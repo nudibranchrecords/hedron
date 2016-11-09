@@ -2,14 +2,13 @@ const THREE = require('three');
 
 module.exports = Cube;
 
-function Cube (params) {
+function Cube () {
 
-	var defaults = {
+	this.defaults = {
 		rotSpeedX: 0.01,
-		rotSpeedY: 0.01
+		rotSpeedY: 0.01,
+		scale: 1
 	}
-
-	this.params = Object.assign({}, defaults, params);
 
 	var geometry = new THREE.BoxGeometry( 300, 300, 300);
 	var material = new THREE.MeshNormalMaterial();
@@ -25,5 +24,6 @@ Cube.prototype.update = function() {
 
 	this.mesh.rotation.x += this.params.rotSpeedX;
 	this.mesh.rotation.y += this.params.rotSpeedY;
+	this.mesh.scale.set(this.params.scale, this.params.scale, this.params.scale);
 
 }
