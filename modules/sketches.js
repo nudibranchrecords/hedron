@@ -1,10 +1,8 @@
 var scene = require( './scenes' );
 
-
-var data = [ 'Demo' ]
+var data = require('../data/demopatch.json')
 
 var sketches = [];
-
 
 module.exports = new Sketches;
 
@@ -12,8 +10,8 @@ function Sketches() {
 
 	for ( var i = 0; i < data.length; i++ ) {
 
-		var Sketch = require( '../sketches/' + data[ i ] );
-		sketches.push( new Sketch );
+		var Sketch = require( '../sketches/' + data[ i ].id );
+		sketches.push( new Sketch(data[i].params) );
 
 	}
 

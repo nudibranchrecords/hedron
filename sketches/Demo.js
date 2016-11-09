@@ -2,21 +2,28 @@ const THREE = require('three');
 
 module.exports = Cube;
 
-function Cube () {
+function Cube (params) {
 
-	this.geometry = new THREE.BoxGeometry( 100, 100, 100);
-	this.material = new THREE.MeshNormalMaterial();
+	var defaults = {
+		rotSpeedX: 0.01,
+		rotSpeedY: 0.01
+	}
 
-	this.cube = new THREE.Mesh( this.geometry, this.material );
+	this.params = Object.assign({}, defaults, params);
+
+	var geometry = new THREE.BoxGeometry( 300, 300, 300);
+	var material = new THREE.MeshNormalMaterial();
+
+	var cube = new THREE.Mesh( geometry, material );
 
 	this.mesh = new THREE.Object3D();
-	this.mesh.add(this.cube);
+	this.mesh.add(cube);
 
 }
 
 Cube.prototype.update = function() {
 
-	this.mesh.rotation.x += 0.01;
-	this.mesh.rotation.y += 0.02;
+	this.mesh.rotation.x += this.params.rotSpeedX;
+	this.mesh.rotation.y += this.params.rotSpeedY;
 
 }
