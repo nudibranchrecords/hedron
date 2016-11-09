@@ -1,0 +1,12 @@
+{
+  "name": "hedron",
+  "version": "0.0.0",
+  "main": "main.js",
+  "dependencies": {
+    "three": "^0.82.1"
+  },
+  "devDependencies": {
+    "electron-prebuilt": "^1.4.5",
+    "electron-reload": "^1.0.3"
+  }
+}
