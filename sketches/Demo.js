@@ -5,9 +5,9 @@ module.exports = Cube;
 function Cube () {
 
 	this.defaults = {
-		rotSpeedX: 0.01,
-		rotSpeedY: 0.01,
-		scale: 1
+		rotSpeedX: 0.5,
+		rotSpeedY: 0.5,
+		scale: 0
 	}
 
 	var geometry = new THREE.BoxGeometry( 300, 300, 300);
@@ -22,8 +22,13 @@ function Cube () {
 
 Cube.prototype.update = function() {
 
-	this.mesh.rotation.x += this.params.rotSpeedX;
-	this.mesh.rotation.y += this.params.rotSpeedY;
-	this.mesh.scale.set(this.params.scale, this.params.scale, this.params.scale);
+	var scale = this.params.scale + 1;
+
+	this.mesh.rotation.x += this.params.rotSpeedX/10;
+	this.mesh.rotation.y += this.params.rotSpeedY/10;
+
+	this.mesh.scale.set(scale, scale, scale);
+	
+	
 
 }

@@ -20,6 +20,8 @@ function Sketches() {
 
 		sketches.push( sketch );
 
+		inputs.registerSketch(sketch);
+
 	}
 
 	for ( var i = 0; i < sketches.length; i++ ) {
@@ -33,10 +35,6 @@ function Sketches() {
 Sketches.prototype.update = function() {
 
 	for ( var i = 0; i < sketches.length; i++ ) {
-
-		if (sketches[i].inputs) {
-			inputs.parseInputs(sketches[i].inputs, sketches[i].params);
-		}
 		
 		sketches[ i ].update();
 
