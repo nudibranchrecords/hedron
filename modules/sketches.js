@@ -17,6 +17,7 @@ function Sketches() {
 		// Override sketch defaults with params from data
 		sketch.params = Object.assign({}, sketch.defaults, data[i].params);
 		sketch.inputs = data[i].inputs;
+		sketch.nodes = data[i].nodes;
 
 		sketches.push( sketch );
 
