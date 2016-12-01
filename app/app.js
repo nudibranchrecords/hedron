@@ -1,2 +1,2 @@
-require('../modules/loop');
-require('../modules/midiInputs');
+import '../modules/loop';
+import '../modules/midiInputs';

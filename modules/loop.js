@@ -1,12 +1,8 @@
-var THREE = require( 'three' );
-var sketches = require( './sketches' );
-var scene = require( './scenes' );
-var camera = require( './cameras' );
-var inputs = require( './inputs' );
-
-var renderer = new THREE.WebGLRenderer();
-renderer.setSize( window.innerWidth, window.innerHeight );
-document.body.appendChild( renderer.domElement );
+import renderer from './renderer';
+import sketches from './sketches';
+import scene from './scenes';
+import camera from './cameras';
+import inputs from './inputs';
 
 function render() {
 

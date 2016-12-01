@@ -1,44 +1,49 @@
-var scene = require( './scenes' );
-var inputs = require( './inputs' );
+import scene from './scenes';
+import inputs from './inputs';
+
 var data = require('../data/demopatch.json')
 
-var sketches = [];
+class Sketches {
 
-module.exports = new Sketches;
+	constructor() {
 
-function Sketches() {
+		this.sketches = [];
+		let Sketch, sketch;
 
-	for ( var i = 0; i < data.length; i++ ) {
+		for ( let i = 0; i < data.length; i++ ) {
 
-		// Require and instantiate sketch
-		var Sketch = require( '../sketches/' + data[ i ].id );
-		var sketch = new Sketch();
+			// Require and instantiate sketch
+			Sketch = require( '../sketches/' + data[ i ].id );
+			sketch = new Sketch();
 
-		// Override sketch defaults with params from data
-		sketch.params = Object.assign({}, sketch.defaults, data[i].params);
-		sketch.inputs = data[i].inputs;
-		sketch.nodes = data[i].nodes;
+			// Override sketch defaults with params from data
+			sketch.params = Object.assign({}, sketch.defaults, data[i].params);
+			sketch.inputs = data[i].inputs;
+			sketch.nodes = data[i].nodes;
 
-		sketches.push( sketch );
+			this.sketches.push( sketch );
 
-		inputs.registerSketch(sketch);
+			inputs.registerSketch(sketch);
 
+		}
+
+		for ( let i = 0; i < this.sketches.length; i++ ) {
+
+			scene.add( this.sketches[ i ].mesh );
+
+		}
 	}
 
-	for ( var i = 0; i < sketches.length; i++ ) {
+	update() {
 
-		scene.add( sketches[ i ].mesh );
-
-	}
-
-}
-
-Sketches.prototype.update = function() {
-
-	for ( var i = 0; i < sketches.length; i++ ) {
+		for ( let i = 0; i < this.sketches.length; i++ ) {
 		
-		sketches[ i ].update();
+			this.sketches[ i ].update();
+
+		}
 
 	}
 
 }
+
+export default new Sketches;

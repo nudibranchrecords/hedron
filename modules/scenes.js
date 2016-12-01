@@ -1,5 +1,3 @@
-var THREE = require( 'three' );
+import {Scene} from 'three';
 
-var scene = new THREE.Scene();
-
-module.exports = scene;
+export default new Scene();

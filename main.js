@@ -1,10 +1,9 @@
-const {app, BrowserWindow} = require('electron')
-
+import {app, BrowserWindow} from 'electron';
 
 // Live reload behaviour
-require('electron-reload')(__dirname+'/**/*', {
-    electron: require('electron-prebuilt')
-});
+// require('electron-reload')(__dirname+'/**/*', {
+//     electron: require('electron-prebuilt')
+// });
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
