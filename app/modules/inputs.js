@@ -67,7 +67,7 @@ class Inputs {
 		const parseNode = (node) => {
 
 			let input;
-			const modifier = require('../modifiers/'+node.modifier.name);
+			const modifier = require('../../modifiers/'+node.modifier.name);
 
 			if (node.input.type == 'audio') {
 
