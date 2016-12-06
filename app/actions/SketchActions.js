@@ -19,3 +19,12 @@ export function createSketch(sketchFile) {
 	});
 
 }
+
+export function deleteSketch(id) {
+
+	dispatcher.dispatch( {
+		type: 'DELETE_SKETCH',
+		id
+	});
+
+}

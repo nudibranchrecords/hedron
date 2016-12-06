@@ -58,6 +58,15 @@ class SketchesStore extends EventEmitter {
 
 	}
 
+	deleteSketch(id) {
+
+		scene.remove(this.sketches[id].mesh);
+
+		delete this.sketches[id];
+
+		this.emit('change');
+	}
+
 	getAll() {
 		return this.sketches;
 	}
@@ -93,6 +102,10 @@ class SketchesStore extends EventEmitter {
 
 			case "CREATE_SKETCH":
 				this.createSketch(action.sketchFile);
+				break
+
+			case "DELETE_SKETCH":
+				this.deleteSketch(action.id);
 				break
 		}
 

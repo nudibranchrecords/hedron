@@ -1,7 +1,14 @@
 import React from 'react';
 import Param from './Param';
+import * as SketchActions from '../../actions/SketchActions';
 
 export default class Sketch extends React.Component {
+
+	deleteThis() {
+
+		SketchActions.deleteSketch(this.props.sketch.id);
+
+	}
 
 	render() {
 
@@ -21,6 +28,8 @@ export default class Sketch extends React.Component {
 		              )
 		            })}
 		        </ul>
+
+		        <a onClick={this.deleteThis.bind(this)}>Delete Sketch</a>
 
 			</div>
 		)

@@ -2,6 +2,8 @@ import React from 'react';
 
 import SketchesStore from '../../stores/SketchesStore';
 
+import { browserHistory } from 'react-router';
+
 import Sketch from './Sketch';
 import SketchesNav from './SketchesNav';
 
@@ -34,15 +36,17 @@ export default class Sketches extends React.Component {
 
 	render() {
 
+		const { sketches } = this.state;
+
+		let currentSketch;
 		let currentSketchId = this.props.routeParams.sketch;
 
-		if (!currentSketchId) {
-			currentSketchId = 1;
+		// Set the current displayed sketch as the last one if not defined (e.g. deleted)
+		if (!currentSketchId || !sketches[currentSketchId]) {
+			currentSketch = sketches[Object.keys(sketches)[Object.keys(sketches).length - 1]]
+		} else {
+			currentSketch = sketches[currentSketchId];
 		}
-
-		const { sketches } = this.state;
-	
-		const currentSketch = sketches[currentSketchId];
 
 		return (
 			<div>
