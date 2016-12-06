@@ -56,6 +56,10 @@ class SketchesStore extends EventEmitter {
 
 		this.emit('change');
 
+		window.location.hash = '/sketch/'+sketch.id;
+
+		
+
 	}
 
 	deleteSketch(id) {
