@@ -1,6 +1,7 @@
 import { EventEmitter } from 'events';
 import dispatcher from '../dispatcher';
 import scene from '../modules/scenes';
+import newId from '../utils/newid';
 
 class SketchesStore extends EventEmitter {
 
@@ -12,18 +13,18 @@ class SketchesStore extends EventEmitter {
 
 		this.sketches = {};
 
-		let Sketch, sketch;
-
 		for (const key of Object.keys(data)) {
+
+			let Sketch, sketch;
 		   
 			// Require and instantiate sketch
-			Sketch = require( '../../sketches/' + data[ key ].sketchId );
+			Sketch = require( '../../sketches/' + data[ key ].sketchFile );
 			sketch = new Sketch();
 
 			// Override sketch defaults with params from data
 			sketch.params = Object.assign({}, sketch.defaults, data[key].params);
-			sketch.id = data[key].id;
-			sketch.sketchId = data[key].sketchId;
+			sketch.id = key;
+			sketch.sketchFile = data[key].sketchFile;
 			sketch.title = data[key].title;
 
 			this.sketches[sketch.id] = sketch;
@@ -32,6 +33,28 @@ class SketchesStore extends EventEmitter {
 			scene.add(sketch.mesh);
 
 		}
+
+	}
+
+	createSketch(sketchFile) {
+
+		let Sketch, sketch;
+
+		// Require and instantiate sketch
+		Sketch = require( '../../sketches/' + sketchFile );
+		sketch = new Sketch();
+
+		sketch.params = sketch.defaults;
+		sketch.id = newId('sketch_');
+		sketch.sketchFile = sketchFile;
+		sketch.title = sketchFile;
+
+		this.sketches[sketch.id] = sketch;
+
+		// Add to scene
+		scene.add(sketch.mesh);
+
+		this.emit('change');
 
 	}
 
@@ -49,9 +72,9 @@ class SketchesStore extends EventEmitter {
 
 	}
 
-	editParam(sketchId, param, value) {
+	editParam(id, param, value) {
 
-		this.sketches[sketchId].params[param] = value;
+		this.sketches[id].params[param] = value;
 		this.emit('change');
 
 	}
@@ -65,7 +88,11 @@ class SketchesStore extends EventEmitter {
 				break
 
 			case "EDIT_SKETCH_PARAM":
-				this.editParam(action.sketchId, action.param, action.value);
+				this.editParam(action.id, action.param, action.value);
+				break
+
+			case "CREATE_SKETCH":
+				this.createSketch(action.sketchFile);
 				break
 		}
 

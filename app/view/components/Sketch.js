@@ -5,7 +5,7 @@ export default class Sketch extends React.Component {
 
 	render() {
 
-		const { title , id, params } = this.props.sketch;
+		const { title, id, params } = this.props.sketch;
 
 		return (
 			<div>
@@ -16,7 +16,7 @@ export default class Sketch extends React.Component {
 
 		              return (
 
-		              	<Param key={key} id={key} value={params[key]} sketchId={id} />
+		              	<Param key={key} paramKey={key} value={params[key]} sketchId={id} />
 
 		              )
 		            })}

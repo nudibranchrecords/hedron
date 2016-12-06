@@ -1,8 +1,9 @@
 import React from 'react';
-import Sketch from './Sketch';
-import SketchesStore from '../../stores/SketchesStore';
-import { Link } from 'react-router';
 
+import SketchesStore from '../../stores/SketchesStore';
+
+import Sketch from './Sketch';
+import SketchesNav from './SketchesNav';
 
 export default class Sketches extends React.Component {
 
@@ -10,7 +11,7 @@ export default class Sketches extends React.Component {
 		super();
 
 		this.getItems = this.getItems.bind(this);
-		
+
 		this.state = {
 			sketches: SketchesStore.getAll()
 		}
@@ -33,20 +34,20 @@ export default class Sketches extends React.Component {
 
 	render() {
 
-		const currentSketchId = this.props.routeParams.sketch;
-		const { sketches } = this.state;
+		let currentSketchId = this.props.routeParams.sketch;
 
+		if (!currentSketchId) {
+			currentSketchId = 1;
+		}
+
+		const { sketches } = this.state;
+	
 		const currentSketch = sketches[currentSketchId];
 
 		return (
 			<div>
 			
-				<ul>
-		            {Object.keys(sketches).map(function(key) {
-		              return <li key={key}><Link to={'/sketch/'+sketches[key].id}>{sketches[key].title}</Link></li>
-		            })}
-		        </ul>
-
+				<SketchesNav sketches={sketches} />
 		        <Sketch sketch={currentSketch} />
 
 			</div>
