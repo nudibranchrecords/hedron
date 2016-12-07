@@ -4,13 +4,7 @@ import { Link } from 'react-router';
 
 import Param from './Param';
 
-import { createSketch } from '../../actions/SketchActions';
-
 export default class SketchesNav extends React.Component {
-
-	create() {
-		createSketch('Demo');
-	}
 
 	render() {
 
@@ -20,10 +14,10 @@ export default class SketchesNav extends React.Component {
 			<nav>
 				<ul>
 		            {Object.keys(sketches).map(function(key) {
-		              return <li key={key}><Link to={'/sketch/'+sketches[key].id}>{sketches[key].title}</Link></li>
+		              return <li key={key}><Link to={'/sketch/id/'+sketches[key].id}>{sketches[key].title}</Link></li>
 		            })}
 
-		            <li><a onClick={this.create.bind(this)}>Add New</a></li>
+		            <li>+<Link to={'/sketch/create'}>Add New</Link></li>
 		        </ul>
 			</nav>
 		)

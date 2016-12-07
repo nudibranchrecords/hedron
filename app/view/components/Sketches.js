@@ -5,6 +5,7 @@ import SketchesStore from '../../stores/SketchesStore';
 import { browserHistory } from 'react-router';
 
 import Sketch from './Sketch';
+import SketchCreate from './SketchCreate';
 import SketchesNav from './SketchesNav';
 
 export default class Sketches extends React.Component {
@@ -12,7 +13,7 @@ export default class Sketches extends React.Component {
 	constructor() {
 		super();
 
-		this.getItems = this.getItems.bind(this);
+		this.getSketches = this.getSketches.bind(this);
 
 		this.state = {
 			sketches: SketchesStore.getAll()
@@ -21,16 +22,16 @@ export default class Sketches extends React.Component {
 	}
 
 	componentWillMount() {
-		SketchesStore.on('change', this.getItems);
+		SketchesStore.on('change', this.getSketches);
 	}
 
 	componentWillUnmount() {
-		SketchesStore.removeListener('change', this.getItems);
+		SketchesStore.removeListener('change', this.getSketches);
 	}
 
-	getItems() {
+	getSketches() {
 		this.setState({
-			items: SketchesStore.getAll()
+			sketches: SketchesStore.getAll()
 		})
 	}
 
@@ -38,21 +39,36 @@ export default class Sketches extends React.Component {
 
 		const { sketches } = this.state;
 
-		let currentSketch;
-		let currentSketchId = this.props.routeParams.sketch;
+		let viewComponent;
+		let action = this.props.routeParams.action;
 
-		// Set the current displayed sketch as the last one if not defined (e.g. deleted)
-		if (!currentSketchId || !sketches[currentSketchId]) {
-			currentSketch = sketches[Object.keys(sketches)[Object.keys(sketches).length - 1]]
-		} else {
-			currentSketch = sketches[currentSketchId];
+		if (action == 'create') {
+
+			viewComponent = <SketchCreate />;
+
+		} else {	
+
+			let currentSketch;
+			let currentSketchId = this.props.routeParams.sketch;
+
+			// Set the current displayed sketch as the last one if not defined (e.g. deleted)
+			if (!currentSketchId || !sketches[currentSketchId]) {
+				currentSketch = sketches[Object.keys(sketches)[Object.keys(sketches).length - 1]]
+			} else {
+				currentSketch = sketches[currentSketchId];
+			}
+
+			viewComponent = <Sketch sketch={currentSketch} />;
+
 		}
+
+	
 
 		return (
 			<div>
 			
 				<SketchesNav sketches={sketches} />
-		        <Sketch sketch={currentSketch} />
+		        {viewComponent}
 
 			</div>
 		)

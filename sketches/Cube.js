@@ -4,7 +4,7 @@ class Cube {
 
 	constructor() {
 
-		this.defaults = {
+		this.params = {
 			rotSpeedX: 0.5,
 			rotSpeedY: 0.5,
 			scale: 0

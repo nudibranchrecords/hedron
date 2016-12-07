@@ -22,7 +22,7 @@ class SketchesStore extends EventEmitter {
 			sketch = new Sketch();
 
 			// Override sketch defaults with params from data
-			sketch.params = Object.assign({}, sketch.defaults, data[key].params);
+			sketch.params = Object.assign({}, sketch.params, data[key].params);
 			sketch.id = key;
 			sketch.sketchFile = data[key].sketchFile;
 			sketch.title = data[key].title;
@@ -44,7 +44,6 @@ class SketchesStore extends EventEmitter {
 		Sketch = require( '../../sketches/' + sketchFile );
 		sketch = new Sketch();
 
-		sketch.params = sketch.defaults;
 		sketch.id = newId('sketch_');
 		sketch.sketchFile = sketchFile;
 		sketch.title = sketchFile;

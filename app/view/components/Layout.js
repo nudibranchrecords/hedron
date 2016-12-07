@@ -1,6 +1,5 @@
 import React from 'react';
 import Overview from './Overview';
-import Controls from './Controls';
 
 export default class Layout extends React.Component {
 	render() {

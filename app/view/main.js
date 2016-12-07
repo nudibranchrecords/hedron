@@ -11,7 +11,8 @@ ReactDOM.render(
 	<Router history={hashHistory}>
 		<Route path="/" component={Layout}>
 			<IndexRoute component={Sketches}></IndexRoute>
-			<Route path="/sketch/:sketch" component={Sketches}></Route>
+			<Route path="/sketch/id/:sketch" component={Sketches}></Route>
+			<Route path="/sketch/:action" component={Sketches}></Route>
 		</Route>
 	</Router>
 , app);
