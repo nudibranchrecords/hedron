@@ -8,10 +8,10 @@ export default class Layout extends React.Component {
 
 			<div className="layout">
 				<div className="layout__module">
-					<Overview />
+					{this.props.children}
 				</div>
 				<div className="layout__module">
-					{this.props.children}
+					<Overview />
 				</div>
 			</div>
 
