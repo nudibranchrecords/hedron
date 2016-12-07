@@ -3,18 +3,14 @@ import scene from './scenes';
 import camera from './cameras';
 
 import inputs from './inputs';
-
-import dispatcher from '../dispatcher';
+import sketches from './sketches';
 
 function update() {
 
 	requestAnimationFrame( update );
 
 	inputs.update();
-
-	dispatcher.dispatch({
-		type: 'UPDATE_SKETCHES'
-	});
+	sketches.update();
 
 	renderer.render( scene, camera );
 

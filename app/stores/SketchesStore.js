@@ -1,6 +1,5 @@
 import { EventEmitter } from 'events';
 import dispatcher from '../dispatcher';
-import scene from '../modules/scenes';
 import newId from '../utils/newid';
 
 class SketchesStore extends EventEmitter {
@@ -33,9 +32,6 @@ class SketchesStore extends EventEmitter {
 
 			this.sketches[sketch.id] = sketch;
 
-			// Add to scene
-			scene.add(sketch.mesh);
-
 		}
 
 	}
@@ -54,39 +50,25 @@ class SketchesStore extends EventEmitter {
 
 		this.sketches[sketch.id] = sketch;
 
-		// Add to scene
-		scene.add(sketch.mesh);
-
 		this.emit('change');
+		this.emit('create', sketch.id);
 
 		window.location.hash = '/sketch/'+sketch.id;
-
-		
 
 	}
 
 	deleteSketch(id) {
 
-		scene.remove(this.sketches[id].mesh);
+		this.emit('change');
+		this.emit('delete', id);
 
 		delete this.sketches[id];
-
-		this.emit('change');
 	}
 
 	getAll() {
 		return this.sketches;
 	}
 
-	update() {
-
-		for (const key of Object.keys(this.sketches)) {
-
-			this.sketches[ key ].update();
-
-		}
-
-	}
 
 	editParam(id, param, value) {
 
