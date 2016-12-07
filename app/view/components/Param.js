@@ -4,7 +4,7 @@ import { editSketchParam } from '../../actions/SketchActions';
 export default class Param extends React.Component {
 
 	edit(e) {
-		editSketchParam(this.props.sketchId, this.props.paramKey, e.target.value);
+		editSketchParam(this.props.sketchId, this.props.paramKey, parseFloat(e.target.value));
 	}
 	
 	render() {
