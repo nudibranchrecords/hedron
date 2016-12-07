@@ -1,10 +1,10 @@
 import React from 'react';
-import { editSketchParam } from '../../actions/SketchActions';
+import * as SketchActions from '../../actions/SketchActions';
 
 export default class Param extends React.Component {
 
 	edit(e) {
-		editSketchParam(this.props.sketchId, this.props.paramKey, parseFloat(e.target.value));
+		SketchActions.editSketchParam(this.props.sketchId, this.props.paramKey, parseFloat(e.target.value));
 	}
 	
 	render() {

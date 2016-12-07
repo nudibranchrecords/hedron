@@ -27,6 +27,10 @@ class SketchesStore extends EventEmitter {
 			sketch.sketchFile = data[key].sketchFile;
 			sketch.title = data[key].title;
 
+			// Add inputs & nodes
+			sketch.inputs = data[key].inputs;
+			sketch.nodes = data[key].nodes;
+
 			this.sketches[sketch.id] = sketch;
 
 			// Add to scene

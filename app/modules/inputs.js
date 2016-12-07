@@ -1,3 +1,6 @@
+import SketchesStore from '../stores/SketchesStore';
+import * as SketchActions from '../actions/SketchActions';
+
 import audioInputs from './audioInputs';
 
 class Inputs {
@@ -5,14 +8,13 @@ class Inputs {
 	constructor() {
 
 		this.inputs = {}
-		this.sketches = [];
+		this.sketches = SketchesStore.getAll();
 
 	}
 
 	update() {
 
 		var audioData = audioInputs.update();
-
 
 		if (audioData) {
 
@@ -22,19 +24,26 @@ class Inputs {
 				"audio2": audioData[2],
 				"audio3": audioData[3]
 			}
-		}
-
-		for (let i = 0; i < this.sketches.length; i++) {
-
-			if (this.sketches[i].inputs.audio) {
-				this.parseAudioInputs(this.sketches[i].inputs.audio, this.sketches[i].params);
-			}
-
-			if (this.sketches[i].inputs.nodes) {
-				this.parseNodeInputs(this.sketches[i].nodes, this.sketches[i].inputs.nodes, this.sketches[i].params);
-			}
 
 		}
+
+	    Object.keys(this.sketches).map((sketchId) => {
+
+	    	if (this.sketches[sketchId].inputs) {
+
+		    	if (this.sketches[sketchId].inputs.audio) {
+
+					this.parseAudioInputs(sketchId, this.sketches[sketchId].inputs.audio);
+					
+				}
+
+				// if (this.sketches[i].inputs.nodes) {
+				// 	this.parseNodeInputs(this.sketches[i].nodes, this.sketches[i].inputs.nodes, this.sketches[i].params);
+				// }
+
+			}
+
+	    });
 
 	}
 
@@ -85,25 +94,21 @@ class Inputs {
 
 		for (let i = 0; i < inputs.length; i++) {
 
+
 			params[inputs[i].param] = parseNode(nodes[inputs[i].id]);
 
 		}
 
 	}
 
-	parseAudioInputs(inputs, params) {
+	parseAudioInputs(sketchId, inputs) {
 
 		for (let i = 0; i < inputs.length; i++) {
 
-			// Assign input value to designated param
-			params[inputs[i].param] = this.inputs[inputs[i].id];
+			SketchActions.editSketchParam(sketchId, inputs[i].param, this.inputs[inputs[i].id]);
 
 		}
 
-	}
-
-	registerSketch(sketch) {
-		this.sketches.push(sketch);
 	}
 	
 }
