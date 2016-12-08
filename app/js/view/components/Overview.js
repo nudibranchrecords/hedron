@@ -1,4 +1,5 @@
 import React from 'react';
+import Analyser from './Analyser';
 
 export default class Overview extends React.Component {
 	render() {
@@ -6,6 +7,7 @@ export default class Overview extends React.Component {
 		return (
 			<div className="overview">
 				<div id="preview"></div>
+				<Analyser/>
 			</div>
 		)
 	}
