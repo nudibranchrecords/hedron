@@ -1,13 +1,17 @@
-var numLevels = 4;
+import { EventEmitter } from 'events';
 
-class AudioInputs {
+import AudioBandsStore from '../stores/AudioBandsStore';
+
+class AudioInputs extends EventEmitter  {
 
     constructor() {
 
-        this.inputs = [];
+        super();
+
+        this.input = false;
 
         const gotStream = ( stream ) => {
-            this.inputs.push(new AudioInput( stream ));
+            this.input = new AudioInput( stream );
         }
 
         navigator.getUserMedia( {
@@ -18,20 +22,22 @@ class AudioInputs {
                 console.log( "The following error occured: " + err );
             }
         );
-
       
     }
 
     update() {
 
-        if (this.inputs.length) {
-            return this.inputs[0].update();
+        if (this.input) {
+
+            this.input.update();
+             this.emit('updated');
+
         }
 
     }
 
-    getLevels() {
-        return this.inputs[0].getLevels();
+    getData() {
+        return this.input.levelsData;
     }
 
 }
@@ -43,6 +49,8 @@ class AudioInput {
         const context = new window.AudioContext;
         const source = context.createMediaStreamSource( stream );
 
+        this.numBands = AudioBandsStore.getCount();
+
         this.analyser = context.createAnalyser();
         this.freqs = new Uint8Array( this.analyser.frequencyBinCount );
 
@@ -51,13 +59,7 @@ class AudioInput {
         source.connect( this.analyser );
 
         // Knocking off 500 redundant frequencies
-        this.levelBins = Math.floor( ( this.analyser.frequencyBinCount - 500 ) / numLevels );
-
-    }
-
-    getLevels() {
-
-        return this.levelsData;
+        this.levelBins = Math.floor( ( this.analyser.frequencyBinCount - 500 ) / this.numBands );
 
     }
 
@@ -65,7 +67,7 @@ class AudioInput {
 
         this.analyser.getByteFrequencyData( this.freqs );
 
-        for ( let i = 0; i < numLevels; i++ ) {
+        for ( let i = 0; i < this.numBands; i++ ) {
 
             let sum = 0;
 
@@ -78,10 +80,12 @@ class AudioInput {
 
         }
 
-        return this.levelsData;
-
     }
 
 }
+
+const audioInputs = new AudioInputs;
+
+window.audioInputs = audioInputs;
 
 export default new AudioInputs;

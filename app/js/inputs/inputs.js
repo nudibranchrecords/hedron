@@ -1,7 +1,7 @@
 import SketchesStore from '../stores/SketchesStore';
-import * as SketchActions from '../actions/SketchActions';
+import AudioInputs from './AudioInputs';
 
-import audioInputs from './audioInputs';
+import * as SketchActions from '../actions/SketchActions';
 
 class Inputs {
 
@@ -10,23 +10,21 @@ class Inputs {
 		this.inputs = {}
 		this.sketches = SketchesStore.getAll();
 
+		AudioInputs.on('updated', this.parseInputs.bind(this));
+
 	}
 
-	update() {
+	parseInputs() {
 
-		var audioData = audioInputs.update();
+		var audioData = AudioInputs.getData();
 
-		if (audioData) {
-
-			this.inputs = {
-				"audio0": audioData[0],
-				"audio1": audioData[1],
-				"audio2": audioData[2],
-				"audio3": audioData[3]
-			}
-
+		this.inputs = {
+			"audio0": audioData[0],
+			"audio1": audioData[1],
+			"audio2": audioData[2],
+			"audio3": audioData[3]
 		}
-
+		
 	    Object.keys(this.sketches).map((sketchId) => {
 
 	    	if (this.sketches[sketchId].inputs) {

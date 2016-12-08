@@ -2,14 +2,15 @@ import renderer from './renderer';
 import scene from './scenes';
 import camera from './cameras';
 
-import inputs from '../inputs/inputs';
+import AudioInputs from '../inputs/AudioInputs';
+
 import sketches from './sketches';
 
 function update() {
 
 	requestAnimationFrame( update );
 
-	inputs.update();
+	AudioInputs.update();
 	sketches.update();
 
 	renderer.render( scene, camera );
