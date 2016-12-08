@@ -2,7 +2,7 @@ import renderer from './renderer';
 import scene from './scenes';
 import camera from './cameras';
 
-import inputs from './inputs';
+import inputs from '../inputs/inputs';
 import sketches from './sketches';
 
 function update() {

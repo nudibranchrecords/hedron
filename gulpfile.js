@@ -7,7 +7,7 @@ var batch = require('gulp-batch');
 
 gulp.task('sass', function () {
  
-  return gulp.src('app/sass/app.scss')
+  return gulp.src('src/sass/app.scss')
     .pipe(sass())
     .pipe(gulp.dest('app/css'));
 
@@ -23,7 +23,7 @@ gulp.task('watch', function () {
         };
     };
 
-    watch('app/sass/**/*.scss', batch(function (events, done) {
+    watch('src/sass/**/*.scss', batch(function (events, done) {
         gulp.start('sass', beepOnError(done));
     }));
 });

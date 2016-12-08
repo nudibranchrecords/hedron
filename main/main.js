@@ -1,10 +1,5 @@
 import {app, BrowserWindow} from 'electron';
 
-// Live reload behaviour
-require('electron-reload')(__dirname+'/**/!(*.css|*.scss)', {
-    electron: require('electron-prebuilt')
-});
-
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let win
@@ -14,7 +9,7 @@ function createWindow () {
   win = new BrowserWindow({width: 1000, height: 800})
 
   // and load the index.html of the app.
-  win.loadURL(`file://${__dirname}/app/index.html`)
+  win.loadURL(`file://${__dirname}/../app/index.html`)
 
   // Open the DevTools.
   // win.webContents.openDevTools()

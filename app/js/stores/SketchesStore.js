@@ -8,7 +8,7 @@ class SketchesStore extends EventEmitter {
 
 		super();
 
-		const data = require('../../data/demopatch.json');
+		const data = require('../../../data/demopatch.json');
 
 		this.sketches = {};
 
@@ -17,7 +17,7 @@ class SketchesStore extends EventEmitter {
 			let Sketch, sketch;
 		   
 			// Require and instantiate sketch
-			Sketch = require( '../../sketches/' + data[ key ].sketchFile );
+			Sketch = require( '../../../sketches/' + data[ key ].sketchFile );
 			sketch = new Sketch();
 
 			// Override sketch defaults with params from data
@@ -41,7 +41,7 @@ class SketchesStore extends EventEmitter {
 		let Sketch, sketch;
 
 		// Require and instantiate sketch
-		Sketch = require( '../../sketches/' + sketchFile );
+		Sketch = require( '../../../sketches/' + sketchFile );
 		sketch = new Sketch();
 
 		sketch.id = newId('sketch_');
