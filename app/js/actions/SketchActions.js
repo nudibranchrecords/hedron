@@ -28,3 +28,14 @@ export function deleteSketch(id) {
 	});
 
 }
+
+export function updateSketchParamInput(id, param, inputId) {
+
+	dispatcher.dispatch({
+		type: 'UPDATE_SKETCH_PARAM_INPUT',
+		id, 
+		param, 
+		inputId
+	});
+
+}

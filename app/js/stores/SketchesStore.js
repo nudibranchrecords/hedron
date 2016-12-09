@@ -48,6 +48,10 @@ class SketchesStore extends EventEmitter {
 		sketch.sketchFile = sketchFile;
 		sketch.title = sketchFile;
 
+		sketch.inputs = {
+			audio: {}
+		};
+
 		this.sketches[sketch.id] = sketch;
 
 		this.emit('change');
@@ -72,7 +76,17 @@ class SketchesStore extends EventEmitter {
 
 	editParam(id, param, value) {
 
-		this.sketches[id].params[param] = value;
+		this.sketches[id].params[param].value = value;
+		this.emit('change');
+
+	}
+
+	editParamInput(id, param, inputId) {
+
+		// Update the sketch object
+		this.sketches[id].params[param].inputId = inputId;
+		// Update the inputs object
+		this.sketches[id].inputs.audio[param] = inputId;
 		this.emit('change');
 
 	}
@@ -81,9 +95,6 @@ class SketchesStore extends EventEmitter {
 
 		switch(action.type) {
 
-			case "UPDATE_SKETCHES":
-				this.update();
-				break
 
 			case "EDIT_SKETCH_PARAM":
 				this.editParam(action.id, action.param, action.value);
@@ -95,6 +106,10 @@ class SketchesStore extends EventEmitter {
 
 			case "DELETE_SKETCH":
 				this.deleteSketch(action.id);
+				break
+
+			case "UPDATE_SKETCH_PARAM_INPUT":
+				this.editParamInput(action.id, action.param, action.inputId);
 				break
 		}
 

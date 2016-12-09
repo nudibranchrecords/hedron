@@ -9,10 +9,22 @@ class AudioBandsStore extends EventEmitter {
 
 		this.count = 4;
 
+		this.keys = [];
+
+		for (let i = 0; i < this.count; i++) {
+
+			this.keys.push('band_'+i);
+
+		}
+
 	}
 
 	getCount() {
 		return this.count;
+	}
+
+	getKeys() {
+		return this.keys;
 	}
 
 	handleActions(action) {

@@ -9,7 +9,10 @@ class Field {
 		let geometry, material, mesh;
 
 		this.params = {
-			speed: 0.5,
+			speed: {
+				name: 'Speed',
+				value: 0.5
+			}
 		}
 
 		this.items = [];
@@ -38,7 +41,7 @@ class Field {
 
 		for (let i = 0; i < itemCount; i++) {
 
-			this.items[i].position.z += this.params.speed * 100;
+			this.items[i].position.z += this.params.speed.value * 100;
 
 			if (this.items[i].position.z > 1000) {
 				this.items[i].position.z = -1000;

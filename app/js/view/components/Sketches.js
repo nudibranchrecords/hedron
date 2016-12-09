@@ -35,6 +35,23 @@ export default class Sketches extends React.Component {
 		})
 	}
 
+	// Assign params inputs from the inputs object
+	// assignParamInputs() {
+		
+	// 	for (const key of Object.keys(this.state.sketches)) {
+
+	// 		const sketch = this.state.sketches[key]
+	// 		const inputs = sketch.inputs;
+
+	// 		for (const key of Object.keys(params)) {
+
+
+	// 		}
+
+
+	// 	}
+	// }
+
 	render() {
 
 		const { sketches } = this.state;

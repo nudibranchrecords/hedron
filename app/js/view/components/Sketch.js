@@ -23,7 +23,7 @@ export default class Sketch extends React.Component {
 
 		              return (
 
-		              	<Param key={key} paramKey={key} value={params[key]} sketchId={id} />
+		              	<Param key={key} paramKey={key} param={params[key]} sketchId={id} />
 
 		              )
 		            })}
