@@ -27,8 +27,8 @@ export default class Analyser extends React.Component {
  	graph() {
  	   this.canvas = ReactDOM.findDOMNode(this);
 	   this.context = this.canvas.getContext( "2d" );
-	   this.height = this.canvas.height;
-	   this.width = this.canvas.width;
+	   this.width = this.canvas.width = 80;
+	   this.height = this.canvas.height = 48;
 	   this.barCount = AudioBandsStore.getCount();
 	   this.barWidth = this.width/this.barCount;
  	}

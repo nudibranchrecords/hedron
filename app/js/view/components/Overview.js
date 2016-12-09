@@ -7,7 +7,16 @@ export default class Overview extends React.Component {
 		return (
 			<div className="overview">
 				<div id="preview"></div>
-				<Analyser/>
+
+				<div className="info">
+					<div className="info__module">
+						<Analyser/>
+					</div>
+					<div className="info__module">
+						<div id="stats"></div>
+					</div>
+				</div>
+				
 			</div>
 		)
 	}
