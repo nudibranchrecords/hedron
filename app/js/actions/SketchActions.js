@@ -39,3 +39,13 @@ export function updateSketchParamInput(id, param, inputId) {
 	});
 
 }
+
+export function deleteSketchParamInput(id, param) {
+
+	dispatcher.dispatch({
+		type: 'DELETE_SKETCH_PARAM_INPUT',
+		id, 
+		param
+	});
+
+}

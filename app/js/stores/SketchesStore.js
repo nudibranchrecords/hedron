@@ -87,6 +87,19 @@ class SketchesStore extends EventEmitter {
 		this.sketches[id].params[param].inputId = inputId;
 		// Update the inputs object
 		this.sketches[id].inputs.audio[param] = inputId;
+		
+		this.emit('change');
+
+	}
+
+
+	deleteParamInput(id, param) {
+
+		// Update the sketch object
+		delete this.sketches[id].params[param].inputId;
+		// Update the inputs object
+		delete this.sketches[id].inputs.audio[param];
+		
 		this.emit('change');
 
 	}
@@ -110,6 +123,10 @@ class SketchesStore extends EventEmitter {
 
 			case "UPDATE_SKETCH_PARAM_INPUT":
 				this.editParamInput(action.id, action.param, action.inputId);
+				break
+
+			case "DELETE_SKETCH_PARAM_INPUT":
+				this.deleteParamInput(action.id, action.param);
 				break
 		}
 
