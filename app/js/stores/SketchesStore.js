@@ -81,12 +81,30 @@ class SketchesStore extends EventEmitter {
 
 	}
 
-	editParamInput(id, param, inputId) {
+	editParamInput(id, param, inputType, inputId) {
+
+		const inputs = this.sketches[id].inputs[inputType];
+
+		this.deleteParamInput(id, param);
 
 		// Update the sketch object
-		this.sketches[id].params[param].inputId = inputId;
+		this.sketches[id].params[param].input.id = inputId;
+		this.sketches[id].params[param].input.type = inputType;
+
 		// Update the inputs object
-		this.sketches[id].inputs.audio[param] = inputId;
+		if (inputType == 'audio') {
+
+			inputs[param] = inputId;
+
+		} else {
+
+			if (!inputs[inputId]) {
+				inputs[inputId] = {}
+			}
+
+			inputs[inputId].param = param;
+		}
+		
 		
 		this.emit('change');
 
@@ -95,10 +113,18 @@ class SketchesStore extends EventEmitter {
 
 	deleteParamInput(id, param) {
 
-		// Update the sketch object
-		delete this.sketches[id].params[param].inputId;
-		// Update the inputs object
-		delete this.sketches[id].inputs.audio[param];
+		const sketch = this.sketches[id];
+
+		// Delete reference in sketch object
+		delete sketch.params[param].inputId;
+		// Delete if reference in audio inputs
+		delete sketch.inputs.audio[param];
+		// Delete any references in midi inputs
+		for (const key of Object.keys(sketch.inputs.midi)) {
+			if (sketch.inputs.midi[key].param == param) {
+				delete sketch.inputs.midi[key];
+			}
+		}
 		
 		this.emit('change');
 
@@ -107,7 +133,6 @@ class SketchesStore extends EventEmitter {
 	handleActions(action) {
 
 		switch(action.type) {
-
 
 			case "EDIT_SKETCH_PARAM":
 				this.editParam(action.id, action.param, action.value);
@@ -122,7 +147,7 @@ class SketchesStore extends EventEmitter {
 				break
 
 			case "UPDATE_SKETCH_PARAM_INPUT":
-				this.editParamInput(action.id, action.param, action.inputId);
+				this.editParamInput(action.id, action.param, action.inputType, action.inputId);
 				break
 
 			case "DELETE_SKETCH_PARAM_INPUT":

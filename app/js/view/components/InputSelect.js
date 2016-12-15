@@ -6,22 +6,56 @@ export default class Param extends React.Component {
 
 	constructor(props) {
 		super(props);
+
+		let input = false;
 		
 		this.keys = AudioBandsStore.getKeys();
-		this.state = {value: this.props.inputId}
 
-		this.handleChange = this.handleChange.bind(this);
+		this.state = {};
+
+		if (this.props.input) {
+			this.state = {
+				type: this.props.input.type, 
+				id: this.props.input.id
+			};
+		}
+		
+
+		this.handleTypeChange = this.handleTypeChange.bind(this);
 	}
 
-	handleChange(event) {
-		const val = event.target.value;
-	    this.setState({value: val});
+	handleTypeChange(e) {
+		const type = e.target.value;
+		let id = false;
 
-	    if (val == 'manual') {
-	    	SketchActions.deleteSketchParamInput(this.props.sketchId, this.props.paramKey);
-	    } else {
-	    	SketchActions.updateSketchParamInput(this.props.sketchId, this.props.paramKey, val);
-	    }
+
+	    switch(type) {
+
+			case 'manual':
+
+				SketchActions.deleteSketchParamInput(this.props.sketchId, this.props.paramKey);
+				break
+
+			case 'midi':
+				// Start MIDI learn
+				id = 1762;
+				SketchActions.updateSketchParamInput(this.props.sketchId, this.props.paramKey, 'midi', id);
+				break
+
+			case 'audio':
+				id = 'band_0';
+				SketchActions.updateSketchParamInput(this.props.sketchId, this.props.paramKey, 'audio', id);
+				break
+
+			default:
+				console.error('Input type not recognised: '+type);
+		}
+
+		this.setState({
+	    	type,
+	    	id
+	    });
+
 	  
 	}
 
@@ -30,15 +64,16 @@ export default class Param extends React.Component {
 		const paramKey = this.props.paramKey;
 
 		return (
-			
-          <select value={this.state.value} onChange={this.handleChange}>
-          		<option value="manual">Manual</option>
-          		<option value="midi">MIDI</option>
-          		{this.keys.map(function(key, i){
-			        return <option value={key} key={i}>{key}</option>
-			    })}
-          </select>
+		  
+		  <div>
+	          <select value={this.state.type} onChange={this.handleTypeChange}>
+	          		<option value="manual">Manual</option>
+	          		<option value="midi">MIDI</option>
+	          		<option value="audio">Audio</option>
+	          </select>
 
+	          {this.state.id}
+          </div>
 		)
 	}
 

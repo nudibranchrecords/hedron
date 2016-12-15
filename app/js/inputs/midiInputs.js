@@ -1,24 +1,25 @@
-import {inputs} from './inputs';
+import { EventEmitter } from 'events';
 
-class MidiInputs {
+class MidiInputs extends EventEmitter  {
 
     constructor() {
         
+        super();
+
         this.inputs = [];
 
-        navigator.requestMIDIAccess().then( function( midiAccess ) {
+        navigator.requestMIDIAccess().then(( midiAccess ) => {
 
-            midiAccess.inputs.forEach( function(entry) {
+            midiAccess.inputs.forEach((entry) => {
+
                 console.log(entry);
 
-                entry.onmidimessage = function(message) {
+                entry.onmidimessage = (message) => {
 
                     var id = message.data[0].toString() + message.data[1].toString();
-                    var val = message.data[2] / 127;
+                    var val = Math.round(message.data[2] / 127 * 1000)/1000;
 
-                    console.log(id, val);
-
-                    inputs.onMidiInput(id, val);
+                    this.emit('message', id, val);
 
                 };
             });

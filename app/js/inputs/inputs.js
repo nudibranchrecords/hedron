@@ -1,6 +1,7 @@
 import SketchesStore from '../stores/SketchesStore';
 import AudioBandsStore from '../stores/AudioBandsStore';
 import AudioInputs from './AudioInputs';
+import MidiInputs from './MidiInputs';
 
 import * as SketchActions from '../actions/SketchActions';
 
@@ -13,6 +14,7 @@ class Inputs {
 		this.keys = AudioBandsStore.getKeys();
 
 		AudioInputs.on('updated', this.parseInputs.bind(this));
+		MidiInputs.on('message', this.onMidiInput.bind(this));
 
 	}
 
@@ -48,21 +50,22 @@ class Inputs {
 
 	onMidiInput(id, val) {
 
-		for (let i = 0; i < this.sketches.length; i++) {
+		for (const sketchId of Object.keys(this.sketches)) {
 
+			const sketch = this.sketches[sketchId];
 
-			if (this.sketches[i].inputs.midi) {
+			if (sketch.inputs.midi) {
 
-				const param = this.sketches[i].inputs.midi[id].param;
-				const node = this.sketches[i].inputs.midi[id].node;
+				const param = sketch.inputs.midi[id].param;
+			//	const node = sketch.inputs.midi[id].node;
 
 				if (param) {
-					this.sketches[i].params[param] = val; 
+					SketchActions.editSketchParam(sketchId, param, val);
 				}
 
-				if (node) {
-					this.sketches[i].nodes[node].modifier.val = val; 
-				}
+				// if (node) {
+				// 	this.sketches[i].nodes[node].modifier.val = val; 
+				// }
 
 			}
 
