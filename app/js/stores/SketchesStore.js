@@ -76,7 +76,7 @@ class SketchesStore extends EventEmitter {
 
 	editParam(id, param, value) {
 
-		this.sketches[id].params[param].value = value;
+		this.sketches[id].params[param].value = Math.round(value * 100)/100;
 		this.emit('change');
 
 	}

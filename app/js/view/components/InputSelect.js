@@ -31,7 +31,7 @@ export default class Param extends React.Component {
 
 	    switch(type) {
 
-			case 'manual':
+			case 'none':
 
 				SketchActions.deleteSketchParamInput(this.props.sketchId, this.props.paramKey);
 				break
@@ -67,7 +67,7 @@ export default class Param extends React.Component {
 		  
 		  <div>
 	          <select value={this.state.type} onChange={this.handleTypeChange}>
-	          		<option value="manual">Manual</option>
+	          		<option value="none">None</option>
 	          		<option value="midi">MIDI</option>
 	          		<option value="audio">Audio</option>
 	          </select>

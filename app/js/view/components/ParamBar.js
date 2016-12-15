@@ -7,7 +7,8 @@ export default class ParamBar extends React.Component {
 	constructor(props) {
 		super(props);
 
-		this.drawBar = this.drawBar.bind(this);
+		this.handleRelease = this.handleRelease.bind(this);
+		this.handleMove = this.handleMove.bind(this);
 	}
 
     componentDidMount() {
@@ -17,7 +18,7 @@ export default class ParamBar extends React.Component {
 		this.width = this.canvas.width = 100;
 		this.height = this.canvas.height = 10;
 		
-		context.fillStyle = 'white';
+		context.fillStyle = 'red';
 
   	}
   	
@@ -39,13 +40,39 @@ export default class ParamBar extends React.Component {
  		context.fillRect(pos, 0, 2, this.height);
 
 	}
+
+	handleClick(e) {
+
+		this.initialX = e.clientX;
+		this.initialVal = this.props.value;
+
+		document.addEventListener('mouseup', this.handleRelease);
+		document.addEventListener('mousemove', this.handleMove);
+	}
+
+	handleRelease() {
+
+		document.removeEventListener('mouseup', this.handleRelease);
+		document.removeEventListener('mousemove', this.handleMove);
+
+	}
+
+	handleMove(e) {
+
+		const x = Math.max(Math.min(this.initialVal + ((e.clientX - this.initialX) / 200), 1), 0);
+
+		SketchActions.editSketchParam(this.props.sketchId, this.props.paramKey, x);
+
+	}
+
+
 	
 	render() {
 
 		return (
 			
 			<div>
-          		<canvas ref="bar" className="param-bar"></canvas>
+          		<canvas ref="bar" className="param-bar" onMouseDown={this.handleClick.bind(this)}></canvas>
           	</div>
 
 		)

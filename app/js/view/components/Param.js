@@ -17,7 +17,7 @@ export default class Param extends React.Component {
           	<li key={paramKey}>
           		<h3>{name} : {value}</h3>
 
-          		<ParamBar value={value} />          		
+          		<ParamBar value={value} paramKey={paramKey} sketchId={this.props.sketchId}  />          		
           		<InputSelect paramKey={paramKey} input={input} sketchId={this.props.sketchId} />
 
           	</li>
