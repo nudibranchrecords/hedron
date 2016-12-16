@@ -54,7 +54,7 @@ class Inputs {
 
 			const sketch = this.sketches[sketchId];
 
-			if (sketch.inputs.midi) {
+			if (sketch.inputs.midi && sketch.inputs.midi[id]) {
 
 				const param = sketch.inputs.midi[id].param;
 			//	const node = sketch.inputs.midi[id].node;
