@@ -30,7 +30,7 @@ class Cube {
 	
 	update() {
 
-		const scale = this.params.scale.value + 1;
+		const scale = (this.params.scale.value) * 3;
 
 
 		this.mesh.rotation.x += this.params.rotSpeedX.value/10;

@@ -2,6 +2,7 @@ import SketchesStore from '../stores/SketchesStore';
 import AudioBandsStore from '../stores/AudioBandsStore';
 import AudioInputs from './AudioInputs';
 import MidiInputs from './MidiInputs';
+import * as Modifiers from './modifiers';
 
 import * as SketchActions from '../actions/SketchActions';
 
@@ -73,43 +74,39 @@ class Inputs {
 
 	}
 
-	parseNodeInputs(nodes, inputs, params) {
+	parseAudioInputs(sketchId, inputs) {
 
-		const parseNode = (node) => {
+		for (const param of Object.keys(inputs)) {
 
-			let input;
-			const modifier = require('../../modifiers/'+node.modifier.name);
+			let val = this.inputs[inputs[param]];
+			const modifierArray = this.sketches[sketchId].params[param].modifiers;
 
-			if (node.input.type == 'audio') {
-
-				input = this.inputs[node.input.id];
-
-			} else if (node.input.type == 'node') {
-
-				input = parseNode(nodes[node.input.id]);
-
+			if (modifierArray) {
+				val = this.modifyInput(val, modifierArray);
 			}
-			
-			return modifier(node.modifier.val, input);
 
-		}
-
-		for (let i = 0; i < inputs.length; i++) {
-
-
-			params[inputs[i].param] = parseNode(nodes[inputs[i].id]);
+			SketchActions.editSketchParam(sketchId, param, val);
 
 		}
 
 	}
 
-	parseAudioInputs(sketchId, inputs) {
+	modifyInput(value, modifierArray) {
 
-		for (const key of Object.keys(inputs)) {
+		for (let i = 0; i < modifierArray.length; i++) {
 
-			SketchActions.editSketchParam(sketchId, key, this.inputs[inputs[key]]);
+			const m = modifierArray[i].m;
+			const modifyFunction = Modifiers[modifierArray[i].id];
 
+			if (modifyFunction) {
+				value = modifyFunction(value, m);
+			} else {
+				console.error('Modifier not recognised: ', modifierArray[i].id)
+			}
+			
 		}
+
+		return value;
 
 	}
 	
