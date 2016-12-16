@@ -1,7 +1,7 @@
 import React from 'react';
 import * as SketchActions from '../../actions/SketchActions';
 import InputSelect from './InputSelect';
-import ParamBar from './ParamBar';
+import ParamBar from './ParamBar/ParamBar';
 
 export default class Param extends React.Component {
 	
