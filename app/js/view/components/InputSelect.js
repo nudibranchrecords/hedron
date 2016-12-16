@@ -1,25 +1,12 @@
 import React from 'react';
-import AudioBandsStore from '../../stores/AudioBandsStore';
 import * as SketchActions from '../../actions/SketchActions';
+import InputSelectAudio from './InputSelectAudio';
+import InputSelectMidi from './InputSelectMidi';
 
-export default class Param extends React.Component {
+export default class InputSelect extends React.Component {
 
 	constructor(props) {
 		super(props);
-
-		let input = false;
-		
-		this.keys = AudioBandsStore.getKeys();
-
-		this.state = {};
-
-		if (this.props.input) {
-			this.state = {
-				type: this.props.input.type, 
-				id: this.props.input.id
-			};
-		}
-		
 
 		this.handleTypeChange = this.handleTypeChange.bind(this);
 	}
@@ -51,11 +38,6 @@ export default class Param extends React.Component {
 				console.error('Input type not recognised: '+type);
 		}
 
-		this.setState({
-	    	type,
-	    	id
-	    });
-
 	  
 	}
 
@@ -63,16 +45,35 @@ export default class Param extends React.Component {
 
 		const paramKey = this.props.paramKey;
 
+		let inputType, inputId;
+		let select;
+
+		if (this.props.input) {
+			inputType = this.props.input.type;
+			inputId = this.props.input.id;
+
+			if (inputType == 'audio') {
+				select = <InputSelectAudio inputId={inputId} sketchId={this.props.sketchId} paramKey={this.props.paramKey} />;
+			} else if (inputType == 'midi') {
+				select = <InputSelectMidi inputId={inputId} sketchId={this.props.sketchId} paramKey={this.props.paramKey} />;
+			}
+
+		} else {
+			inputType = 'none';
+			inputId = '';
+			select = '';
+		}
+
 		return (
 		  
 		  <div>
-	          <select value={this.state.type} onChange={this.handleTypeChange}>
+	          <select value={inputType} onChange={this.handleTypeChange}>
 	          		<option value="none">None</option>
 	          		<option value="midi">MIDI</option>
 	          		<option value="audio">Audio</option>
 	          </select>
 
-	          {this.state.id}
+	          {select}
           </div>
 		)
 	}

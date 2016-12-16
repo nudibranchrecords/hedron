@@ -88,8 +88,13 @@ class SketchesStore extends EventEmitter {
 		this.deleteParamInput(id, param);
 
 		// Update the sketch object
-		this.sketches[id].params[param].input.id = inputId;
-		this.sketches[id].params[param].input.type = inputType;
+
+
+		this.sketches[id].params[param].input = {
+			id: inputId, 
+			type: inputType
+		}
+
 
 		// Update the inputs object
 		if (inputType == 'audio') {
@@ -116,7 +121,7 @@ class SketchesStore extends EventEmitter {
 		const sketch = this.sketches[id];
 
 		// Delete reference in sketch object
-		delete sketch.params[param].inputId;
+		delete sketch.params[param].input;
 		// Delete if reference in audio inputs
 		delete sketch.inputs.audio[param];
 		// Delete any references in midi inputs
