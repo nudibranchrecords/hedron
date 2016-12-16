@@ -25,7 +25,7 @@ export default class InputSelect extends React.Component {
 
 			case 'midi':
 				// Start MIDI learn
-				id = 1762;
+				id = 1760;
 				SketchActions.updateSketchParamInput(this.props.sketchId, this.props.paramKey, 'midi', id);
 				break
 

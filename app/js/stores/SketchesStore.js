@@ -83,13 +83,16 @@ class SketchesStore extends EventEmitter {
 
 	editParamInput(id, param, inputType, inputId) {
 
-		const inputs = this.sketches[id].inputs[inputType];
+		let inputs = this.sketches[id].inputs[inputType];
+
+
+		if (!inputs) {
+			inputs = this.sketches[id].inputs[inputType] = {};
+		}
 
 		this.deleteParamInput(id, param);
 
 		// Update the sketch object
-
-
 		this.sketches[id].params[param].input = {
 			id: inputId, 
 			type: inputType
@@ -108,6 +111,7 @@ class SketchesStore extends EventEmitter {
 			}
 
 			inputs[inputId].param = param;
+
 		}
 		
 		
@@ -125,11 +129,15 @@ class SketchesStore extends EventEmitter {
 		// Delete if reference in audio inputs
 		delete sketch.inputs.audio[param];
 		// Delete any references in midi inputs
-		for (const key of Object.keys(sketch.inputs.midi)) {
-			if (sketch.inputs.midi[key].param == param) {
-				delete sketch.inputs.midi[key];
+
+		if (sketch.inputs.midi) {
+			for (const key of Object.keys(sketch.inputs.midi)) {
+				if (sketch.inputs.midi[key].param == param) {
+					delete sketch.inputs.midi[key];
+				}
 			}
 		}
+		
 		
 		this.emit('change');
 
