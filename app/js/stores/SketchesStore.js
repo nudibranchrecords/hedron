@@ -143,9 +143,22 @@ class SketchesStore extends EventEmitter {
 
 	}
 
-	editParamModifier(id, param, modifierIndex, value) {
+	editParamModifier(id, param, key, value) {
 
-		const modifier = this.sketches[id].params[param].modifiers[modifierIndex];
+		let modifier;
+		const modifiers = this.sketches[id].params[param].modifiers;
+
+		if (typeof(key) === 'number') {
+
+ 			modifier = modifiers[key];
+
+		} else if (typeof(key) === 'string') {
+
+			modifier = modifiers.filter(function( obj ) {
+			  return obj.id == key;
+			})[0];
+
+		}
 
 		modifier.m = value;
 

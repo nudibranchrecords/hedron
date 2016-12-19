@@ -58,10 +58,17 @@ class Inputs {
 			if (sketch.inputs.midi && sketch.inputs.midi[id]) {
 
 				const param = sketch.inputs.midi[id].param;
+				const modifier = sketch.inputs.midi[id].modifier;
 			//	const node = sketch.inputs.midi[id].node;
 
 				if (param) {
-					SketchActions.editSketchParam(sketchId, param, val);
+
+					if (modifier) {
+						SketchActions.editSketchParamModifier(sketchId, param, modifier, val);
+					} else {
+						SketchActions.editSketchParam(sketchId, param, val);
+					}
+					
 				}
 
 				// if (node) {
