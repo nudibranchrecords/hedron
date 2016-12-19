@@ -26,3 +26,20 @@ export function rangeStart(val, m) {
 	return val + m;
 
 }
+
+export function bitCrush(val, m) {
+
+	const crush = 10-Math.round(m * 10);
+
+	if (m == 0) {
+
+		return val;
+
+	} else {
+
+		return Math.round(val * crush)/ crush;
+
+	}
+	
+
+}

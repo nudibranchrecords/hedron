@@ -95,7 +95,7 @@ class Inputs {
 
 		for (let i = 0; i < modifierArray.length; i++) {
 
-			const m = modifierArray[i].m;
+			const m = parseFloat(modifierArray[i].m);
 			const modifyFunction = Modifiers[modifierArray[i].id];
 
 			if (modifyFunction) {

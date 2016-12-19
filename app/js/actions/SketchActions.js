@@ -50,3 +50,15 @@ export function deleteSketchParamInput(id, param) {
 	});
 
 }
+
+export function editSketchParamModifier(id, param, modifierIndex, value) {
+
+	dispatcher.dispatch({
+		type: 'EDIT_SKETCH_PARAM_MODIFIER',
+		id, 
+		param, 
+		modifierIndex,
+		value
+	});
+
+}

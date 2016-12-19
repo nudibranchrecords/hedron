@@ -143,6 +143,15 @@ class SketchesStore extends EventEmitter {
 
 	}
 
+	editParamModifier(id, param, modifierIndex, value) {
+
+		const modifier = this.sketches[id].params[param].modifiers[modifierIndex];
+
+		modifier.m = value;
+
+		this.emit('change');
+	}
+
 	handleActions(action) {
 
 		switch(action.type) {
@@ -165,6 +174,10 @@ class SketchesStore extends EventEmitter {
 
 			case "DELETE_SKETCH_PARAM_INPUT":
 				this.deleteParamInput(action.id, action.param);
+				break
+
+			case "EDIT_SKETCH_PARAM_MODIFIER":
+				this.editParamModifier(action.id, action.param, action.modifierIndex, action.value);
 				break
 		}
 
