@@ -41,6 +41,30 @@ export function updateSketchParamInput(id, param, inputType, inputId) {
 
 }
 
+export function updateSketchParamModifierInput(id, param, modifierId, inputType, inputId) {
+
+	dispatcher.dispatch({
+		type: 'UPDATE_SKETCH_PARAM_MODIFIER_INPUT',
+		id, 
+		param, 
+		modifierId,
+		inputType,
+		inputId
+	});
+
+}
+
+export function deleteSketchParamModifierInput(id, param, modifierId) {
+
+	dispatcher.dispatch({
+		type: 'DELETE_SKETCH_PARAM_MODIFIER_INPUT',
+		id, 
+		param, 
+		modifierId
+	});
+
+}
+
 export function deleteSketchParamInput(id, param) {
 
 	dispatcher.dispatch({

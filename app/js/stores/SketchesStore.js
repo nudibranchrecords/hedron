@@ -206,6 +206,77 @@ class SketchesStore extends EventEmitter {
 		this.emit('change');
 	}
 
+	editParamModifierInput(id, param, modifierId, inputType, inputId) {
+
+		const modifiers = this.sketches[id].params[param].modifiers;
+
+		const modifier = modifiers.filter(function( obj ) {
+		  return obj.id == modifierId;
+		})[0];
+
+		let inputs = this.sketches[id].inputs[inputType];
+
+
+		if (!inputs) {
+			inputs = this.sketches[id].inputs[inputType] = {};
+		}
+
+		// Update the sketch object
+		modifier.input = {
+			id: inputId, 
+			type: inputType
+		}
+
+		// Update the inputs object
+		if (inputType == 'audio') {
+
+			inputs[param] = inputId;
+
+		} else {
+
+			if (!inputs[inputId]) {
+				inputs[inputId] = {}
+			}
+
+			inputs[inputId].param = param;
+			inputs[inputId].modifier = modifierId;
+
+		}
+		
+		
+		this.emit('change');
+
+	}
+
+	deleteParamModifierInput(id, param, modifierId) {
+
+		const sketch = this.sketches[id];
+		const modifiers = sketch.params[param].modifiers;
+
+		const modifier = modifiers.filter(function( obj ) {
+		  return obj.id == modifierId;
+		})[0];
+
+
+		// Delete reference in sketch object
+		delete modifier.input;
+
+		// Delete any references in midi inputs
+		if (sketch.inputs.midi) {
+			for (const key of Object.keys(sketch.inputs.midi)) {
+
+				if (sketch.inputs.midi[key].param == param) {
+
+					delete sketch.inputs.midi[key];
+				}
+			}
+		}
+		
+		
+		this.emit('change');
+
+	}
+
 	handleActions(action) {
 
 		switch(action.type) {
@@ -232,6 +303,14 @@ class SketchesStore extends EventEmitter {
 
 			case 'EDIT_SKETCH_PARAM_MODIFIER':
 				this.editParamModifier(action.id, action.param, action.modifierIndex, action.value);
+				break
+
+			case 'UPDATE_SKETCH_PARAM_MODIFIER_INPUT':
+				this.editParamModifierInput(action.id, action.param, action.modifierId, action.inputType, action.inputId);
+				break
+
+			case 'DELETE_SKETCH_PARAM_MODIFIER_INPUT':
+				this.deleteParamModifierInput(action.id, action.param, action.modifierId);
 				break
 		}
 

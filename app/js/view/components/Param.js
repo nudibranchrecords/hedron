@@ -1,5 +1,5 @@
 import React from 'react';
-import InputSelect from './InputSelect';
+import ParamInputSelect from './ParamInputSelect';
 import ParamBar from './ParamBar/ParamBar';
 import Modifiers from './Modifiers';
 
@@ -28,7 +28,7 @@ export default class Param extends React.Component {
           		<h3>{name} : {value}</h3>
 
           		<ParamBar value={value} paramKey={paramKey} sketchId={this.props.sketchId}  />          		
-          		<InputSelect paramKey={paramKey} input={input} sketchId={this.props.sketchId} />
+          		<ParamInputSelect paramKey={paramKey} input={input} sketchId={this.props.sketchId} />
          		{modifyComponent}
 
           	</li>

@@ -11,6 +11,12 @@ export default class InputSelectMidi extends React.Component {
 			learning: false
 		}
 
+		if (this.props.modifierId) {
+			this.state.mode = 'modifier';
+		} else {
+			this.state.mode = 'param';
+		}
+
 	}
 
 	componentWillMount() {
@@ -22,7 +28,17 @@ export default class InputSelectMidi extends React.Component {
 	startLearning() {
 
 		MidiInputs.once('message', (id, val) => {
-			SketchActions.updateSketchParamInput(this.props.sketchId, this.props.paramKey, 'midi', id);
+
+			if (this.state.mode == 'modifier') {
+				SketchActions.updateSketchParamModifierInput(this.props.sketchId, this.props.paramKey, this.props.modifierId, 'midi', id);
+			} else {
+				SketchActions.updateSketchParamInput(this.props.sketchId, this.props.paramKey, 'midi', id);
+			}
+
+			this.setState({
+				learning: false
+			})
+			
 		});
 
 		this.setState({
