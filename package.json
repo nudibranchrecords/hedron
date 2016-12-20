@@ -20,6 +20,7 @@
     "gulp": "^3.9.1",
     "gulp-batch": "^1.0.5",
     "gulp-sass": "^2.3.2",
-    "gulp-watch": "^4.3.11"
+    "gulp-watch": "^4.3.11",
+    "react-addons-perf": "^15.4.1"
   }
 }
