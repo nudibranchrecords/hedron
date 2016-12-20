@@ -1,7 +1,7 @@
 import React from 'react';
 import * as SketchActions from '../../actions/SketchActions';
 import InputSelectAudio from './InputSelectAudio';
-import InputSelectMidi from './InputSelectMidi';
+import MidiLearn from './MidiLearn';
 
 export default class InputSelect extends React.Component {
 
@@ -13,7 +13,7 @@ export default class InputSelect extends React.Component {
 
 	// Only update select inputs when needed
 	shouldComponentUpdate(newProps) {
-		
+
 		// Has an input value
 		if (newProps.input) {
 
@@ -48,9 +48,7 @@ export default class InputSelect extends React.Component {
 				break
 
 			case 'midi':
-				// Start MIDI learn
-				id = 1760;
-				SketchActions.updateSketchParamInput(this.props.sketchId, this.props.paramKey, 'midi', id);
+				SketchActions.updateSketchParamInput(this.props.sketchId, this.props.paramKey, 'midi', null);
 				break
 
 			case 'audio':
@@ -79,7 +77,7 @@ export default class InputSelect extends React.Component {
 			if (inputType == 'audio') {
 				select = <InputSelectAudio inputId={inputId} sketchId={this.props.sketchId} paramKey={this.props.paramKey} />;
 			} else if (inputType == 'midi') {
-				select = <InputSelectMidi inputId={inputId} sketchId={this.props.sketchId} paramKey={this.props.paramKey} />;
+				select = <MidiLearn inputId={inputId} sketchId={this.props.sketchId} paramKey={this.props.paramKey} />;
 			}
 
 		} else {
