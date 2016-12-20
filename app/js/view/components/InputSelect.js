@@ -11,6 +11,30 @@ export default class InputSelect extends React.Component {
 		this.handleTypeChange = this.handleTypeChange.bind(this);
 	}
 
+	// Only update select inputs when needed
+	shouldComponentUpdate(newProps) {
+		
+		// Has an input value
+		if (newProps.input) {
+
+			// Had input value before
+			if (this.props.input) {
+				// Check to see if input ID has changed
+				return this.props.input.id !== newProps.input.id;
+			} else {
+				// Didn't have input before
+				return true;
+			}
+		
+		// Doesn't now but did have before
+		} else if (this.props.input) {
+
+			return true
+
+		}
+        
+    }
+
 	handleTypeChange(e) {
 		const type = e.target.value;
 		let id = false;
