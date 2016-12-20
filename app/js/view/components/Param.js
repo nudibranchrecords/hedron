@@ -14,7 +14,7 @@ export default class Param extends React.Component {
 		const modifiers = this.props.param.modifiers;
 		let modifyComponent;
 
-		if (modifiers) {
+		if (modifiers && input && input.type == 'audio') {
 			modifyComponent = 
           		<Modifiers modifiers={modifiers} paramKey={paramKey} sketchId={this.props.sketchId} />;
 		} else {
