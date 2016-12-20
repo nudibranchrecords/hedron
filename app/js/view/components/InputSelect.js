@@ -31,6 +31,10 @@ export default class InputSelect extends React.Component {
 
 			return true
 
+		} else {
+
+			return false
+			
 		}
         
     }
