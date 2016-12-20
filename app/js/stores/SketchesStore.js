@@ -2,6 +2,29 @@ import { EventEmitter } from 'events';
 import dispatcher from '../dispatcher';
 import newId from '../utils/newid';
 
+const modifierDefaults = [
+	{
+		'id': 'threshold',
+		'm': 0.0
+	},
+	{
+		'id': 'gain',
+		'm': 0.5
+	},
+	{
+		'id': 'range',
+		'm': 1.0
+	},
+	{
+		'id': 'rangeStart',
+		'm': 0.0
+	},
+	{
+		'id': 'bitCrush',
+		'm': 0.0
+	}
+]
+
 class SketchesStore extends EventEmitter {
 
 	constructor() {
@@ -25,6 +48,17 @@ class SketchesStore extends EventEmitter {
 			sketch.id = key;
 			sketch.sketchFile = data[key].sketchFile;
 			sketch.title = data[key].title;
+
+			// Add param modifiers
+			for (const paramKey of Object.keys(sketch.params)) {
+
+				if (!data[key].params[paramKey] || !sketch.params[paramKey].modifiers) {
+					sketch.params[paramKey].modifiers = JSON.parse(JSON.stringify(modifierDefaults))
+				} else {
+					sketch.params[paramKey].modifiers = data[key].params[paramKey].modifiers;
+				}
+
+			}
 
 			// Add inputs & nodes
 			sketch.inputs = data[key].inputs;
@@ -51,6 +85,13 @@ class SketchesStore extends EventEmitter {
 		sketch.inputs = {
 			audio: {}
 		};
+
+		// Add param modifiers
+		for (const paramKey of Object.keys(sketch.params)) {
+
+			sketch.params[paramKey].modifiers = JSON.parse(JSON.stringify(modifierDefaults));
+		
+		}
 
 		this.sketches[sketch.id] = sketch;
 
@@ -169,27 +210,27 @@ class SketchesStore extends EventEmitter {
 
 		switch(action.type) {
 
-			case "EDIT_SKETCH_PARAM":
+			case 'EDIT_SKETCH_PARAM':
 				this.editParam(action.id, action.param, action.value);
 				break
 
-			case "CREATE_SKETCH":
+			case 'CREATE_SKETCH':
 				this.createSketch(action.sketchFile);
 				break
 
-			case "DELETE_SKETCH":
+			case 'DELETE_SKETCH':
 				this.deleteSketch(action.id);
 				break
 
-			case "UPDATE_SKETCH_PARAM_INPUT":
+			case 'UPDATE_SKETCH_PARAM_INPUT':
 				this.editParamInput(action.id, action.param, action.inputType, action.inputId);
 				break
 
-			case "DELETE_SKETCH_PARAM_INPUT":
+			case 'DELETE_SKETCH_PARAM_INPUT':
 				this.deleteParamInput(action.id, action.param);
 				break
 
-			case "EDIT_SKETCH_PARAM_MODIFIER":
+			case 'EDIT_SKETCH_PARAM_MODIFIER':
 				this.editParamModifier(action.id, action.param, action.modifierIndex, action.value);
 				break
 		}
