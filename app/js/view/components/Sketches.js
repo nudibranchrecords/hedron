@@ -87,11 +87,14 @@ export default class Sketches extends React.Component {
 	
 
 		return (
-			<div>
-			
-				<SketchesNav sketches={sketches} />
-		        {viewComponent}
+			<div data-Sketches>
+				<div data-Sketches-Module='nav'>
+					<SketchesNav sketches={sketches} />
+				</div>
 
+				<div data-Sketches-Module='view'>
+		        	{viewComponent}
+		        </div>
 			</div>
 		)
 	}

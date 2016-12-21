@@ -24,14 +24,14 @@ export default class Param extends React.Component {
 
 		return (
 
-          	<li key={paramKey}>
-          		<h3>{name} : {value}</h3>
+          	<div data-Param>
+          		<h3 data-Param-Header>{name} : {value}</h3>
 
           		<ParamBar value={value} paramKey={paramKey} sketchId={this.props.sketchId}  />          		
           		<ParamInputSelect paramKey={paramKey} input={input} sketchId={this.props.sketchId} />
          		{modifyComponent}
 
-          	</li>
+          	</div>
 
 		)
 

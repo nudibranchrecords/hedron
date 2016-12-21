@@ -40,7 +40,7 @@ export default class ParamBar extends React.Component {
 
 		return (
 			
-			<div className="param-bar" onMouseDown={this.handleClick.bind(this)}>
+			<div data-ParamBar onMouseDown={this.handleClick.bind(this)}>
           		<ValueBar value={this.props.value} />
           	</div>
 

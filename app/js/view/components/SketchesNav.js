@@ -11,13 +11,13 @@ export default class SketchesNav extends React.Component {
 		const sketches = this.props.sketches;
 
 		return (
-			<nav>
+			<nav data-SketchesNav>
 				<ul>
 		            {Object.keys(sketches).map(function(key) {
-		              return <li key={key}><Link to={'/sketch/id/'+sketches[key].data.id}>{sketches[key].data.title}</Link></li>
+		              return <li data-SketchesNav-Item key={key}><Link activeClassName='active' to={'/sketch/id/'+sketches[key].data.id}>{sketches[key].data.title}</Link></li>
 		            })}
 
-		            <li>+<Link to={'/sketch/create'}>Add New</Link></li>
+		            <li data-SketchesNav-Item><Link to={'/sketch/create'}>+ New</Link></li>
 		        </ul>
 			</nav>
 		)

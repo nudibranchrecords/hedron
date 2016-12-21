@@ -92,7 +92,7 @@ export default class ParamInputSelect extends React.Component {
 
 		return (
 		  
-		  <div>
+		  <div data-InputSelect>
 	          <select value={inputType} onChange={this.handleTypeChange}>
 	          		<option value="none">None</option>
 	          		<option value="midi">MIDI</option>

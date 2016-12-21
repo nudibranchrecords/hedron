@@ -1,0 +1,12 @@
+[data-Layout] {
+	display: flex;
+}
+
+[data-Layout-Module] {
+	flex: 1;
+
+}
+
+[data-Layout-Module~='overview'] {
+	flex: 0 0 40%;
+}

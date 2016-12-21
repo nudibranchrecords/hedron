@@ -11,14 +11,14 @@ export default class Overview extends React.Component {
 	render() {
 
 		return (
-			<div className="overview">
+			<div data-Overview>
 				<div id="preview"></div>
 
-				<div className="info">
-					<div className="info__module">
+				<div data-Stats>
+					<div data-Stats-Module>
 						<Analyser/>
 					</div>
-					<div className="info__module">
+					<div data-Stats-Module>
 						<div id="stats"></div>
 					</div>
 				</div>

@@ -1,37 +1,13 @@
-body {
-	margin: 0;
-	-webkit-user-select: none;
-}
+@import 'base/normalize';
+@import 'base/base';
 
-canvas {
-	
-}
+@import 'components/Layout';
+@import 'components/Stats';
 
-.layout {
-	display: flex;
-}
+@import 'components/Sketches';
+@import 'components/SketchesNav';
+@import 'components/ParamBar';
+@import 'components/Params';
+@import 'components/Param';
+@import 'components/InputSelect';
 
-.layout__module {
-	flex: 1;
-}
-
-.info {
-	display: flex;
-}
-
-.info__module {
-	margin-right: 1px;
-}
-
-.param-bar {
-	width: 100px;
-	height: 10px;
-	background: black;
-	position: relative;
-
-	canvas {
-		position: absolute;
-		top: 0;
-		left: 0;
-	}
-}

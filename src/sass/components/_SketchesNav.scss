@@ -1,0 +1,20 @@
+[data-SketchesNav] {
+	margin-top: 3rem;
+}
+
+[data-SketchesNav-Item] {
+	a {
+		display: block;
+		background: black;
+		padding: 0.5rem;
+		text-transform: uppercase;
+		text-align: center;
+		margin-bottom: 0.5rem;
+		text-decoration: none;
+		border: 1px solid black;
+
+		&.active {
+			border: 1px solid white;
+		}
+	}
+}

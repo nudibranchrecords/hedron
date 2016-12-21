@@ -18,18 +18,18 @@ export default class Sketch extends React.Component {
 			<div>
 				<h2>{title} - { id }</h2>
 
-				<ul>
+				<ul data-Params>
 		            {Object.keys(params).map((key) => {
 
 		              return (
-
-		              	<Param key={key} paramKey={key} param={params[key]} sketchId={id} />
-
+		              	<li data-Params-Item key={key}>
+		              		<Param paramKey={key} param={params[key]} sketchId={id} />
+		              	</li>
 		              )
 		            })}
 		        </ul>
 
-		        <a onClick={this.deleteThis.bind(this)}>Delete Sketch</a>
+		        <button onClick={this.deleteThis.bind(this)}>Delete Sketch</button>
 
 			</div>
 		)

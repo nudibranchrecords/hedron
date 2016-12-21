@@ -6,11 +6,11 @@ export default class Layout extends React.Component {
 
 		return (
 
-			<div className="layout">
-				<div className="layout__module">
+			<div data-Layout>
+				<div data-Layout-Module>
 					{this.props.children}
 				</div>
-				<div className="layout__module">
+				<div  data-Layout-Module="overview">
 					<Overview />
 				</div>
 			</div>
