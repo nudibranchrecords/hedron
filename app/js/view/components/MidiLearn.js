@@ -34,10 +34,6 @@ export default class InputSelectMidi extends React.Component {
 			} else {
 				SketchActions.updateSketchParamInput(this.props.sketchId, this.props.paramKey, 'midi', id);
 			}
-
-			this.setState({
-				learning: false
-			})
 			
 		});
 
