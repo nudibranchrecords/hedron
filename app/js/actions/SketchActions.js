@@ -86,3 +86,11 @@ export function editSketchParamModifier(id, param, modifierIndex, value) {
 	});
 
 }
+
+export function saveToFile() {
+
+	dispatcher.dispatch( {
+		type: 'SAVE_SKETCHES_TO_FILE'
+	});
+
+}

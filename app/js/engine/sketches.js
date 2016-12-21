@@ -6,7 +6,14 @@ class Sketches {
 
 	constructor() {
 
-		this.sketches = SketchesStore.getAll()
+		SketchesStore.on('delete', this.removeSketch);
+		SketchesStore.on('create', this.addSketch);
+
+	}
+
+	init() {
+
+		this.sketches = SketchesStore.getAll();
 
 		for (const key of Object.keys(this.sketches)) {
 
@@ -14,9 +21,6 @@ class Sketches {
 			scene.add(this.sketches[key].mesh);
 
 		}
-
-		SketchesStore.on('delete', this.removeSketch);
-		SketchesStore.on('create', this.addSketch);
 
 	}
 	

@@ -32,9 +32,17 @@ class SketchesStore extends EventEmitter {
 
 		super();
 
-		const data = require('../../../data/demopatch.json');
-
 		this.sketches = {};
+
+		storage.get('sketches', (error, data) => {
+		  if (error) throw error;
+
+		  this.init(data);
+		});
+
+	}
+
+	init(data) {
 
 		for (const key of Object.keys(data)) {
 
@@ -61,14 +69,30 @@ class SketchesStore extends EventEmitter {
 
 			}
 
-			// Add inputs & nodes
-			sketch.data.inputs = data[key].inputs;
-			sketch.data.nodes = data[key].nodes;
+			// Add inputs
+			sketch.data.inputs = Object.assign({audio:{}, midi:{}}, data[key].inputs);
+
+			console.log(sketch.data.inputs);
 
 			this.sketches[sketch.data.id] = sketch;
 
 		}
 
+
+		this.emit('init');
+
+	}
+
+	saveToFile() {
+		let data = {};
+
+		for (const key of Object.keys(this.sketches)) {
+			data[key] = this.sketches[key].data;
+		}
+
+		storage.set('sketches', data, function(error) {
+		  if (error) throw error;
+		});
 	}
 
 	createSketch(sketchFile) {
@@ -312,6 +336,10 @@ class SketchesStore extends EventEmitter {
 
 			case 'DELETE_SKETCH_PARAM_MODIFIER_INPUT':
 				this.deleteParamModifierInput(action.id, action.param, action.modifierId);
+				break
+
+			case 'SAVE_SKETCHES_TO_FILE':
+				this.saveToFile();
 				break
 		}
 

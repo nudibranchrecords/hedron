@@ -59,23 +59,28 @@ export default class Sketches extends React.Component {
 		let viewComponent;
 		let action = this.props.routeParams.action;
 
-		if (action == 'create') {
+		if (Object.keys(sketches).length !== 0) {
 
-			viewComponent = <SketchCreate />;
+			if (action == 'create') {
 
-		} else {	
+				viewComponent = <SketchCreate />;
 
-			let currentSketch;
-			let currentSketchId = this.props.routeParams.sketch;
+			} else {	
 
-			// Set the current displayed sketch as the last one if not defined (e.g. deleted)
-			if (!currentSketchId || !sketches[currentSketchId]) {
-				currentSketch = sketches[Object.keys(sketches)[Object.keys(sketches).length - 1]].data
-			} else {
-				currentSketch = sketches[currentSketchId].data;
+				let currentSketch;
+				let currentSketchId = this.props.routeParams.sketch;
+
+				// Set the current displayed sketch as the last one if not defined (e.g. deleted)
+				if (!currentSketchId || !sketches[currentSketchId]) {
+					currentSketch = sketches[Object.keys(sketches)[Object.keys(sketches).length - 1]].data
+				} else {
+					currentSketch = sketches[currentSketchId].data;
+				}
+
+				viewComponent = <Sketch sketch={currentSketch} />;
+
 			}
 
-			viewComponent = <Sketch sketch={currentSketch} />;
 
 		}
 

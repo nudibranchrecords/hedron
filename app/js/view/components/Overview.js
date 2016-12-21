@@ -1,7 +1,13 @@
 import React from 'react';
 import Analyser from './Analyser';
+import * as SketchActions from '../../actions/SketchActions';
 
 export default class Overview extends React.Component {
+
+	save() {
+		SketchActions.saveToFile();
+	}
+
 	render() {
 
 		return (
@@ -17,6 +23,7 @@ export default class Overview extends React.Component {
 					</div>
 				</div>
 				
+				<button onClick={this.save.bind(this)}>Save</button>
 			</div>
 		)
 	}
