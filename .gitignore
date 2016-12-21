@@ -1,3 +1,4 @@
 node_modules
 data
 app/css
+.DS_Store
