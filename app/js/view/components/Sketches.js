@@ -70,9 +70,9 @@ export default class Sketches extends React.Component {
 
 			// Set the current displayed sketch as the last one if not defined (e.g. deleted)
 			if (!currentSketchId || !sketches[currentSketchId]) {
-				currentSketch = sketches[Object.keys(sketches)[Object.keys(sketches).length - 1]]
+				currentSketch = sketches[Object.keys(sketches)[Object.keys(sketches).length - 1]].data
 			} else {
-				currentSketch = sketches[currentSketchId];
+				currentSketch = sketches[currentSketchId].data;
 			}
 
 			viewComponent = <Sketch sketch={currentSketch} />;

@@ -1,10 +1,12 @@
 import {Mesh, Object3D, BoxGeometry, MeshNormalMaterial} from 'three';
+import Sketch from '../app/js/engine/Sketch';
 
-class Cube {
+class Cube extends Sketch {
 
 	constructor() {
+		super();
 
-		this.params = {
+		this.data.params = {
 			rotSpeedX: {
 				name: 'Rotation Speed X',
 				value: 0.5,
@@ -30,11 +32,11 @@ class Cube {
 	
 	update() {
 
-		const scale = Math.max((this.params.scale.value) * 3, 0.000001);
+		const scale = Math.max((this.data.params.scale.value) * 3, 0.000001);
 
 
-		this.mesh.rotation.x += this.params.rotSpeedX.value/10;
-		this.mesh.rotation.y += this.params.rotSpeedY.value/10;
+		this.mesh.rotation.x += this.data.params.rotSpeedX.value/10;
+		this.mesh.rotation.y += this.data.params.rotSpeedY.value/10;
 
 		this.mesh.scale.set(scale, scale, scale);
 

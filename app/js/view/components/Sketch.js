@@ -12,7 +12,7 @@ export default class Sketch extends React.Component {
 
 	render() {
 
-		const { title, id, params } = this.props.sketch;
+		const { id, title, params } = this.props.sketch;
 
 		return (
 			<div>

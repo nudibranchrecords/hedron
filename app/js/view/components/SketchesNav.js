@@ -14,7 +14,7 @@ export default class SketchesNav extends React.Component {
 			<nav>
 				<ul>
 		            {Object.keys(sketches).map(function(key) {
-		              return <li key={key}><Link to={'/sketch/id/'+sketches[key].id}>{sketches[key].title}</Link></li>
+		              return <li key={key}><Link to={'/sketch/id/'+sketches[key].data.id}>{sketches[key].data.title}</Link></li>
 		            })}
 
 		            <li>+<Link to={'/sketch/create'}>Add New</Link></li>

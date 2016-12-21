@@ -1,14 +1,16 @@
 import {Mesh, Object3D, BoxGeometry, MeshNormalMaterial} from 'three';
+import Sketch from '../app/js/engine/Sketch';
 
 const itemCount = 50;
 
-class Field {
+class Field extends Sketch {
 
 	constructor() {
+		super();
 
 		let geometry, material, mesh;
 
-		this.params = {
+		this.data.params = {
 			speed: {
 				name: 'Speed',
 				value: 0.5
@@ -41,7 +43,7 @@ class Field {
 
 		for (let i = 0; i < itemCount; i++) {
 
-			this.items[i].position.z += this.params.speed.value * 100;
+			this.items[i].position.z += this.data.params.speed.value * 100;
 
 			if (this.items[i].position.z > 1000) {
 				this.items[i].position.z = -1000;

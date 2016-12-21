@@ -1,6 +1,7 @@
 import { EventEmitter } from 'events';
 import dispatcher from '../dispatcher';
 import newId from '../utils/newid';
+import storage from 'electron-json-storage';
 
 const modifierDefaults = [
 	{
@@ -44,27 +45,27 @@ class SketchesStore extends EventEmitter {
 			sketch = new Sketch();
 
 			// Override sketch defaults with params from data
-			sketch.params = Object.assign({}, sketch.params, data[key].params);
-			sketch.id = key;
-			sketch.sketchFile = data[key].sketchFile;
-			sketch.title = data[key].title;
+			sketch.data.params = Object.assign({}, sketch.data.params, data[key].params);
+			sketch.data.id = key;
+			sketch.data.sketchFile = data[key].sketchFile;
+			sketch.data.title = data[key].title;
 
 			// Add param modifiers
-			for (const paramKey of Object.keys(sketch.params)) {
+			for (const paramKey of Object.keys(sketch.data.params)) {
 
-				if (!data[key].params[paramKey] || !sketch.params[paramKey].modifiers) {
-					sketch.params[paramKey].modifiers = JSON.parse(JSON.stringify(modifierDefaults))
+				if (!data[key].params[paramKey] || !sketch.data.params[paramKey].modifiers) {
+					sketch.data.params[paramKey].modifiers = JSON.parse(JSON.stringify(modifierDefaults))
 				} else {
-					sketch.params[paramKey].modifiers = data[key].params[paramKey].modifiers;
+					sketch.data.params[paramKey].modifiers = data[key].params[paramKey].modifiers;
 				}
 
 			}
 
 			// Add inputs & nodes
-			sketch.inputs = data[key].inputs;
-			sketch.nodes = data[key].nodes;
+			sketch.data.inputs = data[key].inputs;
+			sketch.data.nodes = data[key].nodes;
 
-			this.sketches[sketch.id] = sketch;
+			this.sketches[sketch.data.id] = sketch;
 
 		}
 
@@ -78,27 +79,27 @@ class SketchesStore extends EventEmitter {
 		Sketch = require( '../../../sketches/' + sketchFile );
 		sketch = new Sketch();
 
-		sketch.id = newId('sketch_');
-		sketch.sketchFile = sketchFile;
-		sketch.title = sketchFile;
+		sketch.data.id = newId('sketch_');
+		sketch.data.sketchFile = sketchFile;
+		sketch.data.title = sketchFile;
 
 		sketch.inputs = {
 			audio: {}
 		};
 
 		// Add param modifiers
-		for (const paramKey of Object.keys(sketch.params)) {
+		for (const paramKey of Object.keys(sketch.data.params)) {
 
-			sketch.params[paramKey].modifiers = JSON.parse(JSON.stringify(modifierDefaults));
+			sketch.data.params[paramKey].modifiers = JSON.parse(JSON.stringify(modifierDefaults));
 		
 		}
 
-		this.sketches[sketch.id] = sketch;
+		this.sketches[sketch.data.id] = sketch;
 
 		this.emit('change');
-		this.emit('create', sketch.id);
+		this.emit('create', sketch.data.id);
 
-		window.location.hash = '/sketch/'+sketch.id;
+		window.location.hash = '/sketch/'+sketch.data.id;
 
 	}
 
@@ -117,24 +118,24 @@ class SketchesStore extends EventEmitter {
 
 	editParam(id, param, value) {
 
-		this.sketches[id].params[param].value = Math.round(value * 100)/100;
+		this.sketches[id].data.params[param].value = Math.round(value * 100)/100;
 		this.emit('change');
 
 	}
 
 	editParamInput(id, param, inputType, inputId) {
 
-		let inputs = this.sketches[id].inputs[inputType];
+		let inputs = this.sketches[id].data.inputs[inputType];
 
 
 		if (!inputs) {
-			inputs = this.sketches[id].inputs[inputType] = {};
+			inputs = this.sketches[id].data.inputs[inputType] = {};
 		}
 
 		this.deleteParamInput(id, param);
 
 		// Update the sketch object
-		this.sketches[id].params[param].input = {
+		this.sketches[id].data.params[param].input = {
 			id: inputId, 
 			type: inputType
 		}
@@ -163,18 +164,18 @@ class SketchesStore extends EventEmitter {
 
 	deleteParamInput(id, param) {
 
-		const sketch = this.sketches[id];
+		const sketchData = this.sketches[id].data;
 
 		// Delete reference in sketch object
-		delete sketch.params[param].input;
+		delete sketchData.params[param].input;
 		// Delete if reference in audio inputs
-		delete sketch.inputs.audio[param];
+		delete sketchData.inputs.audio[param];
 		// Delete any references in midi inputs
 
-		if (sketch.inputs.midi) {
-			for (const key of Object.keys(sketch.inputs.midi)) {
-				if (sketch.inputs.midi[key].param == param) {
-					delete sketch.inputs.midi[key];
+		if (sketchData.inputs.midi) {
+			for (const key of Object.keys(sketchData.inputs.midi)) {
+				if (sketchData.inputs.midi[key].param == param) {
+					delete sketchData.inputs.midi[key];
 				}
 			}
 		}
@@ -187,7 +188,7 @@ class SketchesStore extends EventEmitter {
 	editParamModifier(id, param, key, value) {
 
 		let modifier;
-		const modifiers = this.sketches[id].params[param].modifiers;
+		const modifiers = this.sketches[id].data.params[param].modifiers;
 
 		if (typeof(key) === 'number') {
 
@@ -208,17 +209,17 @@ class SketchesStore extends EventEmitter {
 
 	editParamModifierInput(id, param, modifierId, inputType, inputId) {
 
-		const modifiers = this.sketches[id].params[param].modifiers;
+		const sketchData = this.sketches[id].data;
+		const modifiers = sketchData.params[param].modifiers;
 
 		const modifier = modifiers.filter(function( obj ) {
 		  return obj.id == modifierId;
 		})[0];
 
-		let inputs = this.sketches[id].inputs[inputType];
-
+		let inputs = sketchData.inputs[inputType];
 
 		if (!inputs) {
-			inputs = this.sketches[id].inputs[inputType] = {};
+			inputs = sketchData.inputs[inputType] = {};
 		}
 
 		// Update the sketch object
@@ -250,8 +251,8 @@ class SketchesStore extends EventEmitter {
 
 	deleteParamModifierInput(id, param, modifierId) {
 
-		const sketch = this.sketches[id];
-		const modifiers = sketch.params[param].modifiers;
+		const sketchData = this.sketches[id].data;
+		const modifiers = sketchData.params[param].modifiers;
 
 		const modifier = modifiers.filter(function( obj ) {
 		  return obj.id == modifierId;
@@ -262,12 +263,12 @@ class SketchesStore extends EventEmitter {
 		delete modifier.input;
 
 		// Delete any references in midi inputs
-		if (sketch.inputs.midi) {
-			for (const key of Object.keys(sketch.inputs.midi)) {
+		if (sketchData.inputs.midi) {
+			for (const key of Object.keys(sketchData.inputs.midi)) {
 
-				if (sketch.inputs.midi[key].param == param) {
+				if (sketchData.inputs.midi[key].param == param) {
 
-					delete sketch.inputs.midi[key];
+					delete sketchData.inputs.midi[key];
 				}
 			}
 		}

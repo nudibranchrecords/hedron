@@ -31,11 +31,13 @@ class Inputs {
 		
 	    Object.keys(this.sketches).map((sketchId) => {
 
-	    	if (this.sketches[sketchId].inputs) {
+	    	const sketchInputs = this.sketches[sketchId].data.inputs;
 
-		    	if (this.sketches[sketchId].inputs.audio) {
+	    	if (sketchInputs) {
 
-					this.parseAudioInputs(sketchId, this.sketches[sketchId].inputs.audio);
+		    	if (sketchInputs.audio) {
+
+					this.parseAudioInputs(sketchId, sketchInputs.audio);
 					
 				}
 
@@ -53,12 +55,12 @@ class Inputs {
 
 		for (const sketchId of Object.keys(this.sketches)) {
 
-			const sketch = this.sketches[sketchId];
+			const sketchInputs = this.sketches[sketchId].data.inputs;
 
-			if (sketch.inputs.midi && sketch.inputs.midi[id]) {
+			if (sketchInputs.midi && sketchInputs.midi[id]) {
 
-				const param = sketch.inputs.midi[id].param;
-				const modifier = sketch.inputs.midi[id].modifier;
+				const param = sketchInputs.midi[id].param;
+				const modifier = sketchInputs.midi[id].modifier;
 			//	const node = sketch.inputs.midi[id].node;
 
 				if (param) {
@@ -86,7 +88,7 @@ class Inputs {
 		for (const param of Object.keys(inputs)) {
 
 			let val = this.inputs[inputs[param]];
-			const modifierArray = this.sketches[sketchId].params[param].modifiers;
+			const modifierArray = this.sketches[sketchId].data.params[param].modifiers;
 
 			if (modifierArray) {
 				val = this.modifyInput(val, modifierArray);
