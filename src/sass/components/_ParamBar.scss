@@ -1,0 +1,12 @@
+[data-ParamBar] {
+	width: 100px;
+	height: 10px;
+	background: black;
+	position: relative;
+
+	canvas {
+		position: absolute;
+		top: 0;
+		left: 0;
+	}
+}

@@ -1,0 +1,15 @@
+[data-Sketches] {
+	display: flex;
+}
+
+[data-Sketches-Module] {
+	flex: 1;
+}
+
+[data-Sketches-Module~='nav'] {
+	flex: 0 0 6rem;
+}
+
+[data-Sketches-Module~='view'] {
+	padding: 0.5rem 0.5rem 1rem 1rem;
+}
