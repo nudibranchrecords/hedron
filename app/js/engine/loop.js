@@ -29,9 +29,5 @@ function update() {
 
 }
 
-SketchesStore.on('init', () => {
-	sketches.init();
-	requestAnimationFrame( update );
-});
-
-
+sketches.init();
+requestAnimationFrame( update );

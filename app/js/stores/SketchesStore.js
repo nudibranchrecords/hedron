@@ -1,7 +1,6 @@
 import { EventEmitter } from 'events';
 import dispatcher from '../dispatcher';
 import newId from '../utils/newid';
-import storage from 'electron-json-storage';
 
 const modifierDefaults = [
 	{
@@ -34,11 +33,15 @@ class SketchesStore extends EventEmitter {
 
 		this.sketches = {};
 
-		storage.get('sketches', (error, data) => {
-		  if (error) throw error;
+		this.init(require('../../../data/demopatch.json'));
 
-		  this.init(data);
-		});
+		// storage.get('sketches', (error, data) => {
+		//   if (error) throw error;
+
+		//   this.init(data);
+		// });
+
+
 
 	}
 
@@ -78,7 +81,7 @@ class SketchesStore extends EventEmitter {
 
 		}
 
-
+		console.log('emit init');
 		this.emit('init');
 
 	}
@@ -90,9 +93,9 @@ class SketchesStore extends EventEmitter {
 			data[key] = this.sketches[key].data;
 		}
 
-		storage.set('sketches', data, function(error) {
-		  if (error) throw error;
-		});
+		// storage.set('sketches', data, function(error) {
+		//   if (error) throw error;
+		// });
 	}
 
 	createSketch(sketchFile) {
