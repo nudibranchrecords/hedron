@@ -1,8 +1,8 @@
 // React UI 
-require('./js/view/main.js');
+import './view/main.js';
 
 // Render loop
-require('./js/engine/loop');
+import './engine/loop';
 
 // Inputs
-require('./js/inputs/inputs');
+import './inputs/inputs';
