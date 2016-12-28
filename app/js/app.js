@@ -1,4 +1,7 @@
-// React UI 
+// Dev
+import './dev.js';
+
+// UI 
 import './view/main.js';
 
 // Render loop
