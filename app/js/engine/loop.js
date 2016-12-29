@@ -1,7 +1,5 @@
 import Stats from 'stats.js';
 
-import SketchesStore from '../stores/SketchesStore';
-
 import renderer from './renderer';
 import scene from './scenes';
 import camera from './cameras';
