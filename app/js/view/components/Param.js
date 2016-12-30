@@ -4,7 +4,7 @@ import ParamBar from './ParamBar/ParamBar';
 import Modifiers from './Modifiers';
 
 export default class Param extends React.Component {
-	
+
 	render() {
 
 		const paramKey = this.props.paramKey;
@@ -25,9 +25,8 @@ export default class Param extends React.Component {
 		return (
 
           	<div data-Param>
-          		<h3 data-Param-Header>{name} : {value}</h3>
-
-          		<ParamBar value={value} paramKey={paramKey} sketchId={this.props.sketchId}  />          		
+          		
+          		<ParamBar value={value} paramName={name} paramKey={paramKey} sketchId={this.props.sketchId}  />          		
           		<ParamInputSelect paramKey={paramKey} input={input} sketchId={this.props.sketchId} />
          		{modifyComponent}
 

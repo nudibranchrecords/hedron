@@ -29,9 +29,10 @@ function update() {
 
 }
 
+
 SketchesStore.on('init', () => {
+
 	sketches.init();
 	requestAnimationFrame( update );
-});
-
-
+	
+})

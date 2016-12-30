@@ -13,7 +13,7 @@ export default class ParamInputSelect extends React.Component {
 
 	// Only update select inputs when needed
 	shouldComponentUpdate(newProps) {
-
+		
 		// Has an input value
 		if (newProps.input) {
 

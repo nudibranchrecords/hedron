@@ -1,7 +1,7 @@
 import { EventEmitter } from 'events';
 import dispatcher from '../dispatcher';
 import newId from '../utils/newid';
-import storage from 'electron-json-storage';
+import storage from '../utils/storage';
 
 const modifierDefaults = [
 	{
@@ -34,10 +34,11 @@ class SketchesStore extends EventEmitter {
 
 		this.sketches = {};
 
-		storage.get('sketches', (error, data) => {
-		  if (error) throw error;
+		storage.get('sketches', (data) => {
 
-		  this.init(data);
+			this.init(data);
+			this.emit('change');
+
 		});
 
 	}
@@ -72,12 +73,9 @@ class SketchesStore extends EventEmitter {
 			// Add inputs
 			sketch.data.inputs = Object.assign({audio:{}, midi:{}}, data[key].inputs);
 
-			console.log(sketch.data.inputs);
-
 			this.sketches[sketch.data.id] = sketch;
 
 		}
-
 
 		this.emit('init');
 
@@ -90,9 +88,7 @@ class SketchesStore extends EventEmitter {
 			data[key] = this.sketches[key].data;
 		}
 
-		storage.set('sketches', data, function(error) {
-		  if (error) throw error;
-		});
+		storage.set('sketches', data);
 	}
 
 	createSketch(sketchFile) {
@@ -107,7 +103,7 @@ class SketchesStore extends EventEmitter {
 		sketch.data.sketchFile = sketchFile;
 		sketch.data.title = sketchFile;
 
-		sketch.inputs = {
+		sketch.data.inputs = {
 			audio: {}
 		};
 
@@ -139,11 +135,15 @@ class SketchesStore extends EventEmitter {
 		return this.sketches;
 	}
 
+	getParamValue(id, param) {
+
+		return this.sketches[id].data.params[param].value;
+
+	}
 
 	editParam(id, param, value) {
 
 		this.sketches[id].data.params[param].value = Math.round(value * 100)/100;
-		this.emit('change');
 
 	}
 

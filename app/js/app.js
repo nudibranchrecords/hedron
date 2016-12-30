@@ -1,8 +1,7 @@
-import Perf from 'react-addons-perf'
+// Dev
+import './dev.js';
 
-window.Perf = Perf;
-
-// React UI 
+// UI 
 import './view/main.js';
 
 // Render loop
@@ -11,5 +10,5 @@ import './engine/loop';
 // Inputs
 import './inputs/inputs';
 
-// CSS reload
-require('electron-css-reload')();
+// Window events 
+import './Windows.js';
