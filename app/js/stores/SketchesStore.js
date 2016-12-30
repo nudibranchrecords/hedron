@@ -1,6 +1,7 @@
 import { EventEmitter } from 'events';
 import dispatcher from '../dispatcher';
 import newId from '../utils/newid';
+import storage from '../utils/storage';
 
 const modifierDefaults = [
 	{
@@ -33,15 +34,12 @@ class SketchesStore extends EventEmitter {
 
 		this.sketches = {};
 
-		this.init(require('../../../data/demopatch.json'));
+		storage.get('sketches', (data) => {
 
-		// storage.get('sketches', (error, data) => {
-		//   if (error) throw error;
+			console.log(data);
+			this.init(data);
 
-		//   this.init(data);
-		// });
-
-
+		});
 
 	}
 
@@ -75,13 +73,10 @@ class SketchesStore extends EventEmitter {
 			// Add inputs
 			sketch.data.inputs = Object.assign({audio:{}, midi:{}}, data[key].inputs);
 
-			console.log(sketch.data.inputs);
-
 			this.sketches[sketch.data.id] = sketch;
 
 		}
 
-		console.log('emit init');
 		this.emit('init');
 
 	}
@@ -93,9 +88,7 @@ class SketchesStore extends EventEmitter {
 			data[key] = this.sketches[key].data;
 		}
 
-		// storage.set('sketches', data, function(error) {
-		//   if (error) throw error;
-		// });
+		storage.set('sketches', data);
 	}
 
 	createSketch(sketchFile) {
@@ -110,7 +103,7 @@ class SketchesStore extends EventEmitter {
 		sketch.data.sketchFile = sketchFile;
 		sketch.data.title = sketchFile;
 
-		sketch.inputs = {
+		sketch.data.inputs = {
 			audio: {}
 		};
 

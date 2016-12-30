@@ -23,8 +23,6 @@ class Renderer extends EventEmitter {
 
 		this.renderer.render( scene, camera );
 
-		console.log(this.sendingOutput);
-
 		if (this.sendingOutput) {
 
 			this.previewContext.drawImage(this.renderer.domElement, 0, 0, this.width, this.height);

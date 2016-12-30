@@ -1,4 +1,7 @@
 import gulp from 'gulp';
+import Perf from 'react-addons-perf'
+
+window.Perf = Perf;
 
 gulp.task('reload', function () {
 	if (location) location.reload();
