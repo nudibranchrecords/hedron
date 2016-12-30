@@ -19,6 +19,7 @@ export default class Sketches extends React.Component {
 			sketches: SketchesStore.getAll()
 		}
 
+
 	}
 
 	componentWillMount() {

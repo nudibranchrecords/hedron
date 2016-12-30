@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from "react-dom";
+import SketchesStore from '../../../stores/SketchesStore';
 import * as SketchActions from '../../../actions/SketchActions';
 import ValueBar from './ValueBar';
 
@@ -10,7 +11,38 @@ export default class ParamBar extends React.Component {
 
 		this.handleRelease = this.handleRelease.bind(this);
 		this.handleMove = this.handleMove.bind(this);
+
+		this.getVal = this.getVal.bind(this);
+
+		this.state = {
+			value: 0
+		}
 	}
+
+
+	// shouldComponentUpdate(newProps) {
+	// 	return false
+	// }
+
+	componentWillMount() {
+		this.getVal();
+	}
+
+	componentWillUnmount() {
+		cancelAnimationFrame(this.anim);
+	}
+
+	getVal() {
+
+		this.setState({
+			value: SketchesStore.getParamValue(this.props.sketchId, this.props.paramKey)
+		})
+
+		this.anim = requestAnimationFrame(this.getVal);
+
+	}
+
+
   	
 	handleClick(e) {
 
@@ -40,8 +72,11 @@ export default class ParamBar extends React.Component {
 
 		return (
 			
-			<div data-ParamBar onMouseDown={this.handleClick.bind(this)}>
-          		<ValueBar value={this.props.value} />
+			<div>
+				<h3 data-Param-Header>{this.props.paramName} : {this.state.value}</h3>
+				<div data-ParamBar onMouseDown={this.handleClick.bind(this)}>
+	          		<ValueBar value={this.state.value} />
+	          	</div>
           	</div>
 
 		)

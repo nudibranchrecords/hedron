@@ -36,8 +36,8 @@ class SketchesStore extends EventEmitter {
 
 		storage.get('sketches', (data) => {
 
-			console.log(data);
 			this.init(data);
+			this.emit('change');
 
 		});
 
@@ -135,11 +135,15 @@ class SketchesStore extends EventEmitter {
 		return this.sketches;
 	}
 
+	getParamValue(id, param) {
+
+		return this.sketches[id].data.params[param].value;
+
+	}
 
 	editParam(id, param, value) {
 
 		this.sketches[id].data.params[param].value = Math.round(value * 100)/100;
-		this.emit('change');
 
 	}
 
