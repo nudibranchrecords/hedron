@@ -1,4 +1,4 @@
-let lastId = 0;
+let lastId = Date.now();
 
 export default function(prefix) {
     lastId++;
