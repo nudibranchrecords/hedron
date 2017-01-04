@@ -13,7 +13,8 @@ class Field extends Sketch {
 		this.data.params = {
 			speed: {
 				name: 'Speed',
-				value: 0.5
+				value: 0.5,
+				type: 'posNeg'
 			}
 		}
 
@@ -43,10 +44,14 @@ class Field extends Sketch {
 
 		for (let i = 0; i < itemCount; i++) {
 
-			this.items[i].position.z += this.data.params.speed.value * 100;
+			this.items[i].position.z += (this.data.params.speed.value - 0.5) * 200;
 
 			if (this.items[i].position.z > 1000) {
 				this.items[i].position.z = -1000;
+			}
+
+			if (this.items[i].position.z < -1000) {
+				this.items[i].position.z = 1000;
 			}
 
 		}

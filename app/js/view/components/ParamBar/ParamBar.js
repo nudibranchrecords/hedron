@@ -70,10 +70,18 @@ export default class ParamBar extends React.Component {
 	
 	render() {
 
+		let textVal = this.state.value;
+
+		if (this.props.type == 'posNeg') {
+
+			textVal = Math.round((textVal - 0.5) * 200)/100;
+		
+		}
+
 		return (
 			
 			<div>
-				<h3 data-Param-Header>{this.props.paramName} : {this.state.value}</h3>
+				<h3 data-Param-Header>{this.props.paramName} : {textVal}</h3>
 				<div data-ParamBar onMouseDown={this.handleClick.bind(this)}>
 	          		<ValueBar value={this.state.value} />
 	          	</div>
