@@ -153,10 +153,9 @@ class SketchesStore extends EventEmitter {
 
 	}
 
-	editParamInput(id, param, inputType, inputId) {
+	editParamInput(id, param, inputType, inputId, inputParams) {
 
 		let inputs = this.sketches[id].data.inputs[inputType];
-
 
 		if (!inputs) {
 			inputs = this.sketches[id].data.inputs[inputType] = {};
@@ -166,15 +165,19 @@ class SketchesStore extends EventEmitter {
 
 		// Update the sketch object
 		this.sketches[id].data.params[param].input = {
-			id: inputId, 
+			id: inputId,
+			params: inputParams, 
 			type: inputType
 		}
-
 
 		// Update the inputs object
 		if (inputType == 'audio') {
 
 			inputs[param] = inputId;
+
+		} if (inputType == 'lfo') {
+
+			inputs[param] = inputParams;
 
 		} else {
 
@@ -200,8 +203,9 @@ class SketchesStore extends EventEmitter {
 		delete sketchData.params[param].input;
 		// Delete if reference in audio inputs
 		delete sketchData.inputs.audio[param];
+		// Delete if reference in lfo inputs
+		delete sketchData.inputs.lfo[param];  
 		// Delete any references in midi inputs
-
 		if (sketchData.inputs.midi) {
 			for (const key of Object.keys(sketchData.inputs.midi)) {
 				if (sketchData.inputs.midi[key].param == param) {
@@ -331,7 +335,7 @@ class SketchesStore extends EventEmitter {
 				break
 
 			case 'UPDATE_SKETCH_PARAM_INPUT':
-				this.editParamInput(action.id, action.param, action.inputType, action.inputId);
+				this.editParamInput(action.id, action.param, action.inputType, action.inputId, action.inputParams);
 				break
 
 			case 'DELETE_SKETCH_PARAM_INPUT':

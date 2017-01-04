@@ -42,6 +42,7 @@ export default class ParamInputSelect extends React.Component {
 	handleTypeChange(e) {
 		const type = e.target.value;
 		let id = false;
+		let data;
 
 
 	    switch(type) {
@@ -52,12 +53,18 @@ export default class ParamInputSelect extends React.Component {
 				break
 
 			case 'midi':
-				SketchActions.updateSketchParamInput(this.props.sketchId, this.props.paramKey, 'midi', null);
+				SketchActions.updateSketchParamInput(this.props.sketchId, this.props.paramKey, 'midi');
 				break
 
 			case 'audio':
 				id = 'band_0';
 				SketchActions.updateSketchParamInput(this.props.sketchId, this.props.paramKey, 'audio', id);
+				break
+
+			case 'lfo':
+				id = 'sine';
+				data = {waveType: 'sine', delta: 0};
+				SketchActions.updateSketchParamInput(this.props.sketchId, this.props.paramKey, 'lfo', id, data);
 				break
 
 			default:
@@ -78,10 +85,18 @@ export default class ParamInputSelect extends React.Component {
 			inputType = this.props.input.type;
 			inputId = this.props.input.id;
 
-			if (inputType == 'audio') {
-				select = <InputSelectAudio inputId={inputId} sketchId={this.props.sketchId} paramKey={this.props.paramKey} />;
-			} else if (inputType == 'midi') {
-				select = <MidiLearn inputId={inputId} sketchId={this.props.sketchId} paramKey={this.props.paramKey} />;
+			switch (inputType) {
+				case 'audio':
+					select = <InputSelectAudio inputId={inputId} sketchId={this.props.sketchId} paramKey={this.props.paramKey} />;
+					break
+
+				case 'midi':
+					select = <MidiLearn inputId={inputId} sketchId={this.props.sketchId} paramKey={this.props.paramKey} />;
+					break
+
+				case 'lfo':
+					select = 'SINE'
+					break
 			}
 
 		} else {
@@ -97,6 +112,7 @@ export default class ParamInputSelect extends React.Component {
 	          		<option value="none">None</option>
 	          		<option value="midi">MIDI</option>
 	          		<option value="audio">Audio</option>
+	          		<option value="lfo">LFO</option>
 	          </select>
 
 	          {select}

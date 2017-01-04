@@ -41,6 +41,12 @@ class Inputs {
 					
 				}
 
+				if (sketchInputs.lfo) {
+
+					this.parseLfoInputs(sketchId, sketchInputs.lfo);
+					
+				}
+
 				// if (this.sketches[i].inputs.nodes) {
 				// 	this.parseNodeInputs(this.sketches[i].nodes, this.sketches[i].inputs.nodes, this.sketches[i].params);
 				// }
@@ -99,6 +105,46 @@ class Inputs {
 		}
 
 	}
+
+	parseLfoInputs(sketchId, inputs) {
+
+		console.log(inputs);
+
+		for (const param of Object.keys(inputs)) {
+
+			const waveType = inputs[param].waveType;
+			let delta = inputs[param].delta += 0.1;
+			let y;
+
+			switch (waveType) {
+		        case 'sine':
+		          y = Math.sin(delta);
+		          break;
+		        case 'saw':
+		          y = (delta - Math.floor(delta + 0.5)) * 2;
+		          break;
+		        case 'rSaw':
+		          y = - (delta - Math.floor(delta + 0.5)) * 2;
+		          break;
+		        case 'square':
+		          y = Math.sign(Math.sin(delta));
+		          break;
+		        case 'triangle':
+		          y = Math.abs((delta - Math.floor(delta + 0.5)) * 2);
+		          break;
+		    }
+
+			y = (y+1)/2; // convert from -1 ~ 1 to 0 ~ 1
+
+			console.log(delta);
+
+			SketchActions.editSketchParam(sketchId, param, y);
+
+		}
+
+	}
+
+
 
 	modifyInput(value, modifierArray) {
 
