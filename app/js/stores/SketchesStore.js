@@ -307,6 +307,13 @@ class SketchesStore extends EventEmitter {
 
 	}
 
+	toggleParamModifiers(id, param) {
+
+		this.sketches[id].data.params[param].modifiersShowing = !this.sketches[id].data.params[param].modifiersShowing;
+
+		this.emit('change');
+	}
+
 	handleActions(action) {
 
 		switch(action.type) {
@@ -346,6 +353,12 @@ class SketchesStore extends EventEmitter {
 			case 'SAVE_SKETCHES_TO_FILE':
 				this.saveToFile();
 				break
+
+			case 'TOGGLE_SKETCH_PARAM_MODIFIERS':
+				this.toggleParamModifiers(action.id, action.param);
+				break
+
+			
 		}
 
 

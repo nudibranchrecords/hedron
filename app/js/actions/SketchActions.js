@@ -11,6 +11,16 @@ export function editSketchParam(id, param, value) {
 
 }
 
+export function toggleSketchParamModifiers(id, param) {
+
+	dispatcher.dispatch( {
+		type: 'TOGGLE_SKETCH_PARAM_MODIFIERS',
+		id,
+		param
+	});
+
+}
+
 export function createSketch(sketchFile) {
 
 	dispatcher.dispatch( {
