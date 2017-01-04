@@ -141,6 +141,12 @@ class SketchesStore extends EventEmitter {
 
 	}
 
+	getParamModifierValue(id, param, modifierIndex) {
+
+		return this.sketches[id].data.params[param].modifiers[modifierIndex].m;
+
+	}
+
 	editParam(id, param, value) {
 
 		this.sketches[id].data.params[param].value = Math.round(value * 100)/100;
@@ -228,7 +234,6 @@ class SketchesStore extends EventEmitter {
 
 		modifier.m = value;
 
-		this.emit('change');
 	}
 
 	editParamModifierInput(id, param, modifierId, inputType, inputId) {
