@@ -2,6 +2,8 @@ import SketchesStore from '../stores/SketchesStore';
 import AudioBandsStore from '../stores/AudioBandsStore';
 import AudioInputs from './AudioInputs';
 import MidiInputs from './MidiInputs';
+import Clock from './Clock';
+import GeneratedClock from './GeneratedClock';
 import * as Modifiers from './modifiers';
 
 import * as SketchActions from '../actions/SketchActions';
@@ -14,16 +16,24 @@ class Inputs {
 		this.sketches = SketchesStore.getAll();
 		this.keys = AudioBandsStore.getKeys();
 
-		AudioInputs.on('updated', this.parseInputs.bind(this));
 		MidiInputs.on('message', this.onMidiInput.bind(this));
+		AudioInputs.on('updated', this.onMidiInput.bind(this));
+		Clock.on('pulse', this.onClockPulse.bind(this));
 
 	}
 
-	parseInputs() {
+	update() {
+
+		GeneratedClock.update();
+		AudioInputs.update();
+
+	}
+
+	onAudioInput() {
 
 		this.inputs = {}
 
-		var audioData = AudioInputs.getData();
+		const audioData = AudioInputs.getData();
 
 		for (let i = 0; i < this.keys.length; i++) {
 			this.inputs[this.keys[i]] = audioData[i];
@@ -33,23 +43,25 @@ class Inputs {
 
 	    	const sketchInputs = this.sketches[sketchId].data.inputs;
 
-	    	if (sketchInputs) {
+	    	if (sketchInputs && sketchInputs.audio) {
 
-		    	if (sketchInputs.audio) {
+				this.parseAudioInputs(sketchId, sketchInputs.audio);
 
-					this.parseAudioInputs(sketchId, sketchInputs.audio);
-					
-				}
+			}
 
-				if (sketchInputs.lfo) {
+	    });
 
-					this.parseLfoInputs(sketchId, sketchInputs.lfo);
-					
-				}
+	}
 
-				// if (this.sketches[i].inputs.nodes) {
-				// 	this.parseNodeInputs(this.sketches[i].nodes, this.sketches[i].inputs.nodes, this.sketches[i].params);
-				// }
+	onClockPulse() {
+
+		Object.keys(this.sketches).map((sketchId) => {
+
+	    	const sketchInputs = this.sketches[sketchId].data.inputs;
+
+	    	if (sketchInputs && sketchInputs.lfo) {
+
+				this.parseLfoInputs(sketchId, sketchInputs.lfo);
 
 			}
 
@@ -108,12 +120,11 @@ class Inputs {
 
 	parseLfoInputs(sketchId, inputs) {
 
-		console.log(inputs);
-
 		for (const param of Object.keys(inputs)) {
 
 			const waveType = inputs[param].waveType;
-			let delta = inputs[param].delta += 0.1;
+			const speed = Math.PI/96;
+			let delta = inputs[param].delta += speed;
 			let y;
 
 			switch (waveType) {
@@ -135,8 +146,6 @@ class Inputs {
 		    }
 
 			y = (y+1)/2; // convert from -1 ~ 1 to 0 ~ 1
-
-			console.log(delta);
 
 			SketchActions.editSketchParam(sketchId, param, y);
 

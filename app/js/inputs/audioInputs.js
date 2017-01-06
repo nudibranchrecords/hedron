@@ -30,7 +30,7 @@ class AudioInputs extends EventEmitter  {
         if (this.input) {
 
             this.input.update();
-             this.emit('updated');
+            this.emit('updated');
 
         }
 
