@@ -16,6 +16,9 @@ class Inputs {
 		this.sketches = SketchesStore.getAll();
 		this.keys = AudioBandsStore.getKeys();
 
+		this.clockDelta = 0;
+		this.clockSpeed = Math.PI/96;
+
 		MidiInputs.on('message', this.onMidiInput.bind(this));
 		AudioInputs.on('updated', this.onMidiInput.bind(this));
 		Clock.on('pulse', this.onClockPulse.bind(this));
@@ -54,6 +57,8 @@ class Inputs {
 	}
 
 	onClockPulse() {
+
+		this.clockDelta += this.clockSpeed;
 
 		Object.keys(this.sketches).map((sketchId) => {
 
@@ -123,25 +128,24 @@ class Inputs {
 		for (const param of Object.keys(inputs)) {
 
 			const waveType = inputs[param].waveType;
-			const speed = Math.PI/96;
-			let delta = inputs[param].delta += speed;
+			
 			let y;
 
 			switch (waveType) {
 		        case 'sine':
-		          y = Math.sin(delta);
+		          y = Math.sin(this.clockDelta);
 		          break;
 		        case 'saw':
-		          y = (delta - Math.floor(delta + 0.5)) * 2;
+		          y = (this.clockDelta - Math.floor(this.clockDelta + 0.5)) * 2;
 		          break;
 		        case 'rSaw':
-		          y = - (delta - Math.floor(delta + 0.5)) * 2;
+		          y = - (this.clockDelta - Math.floor(this.clockDelta + 0.5)) * 2;
 		          break;
 		        case 'square':
-		          y = Math.sign(Math.sin(delta));
+		          y = Math.sign(Math.sin(this.clockDelta));
 		          break;
 		        case 'triangle':
-		          y = Math.abs((delta - Math.floor(delta + 0.5)) * 2);
+		          y = Math.abs((this.clockDelta - Math.floor(this.clockDelta + 0.5)) * 2);
 		          break;
 		    }
 
