@@ -1,5 +1,6 @@
 import React from 'react';
 import Analyser from './Analyser';
+import Clock from './Clock';
 import * as SketchActions from '../../actions/SketchActions';
 import * as DisplayActions from '../../actions/DisplayActions';
 
@@ -26,6 +27,9 @@ export default class Overview extends React.Component {
 					</div>
 					<div data-Stats-Module>
 						<div id="stats"></div>
+					</div>
+					<div data-Stats-Module>
+						<Clock/>
 					</div>
 				</div>
 				

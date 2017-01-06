@@ -1,5 +1,6 @@
 import { EventEmitter } from 'events';
 import ClockStore from '../stores/ClockStore';
+import * as ClockActions from '../actions/ClockActions';
 
 import GeneratedClock from './GeneratedClock';
 
@@ -10,6 +11,8 @@ class Clock extends EventEmitter {
 		super();
 
 		this.getInfo();
+
+		this.beatPulses = 0;
 
 		ClockStore.on('change', this.getInfo);
 		GeneratedClock.on('pulse', this.pulse.bind(this));
@@ -25,12 +28,24 @@ class Clock extends EventEmitter {
 
 	pulse() {
 
+		this.beatPulses ++;
+
 		let marker = window.performance.now();
 		let pulses = 1;
 
-		this.emit('pulse');
+		const pulse = () => {
+			this.emit('pulse');
+			pulses++;
+			this.beatPulses ++;
 
-		// Pulse 3 more times (multiply by 4)
+			if (this.beatPulses > 95) {
+				ClockActions.addBeat();
+				this.beatPulses = 0;
+			}
+		}
+
+		// Pulse 3 more times (multiply by 4) to
+		// get PPQN to 96 for smoother animations
 		const multiply = () => {
 
 			// Check to see if time passed is more than time per pulse
@@ -39,22 +54,22 @@ class Clock extends EventEmitter {
 			while (diff > this.mspp) {
 				// Pulse if havent reached 4
 				if (pulses < 4) {
-					this.emit('pulse');
+					pulse();
 				} 
 				// Increase next time to check against by time per pulse
 				marker+=this.mspp;
 				// Loop over in case missed more than one pulse
 				diff-=this.mspp;
-				pulses++;
+				
 			}
 
 			if (pulses < 4) {
-				console.log(pulses);
 				requestAnimationFrame( multiply ); 
 			}
 
 		}
 
+		pulse();
 		requestAnimationFrame( multiply ); 
 
 	}

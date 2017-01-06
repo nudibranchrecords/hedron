@@ -1,7 +1,7 @@
 import { EventEmitter } from 'events';
 import dispatcher from '../dispatcher';
 
-class BeatsStore extends EventEmitter {
+class ClockStore extends EventEmitter {
 
 	constructor() {
 
@@ -14,8 +14,15 @@ class BeatsStore extends EventEmitter {
 
 	}
 
-	setCurrentBeat(beat) {
-		this.currentBeat = beat;
+	addBeat() {
+
+		this.currentBeat++;
+
+		if (this.currentBeat > 4) {
+			this.currentBeat = 1;
+		}
+
+		this.emit('change');
 	}
 
 	getCurrentBeat() {
@@ -30,20 +37,12 @@ class BeatsStore extends EventEmitter {
 		return this.bpm;
 	}
 
-	setDelta(delta) {
-		this.delta = delta;
-	}
-
-	getDelta() {
-		return this.delta;
-	}
-
-
 	handleActions(action) {
 
 		switch(action.type) {
 
-			case 'XXX':
+			case 'ADD_CLOCK_BEAT':
+				this.addBeat();
 			break
 
 		}
@@ -52,8 +51,8 @@ class BeatsStore extends EventEmitter {
 
 }
 
-const beatsStore = new BeatsStore;
+const clockStore = new ClockStore;
 
-dispatcher.register(beatsStore.handleActions.bind(beatsStore));
+dispatcher.register(clockStore.handleActions.bind(clockStore));
 
-export default beatsStore;
+export default clockStore;
