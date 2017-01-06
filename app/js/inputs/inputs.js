@@ -8,6 +8,7 @@ import * as Modifiers from './modifiers';
 
 import * as SketchActions from '../actions/SketchActions';
 
+
 class Inputs {
 
 	constructor() {
@@ -16,12 +17,8 @@ class Inputs {
 		this.sketches = SketchesStore.getAll();
 		this.keys = AudioBandsStore.getKeys();
 
-		this.clockDelta = 0;
-		this.clockSpeed = Math.PI/96;
-
 		MidiInputs.on('message', this.onMidiInput.bind(this));
 		AudioInputs.on('updated', this.onMidiInput.bind(this));
-		Clock.on('pulse', this.onClockPulse.bind(this));
 
 	}
 
@@ -29,6 +26,18 @@ class Inputs {
 
 		GeneratedClock.update();
 		AudioInputs.update();
+
+		Object.keys(this.sketches).map((sketchId) => {
+
+	    	const sketchInputs = this.sketches[sketchId].data.inputs;
+
+	    	if (sketchInputs && sketchInputs.lfo) {
+
+				this.parseLfoInputs(sketchId, sketchInputs.lfo, Clock.getDelta());
+
+			}
+
+	    });
 
 	}
 
@@ -49,24 +58,6 @@ class Inputs {
 	    	if (sketchInputs && sketchInputs.audio) {
 
 				this.parseAudioInputs(sketchId, sketchInputs.audio);
-
-			}
-
-	    });
-
-	}
-
-	onClockPulse() {
-
-		this.clockDelta += this.clockSpeed;
-
-		Object.keys(this.sketches).map((sketchId) => {
-
-	    	const sketchInputs = this.sketches[sketchId].data.inputs;
-
-	    	if (sketchInputs && sketchInputs.lfo) {
-
-				this.parseLfoInputs(sketchId, sketchInputs.lfo);
 
 			}
 
@@ -123,7 +114,7 @@ class Inputs {
 
 	}
 
-	parseLfoInputs(sketchId, inputs) {
+	parseLfoInputs(sketchId, inputs, delta) {
 
 		for (const param of Object.keys(inputs)) {
 
@@ -131,21 +122,21 @@ class Inputs {
 			
 			let y;
 
-			switch (waveType) {
+			switch ('sine') {
 		        case 'sine':
-		          y = Math.sin(this.clockDelta);
+		          y = Math.sin(delta);
 		          break;
-		        case 'saw':
-		          y = (this.clockDelta - Math.floor(this.clockDelta + 0.5)) * 2;
+		        case 'sawTooth':
+		          y = (delta - Math.floor(delta + 0.5)) * 2;
 		          break;
-		        case 'rSaw':
-		          y = - (this.clockDelta - Math.floor(this.clockDelta + 0.5)) * 2;
+		        case 'rSawTooth':
+		          y = - (delta - Math.floor(delta + 0.5)) * 2;
 		          break;
 		        case 'square':
-		          y = Math.sign(Math.sin(this.clockDelta));
+		          y = Math.sign(Math.sin(delta));
 		          break;
 		        case 'triangle':
-		          y = Math.abs((this.clockDelta - Math.floor(this.clockDelta + 0.5)) * 2);
+		          y = Math.abs((delta - Math.floor(delta + 0.5)) * 2);
 		          break;
 		    }
 
@@ -180,4 +171,4 @@ class Inputs {
 	
 }
 
-export default new Inputs;
+export default new Inputs();
