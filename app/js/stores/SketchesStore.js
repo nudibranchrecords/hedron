@@ -149,7 +149,7 @@ class SketchesStore extends EventEmitter {
 
 	editParam(id, param, value) {
 
-		this.sketches[id].data.params[param].value = Math.round(value * 100)/100;
+		this.sketches[id].data.params[param].value = Math.round(value * 1000)/1000;
 
 	}
 
