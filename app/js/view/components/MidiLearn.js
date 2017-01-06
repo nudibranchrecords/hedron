@@ -20,6 +20,7 @@ export default class InputSelectMidi extends React.Component {
 	}
 
 	componentWillMount() {
+
 		if (!this.props.inputId) {
 			this.startLearning();
 		}
@@ -35,10 +36,6 @@ export default class InputSelectMidi extends React.Component {
 				SketchActions.updateSketchParamInput(this.props.sketchId, this.props.paramKey, 'midi', id);
 			}
 
-			this.setState({
-				learning: false
-			})
-			
 		});
 
 		this.setState({

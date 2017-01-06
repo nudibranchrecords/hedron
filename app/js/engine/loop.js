@@ -6,8 +6,8 @@ import renderer from './renderer';
 import scene from './scenes';
 import camera from './cameras';
 
-import Inputs from '../inputs/Inputs';
-import Clock from '../inputs/Clock';
+import AudioInputs from '../inputs/AudioInputs';
+import AudioProcess from '../process/AudioProcess';
 
 import sketches from './sketches';
 
@@ -19,7 +19,9 @@ function update() {
 
 	stats.begin();
 
-	Inputs.update();
+	AudioInputs.update();
+	AudioProcess.update();
+
 	sketches.update();
 
 	renderer.render( scene, camera );

@@ -175,7 +175,7 @@ class SketchesStore extends EventEmitter {
 
 			inputs[param] = inputId;
 
-		} if (inputType == 'lfo') {
+		} else if (inputType == 'lfo') {
 
 			inputs[param] = inputParams;
 

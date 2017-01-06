@@ -1,7 +1,7 @@
 import { EventEmitter } from 'events';
 import ClockStore from '../stores/ClockStore';
 import * as ClockActions from '../actions/ClockActions';
-import MidiInputs from './MidiInputs';
+import MidiInputs from '../inputs/MidiInputs';
 import GeneratedClock from './GeneratedClock';
 
 class Clock extends EventEmitter {
@@ -13,9 +13,6 @@ class Clock extends EventEmitter {
 		this.getInfo();
 
 		this.beatPulses = 0;
-
-		this.delta = 0;
-		this.speed = Math.PI/96;
 
 		ClockStore.on('change', this.getInfo);
 		//GeneratedClock.on('pulse', this.pulse.bind(this));
@@ -30,26 +27,19 @@ class Clock extends EventEmitter {
 		this.mspp = (60/(this.bpm*96))*1000;
 
 	}
-
-	getDelta() {
-		return this.delta;
-	}
-
+	
 	pulse() {
-
 
 		let pulses = 1;
 		let marker = window.performance.now();
 
-		this.delta += this.speed;
+		this.emit('pulse');
 		this.beatPulses ++;
 
 		if (this.beatPulses > 24) {
 			ClockActions.addBeat();
 			this.beatPulses = 0;
 		}
-
-	
 
 		// Pulse 3 more times (multiply by 4) to
 		// get PPQN to 96 for smoother animations
@@ -61,7 +51,7 @@ class Clock extends EventEmitter {
 			while (diff > this.mspp) {
 				// Pulse if havent reached 4
 				if (pulses < 4) {
-					this.delta += this.speed;
+					this.emit('pulse');
 					pulses++;
 				} 
 				// Increase next time to check against by time per pulse

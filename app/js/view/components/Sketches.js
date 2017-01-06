@@ -78,8 +78,6 @@ export default class Sketches extends React.Component {
 					currentSketch = sketches[currentSketchId].data;
 				}
 
-				console.log(currentSketch);
-
 				viewComponent = <Sketch sketch={currentSketch} />;
 
 			}

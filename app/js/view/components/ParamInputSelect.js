@@ -63,7 +63,7 @@ export default class ParamInputSelect extends React.Component {
 
 			case 'lfo':
 				id = 'sine';
-				data = {waveType: 'sine', delta: 0};
+				data = {waveShape: 'sine', delta: 0};
 				SketchActions.updateSketchParamInput(this.props.sketchId, this.props.paramKey, 'lfo', id, data);
 				break
 
