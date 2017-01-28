@@ -24,7 +24,10 @@ class Clock extends EventEmitter {
 	getInfo() {
 
 		this.bpm = ClockStore.getBpm();
-		this.mspp = (60/(this.bpm*96))*1000;
+		this.ppqn = ClockStore.getPpqn();
+		this.multiplyBy = this.ppqn/24;
+		this.mspp = (60/(this.bpm*this.ppqn))*1000;
+
 
 	}
 	
@@ -50,7 +53,7 @@ class Clock extends EventEmitter {
 
 			while (diff > this.mspp) {
 				// Pulse if havent reached 4
-				if (pulses < 4) {
+				if (pulses < this.multiplyBy) {
 					this.emit('pulse');
 					pulses++;
 				} 
@@ -61,7 +64,7 @@ class Clock extends EventEmitter {
 				
 			}
 
-			if (pulses < 4) {
+			if (pulses < this.multiplyBy) {
 				requestAnimationFrame( multiply ); 
 			}
 		}

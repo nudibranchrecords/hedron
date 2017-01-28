@@ -38,7 +38,7 @@ class AudioProcess {
 
 				for (const param of Object.keys(sketchInputs.audio)) {
 
-					let val = this.audioBands[sketchInputs.audio[param]];
+					let val = this.audioBands[sketchInputs.audio[param].id];
 
 					const modifierArray = this.sketches[sketchId].data.params[param].modifiers;
 

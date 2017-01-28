@@ -12,7 +12,7 @@ class AudioProcess {
 		this.sketches = SketchesStore.getAll();
 
 		this.delta = 0;
-		this.speed = Math.PI*2/96;
+		this.speed = Math.PI*2/Clock.ppqn;
 
 		Clock.on('pulse', this.onClockPulse.bind(this));
 
@@ -32,8 +32,9 @@ class AudioProcess {
 
 				for (const param of Object.keys(sketchInputs.lfo)) {
 
-					const waveShape = sketchInputs.lfo[param].waveShape;
-					const y = this.getWaveValue(this.delta, waveShape);
+					const {multiply, waveShape} = sketchInputs.lfo[param];
+
+					const y = this.getWaveValue(this.delta*multiply, waveShape);
 					
 					SketchActions.editSketchParam(sketchId, param, y);
 

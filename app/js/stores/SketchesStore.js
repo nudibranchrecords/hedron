@@ -153,7 +153,10 @@ class SketchesStore extends EventEmitter {
 
 	}
 
-	editParamInput(id, param, inputType, inputId, inputParams) {
+	editParamInput({id, param, inputParams}) {
+
+		const inputType = inputParams.type;
+		const inputId = inputParams.id;
 
 		let inputs = this.sketches[id].data.inputs[inputType];
 
@@ -164,20 +167,12 @@ class SketchesStore extends EventEmitter {
 		this.deleteParamInput(id, param);
 
 		// Update the sketch object
-		this.sketches[id].data.params[param].input = {
-			id: inputId,
-			params: inputParams, 
-			type: inputType
-		}
+		this.sketches[id].data.params[param].input = inputParams;
 
 		// Update the inputs object
-		if (inputType == 'audio') {
+		if (inputType != 'midi') {
 
-			inputs[param] = inputId;
-
-		} else if (inputType == 'lfo') {
-
-			inputs[param] = inputParams;
+			inputs[param] = inputParams
 
 		} else {
 
@@ -335,7 +330,7 @@ class SketchesStore extends EventEmitter {
 				break
 
 			case 'UPDATE_SKETCH_PARAM_INPUT':
-				this.editParamInput(action.id, action.param, action.inputType, action.inputId, action.inputParams);
+				this.editParamInput(action.payload);
 				break
 
 			case 'DELETE_SKETCH_PARAM_INPUT':

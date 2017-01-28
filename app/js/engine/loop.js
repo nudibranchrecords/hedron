@@ -9,6 +9,8 @@ import camera from './cameras';
 import AudioInputs from '../inputs/AudioInputs';
 import AudioProcess from '../process/AudioProcess';
 
+import GeneratedClock from '../process/GeneratedClock';
+
 import sketches from './sketches';
 
 const stats = new Stats();
@@ -21,6 +23,7 @@ function update() {
 
 	AudioInputs.update();
 	AudioProcess.update();
+	GeneratedClock.update();
 
 	sketches.update();
 

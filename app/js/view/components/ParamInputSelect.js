@@ -1,6 +1,7 @@
 import React from 'react';
 import * as SketchActions from '../../actions/SketchActions';
 import InputSelectAudio from './InputSelectAudio';
+import InputSelectLfo from './InputSelectLfo';
 import MidiLearn from './MidiLearn';
 
 export default class ParamInputSelect extends React.Component {
@@ -12,59 +13,74 @@ export default class ParamInputSelect extends React.Component {
 	}
 
 	// Only update select inputs when needed
-	shouldComponentUpdate(newProps) {
+	// shouldComponentUpdate(newProps) {
 		
-		// Has an input value
-		if (newProps.input) {
+	// 	// Has an input value
+	// 	if (newProps.input) {
 
-			// Had input value before
-			if (this.props.input) {
-				// Check to see if input ID has changed
-				return this.props.input.id !== newProps.input.id;
-			} else {
-				// Didn't have input before
-				return true;
-			}
+	// 		// Had input value before
+	// 		if (this.props.input) {
+	// 			// Check to see if input ID has changed
+	// 			return this.props.input.id !== newProps.input.id;
+	// 		} else {
+	// 			// Didn't have input before
+	// 			return true;
+	// 		}
 		
-		// Doesn't now but did have before
-		} else if (this.props.input) {
+	// 	// Doesn't now but did have before
+	// 	} else if (this.props.input) {
 
-			return true
+	// 		return true
 
-		} else {
+	// 	} else {
 
-			return false
+	// 		return false
 			
-		}
+	// 	}
         
-    }
+ //    }
 
 	handleTypeChange(e) {
 		const type = e.target.value;
-		let id = false;
 		let data;
+
+		const id = this.props.sketchId;
+		const param = this.props.paramKey;
+		let inputParams;
+
 
 
 	    switch(type) {
 
 			case 'none':
 
-				SketchActions.deleteSketchParamInput(this.props.sketchId, this.props.paramKey);
+				SketchActions.deleteSketchParamInput(id, param);
 				break
 
 			case 'midi':
-				SketchActions.updateSketchParamInput(this.props.sketchId, this.props.paramKey, 'midi');
+				inputParams = {
+					type: 'midi'
+				}
+				SketchActions.updateSketchParamInput({id, param, inputParams});
 				break
 
 			case 'audio':
-				id = 'band_0';
-				SketchActions.updateSketchParamInput(this.props.sketchId, this.props.paramKey, 'audio', id);
+				inputParams = {
+					type: 'audio',
+					id: 'band_0'
+				}
+				SketchActions.updateSketchParamInput({id, param, inputParams});
 				break
 
 			case 'lfo':
-				id = 'sine';
-				data = {waveShape: 'sine', delta: 0};
-				SketchActions.updateSketchParamInput(this.props.sketchId, this.props.paramKey, 'lfo', id, data);
+				inputParams = {
+					type: 'lfo',
+					waveShape: 'sine', 
+					delta: 0, 
+					multiply: 1
+				};
+
+				SketchActions.updateSketchParamInput({id, param, inputParams});
 				break
 
 			default:
@@ -95,7 +111,7 @@ export default class ParamInputSelect extends React.Component {
 					break
 
 				case 'lfo':
-					select = 'SINE'
+					select = <InputSelectLfo inputId={inputId} sketchId={this.props.sketchId} paramKey={this.props.paramKey} />;
 					break
 			}
 

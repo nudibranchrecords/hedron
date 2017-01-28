@@ -39,15 +39,11 @@ export function deleteSketch(id) {
 
 }
 
-export function updateSketchParamInput(id, param, inputType, inputId, inputParams) {
+export function updateSketchParamInput(payload) {
 
 	dispatcher.dispatch({
 		type: 'UPDATE_SKETCH_PARAM_INPUT',
-		id, 
-		param, 
-		inputType,
-		inputId,
-		inputParams
+		payload
 	});
 
 }

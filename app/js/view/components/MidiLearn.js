@@ -28,12 +28,22 @@ export default class InputSelectMidi extends React.Component {
 
 	startLearning() {
 
-		MidiInputs.once('message', (id, val) => {
+		MidiInputs.once('message', (inputId, val) => {
+
+			const id = this.props.sketchId;
+			const param = this.props.paramKey;
+
+			console.log(param);
+
+			const inputParams = {
+				type: 'midi',
+				id: inputId
+			}
 
 			if (this.state.mode == 'modifier') {
 				SketchActions.updateSketchParamModifierInput(this.props.sketchId, this.props.paramKey, this.props.modifierId, 'midi', id);
 			} else {
-				SketchActions.updateSketchParamInput(this.props.sketchId, this.props.paramKey, 'midi', id);
+				SketchActions.updateSketchParamInput({id, param, inputParams});
 			}
 
 		});

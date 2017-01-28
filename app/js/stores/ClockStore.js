@@ -7,7 +7,8 @@ class ClockStore extends EventEmitter {
 
 		super();
 
-		this.bpm = '110';
+		this.bpm = '80';
+		this.ppqn = 96;
 		this.currentBeat = 1
 		this.delta = 0;
 		this.mode = 'generated';
@@ -35,6 +36,10 @@ class ClockStore extends EventEmitter {
 
 	getBpm() {
 		return this.bpm;
+	}
+
+	getPpqn() {
+		return this.ppqn;
 	}
 
 	handleActions(action) {
