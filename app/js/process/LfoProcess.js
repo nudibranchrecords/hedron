@@ -5,6 +5,8 @@ import AudioInputs from '../inputs/AudioInputs';
 import * as SketchActions from '../actions/SketchActions';
 import Clock from './Clock';
 
+import Modify from './Modify';
+
 class AudioProcess {
 
 	constructor() {
@@ -34,7 +36,13 @@ class AudioProcess {
 
 					const {multiply, waveShape} = sketchInputs.lfo[param];
 
-					const y = this.getWaveValue(this.delta*multiply, waveShape);
+					let y = this.getWaveValue(this.delta*multiply, waveShape);
+
+					const modifierArray = this.sketches[sketchId].data.params[param].modifiers;
+
+					if (modifierArray) {
+						y = Modify.modifyInput(y, modifierArray);
+					}
 					
 					SketchActions.editSketchParam(sketchId, param, y);
 
