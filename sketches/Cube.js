@@ -9,15 +9,15 @@ class Cube extends Sketch {
 		this.data.params = {
 			rotSpeedX: {
 				name: 'Rotation Speed X',
-				value: 0.5,
+				value: 0,
 			},
 			rotSpeedY: {
 				name: 'Rotation Speed Y',
-				value: 0.5,
+				value: 0,
 			},
 			scale: {
 				name: 'Scale',
-				value: 0,
+				value: 0.5,
 			}
 		}
 

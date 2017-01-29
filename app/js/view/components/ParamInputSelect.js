@@ -111,7 +111,7 @@ export default class ParamInputSelect extends React.Component {
 					break
 
 				case 'lfo':
-					select = <InputSelectLfo inputId={inputId} sketchId={this.props.sketchId} paramKey={this.props.paramKey} />;
+					select = <InputSelectLfo inputParams={this.props.input} sketchId={this.props.sketchId} paramKey={this.props.paramKey} />;
 					break
 			}
 

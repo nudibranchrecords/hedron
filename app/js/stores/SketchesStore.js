@@ -155,6 +155,8 @@ class SketchesStore extends EventEmitter {
 
 	editParamInput({id, param, inputParams}) {
 
+		console.log(id, param, inputParams);
+
 		const inputType = inputParams.type;
 		const inputId = inputParams.id;
 
