@@ -1,5 +1,4 @@
-node_modules
-data
-app/css
-.DS_Store
+.DS_STORE
 *.log
+node_modules
+dist
