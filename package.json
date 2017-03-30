@@ -7,6 +7,7 @@
     "start": "concurrently --kill-others \"webpack-dev-server --config config/webpack.config.js\" \"nw ./launch\"",
     "build": "NODE_ENV=production webpack --config config/webpack.config.js",
     "lint": "eslint bin build config server src tests",
+    "lint:css": "stylelint \"src/components/**/*.js\"",
     "lint:fix": "npm run lint -- --fix",
     "test": "NODE_ENV=test karma start config/karma.config"
   },
@@ -25,7 +26,8 @@
     "react-redux": "^5.0.2",
     "react-router-dom": "next",
     "redux": "^3.6.0",
-    "scriptjs": "^2.5.8"
+    "scriptjs": "^2.5.8",
+    "styled-components": "^1.4.4"
   },
   "devDependencies": {
     "babel-eslint": "^7.1.1",
@@ -51,8 +53,12 @@
     "mocha": "^3.2.0",
     "nw": "0.21.3-sdk",
     "phantomjs-prebuilt": "^2.1.14",
+    "postcss": "^5.2.16",
     "sinon": "^1.17.7",
     "sinon-chai": "^2.8.0",
+    "stylelint": "^7.9.0",
+    "stylelint-config-standard": "^16.0.0",
+    "stylelint-processor-styled-components": "^0.0.4",
     "watchify": "^3.9.0",
     "webpack": "^2.2.1",
     "webpack-dev-server": "^2.4.1"
