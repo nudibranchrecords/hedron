@@ -54,6 +54,7 @@
     "nw": "0.21.3-sdk",
     "phantomjs-prebuilt": "^2.1.14",
     "postcss": "^5.2.16",
+    "remote-redux-devtools": "^0.5.7",
     "sinon": "^1.17.7",
     "sinon-chai": "^2.8.0",
     "stylelint": "^7.9.0",

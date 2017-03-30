@@ -39,9 +39,7 @@ module.exports = {
         loader: 'json'
       }
     ],
-    noParse: [
-      /natives/, /minimatch/
-    ]
+    noParse: /ws\/lib/
   },
   externals: {
     sketches: {

@@ -3,13 +3,15 @@ import { render } from 'react-dom'
 import { Provider } from 'react-redux'
 import { createStore } from 'redux'
 import { MemoryRouter } from 'react-router'
+import devToolsEnhancer from 'remote-redux-devtools'
+
 import rootReducer from './reducers'
 import App from './components/App'
 import engine from './engine'
 
 import { AppContainer } from 'react-hot-loader'
 
-let store = createStore(rootReducer)
+const store = createStore(rootReducer, devToolsEnhancer({ realtime: true }))
 
 engine(store)
 
