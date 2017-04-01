@@ -4,7 +4,7 @@ import { paramUpdate } from './actions'
 
 const mapStateToProps = (state, ownProps) => {
   return {
-    value: state.params.valuesById[ownProps.paramId]
+    value: state.params[ownProps.paramId].value
   }
 }
 

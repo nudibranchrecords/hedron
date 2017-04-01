@@ -1,32 +1,30 @@
-import test from 'sketches'
+import Test from 'sketches'
+import updateSketch from './updateSketch'
 
-test.update()
+class Engine {
+  constructor () {
+    this.sketches = [
+      {
+        id: 'sketch_1',
+        module: new Test()
+      },
+      {
+        id: 'sketch_2',
+        module: new Test()
+      }
+    ]
+  }
 
-// console.log(testSketch)
-
-// let store
-
-// const lookup = [
-//   ['rotSpeedX', '01'],
-//   ['rotSpeedY', '02']
-// ]
-
-// const update = () => {
-//   const valuesById = store.getState().params.valuesById
-
-//   let values = {}
-
-//   for (let i = 0; i < lookup.length; i++) {
-//     values[lookup[i][0]] = valuesById[lookup[i][1]]
-//   }
-
-//   testSketch.update(values)
-
-//   requestAnimationFrame(update)
-// }
-//
-
-export default (injectedStore) => {
-  // store = injectedStore
- // update()
+  run (store) {
+    const loop = () => {
+      const state = store.getState()
+      this.sketches.forEach(sketch => sketch.module.update(
+        updateSketch(sketch.id, state)
+      ))
+      requestAnimationFrame(loop)
+    }
+    loop()
+  }
 }
+
+export default new Engine()

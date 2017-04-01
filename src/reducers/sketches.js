@@ -1,14 +1,15 @@
 const defaultState = {
-  currentSketchId: 'sketch_2',
-  items: {
-    'sketch_1': {
-      title: 'Lorem Sketch',
-      params: ['01', '02']
-    },
-    'sketch_2': {
-      title: 'Ipsum Sketch',
-      params: ['03', '04']
-    }
+  'sketch_1': {
+    id: 'sketch_1',
+    module: 'test',
+    title: 'Lorem Sketch',
+    params: ['01', '02']
+  },
+  'sketch_2': {
+    id: 'sketch_2',
+    module: 'test',
+    title: 'Ipsum Sketch',
+    params: ['03', '04']
   }
 }
 

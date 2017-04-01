@@ -5,8 +5,8 @@ const mapStateToProps = (state, ownProps) => {
   const sketchId = ownProps.match.params.sketchId
   console.log(ownProps)
   return {
-    title: state.sketches.items[sketchId].title,
-    params: state.sketches.items[sketchId].params,
+    title: state.sketches[sketchId].title,
+    params: state.sketches[sketchId].params,
     sketchId: sketchId
   }
 }

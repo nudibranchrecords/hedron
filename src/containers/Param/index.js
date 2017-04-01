@@ -3,7 +3,7 @@ import Param from '../../components/Param'
 
 const mapStateToProps = (state, ownProps) => {
   return {
-    title: state.params.info[ownProps.paramId].title
+    title: state.params[ownProps.paramId].title
   }
 }
 

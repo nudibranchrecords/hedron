@@ -7,13 +7,11 @@ import devToolsEnhancer from 'remote-redux-devtools'
 
 import rootReducer from './reducers'
 import App from './components/App'
-import engine from './engine'
+import Engine from './Engine'
 
 import { AppContainer } from 'react-hot-loader'
 
 const store = createStore(rootReducer, devToolsEnhancer({ realtime: true }))
-
-engine(store)
 
 const renderApp = (Component) => {
   render(
@@ -36,3 +34,5 @@ if (module.hot) {
     renderApp(App)
   })
 }
+
+Engine.run(store)
