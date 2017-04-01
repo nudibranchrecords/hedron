@@ -6,7 +6,7 @@ test('(Action Creator) paramValueUpdate', (t) => {
   let expected = {
     type: 'PARAM_VALUE_UPDATE',
     payload: {
-      paramId: '01',
+      id: '01',
       value: 0.5
     }
   }

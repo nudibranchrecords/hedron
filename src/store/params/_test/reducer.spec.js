@@ -39,7 +39,7 @@ test('(Reducer) paramsReducer - Updates correct param value on PARAM_VALUE_CHANG
   actualState = paramsReducer(originalState, {
     type: 'PARAM_VALUE_UPDATE',
     payload: {
-      paramId: '01',
+      id: '01',
       value: 1
     }
   })
@@ -62,7 +62,7 @@ test('(Reducer) paramsReducer - Updates correct param value on PARAM_VALUE_CHANG
   actualState = paramsReducer(actualState, {
     type: 'PARAM_VALUE_UPDATE',
     payload: {
-      paramId: '02',
+      id: '02',
       value: 2
     }
   })

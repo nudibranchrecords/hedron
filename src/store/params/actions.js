@@ -1,6 +1,6 @@
-export function paramValueUpdate (paramId, value = 0.5) {
+export function paramValueUpdate (id, value) {
   return {
     type: 'PARAM_VALUE_UPDATE',
-    payload: { paramId, value }
+    payload: { id, value }
   }
 }

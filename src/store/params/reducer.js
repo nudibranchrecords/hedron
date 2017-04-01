@@ -28,8 +28,8 @@ const paramsReducer = (state = initialState, action) => {
     case 'PARAM_VALUE_UPDATE':
       return {
         ...state,
-        [p.paramId]: {
-          ...state[p.paramId],
+        [p.id]: {
+          ...state[p.id],
           value: p.value
         }
       }
