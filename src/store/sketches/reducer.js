@@ -1,18 +1,21 @@
+import uid from 'uid'
+
 const defaultState = {
   modules: {
     'test': {
       defaultTitle: 'Test Sketch',
-      params: {
-        'rotX': {
+      params: [
+        {
+          key: 'rotX',
           title: 'Rotation X',
           defaultValue: 0.5
         },
-        'rotY': {
-          title: 'Rotation Y',
+        {
           key: 'rotY',
+          title: 'Rotation Y',
           defaultValue: 0.5
         }
-      }
+      ]
     }
   },
   params: {
@@ -40,15 +43,15 @@ const defaultState = {
   instances: {
     'sketch_1': {
       id: 'sketch_1',
-      module: 'test',
+      moduleId: 'test',
       title: 'Lorem Sketch',
-      params: ['01', '02']
+      paramIds: ['01', '02']
     },
     'sketch_2': {
       id: 'sketch_2',
-      module: 'test',
+      moduleId: 'test',
       title: 'Ipsum Sketch',
-      params: ['03', '04']
+      paramIds: ['03', '04']
     }
   }
 }
@@ -58,7 +61,37 @@ const sketchesReducer = (state = defaultState, action) => {
 
   switch (action.type) {
     case 'SKETCHES_CREATE_INSTANCE': {
-      return state
+      const sketchId = uid()
+      const module = state.modules[p.moduleId]
+
+      let params = state.params
+      let paramIds = []
+
+      module.params.forEach(param => {
+        const id = uid()
+        paramIds.push(id)
+        params = {
+          ...params,
+          [id]: {
+            title: param.title,
+            value: param.defaultValue,
+            key: param.key
+          }
+        }
+      })
+
+      return {
+        ...state,
+        instances: {
+          ...state.instances,
+          [sketchId] : {
+            title: module.defaultTitle,
+            moduleId: p.moduleId,
+            paramIds
+          }
+        },
+        params
+      }
     }
     case 'SKETCHES_PARAM_VALUE_UPDATE':
       return {

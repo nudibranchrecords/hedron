@@ -17,6 +17,7 @@
     "babel-preset-es2015": "^6.22.0",
     "babel-preset-react": "^6.22.0",
     "babel-register": "^6.22.0",
+    "proxyquire": "^1.7.11",
     "react": "^15.4.2",
     "react-addons-perf": "^15.4.2",
     "react-dom": "^15.4.2",
@@ -24,7 +25,8 @@
     "react-redux": "^5.0.2",
     "react-router-dom": "next",
     "redux": "^3.6.0",
-    "styled-components": "^1.4.4"
+    "styled-components": "^1.4.4",
+    "uid": "^0.0.2"
   },
   "devDependencies": {
     "babel-eslint": "^7.1.1",
@@ -40,7 +42,7 @@
     "eslint-plugin-standard": "^2.0.1",
     "nw": "0.21.3-sdk",
     "remote-redux-devtools": "^0.5.7",
-    "sinon": "^1.17.7",
+    "sinon": "^2.1.0",
     "stylelint": "^7.9.0",
     "stylelint-config-standard": "^16.0.0",
     "stylelint-processor-styled-components": "^0.0.4",
