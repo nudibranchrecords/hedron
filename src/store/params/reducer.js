@@ -21,7 +21,7 @@ const initialState = {
   }
 }
 
-const params = (state = initialState, action) => {
+const paramsReducer = (state = initialState, action) => {
   const p = action.payload
 
   switch (action.type) {
@@ -38,4 +38,4 @@ const params = (state = initialState, action) => {
   }
 }
 
-export default params
+export default paramsReducer

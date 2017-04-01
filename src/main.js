@@ -5,7 +5,7 @@ import { createStore } from 'redux'
 import { MemoryRouter } from 'react-router'
 import devToolsEnhancer from 'remote-redux-devtools'
 
-import rootReducer from './reducers'
+import rootReducer from './store/rootReducer'
 import App from './components/App'
 import Engine from './Engine'
 

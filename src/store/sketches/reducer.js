@@ -13,11 +13,11 @@ const defaultState = {
   }
 }
 
-const sketches = (state = defaultState, action) => {
+const sketchesReducer = (state = defaultState, action) => {
   switch (action.type) {
     default:
       return state
   }
 }
 
-export default sketches
+export default sketchesReducer
