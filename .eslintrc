@@ -17,11 +17,6 @@
     "__TEST__"     : false,
     "__PROD__"     : false,
     "__COVERAGE__" : false,
-    "describe"     : false,
-    "it"           : false,
-    "expect"       : false,
-    "sinon"        : false,
-    "beforeEach"   : false,
     "nw"           : false
   },
   "rules": {
