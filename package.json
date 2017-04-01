@@ -9,7 +9,7 @@
     "lint": "eslint bin build config server src tests",
     "lint:css": "stylelint \"src/components/**/*.js\"",
     "lint:fix": "npm run lint -- --fix",
-    "test": "NODE_ENV=test tape-watch -r babel-register src/**/*.spec.js  | tap-colorize"
+    "test": "NODE_ENV=test tape-watch -r babel-register src/**/*.spec.js  | tap-colorize --info '#B788CE'"
   },
   "dependencies": {
     "babel-loader": "^6.3.2",
