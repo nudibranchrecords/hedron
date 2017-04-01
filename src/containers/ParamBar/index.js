@@ -1,17 +1,17 @@
 import { connect } from 'react-redux'
 import ParamBar from '../../components/ParamBar'
-import { paramUpdate } from './actions'
+import { sketchesParamValueUpdate } from '../../store/sketches/actions'
 
 const mapStateToProps = (state, ownProps) => {
   return {
-    value: state.params[ownProps.paramId].value
+    value: state.sketches.params[ownProps.paramId].value
   }
 }
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     onChange: (event) => {
-      dispatch(paramUpdate(ownProps.paramId, parseFloat(event.target.value)))
+      dispatch(sketchesParamValueUpdate(ownProps.paramId, parseFloat(event.target.value)))
     }
   }
 }
