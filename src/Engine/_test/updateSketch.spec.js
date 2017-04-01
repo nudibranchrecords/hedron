@@ -1,4 +1,5 @@
 import test from 'tape'
+import deepFreeze from 'deep-freeze'
 import updateSketch from '../updateSketch'
 
 test('(Engine) updateSketch', function (t) {
@@ -42,6 +43,7 @@ test('(Engine) updateSketch', function (t) {
       }
     }
   }
+  deepFreeze(state)
 
   expected = {
     rotX: 0.1,
