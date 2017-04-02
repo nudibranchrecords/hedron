@@ -4,14 +4,13 @@ import { sketchesModulesUpdate } from '../store/sketches/actions'
 
 class Engine {
   constructor () {
-    this.modules = allModules
+    this.modules = {}
 
     Object.keys(allModules).forEach((key) => {
-      const module = new this.modules[key]()
-      const meta = module.getMeta()
+      const params = allModules[key].params
       this.modules[key] = {
-        defaultTitle: meta.defaultTitle,
-        params: meta.params
+        defaultTitle: params.defaultTitle,
+        params: params.params
       }
     })
 

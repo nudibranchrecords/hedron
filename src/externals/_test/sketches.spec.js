@@ -9,18 +9,30 @@ const sketches = proxyquire('../sketches', {
     // Mocked up sketch files
     sync: () => ['foo/bar/dog', 'foo/bar/cat', 'foo/bar/frog']
   },
-  // Mocked up "modules" returned (just using strings)
-  [path.resolve('foo/bar/dog')]: 'doggy',
-  [path.resolve('foo/bar/cat')]: 'catty',
-  [path.resolve('foo/bar/frog')]: 'froggy'
+  // Mocked up modules and meta (just returning strings for test)
+  [path.resolve('foo/bar/dog')]: 'dogModule',
+  [path.resolve('foo/bar/cat')]: 'catModule',
+  [path.resolve('foo/bar/frog')]: 'frogModule',
+  [path.resolve('foo/bar/dog/params.js')]: 'dogMeta',
+  [path.resolve('foo/bar/cat/params.js')]: 'catMeta',
+  [path.resolve('foo/bar/frog/params.js')]: 'frogMeta'
 })
 
 test('(External) sketches', (t) => {
   t.plan(1)
   const expected = {
-    dog: 'doggy',
-    cat: 'catty',
-    frog: 'froggy'
+    dog: {
+      module: 'dogModule',
+      params: 'dogMeta'
+    },
+    cat: {
+      module: 'catModule',
+      params: 'catMeta'
+    },
+    frog: {
+      module: 'frogModule',
+      params: 'frogMeta'
+    }
   }
   const actual = sketches
   t.deepEqual(actual, expected, 'Returns modules from files')

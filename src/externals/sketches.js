@@ -5,7 +5,10 @@ const all = {}
 
 glob.sync('../sketches/*').forEach(function (file) {
   const name = path.parse(file).name
-  all[name] = require(path.resolve(file))
+  all[name] = {
+    module: require(path.resolve(file)),
+    params: require(path.resolve(file + '/params.js'))
+  }
 })
 
 module.exports = all
