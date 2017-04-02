@@ -1,7 +1,14 @@
-export function sketchesCreateInstance (moduleId) {
+export function sketchesInstanceCreate (moduleId) {
   return {
-    type: 'SKETCHES_CREATE_INSTANCE',
+    type: 'SKETCHES_INSTANCE_CREATE',
     payload: { moduleId }
+  }
+}
+
+export function sketchesInstanceRemove (id) {
+  return {
+    type: 'SKETCHES_INSTANCE_REMOVE',
+    payload: { id }
   }
 }
 

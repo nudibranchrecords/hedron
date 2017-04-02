@@ -12,60 +12,7 @@ import { returnsPreviousState } from '../../../testUtils'
 
 returnsPreviousState(sketchesReducer)
 
-test('(Reducer) sketchesReducer - Adds new sketch on SKETCHES_MODULES_UPDATE', (t) => {
-  const originalState = {
-    params: {},
-    instances: {},
-    modules: {}
-  }
-
-  deepFreeze(originalState)
-
-  const modules = {
-    cubey: {
-      defaultTitle: 'Cubey',
-      params: [
-        {
-          key: 'rotX',
-          title: 'Rotation X',
-          defaultValue: 0.5
-        },
-        {
-          key: 'rotY',
-          title: 'Rotation Y',
-          defaultValue: 0.5
-        }
-      ]
-    },
-    swirly: {
-      defaultTitle: 'Swirly',
-      params: [
-        {
-          key: 'swirlRate',
-          title: 'Swirl Rate',
-          defaultValue: 0.1
-        },
-        {
-          key: 'scale',
-          title: 'Scale',
-          defaultValue: 0.1
-        }
-      ]
-    }
-  }
-
-  const actual = sketchesReducer(originalState, {
-    type: 'SKETCHES_MODULES_UPDATE',
-    payload: {
-      modules
-    }
-  })
-
-  t.deepEqual(actual.modules, modules)
-  t.end()
-})
-
-test('(Reducer) sketchesReducer - Adds new sketch on SKETCHES_CREATE_INSTANCE', (t) => {
+test('(Reducer) sketchesReducer - Adds new sketch on SKETCHES_INSTANCE_CREATE', (t) => {
   const originalState = {
     params: {
       p01: {
@@ -159,7 +106,7 @@ test('(Reducer) sketchesReducer - Adds new sketch on SKETCHES_CREATE_INSTANCE', 
   }
 
   const actual = sketchesReducer(originalState, {
-    type: 'SKETCHES_CREATE_INSTANCE',
+    type: 'SKETCHES_INSTANCE_CREATE',
     payload: {
       moduleId: 'swirly'
     }
@@ -167,5 +114,58 @@ test('(Reducer) sketchesReducer - Adds new sketch on SKETCHES_CREATE_INSTANCE', 
 
   t.deepEqual(actual.instances, expectedInstances, 'Adds new instance item')
   t.deepEqual(actual.params, expectedParams, 'Adds new instance item')
+  t.end()
+})
+
+test('(Reducer) sketchesReducer - Removes sketch on SKETCHES_INSTANCE_DELETE', (t) => {
+  let originalState, expectedInstances, actual
+
+  originalState = {
+    params: {},
+    modules: {},
+    instances: {
+      s01: {
+        moduleId: 'cubey',
+        title: 'Cubey 1',
+        paramIds: ['p01', 'p02']
+      },
+      s02: {
+        moduleId: 'swirly',
+        title: 'Swirly 1',
+        paramIds: ['p03', 'p04']
+      }
+    }
+  }
+
+  deepFreeze(originalState)
+
+  expectedInstances = {
+    s01: {
+      moduleId: 'cubey',
+      title: 'Cubey 1',
+      paramIds: ['p01', 'p02']
+    }
+  }
+
+  actual = sketchesReducer(originalState, {
+    type: 'SKETCHES_INSTANCE_DELETE',
+    payload: {
+      id: 's02'
+    }
+  })
+
+  t.deepEqual(actual.instances, expectedInstances, 'Removes instance item')
+
+  expectedInstances = {}
+
+  actual = sketchesReducer(actual, {
+    type: 'SKETCHES_INSTANCE_DELETE',
+    payload: {
+      id: 's01'
+    }
+  })
+
+  t.deepEqual(actual.instances, expectedInstances, 'Removes instance item')
+
   t.end()
 })

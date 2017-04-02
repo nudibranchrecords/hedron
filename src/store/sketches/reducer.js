@@ -1,4 +1,5 @@
 import uid from 'uid'
+import _ from 'lodash'
 
 const defaultState = {
   modules: {},
@@ -16,7 +17,7 @@ const sketchesReducer = (state = defaultState, action) => {
         modules: p.modules
       }
     }
-    case 'SKETCHES_CREATE_INSTANCE': {
+    case 'SKETCHES_INSTANCE_CREATE': {
       const sketchId = uid()
       const module = state.modules[p.moduleId]
 
@@ -47,6 +48,12 @@ const sketchesReducer = (state = defaultState, action) => {
           }
         },
         params
+      }
+    }
+    case 'SKETCHES_INSTANCE_DELETE': {
+      return {
+        ...state,
+        instances: _.omit(state.instances, [p.id])
       }
     }
     case 'SKETCHES_PARAM_VALUE_UPDATE':

@@ -1,15 +1,27 @@
 import test from 'tape'
 import * as a from '../actions'
 
-test('(Action Creator) sketchesCreateInstance', (t) => {
-  let actual = a.sketchesCreateInstance('cubeSpinner')
+test('(Action Creator) sketchesInstanceCreate', (t) => {
+  let actual = a.sketchesInstanceCreate('cubeSpinner')
   let expected = {
-    type: 'SKETCHES_CREATE_INSTANCE',
+    type: 'SKETCHES_INSTANCE_CREATE',
     payload: {
       moduleId: 'cubeSpinner'
     }
   }
   t.deepEqual(actual, expected, 'Creates action to add a sketch')
+  t.end()
+})
+
+test('(Action Creator) sketchesInstanceRemove', (t) => {
+  let actual = a.sketchesInstanceRemove('XXX')
+  let expected = {
+    type: 'SKETCHES_INSTANCE_REMOVE',
+    payload: {
+      id: 'XXX'
+    }
+  }
+  t.deepEqual(actual, expected, 'Creates action to remove a sketch')
   t.end()
 })
 

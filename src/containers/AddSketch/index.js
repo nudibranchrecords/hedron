@@ -1,7 +1,7 @@
 import { connect } from 'react-redux'
 import AddSketch from '../../components/AddSketch'
 import { getModules } from './selectors'
-import { sketchesCreateInstance } from '../../store/sketches/actions'
+import { sketchesInstanceCreate } from '../../store/sketches/actions'
 
 const mapStateToProps = (state, ownProps) => (
   {
@@ -11,7 +11,7 @@ const mapStateToProps = (state, ownProps) => (
 
 const mapDispatchToProps = (dispatch, ownProps) => (
   {
-    onAddClick: (id) => dispatch(sketchesCreateInstance(id))
+    onAddClick: (id) => dispatch(sketchesInstanceCreate(id))
   }
 )
 
