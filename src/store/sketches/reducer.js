@@ -18,42 +18,8 @@ const defaultState = {
       ]
     }
   },
-  params: {
-    '01': {
-      title: 'Rotation X',
-      key: 'rotX',
-      value: 0.1
-    },
-    '02': {
-      title: 'Rotation Y',
-      key: 'rotY',
-      value: 0.2
-    },
-    '03': {
-      title: 'Rotation X',
-      key: 'rotX',
-      value: 0.3
-    },
-    '04': {
-      title: 'Rotation Y',
-      key: 'rotY',
-      value: 0.4
-    }
-  },
-  instances: {
-    'sketch_1': {
-      id: 'sketch_1',
-      moduleId: 'test',
-      title: 'Lorem Sketch',
-      paramIds: ['01', '02']
-    },
-    'sketch_2': {
-      id: 'sketch_2',
-      moduleId: 'test',
-      title: 'Ipsum Sketch',
-      paramIds: ['03', '04']
-    }
-  }
+  params: {},
+  instances: {}
 }
 
 const sketchesReducer = (state = defaultState, action) => {
