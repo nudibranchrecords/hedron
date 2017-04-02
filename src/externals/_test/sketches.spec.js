@@ -22,15 +22,15 @@ test('(External) sketches', (t) => {
   t.plan(1)
   const expected = {
     dog: {
-      module: 'dogModule',
+      Module: 'dogModule',
       params: 'dogMeta'
     },
     cat: {
-      module: 'catModule',
+      Module: 'catModule',
       params: 'catMeta'
     },
     frog: {
-      module: 'frogModule',
+      Module: 'frogModule',
       params: 'frogMeta'
     }
   }
