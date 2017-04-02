@@ -24,7 +24,7 @@ const Sketch = ({ title, params }) => (
 Sketch.propTypes = {
   title: React.PropTypes.string.isRequired,
   params: React.PropTypes.arrayOf(
-    React.PropTypes.object
+    React.PropTypes.string
   ).isRequired
 }
 
