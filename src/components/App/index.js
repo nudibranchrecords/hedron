@@ -1,12 +1,14 @@
 import React from 'react'
 import CurrentSketch from '../../containers/CurrentSketch'
-import SketchesNav from '../SketchesNav'
+import AddSketch from '../../containers/AddSketch'
+import SketchesNav from '../../containers/SketchesNav'
 import { Route } from 'react-router'
 
 const App = () => (
   <div>
     <SketchesNav />
-    <Route path='/sketches/:sketchId' component={CurrentSketch} />
+    <Route path='/sketches/view/:sketchId' component={CurrentSketch} />
+    <Route path='/sketches/add' component={AddSketch} />
   </div>
 )
 
