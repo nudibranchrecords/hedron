@@ -6,7 +6,7 @@ const mapStateToProps = (state, ownProps) => {
   console.log(ownProps)
   return {
     title: state.sketches.instances[sketchId].title,
-    params: state.sketches.instances[sketchId].params,
+    params: state.sketches.instances[sketchId].paramIds,
     sketchId: sketchId
   }
 }
