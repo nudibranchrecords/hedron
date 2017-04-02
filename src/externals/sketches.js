@@ -1,3 +1,11 @@
-const Test = require('../../sketches/test.js')
+const glob = require('glob')
+const path = require('path')
 
-module.exports = Test
+const all = {}
+console.log('external sketches')
+glob.sync('../sketches/*').forEach(function (file) {
+  const name = path.parse(file).name
+  all[name] = require(path.resolve(file))
+})
+
+module.exports = all

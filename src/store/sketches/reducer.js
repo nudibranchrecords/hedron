@@ -1,23 +1,7 @@
 import uid from 'uid'
 
 const defaultState = {
-  modules: {
-    'test': {
-      defaultTitle: 'Test Sketch',
-      params: [
-        {
-          key: 'rotX',
-          title: 'Rotation X',
-          defaultValue: 0.5
-        },
-        {
-          key: 'rotY',
-          title: 'Rotation Y',
-          defaultValue: 0.5
-        }
-      ]
-    }
-  },
+  modules: {},
   params: {},
   instances: {}
 }
@@ -26,6 +10,12 @@ const sketchesReducer = (state = defaultState, action) => {
   const p = action.payload
 
   switch (action.type) {
+    case 'SKETCHES_MODULES_UPDATE': {
+      return {
+        ...state,
+        modules: p.modules
+      }
+    }
     case 'SKETCHES_CREATE_INSTANCE': {
       const sketchId = uid()
       const module = state.modules[p.moduleId]

@@ -11,3 +11,10 @@ export function sketchesParamValueUpdate (id, value) {
     payload: { id, value }
   }
 }
+
+export function sketchesModulesUpdate (modules) {
+  return {
+    type: 'SKETCHES_MODULES_UPDATE',
+    payload: { modules }
+  }
+}
