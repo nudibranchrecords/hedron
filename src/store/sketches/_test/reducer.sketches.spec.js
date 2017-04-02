@@ -2,9 +2,6 @@ import test from 'tape'
 import deepFreeze from 'deep-freeze'
 import proxyquire from 'proxyquire'
 
-import * as uid from 'uid'
-import sinon from 'sinon'
-
 let u = 0
 
 const sketchesReducer = proxyquire('../reducer', {
