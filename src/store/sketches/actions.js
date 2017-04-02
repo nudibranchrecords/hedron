@@ -5,9 +5,9 @@ export function sketchesInstanceCreate (moduleId) {
   }
 }
 
-export function sketchesInstanceRemove (id) {
+export function sketchesInstanceDelete (id) {
   return {
-    type: 'SKETCHES_INSTANCE_REMOVE',
+    type: 'SKETCHES_INSTANCE_DELETE',
     payload: { id }
   }
 }

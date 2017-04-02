@@ -7,7 +7,7 @@ const Items = styled.ul`
   padding: 0;
 `
 
-const Sketch = ({ title, params }) => (
+const Sketch = ({ title, params, onDeleteClick }) => (
   <div>
     <h2>{title}</h2>
 
@@ -18,6 +18,8 @@ const Sketch = ({ title, params }) => (
         </li>
       ))}
     </Items>
+
+    <button onClick={onDeleteClick}>Delete Sketch</button>
   </div>
 )
 
@@ -25,7 +27,8 @@ Sketch.propTypes = {
   title: React.PropTypes.string.isRequired,
   params: React.PropTypes.arrayOf(
     React.PropTypes.string
-  ).isRequired
+  ).isRequired,
+  onDeleteClick: React.PropTypes.func.isRequired
 }
 
 export default Sketch

@@ -1,5 +1,6 @@
 import { connect } from 'react-redux'
 import Sketch from '../../components/Sketch'
+import { sketchesInstanceDelete } from '../../store/sketches/actions'
 
 const mapStateToProps = (state, ownProps) => {
   const sketchId = ownProps.match.params.sketchId
@@ -10,9 +11,16 @@ const mapStateToProps = (state, ownProps) => {
   }
 }
 
+const mapDispatchToProps = (dispatch, ownProps) => {
+  const sketchId = ownProps.match.params.sketchId
+  return {
+    onDeleteClick: () => dispatch(sketchesInstanceDelete(sketchId))
+  }
+}
+
 const CurrentSketch = connect(
   mapStateToProps,
-  null
+  mapDispatchToProps
 )(Sketch)
 
 export default CurrentSketch

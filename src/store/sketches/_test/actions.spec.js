@@ -13,10 +13,10 @@ test('(Action Creator) sketchesInstanceCreate', (t) => {
   t.end()
 })
 
-test('(Action Creator) sketchesInstanceRemove', (t) => {
-  let actual = a.sketchesInstanceRemove('XXX')
+test('(Action Creator) sketchesInstanceDelete', (t) => {
+  let actual = a.sketchesInstanceDelete('XXX')
   let expected = {
-    type: 'SKETCHES_INSTANCE_REMOVE',
+    type: 'SKETCHES_INSTANCE_DELETE',
     payload: {
       id: 'XXX'
     }
