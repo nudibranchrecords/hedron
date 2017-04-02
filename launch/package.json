@@ -3,6 +3,10 @@
   "main": "http://0.0.0.0:8080/",
   "node-remote": "http://*/*",
   "chromium-args": "--mixed-context",
+  "window": {
+    "width": 1024,
+    "height": 768
+  },
   "webkit": {
     "plugin": true
   }
