@@ -1,5 +1,6 @@
 import allModules from 'sketches'
 import updateSketch from './updateSketch'
+import checkSketches from './checkSketches'
 import { sketchesModulesUpdate } from '../store/sketches/actions'
 
 class Engine {
@@ -17,22 +18,6 @@ class Engine {
     this.sketches = []
   }
 
-  // Check and update sketch list if changed
-  checkSketches (state) {
-    const sketchKeys = Object.keys(state.sketches.instances)
-
-    if (this.sketches.length !== sketchKeys.length) {
-      const key = sketchKeys[this.sketches.length]
-      const newSketch = state.sketches.instances[key]
-      const moduleId = newSketch.moduleId
-
-      this.sketches.push({
-        id: key,
-        module: new allModules[moduleId].Module()
-      })
-    }
-  }
-
   run (store) {
     // Give store module params
     store.dispatch(sketchesModulesUpdate(this.modules))
@@ -40,7 +25,7 @@ class Engine {
     const loop = () => {
       const state = store.getState()
 
-      this.checkSketches(state)
+      this.sketches = checkSketches(this.sketches, state)
       this.sketches.forEach(sketch => sketch.module.update(
         updateSketch(sketch.id, state)
       ))
