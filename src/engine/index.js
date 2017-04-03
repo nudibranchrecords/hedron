@@ -2,6 +2,7 @@ import allModules from 'sketches'
 import updateSketch from './updateSketch'
 import checkSketches from './checkSketches'
 import { sketchesModulesUpdate } from '../store/sketches/actions'
+import World from './World'
 
 class Engine {
   constructor () {
@@ -18,6 +19,10 @@ class Engine {
     this.sketches = []
   }
 
+  setCanvas (canvas) {
+    this.canvas = canvas
+  }
+
   run (store) {
     // Give store module params
     store.dispatch(sketchesModulesUpdate(this.modules))
@@ -29,6 +34,8 @@ class Engine {
       this.sketches.forEach(sketch => sketch.module.update(
         updateSketch(sketch.id, state)
       ))
+
+      World.render()
 
       requestAnimationFrame(loop)
     }

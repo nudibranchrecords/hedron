@@ -1,4 +1,5 @@
 import allModules from 'sketches'
+import World from './World'
 
 export default (sketches, state) => {
   const sketchKeys = Object.keys(state.sketches.instances)
@@ -8,11 +9,14 @@ export default (sketches, state) => {
     const key = sketchKeys[sketches.length]
     const newSketch = state.sketches.instances[key]
     const moduleId = newSketch.moduleId
+    const module = new allModules[moduleId].Module()
 
     sketches.push({
       id: key,
-      module: new allModules[moduleId].Module()
+      module
     })
+
+    World.scene.add(module.root)
   }
 
   // Remove sketch

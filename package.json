@@ -27,6 +27,7 @@
     "react-router-dom": "next",
     "redux": "^3.6.0",
     "styled-components": "^1.4.4",
+    "three": "^0.84.0",
     "uid": "^0.0.2"
   },
   "devDependencies": {

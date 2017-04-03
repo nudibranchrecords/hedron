@@ -1,3 +1,5 @@
+require('babel-register')
+
 const glob = require('glob')
 const path = require('path')
 
