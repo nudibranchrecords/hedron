@@ -1,17 +1,26 @@
 import React from 'react'
 import { render } from 'react-dom'
 import { Provider } from 'react-redux'
-import { createStore } from 'redux'
+import { createStore, applyMiddleware } from 'redux'
 import { MemoryRouter } from 'react-router'
-import devToolsEnhancer from 'remote-redux-devtools'
-
+import { composeWithDevTools } from 'remote-redux-devtools'
+import createSagaMiddleware from 'redux-saga'
+import saveSaga from './store/saveSaga'
 import rootReducer from './store/rootReducer'
 import App from './components/App'
 import Engine from './Engine'
 
 import { AppContainer } from 'react-hot-loader'
 
-const store = createStore(rootReducer, devToolsEnhancer({ realtime: true }))
+const composeEnhancers = composeWithDevTools({ realtime: true })
+
+const sagaMiddleware = createSagaMiddleware()
+
+const store = createStore(rootReducer, composeEnhancers(
+  applyMiddleware(sagaMiddleware)
+))
+
+sagaMiddleware.run(saveSaga)
 
 const renderApp = (Component) => {
   render(

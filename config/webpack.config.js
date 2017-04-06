@@ -7,10 +7,12 @@ var entry
 
 if (env === 'production') {
   entry = [
+    'babel-polyfill',
     './src/main.js'
   ]
 } else {
   entry = [
+    'babel-polyfill',
     'react-hot-loader/patch',
     'webpack-dev-server/client?http://0.0.0.0:8080',
     'webpack/hot/only-dev-server',

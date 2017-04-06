@@ -14,6 +14,7 @@
   "dependencies": {
     "babel-loader": "^6.3.2",
     "babel-plugin-transform-object-rest-spread": "^6.22.0",
+    "babel-polyfill": "^6.23.0",
     "babel-preset-es2015": "^6.22.0",
     "babel-preset-react": "^6.22.0",
     "babel-register": "^6.22.0",
@@ -26,6 +27,7 @@
     "react-redux": "^5.0.2",
     "react-router-dom": "next",
     "redux": "^3.6.0",
+    "redux-saga": "^0.14.5",
     "styled-components": "^1.4.4",
     "three": "^0.84.0",
     "uid": "^0.0.2"
