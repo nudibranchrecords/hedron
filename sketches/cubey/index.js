@@ -8,7 +8,7 @@ class Cubey extends Sketch {
 
     let material, geometry
     material = new THREE.MeshBasicMaterial({ wireframe: true })
-    geometry = new THREE.BoxGeometry(100, 100, 100)
+    geometry = new THREE.BoxGeometry(500, 500, 500)
     this.cube = new THREE.Mesh(geometry, material)
 
     this.root.add(this.cube)
