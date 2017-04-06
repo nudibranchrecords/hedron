@@ -1,10 +1,10 @@
 import { connect } from 'react-redux'
 import Viewer from '../../components/Viewer'
-import World from '../../Engine/World'
+import world from '../../Engine/world'
 
 const mapStateToProps = (state, ownProps) => (
   {
-    canvasRef: (canvas) => World.setScene(canvas)
+    canvasRef: (canvas) => world.setScene(canvas)
   }
 )
 

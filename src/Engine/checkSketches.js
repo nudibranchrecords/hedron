@@ -1,5 +1,5 @@
 import allModules from 'sketches'
-import World from './World'
+import world from './world'
 
 export default (sketches, state) => {
   const sketchKeys = Object.keys(state.sketches.instances)
@@ -16,13 +16,14 @@ export default (sketches, state) => {
       module
     })
 
-    World.scene.add(module.root)
+    world.scene.add(module.root)
   }
 
   // Remove sketch
   if (sketches.length === sketchKeys.length + 1) {
     sketches.forEach((sketch, index) => {
       if (sketchKeys.indexOf(sketch.id) === -1) {
+        world.scene.remove(sketch.module.root)
         sketches.splice(index, 1)
       }
     })

@@ -2,7 +2,7 @@ import allModules from 'sketches'
 import updateSketch from './updateSketch'
 import checkSketches from './checkSketches'
 import { sketchesModulesUpdate } from '../store/sketches/actions'
-import World from './World'
+import world from './world'
 
 class Engine {
   constructor () {
@@ -35,7 +35,7 @@ class Engine {
         updateSketch(sketch.id, state)
       ))
 
-      World.render()
+      world.render()
 
       requestAnimationFrame(loop)
     }
