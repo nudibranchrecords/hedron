@@ -3,7 +3,7 @@ import Save from '../../components/Save'
 import * as a from './actions'
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
-  onFileChange: () => dispatch(a.saveProject())
+  onFileChange: (event) => dispatch(a.saveProject(event.target.value))
 })
 
 export default connect(

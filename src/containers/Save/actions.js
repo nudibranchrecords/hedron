@@ -1,5 +1,8 @@
-export function saveProject (moduleId) {
+export function saveProject (filePath) {
   return {
-    type: 'SAVE_PROJECT'
+    type: 'PROJECT_SAVE',
+    payload: {
+      filePath
+    }
   }
 }
