@@ -1,9 +1,10 @@
 import { connect } from 'react-redux'
 import Save from '../../components/Save'
-import * as a from './actions'
+import { projectSave, projectFilepathUpdate } from '../../store/project/actions'
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
-  onFileChange: (event) => dispatch(a.saveProject(event.target.value))
+  onFileChange: (event) => dispatch(projectFilepathUpdate(event.target.value)),
+  onButtonClick: () => dispatch(projectSave())
 })
 
 export default connect(
