@@ -113,15 +113,20 @@ test('(Reducer) sketchesReducer - Adds new sketch on SKETCHES_INSTANCE_CREATE', 
   })
 
   t.deepEqual(actual.instances, expectedInstances, 'Adds new instance item')
-  t.deepEqual(actual.params, expectedParams, 'Adds new instance item')
+  t.deepEqual(actual.params, expectedParams, 'Adds related params')
   t.end()
 })
 
 test('(Reducer) sketchesReducer - Removes sketch on SKETCHES_INSTANCE_DELETE', (t) => {
-  let originalState, expectedInstances, actual
+  let originalState, expectedInstances, expectedParams, actual
 
   originalState = {
-    params: {},
+    params: {
+      p01: 'something',
+      p02: 'something',
+      p03: 'something',
+      p04: 'something'
+    },
     modules: {},
     instances: {
       s01: {
@@ -147,6 +152,11 @@ test('(Reducer) sketchesReducer - Removes sketch on SKETCHES_INSTANCE_DELETE', (
     }
   }
 
+  expectedParams = {
+    p01: 'something',
+    p02: 'something'
+  }
+
   actual = sketchesReducer(originalState, {
     type: 'SKETCHES_INSTANCE_DELETE',
     payload: {
@@ -155,7 +165,9 @@ test('(Reducer) sketchesReducer - Removes sketch on SKETCHES_INSTANCE_DELETE', (
   })
 
   t.deepEqual(actual.instances, expectedInstances, 'Removes instance item')
+  t.deepEqual(actual.params, expectedParams, 'Removes related params')
 
+  expectedParams = {}
   expectedInstances = {}
 
   actual = sketchesReducer(actual, {
@@ -166,6 +178,7 @@ test('(Reducer) sketchesReducer - Removes sketch on SKETCHES_INSTANCE_DELETE', (
   })
 
   t.deepEqual(actual.instances, expectedInstances, 'Removes instance item')
+  t.deepEqual(actual.params, expectedParams, 'Removes related params')
 
   t.end()
 })

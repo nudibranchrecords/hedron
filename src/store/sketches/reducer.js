@@ -51,8 +51,10 @@ const sketchesReducer = (state = defaultState, action) => {
       }
     }
     case 'SKETCHES_INSTANCE_DELETE': {
+      let paramIds = state.instances[p.id].paramIds
       return {
         ...state,
+        params: _.omit(state.params, paramIds),
         instances: _.omit(state.instances, [p.id])
       }
     }
