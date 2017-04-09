@@ -1,5 +1,5 @@
 import allModules from 'sketches'
-import updateSketch from './updateSketch'
+import getSketchParams from './getSketchParams'
 import checkSketches from './checkSketches'
 import { sketchesModulesUpdate } from '../store/sketches/actions'
 import world from './world'
@@ -32,7 +32,7 @@ class Engine {
 
       this.sketches = checkSketches(this.sketches, state)
       this.sketches.forEach(sketch => sketch.module.update(
-        updateSketch(sketch.id, state)
+        getSketchParams(sketch.id, state)
       ))
 
       world.render()
