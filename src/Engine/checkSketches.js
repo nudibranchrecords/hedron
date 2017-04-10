@@ -2,9 +2,10 @@ import allModules from 'sketches'
 import world from './world'
 
 export default (sketches, state) => {
+  // Check state sketches
   const sketchKeys = Object.keys(state.sketches.instances)
 
-  // Add sketch
+  // Add sketch if state has one more  sketch
   if (sketches.length === sketchKeys.length - 1) {
     const key = sketchKeys[sketches.length]
     const newSketch = state.sketches.instances[key]
@@ -19,7 +20,7 @@ export default (sketches, state) => {
     world.scene.add(module.root)
   }
 
-  // Remove sketch
+  // Remove sketch if state has one less sketch
   if (sketches.length === sketchKeys.length + 1) {
     sketches.forEach((sketch, index) => {
       if (sketchKeys.indexOf(sketch.id) === -1) {

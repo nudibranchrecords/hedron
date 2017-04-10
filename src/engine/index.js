@@ -1,6 +1,5 @@
 import allModules from 'sketches'
 import getSketchParams from './getSketchParams'
-import checkSketches from './checkSketches'
 import { sketchesModulesUpdate } from '../store/sketches/actions'
 import world from './world'
 
@@ -23,6 +22,39 @@ class Engine {
     this.canvas = canvas
   }
 
+  addSketch (id, moduleId) {
+    const module = new allModules[moduleId].Module()
+
+    this.sketches.push({
+      id,
+      module
+    })
+
+    world.scene.add(module.root)
+  }
+
+  removeSketch (id) {
+    this.sketches.forEach((sketch, index) => {
+      if (sketch.id === id) {
+        this.sketches.splice(index, 1)
+        world.scene.remove(sketch.module.root)
+      }
+    })
+  }
+
+  initiateSketches (sketches) {
+    // Remove all sketches from world
+    this.sketches.forEach((sketch, index) => {
+      world.scene.remove(sketch.module.root)
+    })
+    this.sketches = []
+
+    // Add new ones
+    sketches.forEach((sketch, index) => {
+      this.addSketch(sketch.id, sketch.moduleId)
+    })
+  }
+
   run (store) {
     // Give store module params
     store.dispatch(sketchesModulesUpdate(this.modules))
@@ -30,7 +62,7 @@ class Engine {
     const loop = () => {
       const state = store.getState()
 
-      this.sketches = checkSketches(this.sketches, state)
+      // this.sketches = checkSketches(this.sketches, state)
       this.sketches.forEach(sketch => sketch.module.update(
         getSketchParams(sketch.id, state)
       ))

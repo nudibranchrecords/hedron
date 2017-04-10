@@ -1,8 +1,8 @@
 import test from 'tape'
 import deepFreeze from 'deep-freeze'
-import updateSketch from '../updateSketch'
+import getSketchParams from '../getSketchParams'
 
-test('(Engine) updateSketch', function (t) {
+test('(Engine) getSketchParams', function (t) {
   let actual, expected
 
   const state = {
@@ -51,7 +51,7 @@ test('(Engine) updateSketch', function (t) {
     rotX: 0.1,
     rotY: 0.2
   }
-  actual = updateSketch('sketch_1', state)
+  actual = getSketchParams('sketch_1', state)
 
   t.deepEqual(actual, expected,
     'Returns key:value params for single sketch')
@@ -60,7 +60,7 @@ test('(Engine) updateSketch', function (t) {
     rotX: 0.3,
     rotY: 0.4
   }
-  actual = updateSketch('sketch_2', state)
+  actual = getSketchParams('sketch_2', state)
 
   t.deepEqual(actual, expected,
     'Returns key:value params for single sketch')
