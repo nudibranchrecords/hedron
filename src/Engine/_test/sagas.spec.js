@@ -2,7 +2,7 @@ import 'babel-polyfill'
 import test from 'tape'
 import { apply, select, takeEvery } from 'redux-saga/effects'
 import proxyquire from 'proxyquire'
-import { getNewestSketchId } from '../selectors'
+import { getNewestSketchId, getAllSketches } from '../selectors'
 
 proxyquire.noCallThru()
 
@@ -30,13 +30,13 @@ test('(Saga) watchSketches', (t) => {
 
   t.deepEqual(
     generator.next().value,
-    takeEvery('SKETCHES_INSTANCES_INITIATE', handleInitiateSketches),
-    'SKETCHES_INSTANCES_INITIATE'
+    takeEvery('PROJECT_LOAD_SUCCESS', handleInitiateSketches),
+    'PROJECT_LOAD_SUCCESS'
   )
   t.end()
 })
 
-test('(Saga) addSketch', (t) => {
+test('(Saga) handleAddSketch', (t) => {
   const generator = handleAddSketch({
     payload: {
       moduleId: 'cubey'
@@ -60,7 +60,7 @@ test('(Saga) addSketch', (t) => {
   t.end()
 })
 
-test('(Saga) removeSketch', (t) => {
+test('(Saga) handleRemoveSketch', (t) => {
   const generator = handleRemoveSketch({
     payload: {
       id: 'XXX'
@@ -71,6 +71,26 @@ test('(Saga) removeSketch', (t) => {
     generator.next().value,
     apply(engine, engine.removeSketch, ['XXX']),
     '1. Remove sketch'
+  )
+
+  t.end()
+})
+
+test('(Saga) handleInitiateSketches', (t) => {
+  const generator = handleInitiateSketches()
+
+  t.deepEqual(
+    generator.next().value,
+    select(getAllSketches),
+    '1. Get all sketches from state'
+  )
+
+  const sketches = { foo: 'bar' }
+
+  t.deepEqual(
+    generator.next().value,
+     apply(engine, engine.initiateSketches, [sketches]),
+    '2. Initiate them'
   )
 
   t.end()

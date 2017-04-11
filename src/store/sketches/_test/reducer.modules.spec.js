@@ -2,7 +2,7 @@ import test from 'tape'
 import deepFreeze from 'deep-freeze'
 import sketchesReducer from '../reducer'
 
-test('(Reducer) sketchesReducer - Adds new sketch on SKETCHES_MODULES_UPDATE', (t) => {
+test('(Reducer) sketchesReducer - Updates available modules SKETCHES_MODULES_UPDATE', (t) => {
   const originalState = {
     params: {},
     instances: {},

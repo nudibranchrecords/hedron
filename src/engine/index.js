@@ -50,8 +50,9 @@ class Engine {
     this.sketches = []
 
     // Add new ones
-    sketches.forEach((sketch, index) => {
-      this.addSketch(sketch.id, sketch.moduleId)
+    Object.keys(sketches).forEach((sketchId) => {
+      const moduleId = sketches[sketchId].moduleId
+      this.addSketch(sketchId, moduleId)
     })
   }
 

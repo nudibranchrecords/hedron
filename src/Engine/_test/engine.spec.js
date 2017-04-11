@@ -14,7 +14,7 @@ const spies = {
 }
 
 test('Engine', (t) => {
-  let expected, sketches
+  let expected
 
   const engine = proxyquire('../', {
     sketches: {
@@ -105,34 +105,30 @@ test('Engine', (t) => {
     }
   ]
 
-  let sketches1 = [
-    {
-      id: 'AAA',
+  let sketches1 = {
+    'AAA': {
       moduleId: 'cat'
     },
-    {
-      id: 'BBB',
+    'BBB': {
       moduleId: 'frog'
     },
-    {
-      id: 'CCC',
+    'CCC': {
       moduleId: 'cat'
     },
-    {
-      id: 'DDD',
+    'DDD': {
       moduleId: 'dog'
     }
-  ]
+  }
 
   engine.initiateSketches(sketches1)
 
   t.equal(spies.worldAdd.callCount, 6, 'Adds 4 extra roots to world')
   t.deepEqual(engine.sketches, expected, 'Adds multiple sketches')
 
-  for (let i = 2; i < 6; i++) {
-    const spyCall = spies.worldAdd.getCall(i)
-    t.equal(spyCall.args[0], sketches1[i - 2].moduleId + 'Root', 'Adds correct root')
-  }
+  Object.keys(sketches1).forEach((sketchId, index) => {
+    const spyCall = spies.worldAdd.getCall(index + 2)
+    t.equal(spyCall.args[0], sketches1[sketchId].moduleId + 'Root', 'Adds correct root')
+  })
 
   expected = [
     {
@@ -149,20 +145,17 @@ test('Engine', (t) => {
     }
   ]
 
-  let sketches2 = [
-    {
-      id: '111',
+  let sketches2 = {
+    '111': {
       moduleId: 'frog'
     },
-    {
-      id: '222',
+    '222': {
       moduleId: 'frog'
     },
-    {
-      id: '333',
+    '333': {
       moduleId: 'cat'
     }
-  ]
+  }
 
   engine.initiateSketches(sketches2)
 
@@ -170,15 +163,15 @@ test('Engine', (t) => {
   t.equal(spies.worldAdd.callCount, 9, 'Adds 3 extra roots to world')
   t.deepEqual(engine.sketches, expected, 'Adds multiple sketches')
 
-  for (let i = 6; i < 9; i++) {
-    const spyCall = spies.worldAdd.getCall(i)
-    t.equal(spyCall.args[0], sketches2[i - 6].moduleId + 'Root', 'Adds correct root')
-  }
+  Object.keys(sketches2).forEach((sketchId, index) => {
+    const spyCall = spies.worldAdd.getCall(index + 6)
+    t.equal(spyCall.args[0], sketches2[sketchId].moduleId + 'Root', 'Adds correct root')
+  })
 
-  for (let i = 2; i < 5; i++) {
-    const spyCall = spies.worldRemove.getCall(i)
-    t.equal(spyCall.args[0], sketches1[i - 2].moduleId + 'Root', 'Removes correct root')
-  }
+  Object.keys(sketches1).forEach((sketchId, index) => {
+    const spyCall = spies.worldRemove.getCall(index + 2)
+    t.equal(spyCall.args[0], sketches1[sketchId].moduleId + 'Root', 'Adds correct root')
+  })
 
   t.end()
 })

@@ -4,21 +4,24 @@
 
 import React from 'react'
 
-const Save = ({ onFileChange, onButtonClick }) => {
+const Menu = ({ onFileChange, onSaveClick, onLoadClick }) => {
   return (
     <div>
       <input onChange={onFileChange} type='file'
         ref={node => node && node.setAttribute('nwsaveas', '')}
         accept='.json'
       />
-      <button onClick={onButtonClick}>Save</button>
+      <input onChange={onFileChange} type='file' accept='.json' />
+      <button onClick={onSaveClick}>Save</button>
+      <button onClick={onLoadClick}>Load</button>
     </div>
   )
 }
 
-Save.propTypes = {
+Menu.propTypes = {
   onFileChange: React.PropTypes.func.isRequired,
-  onButtonClick: React.PropTypes.func.isRequired
+  onSaveClick: React.PropTypes.func.isRequired,
+  onLoadClick: React.PropTypes.func.isRequired
 }
 
-export default Save
+export default Menu

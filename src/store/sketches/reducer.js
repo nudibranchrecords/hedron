@@ -69,6 +69,13 @@ const sketchesReducer = (state = defaultState, action) => {
           }
         }
       }
+    case 'PROJECT_LOAD_SUCCESS': {
+      return {
+        ...state,
+        params: p.data.sketches.params,
+        instances: p.data.sketches.instances
+      }
+    }
     default:
       return state
   }

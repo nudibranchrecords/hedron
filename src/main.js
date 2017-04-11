@@ -5,7 +5,7 @@ import { createStore, applyMiddleware } from 'redux'
 import { MemoryRouter } from 'react-router'
 import { composeWithDevTools } from 'remote-redux-devtools'
 import createSagaMiddleware from 'redux-saga'
-import { watchProject } from './store/project/sagas'
+import rootSaga from './store/rootSaga'
 import rootReducer from './store/rootReducer'
 import App from './components/App'
 import Engine from './Engine'
@@ -20,7 +20,7 @@ const store = createStore(rootReducer, composeEnhancers(
   applyMiddleware(sagaMiddleware)
 ))
 
-sagaMiddleware.run(watchProject)
+sagaMiddleware.run(rootSaga)
 
 const renderApp = (Component) => {
   render(

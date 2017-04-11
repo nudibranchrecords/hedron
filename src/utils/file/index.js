@@ -8,3 +8,16 @@ export const save = (path, data) => {
     }
   })
 }
+
+export const load = (path) => {
+  return new Promise((resolve, reject) => {
+    jsonfile.readFile(path, (err, obj) => {
+      if (err) {
+        console.error(err)
+        throw err
+      } else {
+        resolve(obj)
+      }
+    })
+  })
+}

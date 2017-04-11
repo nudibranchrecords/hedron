@@ -3,7 +3,7 @@ import CurrentSketch from '../../containers/CurrentSketch'
 import AddSketch from '../../containers/AddSketch'
 import SketchesNav from '../../containers/SketchesNav'
 import Viewer from '../../containers/Viewer'
-import Save from '../../containers/Save'
+import Menu from '../../containers/Menu'
 import { Route } from 'react-router'
 
 const App = () => (
@@ -12,7 +12,7 @@ const App = () => (
     <Viewer />
     <Route path='/sketches/view/:sketchId' component={CurrentSketch} />
     <Route path='/sketches/add' component={AddSketch} />
-    <Save />
+    <Menu />
   </div>
 )
 
