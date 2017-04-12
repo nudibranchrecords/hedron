@@ -56,11 +56,13 @@ class Engine {
     })
   }
 
-  run (store) {
+  run (store, stats) {
     // Give store module params
     store.dispatch(sketchesModulesUpdate(this.modules))
 
     const loop = () => {
+      stats.begin()
+
       const state = store.getState()
 
       // this.sketches = checkSketches(this.sketches, state)
@@ -70,6 +72,7 @@ class Engine {
 
       world.render()
 
+      stats.end()
       requestAnimationFrame(loop)
     }
     loop()

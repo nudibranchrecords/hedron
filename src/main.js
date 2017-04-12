@@ -9,8 +9,12 @@ import rootSaga from './store/rootSaga'
 import rootReducer from './store/rootReducer'
 import App from './components/App'
 import Engine from './Engine'
+import Stats from 'stats.js'
 
 import { AppContainer } from 'react-hot-loader'
+
+const stats = new Stats()
+stats.dom.setAttribute('style', '')
 
 const composeEnhancers = composeWithDevTools({ realtime: true })
 
@@ -27,7 +31,7 @@ const renderApp = (Component) => {
     <AppContainer>
       <Provider store={store}>
         <MemoryRouter>
-          <App />
+          <App stats={stats} />
         </MemoryRouter>
       </Provider>
     </AppContainer>,
@@ -44,4 +48,4 @@ if (module.hot) {
   })
 }
 
-Engine.run(store)
+Engine.run(store, stats)

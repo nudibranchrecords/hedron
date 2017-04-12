@@ -1,13 +1,27 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
+import styled from 'styled-components'
+
+const Item = styled(Link)`
+  color: palevioletred;
+  display: block;
+  margin: 0.5em 0;
+  font-family: Helvetica, Arial, sans-serif;
+
+  &:hover {
+    text-decoration: underline;
+  }
+`
 
 const SketchesNav = ({ items }) => (
   <nav>
     <ul>
       {items.map(item => (
-        <li key={item.id}><Link to={`/sketches/view/${item.id}`}>{item.title}</Link></li>
+        <li key={item.id}>
+          <Item to={`/sketches/view/${item.id}`}>{item.title}</Item>
+        </li>
       ))}
-      <li><Link to='/sketches/add'>Add</Link></li>
+      <li><Item to='/sketches/add'>Add</Item></li>
     </ul>
   </nav>
 )

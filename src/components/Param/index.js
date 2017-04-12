@@ -3,7 +3,8 @@ import ParamBar from '../../containers/ParamBar'
 import styled from 'styled-components'
 
 const Wrapper = styled.div`
-  background: #eee;
+  border: 1px solid black;
+  border-radius: 10px;
   padding: 1rem;
 `
 

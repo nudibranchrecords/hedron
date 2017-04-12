@@ -2,13 +2,25 @@ import React from 'react'
 import Param from '../../containers/Param'
 import styled from 'styled-components'
 
+const Wrapper = styled.div`
+  padding: 0.5rem;
+  display: flex;
+  height: 100%;
+  flex-direction: column;
+`
+
 const Items = styled.ul`
-  list-style: none;
-  padding: 0;
+  display: flex;
+`
+
+const Bottom = styled.div`
+  margin-top: auto;
+  display: flex;
+  justify-content: flex-end;
 `
 
 const Sketch = ({ title, params, onDeleteClick }) => (
-  <div>
+  <Wrapper>
     <h2>{title}</h2>
 
     <Items>
@@ -19,8 +31,10 @@ const Sketch = ({ title, params, onDeleteClick }) => (
       ))}
     </Items>
 
-    <button onClick={onDeleteClick}>Delete Sketch</button>
-  </div>
+    <Bottom>
+      <button onClick={onDeleteClick}>Delete Sketch</button>
+    </Bottom>
+  </Wrapper>
 )
 
 Sketch.propTypes = {
