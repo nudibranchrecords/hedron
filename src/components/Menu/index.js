@@ -4,22 +4,44 @@
 
 import React from 'react'
 
-const Menu = ({ onFileChange, onSaveClick, onLoadClick }) => {
+const Menu = ({ onFileSaveChange, onFileLoadChange, onSaveClick, filePath
+}) => {
+  let saveAsInput
+  let loadInput
+
   return (
     <div>
-      <input onChange={onFileChange} type='file'
-        ref={node => node && node.setAttribute('nwsaveas', '')}
-        accept='.json'
-      />
-      <input onChange={onFileChange} type='file' accept='.json' />
       <button onClick={onSaveClick}>Save</button>
-      <button onClick={onLoadClick}>Load</button>
+      <button onClick={() => saveAsInput.click()}>Save As</button>
+      <button onClick={() => loadInput.click()}>Load</button>
+      <span>{filePath}</span>
+
+      <input
+        onChange={onFileSaveChange}
+        type='file'
+        ref={
+            node => {
+              node && node.setAttribute('nwsaveas', '')
+              saveAsInput = node
+            }
+        }
+        accept='.json'
+        style={{ display: 'none' }}
+      />
+      <input
+        onChange={onFileLoadChange}
+        type='file'
+        ref={node => { loadInput = node }}
+        accept='.json'
+        style={{ display: 'none' }} />
     </div>
   )
 }
 
 Menu.propTypes = {
-  onFileChange: React.PropTypes.func.isRequired,
+  filePath: React.PropTypes.string,
+  onFileSaveChange: React.PropTypes.func.isRequired,
+  onFileLoadChange: React.PropTypes.func.isRequired,
   onSaveClick: React.PropTypes.func.isRequired,
   onLoadClick: React.PropTypes.func.isRequired
 }
