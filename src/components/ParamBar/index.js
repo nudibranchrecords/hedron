@@ -9,4 +9,9 @@ const ParamBar = ({ value, onChange }) => {
   )
 }
 
+ParamBar.propTypes = {
+  value: React.PropTypes.number.isRequired,
+  onChange: React.PropTypes.func.isRequired
+}
+
 export default ParamBar

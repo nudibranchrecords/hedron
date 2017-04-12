@@ -30,4 +30,10 @@ class Overview extends React.Component {
   }
 }
 
+Overview.propTypes = {
+  stats: React.PropTypes.shape({
+    dom: React.PropTypes.func
+  }).isRequired
+}
+
 export default Overview

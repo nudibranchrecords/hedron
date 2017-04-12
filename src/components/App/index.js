@@ -43,3 +43,7 @@ const App = ({ stats }) => (
 )
 
 export default App
+
+App.propTypes = {
+  stats: React.PropTypes.object.isRequired
+}
