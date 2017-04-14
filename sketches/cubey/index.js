@@ -8,7 +8,7 @@ class Cubey extends Sketch {
 
     let material, geometry
     material = new THREE.MeshBasicMaterial({ wireframe: true })
-    geometry = new THREE.BoxGeometry(500, 500, 500)
+    geometry = new THREE.BoxGeometry(800, 800, 800)
     this.cube = new THREE.Mesh(geometry, material)
 
     this.root.add(this.cube)
@@ -17,6 +17,7 @@ class Cubey extends Sketch {
   update (params) {
     this.cube.rotation.x += params.rotX
     this.cube.rotation.y += params.rotY
+    this.cube.scale.set(params.scale, params.scale, params.scale)
   }
 }
 

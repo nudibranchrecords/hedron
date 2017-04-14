@@ -10,6 +10,11 @@ module.exports = {
       key: 'rotY',
       title: 'Rotation Y',
       defaultValue: 0.5
+    },
+    {
+      key: 'scale',
+      title: 'Scale',
+      defaultValue: 0.5
     }
   ]
 }
