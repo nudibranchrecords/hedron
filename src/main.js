@@ -10,6 +10,7 @@ import rootReducer from './store/rootReducer'
 import App from './components/App'
 import Engine from './Engine'
 import Stats from 'stats.js'
+import './windows'
 
 import { AppContainer } from 'react-hot-loader'
 

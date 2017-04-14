@@ -1,9 +1,16 @@
 import React from 'react'
+import styled from 'styled-components'
+
+const Wrapper = styled.div`
+  width: 100%;
+`
 
 class Viewer extends React.Component {
   render () {
     return (
-      <canvas ref={this.props.canvasRef} />
+      <Wrapper>
+        <canvas ref={this.props.canvasRef} style={{ width: '100%' }} />
+      </Wrapper>
     )
   }
 }
