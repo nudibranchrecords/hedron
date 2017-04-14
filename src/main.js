@@ -13,14 +13,17 @@ import Stats from 'stats.js'
 import './windows'
 
 // inputs
-import './inputs/audio'
+import initiateAudio from './inputs/AudioInput'
 
 import { AppContainer } from 'react-hot-loader'
 
 const stats = new Stats()
 stats.dom.setAttribute('style', '')
 
-const composeEnhancers = composeWithDevTools({ realtime: true })
+const composeEnhancers = composeWithDevTools({
+  realtime: true,
+  actionsBlacklist: ['INPUT_FIRED']
+})
 
 const sagaMiddleware = createSagaMiddleware()
 
@@ -52,4 +55,5 @@ if (module.hot) {
   })
 }
 
+initiateAudio(store)
 Engine.run(store, stats)
