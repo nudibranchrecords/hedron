@@ -4,7 +4,8 @@
 
 import React from 'react'
 
-const Menu = ({ onFileSaveChange, onFileLoadChange, onSaveClick, filePath
+const Menu = ({
+  onFileSaveChange, onFileLoadChange, onSaveClick, filePath, onSendOutputClick
 }) => {
   let saveAsInput
   let loadInput
@@ -15,6 +16,8 @@ const Menu = ({ onFileSaveChange, onFileLoadChange, onSaveClick, filePath
       <button onClick={() => saveAsInput.click()}>Save As</button>
       <button onClick={() => loadInput.click()}>Load</button>
       <span>{filePath}</span>
+
+      <button onClick={onSendOutputClick}>Send to display</button>
 
       <input
         onChange={onFileSaveChange}
@@ -42,8 +45,8 @@ Menu.propTypes = {
   filePath: React.PropTypes.string,
   onFileSaveChange: React.PropTypes.func.isRequired,
   onFileLoadChange: React.PropTypes.func.isRequired,
-  onSaveClick: React.PropTypes.func.isRequired,
-  onLoadClick: React.PropTypes.func.isRequired
+  onSendOutputClick: React.PropTypes.func.isRequired,
+  onSaveClick: React.PropTypes.func.isRequired
 }
 
 export default Menu
