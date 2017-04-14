@@ -32,7 +32,7 @@ class Overview extends React.Component {
 
 Overview.propTypes = {
   stats: React.PropTypes.shape({
-    dom: React.PropTypes.func
+    dom: React.PropTypes.object
   }).isRequired
 }
 
