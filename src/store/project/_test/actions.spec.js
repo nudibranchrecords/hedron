@@ -1,5 +1,10 @@
 import test from 'tape'
-import { projectSave, projectFilepathUpdate, projectLoadRequest, projectLoadSuccess } from '../actions'
+import {
+  projectSave,
+  projectFilepathUpdate,
+  projectLoadRequest,
+  projectLoadSuccess,
+  projectError } from '../actions'
 
 test('(Action Creator) projectSave', (t) => {
   let actual = projectSave()
@@ -41,5 +46,17 @@ test('(Action Creator) projectFilepathUpdate', (t) => {
     }
   }
   t.deepEqual(actual, expected, 'Creates action to update file of project')
+  t.end()
+})
+
+test('(Action Creator) projectError', (t) => {
+  let actual = projectError('Error!')
+  let expected = {
+    type: 'PROJECT_ERROR',
+    payload: {
+      message: 'Error!'
+    }
+  }
+  t.deepEqual(actual, expected, 'Creates action for when there is some sort of project data error')
   t.end()
 })

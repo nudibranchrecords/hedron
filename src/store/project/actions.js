@@ -27,3 +27,12 @@ export function projectFilepathUpdate (filePath) {
     }
   }
 }
+
+export function projectError (message) {
+  return {
+    type: 'PROJECT_ERROR',
+    payload: {
+      message
+    }
+  }
+}

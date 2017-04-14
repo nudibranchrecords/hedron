@@ -2,11 +2,13 @@ import { fork } from 'redux-saga/effects'
 import { watchSketches } from '../Engine/sagas'
 import { watchProject } from './project/sagas'
 import { watchWindows } from './windows/sagas'
+import { watchInputs } from './inputs/sagas'
 
 export default function* rootSaga () {
   yield [
-    fork(watchSketches),
+    fork(watchWindows),
     fork(watchProject),
-    fork(watchWindows)
+    fork(watchSketches),
+    fork(watchInputs)
   ]
 }
