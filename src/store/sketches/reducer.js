@@ -32,7 +32,8 @@ const sketchesReducer = (state = defaultState, action) => {
           [id]: {
             title: param.title,
             value: param.defaultValue,
-            key: param.key
+            key: param.key,
+            id
           }
         }
       })

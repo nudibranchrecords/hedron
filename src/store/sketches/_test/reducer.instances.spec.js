@@ -18,12 +18,14 @@ test('(Reducer) sketchesReducer - Adds new sketch on SKETCHES_INSTANCE_CREATE', 
       p01: {
         key: 'rotX',
         title: 'Rotation X',
-        value: 0.1
+        value: 0.1,
+        id: 'p01'
       },
       p02: {
         key: 'rotY',
         title: 'Rotation Y',
-        value: 0.2
+        value: 0.2,
+        id: 'p02'
       }
     },
     modules: {
@@ -86,22 +88,26 @@ test('(Reducer) sketchesReducer - Adds new sketch on SKETCHES_INSTANCE_CREATE', 
     p01: {
       key: 'rotX',
       title: 'Rotation X',
-      value: 0.1
+      value: 0.1,
+      id: 'p01'
     },
     p02: {
       key: 'rotY',
       title: 'Rotation Y',
-      value: 0.2
+      value: 0.2,
+      id: 'p02'
     },
     UID1: {
       key: 'swirlRate',
       title: 'Swirl Rate',
-      value: 0.1
+      value: 0.1,
+      id: 'UID1'
     },
     UID2: {
       key: 'scale',
       title: 'Scale',
-      value: 0.1
+      value: 0.1,
+      id: 'UID2'
     }
   }
 
