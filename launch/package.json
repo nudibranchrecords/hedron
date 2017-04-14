@@ -1,6 +1,6 @@
 {
   "name": "standalone",
-  "main": "http://0.0.0.0:8080/",
+  "main": "localhost:8080",
   "node-remote": "http://*/*",
   "chromium-args": "--mixed-context",
   "window": {

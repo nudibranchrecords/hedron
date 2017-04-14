@@ -12,6 +12,9 @@ import Engine from './Engine'
 import Stats from 'stats.js'
 import './windows'
 
+// inputs
+import './inputs/audio'
+
 import { AppContainer } from 'react-hot-loader'
 
 const stats = new Stats()
