@@ -1,5 +1,4 @@
 import test from 'tape'
-import deepFreeze from 'deep-freeze'
 import inputsReducer from '../reducer'
 
 import { returnsPreviousState } from '../../../testUtils'
@@ -15,7 +14,7 @@ test('(Reducer) inputsReducer - Updates value on INPUT_FIRED', (t) => {
     }
   }
 
-  deepFreeze(originalState)
+  // deepFreeze(originalState)
 
   expectedState = {
     values: {

@@ -42,7 +42,6 @@ test('(Selector) inputs - getAssignedParams - Params dont exist', (t) => {
       params: {}
     }
   }
-  deepFreeze(state)
 
   t.throws(getAssignedParams.bind(null, state, 'audio_0'), Error, 'Throws an error')
   t.end()
