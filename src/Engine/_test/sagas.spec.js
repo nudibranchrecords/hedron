@@ -88,7 +88,7 @@ test('(Saga) handleInitiateSketches', (t) => {
   const sketches = { foo: 'bar' }
 
   t.deepEqual(
-    generator.next().value,
+    generator.next(sketches).value,
      apply(engine, engine.initiateSketches, [sketches]),
     '2. Initiate them'
   )
