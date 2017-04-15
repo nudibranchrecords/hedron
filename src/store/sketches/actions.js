@@ -1,27 +1,22 @@
-export function sketchesInstanceCreate (moduleId) {
+export function sketchCreate (id, sketch) {
   return {
-    type: 'SKETCHES_INSTANCE_CREATE',
-    payload: { moduleId }
+    type: 'SKETCH_CREATE',
+    payload: { id, sketch }
   }
 }
 
-export function sketchesInstanceDelete (id) {
+export function sketchDelete (id) {
   return {
-    type: 'SKETCHES_INSTANCE_DELETE',
+    type: 'SKETCH_DELETE',
     payload: { id }
   }
 }
 
-export function sketchesParamValueUpdate (id, value) {
+export function sketchesReplaceAll (sketches) {
   return {
-    type: 'SKETCHES_PARAM_VALUE_UPDATE',
-    payload: { id, value }
-  }
-}
-
-export function sketchesModulesUpdate (modules) {
-  return {
-    type: 'SKETCHES_MODULES_UPDATE',
-    payload: { modules }
+    type: 'SKETCHES_REPLACE_ALL',
+    payload: {
+      sketches
+    }
   }
 }

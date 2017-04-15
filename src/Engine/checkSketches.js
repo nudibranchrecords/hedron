@@ -3,7 +3,7 @@ import world from './world'
 
 export default (sketches, state) => {
   // Check state sketches
-  const sketchKeys = Object.keys(state.sketches.instances)
+  const sketchKeys = Object.keys(state.sketches)
 
   // Add sketch if state has one more  sketch
   if (sketches.length === sketchKeys.length - 1) {

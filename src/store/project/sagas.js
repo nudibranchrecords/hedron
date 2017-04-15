@@ -2,6 +2,8 @@ import { call, select, takeEvery, put } from 'redux-saga/effects'
 import { save, load } from '../../utils/file'
 import { getProjectData, getProjectFilepath } from './selectors'
 import { projectLoadSuccess } from './actions'
+import { sketchesReplaceAll } from '../sketches/actions'
+import { paramsReplaceAll } from '../params/actions'
 
 export function* saveProject () {
   const data = yield select(getProjectData)
@@ -12,6 +14,8 @@ export function* saveProject () {
 export function* loadProject () {
   const filepath = yield select(getProjectFilepath)
   const projectData = yield call(load, filepath)
+  yield put(sketchesReplaceAll(projectData.sketches))
+  yield put(paramsReplaceAll(projectData.params))
   yield put(projectLoadSuccess(projectData))
 }
 

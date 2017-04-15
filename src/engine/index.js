@@ -1,6 +1,6 @@
 import allModules from 'sketches'
 import getSketchParams from './getSketchParams'
-import { sketchesModulesUpdate } from '../store/sketches/actions'
+import { availableModulesReplaceAll } from '../store/availableModules/actions'
 import world from './world'
 
 class Engine {
@@ -58,7 +58,7 @@ class Engine {
 
   run (store, stats) {
     // Give store module params
-    store.dispatch(sketchesModulesUpdate(this.modules))
+    store.dispatch(availableModulesReplaceAll(this.modules))
 
     const loop = () => {
       stats.begin()
@@ -67,7 +67,7 @@ class Engine {
 
       // this.sketches = checkSketches(this.sketches, state)
       this.sketches.forEach(sketch => sketch.module.update(
-        getSketchParams(sketch.id, state)
+        getSketchParams(state, sketch.id)
       ))
 
       world.render()

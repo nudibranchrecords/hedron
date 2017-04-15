@@ -4,21 +4,19 @@ import deepFreeze from 'deep-freeze'
 
 test('(Selector) project - getProjectData', (t) => {
   const state = {
-    project: 'proj',
-    sketches: {
-      modules: 'foo',
-      instances: 'bar',
-      params: 'lorem'
-    }
+    project: '@@project',
+    availableModules: '@@availableModules',
+    inputs: '@@inputs',
+    sketches: '@@sketches',
+    params: '@@params'
   }
   deepFreeze(state)
 
   const expected = {
-    sketches: {
-      instances: 'bar',
-      params: 'lorem'
-    },
-    project: 'proj'
+    project: '@@project',
+    inputs: '@@inputs',
+    sketches: '@@sketches',
+    params: '@@params'
   }
 
   const actual = getProjectData(state)

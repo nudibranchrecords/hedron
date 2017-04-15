@@ -9,6 +9,22 @@ const ParamBar = ({ value, onChange }) => {
   )
 }
 
+// class ParamBar extends React.Component {
+
+//   shouldComponentUpdate (nextProps, nextState) {
+//     return true
+//   }
+
+//   render () {
+//     return (
+//       <div>
+//         {this.props.value}<br />
+//         <input type='range' value={this.props.value} min='0' max='1' step='0.001' onChange={this.props.onChange} />
+//       </div>
+//     )
+//   }
+// }
+
 ParamBar.propTypes = {
   value: React.PropTypes.number.isRequired,
   onChange: React.PropTypes.func.isRequired

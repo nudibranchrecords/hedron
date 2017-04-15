@@ -5,6 +5,8 @@ import { watchProject, saveProject, loadProject } from '../sagas'
 import { getProjectData, getProjectFilepath } from '../selectors'
 import { save, load } from '../../../utils/file'
 import { projectLoadSuccess } from '../actions'
+import { sketchesReplaceAll } from '../../sketches/actions'
+import { paramsReplaceAll } from '../../params/actions'
 
 test('(Saga) watchProject', (t) => {
   const generator = watchProject()
@@ -64,13 +66,31 @@ test('(Saga) loadProject', (t) => {
     '2. Loads file'
   )
 
-  const projectData = { foo: 'bar' }
+  const projectData = {
+    project: '@@project',
+    inputs: '@@inputs',
+    sketches: '@@sketches',
+    params: '@@params'
+  }
 
   t.deepEqual(
     generator.next(projectData).value,
-    put(projectLoadSuccess(projectData)),
-    '3. Fires PROJECT_LOAD_SUCCESS with data'
+    put(sketchesReplaceAll(projectData.sketches)),
+    '3. Dispatches sketchesReplaceAll'
   )
 
+  t.deepEqual(
+    generator.next().value,
+    put(paramsReplaceAll(projectData.params)),
+    '4. Dispatches paramsReplaceAll'
+  )
+
+  t.deepEqual(
+    generator.next().value,
+    put(projectLoadSuccess(projectData)),
+    '5. Fires PROJECT_LOAD_SUCCESS with data'
+  )
+
+  t.equal(generator.next().done, true, 'Generator ends')
   t.end()
 })

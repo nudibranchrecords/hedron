@@ -3,14 +3,12 @@ import { getModules } from '../selectors'
 
 test('(Selector) getModules', (t) => {
   const state = {
-    sketches: {
-      modules: {
-        foo: {
-          defaultTitle: 'Foo'
-        },
-        bar: {
-          defaultTitle: 'Bar'
-        }
+    availableModules: {
+      foo: {
+        defaultTitle: 'Foo'
+      },
+      bar: {
+        defaultTitle: 'Bar'
       }
     }
   }

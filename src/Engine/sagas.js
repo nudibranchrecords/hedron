@@ -1,10 +1,10 @@
 import { apply, select, takeEvery } from 'redux-saga/effects'
 import engine from './'
-import { getNewestSketchId, getAllSketches } from './selectors'
+import { getAllSketches } from './selectors'
 
 export function* handleAddSketch (action) {
-  const id = yield select(getNewestSketchId)
-  const moduleId = action.payload.moduleId
+  const id = action.payload.id
+  const moduleId = action.payload.sketch.moduleId
   yield apply(engine, engine.addSketch, [id, moduleId])
 }
 
@@ -18,7 +18,7 @@ export function* handleInitiateSketches () {
 }
 
 export function* watchSketches () {
-  yield takeEvery('SKETCHES_INSTANCE_CREATE', handleAddSketch)
-  yield takeEvery('SKETCHES_INSTANCE_DELETE', handleRemoveSketch)
+  yield takeEvery('SKETCH_CREATE', handleAddSketch)
+  yield takeEvery('SKETCH_DELETE', handleRemoveSketch)
   yield takeEvery('PROJECT_LOAD_SUCCESS', handleInitiateSketches)
 }

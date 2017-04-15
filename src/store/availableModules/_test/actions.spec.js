@@ -1,16 +1,7 @@
 import test from 'tape'
-import deepFreeze from 'deep-freeze'
-import sketchesReducer from '../reducer'
+import * as a from '../actions'
 
-test('(Reducer) sketchesReducer - Updates available modules SKETCHES_MODULES_UPDATE', (t) => {
-  const originalState = {
-    params: {},
-    instances: {},
-    modules: {}
-  }
-
-  deepFreeze(originalState)
-
+test('(Action Creator) availableModulesReplaceAll', (t) => {
   const modules = {
     cubey: {
       defaultTitle: 'Cubey',
@@ -43,14 +34,13 @@ test('(Reducer) sketchesReducer - Updates available modules SKETCHES_MODULES_UPD
       ]
     }
   }
-
-  const actual = sketchesReducer(originalState, {
-    type: 'SKETCHES_MODULES_UPDATE',
+  let actual = a.availableModulesReplaceAll(modules)
+  let expected = {
+    type: 'AVAILABLE_MODULES_REPLACE_ALL',
     payload: {
       modules
     }
-  })
-
-  t.deepEqual(actual.modules, modules)
+  }
+  t.deepEqual(actual, expected, 'Creates action to update available modules')
   t.end()
 })

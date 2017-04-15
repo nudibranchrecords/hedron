@@ -3,7 +3,7 @@ import test from 'tape'
 import { select, takeEvery, put } from 'redux-saga/effects'
 import { watchInputs, handleInput } from '../sagas'
 import { getAssignedParams } from '../selectors'
-import { sketchesParamValueUpdate } from '../../sketches/actions'
+import { paramValueUpdate } from '../../params/actions'
 import { projectError } from '../../project/actions'
 
 test('(Saga) watchInputs', (t) => {
@@ -40,13 +40,13 @@ test('(Saga) handleInput', (t) => {
 
   t.deepEqual(
     generator.next(params).value,
-    put(sketchesParamValueUpdate('XX', 0.2)),
+    put(paramValueUpdate('XX', 0.2)),
     '2.x Dispatches param update action'
   )
 
   t.deepEqual(
     generator.next(params).value,
-    put(sketchesParamValueUpdate('YY', 0.2)),
+    put(paramValueUpdate('YY', 0.2)),
     '2.x Dispatches param update action'
   )
 

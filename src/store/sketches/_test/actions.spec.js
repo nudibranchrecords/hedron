@@ -1,22 +1,23 @@
 import test from 'tape'
 import * as a from '../actions'
 
-test('(Action Creator) sketchesInstanceCreate', (t) => {
-  let actual = a.sketchesInstanceCreate('cubeSpinner')
+test('(Action Creator) sketchCreate', (t) => {
+  let actual = a.sketchCreate('XXX', { foo: 'bar' })
   let expected = {
-    type: 'SKETCHES_INSTANCE_CREATE',
+    type: 'SKETCH_CREATE',
     payload: {
-      moduleId: 'cubeSpinner'
+      id: 'XXX',
+      sketch: { foo: 'bar' }
     }
   }
   t.deepEqual(actual, expected, 'Creates action to add a sketch')
   t.end()
 })
 
-test('(Action Creator) sketchesInstanceDelete', (t) => {
-  let actual = a.sketchesInstanceDelete('XXX')
+test('(Action Creator) sketchDelete', (t) => {
+  let actual = a.sketchDelete('XXX')
   let expected = {
-    type: 'SKETCHES_INSTANCE_DELETE',
+    type: 'SKETCH_DELETE',
     payload: {
       id: 'XXX'
     }
@@ -25,59 +26,15 @@ test('(Action Creator) sketchesInstanceDelete', (t) => {
   t.end()
 })
 
-test('(Action Creator) sketchesParamValueUpdate', (t) => {
-  let actual = a.sketchesParamValueUpdate('01', 0.5)
+test('(Action Creator) sketchesReplaceAll', (t) => {
+  const sketches = ['foo', 'bar']
+  let actual = a.sketchesReplaceAll(sketches)
   let expected = {
-    type: 'SKETCHES_PARAM_VALUE_UPDATE',
+    type: 'SKETCHES_REPLACE_ALL',
     payload: {
-      id: '01',
-      value: 0.5
+      sketches
     }
   }
-  t.deepEqual(actual, expected, 'Creates action to update param')
-  t.end()
-})
-
-test('(Action Creator) sketchesModulesUpdate', (t) => {
-  const modules = {
-    cubey: {
-      defaultTitle: 'Cubey',
-      params: [
-        {
-          key: 'rotX',
-          title: 'Rotation X',
-          defaultValue: 0.5
-        },
-        {
-          key: 'rotY',
-          title: 'Rotation Y',
-          defaultValue: 0.5
-        }
-      ]
-    },
-    swirly: {
-      defaultTitle: 'Swirly',
-      params: [
-        {
-          key: 'swirlRate',
-          title: 'Swirl Rate',
-          defaultValue: 0.1
-        },
-        {
-          key: 'scale',
-          title: 'Scale',
-          defaultValue: 0.1
-        }
-      ]
-    }
-  }
-  let actual = a.sketchesModulesUpdate(modules)
-  let expected = {
-    type: 'SKETCHES_MODULES_UPDATE',
-    payload: {
-      modules
-    }
-  }
-  t.deepEqual(actual, expected, 'Creates action to update available modules')
+  t.deepEqual(actual, expected, 'Creates action to replace all sketches')
   t.end()
 })

@@ -18,13 +18,13 @@ test('(Saga) watchSketches', (t) => {
   const generator = watchSketches()
   t.deepEqual(
     generator.next().value,
-    takeEvery('SKETCHES_INSTANCE_CREATE', handleAddSketch),
+    takeEvery('SKETCH_CREATE', handleAddSketch),
     'SKETCHES_INSTANCE_CREATE'
   )
 
   t.deepEqual(
     generator.next().value,
-    takeEvery('SKETCHES_INSTANCE_DELETE', handleRemoveSketch),
+    takeEvery('SKETCH_DELETE', handleRemoveSketch),
     'SKETCHES_INSTANCE_DELETE'
   )
 
@@ -39,20 +39,15 @@ test('(Saga) watchSketches', (t) => {
 test('(Saga) handleAddSketch', (t) => {
   const generator = handleAddSketch({
     payload: {
-      moduleId: 'cubey'
+      id: 'XXX',
+      sketch: {
+        moduleId: 'cubey'
+      }
     }
   })
 
   t.deepEqual(
     generator.next().value,
-    select(getNewestSketchId),
-    '1. Get newest sketch id'
-  )
-
-  const sketchId = 'XXX'
-
-  t.deepEqual(
-    generator.next(sketchId).value,
     apply(engine, engine.addSketch, ['XXX', 'cubey']),
     '2. Add sketch'
   )

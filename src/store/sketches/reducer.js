@@ -1,81 +1,22 @@
-import uid from 'uid'
 import _ from 'lodash'
 
-const defaultState = {
-  modules: {},
-  params: {},
-  instances: {}
-}
+const defaultState = {}
 
 const sketchesReducer = (state = defaultState, action) => {
   const p = action.payload
 
   switch (action.type) {
-    case 'SKETCHES_MODULES_UPDATE': {
+    case 'SKETCH_CREATE': {
       return {
         ...state,
-        modules: p.modules
+        [p.id] : p.sketch
       }
     }
-    case 'SKETCHES_INSTANCE_CREATE': {
-      const sketchId = uid()
-      const module = state.modules[p.moduleId]
-
-      let params = state.params
-      let paramIds = []
-
-      module.params.forEach(param => {
-        const id = uid()
-        paramIds.push(id)
-        params = {
-          ...params,
-          [id]: {
-            title: param.title,
-            value: param.defaultValue,
-            key: param.key,
-            id
-          }
-        }
-      })
-
-      return {
-        ...state,
-        instances: {
-          ...state.instances,
-          [sketchId] : {
-            title: module.defaultTitle,
-            moduleId: p.moduleId,
-            paramIds
-          }
-        },
-        params
-      }
+    case 'SKETCH_DELETE': {
+      return _.omit(state, [p.id])
     }
-    case 'SKETCHES_INSTANCE_DELETE': {
-      let paramIds = state.instances[p.id].paramIds
-      return {
-        ...state,
-        params: _.omit(state.params, paramIds),
-        instances: _.omit(state.instances, [p.id])
-      }
-    }
-    case 'SKETCHES_PARAM_VALUE_UPDATE':
-      return {
-        ...state,
-        params: {
-          ...state.params,
-          [p.id]: {
-            ...state.params[p.id],
-            value: p.value
-          }
-        }
-      }
-    case 'PROJECT_LOAD_SUCCESS': {
-      return {
-        ...state,
-        params: p.data.sketches.params,
-        instances: p.data.sketches.instances
-      }
+    case 'SKETCHES_REPLACE_ALL': {
+      return p.sketches
     }
     default:
       return state

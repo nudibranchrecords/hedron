@@ -7,5 +7,5 @@ const mapStateToProps = (state, ownProps) => ({
 })
 
 export default connect(
-  mapStateToProps, null
+  mapStateToProps, null, null, { pure: false }
 )(AudioAnalyzer)

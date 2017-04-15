@@ -1,7 +1,7 @@
 export const getModules = (state) => {
-  return Object.keys(state.sketches.modules).map((id) => (
+  return Object.keys(state.availableModules).map((id) => (
     {
-      title: state.sketches.modules[id].defaultTitle,
+      title: state.availableModules[id].defaultTitle,
       id
     }
   ))

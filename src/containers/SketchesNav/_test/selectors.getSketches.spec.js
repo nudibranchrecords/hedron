@@ -4,13 +4,11 @@ import { getSketches } from '../selectors'
 test('(Selector) getSketches', (t) => {
   const state = {
     sketches: {
-      instances: {
-        foo: {
-          title: 'Foo'
-        },
-        bar: {
-          title: 'Bar'
-        }
+      foo: {
+        title: 'Foo'
+      },
+      bar: {
+        title: 'Bar'
       }
     }
   }

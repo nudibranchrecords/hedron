@@ -9,12 +9,10 @@ test('(Selector) inputs - getAssignedParams', (t) => {
         audio_0: ['XX', 'YY', 'ZZ']
       }
     },
-    sketches: {
-      params: {
-        XX: { foo: 1 },
-        YY: { foo: 2 },
-        ZZ: { foo: 3 }
-      }
+    params: {
+      XX: { foo: 1 },
+      YY: { foo: 2 },
+      ZZ: { foo: 3 }
     }
   }
   deepFreeze(state)
@@ -38,9 +36,7 @@ test('(Selector) inputs - getAssignedParams - Params dont exist', (t) => {
         audio_0: ['XX', 'YY', 'ZZ']
       }
     },
-    sketches: {
-      params: {}
-    }
+    params: {}
   }
 
   t.throws(getAssignedParams.bind(null, state, 'audio_0'), Error, 'Throws an error')
