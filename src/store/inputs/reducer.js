@@ -1,15 +1,19 @@
 const defaultState = {
-  values: {
-    audio_0: 0,
-    audio_1: 0,
-    audio_2: 0,
-    audio_3: 0
+  audio_0: {
+    value: 0,
+    assignedParamIds: []
   },
-  assignedParamIds: {
-    audio_0: ['qater7l'],
-    audio_1: [],
-    audio_2: [],
-    audio_3: []
+  audio_1: {
+    value: 0,
+    assignedParamIds: []
+  },
+  audio_2: {
+    value: 0,
+    assignedParamIds: []
+  },
+  audio_3: {
+    value: 0,
+    assignedParamIds: []
   }
 }
 
@@ -19,8 +23,20 @@ const inputsReducer = (state = defaultState, action) => {
   switch (action.type) {
     case 'INPUT_FIRED': {
       // We are mutating state on purpose here!!
-      state.values[p.inputId] = p.value
+      state[p.inputId].value = p.value
       return state
+    }
+    case 'INPUTS_REPLACE_ALL': {
+      return p.inputs
+    }
+    case 'INPUT_ASSIGNED_PARAM_ADD': {
+      return {
+        ...state,
+        [p.inputId]: {
+          ...state[p.inputId],
+          assignedParamIds: [...state[p.inputId].assignedParamIds, p.paramId]
+        }
+      }
     }
     default:
       return state

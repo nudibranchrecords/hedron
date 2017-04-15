@@ -4,6 +4,7 @@ import { getProjectData, getProjectFilepath } from './selectors'
 import { projectLoadSuccess } from './actions'
 import { sketchesReplaceAll } from '../sketches/actions'
 import { paramsReplaceAll } from '../params/actions'
+import { inputsReplaceAll } from '../inputs/actions'
 
 export function* saveProject () {
   const data = yield select(getProjectData)

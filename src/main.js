@@ -22,7 +22,7 @@ stats.dom.setAttribute('style', '')
 
 const composeEnhancers = composeWithDevTools({
   realtime: true,
-  actionsBlacklist: ['INPUT_FIRED']
+  actionsBlacklist: ['INPUT_FIRED', 'PARAM_VALUE_UPDATE']
 })
 
 const sagaMiddleware = createSagaMiddleware()

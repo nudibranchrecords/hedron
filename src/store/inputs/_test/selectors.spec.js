@@ -5,8 +5,8 @@ import deepFreeze from 'deep-freeze'
 test('(Selector) inputs - getAssignedParams', (t) => {
   const state = {
     inputs: {
-      assignedParamIds: {
-        audio_0: ['XX', 'YY', 'ZZ']
+      audio_0: {
+        assignedParamIds: ['XX', 'YY', 'ZZ']
       }
     },
     params: {

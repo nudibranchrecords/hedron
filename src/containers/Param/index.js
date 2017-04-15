@@ -1,5 +1,6 @@
 import { connect } from 'react-redux'
 import Param from '../../components/Param'
+import { inputAssignedParamAdd } from '../../store/inputs/actions'
 
 const mapStateToProps = (state, ownProps) => {
   return {
@@ -7,9 +8,17 @@ const mapStateToProps = (state, ownProps) => {
   }
 }
 
+const mapDispatchToProps = (dispatch, ownProps) => {
+  return {
+    onIncomingInputChange: (event) => {
+      dispatch(inputAssignedParamAdd(event.target.value, ownProps.paramId))
+    }
+  }
+}
+
 const ParamContainer = connect(
   mapStateToProps,
-  null
+  mapDispatchToProps
 )(Param)
 
 export default ParamContainer

@@ -1,4 +1,4 @@
 export const getBands = (state) => {
-  const vals = state.inputs.values
-  return [vals.audio_0, vals.audio_1, vals.audio_2, vals.audio_3]
+  const inputs = state.inputs
+  return [inputs.audio_0.value, inputs.audio_1.value, inputs.audio_2.value, inputs.audio_3.value]
 }

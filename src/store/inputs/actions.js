@@ -4,3 +4,17 @@ export function inputFired (inputId, value) {
     payload: { inputId, value }
   }
 }
+
+export function inputsReplaceAll (inputs) {
+  return {
+    type: 'INPUTS_REPLACE_ALL',
+    payload: { inputs }
+  }
+}
+
+export function inputAssignedParamAdd (inputId, paramId) {
+  return {
+    type: 'INPUT_ASSIGNED_PARAM_ADD',
+    payload: { inputId, paramId }
+  }
+}
