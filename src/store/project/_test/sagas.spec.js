@@ -7,6 +7,7 @@ import { save, load } from '../../../utils/file'
 import { projectLoadSuccess } from '../actions'
 import { sketchesReplaceAll } from '../../sketches/actions'
 import { paramsReplaceAll } from '../../params/actions'
+import { inputsReplaceAll } from '../../inputs/actions'
 
 test('(Saga) watchProject', (t) => {
   const generator = watchProject()
@@ -87,8 +88,14 @@ test('(Saga) loadProject', (t) => {
 
   t.deepEqual(
     generator.next().value,
+    put(inputsReplaceAll(projectData.inputs)),
+    '5. Dispatches inputsReplaceAll'
+  )
+
+  t.deepEqual(
+    generator.next().value,
     put(projectLoadSuccess(projectData)),
-    '5. Fires PROJECT_LOAD_SUCCESS with data'
+    '6. Fires PROJECT_LOAD_SUCCESS with data'
   )
 
   t.equal(generator.next().done, true, 'Generator ends')
