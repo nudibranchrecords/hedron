@@ -2,7 +2,7 @@ import 'babel-polyfill'
 import test from 'tape'
 import { apply, select, takeEvery } from 'redux-saga/effects'
 import proxyquire from 'proxyquire'
-import { getNewestSketchId, getAllSketches } from '../selectors'
+import { getAllSketches } from '../selectors'
 
 proxyquire.noCallThru()
 
