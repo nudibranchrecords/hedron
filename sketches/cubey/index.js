@@ -5,19 +5,51 @@ class Cubey extends Sketch {
 
   constructor () {
     super()
+    const material = new THREE.MeshBasicMaterial({ wireframe: true })
 
-    let material, geometry
-    material = new THREE.MeshBasicMaterial({ wireframe: true })
-    geometry = new THREE.BoxGeometry(800, 800, 800)
-    this.cube = new THREE.Mesh(geometry, material)
+    const geoms = [
+      new THREE.BoxGeometry(800, 800, 800),
+      new THREE.OctahedronGeometry(800),
+      new THREE.TetrahedronGeometry(800),
+      new THREE.DodecahedronGeometry(800),
+      new THREE.IcosahedronGeometry(800)
+    ]
 
-    this.root.add(this.cube)
+    this.meshes = []
+
+    this.group = new THREE.Object3D()
+
+    geoms.forEach(geom => {
+      const mesh = new THREE.Mesh(geom, material)
+      this.meshes.push(mesh)
+      this.group.add(mesh)
+    })
+
+    this.currentMeshIndex = 0
+
+    this.root.add(this.group)
+
+    this.shapeShift()
+  }
+
+  shapeShift () {
+    if (this.currentMeshIndex > this.meshes.length - 1) this.currentMeshIndex = 0
+
+    this.meshes.forEach((mesh, index) => {
+      if (this.currentMeshIndex !== index) {
+        mesh.visible = false
+      } else {
+        mesh.visible = true
+      }
+    })
+
+    this.currentMeshIndex ++
   }
 
   update (params) {
-    this.cube.rotation.x += params.rotX
-    this.cube.rotation.y += params.rotY
-    this.cube.scale.set(params.scale, params.scale, params.scale)
+    this.group.rotation.x += params.rotX
+    this.group.rotation.y += params.rotY
+    this.group.scale.set(params.scale, params.scale, params.scale)
   }
 }
 

@@ -4,14 +4,22 @@ import sinon from 'sinon'
 
 proxyquire.noCallThru()
 
-function DogModule () { this.root = 'dogRoot' }
-function CatModule () { this.root = 'catRoot' }
-function FrogModule () { this.root = 'frogRoot' }
-
 const spies = {
   worldAdd: sinon.spy(),
-  worldRemove: sinon.spy()
+  worldRemove: sinon.spy(),
+  meow: sinon.spy()
 }
+
+function DogModule () {
+  this.root = 'dogRoot'
+}
+
+function CatModule () {
+  this.root = 'catRoot'
+  this.meow = spies.meow
+}
+
+function FrogModule () { this.root = 'frogRoot' }
 
 test('Engine', (t) => {
   let expected
@@ -172,6 +180,10 @@ test('Engine', (t) => {
     const spyCall = spies.worldRemove.getCall(index + 2)
     t.equal(spyCall.args[0], sketches1[sketchId].moduleId + 'Root', 'Adds correct root')
   })
+
+  engine.fireShot('333', 'meow')
+
+  t.equal(spies.meow.called, true, 'Shot fired')
 
   t.end()
 })

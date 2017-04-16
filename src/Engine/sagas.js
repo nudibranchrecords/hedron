@@ -17,8 +17,13 @@ export function* handleInitiateSketches () {
   yield apply(engine, engine.initiateSketches, [allSketches])
 }
 
+export function* handleShotFired (action) {
+  yield apply(engine, engine.fireShot, [action.payload.sketchId, action.payload.method])
+}
+
 export function* watchSketches () {
   yield takeEvery('SKETCH_CREATE', handleAddSketch)
   yield takeEvery('SKETCH_DELETE', handleRemoveSketch)
   yield takeEvery('PROJECT_LOAD_SUCCESS', handleInitiateSketches)
+  yield takeEvery('SHOT_FIRED', handleShotFired)
 }

@@ -5,6 +5,7 @@ import { projectLoadSuccess } from './actions'
 import { sketchesReplaceAll } from '../sketches/actions'
 import { paramsReplaceAll } from '../params/actions'
 import { inputsReplaceAll } from '../inputs/actions'
+import { shotsReplaceAll } from '../shots/actions'
 
 export function* saveProject () {
   const data = yield select(getProjectData)
@@ -17,6 +18,7 @@ export function* loadProject () {
   const projectData = yield call(load, filepath)
   yield put(sketchesReplaceAll(projectData.sketches))
   yield put(paramsReplaceAll(projectData.params))
+  yield put(shotsReplaceAll(projectData.shots))
   yield put(inputsReplaceAll(projectData.inputs))
   yield put(projectLoadSuccess(projectData))
 }

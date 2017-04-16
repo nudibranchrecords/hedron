@@ -19,7 +19,8 @@ module.exports = {
   ],
   shots: [
     {
-      method: 'shapeShift'
+      method: 'shapeShift',
+      title: 'Shape Shift'
     }
   ]
 }

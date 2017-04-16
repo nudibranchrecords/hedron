@@ -1,5 +1,5 @@
 import test from 'tape'
-import { getModule, getSketchParamIds } from '../selectors'
+import { getModule, getSketchParamIds, getSketchShotIds } from '../selectors'
 import deepFreeze from 'deep-freeze'
 
 test('(Selector) scene - getModule', (t) => {
@@ -37,5 +37,26 @@ test('(Selector) scene - getSketchParamIds', (t) => {
   const actual = getSketchParamIds(state, 'XXX')
 
   t.deepEqual(actual, expected, 'Returns array of param Ids')
+  t.end()
+})
+
+test('(Selector) scene - getSketchShotIds', (t) => {
+  const state = {
+    sketches: {
+      XXX: {
+        shotIds: ['P1', 'P2', 'P3']
+      },
+      YYY: {
+        shotIds: ['P4', 'P5', 'P6']
+      }
+    }
+  }
+  deepFreeze(state)
+
+  const expected = ['P1', 'P2', 'P3']
+
+  const actual = getSketchShotIds(state, 'XXX')
+
+  t.deepEqual(actual, expected, 'Returns array of shot Ids')
   t.end()
 })

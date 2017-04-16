@@ -2,9 +2,10 @@ import 'babel-polyfill'
 import test from 'tape'
 import { call, select, takeEvery, put } from 'redux-saga/effects'
 import { watchScene, handleSketchCreate, handleSketchDelete } from '../sagas'
-import { getModule, getSketchParamIds } from '../selectors'
+import { getModule, getSketchParamIds, getSketchShotIds } from '../selectors'
 import { sketchCreate, sketchDelete } from '../../sketches/actions'
 import { paramCreate, paramDelete } from '../../params/actions'
+import { shotCreate, shotDelete } from '../../shots/actions'
 
 import uid from 'uid'
 // import { getProjectData, getProjectFilepath } from '../selectors'
@@ -33,6 +34,14 @@ test('(Saga) handleSketchCreate', (t) => {
   })
 
   t.deepEqual(
+    generator.next().value,
+    call(uid),
+    'Generate unique ID for sketch'
+  )
+
+  uniqueId = 'SKETCHID'
+
+  t.deepEqual(
     generator.next(uniqueId).value,
     select(getModule, 'cubey'),
     'Get module object'
@@ -50,6 +59,16 @@ test('(Saga) handleSketchCreate', (t) => {
         title: 'Rotate Y',
         defaultValue: 0.5,
         key: 'RotY'
+      }
+    ],
+    shots: [
+      {
+        title: 'Shapeshift',
+        method: 'shapeshift'
+      },
+      {
+        title: 'Explode',
+        method: 'explode'
       }
     ]
   }
@@ -93,19 +112,48 @@ test('(Saga) handleSketchCreate', (t) => {
   )
 
   t.deepEqual(
-    generator.next().value,
+    generator.next(moduleObj).value,
     call(uid),
-    'Generate unique ID for sketch'
+    'Generate unique ID for shot'
   )
 
-  uniqueId = 'XXX'
+  uniqueId = 'SHOT1'
 
   t.deepEqual(
     generator.next(uniqueId).value,
-    put(sketchCreate(uniqueId, {
+    put(shotCreate(uniqueId, {
+      title: 'Shapeshift',
+      method: 'shapeshift',
+      sketchId: 'SKETCHID'
+    })),
+    'Dispatch shot create action'
+  )
+
+  t.deepEqual(
+    generator.next(moduleObj).value,
+    call(uid),
+    'Generate unique ID for shot'
+  )
+
+  uniqueId = 'SHOT2'
+
+  t.deepEqual(
+    generator.next(uniqueId).value,
+    put(shotCreate(uniqueId, {
+      title: 'Explode',
+      method: 'explode',
+      sketchId: 'SKETCHID'
+    })),
+    'Dispatch shot create action'
+  )
+
+  t.deepEqual(
+    generator.next(uniqueId).value,
+    put(sketchCreate('SKETCHID', {
       title: 'Cubey Boy',
       moduleId: 'cubey',
-      paramIds: ['PARAM1', 'PARAM2']
+      paramIds: ['PARAM1', 'PARAM2'],
+      shotIds: ['SHOT1', 'SHOT2']
     })),
     'Dispatch sketch create action'
   )
@@ -140,6 +188,26 @@ test('(Saga) handleSketchDelete', (t) => {
     generator.next().value,
     put(paramDelete('P2')),
     'Dispatch param delete action'
+  )
+
+  t.deepEqual(
+    generator.next().value,
+    select(getSketchShotIds, 'XXX'),
+    'Get shot Ids'
+  )
+
+  const shotIds = ['S1', 'S2']
+
+  t.deepEqual(
+    generator.next(shotIds).value,
+    put(shotDelete('S1')),
+    'Dispatch shot delete action'
+  )
+
+  t.deepEqual(
+    generator.next().value,
+    put(shotDelete('S2')),
+    'Dispatch shot delete action'
   )
 
   t.deepEqual(

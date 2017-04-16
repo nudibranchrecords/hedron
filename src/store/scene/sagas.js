@@ -1,14 +1,17 @@
 import { call, select, takeEvery, put } from 'redux-saga/effects'
-import { getModule, getSketchParamIds } from './selectors'
+import { getModule, getSketchParamIds, getSketchShotIds } from './selectors'
 import { sketchCreate, sketchDelete } from '../sketches/actions'
 import { paramCreate, paramDelete } from '../params/actions'
+import { shotCreate, shotDelete } from '../shots/actions'
 import uid from 'uid'
 
 export function* handleSketchCreate (action) {
   let uniqueId
   const moduleId = action.payload.moduleId
+  const uniqueSketchId = yield call(uid)
   const module = yield select(getModule, moduleId)
   const paramIds = []
+  const shotIds = []
 
   for (let i = 0; i < module.params.length; i++) {
     const param = module.params[i]
@@ -22,11 +25,22 @@ export function* handleSketchCreate (action) {
     }))
   }
 
-  uniqueId = yield call(uid)
-  yield put(sketchCreate(uniqueId, {
+  for (let i = 0; i < module.shots.length; i++) {
+    const shot = module.shots[i]
+    uniqueId = yield call(uid)
+    shotIds.push(uniqueId)
+    yield put(shotCreate(uniqueId, {
+      title: shot.title,
+      method: shot.method,
+      sketchId: uniqueSketchId
+    }))
+  }
+
+  yield put(sketchCreate(uniqueSketchId, {
     title: module.defaultTitle,
     moduleId: moduleId,
-    paramIds
+    paramIds,
+    shotIds
   }))
 }
 
@@ -36,6 +50,12 @@ export function* handleSketchDelete (action) {
 
   for (let i = 0; i < paramIds.length; i++) {
     yield put(paramDelete(paramIds[i]))
+  }
+
+  const shotIds = yield select(getSketchShotIds, id)
+
+  for (let i = 0; i < shotIds.length; i++) {
+    yield put(shotDelete(shotIds[i]))
   }
 
   yield put(sketchDelete(id))

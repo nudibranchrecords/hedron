@@ -39,6 +39,14 @@ class Engine {
     })
   }
 
+  fireShot (sketchId, method) {
+    this.sketches.forEach((sketch) => {
+      if (sketch.id === sketchId) {
+        sketch.module[method]()
+      }
+    })
+  }
+
   initiateSketches (sketches) {
     // Remove all sketches from world
     this.sketches.forEach((sketch, index) => {
@@ -62,7 +70,6 @@ class Engine {
 
       const state = store.getState()
 
-      // this.sketches = checkSketches(this.sketches, state)
       this.sketches.forEach(sketch => sketch.module.update(
         getSketchParams(state, sketch.id)
       ))

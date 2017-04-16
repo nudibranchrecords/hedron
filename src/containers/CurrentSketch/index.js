@@ -7,7 +7,8 @@ const mapStateToProps = (state, ownProps) => {
   return {
     title: state.sketches[sketchId].title,
     params: state.sketches[sketchId].paramIds,
-    sketchId: sketchId
+    sketchId: sketchId,
+    shots: state.sketches[sketchId].shotIds
   }
 }
 

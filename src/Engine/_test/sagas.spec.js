@@ -10,7 +10,10 @@ const engine = proxyquire('../index', {
   'sketches' : {}
 }).default
 
-const { watchSketches, handleAddSketch, handleRemoveSketch, handleInitiateSketches } = proxyquire('../sagas', {
+const {
+  watchSketches, handleAddSketch, handleRemoveSketch,
+  handleInitiateSketches, handleShotFired
+} = proxyquire('../sagas', {
   'sketches' : []
 })
 
@@ -32,6 +35,12 @@ test('(Saga) watchSketches', (t) => {
     generator.next().value,
     takeEvery('PROJECT_LOAD_SUCCESS', handleInitiateSketches),
     'PROJECT_LOAD_SUCCESS'
+  )
+
+  t.deepEqual(
+    generator.next().value,
+    takeEvery('SHOT_FIRED', handleShotFired),
+    'SHOT_FIRED'
   )
   t.end()
 })
@@ -86,6 +95,23 @@ test('(Saga) handleInitiateSketches', (t) => {
     generator.next(sketches).value,
      apply(engine, engine.initiateSketches, [sketches]),
     '2. Initiate them'
+  )
+
+  t.end()
+})
+
+test('(Saga) handleShotFired', (t) => {
+  const generator = handleShotFired({
+    payload: {
+      sketchId: 'XXX',
+      method: 'meow'
+    }
+  })
+
+  t.deepEqual(
+    generator.next().value,
+    apply(engine, engine.fireShot, ['XXX', 'meow']),
+    '1. Fires shot'
   )
 
   t.end()
