@@ -13,9 +13,9 @@ const sketches = proxyquire('../sketches', {
   [path.resolve('foo/bar/dog')]: 'dogModule',
   [path.resolve('foo/bar/cat')]: 'catModule',
   [path.resolve('foo/bar/frog')]: 'frogModule',
-  [path.resolve('foo/bar/dog/params.js')]: 'dogMeta',
-  [path.resolve('foo/bar/cat/params.js')]: 'catMeta',
-  [path.resolve('foo/bar/frog/params.js')]: 'frogMeta'
+  [path.resolve('foo/bar/dog/config.js')]: 'dogMeta',
+  [path.resolve('foo/bar/cat/config.js')]: 'catMeta',
+  [path.resolve('foo/bar/frog/config.js')]: 'frogMeta'
 })
 
 test('(External) sketches', (t) => {
@@ -23,15 +23,15 @@ test('(External) sketches', (t) => {
   const expected = {
     dog: {
       Module: 'dogModule',
-      params: 'dogMeta'
+      config: 'dogMeta'
     },
     cat: {
       Module: 'catModule',
-      params: 'catMeta'
+      config: 'catMeta'
     },
     frog: {
       Module: 'frogModule',
-      params: 'frogMeta'
+      config: 'frogMeta'
     }
   }
   const actual = sketches

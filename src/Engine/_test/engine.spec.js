@@ -20,15 +20,15 @@ test('Engine', (t) => {
     sketches: {
       dog: {
         Module: DogModule,
-        params: 'dogMeta'
+        config: 'dogMeta'
       },
       cat: {
         Module: CatModule,
-        params: 'catMeta'
+        config: 'catMeta'
       },
       frog: {
         Module: FrogModule,
-        params: 'frogMeta'
+        config: 'frogMeta'
       }
     },
     './world': {

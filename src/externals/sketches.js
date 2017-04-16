@@ -9,7 +9,7 @@ glob.sync('../sketches/*').forEach(function (file) {
   const name = path.parse(file).name
   all[name] = {
     Module: require(path.resolve(file)),
-    params: require(path.resolve(file + '/params.js'))
+    config: require(path.resolve(file + '/config.js'))
   }
 })
 

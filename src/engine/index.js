@@ -8,11 +8,8 @@ class Engine {
     this.modules = {}
 
     Object.keys(allModules).forEach((key) => {
-      const params = allModules[key].params
-      this.modules[key] = {
-        defaultTitle: params.defaultTitle,
-        params: params.params
-      }
+      const config = allModules[key].config
+      this.modules[key] = config
     })
 
     this.sketches = []
