@@ -29,12 +29,22 @@ const inputsReducer = (state = defaultState, action) => {
     case 'INPUTS_REPLACE_ALL': {
       return p.inputs
     }
-    case 'INPUT_ASSIGNED_PARAM_ADD': {
+    case 'INPUT_ASSIGNED_PARAM_CREATE': {
       return {
         ...state,
         [p.inputId]: {
           ...state[p.inputId],
           assignedParamIds: [...state[p.inputId].assignedParamIds, p.paramId]
+        }
+      }
+    }
+    case 'INPUT_ASSIGNED_PARAM_DELETE': {
+      return {
+        ...state,
+        [p.inputId]: {
+          ...state[p.inputId],
+          assignedParamIds: state[p.inputId].assignedParamIds
+            .filter((id) => id !== p.paramId)
         }
       }
     }

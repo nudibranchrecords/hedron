@@ -23,6 +23,15 @@ const sketchesReducer = (state = defaultState, action) => {
     case 'PARAMS_REPLACE_ALL': {
       return p.params
     }
+    case 'R_PARAM_INPUT_UPDATE': {
+      return {
+        ...state,
+        [p.paramId] : {
+          ...state[p.paramId],
+          inputId: p.inputId
+        }
+      }
+    }
     default:
       return state
   }

@@ -93,7 +93,7 @@ test('(Reducer) inputsReducer - Replaces all on INPUTS_REPLACE_ALL', (t) => {
   t.end()
 })
 
-test('(Reducer) inputsReducer - Assigns param on INPUT_ASSIGNED_PARAM_ADD', (t) => {
+test('(Reducer) inputsReducer - Adds param on INPUT_ASSIGNED_PARAM_CREATE', (t) => {
   let actual, expectedState
 
   const originalState = {
@@ -117,7 +117,7 @@ test('(Reducer) inputsReducer - Assigns param on INPUT_ASSIGNED_PARAM_ADD', (t) 
   }
 
   actual = inputsReducer(originalState, {
-    type: 'INPUT_ASSIGNED_PARAM_ADD',
+    type: 'INPUT_ASSIGNED_PARAM_CREATE',
     payload: {
       inputId: 'audio_0',
       paramId: 'XX'
@@ -136,7 +136,7 @@ test('(Reducer) inputsReducer - Assigns param on INPUT_ASSIGNED_PARAM_ADD', (t) 
   }
 
   actual = inputsReducer(actual, {
-    type: 'INPUT_ASSIGNED_PARAM_ADD',
+    type: 'INPUT_ASSIGNED_PARAM_CREATE',
     payload: {
       inputId: 'audio_1',
       paramId: 'YY'
@@ -155,10 +155,65 @@ test('(Reducer) inputsReducer - Assigns param on INPUT_ASSIGNED_PARAM_ADD', (t) 
   }
 
   actual = inputsReducer(actual, {
-    type: 'INPUT_ASSIGNED_PARAM_ADD',
+    type: 'INPUT_ASSIGNED_PARAM_CREATE',
     payload: {
       inputId: 'audio_1',
       paramId: 'ZZ'
+    }
+  })
+
+  t.deepEqual(actual, expectedState)
+
+  t.end()
+})
+
+test('(Reducer) inputsReducer - Deletes param on INPUT_ASSIGNED_PARAM_DELETE', (t) => {
+  let actual, expectedState
+
+  const originalState = {
+    audio_0: {
+      assignedParamIds: ['XX']
+    },
+    audio_1: {
+      assignedParamIds: ['YY', 'ZZ']
+    }
+  }
+
+  deepFreeze(originalState)
+
+  expectedState = {
+    audio_0: {
+      assignedParamIds: ['XX']
+    },
+    audio_1: {
+      assignedParamIds: ['ZZ']
+    }
+  }
+
+  actual = inputsReducer(originalState, {
+    type: 'INPUT_ASSIGNED_PARAM_DELETE',
+    payload: {
+      inputId: 'audio_1',
+      paramId: 'YY'
+    }
+  })
+
+  t.deepEqual(actual, expectedState)
+
+  expectedState = {
+    audio_0: {
+      assignedParamIds: []
+    },
+    audio_1: {
+      assignedParamIds: ['ZZ']
+    }
+  }
+
+  actual = inputsReducer(actual, {
+    type: 'INPUT_ASSIGNED_PARAM_DELETE',
+    payload: {
+      inputId: 'audio_0',
+      paramId: 'XX'
     }
   })
 

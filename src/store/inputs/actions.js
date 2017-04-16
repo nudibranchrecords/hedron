@@ -12,9 +12,16 @@ export function inputsReplaceAll (inputs) {
   }
 }
 
-export function inputAssignedParamAdd (inputId, paramId) {
+export function inputAssignedParamCreate (inputId, paramId) {
   return {
-    type: 'INPUT_ASSIGNED_PARAM_ADD',
+    type: 'INPUT_ASSIGNED_PARAM_CREATE',
+    payload: { inputId, paramId }
+  }
+}
+
+export function inputAssignedParamDelete (inputId, paramId) {
+  return {
+    type: 'INPUT_ASSIGNED_PARAM_DELETE',
     payload: { inputId, paramId }
   }
 }

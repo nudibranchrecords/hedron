@@ -1,17 +1,18 @@
 import { connect } from 'react-redux'
 import Param from '../../components/Param'
-import { inputAssignedParamAdd } from '../../store/inputs/actions'
+import { uParamInputUpdate } from '../../store/params/actions'
 
 const mapStateToProps = (state, ownProps) => {
   return {
-    title: state.params[ownProps.paramId].title
+    title: state.params[ownProps.paramId].title,
+    inputId: state.params[ownProps.paramId].inputId
   }
 }
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
-    onIncomingInputChange: (event) => {
-      dispatch(inputAssignedParamAdd(event.target.value, ownProps.paramId))
+    onInputChange: (event) => {
+      dispatch(uParamInputUpdate(ownProps.paramId, event.target.value))
     }
   }
 }

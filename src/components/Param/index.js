@@ -8,13 +8,13 @@ const Wrapper = styled.div`
   padding: 1rem;
 `
 
-const Sketch = ({ title, paramId, onIncomingInputChange }) => (
+const Sketch = ({ title, paramId, inputId, onInputChange }) => (
   <Wrapper>
     {title}
     <br />
     <ParamBar paramId={paramId} />
-    <select onChange={onIncomingInputChange}>
-      <option value={false}>None</option>
+    <select onChange={onInputChange} value={inputId}>
+      <option value='none'>None</option>
       <option value='audio_0'>Low</option>
       <option value='audio_1'>Low-Mid</option>
       <option value='audio_2'>Mid</option>
@@ -26,7 +26,11 @@ const Sketch = ({ title, paramId, onIncomingInputChange }) => (
 Sketch.propTypes = {
   title: React.PropTypes.string.isRequired,
   paramId: React.PropTypes.string.isRequired,
-  onIncomingInputChange: React.PropTypes.func.isRequired
+  inputId: React.PropTypes.oneOfType([
+    React.PropTypes.string,
+    React.PropTypes.bool
+  ]),
+  onInputChange: React.PropTypes.func.isRequired
 }
 
 export default Sketch

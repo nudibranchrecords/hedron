@@ -35,3 +35,23 @@ export function paramsReplaceAll (params) {
     }
   }
 }
+
+export function uParamInputUpdate (paramId, inputId) {
+  return {
+    type: 'U_PARAM_INPUT_UPDATE',
+    payload: {
+      paramId,
+      inputId
+    }
+  }
+}
+
+export function rParamInputUpdate (paramId, inputId) {
+  return {
+    type: 'R_PARAM_INPUT_UPDATE',
+    payload: {
+      paramId,
+      inputId
+    }
+  }
+}

@@ -1,5 +1,5 @@
 import test from 'tape'
-import { inputFired, inputsReplaceAll, inputAssignedParamAdd } from '../actions'
+import { inputFired, inputsReplaceAll, inputAssignedParamCreate, inputAssignedParamDelete } from '../actions'
 
 test('(Action Creator) inputFired', (t) => {
   let actual = inputFired('audio_0', 0.123)
@@ -27,15 +27,28 @@ test('(Action Creator) inputsReplaceAll', (t) => {
   t.end()
 })
 
-test('(Action Creator) inputAssignedParamAdd', (t) => {
-  let actual = inputAssignedParamAdd('INPUTID', 'PARAMID')
+test('(Action Creator) inputAssignedParamCreate', (t) => {
+  let actual = inputAssignedParamCreate('INPUTID', 'PARAMID')
   let expected = {
-    type: 'INPUT_ASSIGNED_PARAM_ADD',
+    type: 'INPUT_ASSIGNED_PARAM_CREATE',
     payload: {
       inputId: 'INPUTID',
       paramId: 'PARAMID'
     }
   }
   t.deepEqual(actual, expected, 'Creates action to assign a param to input')
+  t.end()
+})
+
+test('(Action Creator) inputAssignedParamDelete', (t) => {
+  let actual = inputAssignedParamDelete('INPUTID', 'PARAMID')
+  let expected = {
+    type: 'INPUT_ASSIGNED_PARAM_DELETE',
+    payload: {
+      inputId: 'INPUTID',
+      paramId: 'PARAMID'
+    }
+  }
+  t.deepEqual(actual, expected, 'Creates action to delete a param from input')
   t.end()
 })

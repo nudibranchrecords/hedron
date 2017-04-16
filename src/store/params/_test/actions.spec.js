@@ -59,3 +59,29 @@ test('(Action Creator) paramsReplaceAll', (t) => {
   t.deepEqual(actual, expected, 'Creates action to replace all params')
   t.end()
 })
+
+test('(Action Creator) uParamInputUpdate', (t) => {
+  let actual = a.uParamInputUpdate('param1', 'audio_0')
+  let expected = {
+    type: 'U_PARAM_INPUT_UPDATE',
+    payload: {
+      paramId: 'param1',
+      inputId: 'audio_0'
+    }
+  }
+  t.deepEqual(actual, expected, 'Creates action to change param input')
+  t.end()
+})
+
+test('(Action Creator) rParamInputUpdate', (t) => {
+  let actual = a.rParamInputUpdate('param1', 'audio_0')
+  let expected = {
+    type: 'R_PARAM_INPUT_UPDATE',
+    payload: {
+      paramId: 'param1',
+      inputId: 'audio_0'
+    }
+  }
+  t.deepEqual(actual, expected, 'Creates action to change param input')
+  t.end()
+})
