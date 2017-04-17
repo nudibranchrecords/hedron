@@ -5,7 +5,8 @@ import { uParamInputUpdate } from '../../store/params/actions'
 const mapStateToProps = (state, ownProps) => {
   return {
     title: state.params[ownProps.paramId].title,
-    inputId: state.params[ownProps.paramId].inputId
+    inputId: state.params[ownProps.paramId].inputId,
+    isLearning: state.midi.learning === ownProps.paramId
   }
 }
 
