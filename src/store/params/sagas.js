@@ -7,6 +7,7 @@ import { midiStartLearning } from '../midi/actions'
 export function* paramInputUpdate (action) {
   const p = action.payload
   const inputId = p.inputId !== 'none' ? p.inputId : false
+  const input = inputId ? { id: inputId } : false
 
   const oldInputId = yield select(getParamInputId, p.paramId)
 
@@ -20,7 +21,7 @@ export function* paramInputUpdate (action) {
     if (inputId) {
       yield put(inputAssignedParamCreate(inputId, p.paramId))
     }
-    yield put(rParamInputUpdate(p.paramId, inputId))
+    yield put(rParamInputUpdate(p.paramId, input))
   }
 }
 

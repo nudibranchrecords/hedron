@@ -9,8 +9,13 @@ export default (store) => {
     const val = message.data[2] / 127
 
     if (learningId) {
+      const device = message.currentTarget.name
       store.dispatch(inputAssignedParamCreate(id, learningId))
-      store.dispatch(rParamInputUpdate(learningId, id))
+      store.dispatch(rParamInputUpdate(learningId, {
+        id,
+        type: 'midi',
+        info: `${device} / ${message.data[0]} / ${message.data[1]}`
+      }))
       store.dispatch(midiStopLearning())
     } else {
       store.dispatch(inputFired(id, val))

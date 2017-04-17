@@ -8,7 +8,12 @@ const Wrapper = styled.div`
   padding: 1rem;
 `
 
-const Sketch = ({ title, paramId, inputId, onInputChange, isLearning }) => (
+const Info = styled.span`
+  font-size: 0.7rem;
+  text-transform: uppercase;
+`
+
+const Sketch = ({ title, paramId, inputId, onInputChange, isLearning, midiText }) => (
   <Wrapper>
     {title}
     <br />
@@ -23,7 +28,8 @@ const Sketch = ({ title, paramId, inputId, onInputChange, isLearning }) => (
         <option value='midi'>MIDI</option>
       </select>
     }
-
+    <br />
+    {midiText && <Info>{midiText}</Info>}
   </Wrapper>
 )
 
@@ -35,7 +41,8 @@ Sketch.propTypes = {
     React.PropTypes.bool
   ]),
   onInputChange: React.PropTypes.func.isRequired,
-  isLearning: React.PropTypes.bool
+  isLearning: React.PropTypes.bool,
+  midiText: React.PropTypes.string
 }
 
 export default Sketch

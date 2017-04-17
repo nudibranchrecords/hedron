@@ -48,7 +48,7 @@ test('(Saga) paramInputUpdate', (t) => {
 
   t.deepEqual(
     generator.next().value,
-    put(rParamInputUpdate(paramId, inputId)),
+    put(rParamInputUpdate(paramId, { id: inputId })),
     '4. Update input in param with new ID'
   )
 
@@ -112,7 +112,7 @@ test('(Saga) paramInputUpdate - old input false', (t) => {
 
   t.deepEqual(
     generator.next().value,
-    put(rParamInputUpdate(paramId, inputId)),
+    put(rParamInputUpdate(paramId, { id: inputId })),
     '3. Update input in param with new ID'
   )
 

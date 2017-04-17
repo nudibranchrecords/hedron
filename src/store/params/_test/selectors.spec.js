@@ -2,11 +2,13 @@ import test from 'tape'
 import { getParamInputId } from '../selectors'
 import deepFreeze from 'deep-freeze'
 
-test('(Selector) project - getProjectData', (t) => {
+test('(Selector) project - getParamInputId', (t) => {
   const state = {
     params: {
       XXX: {
-        inputId: 'audio_0'
+        input: {
+          id: 'audio_0'
+        }
       }
     }
   }
@@ -15,5 +17,21 @@ test('(Selector) project - getProjectData', (t) => {
   const actual = getParamInputId(state, 'XXX')
 
   t.deepEqual(actual, 'audio_0', 'Returns input id')
+  t.end()
+})
+
+test('(Selector) project - getParamInputId (no input)', (t) => {
+  const state = {
+    params: {
+      XXX: {
+        input: false
+      }
+    }
+  }
+  deepFreeze(state)
+
+  const actual = getParamInputId(state, 'XXX')
+
+  t.equal(actual, false, 'Returns false')
   t.end()
 })

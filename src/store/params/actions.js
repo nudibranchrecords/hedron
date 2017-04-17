@@ -46,12 +46,12 @@ export function uParamInputUpdate (paramId, inputId) {
   }
 }
 
-export function rParamInputUpdate (paramId, inputId) {
+export function rParamInputUpdate (paramId, input) {
   return {
     type: 'R_PARAM_INPUT_UPDATE',
     payload: {
       paramId,
-      inputId
+      input
     }
   }
 }

@@ -74,12 +74,19 @@ test('(Action Creator) uParamInputUpdate', (t) => {
 })
 
 test('(Action Creator) rParamInputUpdate', (t) => {
-  let actual = a.rParamInputUpdate('param1', 'audio_0')
+  let actual = a.rParamInputUpdate('param1', {
+    id: 'audio_0',
+    foo: 'bar'
+  })
+
   let expected = {
     type: 'R_PARAM_INPUT_UPDATE',
     payload: {
       paramId: 'param1',
-      inputId: 'audio_0'
+      input: {
+        id: 'audio_0',
+        foo: 'bar'
+      }
     }
   }
   t.deepEqual(actual, expected, 'Creates action to change param input')

@@ -270,13 +270,15 @@ test('(Reducer) paramsReducer - Updates correct param value on R_PARAM_INPUT_UPD
       title: 'Rotation X',
       key: 'rotX',
       value: 0.1,
-      inputId: 'audio_0'
+      input: {
+        id: 'audio_0'
+      }
     },
     '02': {
       title: 'Rotation Y',
       key: 'rotY',
       value: 0.2,
-      inputId: undefined
+      input: undefined
     }
   }
 
@@ -287,13 +289,17 @@ test('(Reducer) paramsReducer - Updates correct param value on R_PARAM_INPUT_UPD
       title: 'Rotation X',
       key: 'rotX',
       value: 0.1,
-      inputId: 'audio_0'
+      input: {
+        id: 'audio_0'
+      }
     },
     '02': {
       title: 'Rotation Y',
       key: 'rotY',
       value: 0.2,
-      inputId: 'audio_1'
+      input: {
+        id: 'audio_1'
+      }
     }
   }
 
@@ -301,7 +307,9 @@ test('(Reducer) paramsReducer - Updates correct param value on R_PARAM_INPUT_UPD
     type: 'R_PARAM_INPUT_UPDATE',
     payload: {
       paramId: '02',
-      inputId: 'audio_1'
+      input: {
+        id: 'audio_1'
+      }
     }
   })
 
@@ -312,13 +320,17 @@ test('(Reducer) paramsReducer - Updates correct param value on R_PARAM_INPUT_UPD
       title: 'Rotation X',
       key: 'rotX',
       value: 0.1,
-      inputId: 'audio_3'
+      input: {
+        id: 'audio_3'
+      }
     },
     '02': {
       title: 'Rotation Y',
       key: 'rotY',
       value: 0.2,
-      inputId: 'audio_1'
+      input: {
+        id: 'audio_1'
+      }
     }
   }
 
@@ -326,7 +338,9 @@ test('(Reducer) paramsReducer - Updates correct param value on R_PARAM_INPUT_UPD
     type: 'R_PARAM_INPUT_UPDATE',
     payload: {
       paramId: '01',
-      inputId: 'audio_3'
+      input: {
+        id: 'audio_3'
+      }
     }
   })
 

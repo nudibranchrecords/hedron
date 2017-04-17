@@ -28,7 +28,7 @@ const sketchesReducer = (state = defaultState, action) => {
         ...state,
         [p.paramId] : {
           ...state[p.paramId],
-          inputId: p.inputId
+          input: p.input
         }
       }
     }

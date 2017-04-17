@@ -1,2 +1,4 @@
-export const getParamInputId = (state, paramId) =>
-  state.params[paramId].inputId
+export const getParamInputId = (state, paramId) => {
+  const input = state.params[paramId].input
+  return input && input.id
+}
