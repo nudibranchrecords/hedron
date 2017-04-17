@@ -5,12 +5,13 @@ import { projectError } from '../project/actions'
 
 export function* handleInput (action) {
   const p = action.payload
+  const value = Math.round(p.value * 1000) / 1000
 
   try {
     const params = yield select(getAssignedParams, p.inputId)
 
     for (let i = 0; i < params.length; i++) {
-      yield put(paramValueUpdate(params[i].id, p.value))
+      yield put(paramValueUpdate(params[i].id, value))
     }
   } catch (error) {
     yield put(projectError(error.message))

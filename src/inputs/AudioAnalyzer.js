@@ -26,7 +26,7 @@ class AudioInput {
         sum += this.freqs[ (i * this.levelBins) + j ]
       }
 
-      this.levelsData[ i ] = Math.round(((sum / this.levelBins) / 256) * 1000) / 1000
+      this.levelsData[ i ] = (sum / this.levelBins) / 256
     }
 
     return this.levelsData
