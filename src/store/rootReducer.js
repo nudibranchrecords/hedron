@@ -4,6 +4,7 @@ import projectReducer from './project/reducer'
 import inputsReducer from './inputs/reducer'
 import paramsReducer from './params/reducer'
 import shotsReducer from './shots/reducer'
+import midiReducer from './midi/reducer'
 import availableModulesReducer from './availableModules/reducer'
 
 const rootReducer = combineReducers({
@@ -12,7 +13,8 @@ const rootReducer = combineReducers({
   sketches: sketchesReducer,
   project: projectReducer,
   inputs: inputsReducer,
-  shots: shotsReducer
+  shots: shotsReducer,
+  midi: midiReducer
 })
 
 export default rootReducer

@@ -5,6 +5,7 @@ import { watchParams, paramInputUpdate } from '../sagas'
 import { getParamInputId } from '../selectors'
 import { rParamInputUpdate } from '../actions'
 import { inputAssignedParamDelete, inputAssignedParamCreate } from '../../inputs/actions'
+import { midiStartLearning } from '../../midi/actions'
 
 test('(Saga) watchParams', (t) => {
   const generator = watchParams()
@@ -12,6 +13,8 @@ test('(Saga) watchParams', (t) => {
     generator.next().value,
     takeEvery('U_PARAM_INPUT_UPDATE', paramInputUpdate)
   )
+
+  t.equal(generator.next().done, true, 'Generator ends')
   t.end()
 })
 
@@ -48,6 +51,40 @@ test('(Saga) paramInputUpdate', (t) => {
     put(rParamInputUpdate(paramId, inputId)),
     '4. Update input in param with new ID'
   )
+
+  t.equal(generator.next().done, true, 'Generator ends')
+  t.end()
+})
+
+test('(Saga) paramInputUpdate - midi', (t) => {
+  const inputId = 'midi'
+  const paramId = 'XXX'
+
+  const generator = paramInputUpdate({
+    payload: { paramId, inputId }
+  })
+
+  t.deepEqual(
+    generator.next().value,
+    select(getParamInputId, paramId),
+    '1. Get old input ID'
+  )
+
+  const oldInputId = 'YYY'
+
+  t.deepEqual(
+    generator.next(oldInputId).value,
+    put(inputAssignedParamDelete(oldInputId, paramId)),
+    '2. Delete param assigned to old input'
+  )
+
+  t.deepEqual(
+    generator.next().value,
+    put(midiStartLearning(paramId)),
+    '3. Start Midi Learn'
+  )
+
+  t.equal(generator.next().done, true, 'Generator ends')
   t.end()
 })
 
@@ -78,6 +115,8 @@ test('(Saga) paramInputUpdate - old input false', (t) => {
     put(rParamInputUpdate(paramId, inputId)),
     '3. Update input in param with new ID'
   )
+
+  t.equal(generator.next().done, true, 'Generator ends')
   t.end()
 })
 
@@ -108,5 +147,7 @@ test('(Saga) paramInputUpdate - new input "none"', (t) => {
     put(rParamInputUpdate(paramId, false)),
     '3. Update input in param with false'
   )
+
+  t.equal(generator.next().done, true, 'Generator ends')
   t.end()
 })

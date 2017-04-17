@@ -164,6 +164,28 @@ test('(Reducer) inputsReducer - Adds param on INPUT_ASSIGNED_PARAM_CREATE', (t) 
 
   t.deepEqual(actual, expectedState)
 
+  expectedState = {
+    audio_0: {
+      assignedParamIds: ['XX']
+    },
+    audio_1: {
+      assignedParamIds: ['YY', 'ZZ']
+    },
+    midi_XXX: {
+      assignedParamIds: ['AA']
+    }
+  }
+
+  actual = inputsReducer(actual, {
+    type: 'INPUT_ASSIGNED_PARAM_CREATE',
+    payload: {
+      inputId: 'midi_XXX',
+      paramId: 'AA'
+    }
+  })
+
+  t.deepEqual(actual, expectedState, 'Adds input and assigns param when input doesnt exist')
+
   t.end()
 })
 

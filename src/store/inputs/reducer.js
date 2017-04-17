@@ -30,11 +30,20 @@ const inputsReducer = (state = defaultState, action) => {
       return p.inputs
     }
     case 'INPUT_ASSIGNED_PARAM_CREATE': {
-      return {
-        ...state,
-        [p.inputId]: {
-          ...state[p.inputId],
-          assignedParamIds: [...state[p.inputId].assignedParamIds, p.paramId]
+      if (state[p.inputId]) {
+        return {
+          ...state,
+          [p.inputId]: {
+            ...state[p.inputId],
+            assignedParamIds: [...state[p.inputId].assignedParamIds, p.paramId]
+          }
+        }
+      } else {
+        return {
+          ...state,
+          [p.inputId]: {
+            assignedParamIds: [p.paramId]
+          }
         }
       }
     }

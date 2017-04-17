@@ -19,6 +19,7 @@ const Sketch = ({ title, paramId, inputId, onInputChange }) => (
       <option value='audio_1'>Low-Mid</option>
       <option value='audio_2'>Mid</option>
       <option value='audio_3'>High</option>
+      <option value='midi'>MIDI</option>
     </select>
   </Wrapper>
 )
