@@ -14,6 +14,7 @@ import './windows'
 
 // inputs
 import initiateAudio from './inputs/AudioInput'
+import initiateMidi from './inputs/MidiInput'
 
 import { AppContainer } from 'react-hot-loader'
 
@@ -56,4 +57,5 @@ if (module.hot) {
 }
 
 initiateAudio(store)
+initiateMidi(store)
 Engine.run(store, stats)
