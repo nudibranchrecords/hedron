@@ -3,6 +3,7 @@ import styled from 'styled-components'
 
 const Bar = styled.canvas`
   background: black;
+  cursor: pointer;
 `
 
 class ParamBar extends React.Component {
@@ -30,7 +31,8 @@ class ParamBar extends React.Component {
   }
 
   handleMouseDown (e) {
-    this.props.onChange(e.nativeEvent.offsetX / this.width)
+    this.pos = e.nativeEvent.screenX
+    this.currentValue = this.props.value
 
     const onMouseUp = (e) => {
       document.removeEventListener('mouseup', onMouseUp)
@@ -42,7 +44,9 @@ class ParamBar extends React.Component {
   }
 
   handleMouseMove (e) {
-    this.props.onChange(e.offsetX / this.width)
+    const diff = (e.screenX - this.pos) / this.width
+    const newVal = Math.max(0, Math.min(1, this.currentValue + diff))
+    this.props.onChange(newVal)
   }
 
   render () {
