@@ -9,7 +9,7 @@ const mapStateToProps = (state, ownProps) => {
     title: param.title,
     inputId: getParamInputId(state, ownProps.paramId),
     isLearning: state.midi.learning === ownProps.paramId,
-    midiText: param.input && param.input.type === 'midi' ? param.input.info : false
+    midiText: param.input && param.input.type === 'midi' ? param.input.info : undefined
   }
 }
 

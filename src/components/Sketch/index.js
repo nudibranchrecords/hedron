@@ -10,8 +10,9 @@ const Wrapper = styled.div`
   flex-direction: column;
 `
 
-const Items = styled.ul`
+const Items = styled.div`
   display: flex;
+  align-items: stretch;
 `
 
 const Bottom = styled.div`
@@ -26,17 +27,13 @@ const Sketch = ({ title, params, shots, onDeleteClick, sketchId }) => (
 
     <Items>
       {params.map((id) => (
-        <li key={id}>
-          <Param paramId={id} />
-        </li>
+        <Param paramId={id} key={id} />
       ))}
     </Items>
 
     <Items>
       {shots.map((id) => (
-        <li key={id}>
-          <Shot shotId={id} />
-        </li>
+        <Shot shotId={id} key={id} />
       ))}
     </Items>
 
