@@ -6,6 +6,7 @@ const Wrapper = styled.div`
   border: 1px solid black;
   border-radius: 10px;
   padding: 1rem;
+  margin: 0 0.5rem 0.5rem 0;
 `
 
 const Info = styled.span`

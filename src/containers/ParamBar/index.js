@@ -10,8 +10,8 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
-    onChange: (event) => {
-      dispatch(paramValueUpdate(ownProps.paramId, parseFloat(event.target.value)))
+    onChange: (value) => {
+      dispatch(paramValueUpdate(ownProps.paramId, value))
     }
   }
 }
