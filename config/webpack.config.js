@@ -46,6 +46,9 @@ module.exports = {
   externals: {
     sketches: {
       commonjs2: path.resolve(__dirname, '../src/externals/sketches.js')
+    },
+    modifiers: {
+      commonjs2: path.resolve(__dirname, '../src/externals/modifiers.js')
     }
   },
   target: 'node-webkit',

@@ -1,5 +1,5 @@
 import test from 'tape'
-import { getParamInputId } from '../selectors'
+import { getParamInputId, getDefaultModifierIds } from '../selectors'
 import deepFreeze from 'deep-freeze'
 
 test('(Selector) project - getParamInputId', (t) => {
@@ -33,5 +33,15 @@ test('(Selector) project - getParamInputId (no input)', (t) => {
   const actual = getParamInputId(state, 'XXX')
 
   t.equal(actual, false, 'Returns false')
+  t.end()
+})
+
+test('(Selector) project - getDefaultModifierIds (no input)', (t) => {
+  const state = {}
+  deepFreeze(state)
+
+  const actual = getDefaultModifierIds(state)
+
+  t.deepEqual(actual, ['gain'], 'Returns list of modifier ids')
   t.end()
 })

@@ -70,7 +70,7 @@ test('(Reducer) paramsReducer - Updates correct param value on PARAM_VALUE_UPDAT
   t.end()
 })
 
-test('(Reducer) paramsReducer - Adds param on PARAM_CREATE', (t) => {
+test('(Reducer) paramsReducer - Adds param on R_PARAM_CREATE', (t) => {
   let originalState, expectedState, actualState
 
   originalState = {
@@ -110,7 +110,7 @@ test('(Reducer) paramsReducer - Adds param on PARAM_CREATE', (t) => {
   }
 
   actualState = paramsReducer(originalState, {
-    type: 'PARAM_CREATE',
+    type: 'R_PARAM_CREATE',
     payload: {
       id: '03',
       param: {
@@ -152,7 +152,7 @@ test('(Reducer) paramsReducer - Adds param on PARAM_CREATE', (t) => {
   }
 
   actualState = paramsReducer(actualState, {
-    type: 'PARAM_CREATE',
+    type: 'R_PARAM_CREATE',
     payload: {
       id: '04',
       param: {

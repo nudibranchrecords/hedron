@@ -9,7 +9,7 @@ const sketchesReducer = (state = defaultState, action) => {
     case 'PARAM_DELETE': {
       return _.omit(state, [p.id])
     }
-    case 'PARAM_CREATE': {
+    case 'R_PARAM_CREATE': {
       return {
         ...state,
         [p.id]: p.param

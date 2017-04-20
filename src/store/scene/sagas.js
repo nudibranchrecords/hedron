@@ -1,7 +1,7 @@
 import { call, select, takeEvery, put } from 'redux-saga/effects'
 import { getModule, getSketchParamIds, getSketchShotIds } from './selectors'
 import { sketchCreate, sketchDelete } from '../sketches/actions'
-import { paramCreate, paramDelete } from '../params/actions'
+import { uParamCreate, uParamDelete } from '../params/actions'
 import { shotCreate, shotDelete } from '../shots/actions'
 import uid from 'uid'
 
@@ -17,7 +17,7 @@ export function* handleSketchCreate (action) {
     const param = module.params[i]
     uniqueId = yield call(uid)
     paramIds.push(uniqueId)
-    yield put(paramCreate(uniqueId, {
+    yield put(uParamCreate(uniqueId, {
       title: param.title,
       key: param.key,
       value: param.defaultValue,
@@ -49,7 +49,7 @@ export function* handleSketchDelete (action) {
   const paramIds = yield select(getSketchParamIds, id)
 
   for (let i = 0; i < paramIds.length; i++) {
-    yield put(paramDelete(paramIds[i]))
+    yield put(uParamDelete(paramIds[i]))
   }
 
   const shotIds = yield select(getSketchShotIds, id)

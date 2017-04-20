@@ -1,14 +1,14 @@
 import test from 'tape'
 import * as a from '../actions'
 
-test('(Action Creator) paramCreate', (t) => {
-  let actual = a.paramCreate('XXX', {
+test('(Action Creator) uParamCreate', (t) => {
+  let actual = a.uParamCreate('XXX', {
     title: 'Foo',
     id: 'XXX',
     value: 0.5
   })
   let expected = {
-    type: 'PARAM_CREATE',
+    type: 'U_PARAM_CREATE',
     payload: {
       id: 'XXX',
       param: {
@@ -22,10 +22,43 @@ test('(Action Creator) paramCreate', (t) => {
   t.end()
 })
 
-test('(Action Creator) paramDelete', (t) => {
-  let actual = a.paramDelete('XXX')
+test('(Action Creator) rParamDelete', (t) => {
+  let actual = a.rParamDelete('XXX')
   let expected = {
-    type: 'PARAM_DELETE',
+    type: 'R_PARAM_DELETE',
+    payload: {
+      id: 'XXX'
+    }
+  }
+  t.deepEqual(actual, expected, 'Creates action to delete param')
+  t.end()
+})
+
+test('(Action Creator) rParamCreate', (t) => {
+  let actual = a.rParamCreate('XXX', {
+    title: 'Foo',
+    id: 'XXX',
+    value: 0.5
+  })
+  let expected = {
+    type: 'R_PARAM_CREATE',
+    payload: {
+      id: 'XXX',
+      param: {
+        title: 'Foo',
+        id: 'XXX',
+        value: 0.5
+      }
+    }
+  }
+  t.deepEqual(actual, expected, 'Creates action to create param')
+  t.end()
+})
+
+test('(Action Creator) uParamDelete', (t) => {
+  let actual = a.uParamDelete('XXX')
+  let expected = {
+    type: 'U_PARAM_DELETE',
     payload: {
       id: 'XXX'
     }

@@ -1,6 +1,6 @@
-export function paramCreate (id, param) {
+export function uParamCreate (id, param) {
   return {
-    type: 'PARAM_CREATE',
+    type: 'U_PARAM_CREATE',
     payload: {
       id,
       param
@@ -8,9 +8,28 @@ export function paramCreate (id, param) {
   }
 }
 
-export function paramDelete (id) {
+export function rParamCreate (id, param) {
   return {
-    type: 'PARAM_DELETE',
+    type: 'R_PARAM_CREATE',
+    payload: {
+      id,
+      param
+    }
+  }
+}
+
+export function uParamDelete (id) {
+  return {
+    type: 'U_PARAM_DELETE',
+    payload: {
+      id
+    }
+  }
+}
+
+export function rParamDelete (id) {
+  return {
+    type: 'R_PARAM_DELETE',
     payload: {
       id
     }

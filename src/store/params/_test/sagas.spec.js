@@ -1,17 +1,120 @@
 import 'babel-polyfill'
 import test from 'tape'
-import { select, takeEvery, put } from 'redux-saga/effects'
-import { watchParams, paramInputUpdate } from '../sagas'
-import { getParamInputId } from '../selectors'
-import { rParamInputUpdate } from '../actions'
+import { select, takeEvery, put, call } from 'redux-saga/effects'
+
+import { getParamInputId, getDefaultModifierIds } from '../selectors'
+import { rParamInputUpdate, rParamCreate } from '../actions'
 import { inputAssignedParamDelete, inputAssignedParamCreate } from '../../inputs/actions'
 import { midiStartLearning } from '../../midi/actions'
+import uid from 'uid'
+import sinon from 'sinon'
+import proxyquire from 'proxyquire'
+
+proxyquire.noCallThru()
+
+const getAllModifiers = sinon.stub()
+const { watchParams, paramInputUpdate, paramCreate } = proxyquire('../sagas', {
+  'modifiers': getAllModifiers
+})
 
 test('(Saga) watchParams', (t) => {
   const generator = watchParams()
   t.deepEqual(
     generator.next().value,
     takeEvery('U_PARAM_INPUT_UPDATE', paramInputUpdate)
+  )
+
+  t.deepEqual(
+    generator.next().value,
+    takeEvery('U_PARAM_CREATE', paramCreate)
+  )
+
+  t.equal(generator.next().done, true, 'Generator ends')
+  t.end()
+})
+
+test('(Saga) paramCreate - sketch param', (t) => {
+  const paramId = 'XXX'
+  const param = { foo: 'bar' }
+  let modifier, uniqueId
+
+  const generator = paramCreate({
+    payload: { id: paramId, param }
+  })
+
+  t.deepEqual(
+    generator.next(defaults).value,
+    call(getAllModifiers),
+    '1. get All modifiers'
+  )
+
+  const modifiers = {
+    foo: {
+      config: {
+        title: 'Fooey',
+        defaultValue: 0.2
+      }
+    },
+    bar: {
+      config: {
+        title: 'Barey',
+        defaultValue: 0.5
+      }
+    }
+  }
+
+  t.deepEqual(
+    generator.next(modifiers).value,
+    select(getDefaultModifierIds),
+    '2. get default modifier Ids'
+  )
+
+  const defaults = ['foo', 'bar']
+
+  t.deepEqual(
+    generator.next(defaults).value,
+    call(uid),
+    '3x. Generate unique ID for modifier'
+  )
+
+  uniqueId = 'xxx'
+  modifier = {
+    key: 'foo',
+    title: 'Fooey',
+    value: 0.2
+  }
+
+  t.deepEqual(
+    generator.next(uniqueId).value,
+    put(rParamCreate(uniqueId, modifier)),
+    '4x. Create param (modifier)'
+  )
+
+  t.deepEqual(
+    generator.next(defaults).value,
+    call(uid),
+    '3x. Generate unique ID for modifier'
+  )
+
+  uniqueId = 'yyy'
+  modifier = {
+    key: 'bar',
+    title: 'Barey',
+    value: 0.5
+  }
+
+  t.deepEqual(
+    generator.next(uniqueId).value,
+    put(rParamCreate(uniqueId, modifier)),
+    '4x. Create param (modifier)'
+  )
+
+  param.modifierIds = ['xxx', 'yyy']
+
+  t.deepEqual(
+    generator.next(uid).value,
+    put(rParamCreate(paramId, param)),
+    '4x. Create sketch param'
   )
 
   t.equal(generator.next().done, true, 'Generator ends')
