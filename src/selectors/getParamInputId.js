@@ -1,4 +1,4 @@
-export const getParamInputId = (state, paramId) => {
+export default (state, paramId) => {
   const input = state.params[paramId].input
 
   if (!input) {

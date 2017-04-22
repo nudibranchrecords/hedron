@@ -1,5 +1,5 @@
 import { connect } from 'react-redux'
-import ParamBar from '../../components/ParamBar'
+import ValueBar from '../../components/ValueBar'
 import { paramValueUpdate } from '../../store/params/actions'
 
 const mapStateToProps = (state, ownProps) => {
@@ -21,6 +21,6 @@ const ParamBarContainer = connect(
   mapDispatchToProps,
   null,
   { pure: false }
-)(ParamBar)
+)(ValueBar)
 
 export default ParamBarContainer

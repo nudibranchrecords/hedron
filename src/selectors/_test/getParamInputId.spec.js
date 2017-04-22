@@ -1,5 +1,5 @@
 import test from 'tape'
-import { getParamInputId } from '../selectors'
+import getParamInputId from '../getParamInputId'
 
 test('(Selector) getParamInputId (normal)', (t) => {
   const state = {

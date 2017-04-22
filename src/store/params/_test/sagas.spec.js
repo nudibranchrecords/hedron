@@ -79,6 +79,7 @@ test('(Saga) paramCreate - sketch param', (t) => {
 
   uniqueId = 'xxx'
   modifier = {
+    id: 'xxx',
     key: 'foo',
     title: 'Fooey',
     value: 0.2
@@ -98,6 +99,7 @@ test('(Saga) paramCreate - sketch param', (t) => {
 
   uniqueId = 'yyy'
   modifier = {
+    id: 'yyy',
     key: 'bar',
     title: 'Barey',
     value: 0.5

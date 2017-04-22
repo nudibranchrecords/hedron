@@ -2,7 +2,7 @@ import _ from 'lodash'
 
 const defaultState = {}
 
-const sketchesReducer = (state = defaultState, action) => {
+const paramsReducer = (state = defaultState, action) => {
   const p = action.payload
 
   switch (action.type) {
@@ -37,4 +37,4 @@ const sketchesReducer = (state = defaultState, action) => {
   }
 }
 
-export default sketchesReducer
+export default paramsReducer

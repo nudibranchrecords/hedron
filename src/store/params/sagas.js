@@ -38,13 +38,15 @@ export function* paramCreate (action) {
     const id = defaultModifierIds[i]
     const config = modifiers[id].config
 
+    const modifierId = yield call(uid)
+
     const modifier = {
+      id: modifierId,
       key: id,
       title: config.title,
       value: config.defaultValue
     }
 
-    const modifierId = yield call(uid)
     modifierIds.push(modifierId)
     yield put(rParamCreate(modifierId, modifier))
   }

@@ -1,17 +1,13 @@
 import { connect } from 'react-redux'
-import Param from '../../components/Param'
+import Modifier from '../../components/Modifier'
 
 const mapStateToProps = (state, ownProps) => {
   const param = state.params[ownProps.paramId]
   return {
-    title: param.title,
-    modifierIds: param.modifierIds
+    title: param.title
   }
 }
-
-const ParamContainer = connect(
+export default connect(
   mapStateToProps,
   null
-)(Param)
-
-export default ParamContainer
+)(Modifier)
