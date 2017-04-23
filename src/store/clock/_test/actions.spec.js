@@ -1,5 +1,5 @@
 import test from 'tape'
-import { clockPulse, clockBeatInc } from '../actions'
+import { clockPulse, clockBeatInc, clockBpmUpdate } from '../actions'
 
 test('(Action Creator) clockPulse', (t) => {
   let actual = clockPulse()
@@ -16,5 +16,17 @@ test('(Action Creator) clockBeatInc', (t) => {
     type: 'CLOCK_BEAT_INC'
   }
   t.deepEqual(actual, expected, 'Creates action to incremenent beat')
+  t.end()
+})
+
+test('(Action Creator) clockBpmUpdate', (t) => {
+  let actual = clockBpmUpdate(120)
+  let expected = {
+    type: 'CLOCK_BPM_UPDATE',
+    payload: {
+      bpm: 120
+    }
+  }
+  t.deepEqual(actual, expected, 'Creates action to update bpm')
   t.end()
 })

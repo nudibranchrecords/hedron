@@ -15,16 +15,22 @@ const Top = styled.div`
   justify-content: center;
 `
 
-const Param = ({ beat, bar, phrase }) => (
+const Bottom = styled.div`
+  text-align: center;
+`
+
+const Param = ({ beat, bar, phrase, bpm }) => (
   <Wrapper>
     <Top>{beat} - {bar} - {phrase}</Top>
+    <Bottom>{bpm}</Bottom>
   </Wrapper>
 )
 
 Param.propTypes = {
   beat: React.PropTypes.number.isRequired,
   bar: React.PropTypes.number.isRequired,
-  phrase: React.PropTypes.number.isRequired
+  phrase: React.PropTypes.number.isRequired,
+  bpm: React.PropTypes.string.isRequired
 }
 
 export default Param

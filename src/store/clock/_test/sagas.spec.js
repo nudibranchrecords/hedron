@@ -1,7 +1,7 @@
 import test from 'tape'
 
 import { takeEvery, put, call } from 'redux-saga/effects'
-import { watchClock, clockUpdate, newPulse } from '../sagas'
+import { watchClock, clockUpdate, newPulse, calcBpm } from '../sagas'
 import * as a from '../actions'
 
 test('(Saga) watchClock', (t) => {
@@ -39,6 +39,18 @@ test('(Saga) clockUpdate (on beat)', (t) => {
   t.deepEqual(
     generator.next(pulseNum).value,
     put(a.clockBeatInc())
+  )
+
+  t.deepEqual(
+    generator.next().value,
+    call(calcBpm)
+  )
+
+  const bpm = 120
+
+  t.deepEqual(
+    generator.next(bpm).value,
+    put(a.clockBpmUpdate(bpm))
   )
 
   t.equal(generator.next().done, true, 'Generator ends')

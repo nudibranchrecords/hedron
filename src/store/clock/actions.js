@@ -9,3 +9,12 @@ export function clockBeatInc () {
     type: 'CLOCK_BEAT_INC'
   }
 }
+
+export function clockBpmUpdate (bpm) {
+  return {
+    type: 'CLOCK_BPM_UPDATE',
+    payload: {
+      bpm
+    }
+  }
+}

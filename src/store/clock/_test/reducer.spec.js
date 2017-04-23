@@ -68,3 +68,41 @@ test('(Reducer) clockReducer - loops back to 0 after 64 beats', (t) => {
 
   t.end()
 })
+
+test('(Reducer) clockReducer - updates BPM on CLOCK_BPM_UPDATE', (t) => {
+  let originalState, expectedState, actualState
+
+  originalState = {
+    bpm: undefined
+  }
+
+  deepFreeze(originalState)
+
+  expectedState = {
+    bpm: 120
+  }
+
+  actualState = paramsReducer(originalState, {
+    type: 'CLOCK_BPM_UPDATE',
+    payload: {
+      bpm: 120
+    }
+  })
+
+  t.deepEqual(actualState, expectedState)
+
+  expectedState = {
+    bpm: 110
+  }
+
+  actualState = paramsReducer(actualState, {
+    type: 'CLOCK_BPM_UPDATE',
+    payload: {
+      bpm: 110
+    }
+  })
+
+  t.deepEqual(actualState, expectedState)
+
+  t.end()
+})

@@ -3,6 +3,8 @@ const defaultState = {
 }
 
 const clockReducer = (state = defaultState, action) => {
+  const p = action.payload
+
   switch (action.type) {
     case 'CLOCK_BEAT_INC': {
       let beat = state.beat + 1
@@ -11,6 +13,12 @@ const clockReducer = (state = defaultState, action) => {
       return {
         ...state,
         beat
+      }
+    }
+    case 'CLOCK_BPM_UPDATE': {
+      return {
+        ...state,
+        bpm: p.bpm
       }
     }
     default:
