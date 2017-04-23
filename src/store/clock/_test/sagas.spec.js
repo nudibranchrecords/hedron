@@ -21,9 +21,12 @@ test('(Saga) clockUpdate (off beat)', (t) => {
     call(newPulse)
   )
 
-  const pulseNum = 5
+  const info = {
+    pulses: 1,
+    beats: 1
+  }
 
-  t.equal(generator.next(pulseNum).done, true, 'Generator ends')
+  t.equal(generator.next(info).done, true, 'Generator ends')
   t.end()
 })
 
@@ -34,10 +37,34 @@ test('(Saga) clockUpdate (on beat)', (t) => {
     call(newPulse)
   )
 
-  const pulseNum = 0
+  const info = {
+    pulses: 0,
+    beats: 1
+  }
 
   t.deepEqual(
-    generator.next(pulseNum).value,
+    generator.next(info).value,
+    put(a.clockBeatInc())
+  )
+
+  t.equal(generator.next().done, true, 'Generator ends')
+  t.end()
+})
+
+test('(Saga) clockUpdate (on bar)', (t) => {
+  const generator = clockUpdate()
+  t.deepEqual(
+    generator.next().value,
+    call(newPulse)
+  )
+
+  const info = {
+    pulses: 0,
+    beats: 0
+  }
+
+  t.deepEqual(
+    generator.next(info).value,
     put(a.clockBeatInc())
   )
 

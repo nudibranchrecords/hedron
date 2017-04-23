@@ -30,7 +30,7 @@ Param.propTypes = {
   beat: React.PropTypes.number.isRequired,
   bar: React.PropTypes.number.isRequired,
   phrase: React.PropTypes.number.isRequired,
-  bpm: React.PropTypes.string.isRequired
+  bpm: React.PropTypes.number.isRequired
 }
 
 export default Param

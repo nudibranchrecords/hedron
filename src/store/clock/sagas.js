@@ -3,28 +3,38 @@ import * as a from './actions'
 import now from 'performance-now'
 
 let pulses = 0
-let lastBeat = now()
+let beats = 0
+let lastBar = now()
 
 export const newPulse = () => {
   pulses++
-  if (pulses > 23) pulses = 0
-  return pulses
+  if (pulses > 23) {
+    pulses = 0
+    beats++
+    if (beats > 3) {
+      beats = 0
+    }
+  }
+  return { pulses, beats }
 }
 
 export const calcBpm = () => {
-  let newBeat = now()
-  let mspp = newBeat - lastBeat
-  lastBeat = newBeat
-  return Math.round(60000 / mspp)
+  let newBar = now()
+  let msperbar = newBar - lastBar
+  lastBar = newBar
+  return Math.round(240000 / msperbar)
 }
 
 export function* clockUpdate () {
-  const pulseNum = yield call(newPulse)
+  const info = yield call(newPulse)
 
-  if (pulseNum === 0) {
+  if (info.pulses === 0) {
     yield put(a.clockBeatInc())
-    const bpm = yield call(calcBpm)
-    yield put(a.clockBpmUpdate(bpm))
+
+    if (info.beats === 0) {
+      const bpm = yield call(calcBpm)
+      yield put(a.clockBpmUpdate(bpm))
+    }
   }
 }
 
