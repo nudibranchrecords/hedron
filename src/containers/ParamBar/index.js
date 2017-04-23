@@ -19,8 +19,6 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 const ParamBarContainer = connect(
   mapStateToProps,
   mapDispatchToProps,
-  null,
-  { pure: false }
 )(ValueBar)
 
 export default ParamBarContainer

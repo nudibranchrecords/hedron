@@ -8,11 +8,16 @@ const Bar = styled.canvas`
 
 class ParamBar extends React.Component {
 
+  constructor (props) {
+    super(props)
+
+    this.handleMouseDown = this.handleMouseDown.bind(this)
+    this.handleMouseMove = this.handleMouseMove.bind(this)
+  }
+
   componentDidMount () {
     this.width = this.canvas.width = 100
     this.height = this.canvas.height = 10
-    this.handleMouseDown = this.handleMouseDown.bind(this)
-    this.handleMouseMove = this.handleMouseMove.bind(this)
   }
 
   componentWillReceiveProps (nextProps) {

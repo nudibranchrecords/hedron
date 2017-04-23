@@ -16,9 +16,13 @@ const paramsReducer = (state = defaultState, action) => {
       }
     }
     case 'PARAM_VALUE_UPDATE': {
-      // Intentionally mutating state
-      state[p.id].value = p.value
-      return state
+      return {
+        ...state,
+        [p.id]: {
+          ...state[p.id],
+          value: p.value
+        }
+      }
     }
     case 'PARAMS_REPLACE_ALL': {
       return p.params
