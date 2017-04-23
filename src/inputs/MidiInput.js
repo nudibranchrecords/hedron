@@ -1,24 +1,31 @@
 import { inputFired, inputAssignedParamCreate } from '../store/inputs/actions'
 import { midiStopLearning } from '../store/midi/actions'
 import { rParamInputUpdate } from '../store/params/actions'
+import { clockPulse } from '../store/clock/actions'
 
 export default (store) => {
   const onMessage = (message) => {
-    const learningId = store.getState().midi.learning
-    const id = 'midi_' + message.data[0].toString() + message.data[1].toString()
-    const val = message.data[2] / 127
+    // If has note data, treat as normal midi input
+    if (message.data[1]) {
+      const learningId = store.getState().midi.learning
+      const id = 'midi_' + message.data[0].toString() + message.data[1].toString()
+      const val = message.data[2] / 127
 
-    if (learningId) {
-      const device = message.currentTarget.name
-      store.dispatch(inputAssignedParamCreate(id, learningId))
-      store.dispatch(rParamInputUpdate(learningId, {
-        id,
-        type: 'midi',
-        info: `${device} / ${message.data[0]} / ${message.data[1]}`
-      }))
-      store.dispatch(midiStopLearning())
+      if (learningId) {
+        const device = message.currentTarget.name
+        store.dispatch(inputAssignedParamCreate(id, learningId))
+        store.dispatch(rParamInputUpdate(learningId, {
+          id,
+          type: 'midi',
+          info: `${device} / ${message.data[0]} / ${message.data[1]}`
+        }))
+        store.dispatch(midiStopLearning())
+      } else {
+        store.dispatch(inputFired(id, val))
+      }
+    // If no note data, treat as clock
     } else {
-      store.dispatch(inputFired(id, val))
+      store.dispatch(clockPulse())
     }
   }
 
