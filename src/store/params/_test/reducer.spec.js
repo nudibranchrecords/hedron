@@ -21,6 +21,8 @@ test('(Reducer) paramsReducer - Updates correct param value on PARAM_VALUE_UPDAT
     }
   }
 
+  deepFreeze(originalState)
+
   expectedState = {
     '01': {
       title: 'Rotation X',

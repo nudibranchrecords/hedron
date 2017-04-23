@@ -3,6 +3,7 @@ import Viewer from '../../containers/Viewer'
 import Menu from '../../containers/Menu'
 import styled from 'styled-components'
 import AudioAnalyzer from '../../containers/AudioAnalyzer'
+import Clock from '../../containers/Clock'
 
 const Wrapper = styled.div`
   padding: 0.5rem;
@@ -28,6 +29,7 @@ class Overview extends React.Component {
         <Tools>
           <div ref={node => node.appendChild(this.props.stats.dom)} />
           <AudioAnalyzer />
+          <Clock />
         </Tools>
 
         <Bottom>

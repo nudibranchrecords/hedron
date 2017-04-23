@@ -15,6 +15,7 @@ import './windows'
 // inputs
 import initiateAudio from './inputs/AudioInput'
 import initiateMidi from './inputs/MidiInput'
+import { initiateGenerateClock, startGeneratedClock } from './inputs/GeneratedClock'
 
 import { AppContainer } from 'react-hot-loader'
 
@@ -23,7 +24,7 @@ stats.dom.setAttribute('style', '')
 
 const composeEnhancers = composeWithDevTools({
   realtime: true,
-  actionsBlacklist: ['INPUT_FIRED', 'PARAM_VALUE_UPDATE']
+  actionsBlacklist: ['CLOCK_PULSE', 'INPUT_FIRED', 'PARAM_VALUE_UPDATE']
 })
 
 const sagaMiddleware = createSagaMiddleware()
@@ -58,4 +59,6 @@ if (module.hot) {
 
 initiateAudio(store)
 initiateMidi(store)
+initiateGenerateClock(store)
+startGeneratedClock()
 Engine.run(store, stats)

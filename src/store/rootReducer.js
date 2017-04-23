@@ -5,6 +5,7 @@ import inputsReducer from './inputs/reducer'
 import paramsReducer from './params/reducer'
 import shotsReducer from './shots/reducer'
 import midiReducer from './midi/reducer'
+import clockReducer from './clock/reducer'
 import availableModulesReducer from './availableModules/reducer'
 
 const rootReducer = combineReducers({
@@ -14,6 +15,7 @@ const rootReducer = combineReducers({
   project: projectReducer,
   inputs: inputsReducer,
   shots: shotsReducer,
+  clock: clockReducer,
   midi: midiReducer
 })
 
