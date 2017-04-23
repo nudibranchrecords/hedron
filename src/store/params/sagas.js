@@ -3,7 +3,7 @@ import { getParamInputId, getDefaultModifierIds } from './selectors'
 import { rParamInputUpdate, rParamCreate } from './actions'
 import { inputAssignedParamDelete, inputAssignedParamCreate } from '../inputs/actions'
 import { midiStartLearning } from '../midi/actions'
-import getAllModifiers from 'modifiers'
+import { getAll } from 'modifiers'
 import uid from 'uid'
 
 export function* paramInputUpdate (action) {
@@ -30,7 +30,7 @@ export function* paramInputUpdate (action) {
 export function* paramCreate (action) {
   const p = action.payload
 
-  const modifiers = yield call(getAllModifiers)
+  const modifiers = yield call(getAll)
   const defaultModifierIds = yield select(getDefaultModifierIds)
   const modifierIds = []
 

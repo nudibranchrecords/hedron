@@ -1,16 +1,28 @@
-import { select, takeEvery, put } from 'redux-saga/effects'
+import { select, takeEvery, put, call } from 'redux-saga/effects'
 import { getAssignedParams } from './selectors'
 import { paramValueUpdate } from '../params/actions'
 import { projectError } from '../project/actions'
+import getParams from '../../selectors/getParams'
+import { work } from 'modifiers'
 
 export function* handleInput (action) {
   const p = action.payload
-  const value = Math.round(p.value * 1000) / 1000
+  let value = p.value
 
   try {
     const params = yield select(getAssignedParams, p.inputId)
 
     for (let i = 0; i < params.length; i++) {
+      let modifiers
+
+      if (params[i].modifierIds && params[i].modifierIds.length) {
+        modifiers = yield select(getParams, params[i].modifierIds)
+
+        for (let j = 0; j < modifiers.length; j++) {
+          value = yield call(work, modifiers[j].key, modifiers[j].value, value)
+        }
+      }
+
       yield put(paramValueUpdate(params[i].id, value))
     }
   } catch (error) {

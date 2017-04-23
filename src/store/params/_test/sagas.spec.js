@@ -12,9 +12,9 @@ import proxyquire from 'proxyquire'
 
 proxyquire.noCallThru()
 
-const getAllModifiers = sinon.stub()
+const getAll = sinon.stub()
 const { watchParams, paramInputUpdate, paramCreate } = proxyquire('../sagas', {
-  'modifiers': getAllModifiers
+  'modifiers': { getAll }
 })
 
 test('(Saga) watchParams', (t) => {
@@ -44,7 +44,7 @@ test('(Saga) paramCreate - sketch param', (t) => {
 
   t.deepEqual(
     generator.next(defaults).value,
-    call(getAllModifiers),
+    call(getAll),
     '1. get All modifiers'
   )
 

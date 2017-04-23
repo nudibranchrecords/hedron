@@ -42,4 +42,3 @@ test('(Selector) inputs - getAssignedParams - Params dont exist', (t) => {
   t.throws(getAssignedParams.bind(null, state, 'audio_0'), Error, 'Throws an error')
   t.end()
 })
-
