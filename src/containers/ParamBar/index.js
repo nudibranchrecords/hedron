@@ -1,17 +1,17 @@
 import { connect } from 'react-redux'
 import ValueBar from '../../components/ValueBar'
-import { paramValueUpdate } from '../../store/params/actions'
+import { nodeValueUpdate } from '../../store/nodes/actions'
 
 const mapStateToProps = (state, ownProps) => {
   return {
-    value: state.params[ownProps.paramId].value
+    value: state.nodes[ownProps.nodeId].value
   }
 }
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     onChange: (value) => {
-      dispatch(paramValueUpdate(ownProps.paramId, value))
+      dispatch(nodeValueUpdate(ownProps.nodeId, value))
     }
   }
 }

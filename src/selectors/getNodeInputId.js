@@ -1,5 +1,5 @@
-export default (state, paramId) => {
-  const input = state.params[paramId].input
+export default (state, nodeId) => {
+  const input = state.nodes[nodeId].input
 
   if (!input) {
     return false

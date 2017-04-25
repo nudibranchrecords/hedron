@@ -27,7 +27,7 @@ const Sketch = ({ title, params, shots, onDeleteClick, sketchId }) => (
 
     <Items>
       {params.map((id) => (
-        <Param paramId={id} key={id} />
+        <Param nodeId={id} key={id} />
       ))}
     </Items>
 

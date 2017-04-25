@@ -1,19 +1,19 @@
 const defaultState = {
   audio_0: {
     value: 0,
-    assignedParamIds: []
+    assignedNodeIds: []
   },
   audio_1: {
     value: 0,
-    assignedParamIds: []
+    assignedNodeIds: []
   },
   audio_2: {
     value: 0,
-    assignedParamIds: []
+    assignedNodeIds: []
   },
   audio_3: {
     value: 0,
-    assignedParamIds: []
+    assignedNodeIds: []
   }
 }
 
@@ -29,31 +29,31 @@ const inputsReducer = (state = defaultState, action) => {
     case 'INPUTS_REPLACE_ALL': {
       return p.inputs
     }
-    case 'INPUT_ASSIGNED_PARAM_CREATE': {
+    case 'INPUT_ASSIGNED_NODE_CREATE': {
       if (state[p.inputId]) {
         return {
           ...state,
           [p.inputId]: {
             ...state[p.inputId],
-            assignedParamIds: [...state[p.inputId].assignedParamIds, p.paramId]
+            assignedNodeIds: [...state[p.inputId].assignedNodeIds, p.nodeId]
           }
         }
       } else {
         return {
           ...state,
           [p.inputId]: {
-            assignedParamIds: [p.paramId]
+            assignedNodeIds: [p.nodeId]
           }
         }
       }
     }
-    case 'INPUT_ASSIGNED_PARAM_DELETE': {
+    case 'INPUT_ASSIGNED_NODE_DELETE': {
       return {
         ...state,
         [p.inputId]: {
           ...state[p.inputId],
-          assignedParamIds: state[p.inputId].assignedParamIds
-            .filter((id) => id !== p.paramId)
+          assignedNodeIds: state[p.inputId].assignedNodeIds
+            .filter((id) => id !== p.nodeId)
         }
       }
     }

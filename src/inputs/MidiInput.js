@@ -1,6 +1,6 @@
-import { inputFired, inputAssignedParamCreate } from '../store/inputs/actions'
+import { inputFired, inputAssignedNodeCreate } from '../store/inputs/actions'
 import { midiStopLearning } from '../store/midi/actions'
-import { rParamInputUpdate } from '../store/params/actions'
+import { rNodeInputUpdate } from '../store/nodes/actions'
 import { clockPulse } from '../store/clock/actions'
 
 export default (store) => {
@@ -13,8 +13,8 @@ export default (store) => {
 
       if (learningId) {
         const device = message.currentTarget.name
-        store.dispatch(inputAssignedParamCreate(id, learningId))
-        store.dispatch(rParamInputUpdate(learningId, {
+        store.dispatch(inputAssignedNodeCreate(id, learningId))
+        store.dispatch(rNodeInputUpdate(learningId, {
           id,
           type: 'midi',
           info: `${device} / ${message.data[0]} / ${message.data[1]}`

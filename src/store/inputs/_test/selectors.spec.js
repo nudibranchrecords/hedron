@@ -1,15 +1,15 @@
 import test from 'tape'
-import { getAssignedParams } from '../selectors'
+import { getAssignedNodes } from '../selectors'
 import deepFreeze from 'deep-freeze'
 
-test('(Selector) inputs - getAssignedParams', (t) => {
+test('(Selector) inputs - getAssignedNodes', (t) => {
   const state = {
     inputs: {
       audio_0: {
-        assignedParamIds: ['XX', 'YY', 'ZZ']
+        assignedNodeIds: ['XX', 'YY', 'ZZ']
       }
     },
-    params: {
+    nodes: {
       XX: { foo: 1 },
       YY: { foo: 2 },
       ZZ: { foo: 3 }
@@ -23,22 +23,22 @@ test('(Selector) inputs - getAssignedParams', (t) => {
     { foo: 3 }
   ]
 
-  const actual = getAssignedParams(state, 'audio_0')
+  const actual = getAssignedNodes(state, 'audio_0')
 
-  t.deepEqual(actual, expected, 'Returns array of params')
+  t.deepEqual(actual, expected, 'Returns array of nodes')
   t.end()
 })
 
-test('(Selector) inputs - getAssignedParams - Params dont exist', (t) => {
+test('(Selector) inputs - getAssignedNodes - Nodes dont exist', (t) => {
   const state = {
     inputs: {
-      assignedParamIds: {
+      assignedNodeIds: {
         audio_0: ['XX', 'YY', 'ZZ']
       }
     },
-    params: {}
+    nodes: {}
   }
 
-  t.throws(getAssignedParams.bind(null, state, 'audio_0'), Error, 'Throws an error')
+  t.throws(getAssignedNodes.bind(null, state, 'audio_0'), Error, 'Throws an error')
   t.end()
 })

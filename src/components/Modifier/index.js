@@ -2,18 +2,18 @@ import React from 'react'
 import ParamBar from '../../containers/ParamBar'
 import ParamInputSelect from '../../containers/ParamInputSelect'
 
-const Modifier = ({ title, paramId }) => (
+const Modifier = ({ title, nodeId }) => (
   <div>
     {title}
     <br />
-    <ParamBar paramId={paramId} />
-    <ParamInputSelect paramId={paramId} />
+    <ParamBar nodeId={nodeId} />
+    <ParamInputSelect nodeId={nodeId} />
   </div>
 )
 
 Modifier.propTypes = {
   title: React.PropTypes.string.isRequired,
-  paramId: React.PropTypes.string.isRequired
+  nodeId: React.PropTypes.string.isRequired
 }
 
 export default Modifier

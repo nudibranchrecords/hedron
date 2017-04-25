@@ -2,9 +2,9 @@ import 'babel-polyfill'
 import test from 'tape'
 import { select, takeEvery, put, call } from 'redux-saga/effects'
 
-import { getParamInputId, getDefaultModifierIds } from '../selectors'
-import { rParamInputUpdate, rParamCreate } from '../actions'
-import { inputAssignedParamDelete, inputAssignedParamCreate } from '../../inputs/actions'
+import { getNodeInputId, getDefaultModifierIds } from '../selectors'
+import { rNodeInputUpdate, rNodeCreate } from '../actions'
+import { inputAssignedNodeDelete, inputAssignedNodeCreate } from '../../inputs/actions'
 import { midiStartLearning } from '../../midi/actions'
 import uid from 'uid'
 import sinon from 'sinon'
@@ -13,33 +13,33 @@ import proxyquire from 'proxyquire'
 proxyquire.noCallThru()
 
 const getAll = sinon.stub()
-const { watchParams, paramInputUpdate, paramCreate } = proxyquire('../sagas', {
+const { watchNodes, nodeInputUpdate, nodeCreate } = proxyquire('../sagas', {
   'modifiers': { getAll }
 })
 
-test('(Saga) watchParams', (t) => {
-  const generator = watchParams()
+test('(Saga) watchNodes', (t) => {
+  const generator = watchNodes()
   t.deepEqual(
     generator.next().value,
-    takeEvery('U_PARAM_INPUT_UPDATE', paramInputUpdate)
+    takeEvery('U_NODE_INPUT_UPDATE', nodeInputUpdate)
   )
 
   t.deepEqual(
     generator.next().value,
-    takeEvery('U_PARAM_CREATE', paramCreate)
+    takeEvery('U_NODE_CREATE', nodeCreate)
   )
 
   t.equal(generator.next().done, true, 'Generator ends')
   t.end()
 })
 
-test('(Saga) paramCreate - sketch param', (t) => {
-  const paramId = 'XXX'
-  const param = { foo: 'bar' }
+test('(Saga) nodeCreate - sketch node', (t) => {
+  const nodeId = 'XXX'
+  const node = { foo: 'bar' }
   let modifier, uniqueId
 
-  const generator = paramCreate({
-    payload: { id: paramId, param }
+  const generator = nodeCreate({
+    payload: { id: nodeId, node }
   })
 
   t.deepEqual(
@@ -87,8 +87,8 @@ test('(Saga) paramCreate - sketch param', (t) => {
 
   t.deepEqual(
     generator.next(uniqueId).value,
-    put(rParamCreate(uniqueId, modifier)),
-    '4x. Create param (modifier)'
+    put(rNodeCreate(uniqueId, modifier)),
+    '4x. Create node (modifier)'
   )
 
   t.deepEqual(
@@ -107,33 +107,33 @@ test('(Saga) paramCreate - sketch param', (t) => {
 
   t.deepEqual(
     generator.next(uniqueId).value,
-    put(rParamCreate(uniqueId, modifier)),
-    '4x. Create param (modifier)'
+    put(rNodeCreate(uniqueId, modifier)),
+    '4x. Create node (modifier)'
   )
 
-  param.modifierIds = ['xxx', 'yyy']
+  node.modifierIds = ['xxx', 'yyy']
 
   t.deepEqual(
     generator.next(uid).value,
-    put(rParamCreate(paramId, param)),
-    '4x. Create sketch param'
+    put(rNodeCreate(nodeId, node)),
+    '4x. Create sketch node'
   )
 
   t.equal(generator.next().done, true, 'Generator ends')
   t.end()
 })
 
-test('(Saga) paramInputUpdate', (t) => {
+test('(Saga) nodeInputUpdate', (t) => {
   const inputId = 'AUDIO_0'
-  const paramId = 'XXX'
+  const nodeId = 'XXX'
 
-  const generator = paramInputUpdate({
-    payload: { paramId, inputId }
+  const generator = nodeInputUpdate({
+    payload: { nodeId, inputId }
   })
 
   t.deepEqual(
     generator.next().value,
-    select(getParamInputId, paramId),
+    select(getNodeInputId, nodeId),
     '1. Get old input ID'
   )
 
@@ -141,37 +141,37 @@ test('(Saga) paramInputUpdate', (t) => {
 
   t.deepEqual(
     generator.next(oldInputId).value,
-    put(inputAssignedParamDelete(oldInputId, paramId)),
-    '2. Delete param assigned to old input'
+    put(inputAssignedNodeDelete(oldInputId, nodeId)),
+    '2. Delete node assigned to old input'
   )
 
   t.deepEqual(
     generator.next().value,
-    put(inputAssignedParamCreate(inputId, paramId)),
-    '3. Create assigned param for new input'
+    put(inputAssignedNodeCreate(inputId, nodeId)),
+    '3. Create assigned node for new input'
   )
 
   t.deepEqual(
     generator.next().value,
-    put(rParamInputUpdate(paramId, { id: inputId })),
-    '4. Update input in param with new ID'
+    put(rNodeInputUpdate(nodeId, { id: inputId })),
+    '4. Update input in node with new ID'
   )
 
   t.equal(generator.next().done, true, 'Generator ends')
   t.end()
 })
 
-test('(Saga) paramInputUpdate - midi', (t) => {
+test('(Saga) nodeInputUpdate - midi', (t) => {
   const inputId = 'midi'
-  const paramId = 'XXX'
+  const nodeId = 'XXX'
 
-  const generator = paramInputUpdate({
-    payload: { paramId, inputId }
+  const generator = nodeInputUpdate({
+    payload: { nodeId, inputId }
   })
 
   t.deepEqual(
     generator.next().value,
-    select(getParamInputId, paramId),
+    select(getNodeInputId, nodeId),
     '1. Get old input ID'
   )
 
@@ -179,13 +179,13 @@ test('(Saga) paramInputUpdate - midi', (t) => {
 
   t.deepEqual(
     generator.next(oldInputId).value,
-    put(inputAssignedParamDelete(oldInputId, paramId)),
-    '2. Delete param assigned to old input'
+    put(inputAssignedNodeDelete(oldInputId, nodeId)),
+    '2. Delete node assigned to old input'
   )
 
   t.deepEqual(
     generator.next().value,
-    put(midiStartLearning(paramId)),
+    put(midiStartLearning(nodeId)),
     '3. Start Midi Learn'
   )
 
@@ -193,17 +193,17 @@ test('(Saga) paramInputUpdate - midi', (t) => {
   t.end()
 })
 
-test('(Saga) paramInputUpdate - old input false', (t) => {
+test('(Saga) nodeInputUpdate - old input false', (t) => {
   const inputId = 'AUDIO_0'
-  const paramId = 'XXX'
+  const nodeId = 'XXX'
 
-  const generator = paramInputUpdate({
-    payload: { paramId, inputId }
+  const generator = nodeInputUpdate({
+    payload: { nodeId, inputId }
   })
 
   t.deepEqual(
     generator.next().value,
-    select(getParamInputId, paramId),
+    select(getNodeInputId, nodeId),
     '1. Get old input ID'
   )
 
@@ -211,31 +211,31 @@ test('(Saga) paramInputUpdate - old input false', (t) => {
 
   t.deepEqual(
     generator.next(oldInputId).value,
-    put(inputAssignedParamCreate(inputId, paramId)),
-    '2. Create assigned param for new input'
+    put(inputAssignedNodeCreate(inputId, nodeId)),
+    '2. Create assigned node for new input'
   )
 
   t.deepEqual(
     generator.next().value,
-    put(rParamInputUpdate(paramId, { id: inputId })),
-    '3. Update input in param with new ID'
+    put(rNodeInputUpdate(nodeId, { id: inputId })),
+    '3. Update input in node with new ID'
   )
 
   t.equal(generator.next().done, true, 'Generator ends')
   t.end()
 })
 
-test('(Saga) paramInputUpdate - new input "none"', (t) => {
+test('(Saga) nodeInputUpdate - new input "none"', (t) => {
   const inputId = 'none'
-  const paramId = 'XXX'
+  const nodeId = 'XXX'
 
-  const generator = paramInputUpdate({
-    payload: { paramId, inputId }
+  const generator = nodeInputUpdate({
+    payload: { nodeId, inputId }
   })
 
   t.deepEqual(
     generator.next().value,
-    select(getParamInputId, paramId),
+    select(getNodeInputId, nodeId),
     '1. Get old input ID'
   )
 
@@ -243,14 +243,14 @@ test('(Saga) paramInputUpdate - new input "none"', (t) => {
 
   t.deepEqual(
     generator.next(oldInputId).value,
-    put(inputAssignedParamDelete(oldInputId, paramId)),
-    '2. Delete param assigned to old input'
+    put(inputAssignedNodeDelete(oldInputId, nodeId)),
+    '2. Delete node assigned to old input'
   )
 
   t.deepEqual(
     generator.next().value,
-    put(rParamInputUpdate(paramId, false)),
-    '3. Update input in param with false'
+    put(rNodeInputUpdate(nodeId, false)),
+    '3. Update input in node with false'
   )
 
   t.equal(generator.next().done, true, 'Generator ends')

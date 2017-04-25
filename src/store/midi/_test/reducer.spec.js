@@ -21,7 +21,7 @@ test('(Reducer) midiReducer, sets id on MIDI_START_LEARNING', (t) => {
   actualState = midiReducer(originalState, {
     type: 'MIDI_START_LEARNING',
     payload: {
-      paramId: 'XXX'
+      nodeId: 'XXX'
     }
   })
 

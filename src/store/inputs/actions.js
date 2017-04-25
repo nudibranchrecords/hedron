@@ -12,16 +12,16 @@ export function inputsReplaceAll (inputs) {
   }
 }
 
-export function inputAssignedParamCreate (inputId, paramId) {
+export function inputAssignedNodeCreate (inputId, nodeId) {
   return {
-    type: 'INPUT_ASSIGNED_PARAM_CREATE',
-    payload: { inputId, paramId }
+    type: 'INPUT_ASSIGNED_NODE_CREATE',
+    payload: { inputId, nodeId }
   }
 }
 
-export function inputAssignedParamDelete (inputId, paramId) {
+export function inputAssignedNodeDelete (inputId, nodeId) {
   return {
-    type: 'INPUT_ASSIGNED_PARAM_DELETE',
-    payload: { inputId, paramId }
+    type: 'INPUT_ASSIGNED_NODE_DELETE',
+    payload: { inputId, nodeId }
   }
 }

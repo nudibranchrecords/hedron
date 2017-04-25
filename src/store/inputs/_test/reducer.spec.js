@@ -93,15 +93,15 @@ test('(Reducer) inputsReducer - Replaces all on INPUTS_REPLACE_ALL', (t) => {
   t.end()
 })
 
-test('(Reducer) inputsReducer - Adds param on INPUT_ASSIGNED_PARAM_CREATE', (t) => {
+test('(Reducer) inputsReducer - Adds node on INPUT_ASSIGNED_NODE_CREATE', (t) => {
   let actual, expectedState
 
   const originalState = {
     audio_0: {
-      assignedParamIds: []
+      assignedNodeIds: []
     },
     audio_1: {
-      assignedParamIds: []
+      assignedNodeIds: []
     }
   }
 
@@ -109,18 +109,18 @@ test('(Reducer) inputsReducer - Adds param on INPUT_ASSIGNED_PARAM_CREATE', (t) 
 
   expectedState = {
     audio_0: {
-      assignedParamIds: ['XX']
+      assignedNodeIds: ['XX']
     },
     audio_1: {
-      assignedParamIds: []
+      assignedNodeIds: []
     }
   }
 
   actual = inputsReducer(originalState, {
-    type: 'INPUT_ASSIGNED_PARAM_CREATE',
+    type: 'INPUT_ASSIGNED_NODE_CREATE',
     payload: {
       inputId: 'audio_0',
-      paramId: 'XX'
+      nodeId: 'XX'
     }
   })
 
@@ -128,18 +128,18 @@ test('(Reducer) inputsReducer - Adds param on INPUT_ASSIGNED_PARAM_CREATE', (t) 
 
   expectedState = {
     audio_0: {
-      assignedParamIds: ['XX']
+      assignedNodeIds: ['XX']
     },
     audio_1: {
-      assignedParamIds: ['YY']
+      assignedNodeIds: ['YY']
     }
   }
 
   actual = inputsReducer(actual, {
-    type: 'INPUT_ASSIGNED_PARAM_CREATE',
+    type: 'INPUT_ASSIGNED_NODE_CREATE',
     payload: {
       inputId: 'audio_1',
-      paramId: 'YY'
+      nodeId: 'YY'
     }
   })
 
@@ -147,18 +147,18 @@ test('(Reducer) inputsReducer - Adds param on INPUT_ASSIGNED_PARAM_CREATE', (t) 
 
   expectedState = {
     audio_0: {
-      assignedParamIds: ['XX']
+      assignedNodeIds: ['XX']
     },
     audio_1: {
-      assignedParamIds: ['YY', 'ZZ']
+      assignedNodeIds: ['YY', 'ZZ']
     }
   }
 
   actual = inputsReducer(actual, {
-    type: 'INPUT_ASSIGNED_PARAM_CREATE',
+    type: 'INPUT_ASSIGNED_NODE_CREATE',
     payload: {
       inputId: 'audio_1',
-      paramId: 'ZZ'
+      nodeId: 'ZZ'
     }
   })
 
@@ -166,38 +166,38 @@ test('(Reducer) inputsReducer - Adds param on INPUT_ASSIGNED_PARAM_CREATE', (t) 
 
   expectedState = {
     audio_0: {
-      assignedParamIds: ['XX']
+      assignedNodeIds: ['XX']
     },
     audio_1: {
-      assignedParamIds: ['YY', 'ZZ']
+      assignedNodeIds: ['YY', 'ZZ']
     },
     midi_XXX: {
-      assignedParamIds: ['AA']
+      assignedNodeIds: ['AA']
     }
   }
 
   actual = inputsReducer(actual, {
-    type: 'INPUT_ASSIGNED_PARAM_CREATE',
+    type: 'INPUT_ASSIGNED_NODE_CREATE',
     payload: {
       inputId: 'midi_XXX',
-      paramId: 'AA'
+      nodeId: 'AA'
     }
   })
 
-  t.deepEqual(actual, expectedState, 'Adds input and assigns param when input doesnt exist')
+  t.deepEqual(actual, expectedState, 'Adds input and assigns node when input doesnt exist')
 
   t.end()
 })
 
-test('(Reducer) inputsReducer - Deletes param on INPUT_ASSIGNED_PARAM_DELETE', (t) => {
+test('(Reducer) inputsReducer - Deletes node on INPUT_ASSIGNED_NODE_DELETE', (t) => {
   let actual, expectedState
 
   const originalState = {
     audio_0: {
-      assignedParamIds: ['XX']
+      assignedNodeIds: ['XX']
     },
     audio_1: {
-      assignedParamIds: ['YY', 'ZZ']
+      assignedNodeIds: ['YY', 'ZZ']
     }
   }
 
@@ -205,18 +205,18 @@ test('(Reducer) inputsReducer - Deletes param on INPUT_ASSIGNED_PARAM_DELETE', (
 
   expectedState = {
     audio_0: {
-      assignedParamIds: ['XX']
+      assignedNodeIds: ['XX']
     },
     audio_1: {
-      assignedParamIds: ['ZZ']
+      assignedNodeIds: ['ZZ']
     }
   }
 
   actual = inputsReducer(originalState, {
-    type: 'INPUT_ASSIGNED_PARAM_DELETE',
+    type: 'INPUT_ASSIGNED_NODE_DELETE',
     payload: {
       inputId: 'audio_1',
-      paramId: 'YY'
+      nodeId: 'YY'
     }
   })
 
@@ -224,18 +224,18 @@ test('(Reducer) inputsReducer - Deletes param on INPUT_ASSIGNED_PARAM_DELETE', (
 
   expectedState = {
     audio_0: {
-      assignedParamIds: []
+      assignedNodeIds: []
     },
     audio_1: {
-      assignedParamIds: ['ZZ']
+      assignedNodeIds: ['ZZ']
     }
   }
 
   actual = inputsReducer(actual, {
-    type: 'INPUT_ASSIGNED_PARAM_DELETE',
+    type: 'INPUT_ASSIGNED_NODE_DELETE',
     payload: {
       inputId: 'audio_0',
-      paramId: 'XX'
+      nodeId: 'XX'
     }
   })
 

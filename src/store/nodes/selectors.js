@@ -1,5 +1,5 @@
-export const getParamInputId = (state, paramId) => {
-  const input = state.params[paramId].input
+export const getNodeInputId = (state, nodeId) => {
+  const input = state.nodes[nodeId].input
   return input && input.id
 }
 

@@ -1,13 +1,13 @@
 import { connect } from 'react-redux'
 import InputSelect from '../../components/InputSelect'
-import { uParamInputUpdate } from '../../store/params/actions'
-import getParamInputId from '../../selectors/getParamInputId'
+import { uNodeInputUpdate } from '../../store/nodes/actions'
+import getNodeInputId from '../../selectors/getNodeInputId'
 
 const mapStateToProps = (state, ownProps) => {
-  const param = state.params[ownProps.paramId]
+  const param = state.nodes[ownProps.nodeId]
   return {
-    inputId: getParamInputId(state, ownProps.paramId),
-    isLearning: state.midi.learning === ownProps.paramId,
+    inputId: getNodeInputId(state, ownProps.nodeId),
+    isLearning: state.midi.learning === ownProps.nodeId,
     midiText: param.input && param.input.type === 'midi' ? param.input.info : undefined
   }
 }
@@ -15,7 +15,7 @@ const mapStateToProps = (state, ownProps) => {
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     onInputChange: (event) => {
-      dispatch(uParamInputUpdate(ownProps.paramId, event.target.value))
+      dispatch(uNodeInputUpdate(ownProps.nodeId, event.target.value))
     }
   }
 }

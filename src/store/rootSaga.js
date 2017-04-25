@@ -1,7 +1,7 @@
 import { fork } from 'redux-saga/effects'
 import { watchSketches } from '../Engine/sagas'
 import { watchProject } from './project/sagas'
-import { watchParams } from './params/sagas'
+import { watchNodes } from './nodes/sagas'
 import { watchScene } from './scene/sagas'
 import { watchWindows } from './windows/sagas'
 import { watchInputs } from './inputs/sagas'
@@ -14,7 +14,7 @@ export default function* rootSaga () {
     fork(watchScene),
     fork(watchSketches),
     fork(watchInputs),
-    fork(watchParams),
+    fork(watchNodes),
     fork(watchClock)
   ]
 }

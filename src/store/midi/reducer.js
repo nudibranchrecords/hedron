@@ -9,7 +9,7 @@ const midiReducer = (state = defaultState, action) => {
     case 'MIDI_START_LEARNING': {
       return {
         ...state,
-        learning: p.paramId
+        learning: p.nodeId
       }
     }
     case 'MIDI_STOP_LEARNING': {

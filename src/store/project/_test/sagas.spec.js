@@ -6,7 +6,7 @@ import { getProjectData, getProjectFilepath } from '../selectors'
 import { save, load } from '../../../utils/file'
 import { projectLoadSuccess } from '../actions'
 import { sketchesReplaceAll } from '../../sketches/actions'
-import { paramsReplaceAll } from '../../params/actions'
+import { nodesReplaceAll } from '../../nodes/actions'
 import { inputsReplaceAll } from '../../inputs/actions'
 import { shotsReplaceAll } from '../../shots/actions'
 
@@ -72,7 +72,7 @@ test('(Saga) loadProject', (t) => {
     project: '@@project',
     inputs: '@@inputs',
     sketches: '@@sketches',
-    params: '@@params',
+    nodes: '@@nodes',
     shots: '@@shots'
   }
 
@@ -84,8 +84,8 @@ test('(Saga) loadProject', (t) => {
 
   t.deepEqual(
     generator.next().value,
-    put(paramsReplaceAll(projectData.params)),
-    '4. Dispatches paramsReplaceAll'
+    put(nodesReplaceAll(projectData.params)),
+    '4. Dispatches nodesReplaceAll'
   )
 
   t.deepEqual(

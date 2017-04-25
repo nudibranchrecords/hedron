@@ -6,7 +6,7 @@ test('(Action Creator) midiStartLearning', (t) => {
   let expected = {
     type: 'MIDI_START_LEARNING',
     payload: {
-      paramId: 'param_x'
+      nodeId: 'param_x'
     }
   }
   t.deepEqual(actual, expected, 'Creates action for when midi starts learning')

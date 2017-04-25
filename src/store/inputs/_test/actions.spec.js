@@ -1,5 +1,5 @@
 import test from 'tape'
-import { inputFired, inputsReplaceAll, inputAssignedParamCreate, inputAssignedParamDelete } from '../actions'
+import { inputFired, inputsReplaceAll, inputAssignedNodeCreate, inputAssignedNodeDelete } from '../actions'
 
 test('(Action Creator) inputFired', (t) => {
   let actual = inputFired('audio_0', 0.123)
@@ -27,28 +27,28 @@ test('(Action Creator) inputsReplaceAll', (t) => {
   t.end()
 })
 
-test('(Action Creator) inputAssignedParamCreate', (t) => {
-  let actual = inputAssignedParamCreate('INPUTID', 'PARAMID')
+test('(Action Creator) inputAssignedNodeCreate', (t) => {
+  let actual = inputAssignedNodeCreate('INPUTID', 'NODEID')
   let expected = {
-    type: 'INPUT_ASSIGNED_PARAM_CREATE',
+    type: 'INPUT_ASSIGNED_NODE_CREATE',
     payload: {
       inputId: 'INPUTID',
-      paramId: 'PARAMID'
+      nodeId: 'NODEID'
     }
   }
-  t.deepEqual(actual, expected, 'Creates action to assign a param to input')
+  t.deepEqual(actual, expected, 'Creates action to assign a node to input')
   t.end()
 })
 
-test('(Action Creator) inputAssignedParamDelete', (t) => {
-  let actual = inputAssignedParamDelete('INPUTID', 'PARAMID')
+test('(Action Creator) inputAssignedNodeDelete', (t) => {
+  let actual = inputAssignedNodeDelete('INPUTID', 'NODEID')
   let expected = {
-    type: 'INPUT_ASSIGNED_PARAM_DELETE',
+    type: 'INPUT_ASSIGNED_NODE_DELETE',
     payload: {
       inputId: 'INPUTID',
-      paramId: 'PARAMID'
+      nodeId: 'NODEID'
     }
   }
-  t.deepEqual(actual, expected, 'Creates action to delete a param from input')
+  t.deepEqual(actual, expected, 'Creates action to delete a node from input')
   t.end()
 })

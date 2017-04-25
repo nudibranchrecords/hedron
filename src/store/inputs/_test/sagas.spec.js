@@ -6,11 +6,11 @@ import { select, takeEvery, put, call } from 'redux-saga/effects'
 
 import proxyquire from 'proxyquire'
 
-import { getAssignedParams } from '../selectors'
-import { paramValueUpdate } from '../../params/actions'
+import { getAssignedNodes } from '../selectors'
+import { nodeValueUpdate } from '../../nodes/actions'
 import { projectError } from '../../project/actions'
 
-import getParams from '../../../selectors/getParams'
+import getNodes from '../../../selectors/getNodes'
 
 proxyquire.noCallThru()
 
@@ -39,11 +39,11 @@ test('(Saga) handleInput (no modifiers)', (t) => {
 
   t.deepEqual(
     generator.next().value,
-    select(getAssignedParams, 'audio_0'),
-    '1. Gets assigned params'
+    select(getAssignedNodes, 'audio_0'),
+    '1. Gets assigned nodes'
   )
 
-  const params = [
+  const nodes = [
     {
       id: 'XX'
     },
@@ -53,15 +53,15 @@ test('(Saga) handleInput (no modifiers)', (t) => {
   ]
 
   t.deepEqual(
-    generator.next(params).value,
-    put(paramValueUpdate('XX', 0.2)),
-    '2.x Dispatches param update action'
+    generator.next(nodes).value,
+    put(nodeValueUpdate('XX', 0.2)),
+    '2.x Dispatches node update action'
   )
 
   t.deepEqual(
-    generator.next(params).value,
-    put(paramValueUpdate('YY', 0.2)),
-    '2.x Dispatches param update action'
+    generator.next(nodes).value,
+    put(nodeValueUpdate('YY', 0.2)),
+    '2.x Dispatches node update action'
   )
 
   t.deepEqual(
@@ -74,7 +74,7 @@ test('(Saga) handleInput (no modifiers)', (t) => {
 })
 
 test('(Saga) handleInput (modifiers)', (t) => {
-  let modifiedValue, modifierParams
+  let modifiedValue, modifierNodes
 
   const generator = handleInput({
     payload: {
@@ -85,11 +85,11 @@ test('(Saga) handleInput (modifiers)', (t) => {
 
   t.deepEqual(
     generator.next().value,
-    select(getAssignedParams, 'audio_0'),
-    '1. Gets assigned params'
+    select(getAssignedNodes, 'audio_0'),
+    '1. Gets assigned nodes'
   )
 
-  const params = [
+  const nodes = [
     {
       id: 'XX',
       modifierIds: ['yyy', 'zzz']
@@ -97,12 +97,12 @@ test('(Saga) handleInput (modifiers)', (t) => {
   ]
 
   t.deepEqual(
-    generator.next(params).value,
-    select(getParams, ['yyy', 'zzz']),
-    '2.x Get Modifiers (params)'
+    generator.next(nodes).value,
+    select(getNodes, ['yyy', 'zzz']),
+    '2.x Get Modifiers (nodes)'
   )
 
-  modifierParams = [
+  modifierNodes = [
     {
       id: 'yyy',
       key: 'foo',
@@ -116,7 +116,7 @@ test('(Saga) handleInput (modifiers)', (t) => {
   ]
 
   t.deepEqual(
-    generator.next(modifierParams).value,
+    generator.next(modifierNodes).value,
     call(modifiers.work, 'foo', 0.5, 0.2),
     '2.x get value after going through first modifier'
   )
@@ -133,8 +133,8 @@ test('(Saga) handleInput (modifiers)', (t) => {
 
   t.deepEqual(
     generator.next(modifiedValue).value,
-    put(paramValueUpdate('XX', 0.9)),
-    '2.x Dispatches param update action'
+    put(nodeValueUpdate('XX', 0.9)),
+    '2.x Dispatches node update action'
   )
 
   t.deepEqual(

@@ -2,9 +2,9 @@ import { connect } from 'react-redux'
 import Modifier from '../../components/Modifier'
 
 const mapStateToProps = (state, ownProps) => {
-  const param = state.params[ownProps.paramId]
+  const node = state.nodes[ownProps.nodeId]
   return {
-    title: param.title
+    title: node.title
   }
 }
 export default connect(

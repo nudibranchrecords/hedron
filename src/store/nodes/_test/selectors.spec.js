@@ -1,10 +1,10 @@
 import test from 'tape'
-import { getParamInputId, getDefaultModifierIds } from '../selectors'
+import { getNodeInputId, getDefaultModifierIds } from '../selectors'
 import deepFreeze from 'deep-freeze'
 
-test('(Selector) project - getParamInputId', (t) => {
+test('(Selector) project - getNodeInputId', (t) => {
   const state = {
-    params: {
+    nodes: {
       XXX: {
         input: {
           id: 'audio_0'
@@ -14,15 +14,15 @@ test('(Selector) project - getParamInputId', (t) => {
   }
   deepFreeze(state)
 
-  const actual = getParamInputId(state, 'XXX')
+  const actual = getNodeInputId(state, 'XXX')
 
   t.deepEqual(actual, 'audio_0', 'Returns input id')
   t.end()
 })
 
-test('(Selector) project - getParamInputId (no input)', (t) => {
+test('(Selector) project - getNodeInputId (no input)', (t) => {
   const state = {
-    params: {
+    nodes: {
       XXX: {
         input: false
       }
@@ -30,7 +30,7 @@ test('(Selector) project - getParamInputId (no input)', (t) => {
   }
   deepFreeze(state)
 
-  const actual = getParamInputId(state, 'XXX')
+  const actual = getNodeInputId(state, 'XXX')
 
   t.equal(actual, false, 'Returns false')
   t.end()

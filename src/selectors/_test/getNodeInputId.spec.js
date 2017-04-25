@@ -1,9 +1,9 @@
 import test from 'tape'
-import getParamInputId from '../getParamInputId'
+import getNodeInputId from '../getNodeInputId'
 
-test('(Selector) getParamInputId (normal)', (t) => {
+test('(Selector) getNodeInputId (normal)', (t) => {
   const state = {
-    params: {
+    nodes: {
       xxx: {
         input: {
           id: 'YYY'
@@ -12,30 +12,30 @@ test('(Selector) getParamInputId (normal)', (t) => {
     }
   }
 
-  const actual = getParamInputId(state, 'xxx')
+  const actual = getNodeInputId(state, 'xxx')
 
   t.equal(actual, 'YYY', 'Returns id')
   t.end()
 })
 
-test('(Selector) getParamInputId (false)', (t) => {
+test('(Selector) getNodeInputId (false)', (t) => {
   const state = {
-    params: {
+    nodes: {
       xxx: {
         input: false
       }
     }
   }
 
-  const actual = getParamInputId(state, 'xxx')
+  const actual = getNodeInputId(state, 'xxx')
 
   t.equal(actual, false, 'Returns false')
   t.end()
 })
 
-test('(Selector) getParamInputId (midi)', (t) => {
+test('(Selector) getNodeInputId (midi)', (t) => {
   const state = {
-    params: {
+    nodes: {
       xxx: {
         input: {
           id: 'something',
@@ -45,7 +45,7 @@ test('(Selector) getParamInputId (midi)', (t) => {
     }
   }
 
-  const actual = getParamInputId(state, 'xxx')
+  const actual = getNodeInputId(state, 'xxx')
 
   t.equal(actual, 'midi', 'Returns "midi" instead of actual id')
   t.end()

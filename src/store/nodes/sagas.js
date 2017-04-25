@@ -1,33 +1,33 @@
 import { select, takeEvery, put, call } from 'redux-saga/effects'
-import { getParamInputId, getDefaultModifierIds } from './selectors'
-import { rParamInputUpdate, rParamCreate } from './actions'
-import { inputAssignedParamDelete, inputAssignedParamCreate } from '../inputs/actions'
+import { getNodeInputId, getDefaultModifierIds } from './selectors'
+import { rNodeInputUpdate, rNodeCreate } from './actions'
+import { inputAssignedNodeDelete, inputAssignedNodeCreate } from '../inputs/actions'
 import { midiStartLearning } from '../midi/actions'
 import { getAll } from 'modifiers'
 import uid from 'uid'
 
-export function* paramInputUpdate (action) {
+export function* nodeInputUpdate (action) {
   const p = action.payload
   const inputId = p.inputId !== 'none' ? p.inputId : false
   const input = inputId ? { id: inputId } : false
 
-  const oldInputId = yield select(getParamInputId, p.paramId)
+  const oldInputId = yield select(getNodeInputId, p.nodeId)
 
   if (oldInputId) {
-    yield put(inputAssignedParamDelete(oldInputId, p.paramId))
+    yield put(inputAssignedNodeDelete(oldInputId, p.nodeId))
   }
 
   if (inputId === 'midi') {
-    yield put(midiStartLearning(p.paramId))
+    yield put(midiStartLearning(p.nodeId))
   } else {
     if (inputId) {
-      yield put(inputAssignedParamCreate(inputId, p.paramId))
+      yield put(inputAssignedNodeCreate(inputId, p.nodeId))
     }
-    yield put(rParamInputUpdate(p.paramId, input))
+    yield put(rNodeInputUpdate(p.nodeId, input))
   }
 }
 
-export function* paramCreate (action) {
+export function* nodeCreate (action) {
   const p = action.payload
 
   const modifiers = yield call(getAll)
@@ -48,16 +48,16 @@ export function* paramCreate (action) {
     }
 
     modifierIds.push(modifierId)
-    yield put(rParamCreate(modifierId, modifier))
+    yield put(rNodeCreate(modifierId, modifier))
   }
 
-  const param = p.param
-  param.modifierIds = modifierIds
+  const node = p.node
+  node.modifierIds = modifierIds
 
-  yield put(rParamCreate(p.id, param))
+  yield put(rNodeCreate(p.id, node))
 }
 
-export function* watchParams () {
-  yield takeEvery('U_PARAM_INPUT_UPDATE', paramInputUpdate)
-  yield takeEvery('U_PARAM_CREATE', paramCreate)
+export function* watchNodes () {
+  yield takeEvery('U_NODE_INPUT_UPDATE', nodeInputUpdate)
+  yield takeEvery('U_NODE_CREATE', nodeCreate)
 }

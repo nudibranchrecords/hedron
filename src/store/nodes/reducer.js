@@ -2,20 +2,20 @@ import _ from 'lodash'
 
 const defaultState = {}
 
-const paramsReducer = (state = defaultState, action) => {
+const nodesReducer = (state = defaultState, action) => {
   const p = action.payload
 
   switch (action.type) {
-    case 'PARAM_DELETE': {
+    case 'NODE_DELETE': {
       return _.omit(state, [p.id])
     }
-    case 'R_PARAM_CREATE': {
+    case 'R_NODE_CREATE': {
       return {
         ...state,
-        [p.id]: p.param
+        [p.id]: p.node
       }
     }
-    case 'PARAM_VALUE_UPDATE': {
+    case 'NODE_VALUE_UPDATE': {
       return {
         ...state,
         [p.id]: {
@@ -24,14 +24,14 @@ const paramsReducer = (state = defaultState, action) => {
         }
       }
     }
-    case 'PARAMS_REPLACE_ALL': {
-      return p.params
+    case 'NODES_REPLACE_ALL': {
+      return p.nodes
     }
-    case 'R_PARAM_INPUT_UPDATE': {
+    case 'R_NODE_INPUT_UPDATE': {
       return {
         ...state,
-        [p.paramId] : {
-          ...state[p.paramId],
+        [p.nodeId] : {
+          ...state[p.nodeId],
           input: p.input
         }
       }
@@ -41,4 +41,4 @@ const paramsReducer = (state = defaultState, action) => {
   }
 }
 
-export default paramsReducer
+export default nodesReducer

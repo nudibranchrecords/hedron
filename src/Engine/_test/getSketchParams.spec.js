@@ -6,7 +6,7 @@ test('(Engine) getSketchParams', function (t) {
   let actual, expected
 
   const state = {
-    params: {
+    nodes: {
       '01': {
         title: 'Rotation X',
         key: 'rotX',

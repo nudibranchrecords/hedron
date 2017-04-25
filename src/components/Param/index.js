@@ -15,16 +15,16 @@ const Items = styled.div`
 
 `
 
-const Param = ({ title, paramId, modifierIds }) => (
+const Param = ({ title, nodeId, modifierIds }) => (
   <Wrapper>
     {title}
     <br />
-    <ParamBar paramId={paramId} />
-    <ParamInputSelect paramId={paramId} />
+    <ParamBar nodeId={nodeId} />
+    <ParamInputSelect nodeId={nodeId} />
 
     <Items>
       {modifierIds.map((id) => (
-        <Modifier paramId={id} key={id} />
+        <Modifier nodeId={id} key={id} />
       ))}
     </Items>
   </Wrapper>
@@ -32,7 +32,7 @@ const Param = ({ title, paramId, modifierIds }) => (
 
 Param.propTypes = {
   title: React.PropTypes.string.isRequired,
-  paramId: React.PropTypes.string.isRequired,
+  nodeId: React.PropTypes.string.isRequired,
   modifierIds: React.PropTypes.arrayOf(
     React.PropTypes.string
   )

@@ -4,7 +4,7 @@ export default (state, sketchId) => {
   const params = {}
 
   sketchParams.forEach((id) => {
-    const param = state.params[id]
+    const param = state.nodes[id]
     params[param.key] = param.value
   })
 

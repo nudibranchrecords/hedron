@@ -4,7 +4,7 @@ import { call, select, takeEvery, put } from 'redux-saga/effects'
 import { watchScene, handleSketchCreate, handleSketchDelete } from '../sagas'
 import { getModule, getSketchParamIds, getSketchShotIds } from '../selectors'
 import { sketchCreate, sketchDelete } from '../../sketches/actions'
-import { uParamCreate, uParamDelete } from '../../params/actions'
+import { uNodeCreate, uNodeDelete } from '../../params/actions'
 import { shotCreate, shotDelete } from '../../shots/actions'
 
 import uid from 'uid'
@@ -83,7 +83,7 @@ test('(Saga) handleSketchCreate', (t) => {
 
   t.deepEqual(
     generator.next(uniqueId).value,
-    put(uParamCreate(uniqueId, {
+    put(uNodeCreate(uniqueId, {
       title: 'Rotate X',
       key: 'RotX',
       id: uniqueId,
@@ -102,7 +102,7 @@ test('(Saga) handleSketchCreate', (t) => {
 
   t.deepEqual(
     generator.next(uniqueId).value,
-    put(uParamCreate(uniqueId, {
+    put(uNodeCreate(uniqueId, {
       title: 'Rotate Y',
       key: 'RotY',
       id: uniqueId,
@@ -180,13 +180,13 @@ test('(Saga) handleSketchDelete', (t) => {
 
   t.deepEqual(
     generator.next(paramIds).value,
-    put(uParamDelete('P1')),
+    put(uNodeDelete('P1')),
     'Dispatch param delete action'
   )
 
   t.deepEqual(
     generator.next().value,
-    put(uParamDelete('P2')),
+    put(uNodeDelete('P2')),
     'Dispatch param delete action'
   )
 

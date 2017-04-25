@@ -1,11 +1,11 @@
 import test from 'tape'
 import deepFreeze from 'deep-freeze'
-import paramsReducer from '../reducer'
+import nodesReducer from '../reducer'
 import { returnsPreviousState } from '../../../testUtils'
 
-returnsPreviousState(paramsReducer)
+returnsPreviousState(nodesReducer)
 
-test('(Reducer) paramsReducer - Updates correct param value on PARAM_VALUE_UPDATE', (t) => {
+test('(Reducer) nodesReducer - Updates correct node value on NODE_VALUE_UPDATE', (t) => {
   let originalState, expectedState, actualState
 
   originalState = {
@@ -36,8 +36,8 @@ test('(Reducer) paramsReducer - Updates correct param value on PARAM_VALUE_UPDAT
     }
   }
 
-  actualState = paramsReducer(originalState, {
-    type: 'PARAM_VALUE_UPDATE',
+  actualState = nodesReducer(originalState, {
+    type: 'NODE_VALUE_UPDATE',
     payload: {
       id: '01',
       value: 1
@@ -59,8 +59,8 @@ test('(Reducer) paramsReducer - Updates correct param value on PARAM_VALUE_UPDAT
     }
   }
 
-  actualState = paramsReducer(actualState, {
-    type: 'PARAM_VALUE_UPDATE',
+  actualState = nodesReducer(actualState, {
+    type: 'NODE_VALUE_UPDATE',
     payload: {
       id: '02',
       value: 2
@@ -72,7 +72,7 @@ test('(Reducer) paramsReducer - Updates correct param value on PARAM_VALUE_UPDAT
   t.end()
 })
 
-test('(Reducer) paramsReducer - Adds param on R_PARAM_CREATE', (t) => {
+test('(Reducer) nodesReducer - Adds node on R_NODE_CREATE', (t) => {
   let originalState, expectedState, actualState
 
   originalState = {
@@ -111,11 +111,11 @@ test('(Reducer) paramsReducer - Adds param on R_PARAM_CREATE', (t) => {
     }
   }
 
-  actualState = paramsReducer(originalState, {
-    type: 'R_PARAM_CREATE',
+  actualState = nodesReducer(originalState, {
+    type: 'R_NODE_CREATE',
     payload: {
       id: '03',
-      param: {
+      node: {
         title: 'Rotation X',
         key: 'rotX',
         value: 0.2,
@@ -153,11 +153,11 @@ test('(Reducer) paramsReducer - Adds param on R_PARAM_CREATE', (t) => {
     }
   }
 
-  actualState = paramsReducer(actualState, {
-    type: 'R_PARAM_CREATE',
+  actualState = nodesReducer(actualState, {
+    type: 'R_NODE_CREATE',
     payload: {
       id: '04',
-      param: {
+      node: {
         title: 'Scale',
         key: 'scale',
         value: 0.2,
@@ -171,7 +171,7 @@ test('(Reducer) paramsReducer - Adds param on R_PARAM_CREATE', (t) => {
   t.end()
 })
 
-test('(Reducer) paramsReducer - Removes param on PARAM_DELETE', (t) => {
+test('(Reducer) nodesReducer - Removes node on NODE_DELETE', (t) => {
   let originalState, expectedState, actualState
 
   originalState = {
@@ -198,8 +198,8 @@ test('(Reducer) paramsReducer - Removes param on PARAM_DELETE', (t) => {
     }
   }
 
-  actualState = paramsReducer(originalState, {
-    type: 'PARAM_DELETE',
+  actualState = nodesReducer(originalState, {
+    type: 'NODE_DELETE',
     payload: {
       id: '02'
     }
@@ -209,8 +209,8 @@ test('(Reducer) paramsReducer - Removes param on PARAM_DELETE', (t) => {
 
   expectedState = {}
 
-  actualState = paramsReducer(actualState, {
-    type: 'PARAM_DELETE',
+  actualState = nodesReducer(actualState, {
+    type: 'NODE_DELETE',
     payload: {
       id: '01'
     }
@@ -221,19 +221,19 @@ test('(Reducer) paramsReducer - Removes param on PARAM_DELETE', (t) => {
   t.end()
 })
 
-test('(Reducer) paramsReducer - Replaces params on PARAMS_REPLACE_ALL', (t) => {
+test('(Reducer) nodesReducer - Replaces nodes on NODES_REPLACE_ALL', (t) => {
   let originalState, actual
 
-  const newParams = {
+  const newNodes = {
     sAA: {
       moduleId: 'dog',
       title: 'Dog 1',
-      paramIds: ['p22', 'p02']
+      nodeIds: ['p22', 'p02']
     },
     sBB: {
       moduleId: 'cat',
       title: 'Cat 1',
-      paramIds: ['p55', 'p04']
+      nodeIds: ['p55', 'p04']
     }
   }
 
@@ -241,30 +241,30 @@ test('(Reducer) paramsReducer - Replaces params on PARAMS_REPLACE_ALL', (t) => {
     s01: {
       moduleId: 'cubey',
       title: 'Cubey 1',
-      paramIds: ['p01', 'p02']
+      nodeIds: ['p01', 'p02']
     },
     s02: {
       moduleId: 'swirly',
       title: 'Swirly 1',
-      paramIds: ['p03', 'p04']
+      nodeIds: ['p03', 'p04']
     }
   }
 
   deepFreeze(originalState)
 
-  actual = paramsReducer(originalState, {
-    type: 'PARAMS_REPLACE_ALL',
+  actual = nodesReducer(originalState, {
+    type: 'NODES_REPLACE_ALL',
     payload: {
-      params: newParams
+      nodes: newNodes
     }
   })
 
-  t.deepEqual(actual, newParams, 'Replaces all params')
+  t.deepEqual(actual, newNodes, 'Replaces all nodes')
 
   t.end()
 })
 
-test('(Reducer) paramsReducer - Updates correct param value on R_PARAM_INPUT_UPDATE', (t) => {
+test('(Reducer) nodesReducer - Updates correct node value on R_NODE_INPUT_UPDATE', (t) => {
   let originalState, expectedState, actualState
 
   originalState = {
@@ -305,10 +305,10 @@ test('(Reducer) paramsReducer - Updates correct param value on R_PARAM_INPUT_UPD
     }
   }
 
-  actualState = paramsReducer(originalState, {
-    type: 'R_PARAM_INPUT_UPDATE',
+  actualState = nodesReducer(originalState, {
+    type: 'R_NODE_INPUT_UPDATE',
     payload: {
-      paramId: '02',
+      nodeId: '02',
       input: {
         id: 'audio_1'
       }
@@ -336,10 +336,10 @@ test('(Reducer) paramsReducer - Updates correct param value on R_PARAM_INPUT_UPD
     }
   }
 
-  actualState = paramsReducer(actualState, {
-    type: 'R_PARAM_INPUT_UPDATE',
+  actualState = nodesReducer(actualState, {
+    type: 'R_NODE_INPUT_UPDATE',
     payload: {
-      paramId: '01',
+      nodeId: '01',
       input: {
         id: 'audio_3'
       }
