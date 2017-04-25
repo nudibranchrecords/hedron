@@ -3,7 +3,7 @@ import * as a from './actions'
 import { inputFired } from '../inputs/actions'
 import now from 'performance-now'
 
-let deltaInc = Math.PI * 2 / 24
+let deltaInc = Math.PI * 2 / 48
 let pulses = 0
 let delta = 0
 let beats = 0
