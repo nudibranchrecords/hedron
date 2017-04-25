@@ -11,9 +11,9 @@ let lastBar = now()
 
 export const newPulse = () => {
   pulses++
+  delta += deltaInc
   if (pulses > 23) {
     pulses = 0
-    delta += deltaInc
     beats++
     if (beats > 3) {
       beats = 0

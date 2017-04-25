@@ -16,6 +16,7 @@ const InputSelect = ({ inputId, onInputChange, isLearning, midiText }) => (
         <option value='audio_2'>Mid</option>
         <option value='audio_3'>High</option>
         <option value='midi'>MIDI</option>
+        <option value='lfo'>LFO</option>
       </select>
     }
     <br />

@@ -14,6 +14,10 @@ const defaultState = {
   audio_3: {
     value: 0,
     assignedNodeIds: []
+  },
+  lfo: {
+    value: 0,
+    assignedNodeIds: []
   }
 }
 

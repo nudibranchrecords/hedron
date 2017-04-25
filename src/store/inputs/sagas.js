@@ -15,6 +15,10 @@ export function* handleInput (action) {
     for (let i = 0; i < nodes.length; i++) {
       let modifiers
 
+      if (p.inputId === 'lfo') {
+        value = Math.abs(Math.sin(value))
+      }
+
       if (nodes[i].modifierIds && nodes[i].modifierIds.length) {
         modifiers = yield select(getNodes, nodes[i].modifierIds)
 
