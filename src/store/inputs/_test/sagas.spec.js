@@ -11,6 +11,8 @@ import { nodeValueUpdate } from '../../nodes/actions'
 import { projectError } from '../../project/actions'
 
 import getNodes from '../../../selectors/getNodes'
+import getNodesValues from '../../../selectors/getNodesValues'
+import lfoProcess from '../../../utils/lfoProcess'
 
 proxyquire.noCallThru()
 
@@ -135,6 +137,61 @@ test('(Saga) handleInput (modifiers)', (t) => {
     generator.next(modifiedValue).value,
     put(nodeValueUpdate('XX', 0.9)),
     '2.x Dispatches node update action'
+  )
+
+  t.deepEqual(
+    generator.throw({ message: 'Error!' }).value,
+    put(projectError('Error!')),
+    'Dispatches project error if some error'
+  )
+
+  t.end()
+})
+
+test('(Saga) handleInput (lfo)', (t) => {
+  const generator = handleInput({
+    payload: {
+      value: 0.555,
+      inputId: 'lfo'
+    }
+  })
+
+  t.deepEqual(
+    generator.next().value,
+    select(getAssignedNodes, 'lfo'),
+    '1. Gets assigned nodes'
+  )
+
+  const nodes = [
+    {
+      id: 'XX',
+      lfoOptionIds: ['yyy', 'zzz']
+    }
+  ]
+
+  t.deepEqual(
+    generator.next(nodes).value,
+    select(getNodesValues, ['yyy', 'zzz']),
+    '2 Get Options values (nodes)'
+  )
+
+  const optionValues = {
+    shape: 'sine',
+    rate: 2
+  }
+
+  t.deepEqual(
+    generator.next(optionValues).value,
+    call(lfoProcess, 0.555, 'sine', 2),
+    '3. get value after going through first modifier'
+  )
+
+  const lfoValue = 0.9
+
+  t.deepEqual(
+    generator.next(lfoValue).value,
+    put(nodeValueUpdate('XX', 0.9)),
+    '4. Dispatches node update action'
   )
 
   t.deepEqual(

@@ -3,6 +3,8 @@ import { getAssignedNodes } from './selectors'
 import { nodeValueUpdate } from '../nodes/actions'
 import { projectError } from '../project/actions'
 import getNodes from '../../selectors/getNodes'
+import getNodesValues from '../../selectors/getNodesValues'
+import lfoProcess from '../../utils/lfoProcess'
 import { work } from 'modifiers'
 
 export function* handleInput (action) {
@@ -16,7 +18,8 @@ export function* handleInput (action) {
       let modifiers
 
       if (p.inputId === 'lfo') {
-        value = Math.abs(Math.sin(value))
+        let o = yield select(getNodesValues, nodes[i].lfoOptionIds)
+        value = yield call(lfoProcess, value, o.shape, o.rate)
       }
 
       if (nodes[i].modifierIds && nodes[i].modifierIds.length) {
