@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import styled from 'styled-components'
 
 const Bar = styled.canvas`
@@ -67,8 +68,8 @@ class ParamBar extends React.Component {
 }
 
 ParamBar.propTypes = {
-  value: React.PropTypes.number.isRequired,
-  onChange: React.PropTypes.func.isRequired
+  value: PropTypes.number.isRequired,
+  onChange: PropTypes.func.isRequired
 }
 
 export default ParamBar

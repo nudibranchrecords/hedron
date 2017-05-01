@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 
 const AddSketch = ({ items, onAddClick }) => (
   <div>
@@ -14,11 +15,11 @@ const AddSketch = ({ items, onAddClick }) => (
 )
 
 AddSketch.propTypes = {
-  onAddClick: React.PropTypes.func,
-  items: React.PropTypes.arrayOf(
-    React.PropTypes.shape({
-      title: React.PropTypes.string,
-      id: React.PropTypes.string
+  onAddClick: PropTypes.func,
+  items: PropTypes.arrayOf(
+    PropTypes.shape({
+      title: PropTypes.string,
+      id: PropTypes.string
     })
   ).isRequired
 }

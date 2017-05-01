@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import CurrentSketch from '../../containers/CurrentSketch'
 import AddSketch from '../../containers/AddSketch'
 import SketchesNav from '../../containers/SketchesNav'
@@ -45,5 +46,5 @@ const App = ({ stats }) => (
 export default App
 
 App.propTypes = {
-  stats: React.PropTypes.object.isRequired
+  stats: PropTypes.object.isRequired
 }

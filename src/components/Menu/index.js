@@ -3,6 +3,7 @@
 // https://github.com/facebook/react/issues/140
 
 import React from 'react'
+import PropTypes from 'prop-types'
 
 const Menu = ({
   onFileSaveChange, onFileLoadChange, onSaveClick, filePath, onSendOutputClick
@@ -42,11 +43,11 @@ const Menu = ({
 }
 
 Menu.propTypes = {
-  filePath: React.PropTypes.string,
-  onFileSaveChange: React.PropTypes.func.isRequired,
-  onFileLoadChange: React.PropTypes.func.isRequired,
-  onSendOutputClick: React.PropTypes.func.isRequired,
-  onSaveClick: React.PropTypes.func.isRequired
+  filePath: PropTypes.string,
+  onFileSaveChange: PropTypes.func.isRequired,
+  onFileLoadChange: PropTypes.func.isRequired,
+  onSendOutputClick: PropTypes.func.isRequired,
+  onSaveClick: PropTypes.func.isRequired
 }
 
 export default Menu

@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import Viewer from '../../containers/Viewer'
 import Menu from '../../containers/Menu'
 import styled from 'styled-components'
@@ -42,8 +43,8 @@ class Overview extends React.Component {
 }
 
 Overview.propTypes = {
-  stats: React.PropTypes.shape({
-    dom: React.PropTypes.object
+  stats: PropTypes.shape({
+    dom: PropTypes.object
   }).isRequired
 }
 

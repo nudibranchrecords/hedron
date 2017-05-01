@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 
 class AudioAnalyzer extends React.Component {
 
@@ -44,7 +45,7 @@ class AudioAnalyzer extends React.Component {
 }
 
 AudioAnalyzer.propTypes = {
-  bands: React.PropTypes.arrayOf(React.PropTypes.number)
+  bands: PropTypes.arrayOf(PropTypes.number)
 }
 
 export default AudioAnalyzer

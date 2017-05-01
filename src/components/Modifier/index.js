@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import ParamBar from '../../containers/ParamBar'
 import ParamInputSelect from '../../containers/ParamInputSelect'
 
@@ -12,8 +13,8 @@ const Modifier = ({ title, nodeId }) => (
 )
 
 Modifier.propTypes = {
-  title: React.PropTypes.string.isRequired,
-  nodeId: React.PropTypes.string.isRequired
+  title: PropTypes.string.isRequired,
+  nodeId: PropTypes.string.isRequired
 }
 
 export default Modifier

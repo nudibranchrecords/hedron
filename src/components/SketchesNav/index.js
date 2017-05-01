@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import { Link } from 'react-router-dom'
 import styled from 'styled-components'
 
@@ -27,10 +28,10 @@ const SketchesNav = ({ items }) => (
 )
 
 SketchesNav.propTypes = {
-  items: React.PropTypes.arrayOf(
-    React.PropTypes.shape({
-      id: React.PropTypes.string,
-      title: React.PropTypes.string
+  items: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.string,
+      title: PropTypes.string
     })
   )
 }

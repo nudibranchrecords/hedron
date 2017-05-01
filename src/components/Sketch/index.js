@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import Param from '../../containers/Param'
 import Shot from '../../containers/Shot'
 import styled from 'styled-components'
@@ -44,15 +45,15 @@ const Sketch = ({ title, params, shots, onDeleteClick, sketchId }) => (
 )
 
 Sketch.propTypes = {
-  title: React.PropTypes.string.isRequired,
-  sketchId: React.PropTypes.string.isRequired,
-  params: React.PropTypes.arrayOf(
-    React.PropTypes.string
+  title: PropTypes.string.isRequired,
+  sketchId: PropTypes.string.isRequired,
+  params: PropTypes.arrayOf(
+    PropTypes.string
   ).isRequired,
-  shots: React.PropTypes.arrayOf(
-    React.PropTypes.string
+  shots: PropTypes.arrayOf(
+    PropTypes.string
   ).isRequired,
-  onDeleteClick: React.PropTypes.func.isRequired
+  onDeleteClick: PropTypes.func.isRequired
 
 }
 

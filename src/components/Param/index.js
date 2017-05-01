@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import ParamBar from '../../containers/ParamBar'
 import ParamInputSelect from '../../containers/ParamInputSelect'
 import Modifier from '../../containers/Modifier'
@@ -31,10 +32,10 @@ const Param = ({ title, nodeId, modifierIds }) => (
 )
 
 Param.propTypes = {
-  title: React.PropTypes.string.isRequired,
-  nodeId: React.PropTypes.string.isRequired,
-  modifierIds: React.PropTypes.arrayOf(
-    React.PropTypes.string
+  title: PropTypes.string.isRequired,
+  nodeId: PropTypes.string.isRequired,
+  modifierIds: PropTypes.arrayOf(
+    PropTypes.string
   )
 }
 

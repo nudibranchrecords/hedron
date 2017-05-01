@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import styled from 'styled-components'
 
 const Wrapper = styled.div`
@@ -27,10 +28,10 @@ const Clock = ({ beat, bar, phrase, bpm }) => (
 )
 
 Clock.propTypes = {
-  beat: React.PropTypes.number.isRequired,
-  bar: React.PropTypes.number.isRequired,
-  phrase: React.PropTypes.number.isRequired,
-  bpm: React.PropTypes.number.isRequired
+  beat: PropTypes.number.isRequired,
+  bar: PropTypes.number.isRequired,
+  phrase: PropTypes.number.isRequired,
+  bpm: PropTypes.number.isRequired
 }
 
 export default Clock

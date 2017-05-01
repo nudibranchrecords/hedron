@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import styled from 'styled-components'
 
 import ShotButton from '../../containers/ShotButton'
@@ -18,9 +19,9 @@ const Shot = ({ title, method, sketchId }) => (
 )
 
 Shot.propTypes = {
-  title: React.PropTypes.string.isRequired,
-  method: React.PropTypes.string.isRequired,
-  sketchId: React.PropTypes.string.isRequired
+  title: PropTypes.string.isRequired,
+  method: PropTypes.string.isRequired,
+  sketchId: PropTypes.string.isRequired
 }
 
 export default Shot
