@@ -19,18 +19,18 @@ const Bottom = styled.div`
   text-align: center;
 `
 
-const Param = ({ beat, bar, phrase, bpm }) => (
+const Clock = ({ beat, bar, phrase, bpm }) => (
   <Wrapper>
     <Top>{beat} - {bar} - {phrase}</Top>
     <Bottom>{bpm}</Bottom>
   </Wrapper>
 )
 
-Param.propTypes = {
+Clock.propTypes = {
   beat: React.PropTypes.number.isRequired,
   bar: React.PropTypes.number.isRequired,
   phrase: React.PropTypes.number.isRequired,
   bpm: React.PropTypes.number.isRequired
 }
 
-export default Param
+export default Clock
