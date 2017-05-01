@@ -58,8 +58,13 @@ module.exports = {
   target: 'node-webkit',
   plugins: [
     new webpack.HotModuleReplacementPlugin(),
-    new webpack.NamedModulesPlugin()
-    // ,enable HMR globally
+    new webpack.NamedModulesPlugin(),
+    new webpack.DefinePlugin({
+      'process.env': {
+        NODE_ENV: JSON.stringify('production')
+      }
+    }),
+    new webpack.optimize.UglifyJsPlugin()
   ],
   devtool: 'cheap-module-source-map',
   devServer: {
