@@ -23,17 +23,19 @@ class ParamBar extends React.Component {
 
   componentWillReceiveProps (nextProps) {
     const context = this.canvas.getContext('2d')
+    const barWidth = 2
+    const innerWidth = this.width - barWidth
 
     context.fillStyle = '#FFFFFF'
 
-    const pos = this.width * nextProps.value
-    const oldPos = this.width * this.props.value
+    const pos = innerWidth * nextProps.value
+    const oldPos = innerWidth * this.props.value
 
     // Only clear the area from the last position
-    context.clearRect(oldPos - 1, 0, 4, this.height)
+    context.clearRect(oldPos - 1, 0, barWidth + 2, this.height)
 
       // Draw bar at new position
-    context.fillRect(pos, 0, 2, this.height)
+    context.fillRect(pos, 0, barWidth, this.height)
   }
 
   handleMouseDown (e) {
