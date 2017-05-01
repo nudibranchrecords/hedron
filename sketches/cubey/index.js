@@ -49,6 +49,9 @@ class Cubey extends Sketch {
   update (params) {
     this.group.rotation.x += params.rotX
     this.group.rotation.y += params.rotY
+
+    if (params.scale === 0) params.scale = 0.00001
+
     this.group.scale.set(params.scale, params.scale, params.scale)
   }
 }
