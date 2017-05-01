@@ -8,7 +8,7 @@ import uid from 'uid'
 
 export function* nodeInputUpdate (action) {
   const p = action.payload
-  const inputId = p.inputId !== 'none' ? p.inputId : false
+  const inputId = p.inputId
   const input = inputId ? { id: inputId } : false
 
   const oldInputId = yield select(getNodeInputId, p.nodeId)

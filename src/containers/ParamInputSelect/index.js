@@ -14,8 +14,8 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
-    onInputChange: (event) => {
-      dispatch(uNodeInputUpdate(ownProps.nodeId, event.target.value))
+    onInputChange: (value) => {
+      dispatch(uNodeInputUpdate(ownProps.nodeId, value.value))
     }
   }
 }

@@ -11,6 +11,7 @@ import App from './components/App'
 import Engine from './Engine'
 import Stats from 'stats.js'
 import './windows'
+import 'react-select/dist/react-select.css'
 
 // inputs
 import initiateAudio from './inputs/AudioInput'

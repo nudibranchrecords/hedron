@@ -224,35 +224,3 @@ test('(Saga) nodeInputUpdate - old input false', (t) => {
   t.equal(generator.next().done, true, 'Generator ends')
   t.end()
 })
-
-test('(Saga) nodeInputUpdate - new input "none"', (t) => {
-  const inputId = 'none'
-  const nodeId = 'XXX'
-
-  const generator = nodeInputUpdate({
-    payload: { nodeId, inputId }
-  })
-
-  t.deepEqual(
-    generator.next().value,
-    select(getNodeInputId, nodeId),
-    '1. Get old input ID'
-  )
-
-  const oldInputId = 'audio_0'
-
-  t.deepEqual(
-    generator.next(oldInputId).value,
-    put(inputAssignedNodeDelete(oldInputId, nodeId)),
-    '2. Delete node assigned to old input'
-  )
-
-  t.deepEqual(
-    generator.next().value,
-    put(rNodeInputUpdate(nodeId, false)),
-    '3. Update input in node with false'
-  )
-
-  t.equal(generator.next().done, true, 'Generator ends')
-  t.end()
-})

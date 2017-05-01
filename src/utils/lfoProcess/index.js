@@ -6,10 +6,10 @@ export default (delta, shape, rate) => {
     case 'sine':
       y = Math.sin(x)
       break
-    case 'sawTooth':
+    case 'sawtooth':
       y = (x - Math.floor(x + 0.5)) * 2
       break
-    case 'rSawTooth':
+    case 'rSawtooth':
       y = -(x - Math.floor(x + 0.5)) * 2
       break
     case 'square':

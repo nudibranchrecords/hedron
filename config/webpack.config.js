@@ -29,16 +29,20 @@ module.exports = {
     libraryTarget: 'commonjs2'
   },
   module: {
-    loaders: [
+    rules: [
       {
         test: /\.js$/,
         exclude: /(node_modules|bower_components)/,
-        loader: 'babel-loader'
+        use: [
+          { loader: 'babel-loader' }
+        ]
       },
       {
-        test: /\.json$/,
-        exclude: /(node_modules|bower_components)/,
-        loader: 'json'
+        test: /\.css$/,
+        use: [
+          { loader: 'style-loader' },
+          { loader: 'css-loader' }
+        ]
       }
     ],
     noParse: /ws\/lib/
