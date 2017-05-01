@@ -14,7 +14,6 @@ const mapStateToProps = (state, ownProps) => {
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     onChange: (value) => {
-      console.log(value)
       dispatch(nodeValueUpdate(ownProps.nodeId, value.value))
     }
   }
