@@ -5,7 +5,8 @@ const mapStateToProps = (state, ownProps) => {
   const param = state.nodes[ownProps.nodeId]
   return {
     title: param.title,
-    modifierIds: param.modifierIds
+    modifierIds: param.modifierIds,
+    lfoOptionIds: param.lfoOptionIds
   }
 }
 

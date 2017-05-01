@@ -25,7 +25,7 @@ stats.dom.setAttribute('style', '')
 
 const composeEnhancers = composeWithDevTools({
   realtime: true,
-  actionsBlacklist: ['CLOCK_PULSE', 'INPUT_FIRED', 'NODE_VALUE_UPDATE']
+  actionsBlacklist: ['CLOCK_PULSE', 'CLOCK_BEAT_INC', 'CLOCK_BPM_UPDATE', 'INPUT_FIRED', 'NODE_VALUE_UPDATE']
 })
 
 const sagaMiddleware = createSagaMiddleware()

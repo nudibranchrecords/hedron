@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import ParamBar from '../../containers/ParamBar'
 import ParamInputSelect from '../../containers/ParamInputSelect'
 import Modifier from '../../containers/Modifier'
+import Select from '../../containers/Select'
 import styled from 'styled-components'
 
 const Wrapper = styled.div`
@@ -16,12 +17,18 @@ const Items = styled.div`
 
 `
 
-const Param = ({ title, nodeId, modifierIds }) => (
+const Param = ({ title, nodeId, modifierIds, lfoOptionIds }) => (
   <Wrapper>
     {title}
     <br />
     <ParamBar nodeId={nodeId} />
     <ParamInputSelect nodeId={nodeId} />
+
+    <Items>
+      {lfoOptionIds.map((id) => (
+        <Select nodeId={id} key={id} />
+      ))}
+    </Items>
 
     <Items>
       {modifierIds.map((id) => (
@@ -35,6 +42,9 @@ Param.propTypes = {
   title: PropTypes.string.isRequired,
   nodeId: PropTypes.string.isRequired,
   modifierIds: PropTypes.arrayOf(
+    PropTypes.string
+  ),
+  lfoOptionIds: PropTypes.arrayOf(
     PropTypes.string
   )
 }

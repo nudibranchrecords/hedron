@@ -39,10 +39,10 @@ const options = [
   }
 ]
 
-const InputSelect = ({ inputId, onInputChange, isLearning, midiText }) => (
+const InputSelect = ({ inputId, onInputChange, infoText }) => (
   <div>
     <Select clearable={false} searchable={false} options={options} onChange={onInputChange} value={inputId} />
-    {midiText && <Info>{midiText}</Info>}
+    {infoText && <Info>{infoText}</Info>}
   </div>
 )
 
@@ -52,8 +52,7 @@ InputSelect.propTypes = {
     PropTypes.bool
   ]),
   onInputChange: PropTypes.func.isRequired,
-  isLearning: PropTypes.bool,
-  midiText: PropTypes.string
+  infoText: PropTypes.string
 }
 
 export default InputSelect

@@ -9,12 +9,12 @@ import { work } from 'modifiers'
 
 export function* handleInput (action) {
   const p = action.payload
-  let value = p.value
 
   try {
     const nodes = yield select(getAssignedNodes, p.inputId)
 
     for (let i = 0; i < nodes.length; i++) {
+      let value = p.value
       let modifiers
 
       if (p.inputId === 'lfo') {
