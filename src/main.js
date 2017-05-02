@@ -52,11 +52,7 @@ const renderApp = (Component) => {
 renderApp(App)
 
 // Hot Module Replacement API
-if (module.hot) {
-  module.hot.accept('./components/App', () => {
-    renderApp(App)
-  })
-}
+if (module.hot) module.hot.accept('./components/App', () => renderApp(App))
 
 initiateAudio(store)
 initiateMidi(store)
