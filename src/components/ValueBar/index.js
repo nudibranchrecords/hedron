@@ -17,7 +17,8 @@ class ParamBar extends React.Component {
   }
 
   componentDidMount () {
-    this.width = this.canvas.width = 100
+    this.containerEl = this.canvas.parentElement
+    this.width = this.canvas.width = this.containerEl.offsetWidth
     this.height = this.canvas.height = 10
   }
 

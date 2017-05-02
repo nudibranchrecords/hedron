@@ -13,16 +13,33 @@ const Wrapper = styled.div`
   margin: 0 0.5rem 0.5rem 0;
 `
 
-const Items = styled.div`
+const InputSelectCol = styled.div`
+  flex: 0 0 7rem;
+`
 
+const BarCol = styled.div`
+  flex: 1;
+`
+
+const Row = styled.div`
+  display: flex;
+`
+
+const Items = styled.div`
+  display: flex;
 `
 
 const Param = ({ title, nodeId, modifierIds, lfoOptionIds }) => (
   <Wrapper>
-    {title}
-    <br />
-    <ParamBar nodeId={nodeId} />
-    <ParamInputSelect nodeId={nodeId} />
+    <Row>
+      {title}
+      <BarCol>
+        <ParamBar nodeId={nodeId} />
+      </BarCol>
+      <InputSelectCol>
+        <ParamInputSelect nodeId={nodeId} />
+      </InputSelectCol>
+    </Row>
 
     <Items>
       {lfoOptionIds.map((id) => (

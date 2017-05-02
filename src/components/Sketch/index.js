@@ -14,6 +14,7 @@ const Wrapper = styled.div`
 const Items = styled.div`
   display: flex;
   align-items: stretch;
+  flex-direction: column;
 `
 
 const Bottom = styled.div`
