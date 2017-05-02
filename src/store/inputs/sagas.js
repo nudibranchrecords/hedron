@@ -30,6 +30,11 @@ export function* handleInput (action) {
         }
       }
 
+      if (nodes[i].type === 'select') {
+        const options = nodes[i].options
+        value = options[Math.floor(options.length * value)].value
+      }
+
       yield put(nodeValueUpdate(nodes[i].id, value))
     }
   } catch (error) {

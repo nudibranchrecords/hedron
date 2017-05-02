@@ -202,3 +202,51 @@ test('(Saga) handleInput (lfo)', (t) => {
 
   t.end()
 })
+
+test('(Saga) handleInput (select node)', (t) => {
+  const generator = handleInput({
+    payload: {
+      inputId: 'midi_xxx',
+      value: 0.34
+    }
+  })
+
+  t.deepEqual(
+    generator.next().value,
+    select(getAssignedNodes, 'midi_xxx'),
+    '1. Gets assigned nodes'
+  )
+
+  const nodes = [
+    {
+      id: 'XX',
+      type: 'select',
+      options: [
+        { value: 'one' },
+        { value: 'two' },
+        { value: 'three' },
+        { value: 'four' },
+        { value: 'five' },
+        { value: 'six' },
+        { value: 'seven' },
+        { value: 'eight' },
+        { value: 'nine' },
+        { value: 'ten' }
+      ]
+    }
+  ]
+
+  t.deepEqual(
+    generator.next(nodes).value,
+    put(nodeValueUpdate('XX', 'four')),
+    '2. Dispatches node update action, converting value to option'
+  )
+
+  t.deepEqual(
+    generator.throw({ message: 'Error!' }).value,
+    put(projectError('Error!')),
+    'Dispatches project error if some error'
+  )
+
+  t.end()
+})

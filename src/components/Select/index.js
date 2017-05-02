@@ -7,7 +7,7 @@ const Wrapper = styled.div`
 
 `
 
-const Select = ({ options, onChange, title, value }) => (
+const Select = ({ options, onChange, title, value, onAssignClick }) => (
   <Wrapper>
     {title}
     <ReactSelect
@@ -17,6 +17,7 @@ const Select = ({ options, onChange, title, value }) => (
       options={options}
       onChange={onChange}
     />
+    <a href='#' onClick={onAssignClick}>Assign MIDI</a>
   </Wrapper>
 )
 
@@ -29,8 +30,9 @@ Select.propTypes = {
   options: PropTypes.arrayOf(
     PropTypes.object
   ),
-  onChange: PropTypes.func,
-  title: PropTypes.string
+  onChange: PropTypes.func.isRequired,
+  onAssignClick: PropTypes.func.isRequired,
+  title: PropTypes.string.isRequired
 }
 
 export default Select

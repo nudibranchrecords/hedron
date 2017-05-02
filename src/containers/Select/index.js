@@ -1,6 +1,6 @@
 import { connect } from 'react-redux'
 import Select from '../../components/Select'
-import { nodeValueUpdate } from '../../store/nodes/actions'
+import { nodeValueUpdate, uNodeInputUpdate } from '../../store/nodes/actions'
 
 const mapStateToProps = (state, ownProps) => {
   const select = state.nodes[ownProps.nodeId]
@@ -13,8 +13,11 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
-    onChange: (value) => {
+    onChange: value => {
       dispatch(nodeValueUpdate(ownProps.nodeId, value.value))
+    },
+    onAssignClick: () => {
+      dispatch(uNodeInputUpdate(ownProps.nodeId, 'midi'))
     }
   }
 }

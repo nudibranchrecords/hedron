@@ -7,6 +7,7 @@ export default () => {
       id: uid(),
       key: 'shape',
       value: 'sine',
+      type: 'select',
       options: [
         {
           value: 'sine',
@@ -35,6 +36,7 @@ export default () => {
       id: uid(),
       key: 'rate',
       value: 1,
+      type: 'select',
       options: [
         {
           value: 32,
