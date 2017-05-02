@@ -28,7 +28,7 @@ class Overview extends React.Component {
       <Wrapper>
         <Viewer />
         <Tools>
-          <div ref={node => node.appendChild(this.props.stats.dom)} />
+          <div ref={node => node && node.appendChild(this.props.stats.dom)} />
           <AudioAnalyzer />
           <Clock />
         </Tools>
