@@ -1,14 +1,24 @@
+'use strict'
+
 const webpack = require('webpack')
 const path = require('path')
 
 const env = process.env.NODE_ENV
 
-var entry
+let entry, plugins
 
 if (env === 'production') {
   entry = [
     'babel-polyfill',
     './src/main.js'
+  ]
+  plugins = [
+    new webpack.DefinePlugin({
+      'process.env': {
+        NODE_ENV: JSON.stringify('production')
+      }
+    }),
+    new webpack.optimize.UglifyJsPlugin()
   ]
 } else {
   entry = [
@@ -17,6 +27,10 @@ if (env === 'production') {
     'webpack-dev-server/client?http://0.0.0.0:8080',
     'webpack/hot/only-dev-server',
     './src/main.js'
+  ]
+  plugins = [
+    new webpack.HotModuleReplacementPlugin(),
+    new webpack.NamedModulesPlugin()
   ]
 }
 
@@ -56,25 +70,12 @@ module.exports = {
     }
   },
   target: 'node-webkit',
-  plugins: [
-    new webpack.HotModuleReplacementPlugin(),
-    new webpack.NamedModulesPlugin(),
-    new webpack.DefinePlugin({
-      'process.env': {
-        NODE_ENV: JSON.stringify('production')
-      }
-    }),
-    new webpack.optimize.UglifyJsPlugin()
-  ],
+  plugins: plugins,
   devtool: 'cheap-module-source-map',
   devServer: {
     host: '0.0.0.0',
     port: 8080,
     historyApiFallback: true,
-
-    // respond to 404s with index.html
-
     hot: true
-    // enable HMR on the server
   }
 }
