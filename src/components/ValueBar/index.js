@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import styled from 'styled-components'
 
 const Bar = styled.canvas`
-  background: black;
+  background: #222222;
   cursor: pointer;
 `
 

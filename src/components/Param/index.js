@@ -7,10 +7,10 @@ import Select from '../../containers/Select'
 import styled from 'styled-components'
 
 const Wrapper = styled.div`
-  border: 1px solid black;
-  border-radius: 10px;
+  border: 1px solid #292929;
+  border-radius: 3px;
   padding: 0.5rem;
-  margin: 0 0.5rem 0.5rem 0;
+  margin: 0 0 0.5rem 0
 `
 
 const InputSelectCol = styled.div`
