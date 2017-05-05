@@ -1,5 +1,5 @@
 import test from 'tape'
-import { getInfoText } from '../selectors'
+import getParamInfoText from '../getParamInfoText'
 import deepFreeze from 'deep-freeze'
 
 test('(Selector) getInfoText - "Learning MIDI"', (t) => {
@@ -16,7 +16,7 @@ test('(Selector) getInfoText - "Learning MIDI"', (t) => {
 
   deepFreeze(state)
 
-  const actual = getInfoText(state, 'xxx')
+  const actual = getParamInfoText(state, 'xxx')
   t.equal(actual, 'Learning MIDI')
   t.end()
 })
@@ -38,7 +38,7 @@ test('(Selector) getInfoText - MIDI info', (t) => {
 
   deepFreeze(state)
 
-  const actual = getInfoText(state, 'xxx')
+  const actual = getParamInfoText(state, 'xxx')
   t.equal(actual, 'foo')
   t.end()
 })

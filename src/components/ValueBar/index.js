@@ -7,6 +7,8 @@ const Bar = styled.canvas`
   cursor: pointer;
 `
 
+const win = nw.Window.get()
+
 class ParamBar extends React.Component {
 
   constructor (props) {
@@ -14,12 +16,26 @@ class ParamBar extends React.Component {
 
     this.handleMouseDown = this.handleMouseDown.bind(this)
     this.handleMouseMove = this.handleMouseMove.bind(this)
+    this.setSize = this.setSize.bind(this)
   }
 
   componentDidMount () {
     this.containerEl = this.canvas.parentElement
     this.width = this.canvas.width = this.containerEl.offsetWidth
-    this.height = this.canvas.height = 10
+    this.height = this.canvas.height = 16
+
+    this.setSize()
+
+    win.on('resize', this.setSize)
+  }
+
+  componentWillUnmount () {
+    win.removeListener('resize', this.setSize)
+  }
+
+  setSize () {
+    this.canvas.width = 0
+    this.width = this.canvas.width = this.containerEl.offsetWidth
   }
 
   componentWillReceiveProps (nextProps) {

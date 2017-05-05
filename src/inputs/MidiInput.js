@@ -17,7 +17,7 @@ export default (store) => {
         store.dispatch(rNodeInputUpdate(learningId, {
           id,
           type: 'midi',
-          info: `${device} / ${message.data[0]} / ${message.data[1]}`
+          info: `${device} / ${message.data[1]}`
         }))
         store.dispatch(midiStopLearning())
       } else {

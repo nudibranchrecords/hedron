@@ -1,4 +1,4 @@
-export const getInfoText = (state, nodeId) => {
+export default (state, nodeId) => {
   const param = state.nodes[nodeId]
 
   if (state.midi.learning === nodeId) return 'Learning MIDI'

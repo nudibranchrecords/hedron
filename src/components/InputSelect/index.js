@@ -3,9 +3,17 @@ import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import Select from 'react-select'
 
-const Info = styled.span`
+const Info = styled.div`
   font-size: 0.7rem;
   text-transform: uppercase;
+`
+
+const Label = styled.div`
+  padding: 0.25rem;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  background: #da5782;
+  color: white;
 `
 
 const options = [
@@ -39,10 +47,9 @@ const options = [
   }
 ]
 
-const InputSelect = ({ inputId, onInputChange, infoText }) => (
+const InputSelect = ({ inputId, onInputChange }) => (
   <div>
     <Select clearable={false} searchable={false} options={options} onChange={onInputChange} value={inputId} />
-    {infoText && <Info>{infoText}</Info>}
   </div>
 )
 
@@ -51,8 +58,7 @@ InputSelect.propTypes = {
     PropTypes.string,
     PropTypes.bool
   ]),
-  onInputChange: PropTypes.func.isRequired,
-  infoText: PropTypes.string
+  onInputChange: PropTypes.func.isRequired
 }
 
 export default InputSelect

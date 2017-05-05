@@ -2,13 +2,10 @@ import { connect } from 'react-redux'
 import InputSelect from '../../components/InputSelect'
 import { uNodeInputUpdate } from '../../store/nodes/actions'
 import getNodeInputId from '../../selectors/getNodeInputId'
-import { getInfoText } from './selectors'
 
 const mapStateToProps = (state, ownProps) => {
   return {
-    inputId: getNodeInputId(state, ownProps.nodeId),
-    isLearning: state.midi.learning === ownProps.nodeId,
-    infoText: getInfoText(state, ownProps.nodeId)
+    inputId: getNodeInputId(state, ownProps.nodeId)
   }
 }
 

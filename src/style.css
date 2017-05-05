@@ -1,0 +1,34 @@
+.Select-arrow-zone {
+  display: none;
+}
+
+.Select-control {
+  background: #da5782;
+  text-transform: uppercase;
+  font-size: 0.5rem;
+  border: 0;
+  border-radius: 0;
+  height: auto;
+}
+
+.Select-input {
+  height: 1rem
+}
+
+.Select-value {
+  line-height: 1rem !important;
+}
+
+.Select-value-label {
+  color: white !important;
+}
+
+.Select-menu-outer {
+  max-height: 300px;
+  background: #da5782;
+  color: white;
+}
+.Select-menu {
+  max-height: 300px;
+}
+
