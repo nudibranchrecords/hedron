@@ -34,7 +34,8 @@ export function* handleSketchCreate (action) {
       key: param.key,
       value: param.defaultValue,
       id: uniqueId,
-      lfoOptionIds
+      lfoOptionIds,
+      isOpen: false
     }))
   }
 

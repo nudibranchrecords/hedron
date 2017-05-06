@@ -4,13 +4,12 @@ import ParamBar from '../../containers/ParamBar'
 import ParamInputSelect from '../../containers/ParamInputSelect'
 import Modifier from '../../containers/Modifier'
 import InfoText from '../InfoText'
+import OpenButton from '../OpenButton'
 import Select from '../../containers/Select'
 import styled from 'styled-components'
-import downIcon from '../../assets/icons/down.svg'
-import Icon from '../Icon'
 
 const Wrapper = styled.div`
-  border: 1px solid #292929;
+  border: 1px solid #212121;
   border-radius: 3px;
 
   margin: 0 0 0.5rem 0
@@ -36,7 +35,7 @@ const Row = styled.div`
 `
 
 const Bottom = styled.div`
-  border-top: 1px dashed #292929;
+  border-top: 1px dashed #212121;
   display: flex;
   align-items: center;
   padding: 0.5rem 0.25rem 0.5rem 0.5rem;
@@ -57,7 +56,9 @@ const Info = styled(InfoText)`
   padding-left: 8rem;
 `
 
-const Param = ({ title, nodeId, modifierIds, lfoOptionIds, infoText }) => (
+const Param = ({
+  title, nodeId, modifierIds, lfoOptionIds, infoText, isOpen, onOpenClick
+}) => (
   <Wrapper>
     <Top>
       <Row>
@@ -68,22 +69,24 @@ const Param = ({ title, nodeId, modifierIds, lfoOptionIds, infoText }) => (
         <InputSelectCol>
           <ParamInputSelect nodeId={nodeId} />
         </InputSelectCol>
-        <Icon glyph={downIcon} />
+        <OpenButton onClick={onOpenClick} isOpen={isOpen} />
       </Row>
       <Info>{infoText}</Info>
     </Top>
-    <Bottom>
-      {modifierIds.map((id) => (
-        <Item>
-          <Modifier nodeId={id} key={id} />
-        </Item>
-      ))}
-      {lfoOptionIds && lfoOptionIds.map((id) => (
-        <Item>
-          <Select nodeId={id} key={id} />
-        </Item>
-      ))}
-    </Bottom>
+    {isOpen &&
+      <Bottom>
+        {modifierIds.map((id) => (
+          <Item>
+            <Modifier nodeId={id} key={id} />
+          </Item>
+        ))}
+        {lfoOptionIds && lfoOptionIds.map((id) => (
+          <Item>
+            <Select nodeId={id} key={id} />
+          </Item>
+        ))}
+      </Bottom>
+    }
   </Wrapper>
 )
 
@@ -96,7 +99,9 @@ Param.propTypes = {
   ),
   lfoOptionIds: PropTypes.arrayOf(
     PropTypes.string
-  )
+  ),
+  isOpen: PropTypes.bool,
+  onOpenClick: PropTypes.func.isRequired
 }
 
 export default Param

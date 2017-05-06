@@ -22,6 +22,18 @@ test('(Action Creator) uNodeCreate', (t) => {
   t.end()
 })
 
+test('(Action Creator) nodeOpenToggle', (t) => {
+  let actual = a.nodeOpenToggle('XXX')
+  let expected = {
+    type: 'NODE_OPEN_TOGGLE',
+    payload: {
+      id: 'XXX'
+    }
+  }
+  t.deepEqual(actual, expected, 'Creates action to open/close node')
+  t.end()
+})
+
 test('(Action Creator) rNodeDelete', (t) => {
   let actual = a.rNodeDelete('XXX')
   let expected = {

@@ -74,3 +74,12 @@ export function rNodeInputUpdate (nodeId, input) {
     }
   }
 }
+
+export function nodeOpenToggle (id) {
+  return {
+    type: 'NODE_OPEN_TOGGLE',
+    payload: {
+      id
+    }
+  }
+}

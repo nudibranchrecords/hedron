@@ -128,7 +128,8 @@ test('(Saga) handleSketchCreate', (t) => {
       key: 'RotX',
       id: uniqueId,
       value: 0.1,
-      lfoOptionIds: ['LFO1', 'LFO2']
+      lfoOptionIds: ['LFO1', 'LFO2'],
+      isOpen: false
     })),
     'Dispatch node create action'
   )
@@ -187,7 +188,8 @@ test('(Saga) handleSketchCreate', (t) => {
       key: 'RotY',
       id: uniqueId,
       value: 0.5,
-      lfoOptionIds: ['LFO3', 'LFO4']
+      lfoOptionIds: ['LFO3', 'LFO4'],
+      isOpen: false
     })),
     'Dispatch node create action'
   )

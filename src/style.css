@@ -9,16 +9,17 @@ html {
 }
 
 .Select-arrow-zone {
-  display: none;
+  padding-right: 0;
 }
 
 .Select-control {
-  background: #da5782;
+  background: #222222 !important;
   text-transform: uppercase;
   font-size: 0.5rem;
   border: 0;
   border-radius: 0;
   height: auto;
+  cursor: pointer;
 }
 
 .Select-input {
@@ -35,10 +36,23 @@ html {
 
 .Select-menu-outer {
   max-height: 300px;
-  background: #da5782;
+  background: #222222 !important;
   color: white;
 }
 .Select-menu {
   max-height: 300px;
+  background: #222222 !important;
 }
+.Select-option {
+  background: #222222;
+}
+.Select-option.is-focused {
+  background: #333;
+  color: white;
+}
+.Select-option.is-selected {
+  background: white;
+  color: black;
+}
+
 

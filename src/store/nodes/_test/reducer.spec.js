@@ -351,3 +351,83 @@ test('(Reducer) nodesReducer - Updates correct node value on R_NODE_INPUT_UPDATE
   t.end()
 })
 
+test('(Reducer) nodesReducer - opens/closes node on NODE_OPEN_TOGGLE', (t) => {
+  let originalState, expectedState, actualState
+
+  originalState = {
+    '01': {
+      title: 'Rotation X',
+      key: 'rotX',
+      value: 0.1,
+      isOpen: true,
+      input: {
+        id: 'audio_0'
+      }
+    },
+    '02': {
+      title: 'Rotation Y',
+      key: 'rotY',
+      isOpen: false,
+      input: undefined
+    }
+  }
+
+  deepFreeze(originalState)
+
+  expectedState = {
+    '01': {
+      title: 'Rotation X',
+      key: 'rotX',
+      value: 0.1,
+      isOpen: true,
+      input: {
+        id: 'audio_0'
+      }
+    },
+    '02': {
+      title: 'Rotation Y',
+      key: 'rotY',
+      isOpen: true,
+      input: undefined
+    }
+  }
+
+  actualState = nodesReducer(originalState, {
+    type: 'NODE_OPEN_TOGGLE',
+    payload: {
+      id: '02'
+    }
+  })
+
+  t.deepEqual(actualState, expectedState)
+
+  expectedState = {
+    '01': {
+      title: 'Rotation X',
+      key: 'rotX',
+      value: 0.1,
+      isOpen: false,
+      input: {
+        id: 'audio_0'
+      }
+    },
+    '02': {
+      title: 'Rotation Y',
+      key: 'rotY',
+      isOpen: true,
+      input: undefined
+    }
+  }
+
+  actualState = nodesReducer(actualState, {
+    type: 'NODE_OPEN_TOGGLE',
+    payload: {
+      id: '01'
+    }
+  })
+
+  t.deepEqual(actualState, expectedState)
+
+  t.end()
+})
+

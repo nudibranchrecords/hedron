@@ -36,6 +36,15 @@ const nodesReducer = (state = defaultState, action) => {
         }
       }
     }
+    case 'NODE_OPEN_TOGGLE': {
+      return {
+        ...state,
+        [p.id] : {
+          ...state[p.id],
+          isOpen: !state[p.id].isOpen
+        }
+      }
+    }
     default:
       return state
   }
