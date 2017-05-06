@@ -3,18 +3,21 @@ import PropTypes from 'prop-types'
 import ParamBar from '../../containers/ParamBar'
 import ParamInputSelect from '../../containers/ParamInputSelect'
 import Modifier from '../../containers/Modifier'
-import Select from '../../containers/Select'
+import InfoText from '../InfoText'
 import styled from 'styled-components'
+import downIcon from '../../assets/icons/down.svg'
+import Icon from '../Icon'
 
 const Wrapper = styled.div`
   border: 1px solid #292929;
   border-radius: 3px;
-  padding: 0.5rem;
+
   margin: 0 0 0.5rem 0
 `
 
 const InputSelectCol = styled.div`
   flex: 0 0 5rem;
+  padding-right: 1rem;
 `
 
 const BarCol = styled.div`
@@ -22,51 +25,70 @@ const BarCol = styled.div`
   padding-right: 1rem;
 `
 
+const Top = styled.div`
+  padding: 0.5rem;
+`
+
 const Row = styled.div`
   display: flex;
   align-items: center;
 `
 
-const Info = styled.div`
-  margin-left: 8rem;
-  text-transform: uppercase;
-  font-size: 0.7rem;
-`
-const Items = styled.div`
+const Bottom = styled.div`
+  border-top: 1px dashed #292929;
   display: flex;
+  align-items: center;
+  padding: 0.5rem;
 `
 
+const Item = styled.div`
+  flex: 0 0 25%;
+  font-size: 0.8rem;
+  background: #434343;
+  padding: 0.25rem;
+  margin-right: 0.25rem;
+`
 const Title = styled.div`
   flex: 0 0 8rem;
   text-align: right;
   padding-right: 1rem;
 `
 
+const Info = styled(InfoText)`
+  padding-left: 8rem;
+`
+
 const Param = ({ title, nodeId, modifierIds, lfoOptionIds, infoText }) => (
   <Wrapper>
-    <Row>
-      <Title>{title}</Title>
-      <BarCol>
-        <ParamBar nodeId={nodeId} />
-      </BarCol>
-      <InputSelectCol>
-        <ParamInputSelect nodeId={nodeId} />
-      </InputSelectCol>
-    </Row>
-    <Info>{infoText}</Info>
+    <Top>
+      <Row>
+        <Title>{title}</Title>
+        <BarCol>
+          <ParamBar nodeId={nodeId} />
+        </BarCol>
+        <InputSelectCol>
+          <ParamInputSelect nodeId={nodeId} />
+        </InputSelectCol>
+        <Icon glyph={downIcon} />
+      </Row>
+      <Info>{infoText}</Info>
+    </Top>
+
     {/*
     <Items>
       {lfoOptionIds.map((id) => (
         <Select nodeId={id} key={id} />
       ))}
     </Items>
+  */}
 
-    <Items>
+    <Bottom>
       {modifierIds.map((id) => (
-        <Modifier nodeId={id} key={id} />
+        <Item>
+          <Modifier nodeId={id} key={id} />
+        </Item>
       ))}
-    </Items>
-    */}
+    </Bottom>
   </Wrapper>
 )
 

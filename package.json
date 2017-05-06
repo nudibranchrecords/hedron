@@ -59,6 +59,7 @@
     "stylelint": "^7.9.0",
     "stylelint-config-standard": "^16.0.0",
     "stylelint-processor-styled-components": "^0.0.4",
+    "svg-inline-loader": "^0.7.1",
     "tap-colorize": "^1.2.0",
     "tape": "^4.6.3",
     "tape-watch": "^2.3.0",
