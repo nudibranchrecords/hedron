@@ -5,5 +5,5 @@ export default (state, nodeId) => {
     return node.lfoOptionIds
   }
 
-  return false
+  return undefined
 }

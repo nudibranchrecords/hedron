@@ -14,7 +14,7 @@ test('(Selector) getNodeLfoOptionIds (input is not "lfo")', (t) => {
 
   const actual = getNodeLfoOptionIds(state, 'xxx')
 
-  t.equal(actual, false, 'Returns false')
+  t.equal(actual, undefined, 'Returns undefined')
   t.end()
 })
 
