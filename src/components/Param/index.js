@@ -4,6 +4,7 @@ import ParamBar from '../../containers/ParamBar'
 import ParamInputSelect from '../../containers/ParamInputSelect'
 import Modifier from '../../containers/Modifier'
 import InfoText from '../InfoText'
+import Select from '../../containers/Select'
 import styled from 'styled-components'
 import downIcon from '../../assets/icons/down.svg'
 import Icon from '../Icon'
@@ -38,15 +39,13 @@ const Bottom = styled.div`
   border-top: 1px dashed #292929;
   display: flex;
   align-items: center;
-  padding: 0.5rem;
+  padding: 0.5rem 0.25rem 0.5rem 0.5rem;
 `
 
 const Item = styled.div`
   flex: 0 0 25%;
   font-size: 0.8rem;
-  background: #434343;
-  padding: 0.25rem;
-  margin-right: 0.25rem;
+  padding-right: 0.25rem;
 `
 const Title = styled.div`
   flex: 0 0 8rem;
@@ -73,19 +72,15 @@ const Param = ({ title, nodeId, modifierIds, lfoOptionIds, infoText }) => (
       </Row>
       <Info>{infoText}</Info>
     </Top>
-
-    {/*
-    <Items>
-      {lfoOptionIds.map((id) => (
-        <Select nodeId={id} key={id} />
-      ))}
-    </Items>
-  */}
-
     <Bottom>
       {modifierIds.map((id) => (
         <Item>
           <Modifier nodeId={id} key={id} />
+        </Item>
+      ))}
+      {lfoOptionIds && lfoOptionIds.map((id) => (
+        <Item>
+          <Select nodeId={id} key={id} />
         </Item>
       ))}
     </Bottom>

@@ -1,13 +1,15 @@
 import { connect } from 'react-redux'
 import Select from '../../components/Select'
 import { nodeValueUpdate, uNodeInputUpdate } from '../../store/nodes/actions'
+import getParamInfoText from '../../selectors/getParamInfoText'
 
 const mapStateToProps = (state, ownProps) => {
   const select = state.nodes[ownProps.nodeId]
   return {
     value: select.value,
     title: select.title,
-    options: select.options
+    options: select.options,
+    infoText: getParamInfoText(state, ownProps.nodeId)
   }
 }
 
