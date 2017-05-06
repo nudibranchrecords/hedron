@@ -1,10 +1,10 @@
 import { connect } from 'react-redux'
 import ShotButton from '../../components/ShotButton'
-import { shotFired } from '../../store/shots/actions'
+import { nodeShotFired } from '../../store/nodes/actions'
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
   onClick: () => {
-    dispatch(shotFired(ownProps.sketchId, ownProps.method))
+    dispatch(nodeShotFired(ownProps.sketchId, ownProps.method))
   }
 })
 

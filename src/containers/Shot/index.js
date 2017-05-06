@@ -3,9 +3,9 @@ import Shot from '../../components/Shot'
 
 const mapStateToProps = (state, ownProps) => {
   return {
-    title: state.shots[ownProps.shotId].title,
-    sketchId: state.shots[ownProps.shotId].sketchId,
-    method: state.shots[ownProps.shotId].method
+    title: state.nodes[ownProps.nodeId].title,
+    sketchId: state.nodes[ownProps.nodeId].sketchId,
+    method: state.nodes[ownProps.nodeId].method
   }
 }
 

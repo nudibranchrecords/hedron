@@ -2,6 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import Param from '../../containers/Param'
 import Shot from '../../containers/Shot'
+import Row from '../Row'
 import styled from 'styled-components'
 
 const Wrapper = styled.div`
@@ -11,9 +12,8 @@ const Wrapper = styled.div`
   flex-direction: column;
 `
 
-const Items = styled.div`
+const Params = styled.div`
   display: flex;
-  align-items: stretch;
   flex-direction: column;
 `
 
@@ -27,17 +27,19 @@ const Sketch = ({ title, params, shots, onDeleteClick, sketchId }) => (
   <Wrapper>
     <h2>{title}</h2>
 
-    <Items>
+    <h3>Params</h3>
+    <Params>
       {params.map((id) => (
         <Param nodeId={id} key={id} />
       ))}
-    </Items>
+    </Params>
 
-    <Items>
+    <h3>Shots</h3>
+    <Row>
       {shots.map((id) => (
-        <Shot shotId={id} key={id} />
+        <Shot nodeId={id} key={id} />
       ))}
-    </Items>
+    </Row>
 
     <Bottom>
       <button onClick={onDeleteClick}>Delete Sketch</button>

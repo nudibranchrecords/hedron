@@ -39,8 +39,8 @@ test('(Saga) watchSketches', (t) => {
 
   t.deepEqual(
     generator.next().value,
-    takeEvery('SHOT_FIRED', handleShotFired),
-    'SHOT_FIRED'
+    takeEvery('NODE_SHOT_FIRED', handleShotFired),
+    'NODE_SHOT_FIRED'
   )
   t.end()
 })

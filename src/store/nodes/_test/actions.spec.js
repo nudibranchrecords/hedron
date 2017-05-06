@@ -34,6 +34,19 @@ test('(Action Creator) nodeOpenToggle', (t) => {
   t.end()
 })
 
+test('(Action Creator) nodeShotFired', (t) => {
+  let actual = a.nodeShotFired('XXX', 'explode')
+  let expected = {
+    type: 'NODE_SHOT_FIRED',
+    payload: {
+      sketchId: 'XXX',
+      method: 'explode'
+    }
+  }
+  t.deepEqual(actual, expected, 'Creates action to fire node shot')
+  t.end()
+})
+
 test('(Action Creator) rNodeDelete', (t) => {
   let actual = a.rNodeDelete('XXX')
   let expected = {

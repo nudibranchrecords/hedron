@@ -2,7 +2,6 @@ import { call, select, takeEvery, put } from 'redux-saga/effects'
 import { getModule, getSketchParamIds, getSketchShotIds } from './selectors'
 import { sketchCreate, sketchDelete } from '../sketches/actions'
 import { uNodeCreate, uNodeDelete } from '../nodes/actions'
-import { shotCreate, shotDelete } from '../shots/actions'
 import lfoGenerateOptions from '../../utils/lfoGenerateOptions'
 import uid from 'uid'
 
@@ -43,7 +42,9 @@ export function* handleSketchCreate (action) {
     const shot = module.shots[i]
     uniqueId = yield call(uid)
     shotIds.push(uniqueId)
-    yield put(shotCreate(uniqueId, {
+    yield put(uNodeCreate(uniqueId, {
+      id: uniqueId,
+      value: 0,
       title: shot.title,
       method: shot.method,
       sketchId: uniqueSketchId
@@ -69,7 +70,7 @@ export function* handleSketchDelete (action) {
   const shotIds = yield select(getSketchShotIds, id)
 
   for (let i = 0; i < shotIds.length; i++) {
-    yield put(shotDelete(shotIds[i]))
+    yield put(uNodeDelete(shotIds[i]))
   }
 
   yield put(sketchDelete(id))

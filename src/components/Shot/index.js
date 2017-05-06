@@ -1,27 +1,24 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
+import Node from '../Node'
 
 import ShotButton from '../../containers/ShotButton'
 
-const Wrapper = styled.div`
-  border: 1px solid black;
-  border-radius: 10px;
-  padding: 1rem;
+const Wrapper = styled(Node)`
+  flex: 0 0 33.33%;
+  padding: 0.5rem;
 `
 
-const Shot = ({ title, method, sketchId }) => (
+const Shot = (props) => (
   <Wrapper>
-    {title}
-    <br />
-    <ShotButton sketchId={sketchId} method={method} />
+    {props.title}
+    <ShotButton {...props} />
   </Wrapper>
 )
 
 Shot.propTypes = {
-  title: PropTypes.string.isRequired,
-  method: PropTypes.string.isRequired,
-  sketchId: PropTypes.string.isRequired
+  title: PropTypes.string.isRequired
 }
 
 export default Shot

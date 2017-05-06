@@ -83,3 +83,12 @@ export function nodeOpenToggle (id) {
     }
   }
 }
+
+export function nodeShotFired (sketchId, method) {
+  return {
+    type: 'NODE_SHOT_FIRED',
+    payload: {
+      sketchId, method
+    }
+  }
+}

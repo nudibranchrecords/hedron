@@ -4,14 +4,12 @@ import ParamBar from '../../containers/ParamBar'
 import ParamInputSelect from '../../containers/ParamInputSelect'
 import Modifier from '../../containers/Modifier'
 import InfoText from '../InfoText'
+import Node from '../Node'
 import OpenButton from '../OpenButton'
 import Select from '../../containers/Select'
 import styled from 'styled-components'
 
-const Wrapper = styled.div`
-  border: 1px solid #212121;
-  border-radius: 3px;
-
+const Wrapper = styled(Node)`
   margin: 0 0 0.5rem 0
 `
 
@@ -76,13 +74,13 @@ const Param = ({
     {isOpen &&
       <Bottom>
         {modifierIds.map((id) => (
-          <Item>
-            <Modifier nodeId={id} key={id} />
+          <Item key={id}>
+            <Modifier nodeId={id} />
           </Item>
         ))}
         {lfoOptionIds && lfoOptionIds.map((id) => (
-          <Item>
-            <Select nodeId={id} key={id} />
+          <Item key={id}>
+            <Select nodeId={id} />
           </Item>
         ))}
       </Bottom>

@@ -5,7 +5,6 @@ import { watchScene, handleSketchCreate, handleSketchDelete } from '../sagas'
 import { getModule, getSketchParamIds, getSketchShotIds } from '../selectors'
 import { sketchCreate, sketchDelete } from '../../sketches/actions'
 import { uNodeCreate, uNodeDelete } from '../../nodes/actions'
-import { shotCreate, shotDelete } from '../../shots/actions'
 import lfoGenerateOptions from '../../../utils/lfoGenerateOptions'
 
 import uid from 'uid'
@@ -204,12 +203,14 @@ test('(Saga) handleSketchCreate', (t) => {
 
   t.deepEqual(
     generator.next(uniqueId).value,
-    put(shotCreate(uniqueId, {
+    put(uNodeCreate(uniqueId, {
+      id: uniqueId,
+      value: 0,
       title: 'Shapeshift',
       method: 'shapeshift',
       sketchId: 'SKETCHID'
     })),
-    'Dispatch shot create action'
+    'Dispatch node create action for shot'
   )
 
   t.deepEqual(
@@ -222,12 +223,14 @@ test('(Saga) handleSketchCreate', (t) => {
 
   t.deepEqual(
     generator.next(uniqueId).value,
-    put(shotCreate(uniqueId, {
+    put(uNodeCreate(uniqueId, {
+      id: uniqueId,
+      value: 0,
       title: 'Explode',
       method: 'explode',
       sketchId: 'SKETCHID'
     })),
-    'Dispatch shot create action'
+    'Dispatch node create action for shot'
   )
 
   t.deepEqual(
@@ -283,14 +286,14 @@ test('(Saga) handleSketchDelete', (t) => {
 
   t.deepEqual(
     generator.next(shotIds).value,
-    put(shotDelete('S1')),
-    'Dispatch shot delete action'
+    put(uNodeDelete('S1')),
+    'Dispatch node delete action for shot'
   )
 
   t.deepEqual(
     generator.next().value,
-    put(shotDelete('S2')),
-    'Dispatch shot delete action'
+    put(uNodeDelete('S2')),
+    'Dispatch node delete action for shot'
   )
 
   t.deepEqual(
