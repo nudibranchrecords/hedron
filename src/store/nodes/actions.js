@@ -55,12 +55,13 @@ export function nodesReplaceAll (nodes) {
   }
 }
 
-export function uNodeInputUpdate (nodeId, inputId) {
+export function uNodeInputUpdate (nodeId, inputId, inputType) {
   return {
     type: 'U_NODE_INPUT_UPDATE',
     payload: {
       nodeId,
-      inputId
+      inputId,
+      inputType
     }
   }
 }

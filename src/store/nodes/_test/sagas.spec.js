@@ -52,7 +52,8 @@ test('(Saga) nodeCreate - sketch node', (t) => {
     foo: {
       config: {
         title: 'Fooey',
-        defaultValue: 0.2
+        defaultValue: 0.2,
+        type: 'audio'
       }
     },
     bar: {
@@ -82,7 +83,8 @@ test('(Saga) nodeCreate - sketch node', (t) => {
     id: 'xxx',
     key: 'foo',
     title: 'Fooey',
-    value: 0.2
+    value: 0.2,
+    type: 'audio'
   }
 
   t.deepEqual(
@@ -102,7 +104,8 @@ test('(Saga) nodeCreate - sketch node', (t) => {
     id: 'yyy',
     key: 'bar',
     title: 'Barey',
-    value: 0.5
+    value: 0.5,
+    type: undefined
   }
 
   t.deepEqual(
@@ -126,9 +129,10 @@ test('(Saga) nodeCreate - sketch node', (t) => {
 test('(Saga) nodeInputUpdate', (t) => {
   const inputId = 'AUDIO_0'
   const nodeId = 'XXX'
+  const inputType = 'audio'
 
   const generator = nodeInputUpdate({
-    payload: { nodeId, inputId }
+    payload: { nodeId, inputId, inputType }
   })
 
   t.deepEqual(
@@ -153,7 +157,7 @@ test('(Saga) nodeInputUpdate', (t) => {
 
   t.deepEqual(
     generator.next().value,
-    put(rNodeInputUpdate(nodeId, { id: inputId })),
+    put(rNodeInputUpdate(nodeId, { id: inputId, type: inputType })),
     '4. Update input in node with new ID'
   )
 
@@ -195,10 +199,11 @@ test('(Saga) nodeInputUpdate - midi', (t) => {
 
 test('(Saga) nodeInputUpdate - old input false', (t) => {
   const inputId = 'AUDIO_0'
+  const inputType = 'audio'
   const nodeId = 'XXX'
 
   const generator = nodeInputUpdate({
-    payload: { nodeId, inputId }
+    payload: { nodeId, inputId, inputType }
   })
 
   t.deepEqual(
@@ -217,7 +222,7 @@ test('(Saga) nodeInputUpdate - old input false', (t) => {
 
   t.deepEqual(
     generator.next().value,
-    put(rNodeInputUpdate(nodeId, { id: inputId })),
+    put(rNodeInputUpdate(nodeId, { id: inputId, type: inputType })),
     '3. Update input in node with new ID'
   )
 

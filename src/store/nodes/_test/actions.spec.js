@@ -119,12 +119,13 @@ test('(Action Creator) nodesReplaceAll', (t) => {
 })
 
 test('(Action Creator) uNodeInputUpdate', (t) => {
-  let actual = a.uNodeInputUpdate('node1', 'audio_0')
+  let actual = a.uNodeInputUpdate('node1', 'audio_0', 'audio')
   let expected = {
     type: 'U_NODE_INPUT_UPDATE',
     payload: {
       nodeId: 'node1',
-      inputId: 'audio_0'
+      inputId: 'audio_0',
+      inputType: 'audio'
     }
   }
   t.deepEqual(actual, expected, 'Creates action to change node input')

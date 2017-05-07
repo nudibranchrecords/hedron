@@ -26,7 +26,10 @@ export function* handleInput (action) {
         modifiers = yield select(getNodes, nodes[i].modifierIds)
 
         for (let j = 0; j < modifiers.length; j++) {
-          value = yield call(work, modifiers[j].key, modifiers[j].value, value)
+          const m = modifiers[j]
+          if (!m.type || m.type === p.type) {
+            value = yield call(work, m.key, m.value, value)
+          }
         }
       }
 

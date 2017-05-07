@@ -73,14 +73,14 @@ const Param = ({
     </Top>
     {isOpen &&
       <Bottom>
-        {modifierIds.map((id) => (
-          <Item key={id}>
-            <Modifier nodeId={id} />
-          </Item>
-        ))}
         {lfoOptionIds && lfoOptionIds.map((id) => (
           <Item key={id}>
             <Select nodeId={id} />
+          </Item>
+        ))}
+        {modifierIds && modifierIds.map((id) => (
+          <Item key={id}>
+            <Modifier nodeId={id} />
           </Item>
         ))}
       </Bottom>

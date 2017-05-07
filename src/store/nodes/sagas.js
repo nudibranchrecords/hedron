@@ -9,7 +9,7 @@ import uid from 'uid'
 export function* nodeInputUpdate (action) {
   const p = action.payload
   const inputId = p.inputId
-  const input = inputId ? { id: inputId } : false
+  const input = inputId ? { id: inputId, type: p.inputType } : false
 
   const oldInputId = yield select(getNodeInputId, p.nodeId)
 
@@ -44,7 +44,8 @@ export function* nodeCreate (action) {
       id: modifierId,
       key: id,
       title: config.title,
-      value: config.defaultValue
+      value: config.defaultValue,
+      type: config.type
     }
 
     modifierIds.push(modifierId)
