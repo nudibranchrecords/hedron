@@ -7,6 +7,7 @@ import Col from '../Col'
 import ParamInputSelect from '../../containers/ParamInputSelect'
 import ShotButton from '../../containers/ShotButton'
 import Modifier from '../../containers/Modifier'
+import Select from '../../containers/Select'
 
 const Wrapper = styled(Node)`
   flex: 0 0 33.33%;
@@ -18,7 +19,7 @@ const Item = styled.div`
 
 `
 
-const Shot = ({ onClick, nodeId, modifierIds, title, sketchId, method }) => (
+const Shot = ({ nodeId, modifierIds, lfoOptionIds, title, sketchId, method }) => (
   <Wrapper>
     {title}
     <Row>
@@ -27,6 +28,11 @@ const Shot = ({ onClick, nodeId, modifierIds, title, sketchId, method }) => (
       </Col>
       <ParamInputSelect nodeId={nodeId} />
     </Row>
+    {lfoOptionIds && lfoOptionIds.map((id) => (
+      <Item key={id}>
+        <Select nodeId={id} />
+      </Item>
+    ))}
     {modifierIds && modifierIds.map((id) => (
       <Item key={id}>
         <Modifier nodeId={id} />
@@ -39,9 +45,9 @@ Shot.propTypes = {
   title: PropTypes.string.isRequired,
   nodeId: PropTypes.string.isRequired,
   modifierIds: PropTypes.array,
-  onClick: PropTypes.func.isRequired,
   sketchId: PropTypes.string,
-  method: PropTypes.string
+  method: PropTypes.string,
+  lfoOptionIds: PropTypes.array
 }
 
 export default Shot

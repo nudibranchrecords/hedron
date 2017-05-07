@@ -194,6 +194,45 @@ test('(Saga) handleSketchCreate', (t) => {
   )
 
   t.deepEqual(
+    generator.next().value,
+    call(lfoGenerateOptions),
+    'Generate options for LFO'
+  )
+
+  lfoOpts = [
+    {
+      id: 'LFO1',
+      key: 'shape',
+      value: 'sine'
+    },
+    {
+      id: 'LFO2',
+      key: 'rate',
+      value: 1
+    }
+  ]
+
+  t.deepEqual(
+    generator.next(lfoOpts).value,
+    put(uNodeCreate('LFO1', {
+      key: 'shape',
+      id: 'LFO1',
+      value: 'sine'
+    })),
+    'Dispatch node create action'
+  )
+
+  t.deepEqual(
+    generator.next().value,
+    put(uNodeCreate('LFO2', {
+      key: 'rate',
+      id: 'LFO2',
+      value: 1
+    })),
+    'Dispatch node create action'
+  )
+
+  t.deepEqual(
     generator.next(moduleObj).value,
     call(uid),
     'Generate unique ID for shot'
@@ -209,9 +248,49 @@ test('(Saga) handleSketchCreate', (t) => {
       type: 'shot',
       title: 'Shapeshift',
       method: 'shapeshift',
-      sketchId: 'SKETCHID'
+      sketchId: 'SKETCHID',
+      lfoOptionIds: ['LFO1', 'LFO2']
     })),
     'Dispatch node create action for shot'
+  )
+
+  t.deepEqual(
+    generator.next().value,
+    call(lfoGenerateOptions),
+    'Generate options for LFO'
+  )
+
+  lfoOpts = [
+    {
+      id: 'LFO1',
+      key: 'shape',
+      value: 'sine'
+    },
+    {
+      id: 'LFO2',
+      key: 'rate',
+      value: 1
+    }
+  ]
+
+  t.deepEqual(
+    generator.next(lfoOpts).value,
+    put(uNodeCreate('LFO1', {
+      key: 'shape',
+      id: 'LFO1',
+      value: 'sine'
+    })),
+    'Dispatch node create action'
+  )
+
+  t.deepEqual(
+    generator.next().value,
+    put(uNodeCreate('LFO2', {
+      key: 'rate',
+      id: 'LFO2',
+      value: 1
+    })),
+    'Dispatch node create action'
   )
 
   t.deepEqual(
@@ -230,7 +309,8 @@ test('(Saga) handleSketchCreate', (t) => {
       type: 'shot',
       title: 'Explode',
       method: 'explode',
-      sketchId: 'SKETCHID'
+      sketchId: 'SKETCHID',
+      lfoOptionIds: ['LFO1', 'LFO2']
     })),
     'Dispatch node create action for shot'
   )

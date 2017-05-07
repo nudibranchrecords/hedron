@@ -35,3 +35,28 @@ test('(Selector) getNodeLfoOptionIds (input is "lfo")', (t) => {
   t.deepEqual(actual, ['yyy', 'zzz'], 'Returns options ids array')
   t.end()
 })
+
+test('(Selector) getNodeLfoOptionIds (input is "lfo", node type "shot")', (t) => {
+  const state = {
+    nodes: {
+      xxx: {
+        type: 'shot',
+        input: {
+          id: 'lfo'
+        },
+        lfoOptionIds: ['yyy', 'zzz']
+      },
+      yyy: {
+        key: 'rate'
+      },
+      zzz: {
+        key: 'shape'
+      }
+    }
+  }
+
+  const actual = getNodeLfoOptionIds(state, 'xxx')
+
+  t.deepEqual(actual, ['yyy'], 'Only returns rate ID')
+  t.end()
+})

@@ -39,6 +39,16 @@ export function* handleSketchCreate (action) {
   }
 
   for (let i = 0; i < module.shots.length; i++) {
+    const lfoOpts = yield call(lfoGenerateOptions)
+    const lfoOptionIds = []
+
+    for (let key in lfoOpts) {
+      const item = lfoOpts[key]
+      lfoOptionIds.push(item.id)
+
+      yield put(uNodeCreate(item.id, item))
+    }
+
     const shot = module.shots[i]
     uniqueId = yield call(uid)
     shotIds.push(uniqueId)
@@ -48,7 +58,8 @@ export function* handleSketchCreate (action) {
       type: 'shot',
       title: shot.title,
       method: shot.method,
-      sketchId: uniqueSketchId
+      sketchId: uniqueSketchId,
+      lfoOptionIds
     }))
   }
 

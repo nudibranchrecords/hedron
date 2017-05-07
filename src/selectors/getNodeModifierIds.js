@@ -4,9 +4,13 @@ export default (state, nodeId) => {
   if (!node.input) return undefined
 
   if (node.type === 'shot') {
-    return node.modifierIds.filter(id => {
-      return state.nodes[id].key === 'gain'
-    })
+    if (node.input.type === 'audio') {
+      return node.modifierIds.filter(id => {
+        return state.nodes[id].key === 'gain'
+      })
+    } else {
+      return undefined
+    }
   }
 
   return node.modifierIds.filter(id => {
