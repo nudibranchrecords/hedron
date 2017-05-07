@@ -55,6 +55,25 @@ test('(Reducer) inputsReducer - Updates value on INPUT_FIRED', (t) => {
 
   t.deepEqual(actual, expectedState)
 
+  expectedState = {
+    audio_0: {
+      value: 0.9
+    },
+    audio_1: {
+      value: 0.4
+    }
+  }
+
+  actual = inputsReducer(actual, {
+    type: 'INPUT_FIRED',
+    payload: {
+      inputId: 'audio_XXXX',
+      value: 0.9
+    }
+  })
+
+  t.deepEqual(actual, expectedState, 'does nothing if input doesnt exist in state')
+
   t.end()
 })
 

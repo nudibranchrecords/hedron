@@ -27,7 +27,9 @@ const inputsReducer = (state = defaultState, action) => {
   switch (action.type) {
     case 'INPUT_FIRED': {
       // We are mutating state on purpose here!!
-      state[p.inputId].value = p.value
+      if (state[p.inputId]) {
+        state[p.inputId].value = p.value
+      }
       return state
     }
     case 'INPUTS_REPLACE_ALL': {
