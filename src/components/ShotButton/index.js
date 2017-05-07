@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import ParamBar from '../../containers/ParamBar'
 
 const ShotButton = ({ onClick, nodeId }) => (
-  <ParamBar nodeId={nodeId} onClick={onClick} />
+  <ParamBar nodeId={nodeId} onMouseDown={onClick} />
 )
 
 ShotButton.propTypes = {

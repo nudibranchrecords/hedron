@@ -79,8 +79,7 @@ class ParamBar extends React.Component {
       <div>
         <Bar
           innerRef={node => { this.canvas = node }}
-          onClick={this.props.onClick}
-          onMouseDown={this.handleMouseDown}
+          onMouseDown={this.props.onMouseDown || this.handleMouseDown}
         />
       </div>
     )
@@ -90,7 +89,7 @@ class ParamBar extends React.Component {
 ParamBar.propTypes = {
   value: PropTypes.number.isRequired,
   onChange: PropTypes.func.isRequired,
-  onClick: PropTypes.func
+  onMouseDown: PropTypes.func
 }
 
 export default ParamBar
