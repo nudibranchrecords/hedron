@@ -18,3 +18,9 @@ export function clockBpmUpdate (bpm) {
     }
   }
 }
+
+export function clockReset () {
+  return {
+    type: 'CLOCK_RESET'
+  }
+}

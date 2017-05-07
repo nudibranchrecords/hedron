@@ -4,10 +4,14 @@ import { inputFired } from '../inputs/actions'
 import now from 'performance-now'
 
 let deltaInc = Math.PI * 2 / 48
-let pulses = 0
-let delta = 0
-let beats = 0
-let lastBar = now()
+let pulses, delta, beats, lastBar
+
+export const clockReset = () => {
+  pulses = 0
+  delta = 0
+  beats = 0
+  lastBar = now()
+}
 
 export const newPulse = () => {
   pulses++
@@ -45,4 +49,7 @@ export function* clockUpdate () {
 
 export function* watchClock () {
   yield takeEvery('CLOCK_PULSE', clockUpdate)
+  yield takeEvery('CLOCK_RESET', clockReset)
 }
+
+clockReset()

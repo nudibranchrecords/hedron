@@ -22,6 +22,12 @@ const clockReducer = (state = defaultState, action) => {
         bpm: p.bpm
       }
     }
+    case 'CLOCK_RESET': {
+      return {
+        ...state,
+        beat: 0
+      }
+    }
     default:
       return state
   }

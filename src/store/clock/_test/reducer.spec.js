@@ -37,6 +37,28 @@ test('(Reducer) clockReducer -  - Increases beat on CLOCK_BEAT_INC', (t) => {
   t.end()
 })
 
+test('(Reducer) clockReducer - resets beat on CLOCK_RESET', (t) => {
+  let originalState, expectedState, actualState
+
+  originalState = {
+    beat: 100
+  }
+
+  deepFreeze(originalState)
+
+  expectedState = {
+    beat: 0
+  }
+
+  actualState = paramsReducer(originalState, {
+    type: 'CLOCK_RESET'
+  })
+
+  t.deepEqual(actualState, expectedState)
+
+  t.end()
+})
+
 test('(Reducer) clockReducer - loops back to 0 after 64 beats', (t) => {
   let originalState, expectedState, actualState
 

@@ -1,7 +1,7 @@
 import test from 'tape'
 
 import { takeEvery, put, call } from 'redux-saga/effects'
-import { watchClock, clockUpdate, newPulse, calcBpm } from '../sagas'
+import { watchClock, clockUpdate, newPulse, calcBpm, clockReset } from '../sagas'
 import * as a from '../actions'
 import { inputFired } from '../../inputs/actions'
 
@@ -10,6 +10,10 @@ test('(Saga) watchClock', (t) => {
   t.deepEqual(
     generator.next().value,
     takeEvery('CLOCK_PULSE', clockUpdate)
+  )
+  t.deepEqual(
+    generator.next().value,
+    takeEvery('CLOCK_RESET', clockReset)
   )
   t.equal(generator.next().done, true, 'Generator ends')
   t.end()

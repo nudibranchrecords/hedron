@@ -7,6 +7,7 @@ const Wrapper = styled.div`
   color: white;
   width: 80px;
   padding: 0.5rem;
+  cursor: pointer;
 `
 
 const Top = styled.div`
@@ -20,8 +21,8 @@ const Bottom = styled.div`
   text-align: center;
 `
 
-const Clock = ({ beat, bar, phrase, bpm }) => (
-  <Wrapper>
+const Clock = ({ beat, bar, phrase, bpm, onClick }) => (
+  <Wrapper onClick={onClick}>
     <Top>{beat} - {bar} - {phrase}</Top>
     <Bottom>{bpm}</Bottom>
   </Wrapper>
@@ -31,7 +32,8 @@ Clock.propTypes = {
   beat: PropTypes.number.isRequired,
   bar: PropTypes.number.isRequired,
   phrase: PropTypes.number.isRequired,
-  bpm: PropTypes.number.isRequired
+  bpm: PropTypes.number.isRequired,
+  onClick: PropTypes.func.isRequired
 }
 
 export default Clock
