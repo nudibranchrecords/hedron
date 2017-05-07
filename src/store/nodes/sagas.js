@@ -38,18 +38,21 @@ export function* nodeCreate (action) {
     const id = defaultModifierIds[i]
     const config = modifiers[id].config
 
-    const modifierId = yield call(uid)
+    for (let j = 0; j < config.title.length; j++) {
+      const modifierId = yield call(uid)
 
-    const modifier = {
-      id: modifierId,
-      key: id,
-      title: config.title,
-      value: config.defaultValue,
-      type: config.type
+      const modifier = {
+        id: modifierId,
+        key: id,
+        title: config.title[j],
+        value: config.defaultValue[j],
+        passToNext: j < config.title.length - 1,
+        type: config.type
+      }
+
+      modifierIds.push(modifierId)
+      yield put(rNodeCreate(modifierId, modifier))
     }
-
-    modifierIds.push(modifierId)
-    yield put(rNodeCreate(modifierId, modifier))
   }
 
   const node = p.node

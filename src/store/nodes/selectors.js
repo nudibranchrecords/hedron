@@ -4,4 +4,4 @@ export const getNodeInputId = (state, nodeId) => {
 }
 
 export const getDefaultModifierIds = state =>
-  ['gain', 'lowerRange']
+  ['gain', 'range']

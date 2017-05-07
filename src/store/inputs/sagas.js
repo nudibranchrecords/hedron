@@ -24,11 +24,16 @@ export function* handleInput (action) {
 
       if (nodes[i].modifierIds && nodes[i].modifierIds.length) {
         modifiers = yield select(getNodes, nodes[i].modifierIds)
-
+        let vals = []
         for (let j = 0; j < modifiers.length; j++) {
           const m = modifiers[j]
           if (!m.type || m.type === p.type) {
-            value = yield call(work, m.key, m.value, value)
+            vals.push(m.value)
+            if (!m.passToNext) {
+              value = Math.max(0, Math.min(1, value))
+              value = yield call(work, m.key, vals, value)
+              vals = []
+            }
           }
         }
       }
@@ -44,7 +49,7 @@ export function* handleInput (action) {
         }
       }
 
-      yield put(nodeValueUpdate(nodes[i].id, value))
+      yield put(nodeValueUpdate(nodes[i].id, Math.max(0, Math.min(1, value))))
     }
   } catch (error) {
     yield put(projectError(error.message))

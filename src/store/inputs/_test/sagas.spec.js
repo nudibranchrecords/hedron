@@ -95,13 +95,13 @@ test('(Saga) handleInput (modifiers)', (t) => {
   const nodes = [
     {
       id: 'XX',
-      modifierIds: ['yyy', 'zzz']
+      modifierIds: ['yyy', 'zzz', 'aa1', 'aa2']
     }
   ]
 
   t.deepEqual(
     generator.next(nodes).value,
-    select(getNodes, ['yyy', 'zzz']),
+    select(getNodes, ['yyy', 'zzz', 'aa1', 'aa2']),
     '2.x Get Modifiers (nodes)'
   )
 
@@ -110,18 +110,32 @@ test('(Saga) handleInput (modifiers)', (t) => {
       id: 'yyy',
       key: 'foo',
       value: 0.5,
+      passToNext: false,
       type: 'audio'
     },
     {
       id: 'zzz',
       key: 'bar',
+      passToNext: false,
       value: 0.7
+    },
+    {
+      id: 'zzz',
+      key: 'bar',
+      passToNext: true,
+      value: 0.2
+    },
+    {
+      id: 'zzz',
+      key: 'bar',
+      passToNext: false,
+      value: 0.3
     }
   ]
 
   t.deepEqual(
     generator.next(modifierNodes).value,
-    call(modifiers.work, 'foo', 0.5, 0.2),
+    call(modifiers.work, 'foo', [0.5], 0.2),
     '2.x get value after going through first modifier'
   )
 
@@ -129,8 +143,16 @@ test('(Saga) handleInput (modifiers)', (t) => {
 
   t.deepEqual(
     generator.next(modifiedValue).value,
-    call(modifiers.work, 'bar', 0.7, 0.1),
+    call(modifiers.work, 'bar', [0.7], 0.1),
     '2.x get value after going through second modifier'
+  )
+
+  modifiedValue = 0.9
+
+  t.deepEqual(
+    generator.next(modifiedValue).value,
+    call(modifiers.work, 'bar', [0.2, 0.3], 0.9),
+    '2.x work modifier with multiple values'
   )
 
   modifiedValue = 0.9
@@ -195,7 +217,7 @@ test('(Saga) handleInput (ignore audio type modifiers)', (t) => {
 
   t.deepEqual(
     generator.next(modifierNodes).value,
-    call(modifiers.work, 'bar', 0.7, 0.2),
+    call(modifiers.work, 'bar', [0.7], 0.2),
     '2.x ignore first modifier, get second'
   )
 

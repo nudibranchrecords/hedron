@@ -1,3 +1,3 @@
 module.exports = function (control, val) {
-  return control * val * 3
+  return control[0] * val * 3
 }

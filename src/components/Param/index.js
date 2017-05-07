@@ -41,6 +41,7 @@ const Bottom = styled.div`
 
 const Item = styled.div`
   flex: 0 0 25%;
+  width: 25%;
   font-size: 0.8rem;
   padding-right: 0.25rem;
 `

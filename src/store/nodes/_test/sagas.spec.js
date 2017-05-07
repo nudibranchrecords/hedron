@@ -51,15 +51,15 @@ test('(Saga) nodeCreate - sketch node', (t) => {
   const modifiers = {
     foo: {
       config: {
-        title: 'Fooey',
-        defaultValue: 0.2,
+        title: ['Fooey'],
+        defaultValue: [0.2],
         type: 'audio'
       }
     },
     bar: {
       config: {
-        title: 'Barey',
-        defaultValue: 0.5
+        title: ['Barey1', 'Barey2'],
+        defaultValue: [0.5, 0.5]
       }
     }
   }
@@ -83,6 +83,7 @@ test('(Saga) nodeCreate - sketch node', (t) => {
     id: 'xxx',
     key: 'foo',
     title: 'Fooey',
+    passToNext: false,
     value: 0.2,
     type: 'audio'
   }
@@ -103,7 +104,30 @@ test('(Saga) nodeCreate - sketch node', (t) => {
   modifier = {
     id: 'yyy',
     key: 'bar',
-    title: 'Barey',
+    title: 'Barey1',
+    passToNext: true,
+    value: 0.5,
+    type: undefined
+  }
+
+  t.deepEqual(
+    generator.next(uniqueId).value,
+    put(rNodeCreate(uniqueId, modifier)),
+    '4x. Create node (modifier)'
+  )
+
+  t.deepEqual(
+    generator.next(defaults).value,
+    call(uid),
+    '3x. Generate unique ID for modifier'
+  )
+
+  uniqueId = 'yyy'
+  modifier = {
+    id: 'yyy',
+    key: 'bar',
+    title: 'Barey2',
+    passToNext: false,
     value: 0.5,
     type: undefined
   }

@@ -42,6 +42,6 @@ test('(Selector) project - getDefaultModifierIds (no input)', (t) => {
 
   const actual = getDefaultModifierIds(state)
 
-  t.deepEqual(actual, ['gain', 'lowerRange'], 'Returns list of modifier ids')
+  t.deepEqual(actual, ['gain', 'range'], 'Returns list of modifier ids')
   t.end()
 })
