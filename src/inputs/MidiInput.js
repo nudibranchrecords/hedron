@@ -10,7 +10,7 @@ export default (store) => {
       const learningId = store.getState().midi.learning
       const id = 'midi_' + message.data[0].toString() + message.data[1].toString()
       const val = message.data[2] / 127
-      const noteOn = message.data[0] === 144
+      const noteOn = message.data[0] === 144 ? 'noteOn' : false
 
       if (learningId) {
         const device = message.currentTarget.name
