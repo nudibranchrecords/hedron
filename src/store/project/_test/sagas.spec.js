@@ -83,7 +83,7 @@ test('(Saga) loadProject', (t) => {
 
   t.deepEqual(
     generator.next().value,
-    put(nodesReplaceAll(projectData.params)),
+    put(nodesReplaceAll(projectData.nodes)),
     '4. Dispatches nodesReplaceAll'
   )
 

@@ -16,7 +16,7 @@ export function* loadProject () {
   const filepath = yield select(getProjectFilepath)
   const projectData = yield call(load, filepath)
   yield put(sketchesReplaceAll(projectData.sketches))
-  yield put(nodesReplaceAll(projectData.params))
+  yield put(nodesReplaceAll(projectData.nodes))
   yield put(inputsReplaceAll(projectData.inputs))
   yield put(projectLoadSuccess(projectData))
 }
