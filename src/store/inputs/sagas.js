@@ -1,6 +1,6 @@
 import { select, takeEvery, put, call } from 'redux-saga/effects'
 import { getAssignedNodes } from './selectors'
-import { nodeValueUpdate, nodeShotFired } from '../nodes/actions'
+import { nodeValueUpdate, nodeShotFired, nodeShotDisarm, nodeShotArm } from '../nodes/actions'
 import { projectError } from '../project/actions'
 import getNodes from '../../selectors/getNodes'
 import getNodesValues from '../../selectors/getNodesValues'
@@ -45,7 +45,14 @@ export function* handleInput (action) {
           break
         }
         case 'shot': {
-          yield put(nodeShotFired(nodes[i].sketchId, nodes[i].method))
+          if (p.type === 'noteOn') {
+            yield put(nodeShotFired(nodes[i].sketchId, nodes[i].method))
+          } else if (value === 1 && nodes[i].armed) {
+            yield put(nodeShotFired(nodes[i].sketchId, nodes[i].method))
+            yield put(nodeShotDisarm(nodes[i].id))
+          } else if (value < 1) {
+            yield put(nodeShotArm(nodes[i].id))
+          }
         }
       }
 

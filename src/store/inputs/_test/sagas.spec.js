@@ -7,7 +7,7 @@ import { select, takeEvery, put, call } from 'redux-saga/effects'
 import proxyquire from 'proxyquire'
 
 import { getAssignedNodes } from '../selectors'
-import { nodeValueUpdate, nodeShotFired } from '../../nodes/actions'
+import { nodeValueUpdate, nodeShotFired, nodeShotDisarm, nodeShotArm } from '../../nodes/actions'
 import { projectError } from '../../project/actions'
 
 import getNodes from '../../../selectors/getNodes'
@@ -346,7 +346,7 @@ test('(Saga) handleInput (shot - noteOn)', (t) => {
     payload: {
       value: 0.5,
       inputId: 'midi_xxx',
-      noteOn: true
+      type: 'noteOn'
     }
   })
 
@@ -377,11 +377,175 @@ test('(Saga) handleInput (shot - noteOn)', (t) => {
     '5. Dispatches node update action'
   )
 
+  t.equal(generator.next().done, true, 'generator ends')
+
+  t.end()
+})
+
+test('(Saga) handleInput (shot - audio val is 1, armed)', (t) => {
+  const generator = handleInput({
+    payload: {
+      value: 1,
+      inputId: 'audio_1',
+      type: 'audio'
+    }
+  })
+
   t.deepEqual(
-    generator.throw({ message: 'Error!' }).value,
-    put(projectError('Error!')),
-    'Dispatches project error if some error'
+    generator.next().value,
+    select(getAssignedNodes, 'audio_1'),
+    '1. Gets assigned nodes'
   )
+
+  const nodes = [
+    {
+      id: 'XX',
+      type: 'shot',
+      armed: true,
+      sketchId: 'fooSketch',
+      method: 'barMethod'
+    }
+  ]
+
+  t.deepEqual(
+    generator.next(nodes).value,
+    put(nodeShotFired('fooSketch', 'barMethod')),
+    '4. Dispatches node shot fired action'
+  )
+
+  t.deepEqual(
+    generator.next(nodes).value,
+    put(nodeShotDisarm('XX')),
+    '5. Dispatches node disarm action'
+  )
+
+  t.deepEqual(
+    generator.next().value,
+    put(nodeValueUpdate('XX', 1)),
+    '6. Dispatches node update action'
+  )
+
+  t.equal(generator.next().done, true, 'generator ends')
+
+  t.end()
+})
+
+test('(Saga) handleInput (shot - audio val is 1, disarmed)', (t) => {
+  const generator = handleInput({
+    payload: {
+      value: 1,
+      inputId: 'audio_1',
+      type: 'audio'
+    }
+  })
+
+  t.deepEqual(
+    generator.next().value,
+    select(getAssignedNodes, 'audio_1'),
+    '1. Gets assigned nodes'
+  )
+
+  const nodes = [
+    {
+      id: 'XX',
+      type: 'shot',
+      armed: false,
+      sketchId: 'fooSketch',
+      method: 'barMethod'
+    }
+  ]
+
+  t.deepEqual(
+    generator.next(nodes).value,
+    put(nodeValueUpdate('XX', 1)),
+    '2. Dispatches node update action'
+  )
+
+  t.equal(generator.next().done, true, 'generator ends')
+
+  t.end()
+})
+
+test('(Saga) handleInput (shot - audio val is 0.9, armed)', (t) => {
+  const generator = handleInput({
+    payload: {
+      value: 0.9,
+      inputId: 'audio_1',
+      type: 'audio'
+    }
+  })
+
+  t.deepEqual(
+    generator.next().value,
+    select(getAssignedNodes, 'audio_1'),
+    '1. Gets assigned nodes'
+  )
+
+  const nodes = [
+    {
+      id: 'XX',
+      type: 'shot',
+      armed: true,
+      sketchId: 'fooSketch',
+      method: 'barMethod'
+    }
+  ]
+
+  t.deepEqual(
+    generator.next(nodes).value,
+    put(nodeShotArm('XX')),
+    '5. Dispatches node arm action'
+  )
+
+  t.deepEqual(
+    generator.next().value,
+    put(nodeValueUpdate('XX', 0.9)),
+    '6. Dispatches node update action'
+  )
+
+  t.equal(generator.next().done, true, 'generator ends')
+
+  t.end()
+})
+
+test('(Saga) handleInput (shot - audio val is 0.9, disarmed)', (t) => {
+  const generator = handleInput({
+    payload: {
+      value: 0.9,
+      inputId: 'audio_1',
+      type: 'audio'
+    }
+  })
+
+  t.deepEqual(
+    generator.next().value,
+    select(getAssignedNodes, 'audio_1'),
+    '1. Gets assigned nodes'
+  )
+
+  const nodes = [
+    {
+      id: 'XX',
+      type: 'shot',
+      armed: false,
+      sketchId: 'fooSketch',
+      method: 'barMethod'
+    }
+  ]
+
+  t.deepEqual(
+    generator.next(nodes).value,
+    put(nodeShotArm('XX')),
+    '5. Dispatches node arm action'
+  )
+
+  t.deepEqual(
+    generator.next().value,
+    put(nodeValueUpdate('XX', 0.9)),
+    '6. Dispatches node update action'
+  )
+
+  t.equal(generator.next().done, true, 'generator ends')
 
   t.end()
 })

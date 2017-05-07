@@ -151,3 +151,29 @@ test('(Action Creator) rNodeInputUpdate', (t) => {
   t.deepEqual(actual, expected, 'Creates action to change node input')
   t.end()
 })
+
+test('(Action Creator) nodeShotArm', (t) => {
+  let actual = a.nodeShotArm('node1')
+
+  let expected = {
+    type: 'NODE_SHOT_ARM',
+    payload: {
+      nodeId: 'node1'
+    }
+  }
+  t.deepEqual(actual, expected, 'Creates action to arm shot node')
+  t.end()
+})
+
+test('(Action Creator) nodeShotDisarm', (t) => {
+  let actual = a.nodeShotDisarm('node1')
+
+  let expected = {
+    type: 'NODE_SHOT_DISARM',
+    payload: {
+      nodeId: 'node1'
+    }
+  }
+  t.deepEqual(actual, expected, 'Creates action to arm shot node')
+  t.end()
+})
