@@ -7,7 +7,7 @@ import { select, takeEvery, put, call } from 'redux-saga/effects'
 import proxyquire from 'proxyquire'
 
 import { getAssignedNodes } from '../selectors'
-import { nodeValueUpdate } from '../../nodes/actions'
+import { nodeValueUpdate, nodeShotFired } from '../../nodes/actions'
 import { projectError } from '../../project/actions'
 
 import getNodes from '../../../selectors/getNodes'
@@ -240,6 +240,51 @@ test('(Saga) handleInput (select node)', (t) => {
     generator.next(nodes).value,
     put(nodeValueUpdate('XX', 'four')),
     '2. Dispatches node update action, converting value to option'
+  )
+
+  t.deepEqual(
+    generator.throw({ message: 'Error!' }).value,
+    put(projectError('Error!')),
+    'Dispatches project error if some error'
+  )
+
+  t.end()
+})
+
+test('(Saga) handleInput (shot - noteOn)', (t) => {
+  const generator = handleInput({
+    payload: {
+      value: 0.5,
+      inputId: 'midi_xxx',
+      noteOn: true
+    }
+  })
+
+  t.deepEqual(
+    generator.next().value,
+    select(getAssignedNodes, 'midi_xxx'),
+    '1. Gets assigned nodes'
+  )
+
+  const nodes = [
+    {
+      id: 'XX',
+      type: 'shot',
+      sketchId: 'fooSketch',
+      method: 'barMethod'
+    }
+  ]
+
+  t.deepEqual(
+    generator.next(nodes).value,
+    put(nodeShotFired('fooSketch', 'barMethod')),
+    '4. Dispatches node shot fired action'
+  )
+
+  t.deepEqual(
+    generator.next().value,
+    put(nodeValueUpdate('XX', 0.5)),
+    '5. Dispatches node update action'
   )
 
   t.deepEqual(

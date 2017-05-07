@@ -45,6 +45,7 @@ export function* handleSketchCreate (action) {
     yield put(uNodeCreate(uniqueId, {
       id: uniqueId,
       value: 0,
+      type: 'shot',
       title: shot.title,
       method: shot.method,
       sketchId: uniqueSketchId

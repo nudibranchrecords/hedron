@@ -2,12 +2,13 @@ import test from 'tape'
 import { inputFired, inputsReplaceAll, inputAssignedNodeCreate, inputAssignedNodeDelete } from '../actions'
 
 test('(Action Creator) inputFired', (t) => {
-  let actual = inputFired('audio_0', 0.123)
+  let actual = inputFired('audio_0', 0.123, false)
   let expected = {
     type: 'INPUT_FIRED',
     payload: {
       inputId: 'audio_0',
-      value: 0.123
+      value: 0.123,
+      noteOn: false
     }
   }
   t.deepEqual(actual, expected, 'Creates action for when an input comes in')

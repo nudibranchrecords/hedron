@@ -206,6 +206,7 @@ test('(Saga) handleSketchCreate', (t) => {
     put(uNodeCreate(uniqueId, {
       id: uniqueId,
       value: 0,
+      type: 'shot',
       title: 'Shapeshift',
       method: 'shapeshift',
       sketchId: 'SKETCHID'
@@ -226,6 +227,7 @@ test('(Saga) handleSketchCreate', (t) => {
     put(uNodeCreate(uniqueId, {
       id: uniqueId,
       value: 0,
+      type: 'shot',
       title: 'Explode',
       method: 'explode',
       sketchId: 'SKETCHID'

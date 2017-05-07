@@ -1,7 +1,7 @@
-export function inputFired (inputId, value) {
+export function inputFired (inputId, value, noteOn) {
   return {
     type: 'INPUT_FIRED',
-    payload: { inputId, value }
+    payload: { inputId, value, noteOn }
   }
 }
 

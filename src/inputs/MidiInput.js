@@ -6,10 +6,11 @@ import { clockPulse } from '../store/clock/actions'
 export default (store) => {
   const onMessage = (message) => {
     // If has note data, treat as normal midi input
-    if (message.data[1]) {
+    if (message.data[1] !== undefined) {
       const learningId = store.getState().midi.learning
       const id = 'midi_' + message.data[0].toString() + message.data[1].toString()
       const val = message.data[2] / 127
+      const noteOn = message.data[0] === 144
 
       if (learningId) {
         const device = message.currentTarget.name
@@ -17,11 +18,11 @@ export default (store) => {
         store.dispatch(rNodeInputUpdate(learningId, {
           id,
           type: 'midi',
-          info: `${device} / ${message.data[1]}`
+          info: `${device} : ${message.data[1]}`
         }))
         store.dispatch(midiStopLearning())
       } else {
-        store.dispatch(inputFired(id, val))
+        store.dispatch(inputFired(id, val, noteOn))
       }
     // If no note data, treat as clock
     } else {
