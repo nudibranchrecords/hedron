@@ -25,6 +25,7 @@ class ParamBar extends React.Component {
     this.height = this.canvas.height = 16
 
     this.setSize()
+    this.draw(this.props.value)
 
     win.on('resize', this.setSize)
   }
@@ -36,23 +37,11 @@ class ParamBar extends React.Component {
   setSize () {
     this.canvas.width = 0
     this.width = this.canvas.width = this.containerEl.offsetWidth
+    this.draw(this.props.value)
   }
 
   componentWillReceiveProps (nextProps) {
-    const context = this.canvas.getContext('2d')
-    const barWidth = 2
-    const innerWidth = this.width - barWidth
-
-    context.fillStyle = '#FFFFFF'
-
-    const pos = innerWidth * nextProps.value
-    const oldPos = innerWidth * this.props.value
-
-    // Only clear the area from the last position
-    context.clearRect(oldPos - 1, 0, barWidth + 2, this.height)
-
-      // Draw bar at new position
-    context.fillRect(pos, 0, barWidth, this.height)
+    this.draw(nextProps.value, this.props.value)
   }
 
   handleMouseDown (e) {
@@ -72,6 +61,25 @@ class ParamBar extends React.Component {
     const diff = (e.screenX - this.pos) / this.width
     const newVal = Math.max(0, Math.min(1, this.currentValue + diff))
     this.props.onChange(newVal)
+  }
+
+  draw (newVal, oldVal) {
+    const barWidth = 2
+    const innerWidth = this.width - barWidth
+    const pos = innerWidth * newVal
+    const context = this.canvas.getContext('2d')
+    context.fillStyle = '#FFFFFF'
+
+    if (oldVal) {
+      const oldPos = innerWidth * oldVal
+      // Only clear the area from the last position
+      context.clearRect(oldPos - 1, 0, barWidth + 2, this.height)
+    } else {
+      context.clearRect(0, 0, this.width, this.height)
+    }
+
+    // Draw bar at new position
+    context.fillRect(pos, 0, barWidth, this.height)
   }
 
   render () {
