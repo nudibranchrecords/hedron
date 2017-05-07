@@ -382,7 +382,7 @@ test('(Saga) handleInput (shot - noteOn)', (t) => {
   t.end()
 })
 
-test('(Saga) handleInput (shot - audio val is 1, armed)', (t) => {
+test('(Saga) handleInput (shot - audio val is over 0.5, armed)', (t) => {
   const generator = handleInput({
     payload: {
       value: 1,
@@ -430,7 +430,7 @@ test('(Saga) handleInput (shot - audio val is 1, armed)', (t) => {
   t.end()
 })
 
-test('(Saga) handleInput (shot - audio val is 1, disarmed)', (t) => {
+test('(Saga) handleInput (shot - audio val is over 0.5, disarmed)', (t) => {
   const generator = handleInput({
     payload: {
       value: 1,
@@ -466,10 +466,10 @@ test('(Saga) handleInput (shot - audio val is 1, disarmed)', (t) => {
   t.end()
 })
 
-test('(Saga) handleInput (shot - audio val is 0.9, armed)', (t) => {
+test('(Saga) handleInput (shot - audio val is under 0.5, armed)', (t) => {
   const generator = handleInput({
     payload: {
-      value: 0.9,
+      value: 0.4,
       inputId: 'audio_1',
       type: 'audio'
     }
@@ -499,7 +499,7 @@ test('(Saga) handleInput (shot - audio val is 0.9, armed)', (t) => {
 
   t.deepEqual(
     generator.next().value,
-    put(nodeValueUpdate('XX', 0.9)),
+    put(nodeValueUpdate('XX', 0.4)),
     '6. Dispatches node update action'
   )
 
@@ -508,10 +508,10 @@ test('(Saga) handleInput (shot - audio val is 0.9, armed)', (t) => {
   t.end()
 })
 
-test('(Saga) handleInput (shot - audio val is 0.9, disarmed)', (t) => {
+test('(Saga) handleInput (shot - audio val is under 0.5, disarmed)', (t) => {
   const generator = handleInput({
     payload: {
-      value: 0.9,
+      value: 0.4,
       inputId: 'audio_1',
       type: 'audio'
     }
@@ -541,7 +541,7 @@ test('(Saga) handleInput (shot - audio val is 0.9, disarmed)', (t) => {
 
   t.deepEqual(
     generator.next().value,
-    put(nodeValueUpdate('XX', 0.9)),
+    put(nodeValueUpdate('XX', 0.4)),
     '6. Dispatches node update action'
   )
 

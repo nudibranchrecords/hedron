@@ -47,10 +47,10 @@ export function* handleInput (action) {
         case 'shot': {
           if (p.type === 'noteOn') {
             yield put(nodeShotFired(nodes[i].sketchId, nodes[i].method))
-          } else if (value === 1 && nodes[i].armed) {
+          } else if (value > 0.5 && nodes[i].armed) {
             yield put(nodeShotFired(nodes[i].sketchId, nodes[i].method))
             yield put(nodeShotDisarm(nodes[i].id))
-          } else if (value < 1) {
+          } else if (value < 0.5) {
             yield put(nodeShotArm(nodes[i].id))
           }
         }
