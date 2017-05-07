@@ -8,6 +8,7 @@ import ParamInputSelect from '../../containers/ParamInputSelect'
 import ShotButton from '../../containers/ShotButton'
 import Modifier from '../../containers/Modifier'
 import Select from '../../containers/Select'
+import InfoText from '../InfoText'
 
 const Wrapper = styled(Node)`
   flex: 0 0 33.33%;
@@ -19,7 +20,7 @@ const Item = styled.div`
 
 `
 
-const Shot = ({ nodeId, modifierIds, lfoOptionIds, title, sketchId, method }) => (
+const Shot = ({ nodeId, modifierIds, lfoOptionIds, title, sketchId, method, infoText }) => (
   <Wrapper>
     {title}
     <Row>
@@ -28,6 +29,7 @@ const Shot = ({ nodeId, modifierIds, lfoOptionIds, title, sketchId, method }) =>
       </Col>
       <ParamInputSelect nodeId={nodeId} />
     </Row>
+    <InfoText>{infoText}</InfoText>
     {lfoOptionIds && lfoOptionIds.map((id) => (
       <Item key={id}>
         <Select nodeId={id} />
@@ -47,7 +49,8 @@ Shot.propTypes = {
   modifierIds: PropTypes.array,
   sketchId: PropTypes.string,
   method: PropTypes.string,
-  lfoOptionIds: PropTypes.array
+  lfoOptionIds: PropTypes.array,
+  infoText: React.PropTypes.string
 }
 
 export default Shot
