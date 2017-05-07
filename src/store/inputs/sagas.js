@@ -30,8 +30,8 @@ export function* handleInput (action) {
           if (!m.type || m.type === p.type) {
             vals.push(m.value)
             if (!m.passToNext) {
-              value = Math.max(0, Math.min(1, value))
               value = yield call(work, m.key, vals, value)
+              value = Math.max(0, Math.min(1, value))
               vals = []
             }
           }
@@ -49,7 +49,7 @@ export function* handleInput (action) {
         }
       }
 
-      yield put(nodeValueUpdate(nodes[i].id, Math.max(0, Math.min(1, value))))
+      yield put(nodeValueUpdate(nodes[i].id, value))
     }
   } catch (error) {
     yield put(projectError(error.message))
