@@ -36,6 +36,7 @@ const Bottom = styled.div`
   border-top: 1px dashed #212121;
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
   padding: 0.5rem 0.25rem 0.5rem 0.5rem;
 `
 

@@ -14,6 +14,11 @@ const BarCol = styled.div`
   flex: 1;
 `
 
+const ButtonCol = styled.div`
+  flex: 0 0 1rem;
+  width: 1rem;
+`
+
 const Modifier = ({ title, nodeId, infoText, onAssignClick }) => (
   <SubNode>
     {title}
@@ -21,7 +26,9 @@ const Modifier = ({ title, nodeId, infoText, onAssignClick }) => (
       <BarCol>
         <ParamBar nodeId={nodeId} />
       </BarCol>
-      <MidiButton onClick={onAssignClick} />
+      <ButtonCol>
+        <MidiButton onClick={onAssignClick} />
+      </ButtonCol>
     </Row>
     <InfoText>{infoText}</InfoText>
   </SubNode>
