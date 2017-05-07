@@ -17,7 +17,7 @@ const Wrapper = styled(Node)`
 `
 
 const Item = styled.div`
-
+  margin-top: 0.5rem;
 `
 
 const Shot = ({ nodeId, modifierIds, lfoOptionIds, title, sketchId, method, infoText }) => (
@@ -27,7 +27,9 @@ const Shot = ({ nodeId, modifierIds, lfoOptionIds, title, sketchId, method, info
       <Col>
         <ShotButton sketchId={sketchId} method={method} nodeId={nodeId} />
       </Col>
-      <ParamInputSelect nodeId={nodeId} />
+      <Col>
+        <ParamInputSelect nodeId={nodeId} />
+      </Col>
     </Row>
     <InfoText>{infoText}</InfoText>
     {lfoOptionIds && lfoOptionIds.map((id) => (
