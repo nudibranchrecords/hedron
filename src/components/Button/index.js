@@ -6,6 +6,8 @@ const Button = styled.button`
   color: white;
   cursor: pointer;
 
+  font-size: ${props => props.size === 'large' ? '1.5rem' : 'auto'};
+
   &:hover {
     background: #EF6091;
   }
