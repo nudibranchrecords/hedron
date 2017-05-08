@@ -1,5 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import Button from '../Button'
 
 const AddSketch = ({ items, onAddClick }) => (
   <div>
@@ -7,7 +8,7 @@ const AddSketch = ({ items, onAddClick }) => (
     <ul>
       {items.map((item) => (
         <li key={item.id}>
-          <button onClick={() => onAddClick(item.id)}>{item.title}</button>
+          <Button onClick={() => onAddClick(item.id)}>{item.title}</Button>
         </li>
       ))}
     </ul>

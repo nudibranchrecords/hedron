@@ -4,6 +4,7 @@
 
 import React from 'react'
 import PropTypes from 'prop-types'
+import Button from '../Button'
 
 const Menu = ({
   onFileSaveChange, onFileLoadChange, onSaveClick, filePath, onSendOutputClick
@@ -13,12 +14,12 @@ const Menu = ({
 
   return (
     <div>
-      <button onClick={onSaveClick}>Save</button>
-      <button onClick={() => saveAsInput.click()}>Save As</button>
-      <button onClick={() => loadInput.click()}>Load</button>
+      <Button onClick={onSaveClick}>Save</Button>
+      <Button onClick={() => saveAsInput.click()}>Save As</Button>
+      <Button onClick={() => loadInput.click()}>Load</Button>
       <span>{filePath}</span>
 
-      <button onClick={onSendOutputClick}>Send to display</button>
+      <Button onClick={onSendOutputClick}>Send to display</Button>
 
       <input
         onChange={onFileSaveChange}

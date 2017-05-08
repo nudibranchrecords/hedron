@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import Param from '../../containers/Param'
 import Shot from '../../containers/Shot'
 import Row from '../Row'
+import Button from '../Button'
 import styled from 'styled-components'
 
 const Wrapper = styled.div`
@@ -42,7 +43,7 @@ const Sketch = ({ title, params, shots, onDeleteClick, sketchId }) => (
     </Row>
 
     <Bottom>
-      <button onClick={onDeleteClick}>Delete Sketch</button>
+      <Button onClick={onDeleteClick}>Delete Sketch</Button>
     </Bottom>
   </Wrapper>
 )
