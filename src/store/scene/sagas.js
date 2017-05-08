@@ -2,6 +2,7 @@ import { call, select, takeEvery, put } from 'redux-saga/effects'
 import { getModule, getSketchParamIds, getSketchShotIds } from './selectors'
 import { sketchCreate, sketchDelete } from '../sketches/actions'
 import { uNodeCreate, uNodeDelete } from '../nodes/actions'
+import getSketches from '../../selectors/getSketches'
 import lfoGenerateOptions from '../../utils/lfoGenerateOptions'
 import history from '../../history'
 import uid from 'uid'
@@ -89,6 +90,11 @@ export function* handleSketchDelete (action) {
   }
 
   yield put(sketchDelete(id))
+
+  const sketches = yield select(getSketches)
+  const sketchKeys = Object.keys(sketches)
+  const lastId = sketchKeys[sketchKeys.length - 1]
+  yield call([history, history.push], '/sketches/view/' + lastId)
 }
 
 export function* watchScene () {

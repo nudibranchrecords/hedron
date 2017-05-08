@@ -3,6 +3,7 @@ import test from 'tape'
 import { call, select, takeEvery, put } from 'redux-saga/effects'
 import { watchScene, handleSketchCreate, handleSketchDelete } from '../sagas'
 import { getModule, getSketchParamIds, getSketchShotIds } from '../selectors'
+import getSketches from '../../../selectors/getSketches'
 import { sketchCreate, sketchDelete } from '../../sketches/actions'
 import { uNodeCreate, uNodeDelete } from '../../nodes/actions'
 import lfoGenerateOptions from '../../../utils/lfoGenerateOptions'
@@ -389,6 +390,23 @@ test('(Saga) handleSketchDelete', (t) => {
     generator.next().value,
     put(sketchDelete('XXX')),
     'Dispatch sketch delete action'
+  )
+
+  t.deepEqual(
+    generator.next().value,
+    select(getSketches),
+    'Get remaining sketches'
+  )
+
+  const sketches = {
+    xxx: {},
+    yyy: {}
+  }
+
+  t.deepEqual(
+    generator.next(sketches).value,
+    call([history, history.push], '/sketches/view/yyy'),
+    'Change location to latest sketch'
   )
 
   t.equal(generator.next().done, true, 'Generator ends')
