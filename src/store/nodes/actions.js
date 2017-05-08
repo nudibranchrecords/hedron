@@ -18,11 +18,11 @@ export function rNodeCreate (id, node) {
   }
 }
 
-export function uNodeDelete (id) {
+export function uNodeDelete (nodeId) {
   return {
     type: 'U_NODE_DELETE',
     payload: {
-      id
+      nodeId
     }
   }
 }

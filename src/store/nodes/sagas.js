@@ -1,6 +1,7 @@
 import { select, takeEvery, put, call } from 'redux-saga/effects'
 import { getNodeInputId, getDefaultModifierIds } from './selectors'
-import { rNodeInputUpdate, rNodeCreate } from './actions'
+import getNode from '../../selectors/getNode'
+import { rNodeInputUpdate, rNodeCreate, rNodeDelete, uNodeDelete } from './actions'
 import { inputAssignedNodeDelete, inputAssignedNodeCreate } from '../inputs/actions'
 import { midiStartLearning } from '../midi/actions'
 import { getAll } from 'modifiers'
@@ -61,7 +62,34 @@ export function* nodeCreate (action) {
   yield put(rNodeCreate(p.id, node))
 }
 
+export function* nodeDelete (action) {
+  const p = action.payload
+
+  const node = yield select(getNode, p.nodeId)
+
+  const { input, modifierIds, lfoOptionIds } = node
+
+  if (input && node.input.id) {
+    yield put(inputAssignedNodeDelete(node.input.id, p.nodeId))
+  }
+
+  if (modifierIds) {
+    for (let i = 0; i < modifierIds.length; i++) {
+      yield put(uNodeDelete(modifierIds[i]))
+    }
+  }
+
+  if (lfoOptionIds) {
+    for (let i = 0; i < lfoOptionIds.length; i++) {
+      yield put(uNodeDelete(lfoOptionIds[i]))
+    }
+  }
+
+  yield put(rNodeDelete(p.nodeId))
+}
+
 export function* watchNodes () {
   yield takeEvery('U_NODE_INPUT_UPDATE', nodeInputUpdate)
   yield takeEvery('U_NODE_CREATE', nodeCreate)
+  yield takeEvery('U_NODE_DELETE', nodeDelete)
 }

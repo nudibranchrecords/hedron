@@ -85,7 +85,7 @@ test('(Action Creator) uNodeDelete', (t) => {
   let expected = {
     type: 'U_NODE_DELETE',
     payload: {
-      id: 'XXX'
+      nodeId: 'XXX'
     }
   }
   t.deepEqual(actual, expected, 'Creates action to delete node')

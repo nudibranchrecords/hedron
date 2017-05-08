@@ -6,7 +6,7 @@ const nodesReducer = (state = defaultState, action) => {
   const p = action.payload
 
   switch (action.type) {
-    case 'NODE_DELETE': {
+    case 'R_NODE_DELETE': {
       return _.omit(state, [p.id])
     }
     case 'R_NODE_CREATE': {

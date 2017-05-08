@@ -171,7 +171,7 @@ test('(Reducer) nodesReducer - Adds node on R_NODE_CREATE', (t) => {
   t.end()
 })
 
-test('(Reducer) nodesReducer - Removes node on NODE_DELETE', (t) => {
+test('(Reducer) nodesReducer - Removes node on R_NODE_DELETE', (t) => {
   let originalState, expectedState, actualState
 
   originalState = {
@@ -199,7 +199,7 @@ test('(Reducer) nodesReducer - Removes node on NODE_DELETE', (t) => {
   }
 
   actualState = nodesReducer(originalState, {
-    type: 'NODE_DELETE',
+    type: 'R_NODE_DELETE',
     payload: {
       id: '02'
     }
@@ -210,7 +210,7 @@ test('(Reducer) nodesReducer - Removes node on NODE_DELETE', (t) => {
   expectedState = {}
 
   actualState = nodesReducer(actualState, {
-    type: 'NODE_DELETE',
+    type: 'R_NODE_DELETE',
     payload: {
       id: '01'
     }
