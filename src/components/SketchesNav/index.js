@@ -1,30 +1,49 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Link } from 'react-router-dom'
+import { NavLink } from 'react-router-dom'
 import styled from 'styled-components'
 
-const Item = styled(Link)`
-  color: palevioletred;
+const Wrapper = styled.nav`
+  background: #111;
+  height: 100%;
+`
+
+const Item = styled(NavLink)`
   display: block;
-  margin: 0.5em 0;
-  font-family: Helvetica, Arial, sans-serif;
+  padding: 0.5rem 0.25rem;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  backround: #222;
+  color: white;
+  text-decoration: none;
+  border-top: 1px solid #333;
 
   &:hover {
-    text-decoration: underline;
+    background: #212121;
+  }
+
+  &.active {
+    background: #DA5782;
+  }
+
+  &.last {
+    text-align: center;
+    font-size: 1rem;
+    font-weight: bold;
   }
 `
 
 const SketchesNav = ({ items }) => (
-  <nav>
+  <Wrapper>
     <ul>
       {items.map(item => (
         <li key={item.id}>
-          <Item to={`/sketches/view/${item.id}`}>{item.title}</Item>
+          <Item activeClassName='active' to={`/sketches/view/${item.id}`}>{item.title}</Item>
         </li>
       ))}
-      <li><Item to='/sketches/add'>Add</Item></li>
+      <li><Item className='last' to='/sketches/add'>+</Item></li>
     </ul>
-  </nav>
+  </Wrapper>
 )
 
 SketchesNav.propTypes = {
