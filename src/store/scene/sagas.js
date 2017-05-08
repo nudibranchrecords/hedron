@@ -3,6 +3,7 @@ import { getModule, getSketchParamIds, getSketchShotIds } from './selectors'
 import { sketchCreate, sketchDelete } from '../sketches/actions'
 import { uNodeCreate, uNodeDelete } from '../nodes/actions'
 import lfoGenerateOptions from '../../utils/lfoGenerateOptions'
+import history from '../../history'
 import uid from 'uid'
 
 export function* handleSketchCreate (action) {
@@ -69,6 +70,8 @@ export function* handleSketchCreate (action) {
     paramIds,
     shotIds
   }))
+
+  yield call([history, history.push], '/sketches/view/' + uniqueSketchId)
 }
 
 export function* handleSketchDelete (action) {

@@ -6,6 +6,7 @@ import { getModule, getSketchParamIds, getSketchShotIds } from '../selectors'
 import { sketchCreate, sketchDelete } from '../../sketches/actions'
 import { uNodeCreate, uNodeDelete } from '../../nodes/actions'
 import lfoGenerateOptions from '../../../utils/lfoGenerateOptions'
+import history from '../../../history'
 
 import uid from 'uid'
 // import { getProjectData, getProjectFilepath } from '../selectors'
@@ -324,6 +325,12 @@ test('(Saga) handleSketchCreate', (t) => {
       shotIds: ['SHOT1', 'SHOT2']
     })),
     'Dispatch sketch create action'
+  )
+
+  t.deepEqual(
+    generator.next().value,
+    call([history, history.push], '/sketches/view/SKETCHID'),
+    'Change location to newly created sketch'
   )
 
   t.equal(generator.next().done, true, 'Generator ends')

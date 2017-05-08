@@ -2,7 +2,8 @@ import React from 'react'
 import { render } from 'react-dom'
 import { Provider } from 'react-redux'
 import { createStore, applyMiddleware } from 'redux'
-import { MemoryRouter } from 'react-router'
+import { Router } from 'react-router'
+import history from './history'
 import { composeWithDevTools } from 'remote-redux-devtools'
 import createSagaMiddleware from 'redux-saga'
 import rootSaga from './store/rootSaga'
@@ -44,9 +45,9 @@ const renderApp = (Component) => {
   render(
     <AppContainer>
       <Provider store={store}>
-        <MemoryRouter>
+        <Router history={history}>
           <App stats={stats} />
-        </MemoryRouter>
+        </Router>
       </Provider>
     </AppContainer>,
     document.getElementById('root')
