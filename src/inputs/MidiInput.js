@@ -5,9 +5,10 @@ import { clockPulse } from '../store/clock/actions'
 
 export default (store) => {
   const onMessage = (message) => {
+    const state = store.getState()
     // If has note data, treat as normal midi input
     if (message.data[1] !== undefined) {
-      const learningId = store.getState().midi.learning
+      const learningId = state.midi.learning
       const id = 'midi_' + message.data[0].toString() + message.data[1].toString()
       const val = message.data[2] / 127
       const noteOn = message.data[0] === 144 ? 'noteOn' : false
@@ -26,7 +27,10 @@ export default (store) => {
       }
     // If no note data, treat as clock
     } else {
-      store.dispatch(clockPulse())
+      // Only dispatch clock pulse if no generated clock
+      if (!state.clock.isGenerated) {
+        store.dispatch(clockPulse())
+      }
     }
   }
 

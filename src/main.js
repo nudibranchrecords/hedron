@@ -18,7 +18,7 @@ import './style.css'
 // inputs
 import initiateAudio from './inputs/AudioInput'
 import initiateMidi from './inputs/MidiInput'
-import { initiateGenerateClock, startGeneratedClock } from './inputs/GeneratedClock'
+import initiateGeneratedClock from './inputs/GeneratedClock'
 
 import { AppContainer } from 'react-hot-loader'
 
@@ -61,6 +61,5 @@ if (module.hot) module.hot.accept('./components/App', () => renderApp(App))
 
 initiateAudio(store)
 initiateMidi(store)
-initiateGenerateClock(store)
-startGeneratedClock()
+initiateGeneratedClock(store)
 Engine.run(store, stats)

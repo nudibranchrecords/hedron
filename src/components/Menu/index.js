@@ -5,15 +5,23 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import Button from '../Button'
+import styled from 'styled-components'
+import Row from '../Row'
+
+const Right = styled.div`
+  margin-left: auto;
+  display: flex;
+`
 
 const Menu = ({
-  onFileSaveChange, onFileLoadChange, onSaveClick, filePath, onSendOutputClick
+  onFileSaveChange, onFileLoadChange, onSaveClick,
+  filePath, onSendOutputClick, clockIsGenerated, onClockToggleClick
 }) => {
   let saveAsInput
   let loadInput
 
   return (
-    <div>
+    <Row>
       <Button onClick={onSaveClick}>Save</Button>
       <Button onClick={() => saveAsInput.click()}>Save As</Button>
       <Button onClick={() => loadInput.click()}>Load</Button>
@@ -39,7 +47,13 @@ const Menu = ({
         ref={node => { loadInput = node }}
         accept='.json'
         style={{ display: 'none' }} />
-    </div>
+
+      <Right>
+        <Button onClick={onClockToggleClick}>
+          Generated Clock is: {clockIsGenerated ? 'ON' : 'OFF'}
+        </Button>
+      </Right>
+    </Row>
   )
 }
 
@@ -48,7 +62,8 @@ Menu.propTypes = {
   onFileSaveChange: PropTypes.func.isRequired,
   onFileLoadChange: PropTypes.func.isRequired,
   onSendOutputClick: PropTypes.func.isRequired,
-  onSaveClick: PropTypes.func.isRequired
+  onSaveClick: PropTypes.func.isRequired,
+  clockIsGenerated: PropTypes.bool
 }
 
 export default Menu

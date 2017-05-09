@@ -1,6 +1,7 @@
 const defaultState = {
   beat: 0,
-  bpm: 0
+  bpm: 0,
+  isGenerated: true
 }
 
 const clockReducer = (state = defaultState, action) => {
@@ -26,6 +27,12 @@ const clockReducer = (state = defaultState, action) => {
       return {
         ...state,
         beat: 0
+      }
+    }
+    case 'CLOCK_GENERATED_TOGGLE': {
+      return {
+        ...state,
+        isGenerated: !state.isGenerated
       }
     }
     default:

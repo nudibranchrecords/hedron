@@ -2,6 +2,7 @@ import test from 'tape'
 import deepFreeze from 'deep-freeze'
 import paramsReducer from '../reducer'
 import { returnsPreviousState } from '../../../testUtils'
+import * as a from '../actions'
 
 returnsPreviousState(paramsReducer)
 
@@ -18,9 +19,7 @@ test('(Reducer) clockReducer -  - Increases beat on CLOCK_BEAT_INC', (t) => {
     beat: 2
   }
 
-  actualState = paramsReducer(originalState, {
-    type: 'CLOCK_BEAT_INC'
-  })
+  actualState = paramsReducer(originalState, a.clockBeatInc())
 
   t.deepEqual(actualState, expectedState)
 
@@ -28,9 +27,7 @@ test('(Reducer) clockReducer -  - Increases beat on CLOCK_BEAT_INC', (t) => {
     beat: 3
   }
 
-  actualState = paramsReducer(actualState, {
-    type: 'CLOCK_BEAT_INC'
-  })
+  actualState = paramsReducer(actualState, a.clockBeatInc())
 
   t.deepEqual(actualState, expectedState)
 
@@ -50,9 +47,7 @@ test('(Reducer) clockReducer - resets beat on CLOCK_RESET', (t) => {
     beat: 0
   }
 
-  actualState = paramsReducer(originalState, {
-    type: 'CLOCK_RESET'
-  })
+  actualState = paramsReducer(originalState, a.clockReset())
 
   t.deepEqual(actualState, expectedState)
 
@@ -72,9 +67,7 @@ test('(Reducer) clockReducer - loops back to 0 after 64 beats', (t) => {
     beat: 63
   }
 
-  actualState = paramsReducer(originalState, {
-    type: 'CLOCK_BEAT_INC'
-  })
+  actualState = paramsReducer(originalState, a.clockBeatInc())
 
   t.deepEqual(actualState, expectedState)
 
@@ -82,9 +75,7 @@ test('(Reducer) clockReducer - loops back to 0 after 64 beats', (t) => {
     beat: 0
   }
 
-  actualState = paramsReducer(actualState, {
-    type: 'CLOCK_BEAT_INC'
-  })
+  actualState = paramsReducer(actualState, a.clockBeatInc())
 
   t.deepEqual(actualState, expectedState)
 
@@ -104,12 +95,7 @@ test('(Reducer) clockReducer - updates BPM on CLOCK_BPM_UPDATE', (t) => {
     bpm: 120
   }
 
-  actualState = paramsReducer(originalState, {
-    type: 'CLOCK_BPM_UPDATE',
-    payload: {
-      bpm: 120
-    }
-  })
+  actualState = paramsReducer(originalState, a.clockBpmUpdate(120))
 
   t.deepEqual(actualState, expectedState)
 
@@ -117,14 +103,38 @@ test('(Reducer) clockReducer - updates BPM on CLOCK_BPM_UPDATE', (t) => {
     bpm: 110
   }
 
-  actualState = paramsReducer(actualState, {
-    type: 'CLOCK_BPM_UPDATE',
-    payload: {
-      bpm: 110
-    }
-  })
+  actualState = paramsReducer(actualState, a.clockBpmUpdate(110))
 
   t.deepEqual(actualState, expectedState)
 
   t.end()
 })
+
+test('(Reducer) clockReducer - switches mode on clockGeneratedToggle', (t) => {
+  let originalState, expectedState, actualState
+
+  originalState = {
+    isGenerated: true
+  }
+
+  deepFreeze(originalState)
+
+  expectedState = {
+    isGenerated: false
+  }
+
+  actualState = paramsReducer(originalState, a.clockGeneratedToggle(120))
+
+  t.deepEqual(actualState, expectedState)
+
+  expectedState = {
+    isGenerated: true
+  }
+
+  actualState = paramsReducer(actualState, a.clockGeneratedToggle(110))
+
+  t.deepEqual(actualState, expectedState)
+
+  t.end()
+})
+

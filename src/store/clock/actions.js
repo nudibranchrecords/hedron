@@ -24,3 +24,9 @@ export function clockReset () {
     type: 'CLOCK_RESET'
   }
 }
+
+export function clockGeneratedToggle () {
+  return {
+    type: 'CLOCK_GENERATED_TOGGLE'
+  }
+}
