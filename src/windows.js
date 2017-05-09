@@ -1,5 +1,8 @@
 import world from './Engine/world.js'
 
+const url = process.env.NODE_ENV === 'production'
+ ? 'output.html' : 'http://0.0.0.0:8080/output.html'
+
 nw.Screen.Init()
 
 const win = nw.Window.get()
@@ -11,7 +14,7 @@ win.on('resize', function () {
 
 export const sendOutput = () => {
   if (externalDisplay) {
-    nw.Window.open('http://0.0.0.0:8080/output.html', {}, (outputWin) => {
+    nw.Window.open(url, {}, (outputWin) => {
       const x = externalDisplay.bounds.x
       const y = externalDisplay.bounds.y
 
