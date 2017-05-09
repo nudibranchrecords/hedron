@@ -50,7 +50,7 @@ const Menu = ({
 
       <Right>
         <Button onClick={onClockToggleClick}>
-          Generated Clock is: {clockIsGenerated ? 'ON' : 'OFF'}
+          Mock Clock is: {clockIsGenerated ? 'ON' : 'OFF'}
         </Button>
       </Right>
     </Row>
