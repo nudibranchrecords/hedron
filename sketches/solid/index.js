@@ -1,18 +1,20 @@
 const THREE = require('three')
 const Sketch = require('../../src/Engine/Sketch.js')
 
-class Cubey extends Sketch {
+class Solid extends Sketch {
 
   constructor () {
     super()
     const material = new THREE.MeshBasicMaterial({ wireframe: true })
 
+    const size = 1500
+
     const geoms = [
-      new THREE.BoxGeometry(800, 800, 800),
-      new THREE.OctahedronGeometry(800),
-      new THREE.TetrahedronGeometry(800),
-      new THREE.DodecahedronGeometry(800),
-      new THREE.IcosahedronGeometry(800)
+      new THREE.BoxGeometry(size, size, size),
+      new THREE.OctahedronGeometry(size),
+      new THREE.TetrahedronGeometry(size),
+      new THREE.DodecahedronGeometry(size),
+      new THREE.IcosahedronGeometry(size)
     ]
 
     this.meshes = []
@@ -47,8 +49,9 @@ class Cubey extends Sketch {
   }
 
   update (params) {
-    this.group.rotation.x += params.rotX
-    this.group.rotation.y += params.rotY
+    this.group.rotation.x += params.rotX * 0.15
+    this.group.rotation.y += params.rotY * 0.15
+    this.group.rotation.z += params.rotZ * 0.15
 
     if (params.scale === 0) params.scale = 0.00001
 
@@ -56,4 +59,4 @@ class Cubey extends Sketch {
   }
 }
 
-module.exports = Cubey
+module.exports = Solid

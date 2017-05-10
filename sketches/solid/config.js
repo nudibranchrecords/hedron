@@ -1,5 +1,5 @@
 module.exports = {
-  defaultTitle: 'Cubey',
+  defaultTitle: 'Solid',
   params: [
     {
       key: 'rotX',
@@ -9,6 +9,11 @@ module.exports = {
     {
       key: 'rotY',
       title: 'Rotation Y',
+      defaultValue: 0
+    },
+    {
+      key: 'rotZ',
+      title: 'Rotation Z',
       defaultValue: 0
     },
     {
