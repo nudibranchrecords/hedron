@@ -20,6 +20,11 @@ module.exports = {
       key: 'scale',
       title: 'Scale',
       defaultValue: 0.5
+    },
+    {
+      key: 'opacity',
+      title: 'Opacity',
+      defaultValue: 1
     }
   ],
   shots: [

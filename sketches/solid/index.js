@@ -5,9 +5,12 @@ class Solid extends Sketch {
 
   constructor () {
     super()
-    const material = new THREE.MeshBasicMaterial({ wireframe: true })
+    this.material = new THREE.MeshBasicMaterial({
+      wireframe: true,
+      transparent: true
+    })
 
-    const size = 800
+    const size = 300
 
     const geoms = [
       new THREE.BoxGeometry(size, size, size),
@@ -20,10 +23,10 @@ class Solid extends Sketch {
     this.meshes = []
 
     this.group = new THREE.Object3D()
-    this.group.position.z = 500
+    this.group.position.z = 800
 
     geoms.forEach(geom => {
-      const mesh = new THREE.Mesh(geom, material)
+      const mesh = new THREE.Mesh(geom, this.material)
       this.meshes.push(mesh)
       this.group.add(mesh)
     })
@@ -53,6 +56,7 @@ class Solid extends Sketch {
     this.group.rotation.x += params.rotX * 0.15
     this.group.rotation.y += params.rotY * 0.15
     this.group.rotation.z += params.rotZ * 0.15
+    this.material.opacity = params.opacity
 
     if (params.scale === 0) params.scale = 0.00001
 

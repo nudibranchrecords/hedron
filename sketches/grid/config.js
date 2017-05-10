@@ -30,6 +30,11 @@ module.exports = {
       key: 'speed',
       title: 'Speed',
       defaultValue: 0.5
+    },
+    {
+      key: 'opacity',
+      title: 'Opacity',
+      defaultValue: 1
     }
   ]
 }
