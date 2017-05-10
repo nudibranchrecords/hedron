@@ -11,6 +11,8 @@ const Wrapper = styled.div`
   display: flex;
   height: 100%;
   flex-direction: column;
+  overflow: auto;
+
 `
 
 const Params = styled.div`
@@ -20,8 +22,8 @@ const Params = styled.div`
 
 const Bottom = styled.div`
   margin-top: auto;
-  display: flex;
-  justify-content: flex-end;
+  padding-top: 3rem;
+  text-align: right;
 `
 
 const Sketch = ({ title, params, shots, onDeleteClick, sketchId }) => (
