@@ -28,19 +28,27 @@ const Sketch = ({ title, params, shots, onDeleteClick, sketchId }) => (
   <Wrapper>
     <h2>{title}</h2>
 
-    <h3>Params</h3>
-    <Params>
-      {params.map((id) => (
-        <Param nodeId={id} key={id} />
-      ))}
-    </Params>
+    {params.length > 0 &&
+      <div>
+        <h3>Params</h3>
+        <Params>
+          {params.map((id) => (
+            <Param nodeId={id} key={id} />
+          ))}
+        </Params>
+      </div>
+    }
 
-    <h3>Shots</h3>
-    <Row>
-      {shots.map((id) => (
-        <Shot nodeId={id} key={id} />
-      ))}
-    </Row>
+    {shots.length > 0 &&
+      <div>
+        <h3>Shots</h3>
+        <Row>
+          {shots.map((id) => (
+            <Shot nodeId={id} key={id} />
+          ))}
+        </Row>
+      </div>
+    }
 
     <Bottom>
       <Button onClick={onDeleteClick}>Delete Sketch</Button>
