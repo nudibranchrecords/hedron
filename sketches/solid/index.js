@@ -7,7 +7,7 @@ class Solid extends Sketch {
     super()
     const material = new THREE.MeshBasicMaterial({ wireframe: true })
 
-    const size = 1500
+    const size = 800
 
     const geoms = [
       new THREE.BoxGeometry(size, size, size),
@@ -20,6 +20,7 @@ class Solid extends Sketch {
     this.meshes = []
 
     this.group = new THREE.Object3D()
+    this.group.position.z = 500
 
     geoms.forEach(geom => {
       const mesh = new THREE.Mesh(geom, material)

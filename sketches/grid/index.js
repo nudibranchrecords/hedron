@@ -16,6 +16,7 @@ class Grid extends Sketch {
     this.group.add(this.bottomGrid.mesh)
 
     this.group2 = new THREE.Object3D()
+    this.group2.position.z = 1000
     this.group2.add(this.group)
 
     this.root.add(this.group2)

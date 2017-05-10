@@ -3,8 +3,8 @@ const THREE = require('three')
 class Plane {
 
   constructor () {
-    const size = 1000
-    const step = 20
+    const size = 3000
+    const step = 50
 
     const material = new THREE.LineBasicMaterial({ transparent: true })
     const geometry = new THREE.Geometry()
