@@ -339,6 +339,55 @@ test('(Saga) handleSketchCreate', (t) => {
   t.end()
 })
 
+test('(Saga) handleSketchCreate (no params or shots)', (t) => {
+  let moduleObj, uniqueId
+
+  const generator = handleSketchCreate({
+    payload: {
+      moduleId: 'cubey'
+    }
+  })
+
+  t.deepEqual(
+    generator.next().value,
+    call(uid),
+    'Generate unique ID for sketch'
+  )
+
+  uniqueId = 'SKETCHID'
+
+  t.deepEqual(
+    generator.next(uniqueId).value,
+    select(getModule, 'cubey'),
+    'Get module object'
+  )
+
+  moduleObj = {
+    defaultTitle: 'Cubey Boy'
+  }
+
+  t.deepEqual(
+    generator.next(moduleObj).value,
+    put(sketchCreate('SKETCHID', {
+      title: 'Cubey Boy',
+      moduleId: 'cubey',
+      paramIds: [],
+      shotIds: []
+    })),
+    'Dispatch sketch create action'
+  )
+
+  t.deepEqual(
+    generator.next().value,
+    call([history, history.push], '/sketches/view/SKETCHID'),
+    'Change location to newly created sketch'
+  )
+
+  t.equal(generator.next().done, true, 'Generator ends')
+
+  t.end()
+})
+
 test('(Saga) handleSketchDelete', (t) => {
   const generator = handleSketchDelete({
     payload: {
@@ -413,3 +462,4 @@ test('(Saga) handleSketchDelete', (t) => {
 
   t.end()
 })
+

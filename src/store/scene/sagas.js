@@ -15,54 +15,58 @@ export function* handleSketchCreate (action) {
   const paramIds = []
   const shotIds = []
 
-  for (let i = 0; i < module.params.length; i++) {
-    const param = module.params[i]
+  if (module.params) {
+    for (let i = 0; i < module.params.length; i++) {
+      const param = module.params[i]
 
-    const lfoOpts = yield call(lfoGenerateOptions)
-    const lfoOptionIds = []
+      const lfoOpts = yield call(lfoGenerateOptions)
+      const lfoOptionIds = []
 
-    for (let key in lfoOpts) {
-      const item = lfoOpts[key]
-      lfoOptionIds.push(item.id)
+      for (let key in lfoOpts) {
+        const item = lfoOpts[key]
+        lfoOptionIds.push(item.id)
 
-      yield put(uNodeCreate(item.id, item))
+        yield put(uNodeCreate(item.id, item))
+      }
+
+      uniqueId = yield call(uid)
+      paramIds.push(uniqueId)
+      yield put(uNodeCreate(uniqueId, {
+        title: param.title,
+        key: param.key,
+        value: param.defaultValue,
+        id: uniqueId,
+        lfoOptionIds,
+        isOpen: false
+      }))
     }
-
-    uniqueId = yield call(uid)
-    paramIds.push(uniqueId)
-    yield put(uNodeCreate(uniqueId, {
-      title: param.title,
-      key: param.key,
-      value: param.defaultValue,
-      id: uniqueId,
-      lfoOptionIds,
-      isOpen: false
-    }))
   }
 
-  for (let i = 0; i < module.shots.length; i++) {
-    const lfoOpts = yield call(lfoGenerateOptions)
-    const lfoOptionIds = []
+  if (module.shots) {
+    for (let i = 0; i < module.shots.length; i++) {
+      const lfoOpts = yield call(lfoGenerateOptions)
+      const lfoOptionIds = []
 
-    for (let key in lfoOpts) {
-      const item = lfoOpts[key]
-      lfoOptionIds.push(item.id)
+      for (let key in lfoOpts) {
+        const item = lfoOpts[key]
+        lfoOptionIds.push(item.id)
 
-      yield put(uNodeCreate(item.id, item))
+        yield put(uNodeCreate(item.id, item))
+      }
+
+      const shot = module.shots[i]
+      uniqueId = yield call(uid)
+      shotIds.push(uniqueId)
+      yield put(uNodeCreate(uniqueId, {
+        id: uniqueId,
+        value: 0,
+        type: 'shot',
+        title: shot.title,
+        method: shot.method,
+        sketchId: uniqueSketchId,
+        lfoOptionIds
+      }))
     }
-
-    const shot = module.shots[i]
-    uniqueId = yield call(uid)
-    shotIds.push(uniqueId)
-    yield put(uNodeCreate(uniqueId, {
-      id: uniqueId,
-      value: 0,
-      type: 'shot',
-      title: shot.title,
-      method: shot.method,
-      sketchId: uniqueSketchId,
-      lfoOptionIds
-    }))
   }
 
   yield put(sketchCreate(uniqueSketchId, {
