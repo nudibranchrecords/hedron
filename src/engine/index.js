@@ -3,6 +3,8 @@ import getSketchParams from './getSketchParams'
 import { availableModulesReplaceAll } from '../store/availableModules/actions'
 import world from './world'
 
+let store
+
 class Engine {
   constructor () {
     this.modules = {}
@@ -40,9 +42,11 @@ class Engine {
   }
 
   fireShot (sketchId, method) {
+    const state = store.getState()
+
     this.sketches.forEach((sketch) => {
       if (sketch.id === sketchId) {
-        sketch.module[method]()
+        sketch.module[method](getSketchParams(state, sketch.id))
       }
     })
   }
@@ -61,7 +65,9 @@ class Engine {
     })
   }
 
-  run (store, stats) {
+  run (injectedStore, stats) {
+    store = injectedStore
+
     // Give store module params
     store.dispatch(availableModulesReplaceAll(this.modules))
 
