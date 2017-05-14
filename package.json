@@ -4,9 +4,9 @@
   "repository": {},
   "license": "MIT",
   "scripts": {
-    "start": "concurrently --kill-others \"webpack-dev-server --config config/webpack.config.js\" \"nw ./launch\"",
+    "start": "NODE_ENV=development concurrently --kill-others \"webpack-dev-server --config config/webpack.config.js\" \"nw ./launch\"",
     "start:prod": "nw ./dist",
-    "build": "NODE_ENV=production webpack --config config/webpack.config.js",
+    "build": "webpack --config config/webpack.config.js",
     "lint": "eslint bin build config server src tests",
     "lint:css": "stylelint \"src/components/**/*.js\"",
     "lint:fix": "npm run lint -- --fix",

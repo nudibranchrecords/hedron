@@ -1,6 +1,6 @@
 import world from './Engine/world.js'
 
-const url = process.env.NODE_ENV === 'production'
+const url = process.env.NODE_ENV !== 'development'
  ? 'output.html' : 'http://0.0.0.0:8080/output.html'
 
 nw.Screen.Init()

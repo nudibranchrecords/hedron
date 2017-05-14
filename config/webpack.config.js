@@ -6,8 +6,8 @@ const path = require('path')
 const env = process.env.NODE_ENV
 
 let entry, plugins
-
-if (env === 'production') {
+let externals = './src/externals'
+if (env !== 'development') {
   entry = [
     'babel-polyfill',
     './src/main.js'
@@ -69,10 +69,10 @@ module.exports = {
   },
   externals: {
     sketches: {
-      commonjs2: path.resolve(__dirname, '../src/externals/sketches.js')
+      commonjs2: externals + '/sketches.js'
     },
     modifiers: {
-      commonjs2: path.resolve(__dirname, '../src/externals/modifiers.js')
+      commonjs2: externals + '/modifiers.js'
     }
   },
   target: 'node-webkit',

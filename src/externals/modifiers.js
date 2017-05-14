@@ -5,7 +5,9 @@ const path = require('path')
 
 const all = {}
 
-glob.sync('../modifiers/*').forEach(function (file) {
+const url = process.env.NODE_ENV !== 'development' ? './modifiers/*' : '../modifiers/*'
+
+glob.sync(url).forEach(function (file) {
   const name = path.parse(file).name
   all[name] = {
     func: require(path.resolve(file)),
