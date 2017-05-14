@@ -6,6 +6,7 @@ import { Router } from 'react-router'
 import history from './history'
 import { composeWithDevTools } from 'remote-redux-devtools'
 import createSagaMiddleware from 'redux-saga'
+import { batchedSubscribe } from 'redux-batched-subscribe'
 import rootSaga from './store/rootSaga'
 import rootReducer from './store/rootReducer'
 import App from './components/App'
@@ -19,6 +20,7 @@ import './style.css'
 import initiateAudio from './inputs/AudioInput'
 import initiateMidi from './inputs/MidiInput'
 import initiateGeneratedClock from './inputs/GeneratedClock'
+import debounce from 'lodash/debounce'
 
 import { AppContainer } from 'react-hot-loader'
 
@@ -33,10 +35,13 @@ const composeEnhancers = composeWithDevTools({
   ]
 })
 
+const debounceNotify = debounce(notify => notify())
+
 const sagaMiddleware = createSagaMiddleware()
 
 const store = createStore(rootReducer, composeEnhancers(
-  applyMiddleware(sagaMiddleware)
+  applyMiddleware(sagaMiddleware),
+  batchedSubscribe(debounceNotify)
 ))
 
 sagaMiddleware.run(rootSaga)

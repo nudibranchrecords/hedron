@@ -36,6 +36,7 @@
     "react-router-dom": "next",
     "react-select": "^1.0.0-rc.3",
     "redux": "^3.6.0",
+    "redux-batched-subscribe": "^0.1.6",
     "redux-saga": "^0.14.5",
     "stats.js": "^0.17.0",
     "styled-components": "^1.4.4",
