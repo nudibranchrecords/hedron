@@ -23,7 +23,10 @@ export const sendOutput = () => {
       outputWin.enterFullscreen()
 
       outputWin.on('loaded', function () {
-        world.setOutput(outputWin.window.document.querySelector('#output'))
+        // Don't do anything until fullscreen animation is definitely over
+        setTimeout(() => {
+          world.setOutput(outputWin.window.document.querySelector('#output'))
+        }, 3000)
       })
     })
   }
