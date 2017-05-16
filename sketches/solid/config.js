@@ -22,9 +22,14 @@ module.exports = {
       defaultValue: 0.5
     },
     {
-      key: 'opacity',
-      title: 'Opacity',
+      key: 'faceOpacity',
+      title: 'Face Opacity',
       defaultValue: 1
+    },
+    {
+      key: 'wireframeOpacity',
+      title: 'Wireframe Opacity',
+      defaultValue: 0
     }
   ],
   shots: [
