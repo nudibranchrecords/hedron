@@ -5,9 +5,11 @@ import styled from 'styled-components'
 
 const Items = styled.ul`
   display: flex;
+  flex-wrap: wrap;
 
   & li {
     margin-right: 1rem;
+    margin-bottom: 1rem;
   }
 `
 
