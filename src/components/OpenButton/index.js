@@ -8,7 +8,7 @@ const Button = styled(Icon)`
   transform: rotate(${props => props.isOpen ? '0deg' : '-90deg'});
 
   &:hover {
-    fill: #DA5782
+    fill: #da5782;
   }
 `
 

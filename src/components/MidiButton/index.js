@@ -8,7 +8,7 @@ const Button = styled(Icon)`
   cursor: pointer;
 
   &:hover {
-    fill: #DA5782
+    fill: #da5782;
   }
 `
 

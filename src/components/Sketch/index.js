@@ -12,7 +12,6 @@ const Wrapper = styled.div`
   height: 100%;
   flex-direction: column;
   overflow: auto;
-
 `
 
 const Params = styled.div`

@@ -10,7 +10,7 @@ import Select from '../../containers/Select'
 import styled from 'styled-components'
 
 const Wrapper = styled(Node)`
-  margin: 0 0 0.5rem 0
+  margin: 0 0 0.5rem;
 `
 
 const InputSelectCol = styled.div`

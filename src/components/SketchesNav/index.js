@@ -13,7 +13,7 @@ const Item = styled(NavLink)`
   padding: 0.5rem 0.25rem;
   font-size: 0.7rem;
   text-transform: uppercase;
-  backround: #222;
+  background: #222;
   color: white;
   text-decoration: none;
   border-top: 1px solid #333;
@@ -23,7 +23,7 @@ const Item = styled(NavLink)`
   }
 
   &.active {
-    background: #DA5782;
+    background: #da5782;
   }
 
   &.last {
