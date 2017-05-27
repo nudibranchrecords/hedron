@@ -1,18 +1,31 @@
 'use strict'
 
 const webpack = require('webpack')
+const CopyWebpackPlugin = require('copy-webpack-plugin')
+const CleanWebpackPlugin = require('clean-webpack-plugin')
 const path = require('path')
 
 const env = process.env.NODE_ENV
 
 let entry, plugins
-let externals = './src/externals'
+const externals = './src/externals/'
+
 if (env !== 'development') {
   entry = [
     'babel-polyfill',
     './src/main.js'
   ]
   plugins = [
+    new CleanWebpackPlugin(['dist'], { root: path.resolve(__dirname, '../') }),
+    new CopyWebpackPlugin([
+      { from: 'config/package.build.json', to: 'package.json' },
+      { from: 'index.html' },
+      { from: 'output.html' },
+      { from: 'sketches/**/*' },
+      { from: 'modifiers/**/*' },
+      { from: 'src/externals/*' },
+      { from: 'src/Engine/Sketch.js', to: 'src/Engine' }
+    ]),
     new webpack.DefinePlugin({
       'process.env': {
         NODE_ENV: JSON.stringify('production')
@@ -69,10 +82,10 @@ module.exports = {
   },
   externals: {
     sketches: {
-      commonjs2: externals + '/sketches.js'
+      commonjs2: externals + 'sketches.js'
     },
     modifiers: {
-      commonjs2: externals + '/modifiers.js'
+      commonjs2: externals + 'modifiers.js'
     }
   },
   target: 'node-webkit',

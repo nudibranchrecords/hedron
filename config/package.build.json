@@ -1,0 +1,12 @@
+{
+  "name": "standalone",
+  "main": "index.html",
+  "chromium-args": "--mixed-context",
+  "window": {
+    "width": 1280,
+    "height": 768
+  },
+  "webkit": {
+    "plugin": true
+  }
+}
