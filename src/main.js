@@ -1,7 +1,7 @@
 import React from 'react'
 import { render } from 'react-dom'
 import { Provider } from 'react-redux'
-import { createStore, applyMiddleware } from 'redux'
+import { createStore, applyMiddleware, compose } from 'redux'
 import { Router } from 'react-router'
 import history from './history'
 import { composeWithDevTools } from 'remote-redux-devtools'
@@ -27,13 +27,19 @@ import { AppContainer } from 'react-hot-loader'
 const stats = new Stats()
 stats.dom.setAttribute('style', '')
 
-const composeEnhancers = composeWithDevTools({
-  realtime: true,
-  actionsBlacklist: [
-    'CLOCK_PULSE', 'CLOCK_BEAT_INC', 'CLOCK_BPM_UPDATE', 'INPUT_FIRED',
-    'NODE_VALUE_UPDATE', 'NODE_SHOT_ARM', 'NODE_SHOT_DISARM', 'NODE_SHOT_FIRED'
-  ]
-})
+let composeEnhancers
+
+if (process.env.NODE_ENV !== 'development') {
+  composeEnhancers = compose
+} else {
+  composeEnhancers = composeWithDevTools({
+    realtime: true,
+    actionsBlacklist: [
+      'CLOCK_PULSE', 'CLOCK_BEAT_INC', 'CLOCK_BPM_UPDATE', 'INPUT_FIRED',
+      'NODE_VALUE_UPDATE', 'NODE_SHOT_ARM', 'NODE_SHOT_DISARM', 'NODE_SHOT_FIRED'
+    ]
+  })
+}
 
 const debounceNotify = debounce(notify => notify())
 
