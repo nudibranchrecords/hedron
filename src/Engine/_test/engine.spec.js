@@ -181,9 +181,5 @@ test('Engine', (t) => {
     t.equal(spyCall.args[0], sketches1[sketchId].moduleId + 'Root', 'Adds correct root')
   })
 
-  engine.fireShot('333', 'meow')
-
-  t.equal(spies.meow.called, true, 'Shot fired')
-
   t.end()
 })
