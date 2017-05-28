@@ -1,6 +1,6 @@
 {
   "name": "hedron",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "repository": {},
   "license": "MIT",
   "scripts": {
@@ -12,7 +12,7 @@
     "test": "NODE_ENV=test tape -r babel-register src/**/*.spec.js  | tap-colorize --info '#B788CE'",
     "test:dev": "NODE_ENV=test tape-watch -r babel-register src/**/*.spec.js  | tap-colorize --info '#B788CE'",
     "compile": "webpack --config config/webpack.config.js && build --tasks mac-x64 --mirror https://dl.nwjs.io/ ./dist",
-    "deploy": "yarn test && yarn lint && yarn lint:css && NODE_ENV=production webpack --config config/webpack.config.js && build --tasks mac-x64 --mirror https://dl.nwjs.io/ ./dist"
+    "deploy": "yarn test && yarn lint && yarn lint:css && webpack --config config/webpack.config.js && build --tasks mac-x64 --mirror https://dl.nwjs.io/ ./dist"
   },
   "dependencies": {
     "babel-loader": "^6.3.2",
@@ -59,7 +59,7 @@
     "eslint-plugin-promise": "^3.4.1",
     "eslint-plugin-react": "^6.10.0",
     "eslint-plugin-standard": "^2.0.1",
-    "nw": "^0.22.3",
+    "nw": "0.21.3",
     "nwjs-builder-phoenix": "^1.14.1",
     "remote-redux-devtools": "^0.5.7",
     "sinon": "^2.1.0",

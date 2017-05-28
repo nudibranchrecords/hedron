@@ -11,7 +11,7 @@
     "plugin": true
   },
   "build": {
-    "nwVersion": "0.22.3",
+    "nwVersion": "0.21.3",
     "nwFlavor": "sdk"
   }
 }
