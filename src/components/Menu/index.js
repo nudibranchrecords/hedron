@@ -63,6 +63,7 @@ Menu.propTypes = {
   onFileLoadChange: PropTypes.func.isRequired,
   onSendOutputClick: PropTypes.func.isRequired,
   onSaveClick: PropTypes.func.isRequired,
+  onClockToggleClick: PropTypes.func.isRequired,
   clockIsGenerated: PropTypes.bool
 }
 
