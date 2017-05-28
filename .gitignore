@@ -5,3 +5,4 @@ dist
 sketches/*
 !sketches/grid
 !sketches/solid
+config/dev.config.js

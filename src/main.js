@@ -2,6 +2,7 @@ import React from 'react'
 import { render } from 'react-dom'
 import { Provider } from 'react-redux'
 import { createStore, applyMiddleware, compose } from 'redux'
+import { projectFilepathUpdate, projectLoadRequest } from './store/project/actions'
 import { Router } from 'react-router'
 import history from './history'
 import { composeWithDevTools } from 'remote-redux-devtools'
@@ -74,3 +75,11 @@ initiateAudio(store)
 initiateMidi(store)
 initiateGeneratedClock(store)
 Engine.run(store, stats)
+
+try {
+  const devConfig = require('../config/dev.config').default
+  store.dispatch(projectFilepathUpdate(devConfig.defaultProject))
+  store.dispatch(projectLoadRequest())
+} catch (err) {
+  console.log('No dev config file found: ', err.message)
+}
