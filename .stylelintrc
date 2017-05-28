@@ -1,5 +1,8 @@
 {
   "processors": ["stylelint-processor-styled-components"],
   "extends": "stylelint-config-standard",
-  "syntax": "scss"
+  "syntax": "scss",
+  "rules": {
+    "rule-empty-line-before": null
+  }
 }
