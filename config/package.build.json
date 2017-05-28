@@ -1,6 +1,7 @@
 {
-  "name": "standalone",
+  "name": "Hedron",
   "main": "index.html",
+  "version": "0.1.0",
   "chromium-args": "--mixed-context",
   "window": {
     "width": 1280,
@@ -8,5 +9,9 @@
   },
   "webkit": {
     "plugin": true
+  },
+  "build": {
+    "nwVersion": "0.22.3",
+    "nwFlavor": "sdk"
   }
 }
