@@ -10,6 +10,16 @@ const env = process.env.NODE_ENV
 let entry, plugins
 const externals = './src/externals/'
 
+let devConfig = {}
+
+try {
+  devConfig = require('./dev.config')
+} catch (err) {
+  console.log('No dev config file found: ', err.message)
+}
+
+console.log(devConfig.defaultProject)
+
 if (env !== 'development') {
   entry = [
     'babel-polyfill',
@@ -42,6 +52,9 @@ if (env !== 'development') {
     './src/main.js'
   ]
   plugins = [
+    new webpack.DefinePlugin({
+      DEFAULT_PROJECT: JSON.stringify(devConfig.defaultProject)
+    }),
     new webpack.HotModuleReplacementPlugin(),
     new webpack.NamedModulesPlugin()
   ]
@@ -93,6 +106,7 @@ module.exports = {
   devtool: 'cheap-module-source-map',
   devServer: {
     host: '0.0.0.0',
+    watchContentBase: devConfig.sketchDev,
     port: 8080,
     historyApiFallback: true,
     hot: true

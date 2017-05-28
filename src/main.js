@@ -76,10 +76,8 @@ initiateMidi(store)
 initiateGeneratedClock(store)
 Engine.run(store, stats)
 
-try {
-  const devConfig = require('../config/dev.config').default
-  store.dispatch(projectFilepathUpdate(devConfig.defaultProject))
+console.log(DEFAULT_PROJECT)
+if (DEFAULT_PROJECT) {
+  store.dispatch(projectFilepathUpdate(DEFAULT_PROJECT))
   store.dispatch(projectLoadRequest())
-} catch (err) {
-  console.log('No dev config file found: ', err.message)
 }
