@@ -2,52 +2,77 @@ import test from 'tape'
 import deepFreeze from 'deep-freeze'
 import midiReducer from '../reducer'
 import { returnsPreviousState } from '../../../testUtils'
+import * as a from '../actions'
 
 returnsPreviousState(midiReducer)
 
-test('(Reducer) midiReducer, sets id on MIDI_START_LEARNING', (t) => {
+test('(Reducer) midiReducer', (t) => {
   let originalState, expectedState, actualState
 
   originalState = {
-    learning: false
+    learning: false,
+    devices: {}
   }
 
   deepFreeze(originalState)
 
   expectedState = {
-    learning: 'XXX'
+    learning: 'XXX',
+    devices: {}
   }
 
-  actualState = midiReducer(originalState, {
-    type: 'MIDI_START_LEARNING',
-    payload: {
-      nodeId: 'XXX'
+  actualState = midiReducer(originalState, a.midiStartLearning('XXX'))
+
+  t.deepEqual(actualState, expectedState, 'sets id on midiStartLearning')
+
+  expectedState = {
+    learning: false,
+    devices: {}
+  }
+
+  actualState = midiReducer(originalState, a.midiStopLearning())
+
+  t.deepEqual(actualState, expectedState, 'sets learning to false on midiStopLearning')
+
+  const devices = {
+    xxx: {
+      title: 'Foo'
+    },
+    yyy: {
+      title: 'Bar'
     }
-  })
-
-  t.deepEqual(actualState, expectedState)
-
-  t.end()
-})
-
-test('(Reducer) midiReducer, sets learning to false on MIDI_STOP_LEARNING', (t) => {
-  let originalState, expectedState, actualState
-
-  originalState = {
-    learning: 'XXX'
   }
-
-  deepFreeze(originalState)
 
   expectedState = {
-    learning: false
+    learning: false,
+    devices
   }
 
-  actualState = midiReducer(originalState, {
-    type: 'MIDI_STOP_LEARNING'
-  })
+  actualState = midiReducer(actualState, a.midiUpdateDevices(devices))
 
-  t.deepEqual(actualState, expectedState)
+  t.deepEqual(actualState, expectedState, 'updates devices list on midiUpdateDevices')
+
+  const lastMessage = {
+    data: [0, 1, 2],
+    timeStamp: 100
+  }
+
+  expectedState = {
+    learning: false,
+    devices: {
+      xxx: {
+        title: 'Foo',
+        lastMessage
+      },
+      yyy: {
+        title: 'Bar'
+      }
+    }
+  }
+
+  actualState = midiReducer(actualState, a.midiMessage('xxx', lastMessage))
+
+  t.deepEqual(actualState, expectedState, 'updates message info')
 
   t.end()
 })

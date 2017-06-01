@@ -5,6 +5,7 @@ import Menu from '../../containers/Menu'
 import styled from 'styled-components'
 import AudioAnalyzer from '../../containers/AudioAnalyzer'
 import Clock from '../../containers/Clock'
+import Devices from '../../containers/Devices'
 
 const Wrapper = styled.div`
   padding: 0.5rem;
@@ -19,6 +20,7 @@ const Bottom = styled.div`
 
 const Tools = styled.div`
   display: flex;
+  margin-bottom: 1rem;
 `
 
 class Overview extends React.Component {
@@ -32,6 +34,8 @@ class Overview extends React.Component {
           <AudioAnalyzer />
           <Clock />
         </Tools>
+
+        <Devices />
 
         <Bottom>
           <Menu />

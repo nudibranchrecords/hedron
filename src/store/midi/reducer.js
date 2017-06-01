@@ -1,5 +1,6 @@
 const defaultState = {
-  learning: false
+  learning: false,
+  devices: {}
 }
 
 const midiReducer = (state = defaultState, action) => {
@@ -16,6 +17,24 @@ const midiReducer = (state = defaultState, action) => {
       return {
         ...state,
         learning: false
+      }
+    }
+    case 'MIDI_UPDATE_DEVICES': {
+      return {
+        ...state,
+        devices: p.devices
+      }
+    }
+    case 'MIDI_MESSAGE': {
+      return {
+        ...state,
+        devices: {
+          ...state.devices,
+          [p.id]: {
+            ...state.devices[p.id],
+            lastMessage: p.message
+          }
+        }
       }
     }
     default:

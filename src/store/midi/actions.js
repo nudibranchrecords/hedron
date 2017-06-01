@@ -10,3 +10,22 @@ export function midiStopLearning () {
     type: 'MIDI_STOP_LEARNING'
   }
 }
+
+export function midiUpdateDevices (devices) {
+  return {
+    type: 'MIDI_UPDATE_DEVICES',
+    payload: {
+      devices
+    }
+  }
+}
+
+export function midiMessage (id, message) {
+  return {
+    type: 'MIDI_MESSAGE',
+    payload: {
+      id,
+      message
+    }
+  }
+}

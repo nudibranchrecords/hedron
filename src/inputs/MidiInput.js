@@ -1,11 +1,15 @@
 import { inputFired, inputAssignedNodeCreate } from '../store/inputs/actions'
-import { midiStopLearning } from '../store/midi/actions'
+import { midiStopLearning, midiUpdateDevices, midiMessage } from '../store/midi/actions'
 import { rNodeInputUpdate } from '../store/nodes/actions'
 import { clockPulse } from '../store/clock/actions'
 
 export default (store) => {
   const onMessage = (message) => {
     const state = store.getState()
+    store.dispatch(midiMessage(message.target.id, {
+      data: message.data,
+      timeStamp: message.timeStamp
+    }))
     // If has note data, treat as normal midi input
     if (message.data[1] !== undefined) {
       const learningId = state.midi.learning
@@ -35,9 +39,16 @@ export default (store) => {
   }
 
   navigator.requestMIDIAccess().then((midiAccess) => {
+    const devices = {}
     midiAccess.inputs.forEach((entry) => {
+      console.log(entry)
+      devices[entry.id] = {
+        title: entry.name,
+        id: entry.id,
+        manufacturer: entry.manufacturer
+      }
       entry.onmidimessage = onMessage
     })
+    store.dispatch(midiUpdateDevices(devices))
   })
 }
-
