@@ -6,7 +6,11 @@ import { clockGeneratedToggle } from '../../store/clock/actions'
 
 const mapStateToProps = (state, ownProps) => ({
   filePath: state.project.filePath,
-  clockIsGenerated: state.clock.isGenerated
+  clockIsGenerated: state.clock.isGenerated,
+  displayOptions: state.displays.list.map((item, index) => ({
+    value: index,
+    label: item.bounds.width + 'x' + item.bounds.height
+  }))
 })
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
@@ -19,7 +23,7 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
     dispatch(projectLoadRequest())
   },
   onSaveClick: () => dispatch(projectSave()),
-  onSendOutputClick: () => dispatch(windowSendOutput()),
+  onSendOutputChange: index => dispatch(windowSendOutput(index)),
   onClockToggleClick: () => dispatch(clockGeneratedToggle())
 })
 

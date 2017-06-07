@@ -13,7 +13,7 @@ import rootReducer from './store/rootReducer'
 import App from './components/App'
 import Engine from './Engine'
 import Stats from 'stats.js'
-import './windows'
+import { initiateScreens } from './windows'
 import 'react-select/dist/react-select.css'
 import './style.css'
 
@@ -74,9 +74,9 @@ if (module.hot) module.hot.accept('./components/App', () => renderApp(App))
 initiateAudio(store)
 initiateMidi(store)
 initiateGeneratedClock(store)
+initiateScreens(store)
 Engine.run(store, stats)
 
-console.log(DEFAULT_PROJECT)
 if (DEFAULT_PROJECT) {
   store.dispatch(projectFilepathUpdate(DEFAULT_PROJECT))
   store.dispatch(projectLoadRequest())
