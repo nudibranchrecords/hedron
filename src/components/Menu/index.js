@@ -18,11 +18,6 @@ const Top = styled.div`
   height: 5rem;
 `
 
-const WideSelect = styled(ReactSelect)`
-  width: 8rem;
-  height: 1.5rem;
-`
-
 const Menu = ({
   onFileSaveChange, onFileLoadChange, onSaveClick,
   filePath, onSendOutputChange, clockIsGenerated, onClockToggleClick,
