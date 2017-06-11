@@ -7,7 +7,6 @@ import PropTypes from 'prop-types'
 import Button from '../Button'
 import styled from 'styled-components'
 import Row from '../Row'
-import ReactSelect from 'react-select'
 
 const Right = styled.div`
   margin-left: auto;

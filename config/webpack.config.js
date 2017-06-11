@@ -53,7 +53,7 @@ if (env !== 'development') {
   ]
   plugins = [
     new webpack.DefinePlugin({
-      DEFAULT_PROJECT: JSON.stringify(devConfig.defaultProject)
+      __DEFAULT_PROJECT__: JSON.stringify(devConfig.defaultProject)
     }),
     new webpack.HotModuleReplacementPlugin(),
     new webpack.NamedModulesPlugin()
