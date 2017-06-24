@@ -1,10 +1,12 @@
 import 'babel-polyfill'
 import test from 'tape'
-import { select, put, call } from 'redux-saga/effects'
+import { select, put, call, takeEvery } from 'redux-saga/effects'
 
 import { getDefaultModifierIds } from '../selectors'
-import { rNodeCreate } from '../../nodes/actions'
-import { rInputLinkCreate } from '../actions'
+import { rNodeCreate, nodeInputLinkAdd } from '../../nodes/actions'
+import { rInputLinkCreate, uInputLinkUpdate, uInputLinkCreate } from '../actions'
+import { midiStartLearning } from '../../midi/actions'
+
 import uid from 'uid'
 import sinon from 'sinon'
 import proxyquire from 'proxyquire'
@@ -12,21 +14,40 @@ import proxyquire from 'proxyquire'
 proxyquire.noCallThru()
 
 const getAll = sinon.stub()
-const { inputLinkCreate } = proxyquire('../sagas', {
+const { inputLinkCreate, watchInputLinks } = proxyquire('../sagas', {
   'modifiers': { getAll }
 })
 
+test('(Saga) watchInputLinks', (t) => {
+  const generator = watchInputLinks()
+  t.deepEqual(
+    generator.next().value,
+    takeEvery('U_INPUT_LINK_CREATE', inputLinkCreate)
+  )
+
+  t.equal(generator.next().done, true, 'Generator ends')
+  t.end()
+})
+
 test('(Saga) inputLinkCreate', (t) => {
-  const linkId = 'XXX'
-  const link = { foo: 'bar' }
+  const nodeId = 'NODE1'
+  const inputId = 'audio_0'
+  const inputType = 'audio'
+
   let modifier, uniqueId
 
-  const generator = inputLinkCreate({
-    payload: { id: linkId, link }
-  })
+  const generator = inputLinkCreate(uInputLinkCreate(nodeId, inputId, inputType))
 
   t.deepEqual(
-    generator.next(defaults).value,
+    generator.next().value,
+    call(uid),
+    '0. Generate unique ID for link'
+  )
+
+  const linkId = 'LINK1'
+
+  t.deepEqual(
+    generator.next(linkId).value,
     call(getAll),
     '1. get All modifiers'
   )
@@ -105,9 +126,9 @@ test('(Saga) inputLinkCreate', (t) => {
     '3x. Generate unique ID for modifier'
   )
 
-  uniqueId = 'yyy'
+  uniqueId = 'zzz'
   modifier = {
-    id: 'yyy',
+    id: 'zzz',
     key: 'bar',
     title: 'Barey2',
     passToNext: false,
@@ -121,12 +142,46 @@ test('(Saga) inputLinkCreate', (t) => {
     '4x. Create node (modifier)'
   )
 
-  link.modifierIds = ['xxx', 'yyy']
+  const link = {
+    id: linkId,
+    title: inputId,
+    nodeId,
+    modifierIds: ['xxx', 'yyy', 'zzz']
+  }
 
   t.deepEqual(
     generator.next().value,
     put(rInputLinkCreate(linkId, link)),
-    '4x. Create input link'
+    '5. Create input link'
+  )
+
+  t.deepEqual(
+    generator.next().value,
+    put(uInputLinkUpdate(linkId, inputId, inputType)),
+    '6. Update input link with input id'
+  )
+
+  t.deepEqual(
+    generator.next().value,
+    put(nodeInputLinkAdd(nodeId, linkId)),
+    '6. Add input link id to node'
+  )
+
+  t.equal(generator.next().done, true, 'Generator ends')
+  t.end()
+})
+
+test('(Saga) inputLinkCreate (midi)', (t) => {
+  const nodeId = 'NODE1'
+  const inputId = 'midi'
+  const inputType = 'midi'
+
+  const generator = inputLinkCreate(uInputLinkCreate(nodeId, inputId, inputType))
+
+  t.deepEqual(
+    generator.next().value,
+    put(midiStartLearning(nodeId)),
+    '0. Start Midi Learn'
   )
 
   t.equal(generator.next().done, true, 'Generator ends')

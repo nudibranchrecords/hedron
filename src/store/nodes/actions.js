@@ -36,6 +36,16 @@ export function rNodeDelete (id) {
   }
 }
 
+export function nodeInputLinkAdd (id, linkId) {
+  return {
+    type: 'NODE_INPUT_LINK_ADD',
+    payload: {
+      id,
+      linkId
+    }
+  }
+}
+
 export function nodeValueUpdate (id, value) {
   return {
     type: 'NODE_VALUE_UPDATE',

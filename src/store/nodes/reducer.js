@@ -24,6 +24,15 @@ const nodesReducer = (state = defaultState, action) => {
         }
       }
     }
+    case 'NODE_INPUT_LINK_ADD': {
+      return {
+        ...state,
+        [p.id]: {
+          ...state[p.id],
+          inputLinkIds: [...state[p.id].inputLinkIds, p.linkId]
+        }
+      }
+    }
     case 'NODES_REPLACE_ALL': {
       return p.nodes
     }

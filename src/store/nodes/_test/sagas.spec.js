@@ -1,8 +1,8 @@
 import 'babel-polyfill'
 import test from 'tape'
-import { select, takeEvery, put, call } from 'redux-saga/effects'
+import { select, takeEvery, put } from 'redux-saga/effects'
 
-import { getNodeInputId, getDefaultModifierIds } from '../selectors'
+import { getNodeInputId } from '../selectors'
 import getNode from '../../../selectors/getNode'
 import { rNodeInputUpdate, rNodeCreate, rNodeDelete, uNodeDelete } from '../actions'
 import { inputAssignedNodeDelete, inputAssignedNodeCreate } from '../../inputs/actions'

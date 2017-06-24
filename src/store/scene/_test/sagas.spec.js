@@ -130,7 +130,8 @@ test('(Saga) handleSketchCreate', (t) => {
       id: uniqueId,
       value: 0.1,
       lfoOptionIds: ['LFO1', 'LFO2'],
-      isOpen: false
+      isOpen: false,
+      inputLinkIds: []
     })),
     'Dispatch node create action'
   )
@@ -190,6 +191,7 @@ test('(Saga) handleSketchCreate', (t) => {
       id: uniqueId,
       value: 0.5,
       lfoOptionIds: ['LFO3', 'LFO4'],
+      inputLinkIds: [],
       isOpen: false
     })),
     'Dispatch node create action'
@@ -251,7 +253,8 @@ test('(Saga) handleSketchCreate', (t) => {
       title: 'Shapeshift',
       method: 'shapeshift',
       sketchId: 'SKETCHID',
-      lfoOptionIds: ['LFO1', 'LFO2']
+      lfoOptionIds: ['LFO1', 'LFO2'],
+      inputLinkIds: []
     })),
     'Dispatch node create action for shot'
   )
@@ -312,7 +315,8 @@ test('(Saga) handleSketchCreate', (t) => {
       title: 'Explode',
       method: 'explode',
       sketchId: 'SKETCHID',
-      lfoOptionIds: ['LFO1', 'LFO2']
+      lfoOptionIds: ['LFO1', 'LFO2'],
+      inputLinkIds: []
     })),
     'Dispatch node create action for shot'
   )
@@ -462,4 +466,3 @@ test('(Saga) handleSketchDelete', (t) => {
 
   t.end()
 })
-

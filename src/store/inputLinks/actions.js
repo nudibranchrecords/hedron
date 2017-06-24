@@ -1,9 +1,10 @@
-export function uInputLinkCreate (id, link) {
+export function uInputLinkCreate (nodeId, inputId, inputType) {
   return {
     type: 'U_INPUT_LINK_CREATE',
     payload: {
-      id,
-      link
+      nodeId,
+      inputId,
+      inputType
     }
   }
 }
@@ -32,6 +33,27 @@ export function rInputLinkDelete (id) {
     type: 'R_INPUT_LINK_DELETE',
     payload: {
       id
+    }
+  }
+}
+
+export function uInputLinkUpdate (linkId, inputId, inputType) {
+  return {
+    type: 'U_INPUT_LINK_UPDATE',
+    payload: {
+      linkId,
+      inputId,
+      inputType
+    }
+  }
+}
+
+export function rInputLinkUpdate (linkId, input) {
+  return {
+    type: 'R_INPUT_LINK_UPDATE',
+    payload: {
+      linkId,
+      input
     }
   }
 }

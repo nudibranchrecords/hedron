@@ -13,6 +13,7 @@ export function* handleSketchCreate (action) {
   const uniqueSketchId = yield call(uid)
   const module = yield select(getModule, moduleId)
   const paramIds = []
+  const inputLinkIds = []
   const shotIds = []
 
   if (module.params) {
@@ -37,6 +38,7 @@ export function* handleSketchCreate (action) {
         value: param.defaultValue,
         id: uniqueId,
         lfoOptionIds,
+        inputLinkIds,
         isOpen: false
       }))
     }
@@ -64,6 +66,7 @@ export function* handleSketchCreate (action) {
         title: shot.title,
         method: shot.method,
         sketchId: uniqueSketchId,
+        inputLinkIds,
         lfoOptionIds
       }))
     }
@@ -105,4 +108,3 @@ export function* watchScene () {
   yield takeEvery('SCENE_SKETCH_CREATE', handleSketchCreate)
   yield takeEvery('SCENE_SKETCH_DELETE', handleSketchDelete)
 }
-

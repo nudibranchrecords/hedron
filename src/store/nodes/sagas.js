@@ -1,11 +1,9 @@
-import { select, takeEvery, put, call } from 'redux-saga/effects'
-import { getNodeInputId, getDefaultModifierIds } from './selectors'
+import { select, takeEvery, put } from 'redux-saga/effects'
+import { getNodeInputId } from './selectors'
 import getNode from '../../selectors/getNode'
 import { rNodeInputUpdate, rNodeCreate, rNodeDelete, uNodeDelete } from './actions'
 import { inputAssignedNodeDelete, inputAssignedNodeCreate } from '../inputs/actions'
 import { midiStartLearning } from '../midi/actions'
-import { getAll } from 'modifiers'
-import uid from 'uid'
 
 export function* nodeInputUpdate (action) {
   const p = action.payload
