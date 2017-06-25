@@ -4,7 +4,8 @@ import { select, put, call, takeEvery } from 'redux-saga/effects'
 
 import { getDefaultModifierIds } from '../selectors'
 import { rNodeCreate, nodeInputLinkAdd } from '../../nodes/actions'
-import { rInputLinkCreate, uInputLinkUpdate, uInputLinkCreate } from '../actions'
+import { rInputLinkCreate, uInputLinkCreate } from '../actions'
+import { inputAssignedLinkCreate } from '../../inputs/actions'
 import { midiStartLearning } from '../../midi/actions'
 
 import uid from 'uid'
@@ -89,7 +90,8 @@ test('(Saga) inputLinkCreate', (t) => {
     title: 'Fooey',
     passToNext: false,
     value: 0.2,
-    type: 'audio'
+    type: 'audio',
+    inputLinkIds: []
   }
 
   t.deepEqual(
@@ -111,7 +113,8 @@ test('(Saga) inputLinkCreate', (t) => {
     title: 'Barey1',
     passToNext: true,
     value: 0.5,
-    type: undefined
+    type: undefined,
+    inputLinkIds: []
   }
 
   t.deepEqual(
@@ -133,7 +136,8 @@ test('(Saga) inputLinkCreate', (t) => {
     title: 'Barey2',
     passToNext: false,
     value: 0.5,
-    type: undefined
+    type: undefined,
+    inputLinkIds: []
   }
 
   t.deepEqual(
@@ -145,6 +149,10 @@ test('(Saga) inputLinkCreate', (t) => {
   const link = {
     id: linkId,
     title: inputId,
+    input: {
+      id: inputId,
+      type: inputType
+    },
     nodeId,
     modifierIds: ['xxx', 'yyy', 'zzz']
   }
@@ -157,14 +165,14 @@ test('(Saga) inputLinkCreate', (t) => {
 
   t.deepEqual(
     generator.next().value,
-    put(uInputLinkUpdate(linkId, inputId, inputType)),
-    '6. Update input link with input id'
+    put(nodeInputLinkAdd(nodeId, linkId)),
+    '6. Add input link id to node'
   )
 
   t.deepEqual(
     generator.next().value,
-    put(nodeInputLinkAdd(nodeId, linkId)),
-    '6. Add input link id to node'
+    put(inputAssignedLinkCreate(inputId, linkId)),
+    '7. Update assigned link in input'
   )
 
   t.equal(generator.next().done, true, 'Generator ends')

@@ -1,7 +1,8 @@
 import { select, put, call, takeEvery } from 'redux-saga/effects'
 import { getDefaultModifierIds } from './selectors'
-import { rInputLinkCreate, uInputLinkUpdate } from './actions'
+import { rInputLinkCreate } from './actions'
 import { rNodeCreate, nodeInputLinkAdd } from '../nodes/actions'
+import { inputAssignedLinkCreate } from '../inputs/actions'
 import { midiStartLearning } from '../midi/actions'
 import { getAll } from 'modifiers'
 import uid from 'uid'
@@ -34,6 +35,7 @@ export function* inputLinkCreate (action) {
           title: config.title[j],
           value: config.defaultValue[j],
           passToNext: j < config.title.length - 1,
+          inputLinkIds: [],
           type: config.type
         }
 
@@ -44,36 +46,19 @@ export function* inputLinkCreate (action) {
 
     const link = {
       title: p.inputId,
+      input: {
+        id: p.inputId,
+        type: p.inputType
+      },
       id: linkId,
       nodeId: p.nodeId,
       modifierIds
     }
 
     yield put(rInputLinkCreate(linkId, link))
-    yield put(uInputLinkUpdate(linkId, p.inputId, p.inputType))
     yield put(nodeInputLinkAdd(p.nodeId, linkId))
+    yield put(inputAssignedLinkCreate(p.inputId, linkId))
   }
-}
-
-export function* inputLinkUpdate (action) {
-  // const p = action.payload
-  // const inputId = p.inputId
-  // const input = inputId ? { id: inputId, type: p.inputType } : false
-  //
-  // const oldInputId = yield select(getNodeInputId, p.nodeId)
-  //
-  // if (oldInputId) {
-  //   yield put(inputAssignedLinkDelete(oldInputId, p.nodeId))
-  // }
-  //
-  // if (inputId === 'midi') {
-  //   yield put(midiStartLearning(p.nodeId))
-  // } else {
-  //   if (inputId) {
-  //     yield put(inputAssignedNodeCreate(inputId, p.nodeId))
-  //   }
-  //   yield put(rNodeInputUpdate(p.nodeId, input))
-  // }
 }
 
 export function* watchInputLinks () {

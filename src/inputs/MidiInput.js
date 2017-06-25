@@ -1,4 +1,4 @@
-import { inputFired, inputAssignedNodeCreate } from '../store/inputs/actions'
+import { inputFired, inputAssignedLinkCreate } from '../store/inputs/actions'
 import { midiStopLearning, midiUpdateDevices, midiMessage } from '../store/midi/actions'
 import { uInputLinkCreate } from '../store/inputLinks/actions'
 import { clockPulse } from '../store/clock/actions'
@@ -18,7 +18,6 @@ export default (store) => {
       const noteOn = message.data[0] === 144 ? 'noteOn' : false
 
       if (learningId) {
-        // store.dispatch(inputAssignedNodeCreate(id, learningId))
         store.dispatch(uInputLinkCreate(learningId, id, 'midi'))
         store.dispatch(midiStopLearning())
       } else {

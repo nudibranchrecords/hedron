@@ -2,11 +2,10 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import ParamBar from '../../containers/ParamBar'
 import ParamInputSelect from '../../containers/ParamInputSelect'
-import Modifier from '../../containers/Modifier'
+import InputLink from '../../containers/InputLink'
 import InfoText from '../InfoText'
 import Node from '../Node'
 import OpenButton from '../OpenButton'
-import Select from '../../containers/Select'
 import styled from 'styled-components'
 
 const Wrapper = styled(Node)`
@@ -34,17 +33,8 @@ const Row = styled.div`
 
 const Bottom = styled.div`
   border-top: 1px dashed #212121;
-  display: flex;
   align-items: center;
-  flex-wrap: wrap;
   padding: 0.5rem 0.25rem 0.5rem 0.5rem;
-`
-
-const Item = styled.div`
-  flex: 0 0 25%;
-  width: 25%;
-  font-size: 0.8rem;
-  padding-right: 0.25rem;
 `
 const Title = styled.div`
   flex: 0 0 8rem;
@@ -57,7 +47,7 @@ const Info = styled(InfoText)`
 `
 
 const Param = ({
-  title, nodeId, modifierIds, lfoOptionIds, infoText, isOpen, onOpenClick
+  title, nodeId, inputLinkIds, infoText, isOpen, onOpenClick
 }) => (
   <Wrapper>
     <Top>
@@ -75,15 +65,8 @@ const Param = ({
     </Top>
     {isOpen &&
       <Bottom>
-        {lfoOptionIds && lfoOptionIds.map((id) => (
-          <Item key={id}>
-            <Select nodeId={id} />
-          </Item>
-        ))}
-        {modifierIds && modifierIds.map((id) => (
-          <Item key={id}>
-            <Modifier nodeId={id} />
-          </Item>
+        {inputLinkIds.map(id => (
+          <InputLink id={id} key={id} />
         ))}
       </Bottom>
     }
@@ -94,10 +77,7 @@ Param.propTypes = {
   title: PropTypes.string.isRequired,
   nodeId: PropTypes.string.isRequired,
   infoText: PropTypes.string,
-  modifierIds: PropTypes.arrayOf(
-    PropTypes.string
-  ),
-  lfoOptionIds: PropTypes.arrayOf(
+  inputLinkIds: PropTypes.arrayOf(
     PropTypes.string
   ),
   isOpen: PropTypes.bool,

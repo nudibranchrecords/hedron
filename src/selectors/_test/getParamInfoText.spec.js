@@ -28,10 +28,15 @@ test('(Selector) getInfoText - MIDI info', (t) => {
     },
     nodes: {
       xxx: {
-        input: {
-          type: 'midi',
-          info: 'foo'
-        }
+        inputLinkIds: ['aaa', 'bbb']
+      }
+    },
+    inputLinks: {
+      aaa: {
+        title: 'midi_x'
+      },
+      bbb: {
+        title: 'midi_y'
       }
     }
   }
@@ -39,6 +44,6 @@ test('(Selector) getInfoText - MIDI info', (t) => {
   deepFreeze(state)
 
   const actual = getParamInfoText(state, 'xxx')
-  t.equal(actual, 'foo')
+  t.equal(actual, 'midi_x, midi_y')
   t.end()
 })

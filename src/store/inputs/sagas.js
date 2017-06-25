@@ -1,5 +1,5 @@
 import { select, takeEvery, put, call } from 'redux-saga/effects'
-import { getAssignedNodes } from './selectors'
+import { getAssignedLinks } from './selectors'
 import { nodeValueUpdate, nodeShotFired, nodeShotDisarm, nodeShotArm } from '../nodes/actions'
 import { projectError } from '../project/actions'
 import getNodes from '../../selectors/getNodes'
@@ -11,19 +11,19 @@ export function* handleInput (action) {
   const p = action.payload
 
   try {
-    const nodes = yield select(getAssignedNodes, p.inputId)
+    const links = yield select(getAssignedLinks, p.inputId)
 
-    for (let i = 0; i < nodes.length; i++) {
+    for (let i = 0; i < links.length; i++) {
       let value = p.value
       let modifiers
 
       if (p.inputId === 'lfo') {
-        let o = yield select(getNodesValues, nodes[i].lfoOptionIds)
+        let o = yield select(getNodesValues, links[i].lfoOptionIds)
         value = yield call(lfoProcess, value, o.shape, o.rate)
       }
 
-      if (nodes[i].modifierIds && nodes[i].modifierIds.length) {
-        modifiers = yield select(getNodes, nodes[i].modifierIds)
+      if (links[i].modifierIds && links[i].modifierIds.length) {
+        modifiers = yield select(getNodes, links[i].modifierIds)
         let vals = []
         for (let j = 0; j < modifiers.length; j++) {
           const m = modifiers[j]
@@ -38,25 +38,25 @@ export function* handleInput (action) {
         }
       }
 
-      switch (nodes[i].type) {
-        case 'select': {
-          const options = nodes[i].options
-          value = options[Math.floor(options.length * value)].value
-          break
-        }
-        case 'shot': {
-          if (p.type === 'noteOn') {
-            yield put(nodeShotFired(nodes[i].sketchId, nodes[i].method))
-          } else if (value > 0.5 && nodes[i].armed) {
-            yield put(nodeShotFired(nodes[i].sketchId, nodes[i].method))
-            yield put(nodeShotDisarm(nodes[i].id))
-          } else if (value < 0.5) {
-            yield put(nodeShotArm(nodes[i].id))
-          }
-        }
-      }
+      // switch (links[i].type) {
+      //   case 'select': {
+      //     const options = nodes[i].options
+      //     value = options[Math.floor(options.length * value)].value
+      //     break
+      //   }
+      //   case 'shot': {
+      //     if (p.type === 'noteOn') {
+      //       yield put(nodeShotFired(nodes[i].sketchId, nodes[i].method))
+      //     } else if (value > 0.5 && nodes[i].armed) {
+      //       yield put(nodeShotFired(nodes[i].sketchId, nodes[i].method))
+      //       yield put(nodeShotDisarm(nodes[i].id))
+      //     } else if (value < 0.5) {
+      //       yield put(nodeShotArm(nodes[i].id))
+      //     }
+      //   }
+      // }
 
-      yield put(nodeValueUpdate(nodes[i].id, value))
+      yield put(nodeValueUpdate(links[i].nodeId, value))
     }
   } catch (error) {
     yield put(projectError(error.message))
