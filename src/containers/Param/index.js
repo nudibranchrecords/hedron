@@ -1,6 +1,5 @@
 import { connect } from 'react-redux'
 import Param from '../../components/Param'
-import getParamInfoText from '../../selectors/getParamInfoText'
 import getNodeInputLinkIds from '../../selectors/getNodeInputLinkIds'
 import { nodeOpenToggle } from '../../store/nodes/actions'
 
@@ -9,8 +8,8 @@ const mapStateToProps = (state, ownProps) => {
   return {
     title: param.title,
     inputLinkIds: getNodeInputLinkIds(state, ownProps.nodeId),
-    infoText: getParamInfoText(state, ownProps.nodeId),
-    isOpen: param.isOpen
+    isOpen: param.isOpen,
+    isLearningMidi: state.midi.learning === ownProps.nodeId
   }
 }
 
