@@ -57,3 +57,30 @@ export function rInputLinkUpdate (linkId, input) {
     }
   }
 }
+
+export function inputLinkShotFired (sketchId, method) {
+  return {
+    type: 'INPUT_LINK_SHOT_FIRED',
+    payload: {
+      sketchId, method
+    }
+  }
+}
+
+export function inputLinkShotArm (id) {
+  return {
+    type: 'INPUT_LINK_SHOT_ARM',
+    payload: {
+      id
+    }
+  }
+}
+
+export function inputLinkShotDisarm (id) {
+  return {
+    type: 'INPUT_LINK_SHOT_DISARM',
+    payload: {
+      id
+    }
+  }
+}

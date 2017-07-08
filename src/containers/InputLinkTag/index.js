@@ -1,6 +1,6 @@
 import { connect } from 'react-redux'
 import Tag from '../../components/Tag'
-import { uInputLinkDelete } from '../../store/InputLinks/actions'
+import { uInputLinkDelete } from '../../store/inputLinks/actions'
 
 const mapStateToProps = (state, ownProps) => ({
   title: state.inputLinks[ownProps.id].title

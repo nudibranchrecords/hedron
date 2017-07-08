@@ -1,4 +1,4 @@
-import { inputFired, inputAssignedLinkCreate } from '../store/inputs/actions'
+import { inputFired } from '../store/inputs/actions'
 import { midiStopLearning, midiUpdateDevices, midiMessage } from '../store/midi/actions'
 import { uInputLinkCreate } from '../store/inputLinks/actions'
 import { clockPulse } from '../store/clock/actions'

@@ -64,24 +64,6 @@ const nodesReducer = (state = defaultState, action) => {
         }
       }
     }
-    case 'NODE_SHOT_ARM': {
-      return {
-        ...state,
-        [p.nodeId] : {
-          ...state[p.nodeId],
-          armed: true
-        }
-      }
-    }
-    case 'NODE_SHOT_DISARM': {
-      return {
-        ...state,
-        [p.nodeId] : {
-          ...state[p.nodeId],
-          armed: false
-        }
-      }
-    }
     default:
       return state
   }

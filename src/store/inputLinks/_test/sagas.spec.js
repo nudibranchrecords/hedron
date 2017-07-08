@@ -1,8 +1,9 @@
 import 'babel-polyfill'
 import test from 'tape'
-import { select, put, call, takeEvery } from 'redux-saga/effects'
+import { select, put, call } from 'redux-saga/effects'
 import lfoGenerateOptions from '../../../utils/lfoGenerateOptions'
 import { getDefaultModifierIds } from '../selectors'
+import getNode from '../../../selectors/getNode'
 import { uNodeCreate, rNodeCreate, nodeInputLinkAdd } from '../../nodes/actions'
 import { rInputLinkCreate, uInputLinkCreate } from '../actions'
 import { inputAssignedLinkCreate } from '../../inputs/actions'
@@ -15,7 +16,7 @@ import proxyquire from 'proxyquire'
 proxyquire.noCallThru()
 
 const getAll = sinon.stub()
-const { inputLinkCreate, watchInputLinks } = proxyquire('../sagas', {
+const { inputLinkCreate } = proxyquire('../sagas', {
   'modifiers': { getAll }
 })
 
@@ -38,6 +39,16 @@ test('(Saga) inputLinkCreate', (t) => {
 
   t.deepEqual(
     generator.next(linkId).value,
+    select(getNode, 'NODE1'),
+    '0.1 get linked node'
+  )
+
+  const node = {
+    type: 'FOO'
+  }
+
+  t.deepEqual(
+    generator.next(node).value,
     call(getAll),
     '1. get All modifiers'
   )
@@ -182,6 +193,7 @@ test('(Saga) inputLinkCreate', (t) => {
       type: inputType
     },
     nodeId,
+    nodeType: 'FOO',
     modifierIds: ['xxx', 'yyy', 'zzz'],
     lfoOptionIds: ['LFO1', 'LFO2']
   }

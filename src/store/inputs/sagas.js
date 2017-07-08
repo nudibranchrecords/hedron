@@ -1,8 +1,10 @@
 import { select, takeEvery, put, call } from 'redux-saga/effects'
 import { getAssignedLinks } from './selectors'
-import { nodeValueUpdate, nodeShotFired, nodeShotDisarm, nodeShotArm } from '../nodes/actions'
+import { nodeValueUpdate } from '../nodes/actions'
+import { inputLinkShotFired, inputLinkShotDisarm, inputLinkShotArm } from '../inputLinks/actions'
 import { projectError } from '../project/actions'
 import getNodes from '../../selectors/getNodes'
+import getNode from '../../selectors/getNode'
 import getNodesValues from '../../selectors/getNodesValues'
 import lfoProcess from '../../utils/lfoProcess'
 import { work } from 'modifiers'
@@ -38,27 +40,30 @@ export function* handleInput (action) {
         }
       }
 
-      // switch (links[i].type) {
-      //   case 'select': {
-      //     const options = nodes[i].options
-      //     value = options[Math.floor(options.length * value)].value
-      //     break
-      //   }
-      //   case 'shot': {
-      //     if (p.type === 'noteOn') {
-      //       yield put(nodeShotFired(nodes[i].sketchId, nodes[i].method))
-      //     } else if (value > 0.5 && nodes[i].armed) {
-      //       yield put(nodeShotFired(nodes[i].sketchId, nodes[i].method))
-      //       yield put(nodeShotDisarm(nodes[i].id))
-      //     } else if (value < 0.5) {
-      //       yield put(nodeShotArm(nodes[i].id))
-      //     }
-      //   }
-      // }
+      switch (links[i].nodeType) {
+        case 'select': {
+          const node = yield select(getNode, links[i].nodeId)
+          const options = node.options
+          value = options[Math.floor(options.length * value)].value
+          break
+        }
+        case 'shot': {
+          const node = yield select(getNode, links[i].nodeId)
+          if (p.type === 'noteOn') {
+            yield put(inputLinkShotFired(node.sketchId, node.method))
+          } else if (value > 0.5 && links[i].armed) {
+            yield put(inputLinkShotFired(node.sketchId, node.method))
+            yield put(inputLinkShotDisarm(links[i].id))
+          } else if (value < 0.5) {
+            yield put(inputLinkShotArm(links[i].id))
+          }
+        }
+      }
 
       yield put(nodeValueUpdate(links[i].nodeId, value))
     }
   } catch (error) {
+    console.error(error)
     yield put(projectError(error.message))
   }
 }

@@ -104,30 +104,3 @@ export function nodeOpenToggle (id) {
     }
   }
 }
-
-export function nodeShotFired (sketchId, method) {
-  return {
-    type: 'NODE_SHOT_FIRED',
-    payload: {
-      sketchId, method
-    }
-  }
-}
-
-export function nodeShotArm (nodeId) {
-  return {
-    type: 'NODE_SHOT_ARM',
-    payload: {
-      nodeId
-    }
-  }
-}
-
-export function nodeShotDisarm (nodeId) {
-  return {
-    type: 'NODE_SHOT_DISARM',
-    payload: {
-      nodeId
-    }
-  }
-}
