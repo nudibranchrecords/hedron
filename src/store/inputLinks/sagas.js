@@ -2,8 +2,9 @@ import { select, put, call, takeEvery } from 'redux-saga/effects'
 import { getDefaultModifierIds } from './selectors'
 import getInputLink from '../../selectors/getInputLink'
 import { rInputLinkCreate, rInputLinkDelete } from './actions'
-import { rNodeCreate, uNodeDelete, nodeInputLinkAdd, nodeInputLinkRemove } from '../nodes/actions'
+import { rNodeCreate, uNodeCreate, uNodeDelete, nodeInputLinkAdd, nodeInputLinkRemove } from '../nodes/actions'
 import { inputAssignedLinkCreate, inputAssignedLinkDelete } from '../inputs/actions'
+import lfoGenerateOptions from '../../utils/lfoGenerateOptions'
 import { midiStartLearning } from '../midi/actions'
 import { getAll } from 'modifiers'
 import uid from 'uid'
@@ -45,6 +46,16 @@ export function* inputLinkCreate (action) {
       }
     }
 
+    const lfoOpts = yield call(lfoGenerateOptions)
+    const lfoOptionIds = []
+
+    for (let key in lfoOpts) {
+      const item = lfoOpts[key]
+      lfoOptionIds.push(item.id)
+
+      yield put(uNodeCreate(item.id, item))
+    }
+
     const link = {
       title: p.inputId,
       input: {
@@ -53,7 +64,8 @@ export function* inputLinkCreate (action) {
       },
       id: linkId,
       nodeId: p.nodeId,
-      modifierIds
+      modifierIds,
+      lfoOptionIds
     }
 
     yield put(rInputLinkCreate(linkId, link))

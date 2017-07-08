@@ -1,9 +1,9 @@
 import 'babel-polyfill'
 import test from 'tape'
 import { select, put, call, takeEvery } from 'redux-saga/effects'
-
+import lfoGenerateOptions from '../../../utils/lfoGenerateOptions'
 import { getDefaultModifierIds } from '../selectors'
-import { rNodeCreate, nodeInputLinkAdd } from '../../nodes/actions'
+import { uNodeCreate, rNodeCreate, nodeInputLinkAdd } from '../../nodes/actions'
 import { rInputLinkCreate, uInputLinkCreate } from '../actions'
 import { inputAssignedLinkCreate } from '../../inputs/actions'
 import { midiStartLearning } from '../../midi/actions'
@@ -135,6 +135,45 @@ test('(Saga) inputLinkCreate', (t) => {
     '4x. Create node (modifier)'
   )
 
+  t.deepEqual(
+    generator.next().value,
+    call(lfoGenerateOptions),
+    'Generate options for LFO'
+  )
+
+  const lfoOpts = [
+    {
+      id: 'LFO1',
+      key: 'shape',
+      value: 'sine'
+    },
+    {
+      id: 'LFO2',
+      key: 'rate',
+      value: 1
+    }
+  ]
+
+  t.deepEqual(
+    generator.next(lfoOpts).value,
+    put(uNodeCreate('LFO1', {
+      key: 'shape',
+      id: 'LFO1',
+      value: 'sine'
+    })),
+    'Dispatch node create action'
+  )
+
+  t.deepEqual(
+    generator.next().value,
+    put(uNodeCreate('LFO2', {
+      key: 'rate',
+      id: 'LFO2',
+      value: 1
+    })),
+    'Dispatch node create action'
+  )
+
   const link = {
     id: linkId,
     title: inputId,
@@ -143,7 +182,8 @@ test('(Saga) inputLinkCreate', (t) => {
       type: inputType
     },
     nodeId,
-    modifierIds: ['xxx', 'yyy', 'zzz']
+    modifierIds: ['xxx', 'yyy', 'zzz'],
+    lfoOptionIds: ['LFO1', 'LFO2']
   }
 
   t.deepEqual(
