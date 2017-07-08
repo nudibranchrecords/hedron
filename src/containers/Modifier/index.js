@@ -1,6 +1,6 @@
 import { connect } from 'react-redux'
 import Modifier from '../../components/Modifier'
-import { uNodeInputUpdate } from '../../store/nodes/actions'
+import { uInputLinkCreate } from '../../store/inputLinks/actions'
 import getNodeInputLinkIds from '../../selectors/getNodeInputLinkIds'
 
 const mapStateToProps = (state, ownProps) => {
@@ -14,7 +14,7 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
   onAssignClick: () => {
-    dispatch(uNodeInputUpdate(ownProps.nodeId, 'midi'))
+    dispatch(uInputLinkCreate(ownProps.nodeId, 'midi'))
   }
 })
 
