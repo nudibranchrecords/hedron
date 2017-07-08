@@ -19,17 +19,6 @@ const { inputLinkCreate, watchInputLinks } = proxyquire('../sagas', {
   'modifiers': { getAll }
 })
 
-test('(Saga) watchInputLinks', (t) => {
-  const generator = watchInputLinks()
-  t.deepEqual(
-    generator.next().value,
-    takeEvery('U_INPUT_LINK_CREATE', inputLinkCreate)
-  )
-
-  t.equal(generator.next().done, true, 'Generator ends')
-  t.end()
-})
-
 test('(Saga) inputLinkCreate', (t) => {
   const nodeId = 'NODE1'
   const inputId = 'audio_0'

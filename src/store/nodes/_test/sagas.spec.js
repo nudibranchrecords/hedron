@@ -18,27 +18,6 @@ const { watchNodes, nodeInputUpdate, nodeCreate, nodeDelete } = proxyquire('../s
   'modifiers': { getAll }
 })
 
-test('(Saga) watchNodes', (t) => {
-  const generator = watchNodes()
-  t.deepEqual(
-    generator.next().value,
-    takeEvery('U_NODE_INPUT_UPDATE', nodeInputUpdate)
-  )
-
-  t.deepEqual(
-    generator.next().value,
-    takeEvery('U_NODE_CREATE', nodeCreate)
-  )
-
-  t.deepEqual(
-    generator.next().value,
-    takeEvery('U_NODE_DELETE', nodeDelete)
-  )
-
-  t.equal(generator.next().done, true, 'Generator ends')
-  t.end()
-})
-
 test('(Saga) nodeCreate - param node', (t) => {
   const nodeId = 'XXX'
   const node = { foo: 'bar' }

@@ -1,10 +1,16 @@
 import { connect } from 'react-redux'
 import Tag from '../../components/Tag'
+import { uInputLinkDelete } from '../../store/InputLinks/actions'
 
 const mapStateToProps = (state, ownProps) => ({
   title: state.inputLinks[ownProps.id].title
 })
 
+const mapDispatchToProps = (dispatch, ownProps) => ({
+  onCloseClick: () => { dispatch(uInputLinkDelete(ownProps.id)) }
+})
+
 export default connect(
-  mapStateToProps
+  mapStateToProps,
+  mapDispatchToProps
 )(Tag)

@@ -1,8 +1,9 @@
 import { select, put, call, takeEvery } from 'redux-saga/effects'
 import { getDefaultModifierIds } from './selectors'
-import { rInputLinkCreate } from './actions'
-import { rNodeCreate, nodeInputLinkAdd } from '../nodes/actions'
-import { inputAssignedLinkCreate } from '../inputs/actions'
+import getInputLink from '../../selectors/getInputLink'
+import { rInputLinkCreate, rInputLinkDelete } from './actions'
+import { rNodeCreate, uNodeDelete, nodeInputLinkAdd, nodeInputLinkRemove } from '../nodes/actions'
+import { inputAssignedLinkCreate, inputAssignedLinkDelete } from '../inputs/actions'
 import { midiStartLearning } from '../midi/actions'
 import { getAll } from 'modifiers'
 import uid from 'uid'
@@ -61,6 +62,26 @@ export function* inputLinkCreate (action) {
   }
 }
 
+export function* inputLinkDelete (action) {
+  const p = action.payload
+
+  const link = yield select(getInputLink, p.id)
+
+  const { input, modifierIds, nodeId } = link
+
+  yield put(inputAssignedLinkDelete(input.id, p.id))
+
+  if (modifierIds) {
+    for (let i = 0; i < modifierIds.length; i++) {
+      yield put(uNodeDelete(modifierIds[i]))
+    }
+  }
+
+  yield put(nodeInputLinkRemove(nodeId, p.id))
+  yield put(rInputLinkDelete(p.id))
+}
+
 export function* watchInputLinks () {
   yield takeEvery('U_INPUT_LINK_CREATE', inputLinkCreate)
+  yield takeEvery('U_INPUT_LINK_DELETE', inputLinkDelete)
 }

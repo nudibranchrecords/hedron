@@ -5,6 +5,7 @@ import styled from 'styled-components'
 
 const Items = styled.ul`
   display: flex;
+  flex-wrap: wrap;
 `
 const Item = styled.li`
   margin-right: 0.5rem;

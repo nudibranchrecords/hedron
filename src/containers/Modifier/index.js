@@ -1,13 +1,14 @@
 import { connect } from 'react-redux'
 import Modifier from '../../components/Modifier'
 import { uNodeInputUpdate } from '../../store/nodes/actions'
-import getParamInfoText from '../../selectors/getParamInfoText'
+import getNodeInputLinkIds from '../../selectors/getNodeInputLinkIds'
 
 const mapStateToProps = (state, ownProps) => {
   const node = state.nodes[ownProps.nodeId]
   return {
     title: node.title,
-    infoText: getParamInfoText(state, ownProps.nodeId)
+    inputLinkIds: getNodeInputLinkIds(state, ownProps.nodeId),
+    isLearningMidi: state.midi.learning === ownProps.nodeId
   }
 }
 
