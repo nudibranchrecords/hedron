@@ -1,11 +1,11 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import ParamBar from '../../containers/ParamBar'
+import NodeInputInfo from '../../containers/NodeInputInfo'
 import styled from 'styled-components'
 import MidiButton from '../MidiButton'
 import SubNode from '../SubNode'
 import Row from '../Row'
-import InputLinkTags from '../InputLinkTags'
 
 const BarCol = styled.div`
   flex: 1;
@@ -16,12 +16,8 @@ const ButtonCol = styled.div`
   width: 1rem;
 `
 
-const Info = styled(Row)`
-  margin-top: 0.25rem;
-`
-
 const Modifier = (
-  { title, nodeId, onAssignClick, isLearningMidi, inputLinkIds }
+  { title, nodeId, onAssignClick }
 ) => (
   <SubNode>
     {title}
@@ -33,21 +29,14 @@ const Modifier = (
         <MidiButton onClick={onAssignClick} />
       </ButtonCol>
     </Row>
-    <Info align='center'>
-      {isLearningMidi
-        ? 'Learning MIDI...'
-        : <InputLinkTags ids={inputLinkIds} />
-      }
-    </Info>
+    <NodeInputInfo nodeId={nodeId} />
   </SubNode>
 )
 
 Modifier.propTypes = {
   title: PropTypes.string.isRequired,
   nodeId: PropTypes.string.isRequired,
-  onAssignClick: PropTypes.func.isRequired,
-  isLearningMidi: PropTypes.bool,
-  inputLinkIds: PropTypes.array.isRequired
+  onAssignClick: PropTypes.func.isRequired
 }
 
 export default Modifier

@@ -8,6 +8,7 @@ export default () => {
       key: 'shape',
       value: 'sine',
       type: 'select',
+      inputLinkIds: [],
       options: [
         {
           value: 'sine',
@@ -37,6 +38,7 @@ export default () => {
       key: 'rate',
       value: 1,
       type: 'select',
+      inputLinkIds: [],
       options: [
         {
           value: 32,

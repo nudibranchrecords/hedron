@@ -5,7 +5,7 @@ import ParamInputSelect from '../../containers/ParamInputSelect'
 import InputLink from '../../containers/InputLink'
 import Node from '../Node'
 import OpenButton from '../OpenButton'
-import InputLinkTags from '../InputLinkTags'
+import NodeInputInfo from '../../containers/NodeInputInfo'
 import styled from 'styled-components'
 
 const Wrapper = styled(Node)`
@@ -42,16 +42,8 @@ const Title = styled.div`
   padding-right: 1rem;
 `
 
-const Tags = styled(InputLinkTags)`
-  padding-left: 8rem;
-`
-
-const Info = styled(Row)`
-  margin-top: 0.5rem;
-`
-
 const Param = ({
-  title, nodeId, inputLinkIds, infoText, isOpen, onOpenClick, isLearningMidi
+  title, nodeId, inputLinkIds, infoText, isOpen, onOpenClick
 }) => (
   <Wrapper>
     <Top>
@@ -65,10 +57,7 @@ const Param = ({
         </InputSelectCol>
         <OpenButton onClick={onOpenClick} isOpen={isOpen} />
       </Row>
-      <Info align='center'>
-        <Tags ids={inputLinkIds} />
-        {isLearningMidi && 'Learning MIDI...'}
-      </Info>
+      <NodeInputInfo nodeId={nodeId} />
     </Top>
     {isOpen &&
       <Bottom>
@@ -88,8 +77,7 @@ Param.propTypes = {
     PropTypes.string
   ),
   isOpen: PropTypes.bool,
-  onOpenClick: PropTypes.func.isRequired,
-  isLearningMidi: PropTypes.bool
+  onOpenClick: PropTypes.func.isRequired
 }
 
 export default Param

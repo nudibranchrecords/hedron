@@ -8,8 +8,7 @@ const mapStateToProps = (state, ownProps) => {
   return {
     title: param.title,
     inputLinkIds: getNodeInputLinkIds(state, ownProps.nodeId),
-    isOpen: param.isOpen,
-    isLearningMidi: state.midi.learning === ownProps.nodeId
+    isOpen: param.isOpen
   }
 }
 

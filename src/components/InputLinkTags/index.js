@@ -14,7 +14,7 @@ const Item = styled.li`
 const InputLinkTags = ({ ids }) => (
   <div>
     <Items>
-      {ids.map(id => (
+      {ids && ids.map(id => (
         <Item key={id}>
           <InputLinkTag id={id} />
         </Item>
@@ -24,7 +24,7 @@ const InputLinkTags = ({ ids }) => (
 )
 
 InputLinkTags.propTypes = {
-  ids: PropTypes.arrayOf(PropTypes.string).isRequired
+  ids: PropTypes.arrayOf(PropTypes.string)
 }
 
 export default InputLinkTags
