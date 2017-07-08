@@ -9,25 +9,28 @@ const Wrapper = styled.div`
   flex-wrap: wrap;
 `
 
+const Title = styled.h3`
+  font-size: ${props => props.size === 'small' ? '0.8rem' : '1rem'}
+`
 const Item = styled.div`
-  flex: 0 0 25%;
-  width: 25%;
+  flex: ${props => props.size === 'small' ? '1' : '0 0 25%'} ;
+  width: ${props => props.size === 'small' ? '100%' : '25%'} ;
   font-size: 0.8rem;
   padding-right: 0.25rem;
 `
 const InputLink = ({
-  modifierIds, lfoOptionIds, title
+  modifierIds, lfoOptionIds, title, size
 }) => (
   <div>
-    <h3>{title}</h3>
+    <Title size={size}>{title}</Title>
     <Wrapper>
       {lfoOptionIds && lfoOptionIds.map((id) => (
-        <Item key={id}>
+        <Item key={id} size={size}>
           <Select nodeId={id} />
         </Item>
         ))}
       {modifierIds && modifierIds.map((id) => (
-        <Item key={id}>
+        <Item key={id} size={size}>
           <Modifier nodeId={id} />
         </Item>
         ))}
@@ -42,7 +45,8 @@ InputLink.propTypes = {
   ),
   lfoOptionIds: PropTypes.arrayOf(
     PropTypes.string
-  )
+  ),
+  size: PropTypes.string
 }
 
 export default InputLink

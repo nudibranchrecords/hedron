@@ -15,10 +15,6 @@ const Wrapper = styled(Node)`
   padding: 0.5rem;
 `
 
-const Item = styled.div`
-  margin-top: 0.5rem;
-`
-
 const Shot = ({ nodeId, modifierIds, title, sketchId, method, inputLinkIds }) => (
   <Wrapper>
     {title}
@@ -32,7 +28,7 @@ const Shot = ({ nodeId, modifierIds, title, sketchId, method, inputLinkIds }) =>
     </Row>
     <NodeInputInfo nodeId={nodeId} />
     {inputLinkIds.map(id => (
-      <InputLink id={id} key={id} />
+      <InputLink id={id} key={id} size='small' />
     ))}
   </Wrapper>
 )
