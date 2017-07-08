@@ -40,12 +40,14 @@ test('(Selector) getInputLinkLfoOptionIds (input is "lfo", link type "shot")', (
   const state = {
     inputLinks: {
       xxx: {
-        type: 'shot',
+        nodeType: 'shot',
         input: {
           id: 'lfo'
         },
         lfoOptionIds: ['yyy', 'zzz']
-      },
+      }
+    },
+    nodes: {
       yyy: {
         key: 'rate'
       },

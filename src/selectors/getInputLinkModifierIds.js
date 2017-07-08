@@ -3,10 +3,10 @@ export default (state, id) => {
 
   if (!link.input) return undefined
 
-  if (link.type === 'shot') {
+  if (link.nodeType === 'shot') {
     if (link.input.type === 'audio') {
       return link.modifierIds.filter(id => {
-        return state.inputLinks[id].key === 'gain'
+        return state.nodes[id].key === 'gain'
       })
     } else {
       return undefined

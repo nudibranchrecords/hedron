@@ -5,10 +5,9 @@ import Node from '../Node'
 import Row from '../Row'
 import Col from '../Col'
 import ParamInputSelect from '../../containers/ParamInputSelect'
+import NodeInputInfo from '../../containers/NodeInputInfo'
 import ShotButton from '../../containers/ShotButton'
-import Modifier from '../../containers/Modifier'
-import Select from '../../containers/Select'
-import InfoText from '../InfoText'
+import InputLink from '../../containers/InputLink'
 
 const Wrapper = styled(Node)`
   flex: 0 0 33.33%;
@@ -20,7 +19,7 @@ const Item = styled.div`
   margin-top: 0.5rem;
 `
 
-const Shot = ({ nodeId, modifierIds, lfoOptionIds, title, sketchId, method, infoText }) => (
+const Shot = ({ nodeId, modifierIds, title, sketchId, method, inputLinkIds }) => (
   <Wrapper>
     {title}
     <Row>
@@ -31,16 +30,9 @@ const Shot = ({ nodeId, modifierIds, lfoOptionIds, title, sketchId, method, info
         <ParamInputSelect nodeId={nodeId} />
       </Col>
     </Row>
-    <InfoText>{infoText}</InfoText>
-    {lfoOptionIds && lfoOptionIds.map((id) => (
-      <Item key={id}>
-        <Select nodeId={id} />
-      </Item>
-    ))}
-    {modifierIds && modifierIds.map((id) => (
-      <Item key={id}>
-        <Modifier nodeId={id} />
-      </Item>
+    <NodeInputInfo nodeId={nodeId} />
+    {inputLinkIds.map(id => (
+      <InputLink id={id} key={id} />
     ))}
   </Wrapper>
 )
@@ -51,8 +43,9 @@ Shot.propTypes = {
   modifierIds: PropTypes.array,
   sketchId: PropTypes.string,
   method: PropTypes.string,
-  lfoOptionIds: PropTypes.array,
-  infoText: React.PropTypes.string
+  inputLinkIds: PropTypes.arrayOf(
+    PropTypes.string
+  )
 }
 
 export default Shot
