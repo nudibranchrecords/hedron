@@ -1,12 +1,9 @@
 import 'babel-polyfill'
 import test from 'tape'
-import { select, takeEvery, put } from 'redux-saga/effects'
-
-import { getNodeInputId } from '../selectors'
+import { select, put } from 'redux-saga/effects'
 import getNode from '../../../selectors/getNode'
-import { rNodeInputUpdate, rNodeCreate, rNodeDelete, uNodeDelete } from '../actions'
-import { inputAssignedNodeDelete, inputAssignedNodeCreate } from '../../inputs/actions'
-import { midiStartLearning } from '../../midi/actions'
+import { rNodeCreate, rNodeDelete } from '../actions'
+import { uInputLinkDelete } from '../../inputLinks/actions'
 import uid from 'uid'
 import sinon from 'sinon'
 import proxyquire from 'proxyquire'
@@ -14,7 +11,7 @@ import proxyquire from 'proxyquire'
 proxyquire.noCallThru()
 
 const getAll = sinon.stub()
-const { watchNodes, nodeInputUpdate, nodeCreate, nodeDelete } = proxyquire('../sagas', {
+const { nodeCreate, nodeDelete } = proxyquire('../sagas', {
   'modifiers': { getAll }
 })
 
@@ -35,96 +32,74 @@ test('(Saga) nodeCreate - param node', (t) => {
   t.equal(generator.next().done, true, 'Generator ends')
   t.end()
 })
-//
-// test('(Saga) nodeDelete (no input, no modifiers, no lfoOptions)', (t) => {
-//   const nodeId = 'XXX'
-//
-//   const generator = nodeDelete({
-//     payload: { nodeId }
-//   })
-//
-//   t.deepEqual(
-//     generator.next().value,
-//     select(getNode, nodeId),
-//     '1. Get node'
-//   )
-//
-//   const node = {
-//     id: 'XXX'
-//   }
-//
-//   t.deepEqual(
-//     generator.next(node).value,
-//     put(rNodeDelete(nodeId)),
-//     '2. Delete node'
-//   )
-//
-//   t.equal(generator.next().done, true, 'Generator ends')
-//   t.end()
-// })
-//
-// test('(Saga) nodeDelete (has input, modifiers, lfoOptions)', (t) => {
-//   const nodeId = 'XXX'
-//   const inputId = 'YYY'
-//
-//   const generator = nodeDelete({
-//     payload: { nodeId }
-//   })
-//
-//   t.deepEqual(
-//     generator.next().value,
-//     select(getNode, nodeId),
-//     '1. Get node'
-//   )
-//
-//   const node = {
-//     id: 'XXX',
-//     modifierIds: ['m1', 'm2'],
-//     lfoOptionIds: ['o1', 'o2'],
-//     input: {
-//       id: inputId
-//     }
-//   }
-//
-//   t.deepEqual(
-//     generator.next(node).value,
-//     put(inputAssignedNodeDelete(inputId, nodeId)),
-//     '2. Delete node assigned to old input'
-//   )
-//
-//   t.deepEqual(
-//     generator.next().value,
-//     put(uNodeDelete('m1')),
-//     '3. Delete modifier m1'
-//   )
-//
-//   t.deepEqual(
-//     generator.next().value,
-//     put(uNodeDelete('m2')),
-//     '3. Delete modifier m2'
-//   )
-//
-//   t.deepEqual(
-//     generator.next().value,
-//     put(uNodeDelete('o1')),
-//     '3. Delete option o1'
-//   )
-//
-//   t.deepEqual(
-//     generator.next().value,
-//     put(uNodeDelete('o2')),
-//     '3. Delete option o2'
-//   )
-//
-//   t.deepEqual(
-//     generator.next().value,
-//     put(rNodeDelete(nodeId)),
-//     '3. Delete node'
-//   )
-//
-//   t.equal(generator.next().done, true, 'Generator ends')
-//   t.end()
-// })
+
+test('(Saga) nodeDelete (no inputLinks)', (t) => {
+  const nodeId = 'XXX'
+
+  const generator = nodeDelete({
+    payload: { nodeId }
+  })
+
+  t.deepEqual(
+    generator.next().value,
+    select(getNode, nodeId),
+    '1. Get node'
+  )
+
+  const node = {
+    id: 'XXX',
+    inputLinksIds: []
+  }
+
+  t.deepEqual(
+    generator.next(node).value,
+    put(rNodeDelete(nodeId)),
+    '2. Delete node'
+  )
+
+  t.equal(generator.next().done, true, 'Generator ends')
+  t.end()
+})
+
+test('(Saga) nodeDelete (has inputlinks)', (t) => {
+  const nodeId = 'XXX'
+
+  const generator = nodeDelete({
+    payload: { nodeId }
+  })
+
+  t.deepEqual(
+    generator.next().value,
+    select(getNode, nodeId),
+    '1. Get node'
+  )
+
+  const node = {
+    id: 'XXX',
+    inputLinkIds: ['l1', 'l2']
+  }
+
+  t.deepEqual(
+    generator.next(node).value,
+    put(uInputLinkDelete('l1')),
+    '2. Delete input link'
+  )
+
+  t.deepEqual(
+    generator.next(node).value,
+    put(uInputLinkDelete('l2')),
+    '3. Delete input link'
+  )
+
+  t.deepEqual(
+    generator.next().value,
+    put(rNodeDelete(nodeId)),
+    '3. Delete node'
+  )
+
+  t.equal(generator.next().done, true, 'Generator ends')
+  t.end()
+})
 //
 // test('(Saga) nodeInputUpdate', (t) => {
 //   const inputId = 'AUDIO_0'

@@ -1,6 +1,7 @@
 import { select, takeEvery, put } from 'redux-saga/effects'
 import getNode from '../../selectors/getNode'
-import { rNodeCreate, rNodeDelete, uNodeDelete } from './actions'
+import { uInputLinkDelete } from '../inputLinks/actions'
+import { rNodeCreate, rNodeDelete } from './actions'
 
 export function* nodeCreate (action) {
   const p = action.payload
@@ -12,7 +13,15 @@ export function* nodeCreate (action) {
 export function* nodeDelete (action) {
   const p = action.payload
 
-  // Need to delete associated inputLinks
+  const node = yield select(getNode, p.nodeId)
+
+  const linkIds = node.inputLinkIds
+
+  if (linkIds) {
+    for (let i = 0; i < node.inputLinkIds.length; i++) {
+      yield put(uInputLinkDelete(node.inputLinkIds[i]))
+    }
+  }
 
   yield put(rNodeDelete(p.nodeId))
 }
