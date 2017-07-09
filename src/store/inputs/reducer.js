@@ -41,14 +41,16 @@ const inputsReducer = (state = defaultState, action) => {
           ...state,
           [p.inputId]: {
             ...state[p.inputId],
-            assignedLinkIds: [...state[p.inputId].assignedLinkIds, p.linkId]
+            assignedLinkIds: [...state[p.inputId].assignedLinkIds, p.linkId],
+            deviceId: p.deviceId
           }
         }
       } else {
         return {
           ...state,
           [p.inputId]: {
-            assignedLinkIds: [p.linkId]
+            assignedLinkIds: [p.linkId],
+            deviceId: p.deviceId
           }
         }
       }

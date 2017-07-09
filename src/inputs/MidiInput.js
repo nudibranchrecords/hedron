@@ -18,7 +18,7 @@ export default (store) => {
       const noteOn = message.data[0] === 144
 
       if (learningId) {
-        store.dispatch(uInputLinkCreate(learningId, id, 'midi'))
+        store.dispatch(uInputLinkCreate(learningId, id, 'midi', message.target.id))
         store.dispatch(midiStopLearning())
       } else {
         store.dispatch(inputFired(id, val, { noteOn }))

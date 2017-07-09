@@ -73,7 +73,7 @@ export function* inputLinkCreate (action) {
 
     yield put(rInputLinkCreate(linkId, link))
     yield put(nodeInputLinkAdd(p.nodeId, linkId))
-    yield put(inputAssignedLinkCreate(p.inputId, linkId))
+    yield put(inputAssignedLinkCreate(p.inputId, linkId, p.deviceId))
   }
 }
 

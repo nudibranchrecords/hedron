@@ -24,10 +24,11 @@ test('(Saga) inputLinkCreate', (t) => {
   const nodeId = 'NODE1'
   const inputId = 'audio_0'
   const inputType = 'audio'
+  const deviceId = 'DEVICE1'
 
   let modifier, uniqueId
 
-  const generator = inputLinkCreate(uInputLinkCreate(nodeId, inputId, inputType))
+  const generator = inputLinkCreate(uInputLinkCreate(nodeId, inputId, inputType, deviceId))
 
   t.deepEqual(
     generator.next().value,
@@ -212,7 +213,7 @@ test('(Saga) inputLinkCreate', (t) => {
 
   t.deepEqual(
     generator.next().value,
-    put(inputAssignedLinkCreate(inputId, linkId)),
+    put(inputAssignedLinkCreate(inputId, linkId, deviceId)),
     '7. Update assigned link in input'
   )
 

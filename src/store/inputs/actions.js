@@ -12,10 +12,10 @@ export function inputsReplaceAll (inputs) {
   }
 }
 
-export function inputAssignedLinkCreate (inputId, linkId) {
+export function inputAssignedLinkCreate (inputId, linkId, deviceId) {
   return {
     type: 'INPUT_ASSIGNED_LINK_CREATE',
-    payload: { inputId, linkId }
+    payload: { inputId, linkId, deviceId }
   }
 }
 
