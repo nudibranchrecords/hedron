@@ -29,11 +29,34 @@ test('(Selector) inputs - getAssignedLinks', (t) => {
   t.end()
 })
 
+test('(Selector) inputs - getAssignedLinks - input doesnt exist', (t) => {
+  const state = {
+    inputs: {
+      foo_input: {
+        assignedLinkIds: ['XX', 'YY', 'ZZ']
+      }
+    },
+    inputLinks: {
+      XX: { foo: 1 },
+      YY: { foo: 2 },
+      ZZ: { foo: 3 }
+    }
+  }
+  deepFreeze(state)
+
+  const expected = []
+
+  const actual = getAssignedLinks(state, 'non_existing_input')
+
+  t.deepEqual(actual, expected, 'Returns empty array')
+  t.end()
+})
+
 test('(Selector) inputs - getAssignedLinks - inputLinks dont exist', (t) => {
   const state = {
     inputs: {
-      assignedLinkIds: {
-        audio_0: ['XX', 'YY', 'ZZ']
+      audio_0: {
+        assignedLinkIds: ['XX', 'YY', 'ZZ']
       }
     },
     inputLinks: {}
