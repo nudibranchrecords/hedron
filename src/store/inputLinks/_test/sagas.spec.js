@@ -8,6 +8,7 @@ import { uNodeCreate, rNodeCreate, nodeInputLinkAdd } from '../../nodes/actions'
 import { rInputLinkCreate, uInputLinkCreate } from '../actions'
 import { inputAssignedLinkCreate } from '../../inputs/actions'
 import { midiStartLearning } from '../../midi/actions'
+import getCurrentBankIndex from '../../../selectors/getCurrentBankIndex'
 
 import uid from 'uid'
 import sinon from 'sinon'
@@ -186,6 +187,14 @@ test('(Saga) inputLinkCreate', (t) => {
     'Dispatch node create action'
   )
 
+  t.deepEqual(
+    generator.next().value,
+    select(getCurrentBankIndex, deviceId),
+    'Get current MIDI bank index'
+  )
+
+  const bankIndex = 3
+
   const link = {
     id: linkId,
     title: inputId,
@@ -194,13 +203,15 @@ test('(Saga) inputLinkCreate', (t) => {
       type: inputType
     },
     nodeId,
+    bankIndex,
+    deviceId,
     nodeType: 'FOO',
     modifierIds: ['xxx', 'yyy', 'zzz'],
     lfoOptionIds: ['LFO1', 'LFO2']
   }
 
   t.deepEqual(
-    generator.next().value,
+    generator.next(bankIndex).value,
     put(rInputLinkCreate(linkId, link)),
     '5. Create input link'
   )

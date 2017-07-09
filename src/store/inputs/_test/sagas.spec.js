@@ -14,6 +14,7 @@ import { projectError } from '../../project/actions'
 import getNodes from '../../../selectors/getNodes'
 import getNodesValues from '../../../selectors/getNodesValues'
 import getNode from '../../../selectors/getNode'
+import getCurrentBankIndex from '../../../selectors/getCurrentBankIndex'
 import lfoProcess from '../../../utils/lfoProcess'
 
 proxyquire.noCallThru()
@@ -398,6 +399,78 @@ test('(Saga) handleInput (shot - noteOn)', (t) => {
     put(nodeValueUpdate('XX', 0.5)),
     '5. Dispatches node update action'
   )
+
+  t.equal(generator.next().done, true, 'generator ends')
+
+  t.end()
+})
+
+test('(Saga) handleInput (midi - banks)', (t) => {
+  let bankIndex
+
+  const generator = handleInput({
+    payload: {
+      value: 0.5,
+      inputId: 'midi_xxx',
+      meta: {
+        'type': 'midi'
+      }
+    }
+  })
+
+  t.deepEqual(
+    generator.next().value,
+    select(getAssignedLinks, 'midi_xxx'),
+    '1. Gets assigned links'
+  )
+
+  const links = [
+    {
+      nodeId: 'XX',
+      deviceId: 'D1',
+      bankIndex: 1
+    },
+    {
+      nodeId: 'YY',
+      deviceId: 'D2',
+      bankIndex: 2
+    },
+    {
+      nodeId: 'ZZ',
+      deviceId: 'D3',
+      bankIndex: 3
+    }
+  ]
+
+  t.deepEqual(
+    generator.next(links).value,
+    select(getCurrentBankIndex, 'D1'),
+    'Gets current bank index for device D1'
+  )
+
+  bankIndex = 3
+
+  t.deepEqual(
+    generator.next(bankIndex).value,
+    select(getCurrentBankIndex, 'D2'),
+    'Gets current bank index for device D2'
+  )
+
+  bankIndex = 2
+
+  t.deepEqual(
+    generator.next(bankIndex).value,
+    put(nodeValueUpdate('YY', 0.5)),
+    'Dispatches node update action as link matches current bank'
+  )
+
+  t.deepEqual(
+    generator.next(bankIndex).value,
+    select(getCurrentBankIndex, 'D3'),
+    'Gets current bank index for device D3'
+  )
+
+  bankIndex = 1
 
   t.equal(generator.next().done, true, 'generator ends')
 

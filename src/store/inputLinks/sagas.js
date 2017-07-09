@@ -7,6 +7,7 @@ import { rNodeCreate, uNodeCreate, uNodeDelete, nodeInputLinkAdd, nodeInputLinkR
 import { inputAssignedLinkCreate, inputAssignedLinkDelete } from '../inputs/actions'
 import lfoGenerateOptions from '../../utils/lfoGenerateOptions'
 import { midiStartLearning } from '../midi/actions'
+import getCurrentBankIndex from '../../selectors/getCurrentBankIndex'
 import { getAll } from 'modifiers'
 import uid from 'uid'
 
@@ -58,6 +59,8 @@ export function* inputLinkCreate (action) {
       yield put(uNodeCreate(item.id, item))
     }
 
+    const bankIndex = yield select(getCurrentBankIndex, p.deviceId)
+
     const link = {
       title: p.inputId,
       input: {
@@ -67,6 +70,8 @@ export function* inputLinkCreate (action) {
       id: linkId,
       nodeId: p.nodeId,
       nodeType: node.type,
+      deviceId: p.deviceId,
+      bankIndex,
       modifierIds,
       lfoOptionIds
     }

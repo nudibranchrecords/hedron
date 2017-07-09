@@ -21,7 +21,10 @@ export default (store) => {
         store.dispatch(uInputLinkCreate(learningId, id, 'midi', message.target.id))
         store.dispatch(midiStopLearning())
       } else {
-        store.dispatch(inputFired(id, val, { noteOn }))
+        store.dispatch(inputFired(id, val, {
+          noteOn,
+          type: 'midi'
+        }))
       }
     // If no note data, treat as clock
     } else {
