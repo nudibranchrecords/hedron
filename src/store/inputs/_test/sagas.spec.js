@@ -357,7 +357,9 @@ test('(Saga) handleInput (shot - noteOn)', (t) => {
     payload: {
       value: 0.5,
       inputId: 'midi_xxx',
-      type: 'noteOn'
+      meta: {
+        'noteOn': true
+      }
     }
   })
 

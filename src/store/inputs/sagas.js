@@ -49,7 +49,7 @@ export function* handleInput (action) {
         }
         case 'shot': {
           const node = yield select(getNode, links[i].nodeId)
-          if (p.type === 'noteOn') {
+          if (p.meta && p.meta.noteOn) {
             yield put(inputLinkShotFired(node.sketchId, node.method))
           } else if (value > 0.5 && links[i].armed) {
             yield put(inputLinkShotFired(node.sketchId, node.method))

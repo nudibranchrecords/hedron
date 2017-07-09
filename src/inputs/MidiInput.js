@@ -15,13 +15,13 @@ export default (store) => {
       const learningId = state.midi.learning
       const id = 'midi_' + message.data[0].toString() + message.data[1].toString()
       const val = message.data[2] / 127
-      const noteOn = message.data[0] === 144 ? 'noteOn' : false
+      const noteOn = message.data[0] === 144
 
       if (learningId) {
         store.dispatch(uInputLinkCreate(learningId, id, 'midi'))
         store.dispatch(midiStopLearning())
       } else {
-        store.dispatch(inputFired(id, val, noteOn))
+        store.dispatch(inputFired(id, val, { noteOn }))
       }
     // If no note data, treat as clock
     } else {
