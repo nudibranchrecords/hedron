@@ -1,17 +1,13 @@
 import { connect } from 'react-redux'
 import Param from '../../components/Param'
-import getParamInfoText from '../../selectors/getParamInfoText'
-import getNodeLfoOptionIds from '../../selectors/getNodeLfoOptionIds'
-import getNodeModifierIds from '../../selectors/getNodeModifierIds'
+import getNodeInputLinkIds from '../../selectors/getNodeInputLinkIds'
 import { nodeOpenToggle } from '../../store/nodes/actions'
 
 const mapStateToProps = (state, ownProps) => {
   const param = state.nodes[ownProps.nodeId]
   return {
     title: param.title,
-    modifierIds: getNodeModifierIds(state, ownProps.nodeId),
-    lfoOptionIds: getNodeLfoOptionIds(state, ownProps.nodeId),
-    infoText: getParamInfoText(state, ownProps.nodeId),
+    inputLinkIds: getNodeInputLinkIds(state, ownProps.nodeId),
     isOpen: param.isOpen
   }
 }

@@ -1,16 +1,18 @@
 import test from 'tape'
-import getNodeModifierIds from '../getNodeModifierIds'
+import getInputLinkModifierIds from '../getInputLinkModifierIds'
 
-test('(Selector) getNodeModifierIds (input type "audio")', (t) => {
+test('(Selector) getInputLinkModifierIds (input type "audio")', (t) => {
   const state = {
-    nodes: {
+    inputLinks: {
       xxx: {
         input: {
           id: 'BAR',
           type: 'audio'
         },
         modifierIds: ['mod1', 'mod2']
-      },
+      }
+    },
+    nodes: {
       mod1: {
         type: 'audio',
         id: 'mod1'
@@ -21,22 +23,24 @@ test('(Selector) getNodeModifierIds (input type "audio")', (t) => {
     }
   }
 
-  const actual = getNodeModifierIds(state, 'xxx')
+  const actual = getInputLinkModifierIds(state, 'xxx')
 
   t.deepEqual(actual, ['mod1', 'mod2'], 'Returns all modifier Ids')
   t.end()
 })
 
-test('(Selector) getNodeModifierIds (input type "foo")', (t) => {
+test('(Selector) getInputLinkModifierIds (input type "foo")', (t) => {
   const state = {
-    nodes: {
+    inputLinks: {
       xxx: {
         input: {
           id: 'BAR',
           type: 'foo'
         },
         modifierIds: ['mod1', 'mod2']
-      },
+      }
+    },
+    nodes: {
       mod1: {
         type: 'audio',
         id: 'mod1'
@@ -47,7 +51,7 @@ test('(Selector) getNodeModifierIds (input type "foo")', (t) => {
     }
   }
 
-  const actual = getNodeModifierIds(state, 'xxx')
+  const actual = getInputLinkModifierIds(state, 'xxx')
 
   t.deepEqual(actual, ['mod2'], 'Filters out modifier with audio type')
   t.end()
@@ -55,10 +59,12 @@ test('(Selector) getNodeModifierIds (input type "foo")', (t) => {
 
 test('(Selector) getNodeModifierIds (no input)', (t) => {
   const state = {
-    nodes: {
+    inputLinks: {
       xxx: {
         modifierIds: ['mod1', 'mod2']
-      },
+      }
+    },
+    nodes: {
       mod1: {
         type: 'audio',
         id: 'mod1'
@@ -69,23 +75,25 @@ test('(Selector) getNodeModifierIds (no input)', (t) => {
     }
   }
 
-  const actual = getNodeModifierIds(state, 'xxx')
+  const actual = getInputLinkModifierIds(state, 'xxx')
 
   t.equal(actual, undefined, 'Returns undefined')
   t.end()
 })
 
-test('(Selector) getNodeModifierIds (node type "shot" input type audio)', (t) => {
+test('(Selector) getInputLinkModifierIds (node type "shot" input type audio)', (t) => {
   const state = {
-    nodes: {
+    inputLinks: {
       xxx: {
-        type: 'shot',
+        nodeType: 'shot',
         input: {
           id: 'BAR',
           type: 'audio'
         },
         modifierIds: ['mod1', 'mod2', 'mod3']
-      },
+      }
+    },
+    nodes: {
       mod1: {
         key: 'gain',
         id: 'mod1'
@@ -101,23 +109,25 @@ test('(Selector) getNodeModifierIds (node type "shot" input type audio)', (t) =>
     }
   }
 
-  const actual = getNodeModifierIds(state, 'xxx')
+  const actual = getInputLinkModifierIds(state, 'xxx')
 
   t.deepEqual(actual, ['mod1'], 'Only returns gain modifier')
   t.end()
 })
 
-test('(Selector) getNodeModifierIds (node type "shot" input type not audio)', (t) => {
+test('(Selector) getInputLinkModifierIds (node type "shot" input type not audio)', (t) => {
   const state = {
-    nodes: {
+    inputLinks: {
       xxx: {
-        type: 'shot',
+        nodeType: 'shot',
         input: {
           id: 'BAR',
           type: 'foo'
         },
         modifierIds: ['mod1', 'mod2', 'mod3']
-      },
+      }
+    },
+    nodes: {
       mod1: {
         key: 'gain',
         id: 'mod1'
@@ -133,7 +143,7 @@ test('(Selector) getNodeModifierIds (node type "shot" input type not audio)', (t
     }
   }
 
-  const actual = getNodeModifierIds(state, 'xxx')
+  const actual = getInputLinkModifierIds(state, 'xxx')
 
   t.equal(actual, undefined, 'Returns undefined')
   t.end()

@@ -12,16 +12,16 @@ export function inputsReplaceAll (inputs) {
   }
 }
 
-export function inputAssignedNodeCreate (inputId, nodeId) {
+export function inputAssignedLinkCreate (inputId, linkId) {
   return {
-    type: 'INPUT_ASSIGNED_NODE_CREATE',
-    payload: { inputId, nodeId }
+    type: 'INPUT_ASSIGNED_LINK_CREATE',
+    payload: { inputId, linkId }
   }
 }
 
-export function inputAssignedNodeDelete (inputId, nodeId) {
+export function inputAssignedLinkDelete (inputId, linkId) {
   return {
-    type: 'INPUT_ASSIGNED_NODE_DELETE',
-    payload: { inputId, nodeId }
+    type: 'INPUT_ASSIGNED_LINK_DELETE',
+    payload: { inputId, linkId }
   }
 }

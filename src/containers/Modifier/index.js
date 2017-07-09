@@ -1,19 +1,17 @@
 import { connect } from 'react-redux'
 import Modifier from '../../components/Modifier'
-import { uNodeInputUpdate } from '../../store/nodes/actions'
-import getParamInfoText from '../../selectors/getParamInfoText'
+import { uInputLinkCreate } from '../../store/inputLinks/actions'
 
 const mapStateToProps = (state, ownProps) => {
   const node = state.nodes[ownProps.nodeId]
   return {
-    title: node.title,
-    infoText: getParamInfoText(state, ownProps.nodeId)
+    title: node.title
   }
 }
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
   onAssignClick: () => {
-    dispatch(uNodeInputUpdate(ownProps.nodeId, 'midi'))
+    dispatch(uInputLinkCreate(ownProps.nodeId, 'midi'))
   }
 })
 

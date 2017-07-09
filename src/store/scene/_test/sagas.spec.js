@@ -6,7 +6,6 @@ import { getModule, getSketchParamIds, getSketchShotIds } from '../selectors'
 import getSketches from '../../../selectors/getSketches'
 import { sketchCreate, sketchDelete } from '../../sketches/actions'
 import { uNodeCreate, uNodeDelete } from '../../nodes/actions'
-import lfoGenerateOptions from '../../../utils/lfoGenerateOptions'
 import history from '../../../history'
 
 import uid from 'uid'
@@ -27,7 +26,7 @@ test('(Saga) watchScene', (t) => {
 })
 
 test('(Saga) handleSketchCreate', (t) => {
-  let moduleObj, uniqueId, lfoOpts
+  let moduleObj, uniqueId
 
   const generator = handleSketchCreate({
     payload: {
@@ -77,45 +76,6 @@ test('(Saga) handleSketchCreate', (t) => {
 
   t.deepEqual(
     generator.next(moduleObj).value,
-    call(lfoGenerateOptions),
-    'Generate options for LFO'
-  )
-
-  lfoOpts = [
-    {
-      id: 'LFO1',
-      key: 'shape',
-      value: 'sine'
-    },
-    {
-      id: 'LFO2',
-      key: 'rate',
-      value: 1
-    }
-  ]
-
-  t.deepEqual(
-    generator.next(lfoOpts).value,
-    put(uNodeCreate('LFO1', {
-      key: 'shape',
-      id: 'LFO1',
-      value: 'sine'
-    })),
-    'Dispatch node create action'
-  )
-
-  t.deepEqual(
-    generator.next().value,
-    put(uNodeCreate('LFO2', {
-      key: 'rate',
-      id: 'LFO2',
-      value: 1
-    })),
-    'Dispatch node create action'
-  )
-
-  t.deepEqual(
-    generator.next(moduleObj).value,
     call(uid),
     'Generate unique ID for param'
   )
@@ -129,47 +89,8 @@ test('(Saga) handleSketchCreate', (t) => {
       key: 'RotX',
       id: uniqueId,
       value: 0.1,
-      lfoOptionIds: ['LFO1', 'LFO2'],
-      isOpen: false
-    })),
-    'Dispatch node create action'
-  )
-
-  t.deepEqual(
-    generator.next(moduleObj).value,
-    call(lfoGenerateOptions),
-    'Generate options for LFO'
-  )
-
-  lfoOpts = [
-    {
-      id: 'LFO3',
-      key: 'shape',
-      value: 'sine'
-    },
-    {
-      id: 'LFO4',
-      key: 'rate',
-      value: 1
-    }
-  ]
-
-  t.deepEqual(
-    generator.next(lfoOpts).value,
-    put(uNodeCreate('LFO3', {
-      key: 'shape',
-      id: 'LFO3',
-      value: 'sine'
-    })),
-    'Dispatch node create action'
-  )
-
-  t.deepEqual(
-    generator.next().value,
-    put(uNodeCreate('LFO4', {
-      key: 'rate',
-      id: 'LFO4',
-      value: 1
+      isOpen: false,
+      inputLinkIds: []
     })),
     'Dispatch node create action'
   )
@@ -189,47 +110,8 @@ test('(Saga) handleSketchCreate', (t) => {
       key: 'RotY',
       id: uniqueId,
       value: 0.5,
-      lfoOptionIds: ['LFO3', 'LFO4'],
+      inputLinkIds: [],
       isOpen: false
-    })),
-    'Dispatch node create action'
-  )
-
-  t.deepEqual(
-    generator.next().value,
-    call(lfoGenerateOptions),
-    'Generate options for LFO'
-  )
-
-  lfoOpts = [
-    {
-      id: 'LFO1',
-      key: 'shape',
-      value: 'sine'
-    },
-    {
-      id: 'LFO2',
-      key: 'rate',
-      value: 1
-    }
-  ]
-
-  t.deepEqual(
-    generator.next(lfoOpts).value,
-    put(uNodeCreate('LFO1', {
-      key: 'shape',
-      id: 'LFO1',
-      value: 'sine'
-    })),
-    'Dispatch node create action'
-  )
-
-  t.deepEqual(
-    generator.next().value,
-    put(uNodeCreate('LFO2', {
-      key: 'rate',
-      id: 'LFO2',
-      value: 1
     })),
     'Dispatch node create action'
   )
@@ -251,48 +133,9 @@ test('(Saga) handleSketchCreate', (t) => {
       title: 'Shapeshift',
       method: 'shapeshift',
       sketchId: 'SKETCHID',
-      lfoOptionIds: ['LFO1', 'LFO2']
+      inputLinkIds: []
     })),
     'Dispatch node create action for shot'
-  )
-
-  t.deepEqual(
-    generator.next().value,
-    call(lfoGenerateOptions),
-    'Generate options for LFO'
-  )
-
-  lfoOpts = [
-    {
-      id: 'LFO1',
-      key: 'shape',
-      value: 'sine'
-    },
-    {
-      id: 'LFO2',
-      key: 'rate',
-      value: 1
-    }
-  ]
-
-  t.deepEqual(
-    generator.next(lfoOpts).value,
-    put(uNodeCreate('LFO1', {
-      key: 'shape',
-      id: 'LFO1',
-      value: 'sine'
-    })),
-    'Dispatch node create action'
-  )
-
-  t.deepEqual(
-    generator.next().value,
-    put(uNodeCreate('LFO2', {
-      key: 'rate',
-      id: 'LFO2',
-      value: 1
-    })),
-    'Dispatch node create action'
   )
 
   t.deepEqual(
@@ -312,7 +155,7 @@ test('(Saga) handleSketchCreate', (t) => {
       title: 'Explode',
       method: 'explode',
       sketchId: 'SKETCHID',
-      lfoOptionIds: ['LFO1', 'LFO2']
+      inputLinkIds: []
     })),
     'Dispatch node create action for shot'
   )
@@ -462,4 +305,3 @@ test('(Saga) handleSketchDelete', (t) => {
 
   t.end()
 })
-

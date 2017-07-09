@@ -3,7 +3,6 @@ import { getModule, getSketchParamIds, getSketchShotIds } from './selectors'
 import { sketchCreate, sketchDelete } from '../sketches/actions'
 import { uNodeCreate, uNodeDelete } from '../nodes/actions'
 import getSketches from '../../selectors/getSketches'
-import lfoGenerateOptions from '../../utils/lfoGenerateOptions'
 import history from '../../history'
 import uid from 'uid'
 
@@ -13,21 +12,12 @@ export function* handleSketchCreate (action) {
   const uniqueSketchId = yield call(uid)
   const module = yield select(getModule, moduleId)
   const paramIds = []
+  const inputLinkIds = []
   const shotIds = []
 
   if (module.params) {
     for (let i = 0; i < module.params.length; i++) {
       const param = module.params[i]
-
-      const lfoOpts = yield call(lfoGenerateOptions)
-      const lfoOptionIds = []
-
-      for (let key in lfoOpts) {
-        const item = lfoOpts[key]
-        lfoOptionIds.push(item.id)
-
-        yield put(uNodeCreate(item.id, item))
-      }
 
       uniqueId = yield call(uid)
       paramIds.push(uniqueId)
@@ -36,7 +26,7 @@ export function* handleSketchCreate (action) {
         key: param.key,
         value: param.defaultValue,
         id: uniqueId,
-        lfoOptionIds,
+        inputLinkIds,
         isOpen: false
       }))
     }
@@ -44,16 +34,6 @@ export function* handleSketchCreate (action) {
 
   if (module.shots) {
     for (let i = 0; i < module.shots.length; i++) {
-      const lfoOpts = yield call(lfoGenerateOptions)
-      const lfoOptionIds = []
-
-      for (let key in lfoOpts) {
-        const item = lfoOpts[key]
-        lfoOptionIds.push(item.id)
-
-        yield put(uNodeCreate(item.id, item))
-      }
-
       const shot = module.shots[i]
       uniqueId = yield call(uid)
       shotIds.push(uniqueId)
@@ -64,7 +44,7 @@ export function* handleSketchCreate (action) {
         title: shot.title,
         method: shot.method,
         sketchId: uniqueSketchId,
-        lfoOptionIds
+        inputLinkIds
       }))
     }
   }
@@ -105,4 +85,3 @@ export function* watchScene () {
   yield takeEvery('SCENE_SKETCH_CREATE', handleSketchCreate)
   yield takeEvery('SCENE_SKETCH_DELETE', handleSketchDelete)
 }
-

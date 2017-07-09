@@ -1,8 +1,10 @@
 import { select, takeEvery, put, call } from 'redux-saga/effects'
-import { getAssignedNodes } from './selectors'
-import { nodeValueUpdate, nodeShotFired, nodeShotDisarm, nodeShotArm } from '../nodes/actions'
+import { getAssignedLinks } from './selectors'
+import { nodeValueUpdate } from '../nodes/actions'
+import { inputLinkShotFired, inputLinkShotDisarm, inputLinkShotArm } from '../inputLinks/actions'
 import { projectError } from '../project/actions'
 import getNodes from '../../selectors/getNodes'
+import getNode from '../../selectors/getNode'
 import getNodesValues from '../../selectors/getNodesValues'
 import lfoProcess from '../../utils/lfoProcess'
 import { work } from 'modifiers'
@@ -11,19 +13,19 @@ export function* handleInput (action) {
   const p = action.payload
 
   try {
-    const nodes = yield select(getAssignedNodes, p.inputId)
+    const links = yield select(getAssignedLinks, p.inputId)
 
-    for (let i = 0; i < nodes.length; i++) {
+    for (let i = 0; i < links.length; i++) {
       let value = p.value
       let modifiers
 
       if (p.inputId === 'lfo') {
-        let o = yield select(getNodesValues, nodes[i].lfoOptionIds)
+        let o = yield select(getNodesValues, links[i].lfoOptionIds)
         value = yield call(lfoProcess, value, o.shape, o.rate)
       }
 
-      if (nodes[i].modifierIds && nodes[i].modifierIds.length) {
-        modifiers = yield select(getNodes, nodes[i].modifierIds)
+      if (links[i].modifierIds && links[i].modifierIds.length) {
+        modifiers = yield select(getNodes, links[i].modifierIds)
         let vals = []
         for (let j = 0; j < modifiers.length; j++) {
           const m = modifiers[j]
@@ -38,27 +40,30 @@ export function* handleInput (action) {
         }
       }
 
-      switch (nodes[i].type) {
+      switch (links[i].nodeType) {
         case 'select': {
-          const options = nodes[i].options
+          const node = yield select(getNode, links[i].nodeId)
+          const options = node.options
           value = options[Math.floor(options.length * value)].value
           break
         }
         case 'shot': {
+          const node = yield select(getNode, links[i].nodeId)
           if (p.type === 'noteOn') {
-            yield put(nodeShotFired(nodes[i].sketchId, nodes[i].method))
-          } else if (value > 0.5 && nodes[i].armed) {
-            yield put(nodeShotFired(nodes[i].sketchId, nodes[i].method))
-            yield put(nodeShotDisarm(nodes[i].id))
+            yield put(inputLinkShotFired(node.sketchId, node.method))
+          } else if (value > 0.5 && links[i].armed) {
+            yield put(inputLinkShotFired(node.sketchId, node.method))
+            yield put(inputLinkShotDisarm(links[i].id))
           } else if (value < 0.5) {
-            yield put(nodeShotArm(nodes[i].id))
+            yield put(inputLinkShotArm(links[i].id))
           }
         }
       }
 
-      yield put(nodeValueUpdate(nodes[i].id, value))
+      yield put(nodeValueUpdate(links[i].nodeId, value))
     }
   } catch (error) {
+    console.error(error)
     yield put(projectError(error.message))
   }
 }

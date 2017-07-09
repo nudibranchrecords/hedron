@@ -6,12 +6,14 @@ import { select, takeEvery, put, call } from 'redux-saga/effects'
 
 import proxyquire from 'proxyquire'
 
-import { getAssignedNodes } from '../selectors'
-import { nodeValueUpdate, nodeShotFired, nodeShotDisarm, nodeShotArm } from '../../nodes/actions'
+import { getAssignedLinks } from '../selectors'
+import { nodeValueUpdate } from '../../nodes/actions'
+import { inputLinkShotFired, inputLinkShotDisarm, inputLinkShotArm } from '../../inputLinks/actions'
 import { projectError } from '../../project/actions'
 
 import getNodes from '../../../selectors/getNodes'
 import getNodesValues from '../../../selectors/getNodesValues'
+import getNode from '../../../selectors/getNode'
 import lfoProcess from '../../../utils/lfoProcess'
 
 proxyquire.noCallThru()
@@ -41,27 +43,27 @@ test('(Saga) handleInput (no modifiers)', (t) => {
 
   t.deepEqual(
     generator.next().value,
-    select(getAssignedNodes, 'audio_0'),
-    '1. Gets assigned nodes'
+    select(getAssignedLinks, 'audio_0'),
+    '1. Gets assigned links'
   )
 
-  const nodes = [
+  const links = [
     {
-      id: 'XX'
+      nodeId: 'XX'
     },
     {
-      id: 'YY'
+      nodeId: 'YY'
     }
   ]
 
   t.deepEqual(
-    generator.next(nodes).value,
+    generator.next(links).value,
     put(nodeValueUpdate('XX', 0.2)),
     '2.x Dispatches node update action'
   )
 
   t.deepEqual(
-    generator.next(nodes).value,
+    generator.next(links).value,
     put(nodeValueUpdate('YY', 0.2)),
     '2.x Dispatches node update action'
   )
@@ -88,13 +90,13 @@ test('(Saga) handleInput (modifiers)', (t) => {
 
   t.deepEqual(
     generator.next().value,
-    select(getAssignedNodes, 'audio_0'),
-    '1. Gets assigned nodes'
+    select(getAssignedLinks, 'audio_0'),
+    '1. Gets assigned links'
   )
 
   const nodes = [
     {
-      id: 'XX',
+      nodeId: 'XX',
       modifierIds: ['yyy', 'zzz', 'aa1', 'aa2']
     }
   ]
@@ -184,19 +186,19 @@ test('(Saga) handleInput (ignore audio type modifiers)', (t) => {
 
   t.deepEqual(
     generator.next().value,
-    select(getAssignedNodes, 'midi_xxx'),
-    '1. Gets assigned nodes'
+    select(getAssignedLinks, 'midi_xxx'),
+    '1. Gets assigned links'
   )
 
-  const nodes = [
+  const links = [
     {
-      id: 'XX',
+      nodeId: 'XX',
       modifierIds: ['yyy', 'zzz']
     }
   ]
 
   t.deepEqual(
-    generator.next(nodes).value,
+    generator.next(links).value,
     select(getNodes, ['yyy', 'zzz']),
     '2.x Get Modifiers (nodes)'
   )
@@ -248,19 +250,19 @@ test('(Saga) handleInput (lfo)', (t) => {
 
   t.deepEqual(
     generator.next().value,
-    select(getAssignedNodes, 'lfo'),
-    '1. Gets assigned nodes'
+    select(getAssignedLinks, 'lfo'),
+    '1. Gets assigned links'
   )
 
-  const nodes = [
+  const links = [
     {
-      id: 'XX',
+      nodeId: 'XX',
       lfoOptionIds: ['yyy', 'zzz']
     }
   ]
 
   t.deepEqual(
-    generator.next(nodes).value,
+    generator.next(links).value,
     select(getNodesValues, ['yyy', 'zzz']),
     '2 Get Options values (nodes)'
   )
@@ -303,31 +305,40 @@ test('(Saga) handleInput (select node)', (t) => {
 
   t.deepEqual(
     generator.next().value,
-    select(getAssignedNodes, 'midi_xxx'),
-    '1. Gets assigned nodes'
+    select(getAssignedLinks, 'midi_xxx'),
+    '1. Gets assigned links'
   )
 
-  const nodes = [
+  const links = [
     {
-      id: 'XX',
-      type: 'select',
-      options: [
-        { value: 'one' },
-        { value: 'two' },
-        { value: 'three' },
-        { value: 'four' },
-        { value: 'five' },
-        { value: 'six' },
-        { value: 'seven' },
-        { value: 'eight' },
-        { value: 'nine' },
-        { value: 'ten' }
-      ]
+      nodeId: 'XX',
+      nodeType: 'select'
     }
   ]
 
   t.deepEqual(
-    generator.next(nodes).value,
+    generator.next(links).value,
+    select(getNode, 'XX'),
+    '1.1 Get node'
+  )
+
+  const node = {
+    options: [
+      { value: 'one' },
+      { value: 'two' },
+      { value: 'three' },
+      { value: 'four' },
+      { value: 'five' },
+      { value: 'six' },
+      { value: 'seven' },
+      { value: 'eight' },
+      { value: 'nine' },
+      { value: 'ten' }
+    ]
+  }
+
+  t.deepEqual(
+    generator.next(node).value,
     put(nodeValueUpdate('XX', 'four')),
     '2. Dispatches node update action, converting value to option'
   )
@@ -352,22 +363,31 @@ test('(Saga) handleInput (shot - noteOn)', (t) => {
 
   t.deepEqual(
     generator.next().value,
-    select(getAssignedNodes, 'midi_xxx'),
-    '1. Gets assigned nodes'
+    select(getAssignedLinks, 'midi_xxx'),
+    '1. Gets assigned links'
   )
 
-  const nodes = [
+  const links = [
     {
-      id: 'XX',
-      type: 'shot',
-      sketchId: 'fooSketch',
-      method: 'barMethod'
+      nodeId: 'XX',
+      nodeType: 'shot'
     }
   ]
 
   t.deepEqual(
-    generator.next(nodes).value,
-    put(nodeShotFired('fooSketch', 'barMethod')),
+    generator.next(links).value,
+    select(getNode, 'XX'),
+    '1.1 Get node'
+  )
+
+  const node = {
+    sketchId: 'fooSketch',
+    method: 'barMethod'
+  }
+
+  t.deepEqual(
+    generator.next(node).value,
+    put(inputLinkShotFired('fooSketch', 'barMethod')),
     '4. Dispatches node shot fired action'
   )
 
@@ -393,30 +413,40 @@ test('(Saga) handleInput (shot - audio val is over 0.5, armed)', (t) => {
 
   t.deepEqual(
     generator.next().value,
-    select(getAssignedNodes, 'audio_1'),
+    select(getAssignedLinks, 'audio_1'),
     '1. Gets assigned nodes'
   )
 
-  const nodes = [
+  const links = [
     {
-      id: 'XX',
-      type: 'shot',
-      armed: true,
-      sketchId: 'fooSketch',
-      method: 'barMethod'
+      id: 'LINK1',
+      nodeId: 'XX',
+      nodeType: 'shot',
+      armed: true
     }
   ]
 
   t.deepEqual(
-    generator.next(nodes).value,
-    put(nodeShotFired('fooSketch', 'barMethod')),
-    '4. Dispatches node shot fired action'
+    generator.next(links).value,
+    select(getNode, 'XX'),
+    '1.1 Get node'
+  )
+
+  const node = {
+    sketchId: 'fooSketch',
+    method: 'barMethod'
+  }
+
+  t.deepEqual(
+    generator.next(node).value,
+    put(inputLinkShotFired('fooSketch', 'barMethod')),
+    '4. Dispatches input link shot fired action'
   )
 
   t.deepEqual(
-    generator.next(nodes).value,
-    put(nodeShotDisarm('XX')),
-    '5. Dispatches node disarm action'
+    generator.next().value,
+    put(inputLinkShotDisarm('LINK1')),
+    '5. Dispatches input link disarm action'
   )
 
   t.deepEqual(
@@ -441,22 +471,32 @@ test('(Saga) handleInput (shot - audio val is over 0.5, disarmed)', (t) => {
 
   t.deepEqual(
     generator.next().value,
-    select(getAssignedNodes, 'audio_1'),
-    '1. Gets assigned nodes'
+    select(getAssignedLinks, 'audio_1'),
+    '1. Gets assigned links'
   )
 
-  const nodes = [
+  const links = [
     {
-      id: 'XX',
-      type: 'shot',
-      armed: false,
-      sketchId: 'fooSketch',
-      method: 'barMethod'
+      id: 'LINK1',
+      nodeId: 'XX',
+      nodeType: 'shot',
+      armed: false
     }
   ]
 
   t.deepEqual(
-    generator.next(nodes).value,
+    generator.next(links).value,
+    select(getNode, 'XX'),
+    '1.1 Get node'
+  )
+
+  const node = {
+    sketchId: 'fooSketch',
+    method: 'barMethod'
+  }
+
+  t.deepEqual(
+    generator.next(node).value,
     put(nodeValueUpdate('XX', 1)),
     '2. Dispatches node update action'
   )
@@ -477,24 +517,34 @@ test('(Saga) handleInput (shot - audio val is under 0.5, armed)', (t) => {
 
   t.deepEqual(
     generator.next().value,
-    select(getAssignedNodes, 'audio_1'),
+    select(getAssignedLinks, 'audio_1'),
     '1. Gets assigned nodes'
   )
 
-  const nodes = [
+  const links = [
     {
-      id: 'XX',
-      type: 'shot',
-      armed: true,
-      sketchId: 'fooSketch',
-      method: 'barMethod'
+      id: 'LINK1',
+      nodeId: 'XX',
+      nodeType: 'shot',
+      armed: true
     }
   ]
 
   t.deepEqual(
-    generator.next(nodes).value,
-    put(nodeShotArm('XX')),
-    '5. Dispatches node arm action'
+    generator.next(links).value,
+    select(getNode, 'XX'),
+    '1.1 Get node'
+  )
+
+  const node = {
+    sketchId: 'fooSketch',
+    method: 'barMethod'
+  }
+
+  t.deepEqual(
+    generator.next(node).value,
+    put(inputLinkShotArm('LINK1')),
+    '5. Dispatches input link arm action'
   )
 
   t.deepEqual(
@@ -519,24 +569,34 @@ test('(Saga) handleInput (shot - audio val is under 0.5, disarmed)', (t) => {
 
   t.deepEqual(
     generator.next().value,
-    select(getAssignedNodes, 'audio_1'),
-    '1. Gets assigned nodes'
+    select(getAssignedLinks, 'audio_1'),
+    '1. Gets assigned links'
   )
 
-  const nodes = [
+  const links = [
     {
-      id: 'XX',
-      type: 'shot',
-      armed: false,
-      sketchId: 'fooSketch',
-      method: 'barMethod'
+      id: 'LINK1',
+      nodeId: 'XX',
+      nodeType: 'shot',
+      armed: false
     }
   ]
 
   t.deepEqual(
-    generator.next(nodes).value,
-    put(nodeShotArm('XX')),
-    '5. Dispatches node arm action'
+    generator.next(links).value,
+    select(getNode, 'XX'),
+    '1.1 Get node'
+  )
+
+  const node = {
+    sketchId: 'fooSketch',
+    method: 'barMethod'
+  }
+
+  t.deepEqual(
+    generator.next(node).value,
+    put(inputLinkShotArm('LINK1')),
+    '5. Dispatches input link arm action'
   )
 
   t.deepEqual(

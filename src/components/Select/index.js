@@ -4,14 +4,14 @@ import ReactSelect from 'react-select'
 import styled from 'styled-components'
 import Row from '../Row'
 import MidiButton from '../MidiButton'
-import InfoText from '../InfoText'
 import SubNode from '../SubNode'
+import NodeInputInfo from '../../containers/NodeInputInfo'
 
 const SelectCol = styled.div`
   flex: 1;
 `
 
-const Select = ({ options, onChange, title, value, onAssignClick, infoText }) => (
+const Select = ({ nodeId, options, onChange, title, value, onAssignClick }) => (
   <SubNode>
     {title}
     <Row>
@@ -26,7 +26,7 @@ const Select = ({ options, onChange, title, value, onAssignClick, infoText }) =>
       </SelectCol>
       <MidiButton onClick={onAssignClick} />
     </Row>
-    <InfoText>{infoText}</InfoText>
+    <NodeInputInfo nodeId={nodeId} />
   </SubNode>
 )
 
@@ -42,7 +42,7 @@ Select.propTypes = {
   onChange: PropTypes.func.isRequired,
   onAssignClick: PropTypes.func.isRequired,
   title: PropTypes.string.isRequired,
-  infoText:PropTypes.string
+  nodeId: PropTypes.string.isRequired
 }
 
 export default Select

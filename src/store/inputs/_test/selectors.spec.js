@@ -1,15 +1,15 @@
 import test from 'tape'
-import { getAssignedNodes } from '../selectors'
+import { getAssignedLinks } from '../selectors'
 import deepFreeze from 'deep-freeze'
 
-test('(Selector) inputs - getAssignedNodes', (t) => {
+test('(Selector) inputs - getAssignedLinks', (t) => {
   const state = {
     inputs: {
       audio_0: {
-        assignedNodeIds: ['XX', 'YY', 'ZZ']
+        assignedLinkIds: ['XX', 'YY', 'ZZ']
       }
     },
-    nodes: {
+    inputLinks: {
       XX: { foo: 1 },
       YY: { foo: 2 },
       ZZ: { foo: 3 }
@@ -23,22 +23,22 @@ test('(Selector) inputs - getAssignedNodes', (t) => {
     { foo: 3 }
   ]
 
-  const actual = getAssignedNodes(state, 'audio_0')
+  const actual = getAssignedLinks(state, 'audio_0')
 
   t.deepEqual(actual, expected, 'Returns array of nodes')
   t.end()
 })
 
-test('(Selector) inputs - getAssignedNodes - Nodes dont exist', (t) => {
+test('(Selector) inputs - getAssignedLinks - inputLinks dont exist', (t) => {
   const state = {
     inputs: {
-      assignedNodeIds: {
+      assignedLinkIds: {
         audio_0: ['XX', 'YY', 'ZZ']
       }
     },
-    nodes: {}
+    inputLinks: {}
   }
 
-  t.throws(getAssignedNodes.bind(null, state, 'audio_0'), Error, 'Throws an error')
+  t.throws(getAssignedLinks.bind(null, state, 'audio_0'), Error, 'Throws an error')
   t.end()
 })

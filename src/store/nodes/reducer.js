@@ -24,6 +24,25 @@ const nodesReducer = (state = defaultState, action) => {
         }
       }
     }
+    case 'NODE_INPUT_LINK_ADD': {
+      return {
+        ...state,
+        [p.id]: {
+          ...state[p.id],
+          inputLinkIds: [...state[p.id].inputLinkIds, p.linkId]
+        }
+      }
+    }
+    case 'NODE_INPUT_LINK_REMOVE': {
+      return {
+        ...state,
+        [p.id]: {
+          ...state[p.id],
+          inputLinkIds: state[p.id].inputLinkIds
+            .filter((id) => id !== p.linkId)
+        }
+      }
+    }
     case 'NODES_REPLACE_ALL': {
       return p.nodes
     }
@@ -42,24 +61,6 @@ const nodesReducer = (state = defaultState, action) => {
         [p.id] : {
           ...state[p.id],
           isOpen: !state[p.id].isOpen
-        }
-      }
-    }
-    case 'NODE_SHOT_ARM': {
-      return {
-        ...state,
-        [p.nodeId] : {
-          ...state[p.nodeId],
-          armed: true
-        }
-      }
-    }
-    case 'NODE_SHOT_DISARM': {
-      return {
-        ...state,
-        [p.nodeId] : {
-          ...state[p.nodeId],
-          armed: false
         }
       }
     }

@@ -36,6 +36,26 @@ export function rNodeDelete (id) {
   }
 }
 
+export function nodeInputLinkAdd (id, linkId) {
+  return {
+    type: 'NODE_INPUT_LINK_ADD',
+    payload: {
+      id,
+      linkId
+    }
+  }
+}
+
+export function nodeInputLinkRemove (id, linkId) {
+  return {
+    type: 'NODE_INPUT_LINK_REMOVE',
+    payload: {
+      id,
+      linkId
+    }
+  }
+}
+
 export function nodeValueUpdate (id, value) {
   return {
     type: 'NODE_VALUE_UPDATE',
@@ -81,33 +101,6 @@ export function nodeOpenToggle (id) {
     type: 'NODE_OPEN_TOGGLE',
     payload: {
       id
-    }
-  }
-}
-
-export function nodeShotFired (sketchId, method) {
-  return {
-    type: 'NODE_SHOT_FIRED',
-    payload: {
-      sketchId, method
-    }
-  }
-}
-
-export function nodeShotArm (nodeId) {
-  return {
-    type: 'NODE_SHOT_ARM',
-    payload: {
-      nodeId
-    }
-  }
-}
-
-export function nodeShotDisarm (nodeId) {
-  return {
-    type: 'NODE_SHOT_DISARM',
-    payload: {
-      nodeId
     }
   }
 }

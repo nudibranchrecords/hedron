@@ -1,23 +1,23 @@
 const defaultState = {
   audio_0: {
     value: 0,
-    assignedNodeIds: []
+    assignedLinkIds: []
   },
   audio_1: {
     value: 0,
-    assignedNodeIds: []
+    assignedLinkIds: []
   },
   audio_2: {
     value: 0,
-    assignedNodeIds: []
+    assignedLinkIds: []
   },
   audio_3: {
     value: 0,
-    assignedNodeIds: []
+    assignedLinkIds: []
   },
   lfo: {
     value: 0,
-    assignedNodeIds: []
+    assignedLinkIds: []
   }
 }
 
@@ -35,31 +35,31 @@ const inputsReducer = (state = defaultState, action) => {
     case 'INPUTS_REPLACE_ALL': {
       return p.inputs
     }
-    case 'INPUT_ASSIGNED_NODE_CREATE': {
+    case 'INPUT_ASSIGNED_LINK_CREATE': {
       if (state[p.inputId]) {
         return {
           ...state,
           [p.inputId]: {
             ...state[p.inputId],
-            assignedNodeIds: [...state[p.inputId].assignedNodeIds, p.nodeId]
+            assignedLinkIds: [...state[p.inputId].assignedLinkIds, p.linkId]
           }
         }
       } else {
         return {
           ...state,
           [p.inputId]: {
-            assignedNodeIds: [p.nodeId]
+            assignedLinkIds: [p.linkId]
           }
         }
       }
     }
-    case 'INPUT_ASSIGNED_NODE_DELETE': {
+    case 'INPUT_ASSIGNED_LINK_DELETE': {
       return {
         ...state,
         [p.inputId]: {
           ...state[p.inputId],
-          assignedNodeIds: state[p.inputId].assignedNodeIds
-            .filter((id) => id !== p.nodeId)
+          assignedLinkIds: state[p.inputId].assignedLinkIds
+            .filter((id) => id !== p.linkId)
         }
       }
     }

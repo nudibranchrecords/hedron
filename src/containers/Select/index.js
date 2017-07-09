@@ -1,6 +1,7 @@
 import { connect } from 'react-redux'
 import Select from '../../components/Select'
-import { nodeValueUpdate, uNodeInputUpdate } from '../../store/nodes/actions'
+import { nodeValueUpdate } from '../../store/nodes/actions'
+import { uInputLinkCreate } from '../../store/inputLinks/actions'
 import getParamInfoText from '../../selectors/getParamInfoText'
 
 const mapStateToProps = (state, ownProps) => {
@@ -19,7 +20,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       dispatch(nodeValueUpdate(ownProps.nodeId, value.value))
     },
     onAssignClick: () => {
-      dispatch(uNodeInputUpdate(ownProps.nodeId, 'midi'))
+      dispatch(uInputLinkCreate(ownProps.nodeId, 'midi'))
     }
   }
 }

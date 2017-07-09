@@ -1,9 +1,9 @@
 import test from 'tape'
-import getNodeLfoOptionIds from '../getNodeLfoOptionIds'
+import getInputLinkLfoOptionIds from '../getInputLinkLfoOptionIds'
 
-test('(Selector) getNodeLfoOptionIds (input is not "lfo")', (t) => {
+test('(Selector) getInputLinkLfoOptionIds (input is not "lfo")', (t) => {
   const state = {
-    nodes: {
+    inputLinks: {
       xxx: {
         input: {
           id: 'BAR'
@@ -12,15 +12,15 @@ test('(Selector) getNodeLfoOptionIds (input is not "lfo")', (t) => {
     }
   }
 
-  const actual = getNodeLfoOptionIds(state, 'xxx')
+  const actual = getInputLinkLfoOptionIds(state, 'xxx')
 
   t.equal(actual, undefined, 'Returns undefined')
   t.end()
 })
 
-test('(Selector) getNodeLfoOptionIds (input is "lfo")', (t) => {
+test('(Selector) getInputLinkLfoOptionIds (input is "lfo")', (t) => {
   const state = {
-    nodes: {
+    inputLinks: {
       xxx: {
         input: {
           id: 'lfo'
@@ -30,22 +30,24 @@ test('(Selector) getNodeLfoOptionIds (input is "lfo")', (t) => {
     }
   }
 
-  const actual = getNodeLfoOptionIds(state, 'xxx')
+  const actual = getInputLinkLfoOptionIds(state, 'xxx')
 
   t.deepEqual(actual, ['yyy', 'zzz'], 'Returns options ids array')
   t.end()
 })
 
-test('(Selector) getNodeLfoOptionIds (input is "lfo", node type "shot")', (t) => {
+test('(Selector) getInputLinkLfoOptionIds (input is "lfo", link type "shot")', (t) => {
   const state = {
-    nodes: {
+    inputLinks: {
       xxx: {
-        type: 'shot',
+        nodeType: 'shot',
         input: {
           id: 'lfo'
         },
         lfoOptionIds: ['yyy', 'zzz']
-      },
+      }
+    },
+    nodes: {
       yyy: {
         key: 'rate'
       },
@@ -55,7 +57,7 @@ test('(Selector) getNodeLfoOptionIds (input is "lfo", node type "shot")', (t) =>
     }
   }
 
-  const actual = getNodeLfoOptionIds(state, 'xxx')
+  const actual = getInputLinkLfoOptionIds(state, 'xxx')
 
   t.deepEqual(actual, ['yyy'], 'Only returns rate ID')
   t.end()

@@ -1,6 +1,15 @@
 export default (state, nodeId) => {
   const param = state.nodes[nodeId]
+  const linkIds = param.inputLinkIds
 
   if (state.midi.learning === nodeId) return 'Learning MIDI'
-  if (param.input && param.input.type === 'midi') return param.input.info
+  if (linkIds) {
+    let info = ''
+
+    for (let i = 0; i < linkIds.length; i++) {
+      info += state.inputLinks[linkIds[i]].title
+      if (i !== linkIds.length - 1) info += ', '
+    }
+    return info
+  }
 }

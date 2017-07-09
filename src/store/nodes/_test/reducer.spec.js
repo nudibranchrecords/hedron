@@ -2,6 +2,7 @@ import test from 'tape'
 import deepFreeze from 'deep-freeze'
 import nodesReducer from '../reducer'
 import { returnsPreviousState } from '../../../testUtils'
+import * as a from '../actions'
 
 returnsPreviousState(nodesReducer)
 
@@ -68,6 +69,41 @@ test('(Reducer) nodesReducer - Updates correct node value on NODE_VALUE_UPDATE',
   })
 
   t.deepEqual(actualState, expectedState)
+
+  t.end()
+})
+
+test('(Reducer) nodesReducer - Adds input link id on nodeInputLinkAdd()', (t) => {
+  let originalState, actualState
+
+  originalState = {
+    '01': {
+      title: 'Rotation X',
+      key: 'rotX',
+      value: 0.1,
+      inputLinkIds: []
+    },
+    '02': {
+      title: 'Rotation Y',
+      key: 'rotY',
+      value: 0.2,
+      inputLinkIds: []
+    }
+  }
+
+  deepFreeze(originalState)
+
+  actualState = nodesReducer(originalState, a.nodeInputLinkAdd('01', 'XXX'))
+
+  t.deepEqual(actualState['01'].inputLinkIds, ['XXX'])
+
+  actualState = nodesReducer(actualState, a.nodeInputLinkAdd('01', 'YYY'))
+
+  t.deepEqual(actualState['01'].inputLinkIds, ['XXX', 'YYY'])
+
+  actualState = nodesReducer(actualState, a.nodeInputLinkAdd('02', 'AAA'))
+
+  t.deepEqual(actualState['02'].inputLinkIds, ['AAA'])
 
   t.end()
 })
@@ -430,86 +466,3 @@ test('(Reducer) nodesReducer - opens/closes node on NODE_OPEN_TOGGLE', (t) => {
 
   t.end()
 })
-
-test('(Reducer) nodesReducer - handle NODE_SHOT_ARM / NODE_SHOT_DISARM', (t) => {
-  let originalState, expectedState, actualState
-
-  originalState = {
-    '01': {
-      title: 'Rotation X'
-    },
-    '02': {
-      title: 'Rotation Y',
-      key: 'rotY',
-      armed: true
-    }
-  }
-
-  deepFreeze(originalState)
-
-  expectedState = {
-    '01': {
-      title: 'Rotation X',
-      armed: true
-    },
-    '02': {
-      title: 'Rotation Y',
-      key: 'rotY',
-      armed: true
-    }
-  }
-
-  actualState = nodesReducer(originalState, {
-    type: 'NODE_SHOT_ARM',
-    payload: {
-      nodeId: '01'
-    }
-  })
-
-  t.deepEqual(actualState, expectedState)
-
-  expectedState = {
-    '01': {
-      title: 'Rotation X',
-      armed: true
-    },
-    '02': {
-      title: 'Rotation Y',
-      key: 'rotY',
-      armed: false
-    }
-  }
-
-  actualState = nodesReducer(actualState, {
-    type: 'NODE_SHOT_DISARM',
-    payload: {
-      nodeId: '02'
-    }
-  })
-
-  t.deepEqual(actualState, expectedState)
-
-  expectedState = {
-    '01': {
-      title: 'Rotation X',
-      armed: true
-    },
-    '02': {
-      title: 'Rotation Y',
-      key: 'rotY',
-      armed: true
-    }
-  }
-
-  actualState = nodesReducer(actualState, {
-    type: 'NODE_SHOT_ARM',
-    payload: {
-      nodeId: '02'
-    }
-  })
-
-  t.deepEqual(actualState, expectedState)
-
-  t.end()
-})
-

@@ -1,14 +1,11 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import ParamBar from '../../containers/ParamBar'
+import NodeInputInfo from '../../containers/NodeInputInfo'
 import styled from 'styled-components'
 import MidiButton from '../MidiButton'
-import InfoText from '../InfoText'
 import SubNode from '../SubNode'
-
-const Row = styled.div`
-  display: flex;
-`
+import Row from '../Row'
 
 const BarCol = styled.div`
   flex: 1;
@@ -19,7 +16,9 @@ const ButtonCol = styled.div`
   width: 1rem;
 `
 
-const Modifier = ({ title, nodeId, infoText, onAssignClick }) => (
+const Modifier = (
+  { title, nodeId, onAssignClick }
+) => (
   <SubNode>
     {title}
     <Row>
@@ -30,15 +29,14 @@ const Modifier = ({ title, nodeId, infoText, onAssignClick }) => (
         <MidiButton onClick={onAssignClick} />
       </ButtonCol>
     </Row>
-    <InfoText>{infoText}</InfoText>
+    <NodeInputInfo nodeId={nodeId} />
   </SubNode>
 )
 
 Modifier.propTypes = {
   title: PropTypes.string.isRequired,
   nodeId: PropTypes.string.isRequired,
-  onAssignClick: PropTypes.func.isRequired,
-  infoText: React.PropTypes.string
+  onAssignClick: PropTypes.func.isRequired
 }
 
 export default Modifier
