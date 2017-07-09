@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
+import BankSelect from '../BankSelect'
 
 const Item = styled.div`
   padding: 0.5rem;
@@ -28,6 +29,7 @@ const Devices = ({ items }) => (
                   <Info>{m.data[0]} / {m.data[1]} / {m.data[2]} - {m.timeStamp}</Info>
                 </div>
               }
+              <BankSelect deviceId={item.id} />
             </Item>
           </li>
         )

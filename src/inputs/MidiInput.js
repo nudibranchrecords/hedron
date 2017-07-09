@@ -39,7 +39,8 @@ export default (store) => {
       devices[entry.id] = {
         title: entry.name,
         id: entry.id,
-        manufacturer: entry.manufacturer
+        manufacturer: entry.manufacturer,
+        bankIndex: 0
       }
       entry.onmidimessage = onMessage
     })
