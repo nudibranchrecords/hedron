@@ -38,7 +38,6 @@ export default (store) => {
   navigator.requestMIDIAccess().then((midiAccess) => {
     const devices = {}
     midiAccess.inputs.forEach((entry) => {
-      console.log(entry)
       devices[entry.id] = {
         title: entry.name,
         id: entry.id,

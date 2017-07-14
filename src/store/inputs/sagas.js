@@ -20,7 +20,6 @@ export function* handleInput (action) {
       let value = p.value
       let modifiers
       let skip
-      console.log(p)
       if (p.meta && p.meta.type === 'midi') {
         const currentDeviceBank = yield select(getCurrentBankIndex, links[i].deviceId)
         if (currentDeviceBank !== links[i].bankIndex) skip = true
