@@ -27,6 +27,7 @@ export function* inputLinkCreate (action) {
     const modifiers = yield call(getAll)
     const defaultModifierIds = yield select(getDefaultModifierIds)
     const modifierIds = []
+    let bankIndex
 
     for (let i = 0; i < defaultModifierIds.length; i++) {
       const id = defaultModifierIds[i]
@@ -59,7 +60,9 @@ export function* inputLinkCreate (action) {
       yield put(uNodeCreate(item.id, item))
     }
 
-    const bankIndex = yield select(getCurrentBankIndex, p.deviceId)
+    if (p.inputType === 'midi') {
+      bankIndex = yield select(getCurrentBankIndex, p.deviceId)
+    }
 
     const link = {
       title: p.inputId,
