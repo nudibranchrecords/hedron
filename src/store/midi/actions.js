@@ -29,3 +29,12 @@ export function midiMessage (id, message) {
     }
   }
 }
+
+export function midiDeviceBankChange (id, index) {
+  return {
+    type: 'MIDI_DEVICE_BANK_CHANGE',
+    payload: {
+      id, index
+    }
+  }
+}

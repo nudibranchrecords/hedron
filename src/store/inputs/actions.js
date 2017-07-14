@@ -1,7 +1,7 @@
-export function inputFired (inputId, value, type) {
+export function inputFired (inputId, value, meta) {
   return {
     type: 'INPUT_FIRED',
-    payload: { inputId, value, type }
+    payload: { inputId, value, meta }
   }
 }
 
@@ -12,10 +12,10 @@ export function inputsReplaceAll (inputs) {
   }
 }
 
-export function inputAssignedLinkCreate (inputId, linkId) {
+export function inputAssignedLinkCreate (inputId, linkId, deviceId) {
   return {
     type: 'INPUT_ASSIGNED_LINK_CREATE',
-    payload: { inputId, linkId }
+    payload: { inputId, linkId, deviceId }
   }
 }
 

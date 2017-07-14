@@ -15,13 +15,16 @@ export default (store) => {
       const learningId = state.midi.learning
       const id = 'midi_' + message.data[0].toString() + message.data[1].toString()
       const val = message.data[2] / 127
-      const noteOn = message.data[0] === 144 ? 'noteOn' : false
+      const noteOn = message.data[0] === 144
 
       if (learningId) {
-        store.dispatch(uInputLinkCreate(learningId, id, 'midi'))
+        store.dispatch(uInputLinkCreate(learningId, id, 'midi', message.target.id))
         store.dispatch(midiStopLearning())
       } else {
-        store.dispatch(inputFired(id, val, noteOn))
+        store.dispatch(inputFired(id, val, {
+          noteOn,
+          type: 'midi'
+        }))
       }
     // If no note data, treat as clock
     } else {
@@ -35,11 +38,11 @@ export default (store) => {
   navigator.requestMIDIAccess().then((midiAccess) => {
     const devices = {}
     midiAccess.inputs.forEach((entry) => {
-      console.log(entry)
       devices[entry.id] = {
         title: entry.name,
         id: entry.id,
-        manufacturer: entry.manufacturer
+        manufacturer: entry.manufacturer,
+        bankIndex: 0
       }
       entry.onmidimessage = onMessage
     })

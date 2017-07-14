@@ -113,7 +113,7 @@ test('(Reducer) inputsReducer - Replaces all on INPUTS_REPLACE_ALL', (t) => {
   t.end()
 })
 
-test('(Reducer) inputsReducer - Adds node on inputAssignedLinkCreate', (t) => {
+test('(Reducer) inputsReducer - Adds node and device on inputAssignedLinkCreate', (t) => {
   let actual, expectedState
 
   const originalState = {
@@ -129,101 +129,109 @@ test('(Reducer) inputsReducer - Adds node on inputAssignedLinkCreate', (t) => {
 
   expectedState = {
     audio_0: {
-      assignedLinkIds: ['XX']
+      assignedLinkIds: ['XX'],
+      deviceId: 'AAA'
     },
     audio_1: {
       assignedLinkIds: []
     }
   }
 
-  actual = inputsReducer(originalState, a.inputAssignedLinkCreate('audio_0', 'XX'))
+  actual = inputsReducer(originalState, a.inputAssignedLinkCreate('audio_0', 'XX', 'AAA'))
 
   t.deepEqual(actual, expectedState)
 
   expectedState = {
     audio_0: {
-      assignedLinkIds: ['XX']
+      assignedLinkIds: ['XX'],
+      deviceId: 'AAA'
     },
     audio_1: {
-      assignedLinkIds: ['YY']
+      assignedLinkIds: ['YY'],
+      deviceId: 'BBB'
     }
   }
 
-  actual = inputsReducer(actual, a.inputAssignedLinkCreate('audio_1', 'YY'))
+  actual = inputsReducer(actual, a.inputAssignedLinkCreate('audio_1', 'YY', 'BBB'))
 
   t.deepEqual(actual, expectedState)
 
   expectedState = {
     audio_0: {
-      assignedLinkIds: ['XX']
+      assignedLinkIds: ['XX'],
+      deviceId: 'AAA'
     },
     audio_1: {
-      assignedLinkIds: ['YY', 'ZZ']
+      assignedLinkIds: ['YY', 'ZZ'],
+      deviceId: 'BBB'
     }
   }
 
-  actual = inputsReducer(actual, a.inputAssignedLinkCreate('audio_1', 'ZZ'))
+  actual = inputsReducer(actual, a.inputAssignedLinkCreate('audio_1', 'ZZ', 'BBB'))
 
   t.deepEqual(actual, expectedState)
 
   expectedState = {
     audio_0: {
-      assignedLinkIds: ['XX']
+      assignedLinkIds: ['XX'],
+      deviceId: 'AAA'
     },
     audio_1: {
-      assignedLinkIds: ['YY', 'ZZ']
+      assignedLinkIds: ['YY', 'ZZ'],
+      deviceId: 'BBB'
     },
     midi_XXX: {
-      assignedLinkIds: ['AA']
+      assignedLinkIds: ['AA'],
+      deviceId: 'CCC'
     }
   }
 
-  actual = inputsReducer(actual, a.inputAssignedLinkCreate('midi_XXX', 'AA'))
+  actual = inputsReducer(actual, a.inputAssignedLinkCreate('midi_XXX', 'AA', 'CCC'))
 
   t.deepEqual(actual, expectedState, 'Adds input and assigns node when input doesnt exist')
 
   t.end()
 })
-//
-// test('(Reducer) inputsReducer - Deletes node on INPUT_ASSIGNED_NODE_DELETE', (t) => {
-//   let actual, expectedState
-//
-//   const originalState = {
-//     audio_0: {
-//       assignedNodeIds: ['XX']
-//     },
-//     audio_1: {
-//       assignedNodeIds: ['YY', 'ZZ']
-//     }
-//   }
-//
-//   deepFreeze(originalState)
-//
-//   expectedState = {
-//     audio_0: {
-//       assignedNodeIds: ['XX']
-//     },
-//     audio_1: {
-//       assignedNodeIds: ['ZZ']
-//     }
-//   }
-//
-//   actual = inputsReducer(originalState, a.inputAssignedLinkDelete('audio_0', 'YY'))
-//
-//   t.deepEqual(actual, expectedState)
-//
-//   expectedState = {
-//     audio_0: {
-//       assignedNodeIds: []
-//     },
-//     audio_1: {
-//       assignedNodeIds: ['ZZ']
-//     }
-//   }
-//
-//   actual = inputsReducer(actual, a.inputAssignedLinkDelete('audio_0', 'XX'))
-//
-//   t.deepEqual(actual, expectedState)
-//
-//   t.end()
-// })
+
+test('(Reducer) inputsReducer - Deletes link on INPUT_ASSIGNED_LINK_DELETE', (t) => {
+  let actual, expectedState
+
+  const originalState = {
+    audio_0: {
+      assignedLinkIds: ['XX']
+    },
+    audio_1: {
+      assignedLinkIds: ['YY', 'ZZ']
+    }
+  }
+
+  deepFreeze(originalState)
+
+  expectedState = {
+    audio_0: {
+      assignedLinkIds: ['XX']
+    },
+    audio_1: {
+      assignedLinkIds: ['ZZ']
+    }
+  }
+
+  actual = inputsReducer(originalState, a.inputAssignedLinkDelete('audio_1', 'YY'))
+
+  t.deepEqual(actual, expectedState)
+
+  expectedState = {
+    audio_0: {
+      assignedLinkIds: []
+    },
+    audio_1: {
+      assignedLinkIds: ['ZZ']
+    }
+  }
+
+  actual = inputsReducer(actual, a.inputAssignedLinkDelete('audio_0', 'XX'))
+
+  t.deepEqual(actual, expectedState)
+
+  t.end()
+})
