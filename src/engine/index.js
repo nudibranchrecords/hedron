@@ -22,7 +22,7 @@ class Engine {
   }
 
   addSketch (id, moduleId) {
-    const module = new allModules[moduleId].Module()
+    const module = new allModules[moduleId].Module(world)
 
     this.sketches.push({
       id,
