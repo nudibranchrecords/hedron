@@ -14,6 +14,9 @@ const inputLinkReducer = (state = defaultState, action) => {
     case 'R_INPUT_LINK_DELETE': {
       return _.omit(state, [p.id])
     }
+    case 'INPUT_LINKS_REPLACE_ALL': {
+      return p.links
+    }
     case 'INPUT_LINK_SHOT_ARM': {
       return {
         ...state,

@@ -39,7 +39,80 @@ test('(Reducer) inputLinkReducer - Adds link on rInputLinkCreate()', (t) => {
   t.end()
 })
 
-test('(Reducer) nodesReducer - handle NODE_SHOT_ARM / NODE_SHOT_DISARM', (t) => {
+test('(Reducer) inputLinkReducer - Removes link on rInputLinkDelete()', (t) => {
+  let originalState, expectedState, actualState
+
+  originalState = {
+    '01': {
+      foo: 'bar'
+    },
+    '02': {
+      lorem: 'ipsum'
+    },
+    '03': {
+      bar: 'foo'
+    }
+  }
+
+  deepFreeze(originalState)
+
+  expectedState = {
+    '01': {
+      foo: 'bar'
+    },
+    '02': {
+      lorem: 'ipsum'
+    }
+  }
+
+  actualState = inputLinkReducer(originalState, a.rInputLinkDelete('03'))
+
+  t.deepEqual(actualState, expectedState)
+
+  t.end()
+})
+
+test('(Reducer) inputLinkReducer - Replaces all on inputLinksReplaceAll()', (t) => {
+  let originalState, expectedState, actualState
+
+  originalState = {
+    '01': {
+      foo: 'bar'
+    },
+    '02': {
+      lorem: 'ipsum'
+    },
+    '03': {
+      bar: 'foo'
+    }
+  }
+
+  deepFreeze(originalState)
+
+  expectedState = {
+    'XX': {
+      foo: 'woo'
+    },
+    'YY': {
+      lorem: 'wee'
+    }
+  }
+
+  actualState = inputLinkReducer(originalState, a.inputLinksReplaceAll({
+    'XX': {
+      foo: 'woo'
+    },
+    'YY': {
+      lorem: 'wee'
+    }
+  }))
+
+  t.deepEqual(actualState, expectedState)
+
+  t.end()
+})
+
+test('(Reducer) inputLinkReducer - handle inputLinkShotArm / inputLinkShotDisarm', (t) => {
   let originalState, expectedState, actualState
 
   originalState = {

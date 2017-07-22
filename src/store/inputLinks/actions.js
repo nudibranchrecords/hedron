@@ -49,6 +49,15 @@ export function uInputLinkUpdate (linkId, inputId, inputType) {
   }
 }
 
+export function inputLinksReplaceAll (links) {
+  return {
+    type: 'INPUT_LINKS_REPLACE_ALL',
+    payload: {
+      links
+    }
+  }
+}
+
 export function rInputLinkUpdate (linkId, input) {
   return {
     type: 'R_INPUT_LINK_UPDATE',
