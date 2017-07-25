@@ -77,7 +77,7 @@ initiateGeneratedClock(store)
 initiateScreens(store)
 Engine.run(store, stats)
 
-if (DEFAULT_PROJECT) {
-  store.dispatch(projectFilepathUpdate(DEFAULT_PROJECT))
+if (__DEFAULT_PROJECT__) {
+  store.dispatch(projectFilepathUpdate(__DEFAULT_PROJECT__))
   store.dispatch(projectLoadRequest())
 }

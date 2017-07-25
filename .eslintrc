@@ -13,11 +13,12 @@
     "browser" : true
   },
   "globals": {
-    "__DEV__"      : false,
-    "__TEST__"     : false,
-    "__PROD__"     : false,
-    "__COVERAGE__" : false,
-    "nw"           : false
+    "__DEV__"               : false,
+    "__TEST__"              : false,
+    "__PROD__"              : false,
+    "__COVERAGE__"          : false,
+    "__DEFAULT_PROJECT__"   : false,
+    "nw"                    : false
   },
   "rules": {
     "key-spacing"          : 0,

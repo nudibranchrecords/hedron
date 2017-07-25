@@ -10,11 +10,11 @@ const Wrapper = styled.div`
 `
 
 const Title = styled.h3`
-  font-size: ${props => props.size === 'small' ? '0.8rem' : '1rem'}
+  font-size: ${props => props.size === 'small' ? '0.8rem' : '1rem'};
 `
 const Item = styled.div`
-  flex: ${props => props.size === 'small' ? '1' : '0 0 25%'} ;
-  width: ${props => props.size === 'small' ? '100%' : '25%'} ;
+  flex: ${props => props.size === 'small' ? '1' : '0 0 25%'};
+  width: ${props => props.size === 'small' ? '100%' : '25%'};
   font-size: 0.8rem;
   padding-right: 0.25rem;
 `
