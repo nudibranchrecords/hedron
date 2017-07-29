@@ -24,7 +24,7 @@ const Wrapper = styled.li`
 
 const BankSelectItem = ({ index, onClick, isActive }) => (
   <Wrapper onClick={onClick} isActive={isActive}>
-    {index}
+    {index + 1}
   </Wrapper>
 )
 

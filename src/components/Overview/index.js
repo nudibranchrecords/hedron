@@ -15,12 +15,21 @@ const Wrapper = styled.div`
 `
 
 const Bottom = styled.div`
-  margin-top: auto;
+  margin-top: 3rem;
 `
 
 const Tools = styled.div`
   display: flex;
   margin-bottom: 1rem;
+
+  & > div {
+    height: 48px
+  }
+`
+
+const Scroller = styled.div`
+  flex: 1;
+  overflow: scroll;
 `
 
 class Overview extends React.Component {
@@ -30,16 +39,18 @@ class Overview extends React.Component {
       <Wrapper>
         <Viewer />
         <Tools>
-          <div ref={node => node && node.appendChild(this.props.stats.dom)} />
-          <AudioAnalyzer />
-          <Clock />
+          <div><div ref={node => node && node.appendChild(this.props.stats.dom)} /></div>
+          <div><AudioAnalyzer /></div>
+          <div><Clock /></div>
         </Tools>
 
-        <Devices />
+        <Scroller>
+          <Devices />
 
-        <Bottom>
-          <Menu />
-        </Bottom>
+          <Bottom>
+            <Menu />
+          </Bottom>
+        </Scroller>
       </Wrapper>
 
     )

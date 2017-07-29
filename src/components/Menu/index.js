@@ -13,8 +13,8 @@ const Right = styled.div`
   display: flex;
 `
 
-const Top = styled.div`
-  height: 5rem;
+const FilePath = styled.span`
+  font-size: 0.5rem;
 `
 
 const Menu = ({
@@ -26,49 +26,45 @@ const Menu = ({
   let loadInput
 
   return (
-    <div>
-      <Top>
-        Send to display
-        <Row>
-          {
-            displayOptions.map((item, index) => (
-              <Button key={index} onClick={() => onSendOutputChange(index)}>{item.label}</Button>
-            ))
-          }
-        </Row>
-      </Top>
-      <Row>
-        <Button onClick={onSaveClick}>Save</Button>
-        <Button onClick={() => saveAsInput.click()}>Save As</Button>
-        <Button onClick={() => loadInput.click()}>Load</Button>
-        <span>{filePath}</span>
+    <Row>
+      <Button onClick={onSaveClick}>Save</Button>
+      <Button onClick={() => saveAsInput.click()}>Save As</Button>
+      <Button onClick={() => loadInput.click()}>Load</Button>
+      <FilePath>{filePath}</FilePath>
 
-        <input
-          onChange={onFileSaveChange}
-          type='file'
-          ref={
+      <input
+        onChange={onFileSaveChange}
+        type='file'
+        ref={
               node => {
                 node && node.setAttribute('nwsaveas', '')
                 saveAsInput = node
               }
           }
-          accept='.json'
-          style={{ display: 'none' }}
+        accept='.json'
+        style={{ display: 'none' }}
         />
-        <input
-          onChange={onFileLoadChange}
-          type='file'
-          ref={node => { loadInput = node }}
-          accept='.json'
-          style={{ display: 'none' }} />
+      <input
+        onChange={onFileLoadChange}
+        type='file'
+        ref={node => { loadInput = node }}
+        accept='.json'
+        style={{ display: 'none' }} />
 
-        <Right>
-          <Button onClick={onClockToggleClick}>
-            Mock Clock is: {clockIsGenerated ? 'ON' : 'OFF'}
-          </Button>
-        </Right>
+      <Row>
+        {
+              displayOptions.map((item, index) => (
+                <Button key={index} onClick={() => onSendOutputChange(index)}>{item.label}</Button>
+              ))
+            }
       </Row>
-    </div>
+
+      <Right>
+        <Button onClick={onClockToggleClick}>
+            Mock Clock is: {clockIsGenerated ? 'ON' : 'OFF'}
+        </Button>
+      </Right>
+    </Row>
 
   )
 }

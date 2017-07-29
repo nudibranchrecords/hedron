@@ -10,7 +10,7 @@ const List = styled.ul`
 
 const BankSelect = ({ deviceId }) => (
   <List>
-    {[...Array(16)].map((x, i) =>
+    {[...Array(8)].map((x, i) =>
       <BankSelectItem index={i} id={deviceId} key={i} />
     )}
   </List>
