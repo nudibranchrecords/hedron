@@ -13,9 +13,12 @@ const Wrapper = styled.div`
   height: 100%;
   flex-direction: column;
 `
+const Top = styled.div`
+  margin-bottom: 3rem;
+`
 
 const Bottom = styled.div`
-  margin-top: 3rem;
+  margin-top: auto;
 `
 
 const Tools = styled.div`
@@ -28,8 +31,10 @@ const Tools = styled.div`
 `
 
 const Scroller = styled.div`
+  display: flex;
+  flex-direction: column;
   flex: 1;
-  overflow: scroll;
+  overflow: auto;
 `
 
 class Overview extends React.Component {
@@ -45,8 +50,9 @@ class Overview extends React.Component {
         </Tools>
 
         <Scroller>
-          <Devices />
-
+          <Top>
+            <Devices />
+          </Top>
           <Bottom>
             <Menu />
           </Bottom>
