@@ -23,7 +23,7 @@ const Tools = styled.div`
   margin-bottom: 1rem;
 
   & > div {
-    height: 48px
+    height: 48px;
   }
 `
 
