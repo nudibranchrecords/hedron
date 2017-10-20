@@ -6,7 +6,7 @@ import { clockPulse } from '../store/clock/actions'
 export default (store) => {
   const onMessage = (message) => {
     const state = store.getState()
-    store.dispatch(midiMessage(message.target.id, {
+    store.dispatch(midiMessage(message.target.name, {
       data: message.data,
       timeStamp: message.timeStamp
     }))
@@ -18,7 +18,7 @@ export default (store) => {
       const noteOn = message.data[0] === 144
 
       if (learningId) {
-        store.dispatch(uInputLinkCreate(learningId, id, 'midi', message.target.id))
+        store.dispatch(uInputLinkCreate(learningId, id, 'midi', message.target.name))
         store.dispatch(midiStopLearning())
       } else {
         store.dispatch(inputFired(id, val, {
@@ -38,9 +38,9 @@ export default (store) => {
   navigator.requestMIDIAccess().then((midiAccess) => {
     const devices = {}
     midiAccess.inputs.forEach((entry) => {
-      devices[entry.id] = {
+      devices[entry.name] = {
         title: entry.name,
-        id: entry.id,
+        id: entry.name,
         manufacturer: entry.manufacturer,
         bankIndex: 0
       }
