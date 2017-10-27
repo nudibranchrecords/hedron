@@ -8,7 +8,7 @@ import { inputAssignedLinkCreate, inputAssignedLinkDelete } from '../inputs/acti
 import lfoGenerateOptions from '../../utils/lfoGenerateOptions'
 import { midiStartLearning } from '../midi/actions'
 import getCurrentBankIndex from '../../selectors/getCurrentBankIndex'
-import { getAll } from 'modifiers'
+import { getAll } from '../../externals/modifiers'
 import uid from 'uid'
 
 /*

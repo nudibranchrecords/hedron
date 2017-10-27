@@ -1,4 +1,4 @@
-import allModules from 'sketches'
+import allModules from '../externals/sketches'
 import getSketchParams from './getSketchParams'
 import { availableModulesReplaceAll } from '../store/availableModules/actions'
 import world from './world'

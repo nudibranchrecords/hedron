@@ -8,7 +8,7 @@ import getNode from '../../selectors/getNode'
 import getNodesValues from '../../selectors/getNodesValues'
 import getCurrentBankIndex from '../../selectors/getCurrentBankIndex'
 import lfoProcess from '../../utils/lfoProcess'
-import { work } from 'modifiers'
+import { work } from '../../externals/modifiers'
 
 export function* handleInput (action) {
   const p = action.payload

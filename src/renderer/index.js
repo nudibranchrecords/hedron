@@ -2,25 +2,25 @@ import React from 'react'
 import { render } from 'react-dom'
 import { Provider } from 'react-redux'
 import { createStore, applyMiddleware, compose } from 'redux'
-import { projectFilepathUpdate, projectLoadRequest } from './store/project/actions'
+import { projectFilepathUpdate, projectLoadRequest } from '../store/project/actions'
 import { Router } from 'react-router'
-import history from './history'
+import history from '../history'
 import { composeWithDevTools } from 'remote-redux-devtools'
 import createSagaMiddleware from 'redux-saga'
 import { batchedSubscribe } from 'redux-batched-subscribe'
-import rootSaga from './store/rootSaga'
-import rootReducer from './store/rootReducer'
-import App from './components/App'
-import Engine from './Engine'
+import rootSaga from '../store/rootSaga'
+import rootReducer from '../store/rootReducer'
+import App from '../components/App'
+import Engine from '../Engine'
 import Stats from 'stats.js'
-import { initiateScreens } from './windows'
+import { initiateScreens } from '../windows'
 import 'react-select/dist/react-select.css'
-import './style.css'
+import '../style.css'
 
 // inputs
-import initiateAudio from './inputs/AudioInput'
-import initiateMidi from './inputs/MidiInput'
-import initiateGeneratedClock from './inputs/GeneratedClock'
+import initiateAudio from '../inputs/AudioInput'
+import initiateMidi from '../inputs/MidiInput'
+import initiateGeneratedClock from '../inputs/GeneratedClock'
 import debounce from 'lodash/debounce'
 
 import { AppContainer } from 'react-hot-loader'
@@ -62,14 +62,11 @@ const renderApp = (Component) => {
         </Router>
       </Provider>
     </AppContainer>,
-    document.getElementById('root')
+    document.getElementById('app')
   )
 }
 
 renderApp(App)
-
-// Hot Module Replacement API
-if (module.hot) module.hot.accept('./components/App', () => renderApp(App))
 
 initiateAudio(store)
 initiateMidi(store)
