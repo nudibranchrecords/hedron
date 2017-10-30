@@ -14,6 +14,11 @@
     "compile": "webpack --config config/webpack.config.js && build --tasks mac-x64 --mirror https://dl.nwjs.io/ ./dist",
     "deploy": "yarn test && yarn lint && yarn lint:css && webpack --config config/webpack.config.js && build --tasks mac-x64 --mirror https://dl.nwjs.io/ ./dist"
   },
+  "electronWebpack": {
+     "renderer": {
+       "webpackConfig": "config/webpack.custom.config.js"
+     }
+  },
   "dependencies": {
     "babel-loader": "^6.3.2",
     "babel-plugin-transform-object-rest-spread": "^6.22.0",
@@ -21,7 +26,6 @@
     "babel-preset-es2015": "^6.22.0",
     "babel-register": "^6.22.0",
     "create-react-class": "^15.5.2",
-    "css-loader": "^0.28.0",
     "history": "^4.6.1",
     "jsonfile": "^2.4.0",
     "lodash": "^4.17.4",
@@ -51,6 +55,7 @@
     "clean-webpack-plugin": "^0.1.16",
     "concurrently": "^3.4.0",
     "copy-webpack-plugin": "^4.0.1",
+    "css-loader": "^0.28.7",
     "deep-freeze": "^0.0.1",
     "electron": "^1.7.9",
     "electron-webpack": "^1.11.0",

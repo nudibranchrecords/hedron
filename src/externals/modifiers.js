@@ -5,13 +5,14 @@ const path = require('path')
 
 const all = {}
 
-const url = process.env.NODE_ENV !== 'development' ? './modifiers/*' : '../modifiers/*'
+const url = './modifiers/*'
 
 glob.sync(url).forEach(function (file) {
   const name = path.parse(file).name
+  console.log(path.resolve(file))
   all[name] = {
-    func: require(path.resolve(file)),
-    config: require(path.resolve(file + '/config.js'))
+    func: eval('require(path.resolve(file))'),
+    config: eval('require(path.resolve(file + "/config.js"))')
   }
 })
 

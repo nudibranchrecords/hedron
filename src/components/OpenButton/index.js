@@ -1,7 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import Icon from '../Icon'
-import downIcon from '../../assets/icons/down.svg'
+import downIcon from '../../assets/icons/down.icon.txt'
 
 const Button = styled(Icon)`
   cursor: pointer;

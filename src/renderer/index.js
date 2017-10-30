@@ -13,7 +13,6 @@ import rootReducer from '../store/rootReducer'
 import App from '../components/App'
 import Engine from '../Engine'
 import Stats from 'stats.js'
-import { initiateScreens } from '../windows'
 import 'react-select/dist/react-select.css'
 import '../style.css'
 
@@ -71,10 +70,9 @@ renderApp(App)
 initiateAudio(store)
 initiateMidi(store)
 initiateGeneratedClock(store)
-initiateScreens(store)
 Engine.run(store, stats)
 
-if (__DEFAULT_PROJECT__) {
-  store.dispatch(projectFilepathUpdate(__DEFAULT_PROJECT__))
-  store.dispatch(projectLoadRequest())
-}
+// if (__DEFAULT_PROJECT__) {
+//   store.dispatch(projectFilepathUpdate(__DEFAULT_PROJECT__))
+//   store.dispatch(projectLoadRequest())
+// }
