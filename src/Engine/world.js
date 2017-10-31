@@ -11,6 +11,11 @@ class World {
       this.viewerEl = this.renderer.domElement.parentElement
       this.scene.fog = new THREE.FogExp2(0x000000, 0.0003)
       this.setSize()
+
+      window.addEventListener('resize', e => {
+        e.preventDefault()
+        this.setSize()
+      })
     }
   }
 
