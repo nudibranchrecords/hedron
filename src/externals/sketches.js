@@ -1,18 +1,19 @@
 require('babel-register')
+const config = require('../../config/dev.config.js')
 
 const glob = require('glob')
 const path = require('path')
 
 const all = {}
 
-const url = './sketches/*'
+const url = config.sketchFolder
 
 glob.sync(url).forEach(function (file) {
   const name = path.parse(file).name
-  console.log(path.resolve(file))
+  const url = path.resolve(file)
   all[name] = {
-    Module: eval('require(path.resolve(file))'),
-    config: eval('require(path.resolve(file + "/config.js"))')
+    Module: eval('require("' + url + '")'),
+    config: eval('require("' + url + '/config.js")')
   }
 })
 
