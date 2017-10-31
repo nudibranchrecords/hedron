@@ -6,6 +6,7 @@ import { watchInputLinks } from './inputLinks/sagas'
 import { watchScene } from './scene/sagas'
 import { watchInputs } from './inputs/sagas'
 import { watchClock } from './clock/sagas'
+import { watchWindows } from './windows/sagas'
 
 export default function* rootSaga () {
   yield [
@@ -15,6 +16,7 @@ export default function* rootSaga () {
     fork(watchInputs),
     fork(watchInputLinks),
     fork(watchNodes),
-    fork(watchClock)
+    fork(watchClock),
+    fork(watchWindows)
   ]
 }

@@ -12,6 +12,7 @@ import rootSaga from '../store/rootSaga'
 import rootReducer from '../store/rootReducer'
 import App from '../components/App'
 import Engine from '../Engine'
+import { initiateScreens } from '../windows'
 import Stats from 'stats.js'
 import 'react-select/dist/react-select.css'
 import '../style.css'
@@ -70,6 +71,7 @@ renderApp(App)
 initiateAudio(store)
 initiateMidi(store)
 initiateGeneratedClock(store)
+initiateScreens(store)
 Engine.run(store, stats)
 
 // if (__DEFAULT_PROJECT__) {

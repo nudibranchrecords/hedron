@@ -9,7 +9,6 @@ const url = './modifiers/*'
 
 glob.sync(url).forEach(function (file) {
   const name = path.parse(file).name
-  console.log(path.resolve(file))
   all[name] = {
     func: eval('require(path.resolve(file))'),
     config: eval('require(path.resolve(file + "/config.js"))')
