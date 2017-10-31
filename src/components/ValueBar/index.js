@@ -7,8 +7,6 @@ const Bar = styled.canvas`
   cursor: pointer;
 `
 
-// const win = nw.Window.get()
-
 class ParamBar extends React.Component {
 
   constructor (props) {
@@ -27,11 +25,14 @@ class ParamBar extends React.Component {
     this.setSize()
     this.draw(this.props.value)
 
-    // win.on('resize', this.setSize)
+    window.addEventListener('resize', e => {
+      e.preventDefault()
+      this.setSize()
+    })
   }
 
   componentWillUnmount () {
-  //   win.removeListener('resize', this.setSize)
+    window.removeEventListener('resize', this.setSize)
   }
 
   setSize () {
