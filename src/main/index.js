@@ -1,6 +1,6 @@
 'use strict'
 
-import { app, BrowserWindow } from 'electron'
+import { app, BrowserWindow, ipcMain } from 'electron'
 
 const isDevelopment = process.env.NODE_ENV !== 'production'
 
@@ -10,7 +10,23 @@ let mainWindow
 
 function createMainWindow () {
   // Construct new BrowserWindow
-  const window = new BrowserWindow()
+  mainWindow = new BrowserWindow({
+    webPreferences: {
+      nativeWindowOpen: true
+    }
+  })
+
+  mainWindow.webContents.on('new-window', (event, url, frameName, disposition, options, additionalFeatures) => {
+    if (frameName === 'modal') {
+    // open window as modal
+      event.preventDefault()
+      event.newGuest = new BrowserWindow(options)
+
+      setTimeout(() => {
+        event.newGuest.setFullScreen(true)
+      }, 1000)
+    }
+  })
 
   // Set url for `win`
     // points to `webpack-dev-server` in development
@@ -20,23 +36,23 @@ function createMainWindow () {
     : `file://${__dirname}/index.html`
 
   if (isDevelopment) {
-    window.webContents.openDevTools()
+    mainWindow.webContents.openDevTools()
   }
 
-  window.loadURL(url)
+  mainWindow.loadURL(url)
 
-  window.on('closed', () => {
+  mainWindow.on('closed', () => {
     mainWindow = null
   })
 
-  window.webContents.on('devtools-opened', () => {
-    window.focus()
+  mainWindow.webContents.send('devtools-opened', () => {
+    mainWindow.focus()
     setImmediate(() => {
-      window.focus()
+      mainWindow.focus()
     })
   })
 
-  return window
+  return mainWindow
 }
 
 // Quit application when all windows are closed

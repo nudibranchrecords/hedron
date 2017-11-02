@@ -24,12 +24,10 @@ electron.screen.on('display-metrics-changed', updateDisplays)
 export const sendOutput = (index) => {
   const display = electron.screen.getAllDisplays()[index]
 
-  const win = new BrowserWindow({
-    x: display.bounds.x,
-    y: display.bounds.y
-  })
+  let modal = window.open('', 'modal', `left=${display.bounds.x},top=${display.bounds.y}`)
 
-  win.loadURL('http://google.com')
+  console.log(modal)
+  modal.document.write('<h1>Hello</h1>')
 
   // nw.Window.open(url, {}, (outputWin) => {
   //
