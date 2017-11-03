@@ -22,9 +22,9 @@ function createMainWindow () {
       event.preventDefault()
       event.newGuest = new BrowserWindow(options)
 
-      setTimeout(() => {
-        event.newGuest.setFullScreen(true)
-      }, 1000)
+      // setTimeout(() => {
+      //   event.newGuest.setFullScreen(true)
+      // }, 500)
     }
   })
 
@@ -38,6 +38,8 @@ function createMainWindow () {
   if (isDevelopment) {
     mainWindow.webContents.openDevTools()
   }
+
+  mainWindow.webContents.openDevTools()
 
   mainWindow.loadURL(url)
 

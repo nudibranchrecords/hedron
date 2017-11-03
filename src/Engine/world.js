@@ -20,24 +20,23 @@ class World {
   }
 
   setSize () {
-    this.renderer.setSize(0, 0)
-
-    let previewCanvas, width, ratio
-
-    const previewWidth = this.viewerEl.offsetWidth
+    let width, ratio
 
     if (this.isSendingOutput) {
-      previewCanvas = this.previewCanvas
+      // Get width and ratio from output window
       width = this.outputEl.offsetWidth
       ratio = width / this.outputEl.offsetHeight
-      previewCanvas.width = this.outputEl.offsetWidth
-      previewCanvas.height = previewCanvas.width / ratio
+
+      // Set canvas width and height attr
+      this.previewCanvas.width = width
+      this.previewCanvas.height = width / ratio
     } else {
+      // Basic width and ratio if no output
+      width = this.viewerEl.offsetWidth
       ratio = 16 / 9
-      width = previewWidth
-      previewCanvas = this.renderer.domElement
     }
 
+    const perc = 100 / ratio
     const height = width / ratio
 
     this.renderer.setSize(width, height)
@@ -45,8 +44,8 @@ class World {
     this.camera.aspect = ratio
     this.camera.updateProjectionMatrix()
 
-    previewCanvas.style.width = previewWidth + 'px'
-    previewCanvas.style.height = previewWidth / ratio + 'px'
+    // CSS trick to resize canvas
+    this.viewerEl.style.paddingBottom = perc + '%'
   }
 
   setOutput (container) {
@@ -60,6 +59,7 @@ class World {
 
     // Setup preview canvas to replace renderer canvas in controls window
     this.previewCanvas = document.createElement('canvas')
+    this.previewCanvas.style = 'position: absolute; left: 0; height: 0; width:100%; height:100%;'
 
     this.previewContext = this.previewCanvas.getContext('2d')
     this.viewerEl.appendChild(this.previewCanvas)
@@ -73,6 +73,7 @@ class World {
     this.renderer.render(this.scene, this.camera)
 
     if (this.isSendingOutput) {
+      console.log(this.width, this.height)
       this.previewContext.drawImage(this.renderer.domElement, 0, 0, this.width, this.height)
     }
   }

@@ -5,9 +5,6 @@ let store
 
 const BrowserWindow = electron.remote.BrowserWindow
 
-const url = process.env.NODE_ENV !== 'development'
- ? 'output.html' : 'http://0.0.0.0:8080/output.html'
-
 const updateDisplays = () => {
   store.dispatch(displaysListUpdate(electron.screen.getAllDisplays()))
 }
@@ -24,22 +21,12 @@ electron.screen.on('display-metrics-changed', updateDisplays)
 export const sendOutput = (index) => {
   const display = electron.screen.getAllDisplays()[index]
 
-  let modal = window.open('', 'modal', `left=${display.bounds.x},top=${display.bounds.y}`)
+  let outputWin = window.open('', 'modal', `left=${display.bounds.x},top=${display.bounds.y}`)
 
-  console.log(modal)
-  modal.document.write('<h1>Hello</h1>')
+  outputWin.document.write('<div style="width:100vw;height:100vh;"></div>')
+  outputWin.document.body.style.margin = '0'
 
-  // nw.Window.open(url, {}, (outputWin) => {
-  //
-  //   outputWin.moveTo(x, y)
-  //   outputWin.maximize()
-  //   outputWin.enterFullscreen()
-  //
-  //   outputWin.on('loaded', function () {
-  //       // Don't do anything until fullscreen animation is definitely over
-  //     setTimeout(() => {
-  //       world.setOutput(outputWin.window.document.querySelector('#output'))
-  //     }, 3000)
-  //   })
-  // })
+  setTimeout(() => {
+    world.setOutput(outputWin.document.querySelector('div'))
+  }, 1000)
 }
