@@ -39,6 +39,7 @@ class World {
     const perc = 100 / ratio
     const height = width / ratio
 
+    console.log(width, height)
     this.renderer.setSize(width, height)
 
     this.camera.aspect = ratio
@@ -46,9 +47,15 @@ class World {
 
     // CSS trick to resize canvas
     this.viewerEl.style.paddingBottom = perc + '%'
+
+    // Set new dimensions so output copying is correct
+    this.width = width
+    this.height = height
   }
 
-  setOutput (container) {
+  setOutput (win) {
+    const container = win.document.querySelector('div')
+
     this.width = container.offsetWidth
     this.height = container.offsetHeight
     this.outputEl = container
@@ -67,13 +74,16 @@ class World {
     this.isSendingOutput = true
 
     this.setSize()
+
+    win.addEventListener('resize', () => {
+      this.setSize()
+    })
   }
 
   render () {
     this.renderer.render(this.scene, this.camera)
 
     if (this.isSendingOutput) {
-      console.log(this.width, this.height)
       this.previewContext.drawImage(this.renderer.domElement, 0, 0, this.width, this.height)
     }
   }

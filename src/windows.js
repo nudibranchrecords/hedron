@@ -27,6 +27,6 @@ export const sendOutput = (index) => {
   outputWin.document.body.style.margin = '0'
 
   setTimeout(() => {
-    world.setOutput(outputWin.document.querySelector('div'))
+    world.setOutput(outputWin)
   }, 1000)
 }
