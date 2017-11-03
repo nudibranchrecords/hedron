@@ -39,7 +39,6 @@ class World {
     const perc = 100 / ratio
     const height = width / ratio
 
-    console.log(width, height)
     this.renderer.setSize(width, height)
 
     this.camera.aspect = ratio

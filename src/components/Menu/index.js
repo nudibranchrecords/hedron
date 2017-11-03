@@ -18,38 +18,16 @@ const FilePath = styled.span`
 `
 
 const Menu = ({
-  onFileSaveChange, onFileLoadChange, onSaveClick,
+  onSaveClick, onSaveAsClick, onLoadClick,
   filePath, onSendOutputChange, clockIsGenerated, onClockToggleClick,
   displayOptions
 }) => {
-  let saveAsInput
-  let loadInput
-
   return (
     <Row>
       <Button onClick={onSaveClick}>Save</Button>
-      <Button onClick={() => saveAsInput.click()}>Save As</Button>
-      <Button onClick={() => loadInput.click()}>Load</Button>
+      <Button onClick={onSaveAsClick}>Save As</Button>
+      <Button onClick={onLoadClick}>Load</Button>
       <FilePath>{filePath}</FilePath>
-
-      <input
-        onChange={onFileSaveChange}
-        type='file'
-        ref={
-              node => {
-                node && node.setAttribute('nwsaveas', '')
-                saveAsInput = node
-              }
-          }
-        accept='.json'
-        style={{ display: 'none' }}
-        />
-      <input
-        onChange={onFileLoadChange}
-        type='file'
-        ref={node => { loadInput = node }}
-        accept='.json'
-        style={{ display: 'none' }} />
 
       <Row>
         {
@@ -71,10 +49,10 @@ const Menu = ({
 
 Menu.propTypes = {
   filePath: PropTypes.string,
-  onFileSaveChange: PropTypes.func.isRequired,
-  onFileLoadChange: PropTypes.func.isRequired,
-  onSendOutputChange: PropTypes.func.isRequired,
   onSaveClick: PropTypes.func.isRequired,
+  onSaveAsClick: PropTypes.func.isRequired,
+  onLoadClick: PropTypes.func.isRequired,
+  onSendOutputChange: PropTypes.func.isRequired,
   onClockToggleClick: PropTypes.func.isRequired,
   clockIsGenerated: PropTypes.bool,
   displayOptions: PropTypes.array.isRequired

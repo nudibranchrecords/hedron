@@ -1,8 +1,12 @@
+import electron from 'electron'
+
 import { connect } from 'react-redux'
 import Menu from '../../components/Menu'
 import { projectSave, projectLoadRequest, projectFilepathUpdate } from '../../store/project/actions'
 import { windowSendOutput } from '../../store/windows/actions'
 import { clockGeneratedToggle } from '../../store/clock/actions'
+
+const { dialog } = electron.remote
 
 const mapStateToProps = (state, ownProps) => ({
   filePath: state.project.filePath,
@@ -13,16 +17,34 @@ const mapStateToProps = (state, ownProps) => ({
   }))
 })
 
+const fileFilters = [
+  { name: 'JSON', extensions: ['json'] }
+]
+
 const mapDispatchToProps = (dispatch, ownProps) => ({
-  onFileSaveChange: (event) => {
-    dispatch(projectFilepathUpdate(event.target.value))
-    dispatch(projectSave())
-  },
-  onFileLoadChange: (event) => {
-    dispatch(projectFilepathUpdate(event.target.value))
-    dispatch(projectLoadRequest())
-  },
   onSaveClick: () => dispatch(projectSave()),
+  onSaveAsClick: () => {
+    dialog.showSaveDialog({
+      filters: fileFilters
+    },
+    filePath => {
+      if (filePath) {
+        dispatch(projectFilepathUpdate(filePath))
+        dispatch(projectSave())
+      }
+    })
+  },
+  onLoadClick: () => {
+    dialog.showOpenDialog({
+      filters: fileFilters
+    },
+    filePath => {
+      if (filePath) {
+        dispatch(projectFilepathUpdate(filePath[0]))
+        dispatch(projectLoadRequest())
+      }
+    })
+  },
   onSendOutputChange: index => dispatch(windowSendOutput(index)),
   onClockToggleClick: () => dispatch(clockGeneratedToggle())
 })
