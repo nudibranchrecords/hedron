@@ -1,19 +1,19 @@
 require('babel-register')
 
-const glob = require('glob')
-const path = require('path')
-
-const all = {}
-
-const url = './modifiers/*'
-
-glob.sync(url).forEach(function (file) {
-  const name = path.parse(file).name
-  all[name] = {
-    func: eval('require(path.resolve(file))'),
-    config: eval('require(path.resolve(file + "/config.js"))')
+const all = {
+  gain: {
+    func: require('../coreModifiers/gain'),
+    config: require('../coreModifiers/gain/config')
+  },
+  range: {
+    func: require('../coreModifiers/range'),
+    config: require('../coreModifiers/range/config')
+  },
+  threshold: {
+    func: require('../coreModifiers/threshold'),
+    config: require('../coreModifiers/threshold/config')
   }
-})
+}
 
 const getAll = () =>
   all
