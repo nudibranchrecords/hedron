@@ -19,12 +19,12 @@ const FilePath = styled.span`
 
 const Menu = ({
   onSaveClick, onSaveAsClick, onLoadClick,
-  filePath, onSendOutputChange, clockIsGenerated, onClockToggleClick,
+  filePath, saveIsDisabled, onSendOutputChange, clockIsGenerated, onClockToggleClick,
   displayOptions
 }) => {
   return (
     <Row>
-      <Button onClick={onSaveClick}>Save</Button>
+      <Button onClick={onSaveClick} disabled={saveIsDisabled}>Save</Button>
       <Button onClick={onSaveAsClick}>Save As</Button>
       <Button onClick={onLoadClick}>Load</Button>
       <FilePath>{filePath}</FilePath>
@@ -55,7 +55,8 @@ Menu.propTypes = {
   onSendOutputChange: PropTypes.func.isRequired,
   onClockToggleClick: PropTypes.func.isRequired,
   clockIsGenerated: PropTypes.bool,
-  displayOptions: PropTypes.array.isRequired
+  displayOptions: PropTypes.array.isRequired,
+  saveIsDisabled: PropTypes.bool
 }
 
 export default Menu

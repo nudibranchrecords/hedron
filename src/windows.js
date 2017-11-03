@@ -3,8 +3,6 @@ import electron from 'electron'
 import { displaysListUpdate } from './store/displays/actions'
 let store
 
-const BrowserWindow = electron.remote.BrowserWindow
-
 const updateDisplays = () => {
   store.dispatch(displaysListUpdate(electron.screen.getAllDisplays()))
 }

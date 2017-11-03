@@ -10,6 +10,7 @@ const { dialog } = electron.remote
 
 const mapStateToProps = (state, ownProps) => ({
   filePath: state.project.filePath,
+  saveIsDisabled: !state.project.filePath,
   clockIsGenerated: state.clock.isGenerated,
   displayOptions: state.displays.list.map((item, index) => ({
     value: index,
