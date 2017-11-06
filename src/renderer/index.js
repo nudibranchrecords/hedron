@@ -25,6 +25,8 @@ import debounce from 'lodash/debounce'
 
 import { AppContainer } from 'react-hot-loader'
 
+const devConfig = require('../../config/dev.config')
+
 const stats = new Stats()
 stats.dom.setAttribute('style', '')
 
@@ -74,7 +76,7 @@ initiateGeneratedClock(store)
 initiateScreens(store)
 Engine.run(store, stats)
 
-// if (__DEFAULT_PROJECT__) {
-//   store.dispatch(projectFilepathUpdate(__DEFAULT_PROJECT__))
-//   store.dispatch(projectLoadRequest())
-// }
+if (devConfig && devConfig.defaultProject) {
+  store.dispatch(projectFilepathUpdate(devConfig.defaultProject))
+  store.dispatch(projectLoadRequest())
+}
