@@ -1,6 +1,6 @@
 'use strict'
 
-import { app, BrowserWindow, ipcMain } from 'electron'
+import { app, BrowserWindow } from 'electron'
 
 const isDevelopment = process.env.NODE_ENV !== 'production'
 
@@ -11,6 +11,8 @@ let mainWindow
 function createMainWindow () {
   // Construct new BrowserWindow
   mainWindow = new BrowserWindow({
+    width: 1920,
+    height: 1080,
     webPreferences: {
       nativeWindowOpen: true
     }
@@ -38,8 +40,6 @@ function createMainWindow () {
   if (isDevelopment) {
     mainWindow.webContents.openDevTools()
   }
-
-  mainWindow.webContents.openDevTools()
 
   mainWindow.loadURL(url)
 
