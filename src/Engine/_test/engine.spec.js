@@ -19,6 +19,24 @@ function CatModule () {
   this.meow = spies.meow
 }
 
+const getSketchesStub = sinon.stub()
+getSketchesStub.withArgs('foo/bar').returns(
+  {
+    dog: {
+      Module: DogModule,
+      config: 'dogMeta'
+    },
+    cat: {
+      Module: CatModule,
+      config: 'catMeta'
+    },
+    frog: {
+      Module: FrogModule,
+      config: 'frogMeta'
+    }
+  }
+)
+
 function FrogModule () { this.root = 'frogRoot' }
 
 test('Engine', (t) => {
@@ -26,18 +44,7 @@ test('Engine', (t) => {
 
   const engine = proxyquire('../', {
     '../externals/sketches': {
-      dog: {
-        Module: DogModule,
-        config: 'dogMeta'
-      },
-      cat: {
-        Module: CatModule,
-        config: 'catMeta'
-      },
-      frog: {
-        Module: FrogModule,
-        config: 'frogMeta'
-      }
+      getSketches: getSketchesStub
     },
     './world': {
       scene: {
@@ -47,7 +54,10 @@ test('Engine', (t) => {
     }
   }).default
 
+  t.deepEqual(engine.allModules, {}, 'If no dev config, no sketch modules are loaded')
   t.deepEqual(engine.sketches, [], 'Sketches start empty')
+
+  engine.loadSketchModules('foo/bar')
 
   engine.addSketch('XXX', 'dog')
 

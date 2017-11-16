@@ -1,13 +1,17 @@
 import proxyquire from 'proxyquire'
 import test from 'tape'
 import path from 'path'
+import sinon from 'sinon'
 
 proxyquire.noCallThru()
 
-const sketches = proxyquire('../sketches', {
+const syncStub = sinon.stub()
+syncStub.withArgs('foo/bar').returns(['foo/bar/dog', 'foo/bar/cat', 'foo/bar/frog'])
+
+const { getSketches } = proxyquire('../sketches', {
   glob: {
     // Mocked up sketch files
-    sync: () => ['foo/bar/dog', 'foo/bar/cat', 'foo/bar/frog']
+    sync: syncStub
   },
   // Mocked up modules and meta (just returning strings for test)
   [path.resolve('foo/bar/dog')]: 'dogModule',
@@ -18,7 +22,7 @@ const sketches = proxyquire('../sketches', {
   [path.resolve('foo/bar/frog/config.js')]: 'frogMeta'
 })
 
-test('(External) sketches', (t) => {
+test('(External) sketches - getSketches()', (t) => {
   t.plan(1)
   const expected = {
     dog: {
@@ -34,6 +38,6 @@ test('(External) sketches', (t) => {
       config: 'frogMeta'
     }
   }
-  const actual = sketches
+  const actual = getSketches('foo/bar')
   t.deepEqual(actual, expected, 'Returns modules from files')
 })

@@ -1,4 +1,4 @@
-import allModules from '../externals/sketches'
+import { getSketches } from '../externals/sketches'
 import getSketchParams from './getSketchParams'
 import { availableModulesReplaceAll } from '../store/availableModules/actions'
 import world from './world'
@@ -7,14 +7,18 @@ let store
 
 class Engine {
   constructor () {
+    this.allModules = {}
     this.modules = {}
+    this.sketches = []
+  }
 
-    Object.keys(allModules).forEach((key) => {
-      const config = allModules[key].config
+  loadSketchModules (url) {
+    this.allModules = getSketches(url)
+
+    Object.keys(this.allModules).forEach((key) => {
+      const config = this.allModules[key].config
       this.modules[key] = config
     })
-
-    this.sketches = []
   }
 
   setCanvas (canvas) {
@@ -22,7 +26,7 @@ class Engine {
   }
 
   addSketch (id, moduleId) {
-    const module = new allModules[moduleId].Module(world)
+    const module = new this.allModules[moduleId].Module(world)
 
     this.sketches.push({
       id,
