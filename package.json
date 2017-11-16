@@ -67,7 +67,6 @@
     "eslint-plugin-promise": "^3.4.1",
     "eslint-plugin-react": "^6.10.0",
     "eslint-plugin-standard": "^2.0.1",
-    "nw": "0.21.3",
     "nwjs-builder-phoenix": "^1.14.1",
     "remote-redux-devtools": "^0.5.7",
     "sinon": "^2.1.0",
