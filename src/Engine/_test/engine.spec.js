@@ -25,7 +25,7 @@ test('Engine', (t) => {
   let expected
 
   const engine = proxyquire('../', {
-    sketches: {
+    '../externals/sketches': {
       dog: {
         Module: DogModule,
         config: 'dogMeta'
