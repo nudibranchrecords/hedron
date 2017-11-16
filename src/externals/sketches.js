@@ -2,10 +2,10 @@ require('babel-register')
 const glob = require('glob')
 const path = require('path')
 
-const getSketches = url => {
+const getSketches = globUrl => {
   const all = {}
 
-  glob.sync(url).forEach(function (file) {
+  glob.sync(globUrl + '/*').forEach(function (file) {
     const name = path.parse(file).name
     const url = path.resolve(file)
     all[name] = {

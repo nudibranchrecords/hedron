@@ -6,7 +6,7 @@ import sinon from 'sinon'
 proxyquire.noCallThru()
 
 const syncStub = sinon.stub()
-syncStub.withArgs('foo/bar').returns(['foo/bar/dog', 'foo/bar/cat', 'foo/bar/frog'])
+syncStub.withArgs('foo/bar/*').returns(['foo/bar/dog', 'foo/bar/cat', 'foo/bar/frog'])
 
 const { getSketches } = proxyquire('../sketches', {
   glob: {

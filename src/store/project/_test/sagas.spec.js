@@ -4,7 +4,7 @@ import { call, select, takeEvery, put } from 'redux-saga/effects'
 import { watchProject, saveProject, loadProject } from '../sagas'
 import { getProjectData, getProjectFilepath } from '../selectors'
 import { save, load } from '../../../utils/file'
-import { projectLoadSuccess } from '../actions'
+import { projectLoadSuccess, projectSketchesPathUpdate } from '../actions'
 import { sketchesReplaceAll } from '../../sketches/actions'
 import { nodesReplaceAll } from '../../nodes/actions'
 import { inputsReplaceAll } from '../../inputs/actions'
@@ -69,7 +69,9 @@ test('(Saga) loadProject', (t) => {
   )
 
   const projectData = {
-    project: '@@project',
+    project: {
+      sketchesPath: 'sketches_path'
+    },
     inputs: '@@inputs',
     sketches: '@@sketches',
     nodes: '@@nodes',
@@ -79,8 +81,14 @@ test('(Saga) loadProject', (t) => {
 
   t.deepEqual(
     generator.next(projectData).value,
+    put(projectSketchesPathUpdate(projectData.project.sketchesPath)),
+    '3.1 Dispatches projectSketchesPathUpdate'
+  )
+
+  t.deepEqual(
+    generator.next(projectData).value,
     put(sketchesReplaceAll(projectData.sketches)),
-    '3. Dispatches sketchesReplaceAll'
+    '3.2 Dispatches sketchesReplaceAll'
   )
 
   t.deepEqual(

@@ -3,6 +3,7 @@ import test from 'tape'
 import { apply, select, takeEvery } from 'redux-saga/effects'
 import proxyquire from 'proxyquire'
 import { getAllSketches } from '../selectors'
+import getSketchesPath from '../../selectors/getSketchesPath'
 
 proxyquire.noCallThru()
 
@@ -85,6 +86,14 @@ test('(Saga) handleInitiateSketches', (t) => {
 
   t.deepEqual(
     generator.next().value,
+    select(getSketchesPath),
+    '0. Get sketches path from state'
+  )
+
+  const path = 'foo/bar'
+
+  t.deepEqual(
+    generator.next(path).value,
     select(getAllSketches),
     '1. Get all sketches from state'
   )
@@ -93,8 +102,14 @@ test('(Saga) handleInitiateSketches', (t) => {
 
   t.deepEqual(
     generator.next(sketches).value,
+     apply(engine, engine.loadSketchModules, [path]),
+    '2. Load in modules'
+  )
+
+  t.deepEqual(
+    generator.next().value,
      apply(engine, engine.initiateSketches, [sketches]),
-    '2. Initiate them'
+    '3. Initiate sketches'
   )
 
   t.end()

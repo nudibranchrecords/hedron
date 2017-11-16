@@ -6,6 +6,7 @@ import styled from 'styled-components'
 const Items = styled.ul`
   display: flex;
   flex-wrap: wrap;
+  margin-bottom: 2rem;
 
   & li {
     margin-right: 1rem;
@@ -13,7 +14,7 @@ const Items = styled.ul`
   }
 `
 
-const AddSketch = ({ items, onAddClick }) => (
+const AddSketch = ({ items, onAddClick, onChooseFolderClick, sketchesPath }) => (
   <div>
     <h2>Add Sketch</h2>
     <Items>
@@ -23,11 +24,16 @@ const AddSketch = ({ items, onAddClick }) => (
         </li>
       ))}
     </Items>
+    <Button onClick={onChooseFolderClick}>Choose Sketch Folder</Button>
+    <br />
+    {sketchesPath}
   </div>
 )
 
 AddSketch.propTypes = {
-  onAddClick: PropTypes.func,
+  sketchesPath: PropTypes.string,
+  onAddClick: PropTypes.func.isRequired,
+  onChooseFolderClick: PropTypes.func.isRequired,
   items: PropTypes.arrayOf(
     PropTypes.shape({
       title: PropTypes.string,
