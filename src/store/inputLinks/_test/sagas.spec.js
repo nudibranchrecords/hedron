@@ -18,7 +18,7 @@ proxyquire.noCallThru()
 
 const getAll = sinon.stub()
 const { inputLinkCreate } = proxyquire('../sagas', {
-  'modifiers': { getAll }
+  '../../externals/modifiers': { getAll }
 })
 
 test('(Saga) inputLinkCreate', (t) => {

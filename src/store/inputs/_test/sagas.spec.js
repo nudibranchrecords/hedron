@@ -23,7 +23,11 @@ const modifiers = {
   work: sinon.stub()
 }
 
-const { watchInputs, handleInput } = proxyquire('../sagas', { modifiers })
+const { watchInputs, handleInput } = proxyquire('../sagas', {
+  '../../externals/modifiers': {
+    work: modifiers.work
+  }
+})
 
 test('(Saga) watchInputs', (t) => {
   const generator = watchInputs()

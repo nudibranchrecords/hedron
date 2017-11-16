@@ -28,6 +28,15 @@ export function projectFilepathUpdate (filePath) {
   }
 }
 
+export function projectSketchesPathUpdate (path) {
+  return {
+    type: 'PROJECT_SKETCHES_PATH_UPDATE',
+    payload: {
+      path
+    }
+  }
+}
+
 export function projectError (message) {
   return {
     type: 'PROJECT_ERROR',

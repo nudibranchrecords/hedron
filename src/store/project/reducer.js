@@ -1,5 +1,6 @@
 const defaultState = {
-  filePath: undefined
+  filePath: undefined,
+  sketchesPath: undefined
 }
 
 const projectReducer = (state = defaultState, action) => {
@@ -10,6 +11,12 @@ const projectReducer = (state = defaultState, action) => {
       return {
         ...state,
         filePath: p.filePath
+      }
+    }
+    case 'PROJECT_SKETCHES_PATH_UPDATE': {
+      return {
+        ...state,
+        sketchesPath: p.path
       }
     }
     default:
