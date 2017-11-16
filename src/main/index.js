@@ -14,7 +14,8 @@ function createMainWindow () {
     width: 1920,
     height: 1080,
     webPreferences: {
-      nativeWindowOpen: true
+      nativeWindowOpen: true,
+      webSecurity: false
     }
   })
 
