@@ -18,6 +18,13 @@
       "webpackConfig": "config/webpack.custom.config.js"
     }
   },
+  "build": {
+    "linux": {
+      "target": [
+        "AppImage"
+      ]
+    }
+  },
   "dependencies": {
     "babel-loader": "^6.3.2",
     "babel-plugin-transform-object-rest-spread": "^6.22.0",
@@ -57,7 +64,7 @@
     "copy-webpack-plugin": "^4.0.1",
     "css-loader": "^0.28.7",
     "deep-freeze": "^0.0.1",
-    "electron": "^1.7.9",
+    "electron": "^1.8.2-beta.2",
     "electron-builder": "^19.43.0",
     "electron-webpack": "^1.11.0",
     "eslint": "^3.15.0",
