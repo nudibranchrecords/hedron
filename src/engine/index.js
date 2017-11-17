@@ -13,6 +13,7 @@ class Engine {
   }
 
   loadSketchModules (url) {
+    this.sketchesFolder = url
     this.allModules = getSketches(url)
 
     Object.keys(this.allModules).forEach((key) => {
@@ -26,7 +27,11 @@ class Engine {
   }
 
   addSketch (id, moduleId) {
-    const module = new this.allModules[moduleId].Module(world)
+    const meta = {
+      sketchesFolder: `file://${this.sketchesFolder}`
+    }
+
+    const module = new this.allModules[moduleId].Module(world, meta)
 
     this.sketches.push({
       id,
