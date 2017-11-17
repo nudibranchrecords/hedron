@@ -25,9 +25,11 @@ function createMainWindow () {
       event.preventDefault()
       event.newGuest = new BrowserWindow(options)
 
-      // setTimeout(() => {
-      //   event.newGuest.setFullScreen(true)
-      // }, 500)
+      if (!isDevelopment) {
+        setTimeout(() => {
+          event.newGuest.setFullScreen(true)
+        }, 500)
+      }
     }
   })
 
