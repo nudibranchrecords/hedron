@@ -1,10 +1,11 @@
 const devConfig = require('./dev.config.js')
-
+const defaultProject = require(devConfig.defaultProject)
+const sketchesPath = defaultProject && defaultProject.project.sketchesPath
 let devServerOptions = {}
 
-if (devConfig && devConfig.sketchFolder) {
+if (sketchesPath) {
   devServerOptions = {
-    contentBase: devConfig.sketchFolder.slice(0, -2),
+    contentBase: sketchesPath,
     watchContentBase: true
   }
 }
