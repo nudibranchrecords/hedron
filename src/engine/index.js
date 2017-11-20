@@ -1,5 +1,5 @@
 import { getSketches } from '../externals/sketches'
-import getSketchParams from './getSketchParams'
+import getSketchParams from '../selectors/getSketchParams'
 import { availableModulesReplaceAll } from '../store/availableModules/actions'
 import world from './world'
 
@@ -75,6 +75,7 @@ class Engine {
   }
 
   run (injectedStore, stats) {
+    let tick = 0
     store = injectedStore
 
     // Give store module params
@@ -84,14 +85,16 @@ class Engine {
       stats.begin()
 
       const state = store.getState()
+      const params = getSketchParams(state)
 
       this.sketches.forEach(sketch => sketch.module.update(
-        getSketchParams(state, sketch.id)
+        params, tick
       ))
 
       world.render()
 
       stats.end()
+      tick++
       requestAnimationFrame(loop)
     }
     loop()

@@ -9,7 +9,6 @@ class World {
       this.camera = new THREE.PerspectiveCamera(75, null, 1, 200000)
       this.camera.position.z = 1000
       this.viewerEl = this.renderer.domElement.parentElement
-      this.scene.fog = new THREE.FogExp2(0x000000, 0.0003)
       this.setSize()
 
       window.addEventListener('resize', e => {
