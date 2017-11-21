@@ -10,5 +10,6 @@ export default (nodeValue, midiValue) => {
   } else {
     value = nodeValue + 0.004
   }
+  value = Math.max(0, Math.min(1, value))
   return value
 }
