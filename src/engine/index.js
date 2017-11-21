@@ -76,6 +76,9 @@ class Engine {
 
   run (injectedStore, stats) {
     let tick = 0
+    let oldTime = performance.now()
+    let elapsedFrames = 1
+    let now
     store = injectedStore
 
     // Give store module params
@@ -83,18 +86,21 @@ class Engine {
 
     const loop = () => {
       stats.begin()
-
+      const spf = 1000 / 60
       const state = store.getState()
       const params = getSketchParams(state)
 
       this.sketches.forEach(sketch => sketch.module.update(
-        params, tick
+        params, tick, elapsedFrames
       ))
 
       world.render()
 
       stats.end()
-      tick++
+      now = performance.now()
+      elapsedFrames = (now - oldTime) / spf
+      tick += elapsedFrames
+      oldTime = now
       requestAnimationFrame(loop)
     }
     loop()
