@@ -16,6 +16,7 @@ import getNodesValues from '../../../selectors/getNodesValues'
 import getNode from '../../../selectors/getNode'
 import getCurrentBankIndex from '../../../selectors/getCurrentBankIndex'
 import lfoProcess from '../../../utils/lfoProcess'
+import midiValueProcess from '../../../utils/midiValueProcess'
 
 proxyquire.noCallThru()
 
@@ -452,7 +453,7 @@ test('(Saga) handleInput (midi - banks)', (t) => {
     'Gets current bank index for device D1'
   )
 
-  bankIndex = 3
+  bankIndex = 100
 
   t.deepEqual(
     generator.next(bankIndex).value,
@@ -464,8 +465,26 @@ test('(Saga) handleInput (midi - banks)', (t) => {
 
   t.deepEqual(
     generator.next(bankIndex).value,
-    put(nodeValueUpdate('YY', 0.5)),
-    'Dispatches node update action as link matches current bank'
+    select(getNode, 'YY'),
+    'Gets node because matches with current bank'
+  )
+
+  const node = {
+    value: 0.7
+  }
+
+  t.deepEqual(
+    generator.next(node).value,
+    call(midiValueProcess, 0.7, 0.5),
+    'Calls midiValueProcess using nodeValue and midi action value'
+  )
+
+  const val = 0.75
+
+  t.deepEqual(
+    generator.next(val).value,
+    put(nodeValueUpdate('YY', val)),
+    'Dispatches node update action with newly generated value'
   )
 
   t.deepEqual(

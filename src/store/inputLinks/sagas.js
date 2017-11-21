@@ -19,39 +19,43 @@ import uid from 'uid'
 */
 export function* inputLinkCreate (action) {
   const p = action.payload
+  const modifierIds = []
+  const lfoOptionIds = []
+  let bankIndex
+
   if (p.inputId === 'midi') {
     yield put(midiStartLearning(p.nodeId))
   } else {
     const linkId = yield call(uid)
     const node = yield select(getNode, p.nodeId)
-    const modifiers = yield call(getAll)
-    const defaultModifierIds = yield select(getDefaultModifierIds)
-    const modifierIds = []
-    let bankIndex
 
-    for (let i = 0; i < defaultModifierIds.length; i++) {
-      const id = defaultModifierIds[i]
-      const config = modifiers[id].config
+    if (p.inputType !== 'midi') {
+      const modifiers = yield call(getAll)
+      const defaultModifierIds = yield select(getDefaultModifierIds)
 
-      for (let j = 0; j < config.title.length; j++) {
-        const modifierId = yield call(uid)
-        const modifier = {
-          id: modifierId,
-          key: id,
-          title: config.title[j],
-          value: config.defaultValue[j],
-          passToNext: j < config.title.length - 1,
-          inputLinkIds: [],
-          type: config.type
+      for (let i = 0; i < defaultModifierIds.length; i++) {
+        const id = defaultModifierIds[i]
+        const config = modifiers[id].config
+
+        for (let j = 0; j < config.title.length; j++) {
+          const modifierId = yield call(uid)
+          const modifier = {
+            id: modifierId,
+            key: id,
+            title: config.title[j],
+            value: config.defaultValue[j],
+            passToNext: j < config.title.length - 1,
+            inputLinkIds: [],
+            type: config.type
+          }
+
+          modifierIds.push(modifierId)
+          yield put(rNodeCreate(modifierId, modifier))
         }
-
-        modifierIds.push(modifierId)
-        yield put(rNodeCreate(modifierId, modifier))
       }
     }
 
     const lfoOpts = yield call(lfoGenerateOptions)
-    const lfoOptionIds = []
 
     for (let key in lfoOpts) {
       const item = lfoOpts[key]

@@ -8,6 +8,7 @@ import getNode from '../../selectors/getNode'
 import getNodesValues from '../../selectors/getNodesValues'
 import getCurrentBankIndex from '../../selectors/getCurrentBankIndex'
 import lfoProcess from '../../utils/lfoProcess'
+import midiValueProcess from '../../utils/midiValueProcess'
 import { work } from '../../externals/modifiers'
 
 export function* handleInput (action) {
@@ -23,6 +24,11 @@ export function* handleInput (action) {
       if (p.meta && p.meta.type === 'midi') {
         const currentDeviceBank = yield select(getCurrentBankIndex, links[i].deviceId)
         if (currentDeviceBank !== links[i].bankIndex) skip = true
+
+        if (!skip) {
+          const currNode = yield select(getNode, links[i].nodeId)
+          value = yield call(midiValueProcess, currNode.value, value)
+        }
       }
 
       if (!skip) {
