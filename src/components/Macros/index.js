@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import Button from '../Button'
-import Param from '../../containers/Param'
+import MacroItem from '../../containers/MacroItem'
 
 const Wrapper = styled.div`
   padding: 0.5rem;
@@ -16,8 +16,10 @@ const Macros = ({ items, onAddClick }) => (
   <Wrapper>
     <h2>Macros</h2>
     <ul>
-      {items.map(({ nodeId }) => (
-        <li key={nodeId}><Param nodeId={nodeId} /></li>
+      {items.map(({ id }) => (
+        <li key={id}>
+          <MacroItem id={id} />
+        </li>
       ))}
     </ul>
     <div>

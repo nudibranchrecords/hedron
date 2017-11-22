@@ -1,7 +1,6 @@
 const defaultState = {
   items: {}
 }
-import _ from 'lodash'
 
 const macroReducer = (state = defaultState, action) => {
   const p = action.payload
@@ -13,8 +12,24 @@ const macroReducer = (state = defaultState, action) => {
         items: {
           ...state.items,
           [p.id]: {
+            id: p.id,
             nodeId: p.nodeId,
             targetParamLinks: []
+          }
+        }
+      }
+    }
+    case 'R_MACRO_TARGET_PARAM_LINK_ADD': {
+      return {
+        ...state,
+        items: {
+          ...state.items,
+          [p.macroId]: {
+            ...state.items[p.macroId],
+            targetParamLinks: [
+              ...state.items[p.macroId].targetParamLinks,
+              p.linkId
+            ]
           }
         }
       }

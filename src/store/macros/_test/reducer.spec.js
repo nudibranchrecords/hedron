@@ -12,6 +12,7 @@ test('(Reducer) macroReducer - Adds macro on rMacroCreate()', (t) => {
   originalState = {
     items: {
       '01': {
+        id: '01',
         nodeId: 'xxx',
         targetParamLinks: []
       }
@@ -23,10 +24,12 @@ test('(Reducer) macroReducer - Adds macro on rMacroCreate()', (t) => {
   expectedState = {
     items: {
       '01': {
+        id: '01',
         nodeId: 'xxx',
         targetParamLinks: []
       },
       '02': {
+        id: '02',
         nodeId: 'yyy',
         targetParamLinks: []
       }
