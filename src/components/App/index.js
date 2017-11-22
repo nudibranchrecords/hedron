@@ -3,9 +3,11 @@ import PropTypes from 'prop-types'
 import CurrentSketch from '../../containers/CurrentSketch'
 import AddSketch from '../../containers/AddSketch'
 import SketchesNav from '../../containers/SketchesNav'
+import Macros from '../../containers/Macros'
 import Overview from '../Overview'
 import { Route } from 'react-router'
 import styled from 'styled-components'
+import NavItem from '../NavItem'
 
 const Wrapper = styled.div`
   display: flex;
@@ -25,7 +27,12 @@ const Right = styled.div`
 `
 
 const Bar = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
   flex: 0 0 3rem;
+  background: #111;
+  height: 100%;
 `
 
 const App = ({ stats }) => (
@@ -36,9 +43,11 @@ const App = ({ stats }) => (
     <Right>
       <Route path='/sketches/view/:sketchId' component={CurrentSketch} />
       <Route path='/sketches/add' component={AddSketch} />
+      <Route path='/macros' component={Macros} />
     </Right>
     <Bar>
       <SketchesNav />
+      <NavItem to='/macros'>Macros</NavItem>
     </Bar>
   </Wrapper>
 )

@@ -1,21 +1,22 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import NavItem from '../NavItem'
 import styled from 'styled-components'
+import Button from '../Button'
 
-const Wrapper = styled.nav`
+const Wrapper = styled.div`
+  padding: 0.5rem;
+  display: flex;
+  height: 100%;
+  flex-direction: column;
+  overflow: auto;
 `
 
 const SketchesNav = ({ items }) => (
   <Wrapper>
-    <ul>
-      {items.map(item => (
-        <li key={item.id}>
-          <NavItem activeClassName='active' to={`/sketches/view/${item.id}`}>{item.title}</NavItem>
-        </li>
-      ))}
-      <li><NavItem className='last' to='/sketches/add'>+</NavItem></li>
-    </ul>
+    <h2>Macros</h2>
+    <div>
+      <Button size='large'>Add Macro</Button>
+    </div>
   </Wrapper>
 )
 
