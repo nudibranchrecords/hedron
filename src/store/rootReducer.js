@@ -8,6 +8,7 @@ import midiReducer from './midi/reducer'
 import clockReducer from './clock/reducer'
 import availableModulesReducer from './availableModules/reducer'
 import displaysReducer from './displays/reducer'
+import macroReducer from './macros/reducer'
 
 const rootReducer = combineReducers({
   nodes: nodesReducer,
@@ -18,7 +19,8 @@ const rootReducer = combineReducers({
   inputLinks: inputLinkReducer,
   clock: clockReducer,
   midi: midiReducer,
-  displays: displaysReducer
+  displays: displaysReducer,
+  macros: macroReducer
 })
 
 export default rootReducer

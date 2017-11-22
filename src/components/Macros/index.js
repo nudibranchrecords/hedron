@@ -11,16 +11,17 @@ const Wrapper = styled.div`
   overflow: auto;
 `
 
-const SketchesNav = ({ items }) => (
+const Macros = ({ items, onAddClick }) => (
   <Wrapper>
     <h2>Macros</h2>
     <div>
-      <Button size='large'>Add Macro</Button>
+      <Button size='large' onClick={onAddClick}>Add Macro</Button>
     </div>
   </Wrapper>
 )
 
-SketchesNav.propTypes = {
+Macros.propTypes = {
+  onAddClick: PropTypes.func.isRequired,
   items: PropTypes.arrayOf(
     PropTypes.shape({
       id: PropTypes.string,
@@ -29,4 +30,4 @@ SketchesNav.propTypes = {
   )
 }
 
-export default SketchesNav
+export default Macros
