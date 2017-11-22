@@ -1,4 +1,5 @@
 'use strict'
+import installExtension, { REDUX_DEVTOOLS } from 'electron-devtools-installer'
 
 import { app, BrowserWindow } from 'electron'
 
@@ -76,4 +77,9 @@ app.on('activate', () => {
 // Create main BrowserWindow when electron is ready
 app.on('ready', () => {
   mainWindow = createMainWindow()
+  if (isDevelopment) {
+    installExtension(REDUX_DEVTOOLS)
+        .then((name) => console.log(`Added Extension:  ${name}`))
+        .catch((err) => console.log('An error occurred: ', err))
+  }
 })

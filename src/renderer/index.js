@@ -5,7 +5,7 @@ import { createStore, applyMiddleware, compose } from 'redux'
 import { projectFilepathUpdate, projectLoadRequest } from '../store/project/actions'
 import { Router } from 'react-router'
 import history from '../history'
-import { composeWithDevTools } from 'remote-redux-devtools'
+import { composeWithDevTools } from 'redux-devtools-extension'
 import createSagaMiddleware from 'redux-saga'
 import { batchedSubscribe } from 'redux-batched-subscribe'
 import rootSaga from '../store/rootSaga'
@@ -35,7 +35,6 @@ if (process.env.NODE_ENV !== 'development') {
   composeEnhancers = compose
 } else {
   composeEnhancers = composeWithDevTools({
-    realtime: true,
     actionsBlacklist: [
       'CLOCK_PULSE', 'CLOCK_BEAT_INC', 'CLOCK_BPM_UPDATE', 'INPUT_FIRED',
       'NODE_VALUE_UPDATE', 'NODE_SHOT_ARM', 'NODE_SHOT_DISARM', 'NODE_SHOT_FIRED'
