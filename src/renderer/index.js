@@ -23,8 +23,6 @@ import initiateMidi from '../inputs/MidiInput'
 import initiateGeneratedClock from '../inputs/GeneratedClock'
 import debounce from 'lodash/debounce'
 
-import { AppContainer } from 'react-hot-loader'
-
 const isDevelopment = process.env.NODE_ENV !== 'production'
 const devConfig = require('../../config/dev.config')
 
@@ -58,13 +56,13 @@ sagaMiddleware.run(rootSaga)
 
 const renderApp = (Component) => {
   render(
-    <AppContainer>
-      <Provider store={store}>
-        <Router history={history}>
-          <App stats={stats} />
-        </Router>
-      </Provider>
-    </AppContainer>,
+    // <AppContainer>
+    <Provider store={store}>
+      <Router history={history}>
+        <App stats={stats} />
+      </Router>
+    </Provider>,
+    // </AppContainer>,
     document.getElementById('app')
   )
 }
@@ -81,3 +79,5 @@ if (isDevelopment && devConfig && devConfig.defaultProject) {
   store.dispatch(projectFilepathUpdate(devConfig.defaultProject))
   store.dispatch(projectLoadRequest())
 }
+
+if (module.hot) module.hot.accept('../components/App', () => renderApp(App))
