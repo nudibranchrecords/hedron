@@ -12,7 +12,11 @@ const nodesReducer = (state = defaultState, action) => {
     case 'R_NODE_CREATE': {
       return {
         ...state,
-        [p.id]: p.node
+        [p.id]: {
+          id: p.id,
+          value: 0,
+          ...p.node
+        }
       }
     }
     case 'NODE_VALUE_UPDATE': {

@@ -29,6 +29,7 @@ test('(Saga) macroCreate', (t) => {
   t.deepEqual(
     generator.next(UID2).value,
     put(rNodeCreate('XX2', {
+      title: 'New Macro',
       value: 0
     })),
     '2. Create node item in state'

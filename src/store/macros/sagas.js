@@ -8,6 +8,7 @@ export function* macroCreate (action) {
   const macroId = yield call(uid)
   const nodeId = yield call(uid)
   yield put(rNodeCreate(nodeId, {
+    title: 'New Macro',
     value: 0
   }))
   yield put(rMacroCreate(macroId, nodeId))

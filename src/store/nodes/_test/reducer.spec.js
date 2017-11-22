@@ -108,7 +108,7 @@ test('(Reducer) nodesReducer - Adds input link id on nodeInputLinkAdd()', (t) =>
   t.end()
 })
 
-test('(Reducer) nodesReducer - Adds node on R_NODE_CREATE', (t) => {
+test('(Reducer) nodesReducer - Adds node on R_NODE_CREATE, adds id and val property if dont exist', (t) => {
   let originalState, expectedState, actualState
 
   originalState = {
@@ -184,7 +184,7 @@ test('(Reducer) nodesReducer - Adds node on R_NODE_CREATE', (t) => {
     '04': {
       title: 'Scale',
       key: 'scale',
-      value: 0.2,
+      value: 0,
       id: '04'
     }
   }
@@ -195,9 +195,7 @@ test('(Reducer) nodesReducer - Adds node on R_NODE_CREATE', (t) => {
       id: '04',
       node: {
         title: 'Scale',
-        key: 'scale',
-        value: 0.2,
-        id: '04'
+        key: 'scale'
       }
     }
   })
