@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import Param from '../../containers/Param'
+import SketchParam from '../../containers/SketchParam'
 import Shot from '../../containers/Shot'
 import Row from '../Row'
 import Button from '../Button'
@@ -34,7 +34,7 @@ const Sketch = ({ title, params, shots, onDeleteClick, sketchId }) => (
         <h3>Params</h3>
         <Params>
           {params.map((id) => (
-            <Param nodeId={id} key={id} />
+            <SketchParam nodeId={id} key={id} />
           ))}
         </Params>
       </div>

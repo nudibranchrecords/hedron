@@ -2,7 +2,6 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import ParamBar from '../../containers/ParamBar'
 import ParamInputSelect from '../../containers/ParamInputSelect'
-import InputLink from '../../containers/InputLink'
 import Node from '../Node'
 import OpenButton from '../OpenButton'
 import NodeInputInfo from '../../containers/NodeInputInfo'
@@ -43,7 +42,7 @@ const Title = styled.div`
 `
 
 const Param = ({
-  title, nodeId, inputLinkIds, infoText, isOpen, onOpenClick
+  title, nodeId, inputLinkIds, infoText, isOpen, onOpenClick, children
 }) => (
   <Wrapper>
     <Top>
@@ -61,9 +60,7 @@ const Param = ({
     </Top>
     {isOpen &&
       <Bottom>
-        {inputLinkIds.map(id => (
-          <InputLink id={id} key={id} />
-        ))}
+        {children}
       </Bottom>
     }
   </Wrapper>
@@ -77,7 +74,8 @@ Param.propTypes = {
     PropTypes.string
   ),
   isOpen: PropTypes.bool,
-  onOpenClick: PropTypes.func.isRequired
+  onOpenClick: PropTypes.func.isRequired,
+  children: PropTypes.node
 }
 
 export default Param
