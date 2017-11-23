@@ -11,7 +11,7 @@ const macroTargetParamLinksReducer = (state = defaultState, action) => {
           id: p.id,
           nodeId: p.nodeId,
           paramId: p.paramId,
-          startValue: 0
+          startValue: false
         }
       }
     }

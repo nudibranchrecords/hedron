@@ -2,6 +2,7 @@ import 'babel-polyfill'
 import test from 'tape'
 import getNode from '../../../selectors/getNode'
 import getMacro from '../../../selectors/getMacro'
+import macroInterpolate from '../../../utils/macroInterpolate'
 import getMacroTargetParamLinks from '../../../selectors/getMacroTargetParamLinks'
 import { select, put, call } from 'redux-saga/effects'
 import { rNodeCreate, nodeValueUpdate } from '../../nodes/actions'
@@ -32,7 +33,7 @@ test('(Saga) macroProcess (does nothing if node value update isnt a macro)', (t)
   t.end()
 })
 
-test('(Saga) macroProcess (update linked params with correct val)', (t) => {
+test('(Saga) macroProcess (update linked params with correct val, start and timer vals exists)', (t) => {
   const nodeId = 'XXX'
   const newVal = 0.5
   const generator = macroProcess(nodeValueUpdate(nodeId, newVal))
@@ -45,7 +46,8 @@ test('(Saga) macroProcess (update linked params with correct val)', (t) => {
 
   const node = {
     type: 'macro',
-    macroId: 'YYY'
+    macroId: 'YYY',
+    resetTime: 10000
   }
 
   t.deepEqual(
@@ -68,19 +70,65 @@ test('(Saga) macroProcess (update linked params with correct val)', (t) => {
     {
       id: 'l1',
       nodeId: 'n1',
-      startValue: 0
+      paramId: 'p1',
+      startValue: 0.2
     },
     {
       id: 'l2',
       nodeId: 'n2',
-      startValue: 0
+      paramId: 'p2',
+      startValue: 0.5
     }
   ]
 
   t.deepEqual(
     generator.next(links).value,
     select(getNode, 'n1'),
-    '3.1 Get node for link 1'
+    '3.0 Get node for link 1'
+  )
+
+  const node1 = {
+    value: 0.3
+  }
+
+  t.deepEqual(
+    generator.next(node1).value,
+    // start value, target value, interp value
+    call(macroInterpolate, 0.2, 0.3, 0.5),
+    '3.1 Call interpolation function'
+  )
+
+  const val = 0.88888
+
+  t.deepEqual(
+    generator.next(val).value,
+    put(nodeValueUpdate('p1', val)),
+    '3.1 Update target param'
+  )
+
+  t.deepEqual(
+    generator.next(links).value,
+    select(getNode, 'n2'),
+    '3.0 Get node for link 2'
+  )
+
+  const node2 = {
+    value: 0.6
+  }
+
+  t.deepEqual(
+    generator.next(node2).value,
+    // start value, target value, interp value
+    call(macroInterpolate, 0.5, 0.6, 0.5),
+    '3.1 Call interpolation function'
+  )
+
+  const val2 = 0.88888
+
+  t.deepEqual(
+    generator.next(val2).value,
+    put(nodeValueUpdate('p2', val2)),
+    '3.1 Update target param'
   )
 
   t.equal(generator.next().done, true, 'Generator ends')
