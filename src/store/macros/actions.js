@@ -25,6 +25,13 @@ export function rMacroCreate (id, nodeId) {
   }
 }
 
+export function rMacroLearningToggle (id) {
+  return {
+    type: 'R_MACRO_LEARNING_TOGGLE',
+    payload: { id }
+  }
+}
+
 export function rMacroTargetParamLinkCreate (macroId, paramId, nodeId) {
   return {
     type: 'R_MACRO_TARGET_PARAM_LINK_CREATE',

@@ -1,4 +1,5 @@
 const defaultState = {
+  learningId: false,
   items: {}
 }
 
@@ -17,6 +18,12 @@ const macroReducer = (state = defaultState, action) => {
             targetParamLinks: {}
           }
         }
+      }
+    }
+    case 'R_MACRO_LEARNING_TOGGLE': {
+      return {
+        ...state,
+        learningId: state.learningId !== false ? false : p.id
       }
     }
     case 'R_MACRO_TARGET_PARAM_LINK_CREATE': {
