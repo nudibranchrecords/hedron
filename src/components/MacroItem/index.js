@@ -2,13 +2,17 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import Button from '../Button'
 import Param from '../../containers/Param'
+import MacroLink from '../../containers/MacroLink'
+import Row from '../Row'
 
 const MacroItem = ({ nodeId, onLearningClick, items, isLearning }) => (
   <div>
     <Param nodeId={nodeId}>
-      {items.map(item => (
-        <Param nodeId={item.nodeId} key={item.nodeId} />
-      ))}
+      <Row>
+        {items.map(item => (
+          <MacroLink nodeId={item.nodeId} key={item.nodeId} />
+        ))}
+      </Row>
     </Param>
 
     <Button onClick={onLearningClick}>

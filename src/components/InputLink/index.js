@@ -16,7 +16,6 @@ const Item = styled.div`
   flex: ${props => props.size === 'small' ? '1' : '0 0 25%'};
   width: ${props => props.size === 'small' ? '100%' : '25%'};
   font-size: 0.8rem;
-  padding-right: 0.25rem;
 `
 const InputLink = ({
   modifierIds, lfoOptionIds, title, size
