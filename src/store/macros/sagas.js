@@ -5,7 +5,7 @@ import getMacroTargetParamLinks from '../../selectors/getMacroTargetParamLinks'
 import macroInterpolate from '../../utils/macroInterpolate'
 import { rNodeCreate, nodeValueUpdate } from '../nodes/actions'
 import { rMacroCreate, rMacroTargetParamLinkAdd } from './actions'
-import { rMacroTargetParamLinkCreate } from '../macroTargetParamLinks/actions'
+import { rMacroTargetParamLinkCreate, rMacroTargetParamLinkUpdateStartValue } from '../macroTargetParamLinks/actions'
 
 import uid from 'uid'
 
@@ -45,7 +45,6 @@ it is a macro type node:
 - An interpolation is done between 'startValue' and
   the node value for the link (the target value), based on the macro node value
 - the param value is updated with new interpolated value
-
 */
 export function* macroProcess (action) {
   const p = action.payload
@@ -56,8 +55,14 @@ export function* macroProcess (action) {
     const links = yield select(getMacroTargetParamLinks, m.targetParamLinks)
     for (let i = 0; i < links.length; i++) {
       const l = links[i]
+      let startValue = l.startValue
+      if (startValue === false) {
+        const p = yield select(getNode, l.paramId)
+        startValue = p.value
+        yield put(rMacroTargetParamLinkUpdateStartValue(l.id, startValue))
+      }
       const n = yield select(getNode, l.nodeId)
-      const val = yield call(macroInterpolate, l.startValue, n.value, p.value)
+      const val = yield call(macroInterpolate, startValue, n.value, p.value)
       yield put(nodeValueUpdate(l.paramId, val))
     }
   }

@@ -6,7 +6,7 @@ import macroInterpolate from '../../../utils/macroInterpolate'
 import getMacroTargetParamLinks from '../../../selectors/getMacroTargetParamLinks'
 import { select, put, call } from 'redux-saga/effects'
 import { rNodeCreate, nodeValueUpdate } from '../../nodes/actions'
-import { rMacroTargetParamLinkCreate } from '../../macroTargetParamLinks/actions'
+import { rMacroTargetParamLinkCreate, rMacroTargetParamLinkUpdateStartValue } from '../../macroTargetParamLinks/actions'
 import {
   uMacroCreate, rMacroCreate, uMacroTargetParamLinkAdd, rMacroTargetParamLinkAdd
 } from '../actions'
@@ -33,7 +33,7 @@ test('(Saga) macroProcess (does nothing if node value update isnt a macro)', (t)
   t.end()
 })
 
-test('(Saga) macroProcess (update linked params with correct val, start and timer vals exists)', (t) => {
+test('(Saga) macroProcess (update linked params with correct val, start vals exist)', (t) => {
   const nodeId = 'XXX'
   const newVal = 0.5
   const generator = macroProcess(nodeValueUpdate(nodeId, newVal))
@@ -46,8 +46,7 @@ test('(Saga) macroProcess (update linked params with correct val, start and time
 
   const node = {
     type: 'macro',
-    macroId: 'YYY',
-    resetTime: 10000
+    macroId: 'YYY'
   }
 
   t.deepEqual(
@@ -129,6 +128,92 @@ test('(Saga) macroProcess (update linked params with correct val, start and time
     generator.next(val2).value,
     put(nodeValueUpdate('p2', val2)),
     '3.1 Update target param'
+  )
+
+  t.equal(generator.next().done, true, 'Generator ends')
+  t.end()
+})
+
+test('(Saga) macroProcess (update linked params with correct val, start vals dont exist)', (t) => {
+  const nodeId = 'XXX'
+  const newVal = 0.5
+  const generator = macroProcess(nodeValueUpdate(nodeId, newVal))
+
+  t.deepEqual(
+    generator.next().value,
+    select(getNode, 'XXX'),
+    '0. Get node'
+  )
+
+  const node = {
+    type: 'macro',
+    macroId: 'YYY'
+  }
+
+  t.deepEqual(
+    generator.next(node).value,
+    select(getMacro, 'YYY'),
+    '1. Get macro'
+  )
+
+  const macro = {
+    targetParamLinks: ['l1']
+  }
+
+  t.deepEqual(
+    generator.next(macro).value,
+    select(getMacroTargetParamLinks, ['l1']),
+    '2. Get macro target param links'
+  )
+
+  const links = [
+    {
+      id: 'l1',
+      nodeId: 'n1',
+      paramId: 'p1',
+      startValue: false
+    }
+  ]
+
+  t.deepEqual(
+    generator.next(links).value,
+    select(getNode, 'p1'),
+    '3.0 No start value, get param val'
+  )
+
+  const param = {
+    value: 0.8
+  }
+
+  t.deepEqual(
+    generator.next(param).value,
+    put(rMacroTargetParamLinkUpdateStartValue('l1', 0.8)),
+    '3.1 Update startValue for link'
+  )
+
+  t.deepEqual(
+    generator.next(links).value,
+    select(getNode, 'n1'),
+    '3.2 Get node for link 1'
+  )
+
+  const node1 = {
+    value: 0.3
+  }
+
+  t.deepEqual(
+    generator.next(node1).value,
+    // start value, target value, interp value
+    call(macroInterpolate, 0.8, 0.3, 0.5),
+    '3.3 Call interpolation function'
+  )
+
+  const val = 0.88888
+
+  t.deepEqual(
+    generator.next(val).value,
+    put(nodeValueUpdate('p1', val)),
+    '3.4 Update target param'
   )
 
   t.equal(generator.next().done, true, 'Generator ends')

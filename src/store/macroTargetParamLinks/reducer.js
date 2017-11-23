@@ -15,6 +15,15 @@ const macroTargetParamLinksReducer = (state = defaultState, action) => {
         }
       }
     }
+    case 'R_MACRO_TARGET_PARAM_LINK_UPDATE_START_VALUE': {
+      return {
+        ...state,
+        [p.id]: {
+          ...state[p.id],
+          startValue: p.value
+        }
+      }
+    }
     default:
       return state
   }
