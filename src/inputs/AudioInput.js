@@ -8,7 +8,7 @@ export default (store) => {
     const loop = () => {
       const bands = input.update()
       bands.forEach((val, index) => {
-        store.dispatch(inputFired('audio_' + index, val, 'audio'))
+        store.dispatch(inputFired('audio_' + index, val, { meta: 'audio' }))
       })
       requestAnimationFrame(loop)
     }

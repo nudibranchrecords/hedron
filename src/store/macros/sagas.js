@@ -1,6 +1,7 @@
 import { select, put, call, takeEvery } from 'redux-saga/effects'
 import getNode from '../../selectors/getNode'
 import getMacro from '../../selectors/getMacro'
+import { shouldItLearn } from './utils'
 import getMacroLearningId from '../../selectors/getMacroLearningId'
 import getMacroTargetParamLink from '../../selectors/getMacroTargetParamLink'
 import macroInterpolate from '../../utils/macroInterpolate'
@@ -87,8 +88,11 @@ export function* handleNodeValueUpdate (action) {
 
   if (node.type === 'macro') {
     yield call(macroProcess, action.payload, node)
-  } else if (learningId !== false && node.type !== 'macroTargetParamLink') {
-    yield call(macroLearnFromParam, action.payload, learningId)
+  } else {
+    const learn = yield call(shouldItLearn, learningId, node, p)
+    if (learn) {
+      yield call(macroLearnFromParam, action.payload, learningId)
+    }
   }
 }
 

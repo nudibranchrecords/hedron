@@ -2,6 +2,7 @@ import 'babel-polyfill'
 import test from 'tape'
 import getNode from '../../../selectors/getNode'
 import getMacro from '../../../selectors/getMacro'
+import { shouldItLearn } from '../utils'
 import getMacroTargetParamLink from '../../../selectors/getMacroTargetParamLink'
 import getMacroLearningId from '../../../selectors/getMacroLearningId'
 import macroInterpolate from '../../../utils/macroInterpolate'
@@ -89,10 +90,11 @@ test('(Saga) macroLearnFromParam (link does exist)', (t) => {
   t.end()
 })
 
-test('(Saga) handleNodeValueUpdate (does nothing if node value update isnt a macro AND no macro is learning)', (t) => {
+test('(Saga) handleNodeValueUpdate (does nothing if node value update isnt a macro AND it shouldnt learn)', (t) => {
   const nodeId = 'XXX'
   const newVal = 0.5
-  const generator = handleNodeValueUpdate(nodeValueUpdate(nodeId, newVal))
+  const action = nodeValueUpdate(nodeId, newVal)
+  const generator = handleNodeValueUpdate(action)
 
   t.deepEqual(
     generator.next().value,
@@ -110,9 +112,17 @@ test('(Saga) handleNodeValueUpdate (does nothing if node value update isnt a mac
     '1. Check macro learning Id'
   )
 
-  const id = false
+  const id = true
 
-  t.equal(generator.next(id).done, true, 'Generator ends')
+  t.deepEqual(
+    generator.next(id).value,
+    call(shouldItLearn, id, node, action.payload),
+    '2. Check if node should learn'
+  )
+
+  const learn = false
+
+  t.equal(generator.next(learn).done, true, 'Generator ends')
   t.end()
 })
 
@@ -210,6 +220,14 @@ test('(Saga) handleNodeValueUpdate (call macroLearnFromParam if learning ID and 
 
   t.deepEqual(
     generator.next(id).value,
+    call(shouldItLearn, id, node, action.payload),
+    '2. Check if node should learn'
+  )
+
+  const learn = true
+
+  t.deepEqual(
+    generator.next(learn).value,
     call(macroLearnFromParam, action.payload, id),
     '2. Call macroLearnFromParam, passing in action payload and learningId'
   )

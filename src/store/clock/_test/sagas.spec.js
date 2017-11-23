@@ -34,7 +34,7 @@ test('(Saga) clockUpdate (off beat)', (t) => {
 
   t.deepEqual(
     generator.next(info).value,
-    put(inputFired('lfo', info.delta))
+    put(inputFired('lfo', info.delta, { type: 'lfo' }))
   )
 
   t.equal(generator.next().done, true, 'Generator ends')

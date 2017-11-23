@@ -73,7 +73,7 @@ export function* handleInput (action) {
           }
         }
 
-        yield put(nodeValueUpdate(links[i].nodeId, value))
+        yield put(nodeValueUpdate(links[i].nodeId, value, p.meta))
       }
     }
   } catch (error) {

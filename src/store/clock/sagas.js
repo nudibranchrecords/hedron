@@ -35,7 +35,7 @@ export const calcBpm = () => {
 
 export function* clockUpdate () {
   const info = yield call(newPulse)
-  yield put(inputFired('lfo', info.delta))
+  yield put(inputFired('lfo', info.delta, { type: 'lfo' }))
 
   if (info.pulses === 0) {
     yield put(a.clockBeatInc())

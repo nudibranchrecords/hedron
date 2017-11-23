@@ -359,13 +359,12 @@ test('(Saga) handleInput (select node)', (t) => {
 })
 
 test('(Saga) handleInput (shot - noteOn)', (t) => {
+  const meta = { 'noteOn': true }
   const generator = handleInput({
     payload: {
       value: 0.5,
       inputId: 'midi_xxx',
-      meta: {
-        'noteOn': true
-      }
+      meta
     }
   })
 
@@ -401,7 +400,7 @@ test('(Saga) handleInput (shot - noteOn)', (t) => {
 
   t.deepEqual(
     generator.next().value,
-    put(nodeValueUpdate('XX', 0.5)),
+    put(nodeValueUpdate('XX', 0.5, meta)),
     '5. Dispatches node update action'
   )
 
@@ -413,13 +412,12 @@ test('(Saga) handleInput (shot - noteOn)', (t) => {
 test('(Saga) handleInput (midi - banks)', (t) => {
   let bankIndex
 
+  const meta = { type: 'midi' }
   const generator = handleInput({
     payload: {
       value: 0.5,
       inputId: 'midi_xxx',
-      meta: {
-        'type': 'midi'
-      }
+      meta
     }
   })
 
@@ -483,7 +481,7 @@ test('(Saga) handleInput (midi - banks)', (t) => {
 
   t.deepEqual(
     generator.next(val).value,
-    put(nodeValueUpdate('YY', val)),
+    put(nodeValueUpdate('YY', val, meta)),
     'Dispatches node update action with newly generated value'
   )
 
@@ -501,11 +499,12 @@ test('(Saga) handleInput (midi - banks)', (t) => {
 })
 
 test('(Saga) handleInput (shot - audio val is over 0.5, armed)', (t) => {
+  const meta = { type: 'audio' }
   const generator = handleInput({
     payload: {
       value: 1,
       inputId: 'audio_1',
-      type: 'audio'
+      meta
     }
   })
 
@@ -549,7 +548,7 @@ test('(Saga) handleInput (shot - audio val is over 0.5, armed)', (t) => {
 
   t.deepEqual(
     generator.next().value,
-    put(nodeValueUpdate('XX', 1)),
+    put(nodeValueUpdate('XX', 1, meta)),
     '6. Dispatches node update action'
   )
 
@@ -559,11 +558,12 @@ test('(Saga) handleInput (shot - audio val is over 0.5, armed)', (t) => {
 })
 
 test('(Saga) handleInput (shot - audio val is over 0.5, disarmed)', (t) => {
+  const meta = { type: 'audio' }
   const generator = handleInput({
     payload: {
       value: 1,
       inputId: 'audio_1',
-      type: 'audio'
+      meta
     }
   })
 
@@ -595,7 +595,7 @@ test('(Saga) handleInput (shot - audio val is over 0.5, disarmed)', (t) => {
 
   t.deepEqual(
     generator.next(node).value,
-    put(nodeValueUpdate('XX', 1)),
+    put(nodeValueUpdate('XX', 1, meta)),
     '2. Dispatches node update action'
   )
 
@@ -605,11 +605,12 @@ test('(Saga) handleInput (shot - audio val is over 0.5, disarmed)', (t) => {
 })
 
 test('(Saga) handleInput (shot - audio val is under 0.5, armed)', (t) => {
+  const meta = { type: 'audio' }
   const generator = handleInput({
     payload: {
       value: 0.4,
       inputId: 'audio_1',
-      type: 'audio'
+      meta
     }
   })
 
@@ -647,7 +648,7 @@ test('(Saga) handleInput (shot - audio val is under 0.5, armed)', (t) => {
 
   t.deepEqual(
     generator.next().value,
-    put(nodeValueUpdate('XX', 0.4)),
+    put(nodeValueUpdate('XX', 0.4, meta)),
     '6. Dispatches node update action'
   )
 
@@ -657,11 +658,12 @@ test('(Saga) handleInput (shot - audio val is under 0.5, armed)', (t) => {
 })
 
 test('(Saga) handleInput (shot - audio val is under 0.5, disarmed)', (t) => {
+  const meta = { type: 'audio' }
   const generator = handleInput({
     payload: {
       value: 0.4,
       inputId: 'audio_1',
-      type: 'audio'
+      meta
     }
   })
 
@@ -699,7 +701,7 @@ test('(Saga) handleInput (shot - audio val is under 0.5, disarmed)', (t) => {
 
   t.deepEqual(
     generator.next().value,
-    put(nodeValueUpdate('XX', 0.4)),
+    put(nodeValueUpdate('XX', 0.4, meta)),
     '6. Dispatches node update action'
   )
 

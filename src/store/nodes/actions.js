@@ -56,12 +56,13 @@ export function nodeInputLinkRemove (id, linkId) {
   }
 }
 
-export function nodeValueUpdate (id, value) {
+export function nodeValueUpdate (id, value, meta) {
   return {
     type: 'NODE_VALUE_UPDATE',
     payload: {
       id,
-      value
+      value,
+      meta
     }
   }
 }
