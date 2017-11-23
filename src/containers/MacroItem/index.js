@@ -1,14 +1,14 @@
 import { connect } from 'react-redux'
 import MacroItem from '../../components/MacroItem'
 import getMacro from '../../selectors/getMacro'
-import getMacroTargetParamLinks from '../../selectors/getMacroTargetParamLinks'
 import { uMacroTargetParamLinkAdd } from '../../store/macros/actions'
+import { values } from 'lodash'
 
 const mapStateToProps = (state, ownProps) => {
   const macro = getMacro(state, ownProps.id)
   return {
     nodeId: macro.nodeId,
-    items: getMacroTargetParamLinks(state, macro.targetParamLinks)
+    items: values(macro.targetParamLinks)
   }
 }
 

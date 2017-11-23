@@ -3,12 +3,11 @@ import test from 'tape'
 import getNode from '../../../selectors/getNode'
 import getMacro from '../../../selectors/getMacro'
 import macroInterpolate from '../../../utils/macroInterpolate'
-import getMacroTargetParamLinks from '../../../selectors/getMacroTargetParamLinks'
 import { select, put, call } from 'redux-saga/effects'
 import { rNodeCreate, nodeValueUpdate } from '../../nodes/actions'
-import { rMacroTargetParamLinkCreate, rMacroTargetParamLinkUpdateStartValue } from '../../macroTargetParamLinks/actions'
 import {
-  uMacroCreate, rMacroCreate, uMacroTargetParamLinkAdd, rMacroTargetParamLinkAdd
+  rMacroTargetParamLinkUpdateStartValue,
+  uMacroCreate, rMacroCreate, uMacroTargetParamLinkAdd, rMacroTargetParamLinkCreate
 } from '../actions'
 import { macroCreate, macroTargetParamLinkAdd, macroProcess } from '../sagas'
 
@@ -56,32 +55,22 @@ test('(Saga) macroProcess (update linked params with correct val, start vals exi
   )
 
   const macro = {
-    targetParamLinks: ['l1', 'l2']
+    targetParamLinks: {
+      p1: {
+        nodeId: 'n1',
+        paramId: 'p1',
+        startValue: 0.2
+      },
+      p2: {
+        nodeId: 'n2',
+        paramId: 'p2',
+        startValue: 0.5
+      }
+    }
   }
 
   t.deepEqual(
     generator.next(macro).value,
-    select(getMacroTargetParamLinks, ['l1', 'l2']),
-    '2. Get macro target param links'
-  )
-
-  const links = [
-    {
-      id: 'l1',
-      nodeId: 'n1',
-      paramId: 'p1',
-      startValue: 0.2
-    },
-    {
-      id: 'l2',
-      nodeId: 'n2',
-      paramId: 'p2',
-      startValue: 0.5
-    }
-  ]
-
-  t.deepEqual(
-    generator.next(links).value,
     select(getNode, 'n1'),
     '3.0 Get node for link 1'
   )
@@ -106,7 +95,7 @@ test('(Saga) macroProcess (update linked params with correct val, start vals exi
   )
 
   t.deepEqual(
-    generator.next(links).value,
+    generator.next().value,
     select(getNode, 'n2'),
     '3.0 Get node for link 2'
   )
@@ -136,6 +125,7 @@ test('(Saga) macroProcess (update linked params with correct val, start vals exi
 
 test('(Saga) macroProcess (update linked params with correct val, start vals dont exist)', (t) => {
   const nodeId = 'XXX'
+  const macroId = 'YYY'
   const newVal = 0.5
   const generator = macroProcess(nodeValueUpdate(nodeId, newVal))
 
@@ -147,7 +137,7 @@ test('(Saga) macroProcess (update linked params with correct val, start vals don
 
   const node = {
     type: 'macro',
-    macroId: 'YYY'
+    macroId
   }
 
   t.deepEqual(
@@ -157,26 +147,18 @@ test('(Saga) macroProcess (update linked params with correct val, start vals don
   )
 
   const macro = {
-    targetParamLinks: ['l1']
+    targetParamLinks: {
+      p1: {
+        id: 'l1',
+        nodeId: 'n1',
+        paramId: 'p1',
+        startValue: false
+      }
+    }
   }
 
   t.deepEqual(
     generator.next(macro).value,
-    select(getMacroTargetParamLinks, ['l1']),
-    '2. Get macro target param links'
-  )
-
-  const links = [
-    {
-      id: 'l1',
-      nodeId: 'n1',
-      paramId: 'p1',
-      startValue: false
-    }
-  ]
-
-  t.deepEqual(
-    generator.next(links).value,
     select(getNode, 'p1'),
     '3.0 No start value, get param val'
   )
@@ -187,12 +169,12 @@ test('(Saga) macroProcess (update linked params with correct val, start vals don
 
   t.deepEqual(
     generator.next(param).value,
-    put(rMacroTargetParamLinkUpdateStartValue('l1', 0.8)),
+    put(rMacroTargetParamLinkUpdateStartValue(macroId, 'p1', 0.8)),
     '3.1 Update startValue for link'
   )
 
   t.deepEqual(
-    generator.next(links).value,
+    generator.next().value,
     select(getNode, 'n1'),
     '3.2 Get node for link 1'
   )
@@ -278,22 +260,14 @@ test('(Saga) macroTargetParamLinkAdd', (t) => {
   t.deepEqual(
     generator.next(param).value,
     call(uid),
-    '0.1 Generate unique ID for link'
-  )
-
-  const UID1 = 'XX1'
-
-  t.deepEqual(
-    generator.next(UID1).value,
-    call(uid),
     '1. Generate unique ID for node'
   )
 
-  const UID2 = 'XX2'
+  const nodeId = 'NODE01'
 
   t.deepEqual(
-    generator.next(UID2).value,
-    put(rNodeCreate('XX2', {
+    generator.next(nodeId).value,
+    put(rNodeCreate(nodeId, {
       title: 'Foo Param'
     })),
     '2. Create node item in state'
@@ -301,14 +275,8 @@ test('(Saga) macroTargetParamLinkAdd', (t) => {
 
   t.deepEqual(
     generator.next().value,
-    put(rMacroTargetParamLinkCreate(UID1, UID2, paramId)),
+    put(rMacroTargetParamLinkCreate(macroId, paramId, nodeId)),
     '3. Create param link in state'
-  )
-
-  t.deepEqual(
-    generator.next().value,
-    put(rMacroTargetParamLinkAdd(macroId, UID1)),
-    '4. Add link id to macro'
   )
 
   t.equal(generator.next().done, true, 'Generator ends')

@@ -24,3 +24,17 @@ export function rMacroCreate (id, nodeId) {
     payload: { id, nodeId }
   }
 }
+
+export function rMacroTargetParamLinkCreate (macroId, paramId, nodeId) {
+  return {
+    type: 'R_MACRO_TARGET_PARAM_LINK_CREATE',
+    payload: { macroId, paramId, nodeId }
+  }
+}
+
+export function rMacroTargetParamLinkUpdateStartValue (macroId, paramId, value) {
+  return {
+    type: 'R_MACRO_TARGET_PARAM_LINK_UPDATE_START_VALUE',
+    payload: { macroId, paramId, value }
+  }
+}

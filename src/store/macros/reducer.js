@@ -14,22 +14,42 @@ const macroReducer = (state = defaultState, action) => {
           [p.id]: {
             id: p.id,
             nodeId: p.nodeId,
-            targetParamLinks: []
+            targetParamLinks: {}
           }
         }
       }
     }
-    case 'R_MACRO_TARGET_PARAM_LINK_ADD': {
+    case 'R_MACRO_TARGET_PARAM_LINK_CREATE': {
       return {
         ...state,
         items: {
-          ...state.items,
           [p.macroId]: {
             ...state.items[p.macroId],
-            targetParamLinks: [
+            targetParamLinks: {
               ...state.items[p.macroId].targetParamLinks,
-              p.linkId
-            ]
+              [p.paramId]: {
+                nodeId: p.nodeId,
+                paramId: p.paramId,
+                startValue: false
+              }
+            }
+          }
+        }
+      }
+    }
+    case 'R_MACRO_TARGET_PARAM_LINK_UPDATE_START_VALUE': {
+      return {
+        ...state,
+        items: {
+          [p.macroId]: {
+            ...state.items[p.macroId],
+            targetParamLinks: {
+              ...state.items[p.macroId].targetParamLinks,
+              [p.paramId]: {
+                ...state.items[p.macroId].targetParamLinks[p.paramId],
+                startValue: p.value
+              }
+            }
           }
         }
       }
