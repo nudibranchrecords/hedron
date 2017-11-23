@@ -108,7 +108,7 @@ test('(Reducer) nodesReducer - Adds input link id on nodeInputLinkAdd()', (t) =>
   t.end()
 })
 
-test('(Reducer) nodesReducer - Adds node on R_NODE_CREATE, adds id and val property if dont exist', (t) => {
+test('(Reducer) nodesReducer - Adds node on R_NODE_CREATE, adds extra properties if dont exist', (t) => {
   let originalState, expectedState, actualState
 
   originalState = {
@@ -116,13 +116,15 @@ test('(Reducer) nodesReducer - Adds node on R_NODE_CREATE, adds id and val prope
       title: 'Rotation X',
       key: 'rotX',
       value: 0.1,
-      id: '01'
+      id: '01',
+      inputLinkIds: []
     },
     '02': {
       title: 'Rotation Y',
       key: 'rotY',
       value: 0.2,
-      id: '02'
+      id: '02',
+      inputLinkIds: []
     }
   }
 
@@ -131,19 +133,22 @@ test('(Reducer) nodesReducer - Adds node on R_NODE_CREATE, adds id and val prope
       title: 'Rotation X',
       key: 'rotX',
       value: 0.1,
-      id: '01'
+      id: '01',
+      inputLinkIds: []
     },
     '02': {
       title: 'Rotation Y',
       key: 'rotY',
       value: 0.2,
-      id: '02'
+      id: '02',
+      inputLinkIds: []
     },
     '03': {
       title: 'Rotation X',
       key: 'rotX',
       value: 0.2,
-      id: '03'
+      id: '03',
+      inputLinkIds: []
     }
   }
 
@@ -167,25 +172,29 @@ test('(Reducer) nodesReducer - Adds node on R_NODE_CREATE, adds id and val prope
       title: 'Rotation X',
       key: 'rotX',
       value: 0.1,
-      id: '01'
+      id: '01',
+      inputLinkIds: []
     },
     '02': {
       title: 'Rotation Y',
       key: 'rotY',
       value: 0.2,
-      id: '02'
+      id: '02',
+      inputLinkIds: []
     },
     '03': {
       title: 'Rotation X',
       key: 'rotX',
       value: 0.2,
-      id: '03'
+      id: '03',
+      inputLinkIds: []
     },
     '04': {
       title: 'Scale',
       key: 'scale',
       value: 0,
-      id: '04'
+      id: '04',
+      inputLinkIds: []
     }
   }
 

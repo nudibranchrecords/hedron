@@ -15,6 +15,7 @@ const nodesReducer = (state = defaultState, action) => {
         [p.id]: {
           id: p.id,
           value: 0,
+          inputLinkIds: [],
           ...p.node
         }
       }
