@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import Param from '../../components/Param'
+import Param from '../../containers/Param'
 import InputLink from '../../containers/InputLink'
 
 const SketchParam = (props) => (

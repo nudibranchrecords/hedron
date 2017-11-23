@@ -5,10 +5,11 @@ import Param from '../../containers/Param'
 
 const MacroItem = ({ nodeId, onLearningClick, items, isLearning }) => (
   <div>
-    <Param nodeId={nodeId} />
-    {items.map(item => (
-      <Param nodeId={item.nodeId} key={item.nodeId} />
-    ))}
+    <Param nodeId={nodeId}>
+      {items.map(item => (
+        <Param nodeId={item.nodeId} key={item.nodeId} />
+      ))}
+    </Param>
 
     <Button onClick={onLearningClick}>
       {isLearning ? 'Stop Learning' : 'Start Learning'}

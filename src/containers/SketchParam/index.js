@@ -1,24 +1,15 @@
 import { connect } from 'react-redux'
 import SketchParam from '../../components/SketchParam'
 import getNodeInputLinkIds from '../../selectors/getNodeInputLinkIds'
-import { nodeOpenToggle } from '../../store/nodes/actions'
 
 const mapStateToProps = (state, ownProps) => {
-  const param = state.nodes[ownProps.nodeId]
   return {
-    title: param.title,
-    inputLinkIds: getNodeInputLinkIds(state, ownProps.nodeId),
-    isOpen: param.isOpen
+    inputLinkIds: getNodeInputLinkIds(state, ownProps.nodeId)
   }
 }
 
-const mapDispatchToProps = (dispatch, ownProps) => ({
-  onOpenClick: () => { dispatch(nodeOpenToggle(ownProps.nodeId)) }
-})
-
 const ParamContainer = connect(
-  mapStateToProps,
-  mapDispatchToProps
+  mapStateToProps
 )(SketchParam)
 
 export default ParamContainer
