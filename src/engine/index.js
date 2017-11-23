@@ -1,6 +1,7 @@
 import { getSketches } from '../externals/sketches'
 import getSketchParams from '../selectors/getSketchParams'
 import { availableModulesReplaceAll } from '../store/availableModules/actions'
+import now from 'performance-now'
 import world from './world'
 
 let store
@@ -76,9 +77,9 @@ class Engine {
 
   run (injectedStore, stats) {
     let tick = 0
-    let oldTime = performance.now()
+    let oldTime = now()
     let elapsedFrames = 1
-    let now
+    let newTime
     store = injectedStore
 
     // Give store module params
@@ -97,10 +98,10 @@ class Engine {
       world.render()
 
       stats.end()
-      now = performance.now()
-      elapsedFrames = (now - oldTime) / spf
+      newTime = now()
+      elapsedFrames = (newTime - oldTime) / spf
       tick += elapsedFrames
-      oldTime = now
+      oldTime = newTime
       requestAnimationFrame(loop)
     }
     loop()
