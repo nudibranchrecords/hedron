@@ -1,6 +1,4 @@
 'use strict'
-import installExtension, { REDUX_DEVTOOLS } from 'electron-devtools-installer'
-
 import { app, BrowserWindow } from 'electron'
 
 const isDevelopment = process.env.NODE_ENV !== 'production'
@@ -78,6 +76,8 @@ app.on('activate', () => {
 app.on('ready', () => {
   mainWindow = createMainWindow()
   if (isDevelopment) {
+    const { default: installExtension, REDUX_DEVTOOLS } = require('electron-devtools-installer')
+
     installExtension(REDUX_DEVTOOLS)
         .then((name) => console.log(`Added Extension:  ${name}`))
         .catch((err) => console.log('An error occurred: ', err))
