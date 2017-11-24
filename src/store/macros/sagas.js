@@ -124,7 +124,10 @@ export function* handleNodeValueUpdate (action) {
       }
       if (nodeMacroIds) {
         for (let i = 0; i < nodeMacroIds.length; i++) {
-          yield put(rMacroTargetParamLinkUpdateStartValue(nodeMacroIds[i], p.id, false))
+          const macroId = nodeMacroIds[i]
+          const macro = yield select(getMacro, macroId)
+          yield put(rMacroTargetParamLinkUpdateStartValue(macroId, p.id, false))
+          yield put(nodeValueUpdate(macro.nodeId, 0))
         }
       }
     }

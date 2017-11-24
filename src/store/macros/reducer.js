@@ -38,6 +38,7 @@ const macroReducer = (state = defaultState, action) => {
       return {
         ...state,
         items: {
+          ...state.items,
           [p.macroId]: {
             ...state.items[p.macroId],
             targetParamLinks: {
@@ -56,6 +57,7 @@ const macroReducer = (state = defaultState, action) => {
       return {
         ...state,
         items: {
+          ...state.items,
           [p.macroId]: {
             ...state.items[p.macroId],
             targetParamLinks: omit(state.items[p.macroId].targetParamLinks, [p.paramId])
@@ -67,6 +69,7 @@ const macroReducer = (state = defaultState, action) => {
       return {
         ...state,
         items: {
+          ...state.items,
           [p.macroId]: {
             ...state.items[p.macroId],
             targetParamLinks: {

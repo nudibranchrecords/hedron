@@ -142,7 +142,7 @@ test(`(Saga) handleNodeValueUpdate (does nothing if input is from a macro)`, (t)
 })
 
 test(`(Saga) handleNodeValueUpdate
-(Reset start values for relevant links if has connectedMacroIds)`, (t) => {
+(Reset macro and start values for relevant links if has connectedMacroIds)`, (t) => {
   const paramId = 'PARAMID'
   const newVal = 0.5
   const action = nodeValueUpdate(paramId, newVal)
@@ -177,14 +177,46 @@ test(`(Saga) handleNodeValueUpdate
 
   t.deepEqual(
     generator.next(learn).value,
+    select(getMacro, 'macro01'),
+    '3.0 Get macro'
+  )
+
+  const macro = {
+    nodeId: 'n1'
+  }
+
+  t.deepEqual(
+    generator.next(macro).value,
     put(rMacroTargetParamLinkUpdateStartValue('macro01', 'PARAMID', false)),
     '3.1 Reset macro link'
   )
 
   t.deepEqual(
-    generator.next(node).value,
+    generator.next().value,
+    put(nodeValueUpdate('n1', 0)),
+    '3.2 Reset macro node'
+  )
+
+  t.deepEqual(
+    generator.next(learn).value,
+    select(getMacro, 'macro02'),
+    '4.0 Get macro'
+  )
+
+  const macro2 = {
+    nodeId: 'n2'
+  }
+
+  t.deepEqual(
+    generator.next(macro2).value,
     put(rMacroTargetParamLinkUpdateStartValue('macro02', 'PARAMID', false)),
-    '3.2 Reset macro link'
+    '4.1 Reset macro link'
+  )
+
+  t.deepEqual(
+    generator.next().value,
+    put(nodeValueUpdate('n2', 0)),
+    '4.2 Reset macro node'
   )
 
   t.equal(generator.next().done, true, 'Generator ends')
