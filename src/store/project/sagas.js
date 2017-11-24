@@ -6,6 +6,7 @@ import { sketchesReplaceAll } from '../sketches/actions'
 import { nodesReplaceAll } from '../nodes/actions'
 import { inputsReplaceAll } from '../inputs/actions'
 import { inputLinksReplaceAll } from '../inputLinks/actions'
+import { macrosReplaceAll } from '../macros/actions'
 export function* saveProject () {
   const data = yield select(getProjectData)
   const filepath = yield select(getProjectFilepath)
@@ -20,6 +21,7 @@ export function* loadProject () {
   yield put(nodesReplaceAll(projectData.nodes))
   yield put(inputsReplaceAll(projectData.inputs))
   yield put(inputLinksReplaceAll(projectData.inputLinks))
+  yield put(macrosReplaceAll(projectData.macros))
   yield put(projectLoadSuccess(projectData))
 }
 

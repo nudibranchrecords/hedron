@@ -9,6 +9,7 @@ import { sketchesReplaceAll } from '../../sketches/actions'
 import { nodesReplaceAll } from '../../nodes/actions'
 import { inputsReplaceAll } from '../../inputs/actions'
 import { inputLinksReplaceAll } from '../../inputLinks/actions'
+import { macrosReplaceAll } from '../../macros/actions'
 
 test('(Saga) watchProject', (t) => {
   const generator = watchProject()
@@ -107,6 +108,12 @@ test('(Saga) loadProject', (t) => {
     generator.next().value,
     put(inputLinksReplaceAll(projectData.inputLinks)),
     '5. Dispatches inputLinksReplaceAll'
+  )
+
+  t.deepEqual(
+    generator.next().value,
+    put(macrosReplaceAll(projectData.macros)),
+    '5. Dispatches macrosReplaceAll'
   )
 
   t.deepEqual(

@@ -1,3 +1,10 @@
+export function macrosReplaceAll (macros) {
+  return {
+    type: 'MACROS_REPLACE_ALL',
+    payload: { macros }
+  }
+}
+
 export function uMacroCreate () {
   return {
     type: 'U_MACRO_CREATE'

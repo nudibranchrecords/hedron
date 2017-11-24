@@ -80,6 +80,9 @@ const macroReducer = (state = defaultState, action) => {
         }
       }
     }
+    case 'MACROS_REPLACE_ALL': {
+      return p.macros
+    }
     default:
       return state
   }
