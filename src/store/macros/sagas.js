@@ -18,6 +18,7 @@ export function* macroCreate (action) {
   yield put(rNodeCreate(nodeId, {
     title: 'New Macro',
     type: 'macro',
+    isOpen: true,
     macroId: macroId,
     value: 0
   }))

@@ -420,7 +420,8 @@ test('(Saga) macroCreate', (t) => {
       title: 'New Macro',
       type: 'macro',
       macroId: UID1,
-      value: 0
+      value: 0,
+      isOpen: true
     })),
     '2. Create node item in state'
   )
