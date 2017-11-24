@@ -12,7 +12,7 @@ const Links = styled.div`
   margin-bottom: 0.5rem;
 `
 
-const MacroItem = ({ nodeId, onLearningClick, items, isLearning, macroId }) => (
+const MacroItem = ({ nodeId, onLearningClick, onDeleteClick, items, isLearning, macroId }) => (
   <div>
     <Param nodeId={nodeId}>
       <Links>
@@ -29,7 +29,7 @@ const MacroItem = ({ nodeId, onLearningClick, items, isLearning, macroId }) => (
         <Button onClick={onLearningClick}>
           {isLearning ? 'Stop Learning' : 'Start Learning'}
         </Button>
-        <Button>Delete Macro</Button>
+        <Button onClick={onDeleteClick}>Delete Macro</Button>
       </Row>
     </Param>
 
@@ -41,7 +41,8 @@ MacroItem.propTypes = {
   items: PropTypes.array.isRequired,
   nodeId: PropTypes.string.isRequired,
   macroId: PropTypes.string.isRequired,
-  onLearningClick: PropTypes.func.isRequired
+  onLearningClick: PropTypes.func.isRequired,
+  onDeleteClick: PropTypes.func.isRequired
 }
 
 export default MacroItem

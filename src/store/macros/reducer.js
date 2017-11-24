@@ -22,6 +22,12 @@ const macroReducer = (state = defaultState, action) => {
         }
       }
     }
+    case 'R_MACRO_DELETE': {
+      return {
+        ...state,
+        items: omit(state.items, [p.id])
+      }
+    }
     case 'R_MACRO_LEARNING_TOGGLE': {
       return {
         ...state,

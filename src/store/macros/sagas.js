@@ -6,8 +6,8 @@ import getMacroLearningId from '../../selectors/getMacroLearningId'
 import getMacroTargetParamLink from '../../selectors/getMacroTargetParamLink'
 import macroInterpolate from '../../utils/macroInterpolate'
 import { rNodeCreate, nodeValueUpdate, uNodeDelete } from '../nodes/actions'
-import { rMacroCreate, rMacroTargetParamLinkCreate, rMacroTargetParamLinkDelete,
-        rMacroTargetParamLinkUpdateStartValue, uMacroTargetParamLinkAdd
+import { rMacroCreate, rMacroDelete, rMacroTargetParamLinkCreate, rMacroTargetParamLinkDelete,
+        rMacroTargetParamLinkUpdateStartValue, uMacroTargetParamLinkAdd, rMacroLearningToggle
 } from './actions'
 
 import uid from 'uid'
@@ -22,6 +22,18 @@ export function* macroCreate (action) {
     value: 0
   }))
   yield put(rMacroCreate(macroId, nodeId))
+}
+
+export function* macroDelete (action) {
+  const id = action.payload.id
+  const macro = yield select(getMacro, id)
+  yield put(rMacroLearningToggle(false))
+  yield put(rMacroDelete(id))
+  yield put(uNodeDelete(macro.nodeId))
+
+  for (const id in macro.targetParamLinks) {
+    yield put(uNodeDelete(macro.targetParamLinks[id].nodeId))
+  }
 }
 
 export function* macroTargetParamLinkAdd (action) {
@@ -105,6 +117,7 @@ export function* handleNodeValueUpdate (action) {
 
 export function* watchMacros () {
   yield takeEvery('U_MACRO_CREATE', macroCreate)
+  yield takeEvery('U_MACRO_DELETE', macroDelete)
   yield takeEvery('U_MACRO_TARGET_PARAM_LINK_ADD', macroTargetParamLinkAdd)
   yield takeEvery('U_MACRO_TARGET_PARAM_LINK_DELETE', macroTargetParamLinkDelete)
   yield takeEvery('NODE_VALUE_UPDATE', handleNodeValueUpdate)

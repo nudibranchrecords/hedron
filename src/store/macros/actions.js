@@ -4,6 +4,20 @@ export function uMacroCreate () {
   }
 }
 
+export function uMacroDelete (id) {
+  return {
+    type: 'U_MACRO_DELETE',
+    payload: { id }
+  }
+}
+
+export function rMacroDelete (id) {
+  return {
+    type: 'R_MACRO_DELETE',
+    payload: { id }
+  }
+}
+
 export function uMacroTargetParamLinkAdd (macroId, paramId) {
   return {
     type: 'U_MACRO_TARGET_PARAM_LINK_ADD',

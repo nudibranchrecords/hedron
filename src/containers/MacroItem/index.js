@@ -1,7 +1,7 @@
 import { connect } from 'react-redux'
 import MacroItem from '../../components/MacroItem'
 import getMacro from '../../selectors/getMacro'
-import { rMacroLearningToggle } from '../../store/macros/actions'
+import { rMacroLearningToggle, uMacroDelete } from '../../store/macros/actions'
 import { values } from 'lodash'
 
 const mapStateToProps = (state, ownProps) => {
@@ -15,7 +15,8 @@ const mapStateToProps = (state, ownProps) => {
 }
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
-  onLearningClick: () => { dispatch(rMacroLearningToggle(ownProps.id)) }
+  onLearningClick: () => { dispatch(rMacroLearningToggle(ownProps.id)) },
+  onDeleteClick: () => { dispatch(uMacroDelete(ownProps.id)) }
 })
 
 export default connect(
