@@ -8,6 +8,7 @@ const mapStateToProps = (state, ownProps) => {
   const macro = getMacro(state, ownProps.id)
   return {
     nodeId: macro.nodeId,
+    macroId: macro.id,
     items: values(macro.targetParamLinks),
     isLearning: state.macros.learningId === ownProps.id
   }

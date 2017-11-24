@@ -1,3 +1,5 @@
+import { omit } from 'lodash'
+
 const defaultState = {
   learningId: false,
   items: {}
@@ -40,6 +42,17 @@ const macroReducer = (state = defaultState, action) => {
                 startValue: false
               }
             }
+          }
+        }
+      }
+    }
+    case 'R_MACRO_TARGET_PARAM_LINK_DELETE': {
+      return {
+        ...state,
+        items: {
+          [p.macroId]: {
+            ...state.items[p.macroId],
+            targetParamLinks: omit(state.items[p.macroId].targetParamLinks, [p.paramId])
           }
         }
       }

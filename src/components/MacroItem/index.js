@@ -5,12 +5,17 @@ import Param from '../../containers/Param'
 import MacroLink from '../../containers/MacroLink'
 import Row from '../Row'
 
-const MacroItem = ({ nodeId, onLearningClick, items, isLearning }) => (
+const MacroItem = ({ nodeId, onLearningClick, items, isLearning, macroId }) => (
   <div>
     <Param nodeId={nodeId}>
       <Row>
         {items.map(item => (
-          <MacroLink nodeId={item.nodeId} key={item.nodeId} />
+          <MacroLink
+            macroId={macroId}
+            nodeId={item.nodeId}
+            paramId={item.paramId}
+            key={item.nodeId}
+          />
         ))}
       </Row>
     </Param>
@@ -25,6 +30,7 @@ MacroItem.propTypes = {
   isLearning: PropTypes.bool,
   items: PropTypes.array.isRequired,
   nodeId: PropTypes.string.isRequired,
+  macroId: PropTypes.string.isRequired,
   onLearningClick: PropTypes.func.isRequired
 }
 

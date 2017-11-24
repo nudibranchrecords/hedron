@@ -2,7 +2,6 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import ParamBar from '../../containers/ParamBar'
 import styled from 'styled-components'
-import MidiButton from '../MidiButton'
 import SubNode from '../SubNode'
 import Row from '../Row'
 
@@ -13,10 +12,16 @@ const BarCol = styled.div`
 const ButtonCol = styled.div`
   flex: 0 0 1rem;
   width: 1rem;
+  text-align: right;
+  color: red;
+
+  span {
+    cursor: pointer;
+  }
 `
 
 const Modifier = (
-  { title, nodeId, onAssignClick }
+  { title, nodeId, onDeleteClick }
 ) => (
   <SubNode>
     {title}
@@ -25,7 +30,7 @@ const Modifier = (
         <ParamBar nodeId={nodeId} />
       </BarCol>
       <ButtonCol>
-        <MidiButton onClick={onAssignClick} />
+        <span onClick={onDeleteClick}>&times;</span>
       </ButtonCol>
     </Row>
   </SubNode>
@@ -34,7 +39,7 @@ const Modifier = (
 Modifier.propTypes = {
   title: PropTypes.string.isRequired,
   nodeId: PropTypes.string.isRequired,
-  onAssignClick: PropTypes.func.isRequired
+  onDeleteClick: PropTypes.func.isRequired
 }
 
 export default Modifier

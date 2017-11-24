@@ -39,6 +39,20 @@ export function rMacroTargetParamLinkCreate (macroId, paramId, nodeId) {
   }
 }
 
+export function uMacroTargetParamLinkDelete (macroId, paramId) {
+  return {
+    type: 'U_MACRO_TARGET_PARAM_LINK_DELETE',
+    payload: { macroId, paramId }
+  }
+}
+
+export function rMacroTargetParamLinkDelete (macroId, paramId) {
+  return {
+    type: 'R_MACRO_TARGET_PARAM_LINK_DELETE',
+    payload: { macroId, paramId }
+  }
+}
+
 export function rMacroTargetParamLinkUpdateStartValue (macroId, paramId, value) {
   return {
     type: 'R_MACRO_TARGET_PARAM_LINK_UPDATE_START_VALUE',
