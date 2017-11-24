@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
+import { throttle } from 'lodash'
 
 const Bar = styled.canvas`
   background: #222;
@@ -64,24 +65,26 @@ class ParamBar extends React.Component {
     this.props.onChange(newVal)
   }
 
-  draw (newVal, oldVal) {
+  draw = throttle((newVal) => {
     const barWidth = 2
     const innerWidth = this.width - barWidth
     const pos = innerWidth * newVal
     const context = this.canvas.getContext('2d')
     context.fillStyle = '#FFFFFF'
 
-    if (oldVal) {
-      const oldPos = innerWidth * oldVal
-      // Only clear the area from the last position
+    if (this.oldVal) {
+      const oldPos = innerWidth * this.oldVal
+        // Only clear the area from the last position
       context.clearRect(oldPos - 1, 0, barWidth + 2, this.height)
     } else {
       context.clearRect(0, 0, this.width, this.height)
     }
 
+    this.oldVal = newVal
+
     // Draw bar at new position
     context.fillRect(pos, 0, barWidth, this.height)
-  }
+  }, 50)
 
   render () {
     return (
