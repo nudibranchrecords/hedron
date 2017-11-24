@@ -7,7 +7,7 @@ import getMacroTargetParamLink from '../../../selectors/getMacroTargetParamLink'
 import getMacroLearningId from '../../../selectors/getMacroLearningId'
 import macroInterpolate from '../../../utils/macroInterpolate'
 import { select, put, call } from 'redux-saga/effects'
-import { rNodeCreate, nodeValueUpdate } from '../../nodes/actions'
+import { rNodeCreate, nodeValueUpdate, rNodeConnectedMacroAdd } from '../../nodes/actions'
 import {
   rMacroTargetParamLinkUpdateStartValue,
   uMacroCreate, rMacroCreate, uMacroTargetParamLinkAdd, rMacroTargetParamLinkCreate
@@ -90,7 +90,8 @@ test('(Saga) macroLearnFromParam (link does exist)', (t) => {
   t.end()
 })
 
-test('(Saga) handleNodeValueUpdate (does nothing if node value update isnt a macro AND it shouldnt learn)', (t) => {
+test(`(Saga) handleNodeValueUpdate (does nothing if node
+  value update isnt a macro AND it shouldnt learn AND it doesnt have any connectedMacroIds)`, (t) => {
   const nodeId = 'XXX'
   const newVal = 0.5
   const action = nodeValueUpdate(nodeId, newVal)
@@ -103,7 +104,8 @@ test('(Saga) handleNodeValueUpdate (does nothing if node value update isnt a mac
   )
 
   const node = {
-    type: 'foo'
+    type: 'foo',
+    connectedMacroIds: []
   }
 
   t.deepEqual(
@@ -123,6 +125,69 @@ test('(Saga) handleNodeValueUpdate (does nothing if node value update isnt a mac
   const learn = false
 
   t.equal(generator.next(learn).done, true, 'Generator ends')
+  t.end()
+})
+
+test(`(Saga) handleNodeValueUpdate (does nothing if input is from a macro)`, (t) => {
+  const nodeId = 'XXX'
+  const newVal = 0.5
+  const meta = {
+    type: 'macro'
+  }
+  const action = nodeValueUpdate(nodeId, newVal, meta)
+  const generator = handleNodeValueUpdate(action)
+
+  t.equal(generator.next().done, true, 'Generator ends')
+  t.end()
+})
+
+test(`(Saga) handleNodeValueUpdate
+(Reset start values for relevant links if has connectedMacroIds)`, (t) => {
+  const paramId = 'PARAMID'
+  const newVal = 0.5
+  const action = nodeValueUpdate(paramId, newVal)
+  const generator = handleNodeValueUpdate(action)
+
+  t.deepEqual(
+    generator.next().value,
+    select(getNode, paramId),
+    '0. Get node'
+  )
+
+  const node = {
+    type: 'foo',
+    connectedMacroIds: ['macro01', 'macro02']
+  }
+
+  t.deepEqual(
+    generator.next(node).value,
+    select(getMacroLearningId),
+    '1. Check macro learning Id'
+  )
+
+  const id = true
+
+  t.deepEqual(
+    generator.next(id).value,
+    call(shouldItLearn, id, node, action.payload),
+    '2. Check if node should learn'
+  )
+
+  const learn = false
+
+  t.deepEqual(
+    generator.next(learn).value,
+    put(rMacroTargetParamLinkUpdateStartValue('macro01', 'PARAMID', false)),
+    '3.1 Reset macro link'
+  )
+
+  t.deepEqual(
+    generator.next(node).value,
+    put(rMacroTargetParamLinkUpdateStartValue('macro02', 'PARAMID', false)),
+    '3.2 Reset macro link'
+  )
+
+  t.equal(generator.next().done, true, 'Generator ends')
   t.end()
 })
 
@@ -289,7 +354,7 @@ test('(Saga) macroProcess (update linked params with correct val, start vals exi
 
   t.deepEqual(
     generator.next(val).value,
-    put(nodeValueUpdate('p1', val)),
+    put(nodeValueUpdate('p1', val, { type: 'macro' })),
     '3.1 Update target param'
   )
 
@@ -314,7 +379,7 @@ test('(Saga) macroProcess (update linked params with correct val, start vals exi
 
   t.deepEqual(
     generator.next(val2).value,
-    put(nodeValueUpdate('p2', val2)),
+    put(nodeValueUpdate('p2', val2, { type: 'macro' })),
     '3.1 Update target param'
   )
 
@@ -387,7 +452,7 @@ test('(Saga) macroProcess (update linked params with correct val, start vals don
 
   t.deepEqual(
     generator.next(val).value,
-    put(nodeValueUpdate('p1', val)),
+    put(nodeValueUpdate('p1', val, { type: 'macro' })),
     '3.4 Update target param'
   )
 
@@ -472,6 +537,12 @@ test('(Saga) macroTargetParamLinkAdd', (t) => {
     generator.next().value,
     put(rMacroTargetParamLinkCreate(macroId, paramId, nodeId)),
     '3. Create param link in state'
+  )
+
+  t.deepEqual(
+    generator.next().value,
+    put(rNodeConnectedMacroAdd(paramId, macroId)),
+    '4. Add macro id to param node'
   )
 
   t.equal(generator.next().done, true, 'Generator ends')

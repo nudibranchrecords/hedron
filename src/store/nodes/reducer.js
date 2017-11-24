@@ -16,6 +16,7 @@ const nodesReducer = (state = defaultState, action) => {
           id: p.id,
           value: 0,
           inputLinkIds: [],
+          connectedMacroIds: [],
           ...p.node
         }
       }
@@ -45,6 +46,25 @@ const nodesReducer = (state = defaultState, action) => {
           ...state[p.id],
           inputLinkIds: state[p.id].inputLinkIds
             .filter((id) => id !== p.linkId)
+        }
+      }
+    }
+    case 'R_NODE_CONNECTED_MACRO_ADD': {
+      return {
+        ...state,
+        [p.id]: {
+          ...state[p.id],
+          connectedMacroIds: [...state[p.id].connectedMacroIds, p.macroId]
+        }
+      }
+    }
+    case 'R_NODE_CONNECTED_MACRO_REMOVE': {
+      return {
+        ...state,
+        [p.id]: {
+          ...state[p.id],
+          connectedMacroIds: state[p.id].connectedMacroIds
+            .filter((id) => id !== p.macroId)
         }
       }
     }

@@ -97,6 +97,20 @@ export function rNodeInputUpdate (nodeId, input) {
   }
 }
 
+export function rNodeConnectedMacroAdd (id, macroId) {
+  return {
+    type: 'R_NODE_CONNECTED_MACRO_ADD',
+    payload: { id, macroId }
+  }
+}
+
+export function rNodeConnectedMacroRemove (id, macroId) {
+  return {
+    type: 'R_NODE_CONNECTED_MACRO_REMOVE',
+    payload: { id, macroId }
+  }
+}
+
 export function nodeOpenToggle (id) {
   return {
     type: 'NODE_OPEN_TOGGLE',

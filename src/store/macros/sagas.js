@@ -5,7 +5,9 @@ import { shouldItLearn } from './utils'
 import getMacroLearningId from '../../selectors/getMacroLearningId'
 import getMacroTargetParamLink from '../../selectors/getMacroTargetParamLink'
 import macroInterpolate from '../../utils/macroInterpolate'
-import { rNodeCreate, nodeValueUpdate, uNodeDelete } from '../nodes/actions'
+import { rNodeCreate, nodeValueUpdate, uNodeDelete, rNodeConnectedMacroAdd,
+          rNodeConnectedMacroRemove
+} from '../nodes/actions'
 import { rMacroCreate, rMacroDelete, rMacroTargetParamLinkCreate, rMacroTargetParamLinkDelete,
         rMacroTargetParamLinkUpdateStartValue, uMacroTargetParamLinkAdd, rMacroLearningToggle
 } from './actions'
@@ -26,14 +28,16 @@ export function* macroCreate (action) {
 }
 
 export function* macroDelete (action) {
-  const id = action.payload.id
-  const macro = yield select(getMacro, id)
+  const macroId = action.payload.id
+  const macro = yield select(getMacro, macroId)
   yield put(rMacroLearningToggle(false))
-  yield put(rMacroDelete(id))
+  yield put(rMacroDelete(macroId))
   yield put(uNodeDelete(macro.nodeId))
 
-  for (const id in macro.targetParamLinks) {
-    yield put(uNodeDelete(macro.targetParamLinks[id].nodeId))
+  for (const linkId in macro.targetParamLinks) {
+    const link = macro.targetParamLinks[linkId]
+    yield put(uNodeDelete(link.nodeId))
+    yield put(rNodeConnectedMacroRemove(link.paramId, macroId))
   }
 }
 
@@ -46,6 +50,7 @@ export function* macroTargetParamLinkAdd (action) {
     type: 'macroTargetParamLink'
   }))
   yield put(rMacroTargetParamLinkCreate(p.macroId, p.paramId, nodeId))
+  yield put(rNodeConnectedMacroAdd(p.paramId, p.macroId))
 }
 
 export function* macroTargetParamLinkDelete (action) {
@@ -53,6 +58,7 @@ export function* macroTargetParamLinkDelete (action) {
   const link = yield select(getMacroTargetParamLink, p.macroId, p.paramId)
   yield put(rMacroTargetParamLinkDelete(p.macroId, p.paramId))
   yield put(uNodeDelete(link.nodeId))
+  yield put(rNodeConnectedMacroRemove(p.paramId, p.macroId))
 }
 
 /*
@@ -86,7 +92,7 @@ export function* macroProcess (p, node) {
     }
     const n = yield select(getNode, l.nodeId)
     const val = yield call(macroInterpolate, startValue, n.value, p.value)
-    yield put(nodeValueUpdate(l.paramId, val))
+    yield put(nodeValueUpdate(l.paramId, val, { type: 'macro' }))
   }
 }
 
@@ -103,15 +109,24 @@ export function* macroLearnFromParam (p, macroId) {
 
 export function* handleNodeValueUpdate (action) {
   const p = action.payload
-  const node = yield select(getNode, p.id)
-  const learningId = yield select(getMacroLearningId)
+  if (!p.meta || p.meta.type !== 'macro') {
+    const node = yield select(getNode, p.id)
 
-  if (node.type === 'macro') {
-    yield call(macroProcess, action.payload, node)
-  } else {
-    const learn = yield call(shouldItLearn, learningId, node, p)
-    if (learn) {
-      yield call(macroLearnFromParam, action.payload, learningId)
+    const nodeMacroIds = node.connectedMacroIds
+    const learningId = yield select(getMacroLearningId)
+
+    if (node.type === 'macro') {
+      yield call(macroProcess, action.payload, node)
+    } else {
+      const learn = yield call(shouldItLearn, learningId, node, p)
+      if (learn) {
+        yield call(macroLearnFromParam, action.payload, learningId)
+      }
+      if (nodeMacroIds) {
+        for (let i = 0; i < nodeMacroIds.length; i++) {
+          yield put(rMacroTargetParamLinkUpdateStartValue(nodeMacroIds[i], p.id, false))
+        }
+      }
     }
   }
 }

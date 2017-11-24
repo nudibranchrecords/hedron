@@ -117,14 +117,16 @@ test('(Reducer) nodesReducer - Adds node on R_NODE_CREATE, adds extra properties
       key: 'rotX',
       value: 0.1,
       id: '01',
-      inputLinkIds: []
+      inputLinkIds: [],
+      connectedMacroIds: []
     },
     '02': {
       title: 'Rotation Y',
       key: 'rotY',
       value: 0.2,
       id: '02',
-      inputLinkIds: []
+      inputLinkIds: [],
+      connectedMacroIds: []
     }
   }
 
@@ -134,21 +136,24 @@ test('(Reducer) nodesReducer - Adds node on R_NODE_CREATE, adds extra properties
       key: 'rotX',
       value: 0.1,
       id: '01',
-      inputLinkIds: []
+      inputLinkIds: [],
+      connectedMacroIds: []
     },
     '02': {
       title: 'Rotation Y',
       key: 'rotY',
       value: 0.2,
       id: '02',
-      inputLinkIds: []
+      inputLinkIds: [],
+      connectedMacroIds: []
     },
     '03': {
       title: 'Rotation X',
       key: 'rotX',
       value: 0.2,
       id: '03',
-      inputLinkIds: []
+      inputLinkIds: [],
+      connectedMacroIds: []
     }
   }
 
@@ -173,28 +178,32 @@ test('(Reducer) nodesReducer - Adds node on R_NODE_CREATE, adds extra properties
       key: 'rotX',
       value: 0.1,
       id: '01',
-      inputLinkIds: []
+      inputLinkIds: [],
+      connectedMacroIds: []
     },
     '02': {
       title: 'Rotation Y',
       key: 'rotY',
       value: 0.2,
       id: '02',
-      inputLinkIds: []
+      inputLinkIds: [],
+      connectedMacroIds: []
     },
     '03': {
       title: 'Rotation X',
       key: 'rotX',
       value: 0.2,
       id: '03',
-      inputLinkIds: []
+      inputLinkIds: [],
+      connectedMacroIds: []
     },
     '04': {
       title: 'Scale',
       key: 'scale',
       value: 0,
       id: '04',
-      inputLinkIds: []
+      inputLinkIds: [],
+      connectedMacroIds: []
     }
   }
 
