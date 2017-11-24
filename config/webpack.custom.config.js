@@ -1,5 +1,8 @@
 const devConfig = require('./dev.config.js')
-const defaultProject = require(devConfig.defaultProject)
+let defaultProject
+if (devConfig.defaultProject) {
+  defaultProject = require(devConfig.defaultProject)
+}
 const sketchesPath = defaultProject && defaultProject.project.sketchesPath
 let devServerOptions = {}
 
