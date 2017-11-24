@@ -14,6 +14,8 @@ import App from '../components/App'
 import Engine from '../Engine'
 import { initiateScreens } from '../windows'
 import Stats from 'stats.js'
+import createDebounce from 'redux-debounced'
+
 import 'react-select/dist/react-select.css'
 import '../style.css'
 
@@ -52,6 +54,7 @@ const debounceNotify = debounce(notify => notify())
 const sagaMiddleware = createSagaMiddleware()
 
 const store = createStore(rootReducer, composeEnhancers(
+  applyMiddleware(createDebounce()),
   applyMiddleware(sagaMiddleware),
   batchedSubscribe(debounceNotify)
 ))

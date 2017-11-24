@@ -26,6 +26,11 @@ export function midiMessage (id, message) {
     payload: {
       id,
       message
+    },
+    meta: {
+      debounce: {
+        time: 100
+      }
     }
   }
 }
