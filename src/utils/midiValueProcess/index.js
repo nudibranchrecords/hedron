@@ -6,9 +6,9 @@
 export default (nodeValue, midiValue) => {
   let value
   if (midiValue === 1) {
-    value = nodeValue - 0.004
+    value = nodeValue - 0.007
   } else {
-    value = nodeValue + 0.004
+    value = nodeValue + 0.007
   }
   value = Math.max(0, Math.min(1, value))
   return value
