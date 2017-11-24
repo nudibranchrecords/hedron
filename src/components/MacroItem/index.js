@@ -4,11 +4,18 @@ import Button from '../Button'
 import Param from '../../containers/Param'
 import MacroLink from '../../containers/MacroLink'
 import Row from '../Row'
+import styled from 'styled-components'
+
+const Links = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  margin-bottom: 0.5rem;
+`
 
 const MacroItem = ({ nodeId, onLearningClick, items, isLearning, macroId }) => (
   <div>
     <Param nodeId={nodeId}>
-      <Row>
+      <Links>
         {items.map(item => (
           <MacroLink
             macroId={macroId}
@@ -17,12 +24,15 @@ const MacroItem = ({ nodeId, onLearningClick, items, isLearning, macroId }) => (
             key={item.nodeId}
           />
         ))}
+      </Links>
+      <Row justify='space-between'>
+        <Button onClick={onLearningClick}>
+          {isLearning ? 'Stop Learning' : 'Start Learning'}
+        </Button>
+        <Button>Delete Macro</Button>
       </Row>
     </Param>
 
-    <Button onClick={onLearningClick}>
-      {isLearning ? 'Stop Learning' : 'Start Learning'}
-    </Button>
   </div>
 )
 

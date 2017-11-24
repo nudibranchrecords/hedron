@@ -6,6 +6,8 @@ const SubNode = styled.div`
   border-radius: 3px;
   min-width: 20%;
   margin-right: 0.25rem;
+  margin-bottom: 0.25rem;
+  flex: 1;
 `
 
 export default SubNode
