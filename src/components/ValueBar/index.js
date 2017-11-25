@@ -1,7 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
-import { throttle } from 'lodash'
 
 const Bar = styled.canvas`
   background: #222;
@@ -24,15 +23,19 @@ class ParamBar extends React.Component {
     this.height = this.canvas.height = 16
 
     this.setSize()
-    this.draw(this.props.value)
 
     window.addEventListener('resize', e => {
       e.preventDefault()
       this.setSize()
     })
+
+    this.ticker = setInterval(() => {
+      this.draw(this.props.value)
+    }, 100)
   }
 
   componentWillUnmount () {
+    clearInterval(this.ticker)
     window.removeEventListener('resize', this.setSize)
   }
 
@@ -42,8 +45,12 @@ class ParamBar extends React.Component {
     this.draw(this.props.value)
   }
 
-  componentWillReceiveProps (nextProps) {
-    this.draw(nextProps.value, this.props.value)
+  // componentWillReceiveProps (nextProps) {
+  //   this.draw(nextProps.value, this.props.value)
+  // }
+
+  shouldComponentUpdate () {
+    return false
   }
 
   handleMouseDown (e) {
@@ -65,26 +72,28 @@ class ParamBar extends React.Component {
     this.props.onChange(newVal)
   }
 
-  draw = throttle((newVal) => {
-    const barWidth = 2
-    const innerWidth = this.width - barWidth
-    const pos = innerWidth * newVal
-    const context = this.canvas.getContext('2d')
-    context.fillStyle = '#FFFFFF'
+  draw (newVal) {
+    if (newVal !== this.oldVal) {
+      const barWidth = 2
+      const innerWidth = this.width - barWidth
+      const pos = innerWidth * newVal
+      const context = this.canvas.getContext('2d')
+      context.fillStyle = '#FFFFFF'
 
-    if (this.oldVal) {
-      const oldPos = innerWidth * this.oldVal
-        // Only clear the area from the last position
-      context.clearRect(oldPos - 1, 0, barWidth + 2, this.height)
-    } else {
-      context.clearRect(0, 0, this.width, this.height)
+      if (this.oldVal) {
+        const oldPos = innerWidth * this.oldVal
+          // Only clear the area from the last position
+        context.clearRect(oldPos - 1, 0, barWidth + 2, this.height)
+      } else {
+        context.clearRect(0, 0, this.width, this.height)
+      }
+
+      this.oldVal = newVal
+
+      // Draw bar at new position
+      context.fillRect(pos, 0, barWidth, this.height)
     }
-
-    this.oldVal = newVal
-
-    // Draw bar at new position
-    context.fillRect(pos, 0, barWidth, this.height)
-  }, 50)
+  }
 
   render () {
     return (
