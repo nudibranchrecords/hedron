@@ -193,8 +193,8 @@ test(`(Saga) handleNodeValueUpdate
 
   t.deepEqual(
     generator.next().value,
-    put(nodeValueUpdate('n1', 0)),
-    '3.2 Reset macro node'
+    put(nodeValueUpdate('n1', 0, { type: 'macro' })),
+    '3.2 Reset macro node, meta type: macro to stop it from processing the macro'
   )
 
   t.deepEqual(
@@ -215,8 +215,8 @@ test(`(Saga) handleNodeValueUpdate
 
   t.deepEqual(
     generator.next().value,
-    put(nodeValueUpdate('n2', 0)),
-    '4.2 Reset macro node'
+    put(nodeValueUpdate('n2', 0, { type: 'macro' })),
+    '4.2 Reset macro node, meta type: macro to stop it from processing the macro'
   )
 
   t.equal(generator.next().done, true, 'Generator ends')
