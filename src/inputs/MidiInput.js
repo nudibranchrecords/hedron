@@ -6,12 +6,14 @@ import { clockPulse } from '../store/clock/actions'
 export default (store) => {
   const onMessage = (message) => {
     const state = store.getState()
-    store.dispatch(midiMessage(message.target.name, {
-      data: message.data,
-      timeStamp: message.timeStamp
-    }))
+
     // If has note data, treat as normal midi input
     if (message.data[1] !== undefined) {
+      store.dispatch(midiMessage(message.target.name, {
+        data: message.data,
+        timeStamp: message.timeStamp
+      }))
+
       const learningId = state.midi.learning
       const id = 'midi_' + message.data[0].toString() + message.data[1].toString()
       const val = message.data[2] / 127
