@@ -17,7 +17,7 @@ export default (store) => {
       const learningId = state.midi.learning
       const id = 'midi_' + message.data[0].toString() + message.data[1].toString()
       const val = message.data[2] / 127
-      const noteOn = message.data[0] === 144
+      const noteOn = message.data[0] === 144 && message.data[2] !== 0
 
       if (learningId) {
         store.dispatch(uInputLinkCreate(learningId, id, 'midi', message.target.name))
