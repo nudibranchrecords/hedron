@@ -8,7 +8,6 @@ export default (store) => {
   const onMessage = (rawMessage) => {
     const state = store.getState()
     const m = processMidiMessage(rawMessage)
-    console.log(m, rawMessage.data)
 
     if (m.type !== 'timingClock') {
       store.dispatch(midiMessage(rawMessage.target.name, {
