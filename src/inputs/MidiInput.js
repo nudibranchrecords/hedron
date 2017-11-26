@@ -2,34 +2,33 @@ import { inputFired } from '../store/inputs/actions'
 import { midiStopLearning, midiUpdateDevices, midiMessage } from '../store/midi/actions'
 import { uInputLinkCreate } from '../store/inputLinks/actions'
 import { clockPulse } from '../store/clock/actions'
+import processMidiMessage from '../utils/processMidiMessage'
 
 export default (store) => {
-  const onMessage = (message) => {
+  const onMessage = (rawMessage) => {
     const state = store.getState()
+    const m = processMidiMessage(rawMessage)
+    console.log(m, rawMessage.data)
 
-    // If has note data, treat as normal midi input
-    if (message.data[1] !== undefined) {
-      store.dispatch(midiMessage(message.target.name, {
-        data: message.data,
-        timeStamp: message.timeStamp
+    if (m.type !== 'timingClock') {
+      store.dispatch(midiMessage(rawMessage.target.name, {
+        data: rawMessage.data,
+        timeStamp: rawMessage.timeStamp
       }))
 
       const learningId = state.midi.learning
-      const id = 'midi_' + message.data[0].toString() + message.data[1].toString()
-      const val = message.data[2] / 127
-      const noteOn = message.data[0] === 144 && message.data[2] !== 0
 
       if (learningId) {
-        store.dispatch(uInputLinkCreate(learningId, id, 'midi', message.target.name))
+        store.dispatch(uInputLinkCreate(learningId, m.id, 'midi', rawMessage.target.name))
         store.dispatch(midiStopLearning())
       } else {
-        store.dispatch(inputFired(id, val, {
-          noteOn,
+        store.dispatch(inputFired(m.id, m.value, {
+          noteOn: m.type === 'noteOn',
           type: 'midi'
         }))
       }
     // If no note data, treat as clock
-    } else {
+    } else if (m.type === 'timingClock') {
       // Only dispatch clock pulse if no generated clock
       if (!state.clock.isGenerated) {
         store.dispatch(clockPulse())
