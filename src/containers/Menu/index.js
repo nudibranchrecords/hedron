@@ -12,10 +12,14 @@ const mapStateToProps = (state, ownProps) => ({
   filePath: state.project.filePath,
   saveIsDisabled: !state.project.filePath,
   clockIsGenerated: state.clock.isGenerated,
-  displayOptions: state.displays.list.map((item, index) => ({
-    value: index,
-    label: item.bounds.width + 'x' + item.bounds.height
-  }))
+  displayOptions: state.displays.list.map((item, index) => {
+    const width = item && item.bounds && item.bounds.width
+    const height = item && item.bounds && item.bounds.height
+    return {
+      value: index,
+      label: width + 'x' + height
+    }
+  })
 })
 
 const fileFilters = [
