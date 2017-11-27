@@ -1,5 +1,5 @@
 export default message => {
-  let val, type, id
+  let value, type, id
 
   const d0 = message.data[0]
   const d1 = message.data[1]
@@ -22,14 +22,14 @@ export default message => {
   }
 
   if (d2) {
-    val = d2 / 127
+    value = d2 / 127
   }
 
-  if (d0 && d1) {
+  if (d0 !== undefined && d1 !== undefined) {
     id = 'midi_' + d0.toString() + d1.toString()
   }
 
   return {
-    val, id, type
+    value, id, type
   }
 }
