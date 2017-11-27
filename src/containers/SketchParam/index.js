@@ -1,6 +1,7 @@
 import { connect } from 'react-redux'
 import SketchParam from '../../components/SketchParam'
 import getNodeInputLinkIds from '../../selectors/getNodeInputLinkIds'
+import withDeferRender from '../../utils/withDeferRender'
 
 const mapStateToProps = (state, ownProps) => {
   return {
@@ -10,6 +11,6 @@ const mapStateToProps = (state, ownProps) => {
 
 const ParamContainer = connect(
   mapStateToProps
-)(SketchParam)
+)(withDeferRender(SketchParam))
 
 export default ParamContainer

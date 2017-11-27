@@ -33,8 +33,8 @@ const Sketch = ({ title, params, shots, onDeleteClick, sketchId }) => (
       <div>
         <h3>Params</h3>
         <Params>
-          {params.map((id) => (
-            <SketchParam nodeId={id} key={id} />
+          {params.map((id, index) => (
+            <SketchParam nodeId={id} key={id} index={index} />
           ))}
         </Params>
       </div>
