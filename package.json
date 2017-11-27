@@ -51,7 +51,7 @@
     "redux-batched-subscribe": "^0.1.6",
     "redux-saga": "^0.14.5",
     "stats.js": "^0.17.0",
-    "styled-components": "^1.4.4",
+    "styled-components": "^2.2.3",
     "three": "^0.84.0",
     "uid": "^0.0.2"
   },
