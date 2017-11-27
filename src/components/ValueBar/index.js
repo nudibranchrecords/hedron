@@ -19,7 +19,6 @@ class ParamBar extends React.Component {
 
   componentDidMount () {
     this.containerEl = this.canvas.parentElement
-    this.width = this.canvas.width = this.containerEl.offsetWidth
     this.height = this.canvas.height = 16
 
     this.setSize()
@@ -36,18 +35,21 @@ class ParamBar extends React.Component {
 
   componentWillUnmount () {
     clearInterval(this.ticker)
+    clearInterval(this.sizer)
     window.removeEventListener('resize', this.setSize)
   }
 
   setSize () {
     this.canvas.width = 0
-    this.width = this.canvas.width = this.containerEl.offsetWidth
-    this.draw(this.props.value)
-  }
+    this.canvas.style.display = 'none'
+    this.containerEl.style.display = 'none'
+    this.containerEl.style.display = 'block'
 
-  // componentWillReceiveProps (nextProps) {
-  //   this.draw(nextProps.value, this.props.value)
-  // }
+    this.sizer = setTimeout(() => {
+      this.canvas.style.display = 'block'
+      this.width = this.canvas.width = this.containerEl.offsetWidth
+    }, 1)
+  }
 
   shouldComponentUpdate () {
     return false
