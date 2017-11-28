@@ -92,7 +92,7 @@ export function* macroProcess (p, node) {
     }
     const n = yield select(getNode, l.nodeId)
     const val = yield call(macroInterpolate, startValue, n.value, p.value)
-    yield put(nodeValueUpdate(l.paramId, val, { type: 'macro' }))
+    yield put(nodeValueUpdate(l.paramId, val, { type: 'macro', macroId: node.macroId }))
   }
 }
 
@@ -109,22 +109,25 @@ export function* macroLearnFromParam (p, macroId) {
 
 export function* handleNodeValueUpdate (action) {
   const p = action.payload
-  if (!p.meta || p.meta.type !== 'macro') {
-    const node = yield select(getNode, p.id)
+  const senderType = p.meta && p.meta.type
+  const senderMacroId = p.meta && p.meta.macroId
 
-    const nodeMacroIds = node.connectedMacroIds
-    const learningId = yield select(getMacroLearningId)
+  const node = yield select(getNode, p.id)
+  const nodeMacroIds = node.connectedMacroIds
 
-    if (node.type === 'macro') {
-      yield call(macroProcess, p, node)
-    } else {
-      const learn = yield call(shouldItLearn, learningId, node, p)
-      if (learn) {
-        yield call(macroLearnFromParam, p, learningId)
-      }
-      if (nodeMacroIds) {
-        for (let i = 0; i < nodeMacroIds.length; i++) {
-          const macroId = nodeMacroIds[i]
+  const learningId = yield select(getMacroLearningId)
+
+  if (node.type === 'macro' && senderType !== 'macro') {
+    yield call(macroProcess, p, node)
+  } else {
+    const learn = yield call(shouldItLearn, learningId, node, p)
+    if (learn) {
+      yield call(macroLearnFromParam, p, learningId)
+    }
+    if (nodeMacroIds) {
+      for (let i = 0; i < nodeMacroIds.length; i++) {
+        const macroId = nodeMacroIds[i]
+        if (senderMacroId !== macroId) {
           const macro = yield select(getMacro, macroId)
 
           for (const key in macro.targetParamLinks) {
