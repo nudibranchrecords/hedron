@@ -6,7 +6,7 @@ class World {
       this.canvas = canvas
       this.renderer = new THREE.WebGLRenderer({ canvas: this.canvas })
       this.scene = new THREE.Scene()
-      this.camera = new THREE.PerspectiveCamera(75, null, 1, 200000)
+      this.camera = new THREE.PerspectiveCamera(75, null, 1, 1000000)
       this.camera.position.z = 1000
       this.viewerEl = this.renderer.domElement.parentElement
       this.setSize()
