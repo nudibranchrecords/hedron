@@ -116,11 +116,11 @@ export function* handleNodeValueUpdate (action) {
     const learningId = yield select(getMacroLearningId)
 
     if (node.type === 'macro') {
-      yield call(macroProcess, action.payload, node)
+      yield call(macroProcess, p, node)
     } else {
       const learn = yield call(shouldItLearn, learningId, node, p)
       if (learn) {
-        yield call(macroLearnFromParam, action.payload, learningId)
+        yield call(macroLearnFromParam, p, learningId)
       }
       if (nodeMacroIds) {
         for (let i = 0; i < nodeMacroIds.length; i++) {
