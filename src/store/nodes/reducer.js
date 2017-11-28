@@ -22,6 +22,9 @@ const nodesReducer = (state = defaultState, action) => {
       }
     }
     case 'NODE_VALUE_UPDATE': {
+      if (!state[p.id]) {
+        return state
+      }
       return {
         ...state,
         [p.id]: {
@@ -31,6 +34,9 @@ const nodesReducer = (state = defaultState, action) => {
       }
     }
     case 'NODE_INPUT_LINK_ADD': {
+      if (!state[p.id]) {
+        return state
+      }
       return {
         ...state,
         [p.id]: {
@@ -40,6 +46,9 @@ const nodesReducer = (state = defaultState, action) => {
       }
     }
     case 'NODE_INPUT_LINK_REMOVE': {
+      if (!state[p.id]) {
+        return state
+      }
       return {
         ...state,
         [p.id]: {
@@ -50,6 +59,10 @@ const nodesReducer = (state = defaultState, action) => {
       }
     }
     case 'R_NODE_CONNECTED_MACRO_ADD': {
+      if (!state[p.id]) {
+        return state
+      }
+
       return {
         ...state,
         [p.id]: {
@@ -59,6 +72,10 @@ const nodesReducer = (state = defaultState, action) => {
       }
     }
     case 'R_NODE_CONNECTED_MACRO_REMOVE': {
+      if (!state[p.id]) {
+        return state
+      }
+
       return {
         ...state,
         [p.id]: {
