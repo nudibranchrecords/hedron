@@ -2,30 +2,32 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import Node from '../Node'
-import Row from '../Row'
-import Col from '../Col'
 import ParamInputSelect from '../../containers/ParamInputSelect'
 import NodeInputInfo from '../../containers/NodeInputInfo'
 import ShotButton from '../../containers/ShotButton'
 import InputLink from '../../containers/InputLink'
 
 const Wrapper = styled(Node)`
-  flex: 0 0 33.33%;
-  width: 33.33%;
+  flex: 0 0 25%;
+  width: 25%;
   padding: 0.5rem;
+`
+
+const Part = styled.div`
+  margin-bottom: 0.25rem;
 `
 
 const Shot = ({ nodeId, modifierIds, title, sketchId, method, inputLinkIds }) => (
   <Wrapper>
-    {title}
-    <Row>
-      <Col>
-        <ShotButton sketchId={sketchId} method={method} nodeId={nodeId} />
-      </Col>
-      <Col>
-        <ParamInputSelect nodeId={nodeId} />
-      </Col>
-    </Row>
+    <Part>
+      {title}
+    </Part>
+    <Part>
+      <ShotButton sketchId={sketchId} method={method} nodeId={nodeId} />
+    </Part>
+    <Part>
+      <ParamInputSelect nodeId={nodeId} />
+    </Part>
     <NodeInputInfo nodeId={nodeId} />
     {inputLinkIds.map(id => (
       <InputLink id={id} key={id} size='small' />
