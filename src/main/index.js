@@ -12,6 +12,7 @@ function createMainWindow () {
   mainWindow = new BrowserWindow({
     width: 1920,
     height: 1080,
+    fullscreen: !isDevelopment,
     webPreferences: {
       nativeWindowOpen: true,
       webSecurity: false
@@ -20,7 +21,7 @@ function createMainWindow () {
 
   mainWindow.webContents.on('new-window', (event, url, frameName, disposition, options, additionalFeatures) => {
     if (frameName === 'modal') {
-    // open window as modal
+      // open window as modal
       event.preventDefault()
       event.newGuest = new BrowserWindow(options)
 
