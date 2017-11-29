@@ -409,6 +409,40 @@ test('(Saga) handleInput (shot - noteOn)', (t) => {
   t.end()
 })
 
+test('(Saga) handleInput (macro - noteOn)', (t) => {
+  const meta = { 'noteOn': true }
+  const generator = handleInput({
+    payload: {
+      value: 0.5,
+      inputId: 'midi_xxx',
+      meta
+    }
+  })
+
+  t.deepEqual(
+    generator.next().value,
+    select(getAssignedLinks, 'midi_xxx'),
+    '1. Gets assigned links'
+  )
+
+  const links = [
+    {
+      nodeId: 'XX',
+      nodeType: 'macro'
+    }
+  ]
+
+  t.deepEqual(
+    generator.next(links).value,
+    put(nodeValueUpdate('XX', 1, meta)),
+    '5. Dispatches node update action with value of 1'
+  )
+
+  t.equal(generator.next().done, true, 'generator ends')
+
+  t.end()
+})
+
 test('(Saga) handleInput (midi - banks)', (t) => {
   let bankIndex
 

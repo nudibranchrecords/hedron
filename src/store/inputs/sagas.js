@@ -70,6 +70,12 @@ export function* handleInput (action) {
             } else if (value < 0.5) {
               yield put(inputLinkShotArm(links[i].id))
             }
+            break
+          }
+          case 'macro': {
+            if (p.meta && p.meta.noteOn) {
+              value = 1
+            }
           }
         }
 
