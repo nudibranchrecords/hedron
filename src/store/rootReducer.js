@@ -1,4 +1,6 @@
 import { combineReducers } from 'redux'
+import { ignoreActions } from 'redux-ignore'
+
 import sketchesReducer from './sketches/reducer'
 import projectReducer from './project/reducer'
 import inputsReducer from './inputs/reducer'
@@ -10,17 +12,24 @@ import availableModulesReducer from './availableModules/reducer'
 import displaysReducer from './displays/reducer'
 import macroReducer from './macros/reducer'
 
+const ignoreList = [
+  'CLOCK_PULSE', 'CLOCK_BEAT_INC',
+  'CLOCK_BPM_UPDATE', 'INPUT_FIRED',
+  'NODE_VALUE_UPDATE'
+]
+
 const rootReducer = combineReducers({
-  nodes: nodesReducer,
-  availableModules: availableModulesReducer,
-  sketches: sketchesReducer,
-  project: projectReducer,
-  inputs: inputsReducer,
-  inputLinks: inputLinkReducer,
-  clock: clockReducer,
-  midi: midiReducer,
-  displays: displaysReducer,
-  macros: macroReducer
+  nodes: ignoreActions(nodesReducer, ['CLOCK_PULSE', 'CLOCK_BEAT_INC',
+    'CLOCK_BPM_UPDATE']),
+  availableModules: ignoreActions(availableModulesReducer, ignoreList),
+  sketches: ignoreActions(sketchesReducer, ignoreList),
+  project: ignoreActions(projectReducer, ignoreList),
+  inputs: ignoreActions(inputsReducer, ignoreList),
+  inputLinks: ignoreActions(inputLinkReducer, ignoreList),
+  clock: ignoreActions(clockReducer, ['INPUT_FIRED', 'NODE_VALUE_UPDATE']),
+  midi: ignoreActions(midiReducer, ignoreList),
+  displays: ignoreActions(displaysReducer, ignoreList),
+  macros: ignoreActions(macroReducer, ignoreList)
 })
 
 export default rootReducer
