@@ -1,5 +1,5 @@
 'use strict'
-import { app, BrowserWindow } from 'electron'
+import { app, BrowserWindow, ipcMain } from 'electron'
 
 const isDevelopment = process.env.NODE_ENV !== 'production'
 
@@ -24,6 +24,10 @@ function createMainWindow () {
       // open window as modal
       event.preventDefault()
       event.newGuest = new BrowserWindow(options)
+
+      ipcMain.on('reposition-output-window', (e, display) => {
+        event.newGuest.setBounds(display.bounds)
+      })
 
       if (!isDevelopment) {
         setTimeout(() => {

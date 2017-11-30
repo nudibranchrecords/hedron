@@ -1,10 +1,10 @@
 import world from './Engine/world.js'
-import electron from 'electron'
+import { screen, ipcRenderer } from 'electron'
 import { displaysListUpdate } from './store/displays/actions'
 let store
 
 const updateDisplays = () => {
-  store.dispatch(displaysListUpdate(electron.screen.getAllDisplays()))
+  store.dispatch(displaysListUpdate(screen.getAllDisplays()))
 }
 
 export const initiateScreens = (injectedStore) => {
@@ -12,14 +12,16 @@ export const initiateScreens = (injectedStore) => {
   updateDisplays()
 }
 
-electron.screen.on('display-added', updateDisplays)
-electron.screen.on('display-removed', updateDisplays)
-electron.screen.on('display-metrics-changed', updateDisplays)
+screen.on('display-added', updateDisplays)
+screen.on('display-removed', updateDisplays)
+screen.on('display-metrics-changed', updateDisplays)
 
 export const sendOutput = (index) => {
-  const display = electron.screen.getAllDisplays()[index]
+  const display = screen.getAllDisplays()[index]
 
-  let outputWin = window.open('', 'modal', `left=${display.bounds.x},top=${display.bounds.y}`)
+  let outputWin = window.open('', 'modal')
+
+  ipcRenderer.send('reposition-output-window', display)
 
   outputWin.document.write('<div style="width:100vw;height:100vh;"></div>')
   outputWin.document.body.style.margin = '0'
