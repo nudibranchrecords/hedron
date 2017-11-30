@@ -219,47 +219,67 @@ test(`(Saga) handleNodeValueUpdate
 
   t.deepEqual(
     generator.next(macro).value,
+    select(getNode, 'n1'),
+    '4.0 Get node'
+  )
+
+  const macroNode = {
+    value: 0.5
+  }
+
+  t.deepEqual(
+    generator.next(macroNode).value,
     put(rMacroTargetParamLinkUpdateStartValue('macro01', 'foo', false)),
-    '3.1 Reset macro link'
+    '5.1 Reset macro link'
   )
 
   t.deepEqual(
     generator.next(macro).value,
     put(rMacroTargetParamLinkUpdateStartValue('macro01', 'bar', false)),
-    '3.2 Reset macro link'
+    '5.2 Reset macro link'
   )
 
   t.deepEqual(
     generator.next().value,
-    put(nodeValueUpdate('n1', 0, { type: 'macro' })),
-    '3.3 Reset macro node, meta type: macro to stop it from processing the macro'
+    put(nodeValueUpdate('n1', false, { type: 'macro' })),
+    '4.2 Reset macro node with "false" and meta type: macro to stop it from processing the macro'
   )
 
   t.deepEqual(
     generator.next(learn).value,
     select(getMacro, 'macro02'),
-    '4.0 Get macro'
+    '6.0 Get macro'
   )
 
   const macro2 = {
     nodeId: 'n2',
     targetParamLinks: {
       lorem: {
-        startValue: 0.5
+        startValue: 0.1
       }
     }
   }
 
   t.deepEqual(
-    generator.next(macro2).value,
+      generator.next(macro2).value,
+      select(getNode, 'n2'),
+      '6.0 Get node'
+    )
+
+  const macroNode2 = {
+    value: 0.2
+  }
+
+  t.deepEqual(
+    generator.next(macroNode2).value,
     put(rMacroTargetParamLinkUpdateStartValue('macro02', 'lorem', false)),
     '4.1 Reset macro link'
   )
 
   t.deepEqual(
     generator.next().value,
-    put(nodeValueUpdate('n2', 0, { type: 'macro' })),
-    '4.2 Reset macro node, meta type: macro to stop it from processing the macro'
+    put(nodeValueUpdate('n2', false, { type: 'macro' })),
+    '4.2 Reset macro node with "false" and meta type: macro to stop it from processing the macro'
   )
 
   t.equal(generator.next().done, true, 'Generator ends')
@@ -319,18 +339,92 @@ except for the macro being called)`, (t) => {
   }
 
   t.deepEqual(
-    generator.next(macro2).value,
+      generator.next(macro2).value,
+      select(getNode, 'n2'),
+      '6.0 Get node'
+    )
+
+  const macroNode2 = {
+    value: 0.2
+  }
+
+  t.deepEqual(
+    generator.next(macroNode2).value,
     put(rMacroTargetParamLinkUpdateStartValue('macro02', 'lorem', false)),
     '4.1 Reset macro link'
   )
 
   t.deepEqual(
     generator.next().value,
-    put(nodeValueUpdate('n2', 0, { type: 'macro' })),
+    put(nodeValueUpdate('n2', false, { type: 'macro' })),
     '4.2 Reset macro node, meta type: macro to stop it from processing the macro'
   )
 
   t.equal(generator.next().done, true, 'Generator ends (dont reset macro)')
+  t.end()
+})
+
+test(`(Saga) handleNodeValueUpdate
+(Dont Reset macro or start values for links if macro node
+is already set to false, as this signifies it has already been reset)`, (t) => {
+  const paramId = 'PARAMID'
+  const newVal = 0.5
+  const action = nodeValueUpdate(paramId, newVal, { type: 'macro', macroId: 'macro01' })
+  const generator = handleNodeValueUpdate(action)
+
+  t.deepEqual(
+    generator.next().value,
+    select(getNode, paramId),
+    '0. Get node'
+  )
+
+  const node = {
+    type: 'foo',
+    connectedMacroIds: ['macro05']
+  }
+
+  t.deepEqual(
+    generator.next(node).value,
+    select(getMacroLearningId),
+    '1. Check macro learning Id'
+  )
+
+  const id = true
+
+  t.deepEqual(
+    generator.next(id).value,
+    call(shouldItLearn, id, node, action.payload),
+    '2. Check if node should learn'
+  )
+
+  const learn = false
+
+  t.deepEqual(
+    generator.next(learn).value,
+    select(getMacro, 'macro05'),
+    '4.0 Get macro'
+  )
+
+  const macro2 = {
+    nodeId: 'n2',
+    targetParamLinks: {
+      lorem: {
+        startValue: 0.5
+      }
+    }
+  }
+
+  t.deepEqual(
+      generator.next(macro2).value,
+      select(getNode, 'n2'),
+      '6.0 Get node'
+    )
+
+  const macroNode2 = {
+    value: false
+  }
+
+  t.equal(generator.next(macroNode2).done, true, 'Generator ends (dont reset macro)')
   t.end()
 })
 

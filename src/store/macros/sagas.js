@@ -129,12 +129,15 @@ export function* handleNodeValueUpdate (action) {
         const macroId = nodeMacroIds[i]
         if (senderMacroId !== macroId) {
           const macro = yield select(getMacro, macroId)
+          const node = yield select(getNode, macro.nodeId)
 
-          for (const key in macro.targetParamLinks) {
-            yield put(rMacroTargetParamLinkUpdateStartValue(macroId, key, false))
+          if (node.value !== false) {
+            for (const key in macro.targetParamLinks) {
+              yield put(rMacroTargetParamLinkUpdateStartValue(macroId, key, false))
+            }
+
+            yield put(nodeValueUpdate(macro.nodeId, false, { type: 'macro' }))
           }
-
-          yield put(nodeValueUpdate(macro.nodeId, 0, { type: 'macro' }))
         }
       }
     }
