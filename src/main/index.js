@@ -12,7 +12,7 @@ function createMainWindow () {
   mainWindow = new BrowserWindow({
     width: 1920,
     height: 1080,
-    fullscreen: !isDevelopment,
+    fullscreenable: true,
     webPreferences: {
       nativeWindowOpen: true,
       webSecurity: false
@@ -27,6 +27,7 @@ function createMainWindow () {
 
       if (!isDevelopment) {
         setTimeout(() => {
+          mainWindow.setFullScreen(true)
           event.newGuest.setFullScreen(true)
         }, 500)
       }
