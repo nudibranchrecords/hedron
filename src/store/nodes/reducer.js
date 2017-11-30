@@ -6,6 +6,18 @@ const nodesReducer = (state = defaultState, action) => {
   const p = action.payload
 
   switch (action.type) {
+    case 'NODE_VALUE_UPDATE': {
+      if (!state[p.id]) {
+        return state
+      }
+      return {
+        ...state,
+        [p.id]: {
+          ...state[p.id],
+          value: p.value
+        }
+      }
+    }
     case 'R_NODE_DELETE': {
       return _.omit(state, [p.id])
     }
@@ -18,18 +30,6 @@ const nodesReducer = (state = defaultState, action) => {
           inputLinkIds: [],
           connectedMacroIds: [],
           ...p.node
-        }
-      }
-    }
-    case 'NODE_VALUE_UPDATE': {
-      if (!state[p.id]) {
-        return state
-      }
-      return {
-        ...state,
-        [p.id]: {
-          ...state[p.id],
-          value: p.value
         }
       }
     }
