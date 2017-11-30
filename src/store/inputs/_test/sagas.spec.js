@@ -17,6 +17,7 @@ import getNode from '../../../selectors/getNode'
 import getCurrentBankIndex from '../../../selectors/getCurrentBankIndex'
 import lfoProcess from '../../../utils/lfoProcess'
 import midiValueProcess from '../../../utils/midiValueProcess'
+import debounceInput from '../../../utils/debounceInput'
 
 proxyquire.noCallThru()
 
@@ -39,16 +40,26 @@ test('(Saga) watchInputs', (t) => {
   t.end()
 })
 
+const payload = {
+  value: 0.2,
+  inputId: 'audio_0'
+}
+
 test('(Saga) handleInput (no modifiers)', (t) => {
   const generator = handleInput({
-    payload: {
-      value: 0.2,
-      inputId: 'audio_0'
-    }
+    payload
   })
 
   t.deepEqual(
     generator.next().value,
+    call(debounceInput, payload),
+    '0. Call debounceInput'
+  )
+
+  const messageCount = 1
+
+  t.deepEqual(
+    generator.next(messageCount).value,
     select(getAssignedLinks, 'audio_0'),
     '1. Gets assigned links'
   )
@@ -86,16 +97,26 @@ test('(Saga) handleInput (no modifiers)', (t) => {
 test('(Saga) handleInput (modifiers)', (t) => {
   let modifiedValue, modifierNodes
 
+  const payload = {
+    value: 0.2,
+    inputId: 'audio_0',
+    type: 'audio'
+  }
+
   const generator = handleInput({
-    payload: {
-      value: 0.2,
-      inputId: 'audio_0',
-      type: 'audio'
-    }
+    payload
   })
 
   t.deepEqual(
     generator.next().value,
+    call(debounceInput, payload),
+    '0. Call debounceInput'
+  )
+
+  const messageCount = 1
+
+  t.deepEqual(
+    generator.next(messageCount).value,
     select(getAssignedLinks, 'audio_0'),
     '1. Gets assigned links'
   )
@@ -182,16 +203,25 @@ test('(Saga) handleInput (modifiers)', (t) => {
 
 test('(Saga) handleInput (ignore audio type modifiers)', (t) => {
   let modifiedValue, modifierNodes
+  const payload = {
+    value: 0.2,
+    inputId: 'midi_xxx'
+  }
 
   const generator = handleInput({
-    payload: {
-      value: 0.2,
-      inputId: 'midi_xxx'
-    }
+    payload
   })
 
   t.deepEqual(
     generator.next().value,
+    call(debounceInput, payload),
+    '0. Call debounceInput'
+  )
+
+  const messageCount = 1
+
+  t.deepEqual(
+    generator.next(messageCount).value,
     select(getAssignedLinks, 'midi_xxx'),
     '1. Gets assigned links'
   )
@@ -247,15 +277,25 @@ test('(Saga) handleInput (ignore audio type modifiers)', (t) => {
 })
 
 test('(Saga) handleInput (lfo)', (t) => {
+  const payload = {
+    value: 0.555,
+    inputId: 'lfo'
+  }
+
   const generator = handleInput({
-    payload: {
-      value: 0.555,
-      inputId: 'lfo'
-    }
+    payload
   })
 
   t.deepEqual(
     generator.next().value,
+    call(debounceInput, payload),
+    '0. Call debounceInput'
+  )
+
+  const messageCount = 1
+
+  t.deepEqual(
+    generator.next(messageCount).value,
     select(getAssignedLinks, 'lfo'),
     '1. Gets assigned links'
   )
@@ -302,15 +342,25 @@ test('(Saga) handleInput (lfo)', (t) => {
 })
 
 test('(Saga) handleInput (select node)', (t) => {
+  const payload = {
+    inputId: 'midi_xxx',
+    value: 0.34
+  }
+
   const generator = handleInput({
-    payload: {
-      inputId: 'midi_xxx',
-      value: 0.34
-    }
+    payload
   })
 
   t.deepEqual(
     generator.next().value,
+    call(debounceInput, payload),
+    '0. Call debounceInput'
+  )
+
+  const messageCount = 1
+
+  t.deepEqual(
+    generator.next(messageCount).value,
     select(getAssignedLinks, 'midi_xxx'),
     '1. Gets assigned links'
   )
@@ -360,16 +410,25 @@ test('(Saga) handleInput (select node)', (t) => {
 
 test('(Saga) handleInput (shot - noteOn)', (t) => {
   const meta = { 'noteOn': true }
+  const payload = {
+    value: 0.5,
+    inputId: 'midi_xxx',
+    meta
+  }
   const generator = handleInput({
-    payload: {
-      value: 0.5,
-      inputId: 'midi_xxx',
-      meta
-    }
+    payload
   })
 
   t.deepEqual(
     generator.next().value,
+    call(debounceInput, payload),
+    '0. Call debounceInput'
+  )
+
+  const messageCount = 1
+
+  t.deepEqual(
+    generator.next(messageCount).value,
     select(getAssignedLinks, 'midi_xxx'),
     '1. Gets assigned links'
   )
@@ -411,16 +470,26 @@ test('(Saga) handleInput (shot - noteOn)', (t) => {
 
 test('(Saga) handleInput (macro - noteOn)', (t) => {
   const meta = { 'noteOn': true }
+  const payload = {
+    value: 0.5,
+    inputId: 'midi_xxx',
+    meta
+  }
+
   const generator = handleInput({
-    payload: {
-      value: 0.5,
-      inputId: 'midi_xxx',
-      meta
-    }
+    payload
   })
 
   t.deepEqual(
     generator.next().value,
+    call(debounceInput, payload),
+    '0. Call debounceInput'
+  )
+
+  const messageCount = 1
+
+  t.deepEqual(
+    generator.next(messageCount).value,
     select(getAssignedLinks, 'midi_xxx'),
     '1. Gets assigned links'
   )
@@ -445,18 +514,27 @@ test('(Saga) handleInput (macro - noteOn)', (t) => {
 
 test('(Saga) handleInput (midi - banks)', (t) => {
   let bankIndex
-
   const meta = { type: 'midi' }
+  const payload = {
+    value: 0.5,
+    inputId: 'midi_xxx',
+    meta
+  }
+
   const generator = handleInput({
-    payload: {
-      value: 0.5,
-      inputId: 'midi_xxx',
-      meta
-    }
+    payload
   })
 
   t.deepEqual(
     generator.next().value,
+    call(debounceInput, payload),
+    '0. Call debounceInput'
+  )
+
+  const messageCount = 5
+
+  t.deepEqual(
+    generator.next(messageCount).value,
     select(getAssignedLinks, 'midi_xxx'),
     '1. Gets assigned links'
   )
@@ -507,8 +585,8 @@ test('(Saga) handleInput (midi - banks)', (t) => {
 
   t.deepEqual(
     generator.next(node).value,
-    call(midiValueProcess, 0.7, 0.5),
-    'Calls midiValueProcess using nodeValue and midi action value'
+    call(midiValueProcess, 0.7, 0.5, messageCount),
+    'Calls midiValueProcess using nodeValue, midi action value and number of messages'
   )
 
   const val = 0.75
@@ -534,16 +612,26 @@ test('(Saga) handleInput (midi - banks)', (t) => {
 
 test('(Saga) handleInput (shot - audio val is over 0.5, armed)', (t) => {
   const meta = { type: 'audio' }
+  const payload = {
+    value: 1,
+    inputId: 'audio_1',
+    meta
+  }
+
   const generator = handleInput({
-    payload: {
-      value: 1,
-      inputId: 'audio_1',
-      meta
-    }
+    payload
   })
 
   t.deepEqual(
     generator.next().value,
+    call(debounceInput, payload),
+    '0. Call debounceInput'
+  )
+
+  const messageCount = 1
+
+  t.deepEqual(
+    generator.next(messageCount).value,
     select(getAssignedLinks, 'audio_1'),
     '1. Gets assigned nodes'
   )
@@ -593,16 +681,25 @@ test('(Saga) handleInput (shot - audio val is over 0.5, armed)', (t) => {
 
 test('(Saga) handleInput (shot - audio val is over 0.5, disarmed)', (t) => {
   const meta = { type: 'audio' }
+  const payload = {
+    value: 1,
+    inputId: 'audio_1',
+    meta
+  }
   const generator = handleInput({
-    payload: {
-      value: 1,
-      inputId: 'audio_1',
-      meta
-    }
+    payload
   })
 
   t.deepEqual(
     generator.next().value,
+    call(debounceInput, payload),
+    '0. Call debounceInput'
+  )
+
+  const messageCount = 1
+
+  t.deepEqual(
+    generator.next(messageCount).value,
     select(getAssignedLinks, 'audio_1'),
     '1. Gets assigned links'
   )
@@ -640,16 +737,25 @@ test('(Saga) handleInput (shot - audio val is over 0.5, disarmed)', (t) => {
 
 test('(Saga) handleInput (shot - audio val is under 0.5, armed)', (t) => {
   const meta = { type: 'audio' }
+  const payload = {
+    value: 0.4,
+    inputId: 'audio_1',
+    meta
+  }
   const generator = handleInput({
-    payload: {
-      value: 0.4,
-      inputId: 'audio_1',
-      meta
-    }
+    payload
   })
 
   t.deepEqual(
     generator.next().value,
+    call(debounceInput, payload),
+    '0. Call debounceInput'
+  )
+
+  const messageCount = 1
+
+  t.deepEqual(
+    generator.next(messageCount).value,
     select(getAssignedLinks, 'audio_1'),
     '1. Gets assigned nodes'
   )
@@ -693,16 +799,25 @@ test('(Saga) handleInput (shot - audio val is under 0.5, armed)', (t) => {
 
 test('(Saga) handleInput (shot - audio val is under 0.5, disarmed)', (t) => {
   const meta = { type: 'audio' }
+  const payload = {
+    value: 0.4,
+    inputId: 'audio_1',
+    meta
+  }
   const generator = handleInput({
-    payload: {
-      value: 0.4,
-      inputId: 'audio_1',
-      meta
-    }
+    payload
   })
 
   t.deepEqual(
     generator.next().value,
+    call(debounceInput, payload),
+    '0. Call debounceInput'
+  )
+
+  const messageCount = 1
+
+  t.deepEqual(
+    generator.next(messageCount).value,
     select(getAssignedLinks, 'audio_1'),
     '1. Gets assigned links'
   )

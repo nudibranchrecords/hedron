@@ -17,7 +17,7 @@ import debounceInput from '../../utils/debounceInput'
 
 export function* handleInput (action) {
   const p = action.payload
-  let messageCount = yield call(debounceInput, p)
+  const messageCount = yield call(debounceInput, p)
   if (messageCount) {
     try {
       const links = yield select(getAssignedLinks, p.inputId)
@@ -35,10 +35,7 @@ export function* handleInput (action) {
 
             let midiValue = value
             value = currNode.value
-
-            while (messageCount--) {
-              value = yield call(midiValueProcess, value, midiValue)
-            }
+            value = yield call(midiValueProcess, value, midiValue, messageCount)
           }
         }
 
