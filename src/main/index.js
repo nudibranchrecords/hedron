@@ -9,14 +9,23 @@ let mainWindow
 
 function createMainWindow () {
   // Construct new BrowserWindow
+  const dimensions = isDevelopment
+    ? {
+      width: 1920,
+      height: 1080
+    } // Smaller dimensions for prod for easier moving of window
+    : {
+      width: 800,
+      height: 500
+    }
+
   mainWindow = new BrowserWindow({
-    width: 1920,
-    height: 1080,
     fullscreenable: true,
     webPreferences: {
       nativeWindowOpen: true,
       webSecurity: false
-    }
+    },
+    ...dimensions
   })
 
   mainWindow.webContents.on('new-window', (event, url, frameName, disposition, options, additionalFeatures) => {
