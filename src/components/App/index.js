@@ -19,7 +19,18 @@ const Wrapper = styled.div`
 `
 
 const Left = styled.div`
-  flex: 0 0 50%;
+  flex: 0 0 70%;
+  position: relative;
+  border-right: 1px dashed #666;
+`
+
+const Handle = styled.div`
+  position: absolute;
+  right: -0.5rem;
+  top: 0;
+  bottom: 0;
+  cursor: ew-resize;
+  width: 1rem;
 `
 
 const Right = styled.div`
@@ -39,6 +50,7 @@ const App = ({ stats }) => (
   <Wrapper>
     <Left>
       <Overview stats={stats} />
+      <Handle />
     </Left>
     <Right>
       <Route path='/sketches/view/:sketchId' component={CurrentSketch} />
