@@ -57,13 +57,15 @@ export function* inputLinkCreate (action) {
       }
     }
 
-    const lfoOpts = yield call(lfoGenerateOptions)
+    if (p.inputId === 'lfo') {
+      const lfoOpts = yield call(lfoGenerateOptions)
 
-    for (let key in lfoOpts) {
-      const item = lfoOpts[key]
-      lfoOptionIds.push(item.id)
+      for (let key in lfoOpts) {
+        const item = lfoOpts[key]
+        lfoOptionIds.push(item.id)
 
-      yield put(uNodeCreate(item.id, item))
+        yield put(uNodeCreate(item.id, item))
+      }
     }
 
     if (p.inputType === 'midi') {

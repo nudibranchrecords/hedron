@@ -148,45 +148,6 @@ test('(Saga) inputLinkCreate', (t) => {
     '4x. Create node (modifier)'
   )
 
-  t.deepEqual(
-    generator.next().value,
-    call(lfoGenerateOptions),
-    'Generate options for LFO'
-  )
-
-  const lfoOpts = [
-    {
-      id: 'LFO1',
-      key: 'shape',
-      value: 'sine'
-    },
-    {
-      id: 'LFO2',
-      key: 'rate',
-      value: 1
-    }
-  ]
-
-  t.deepEqual(
-    generator.next(lfoOpts).value,
-    put(uNodeCreate('LFO1', {
-      key: 'shape',
-      id: 'LFO1',
-      value: 'sine'
-    })),
-    'Dispatch node create action'
-  )
-
-  t.deepEqual(
-    generator.next().value,
-    put(uNodeCreate('LFO2', {
-      key: 'rate',
-      id: 'LFO2',
-      value: 1
-    })),
-    'Dispatch node create action'
-  )
-
   const link = {
     id: linkId,
     title: inputId,
@@ -199,7 +160,7 @@ test('(Saga) inputLinkCreate', (t) => {
     bankIndex: undefined,
     nodeType: 'FOO',
     modifierIds: ['xxx', 'yyy', 'zzz'],
-    lfoOptionIds: ['LFO1', 'LFO2']
+    lfoOptionIds: []
   }
 
   t.deepEqual(
@@ -432,45 +393,6 @@ test('(Saga) inputLinkCreate (type midi)', (t) => {
 
   t.deepEqual(
     generator.next(node).value,
-    call(lfoGenerateOptions),
-    'Generate options for LFO (skips modifier stuff because MIDI)'
-  )
-
-  const lfoOpts = [
-    {
-      id: 'LFO1',
-      key: 'shape',
-      value: 'sine'
-    },
-    {
-      id: 'LFO2',
-      key: 'rate',
-      value: 1
-    }
-  ]
-
-  t.deepEqual(
-    generator.next(lfoOpts).value,
-    put(uNodeCreate('LFO1', {
-      key: 'shape',
-      id: 'LFO1',
-      value: 'sine'
-    })),
-    'Dispatch node create action'
-  )
-
-  t.deepEqual(
-    generator.next().value,
-    put(uNodeCreate('LFO2', {
-      key: 'rate',
-      id: 'LFO2',
-      value: 1
-    })),
-    'Dispatch node create action'
-  )
-
-  t.deepEqual(
-    generator.next().value,
     select(getCurrentBankIndex, deviceId),
     'Get current MIDI bank index'
   )
@@ -489,7 +411,7 @@ test('(Saga) inputLinkCreate (type midi)', (t) => {
     deviceId,
     nodeType: 'FOO',
     modifierIds: [],
-    lfoOptionIds: ['LFO1', 'LFO2']
+    lfoOptionIds: []
   }
 
   t.deepEqual(
