@@ -18,7 +18,7 @@ const Item = styled.div`
   font-size: 0.8rem;
 `
 const InputLink = ({
-  modifierIds, lfoOptionIds, title, size
+  modifierIds, lfoOptionIds, title, size, midiOptionIds
 }) => (
   <div>
     <Title size={size}>{title}</Title>
@@ -33,6 +33,12 @@ const InputLink = ({
           <Modifier nodeId={id} />
         </Item>
         ))}
+
+      {midiOptionIds && midiOptionIds.map((id) => (
+        <Item key={id} size={size}>
+          <Modifier nodeId={id} />
+        </Item>
+          ))}
     </Wrapper>
   </div>
 )
@@ -43,6 +49,9 @@ InputLink.propTypes = {
     PropTypes.string
   ),
   lfoOptionIds: PropTypes.arrayOf(
+    PropTypes.string
+  ),
+  midiOptionIds: PropTypes.arrayOf(
     PropTypes.string
   ),
   size: PropTypes.string
