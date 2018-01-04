@@ -19,7 +19,7 @@ const Wrapper = styled.div`
 `
 
 const Left = styled.div`
-  flex: 0 0 70%;
+  flex: 0 0 ${props => props.width}%;
   position: relative;
   border-right: 1px dashed #666;
 `
@@ -46,9 +46,9 @@ const Bar = styled.div`
   height: 100%;
 `
 
-const App = ({ stats }) => (
+const App = ({ stats, leftWidth }) => (
   <Wrapper>
-    <Left>
+    <Left width={leftWidth}>
       <Overview stats={stats} />
       <Handle />
     </Left>
@@ -67,5 +67,6 @@ const App = ({ stats }) => (
 export default App
 
 App.propTypes = {
-  stats: PropTypes.object.isRequired
+  stats: PropTypes.object.isRequired,
+  leftWidth: PropTypes.number.isRequired
 }
