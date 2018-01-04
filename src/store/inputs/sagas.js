@@ -35,7 +35,8 @@ export function* handleInput (action) {
 
             let midiValue = value
             value = currNode.value
-            value = yield call(midiValueProcess, value, midiValue, messageCount)
+            const o = yield select(getNodesValues, links[i].midiOptionIds)
+            value = yield call(midiValueProcess, value, midiValue, messageCount, o.sensitity)
           }
         }
 

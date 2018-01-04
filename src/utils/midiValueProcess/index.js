@@ -3,12 +3,13 @@
 // Absolute type MIDI will completely replace the values
 // *** Currently just doing encoder type ***
 
-export default (nodeValue, midiValue, messageCount) => {
+export default (nodeValue, midiValue, messageCount, sensitity = 0.5) => {
   let value
+  const s = sensitity * 0.014
   if (midiValue === 1) {
-    value = nodeValue - 0.007 * messageCount
+    value = nodeValue - (s * messageCount)
   } else {
-    value = nodeValue + 0.007 * messageCount
+    value = nodeValue + (s * messageCount)
   }
   value = Math.max(0, Math.min(1, value))
   return value
