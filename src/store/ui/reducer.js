@@ -13,7 +13,7 @@ const uiReducer = (state = defaultState, action) => {
         ...state,
         panelWidths: {
           ...state.panelWidths,
-          [p.panelName]: p.value
+          left: p.value
         }
       }
     }
