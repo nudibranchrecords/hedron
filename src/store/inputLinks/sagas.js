@@ -6,6 +6,7 @@ import { rInputLinkCreate, rInputLinkDelete } from './actions'
 import { rNodeCreate, uNodeCreate, uNodeDelete, nodeInputLinkAdd, nodeInputLinkRemove } from '../nodes/actions'
 import { inputAssignedLinkCreate, inputAssignedLinkDelete } from '../inputs/actions'
 import lfoGenerateOptions from '../../utils/lfoGenerateOptions'
+import midiGenerateOptions from '../../utils/midiGenerateOptions'
 import { midiStartLearning } from '../midi/actions'
 import getCurrentBankIndex from '../../selectors/getCurrentBankIndex'
 import { getAll } from '../../externals/modifiers'
@@ -21,6 +22,7 @@ export function* inputLinkCreate (action) {
   const p = action.payload
   const modifierIds = []
   const lfoOptionIds = []
+  const midiOptionIds = []
   let bankIndex
 
   if (p.inputId === 'midi') {
@@ -38,34 +40,46 @@ export function* inputLinkCreate (action) {
         const config = modifiers[id].config
 
         for (let j = 0; j < config.title.length; j++) {
-          const modifierId = yield call(uid)
-          const modifier = {
-            id: modifierId,
-            key: id,
-            title: config.title[j],
-            value: config.defaultValue[j],
-            passToNext: j < config.title.length - 1,
-            inputLinkIds: [],
-            type: config.type
-          }
+          if (!config.type || config.type === p.inputType) {
+            const modifierId = yield call(uid)
+            const modifier = {
+              id: modifierId,
+              key: id,
+              title: config.title[j],
+              value: config.defaultValue[j],
+              passToNext: j < config.title.length - 1,
+              inputLinkIds: [],
+              type: config.type
+            }
 
-          modifierIds.push(modifierId)
-          yield put(rNodeCreate(modifierId, modifier))
+            modifierIds.push(modifierId)
+            yield put(rNodeCreate(modifierId, modifier))
+          }
         }
       }
     }
 
-    const lfoOpts = yield call(lfoGenerateOptions)
+    if (p.inputId === 'lfo') {
+      const lfoOpts = yield call(lfoGenerateOptions)
 
-    for (let key in lfoOpts) {
-      const item = lfoOpts[key]
-      lfoOptionIds.push(item.id)
+      for (let key in lfoOpts) {
+        const item = lfoOpts[key]
+        lfoOptionIds.push(item.id)
 
-      yield put(uNodeCreate(item.id, item))
+        yield put(uNodeCreate(item.id, item))
+      }
     }
 
     if (p.inputType === 'midi') {
       bankIndex = yield select(getCurrentBankIndex, p.deviceId)
+      const midiOpts = yield call(midiGenerateOptions)
+
+      for (let key in midiOpts) {
+        const item = midiOpts[key]
+        midiOptionIds.push(item.id)
+
+        yield put(uNodeCreate(item.id, item))
+      }
     }
 
     const link = {
@@ -80,7 +94,8 @@ export function* inputLinkCreate (action) {
       deviceId: p.deviceId,
       bankIndex,
       modifierIds,
-      lfoOptionIds
+      lfoOptionIds,
+      midiOptionIds
     }
 
     yield put(rInputLinkCreate(linkId, link))

@@ -25,3 +25,25 @@ test('(Selector) getNodesValues', (t) => {
   t.deepEqual(actual, expected, 'Returns object key pair')
   t.end()
 })
+
+test('(Selector) getNodesValues - undefined array', (t) => {
+  const state = {
+    nodes: {
+      XX: {
+        key: 'shape',
+        value: 'triangle'
+      },
+      YY: {
+        key: 'rate',
+        value: 2
+      }
+    }
+  }
+
+  const expected = {}
+
+  const actual = getNodesValues(state, undefined)
+
+  t.deepEqual(actual, expected, 'Returns empty object')
+  t.end()
+})

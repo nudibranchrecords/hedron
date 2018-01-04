@@ -548,7 +548,8 @@ test('(Saga) handleInput (midi - banks)', (t) => {
     {
       nodeId: 'YY',
       deviceId: 'D2',
-      bankIndex: 2
+      bankIndex: 2,
+      midiOptionIds: ['MIDI1']
     },
     {
       nodeId: 'ZZ',
@@ -585,7 +586,17 @@ test('(Saga) handleInput (midi - banks)', (t) => {
 
   t.deepEqual(
     generator.next(node).value,
-    call(midiValueProcess, 0.7, 0.5, messageCount),
+    select(getNodesValues, ['MIDI1']),
+    'Get midi option nodes'
+  )
+
+  const midiOptionNodes = {
+    sensitity: 0.11
+  }
+
+  t.deepEqual(
+    generator.next(midiOptionNodes).value,
+    call(midiValueProcess, 0.7, 0.5, messageCount, 0.11),
     'Calls midiValueProcess using nodeValue, midi action value and number of messages'
   )
 
