@@ -38,19 +38,21 @@ export function* inputLinkCreate (action) {
         const config = modifiers[id].config
 
         for (let j = 0; j < config.title.length; j++) {
-          const modifierId = yield call(uid)
-          const modifier = {
-            id: modifierId,
-            key: id,
-            title: config.title[j],
-            value: config.defaultValue[j],
-            passToNext: j < config.title.length - 1,
-            inputLinkIds: [],
-            type: config.type
-          }
+          if (!config.type || config.type === p.inputType) {
+            const modifierId = yield call(uid)
+            const modifier = {
+              id: modifierId,
+              key: id,
+              title: config.title[j],
+              value: config.defaultValue[j],
+              passToNext: j < config.title.length - 1,
+              inputLinkIds: [],
+              type: config.type
+            }
 
-          modifierIds.push(modifierId)
-          yield put(rNodeCreate(modifierId, modifier))
+            modifierIds.push(modifierId)
+            yield put(rNodeCreate(modifierId, modifier))
+          }
         }
       }
     }
