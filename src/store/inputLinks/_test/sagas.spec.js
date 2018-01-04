@@ -158,6 +158,7 @@ test('(Saga) inputLinkCreate', (t) => {
     nodeId,
     deviceId,
     bankIndex: undefined,
+    midiSensitivityNodeId: undefined,
     nodeType: 'FOO',
     modifierIds: ['xxx', 'yyy', 'zzz'],
     lfoOptionIds: []
@@ -338,6 +339,7 @@ test('(Saga) inputLinkCreate - LFO', (t) => {
     nodeId,
     deviceId,
     bankIndex: undefined,
+    midiSensitivityNodeId: undefined,
     nodeType: 'FOO',
     modifierIds: ['yyy', 'zzz'],
     lfoOptionIds: ['LFO1', 'LFO2']
@@ -399,6 +401,26 @@ test('(Saga) inputLinkCreate (type midi)', (t) => {
 
   const bankIndex = 3
 
+  t.deepEqual(
+    generator.next(bankIndex).value,
+    call(uid),
+    '3x. Generate unique ID for midi sensitivity node'
+  )
+
+  const uniqueId = 'zzz'
+  const sensitivityNode = {
+    id: 'zzz',
+    title: 'MIDI Sensitity',
+    value: 0.5,
+    inputLinkIds: []
+  }
+
+  t.deepEqual(
+    generator.next(uniqueId).value,
+    put(rNodeCreate(uniqueId, sensitivityNode)),
+    '4x. Create node (modifier)'
+  )
+
   const link = {
     id: linkId,
     title: inputId,
@@ -409,6 +431,7 @@ test('(Saga) inputLinkCreate (type midi)', (t) => {
     nodeId,
     bankIndex,
     deviceId,
+    midiSensitivityNodeId: 'zzz',
     nodeType: 'FOO',
     modifierIds: [],
     lfoOptionIds: []

@@ -22,6 +22,7 @@ export function* inputLinkCreate (action) {
   const modifierIds = []
   const lfoOptionIds = []
   let bankIndex
+  let midiSensitivityNodeId
 
   if (p.inputId === 'midi') {
     yield put(midiStartLearning(p.nodeId))
@@ -70,6 +71,16 @@ export function* inputLinkCreate (action) {
 
     if (p.inputType === 'midi') {
       bankIndex = yield select(getCurrentBankIndex, p.deviceId)
+
+      midiSensitivityNodeId = yield call(uid)
+      const node = {
+        id: midiSensitivityNodeId,
+        title: 'MIDI Sensitity',
+        value: 0.5,
+        inputLinkIds: []
+      }
+
+      yield put(rNodeCreate(midiSensitivityNodeId, node))
     }
 
     const link = {
@@ -84,7 +95,8 @@ export function* inputLinkCreate (action) {
       deviceId: p.deviceId,
       bankIndex,
       modifierIds,
-      lfoOptionIds
+      lfoOptionIds,
+      midiSensitivityNodeId
     }
 
     yield put(rInputLinkCreate(linkId, link))
