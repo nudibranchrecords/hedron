@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
+import uiEventEmitter from '../../utils/uiEventEmitter'
 
 const Bar = styled.canvas`
   background: #222;
@@ -23,8 +24,7 @@ class ParamBar extends React.Component {
 
     this.setSize()
 
-    window.addEventListener('resize', e => {
-      e.preventDefault()
+    uiEventEmitter.on('repaint', () => {
       this.setSize()
     })
 
@@ -36,7 +36,6 @@ class ParamBar extends React.Component {
   componentWillUnmount () {
     clearInterval(this.ticker)
     clearInterval(this.sizer)
-    window.removeEventListener('resize', this.setSize)
   }
 
   setSize () {
