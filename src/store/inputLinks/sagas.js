@@ -6,6 +6,7 @@ import { rInputLinkCreate, rInputLinkDelete } from './actions'
 import { rNodeCreate, uNodeCreate, uNodeDelete, nodeInputLinkAdd, nodeInputLinkRemove } from '../nodes/actions'
 import { inputAssignedLinkCreate, inputAssignedLinkDelete } from '../inputs/actions'
 import lfoGenerateOptions from '../../utils/lfoGenerateOptions'
+import midiGenerateOptions from '../../utils/midiGenerateOptions'
 import { midiStartLearning } from '../midi/actions'
 import getCurrentBankIndex from '../../selectors/getCurrentBankIndex'
 import { getAll } from '../../externals/modifiers'
@@ -21,8 +22,8 @@ export function* inputLinkCreate (action) {
   const p = action.payload
   const modifierIds = []
   const lfoOptionIds = []
+  const midiOptionIds = []
   let bankIndex
-  let midiSensitivityNodeId
 
   if (p.inputId === 'midi') {
     yield put(midiStartLearning(p.nodeId))
@@ -71,16 +72,14 @@ export function* inputLinkCreate (action) {
 
     if (p.inputType === 'midi') {
       bankIndex = yield select(getCurrentBankIndex, p.deviceId)
+      const midiOpts = yield call(midiGenerateOptions)
 
-      midiSensitivityNodeId = yield call(uid)
-      const node = {
-        id: midiSensitivityNodeId,
-        title: 'MIDI Sensitity',
-        value: 0.5,
-        inputLinkIds: []
+      for (let key in midiOpts) {
+        const item = midiOpts[key]
+        midiOptionIds.push(item.id)
+
+        yield put(uNodeCreate(item.id, item))
       }
-
-      yield put(rNodeCreate(midiSensitivityNodeId, node))
     }
 
     const link = {
@@ -96,7 +95,7 @@ export function* inputLinkCreate (action) {
       bankIndex,
       modifierIds,
       lfoOptionIds,
-      midiSensitivityNodeId
+      midiOptionIds
     }
 
     yield put(rInputLinkCreate(linkId, link))

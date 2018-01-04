@@ -2,6 +2,7 @@ import 'babel-polyfill'
 import test from 'tape'
 import { select, put, call } from 'redux-saga/effects'
 import lfoGenerateOptions from '../../../utils/lfoGenerateOptions'
+import midiGenerateOptions from '../../../utils/midiGenerateOptions'
 import { getDefaultModifierIds } from '../selectors'
 import getNode from '../../../selectors/getNode'
 import { uNodeCreate, rNodeCreate, nodeInputLinkAdd } from '../../nodes/actions'
@@ -158,10 +159,10 @@ test('(Saga) inputLinkCreate', (t) => {
     nodeId,
     deviceId,
     bankIndex: undefined,
-    midiSensitivityNodeId: undefined,
     nodeType: 'FOO',
     modifierIds: ['xxx', 'yyy', 'zzz'],
-    lfoOptionIds: []
+    lfoOptionIds: [],
+    midiOptionIds: []
   }
 
   t.deepEqual(
@@ -339,10 +340,10 @@ test('(Saga) inputLinkCreate - LFO', (t) => {
     nodeId,
     deviceId,
     bankIndex: undefined,
-    midiSensitivityNodeId: undefined,
     nodeType: 'FOO',
     modifierIds: ['yyy', 'zzz'],
-    lfoOptionIds: ['LFO1', 'LFO2']
+    lfoOptionIds: ['LFO1', 'LFO2'],
+    midiOptionIds: []
   }
 
   t.deepEqual(
@@ -403,22 +404,37 @@ test('(Saga) inputLinkCreate (type midi)', (t) => {
 
   t.deepEqual(
     generator.next(bankIndex).value,
-    call(uid),
-    '3x. Generate unique ID for midi sensitivity node'
+    call(midiGenerateOptions),
+    'Generate options for Midi'
   )
 
-  const uniqueId = 'zzz'
-  const sensitivityNode = {
-    id: 'zzz',
-    title: 'MIDI Sensitity',
-    value: 0.5,
-    inputLinkIds: []
-  }
+  const midiOpts = [
+    {
+      id: 'MIDI1',
+      foo: 'bar'
+    },
+    {
+      id: 'MIDI2',
+      foo: 'lorem'
+    }
+  ]
 
   t.deepEqual(
-    generator.next(uniqueId).value,
-    put(rNodeCreate(uniqueId, sensitivityNode)),
-    '4x. Create node (modifier)'
+    generator.next(midiOpts).value,
+    put(uNodeCreate('MIDI1', {
+      id: 'MIDI1',
+      foo: 'bar'
+    })),
+    'Dispatch node create action'
+  )
+
+  t.deepEqual(
+    generator.next().value,
+    put(uNodeCreate('MIDI2', {
+      id: 'MIDI2',
+      foo: 'lorem'
+    })),
+    'Dispatch node create action'
   )
 
   const link = {
@@ -431,10 +447,10 @@ test('(Saga) inputLinkCreate (type midi)', (t) => {
     nodeId,
     bankIndex,
     deviceId,
-    midiSensitivityNodeId: 'zzz',
     nodeType: 'FOO',
     modifierIds: [],
-    lfoOptionIds: []
+    lfoOptionIds: [],
+    midiOptionIds: ['MIDI1', 'MIDI2']
   }
 
   t.deepEqual(
