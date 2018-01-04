@@ -1,5 +1,6 @@
 import { combineReducers } from 'redux'
 import { ignoreActions } from 'redux-ignore'
+import difference from 'lodash/difference'
 
 import sketchesReducer from './sketches/reducer'
 import projectReducer from './project/reducer'
@@ -19,14 +20,13 @@ const ignoreList = [
 ]
 
 const rootReducer = combineReducers({
-  nodes: ignoreActions(nodesReducer, ['CLOCK_PULSE', 'CLOCK_BEAT_INC',
-    'CLOCK_BPM_UPDATE']),
+  nodes: ignoreActions(nodesReducer, difference(ignoreList, ['NODE_VALUE_UPDATE'])),
   availableModules: ignoreActions(availableModulesReducer, ignoreList),
   sketches: ignoreActions(sketchesReducer, ignoreList),
   project: ignoreActions(projectReducer, ignoreList),
-  inputs: ignoreActions(inputsReducer, ignoreList),
+  inputs: ignoreActions(inputsReducer, difference(ignoreList, ['INPUT_FIRED'])),
   inputLinks: ignoreActions(inputLinkReducer, ignoreList),
-  clock: ignoreActions(clockReducer, ['INPUT_FIRED', 'NODE_VALUE_UPDATE']),
+  clock: ignoreActions(clockReducer, difference(ignoreList, ['CLOCK_PULSE', 'CLOCK_BEAT_INC', 'CLOCK_BPM_UPDATE'])),
   midi: ignoreActions(midiReducer, ignoreList),
   displays: ignoreActions(displaysReducer, ignoreList),
   macros: ignoreActions(macroReducer, ignoreList)
