@@ -8,7 +8,7 @@
     "lint:css": "stylelint \"src/components/**/*.js\"",
     "lint:fix": "npm run lint -- --fix",
     "test": "NODE_ENV=test tape -r babel-register src/**/*.spec.js  | tap-colorize --info '#B788CE'",
-    "test:dev": "NODE_ENV=test tape-watch -r babel-register src/**/*.spec.js  | tap-colorize --info '#B788CE'",
+    "test:dev": "NODE_ENV=test tape-watch -r babel-register src/**/*.spec.js -p tap-diff",
     "deploy": "yarn test && yarn lint && yarn lint:css && webpack --config config/webpack.config.js && build --tasks mac-x64 --mirror https://dl.nwjs.io/ ./dist",
     "compile": "electron-webpack",
     "dist": "yarn compile && electron-builder"
@@ -54,6 +54,7 @@
     "redux-saga": "^0.14.5",
     "stats.js": "^0.17.0",
     "styled-components": "^2.2.3",
+    "tap-diff": "^0.1.1",
     "three": "^0.84.0",
     "uid": "^0.0.2"
   },
