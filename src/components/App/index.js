@@ -8,6 +8,7 @@ import Overview from '../Overview'
 import { Route } from 'react-router'
 import styled from 'styled-components'
 import NavItem from '../NavItem'
+import PanelDragger from '../PanelDragger'
 
 const Wrapper = styled.div`
   display: flex;
@@ -19,7 +20,8 @@ const Wrapper = styled.div`
 `
 
 const Left = styled.div`
-  flex: 0 0 50%;
+  flex: 0 0 ${props => props.width}%;
+  position: relative;
 `
 
 const Right = styled.div`
@@ -35,10 +37,11 @@ const Bar = styled.div`
   height: 100%;
 `
 
-const App = ({ stats }) => (
+const App = ({ stats, leftWidth, onLeftDrag }) => (
   <Wrapper>
-    <Left>
+    <Left width={leftWidth}>
       <Overview stats={stats} />
+      <PanelDragger onHandleDrag={onLeftDrag} position={leftWidth} />
     </Left>
     <Right>
       <Route path='/sketches/view/:sketchId' component={CurrentSketch} />
@@ -55,5 +58,7 @@ const App = ({ stats }) => (
 export default App
 
 App.propTypes = {
-  stats: PropTypes.object.isRequired
+  stats: PropTypes.object.isRequired,
+  leftWidth: PropTypes.number.isRequired,
+  onLeftDrag: PropTypes.func.isRequired
 }

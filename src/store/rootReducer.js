@@ -12,6 +12,7 @@ import clockReducer from './clock/reducer'
 import availableModulesReducer from './availableModules/reducer'
 import displaysReducer from './displays/reducer'
 import macroReducer from './macros/reducer'
+import uiReducer from './ui/reducer'
 
 const ignoreList = [
   'CLOCK_PULSE', 'CLOCK_BEAT_INC',
@@ -29,7 +30,8 @@ const rootReducer = combineReducers({
   clock: ignoreActions(clockReducer, difference(ignoreList, ['CLOCK_PULSE', 'CLOCK_BEAT_INC', 'CLOCK_BPM_UPDATE'])),
   midi: ignoreActions(midiReducer, ignoreList),
   displays: ignoreActions(displaysReducer, ignoreList),
-  macros: ignoreActions(macroReducer, ignoreList)
+  macros: ignoreActions(macroReducer, ignoreList),
+  ui: ignoreActions(uiReducer, ignoreList)
 })
 
 export default rootReducer

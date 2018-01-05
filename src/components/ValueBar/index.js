@@ -1,13 +1,14 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
+import uiEventEmitter from '../../utils/uiEventEmitter'
 
 const Bar = styled.canvas`
   background: #222;
   cursor: pointer;
 `
 
-class ParamBar extends React.Component {
+class ValueBar extends React.Component {
 
   constructor (props) {
     super(props)
@@ -23,10 +24,7 @@ class ParamBar extends React.Component {
 
     this.setSize()
 
-    window.addEventListener('resize', e => {
-      e.preventDefault()
-      this.setSize()
-    })
+    uiEventEmitter.on('repaint', this.setSize)
 
     this.ticker = setInterval(() => {
       this.draw(this.props.value)
@@ -36,7 +34,7 @@ class ParamBar extends React.Component {
   componentWillUnmount () {
     clearInterval(this.ticker)
     clearInterval(this.sizer)
-    window.removeEventListener('resize', this.setSize)
+    uiEventEmitter.removeListener('repaint', this.setSize)
   }
 
   setSize () {
@@ -48,6 +46,7 @@ class ParamBar extends React.Component {
     this.sizer = setTimeout(() => {
       this.canvas.style.display = 'block'
       this.width = this.canvas.width = this.containerEl.offsetWidth
+      this.draw(this.props.value, true)
     }, 1)
   }
 
@@ -74,8 +73,8 @@ class ParamBar extends React.Component {
     this.props.onChange(newVal)
   }
 
-  draw (newVal) {
-    if (newVal !== this.oldVal) {
+  draw (newVal, force) {
+    if (newVal !== this.oldVal || force) {
       const barWidth = 2
       const innerWidth = this.width - barWidth
       const pos = innerWidth * newVal
@@ -109,10 +108,10 @@ class ParamBar extends React.Component {
   }
 }
 
-ParamBar.propTypes = {
+ValueBar.propTypes = {
   value: PropTypes.number.isRequired,
   onChange: PropTypes.func.isRequired,
   onMouseDown: PropTypes.func
 }
 
-export default ParamBar
+export default ValueBar

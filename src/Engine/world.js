@@ -1,4 +1,5 @@
 import * as THREE from 'three'
+import uiEventEmitter from '../utils/uiEventEmitter'
 
 class World {
   setScene (canvas) {
@@ -11,8 +12,7 @@ class World {
       this.viewerEl = this.renderer.domElement.parentElement
       this.setSize()
 
-      window.addEventListener('resize', e => {
-        e.preventDefault()
+      uiEventEmitter.on('repaint', () => {
         this.setSize()
       })
     }
@@ -74,7 +74,7 @@ class World {
     this.setSize()
 
     win.addEventListener('resize', () => {
-      this.setSize()
+      uiEventEmitter.emit('repaint')
     })
   }
 
