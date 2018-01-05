@@ -11,7 +11,8 @@
     "test:dev": "NODE_ENV=test tape-watch -r babel-register src/**/*.spec.js -p tap-diff",
     "deploy": "yarn test && yarn lint && yarn lint:css && webpack --config config/webpack.config.js && build --tasks mac-x64 --mirror https://dl.nwjs.io/ ./dist",
     "compile": "electron-webpack",
-    "dist": "yarn compile && electron-builder"
+    "dist": "yarn compile && electron-builder",
+    "start": "yarn electron-webpack dev"
   },
   "electronWebpack": {
     "renderer": {
