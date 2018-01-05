@@ -46,6 +46,7 @@ class ValueBar extends React.Component {
     this.sizer = setTimeout(() => {
       this.canvas.style.display = 'block'
       this.width = this.canvas.width = this.containerEl.offsetWidth
+      this.draw(this.props.value, true)
     }, 1)
   }
 
@@ -72,8 +73,8 @@ class ValueBar extends React.Component {
     this.props.onChange(newVal)
   }
 
-  draw (newVal) {
-    if (newVal !== this.oldVal) {
+  draw (newVal, force) {
+    if (newVal !== this.oldVal || force) {
       const barWidth = 2
       const innerWidth = this.width - barWidth
       const pos = innerWidth * newVal
