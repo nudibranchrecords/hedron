@@ -1,3 +1,4 @@
+import 'jsdom-global/register' // Fixes issue with window var in node
 import test from 'tape'
 import proxyquire from 'proxyquire'
 import sinon from 'sinon'

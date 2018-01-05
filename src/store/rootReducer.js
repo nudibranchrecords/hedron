@@ -1,5 +1,6 @@
 import { combineReducers } from 'redux'
 import { ignoreActions } from 'redux-ignore'
+import { routerReducer } from 'react-router-redux'
 import difference from 'lodash/difference'
 
 import sketchesReducer from './sketches/reducer'
@@ -20,7 +21,7 @@ const ignoreList = [
   'NODE_VALUE_UPDATE'
 ]
 
-const rootReducer = combineReducers({
+const reducers = combineReducers({
   nodes: ignoreActions(nodesReducer, difference(ignoreList, ['NODE_VALUE_UPDATE'])),
   availableModules: ignoreActions(availableModulesReducer, ignoreList),
   sketches: ignoreActions(sketchesReducer, ignoreList),
@@ -31,7 +32,12 @@ const rootReducer = combineReducers({
   midi: ignoreActions(midiReducer, ignoreList),
   displays: ignoreActions(displaysReducer, ignoreList),
   macros: ignoreActions(macroReducer, ignoreList),
-  ui: ignoreActions(uiReducer, ignoreList)
+  ui: ignoreActions(uiReducer, ignoreList),
+  router: routerReducer
 })
+
+const rootReducer = (state = {}, action) => action.type === 'PROJECT_REHYDRATE'
+? action.payload.data
+: reducers(state, action)
 
 export default rootReducer

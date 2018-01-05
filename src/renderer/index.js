@@ -3,7 +3,7 @@ import { render } from 'react-dom'
 import { Provider } from 'react-redux'
 import { createStore, applyMiddleware, compose } from 'redux'
 import { projectFilepathUpdate, projectLoadRequest } from '../store/project/actions'
-import { Router } from 'react-router'
+import { ConnectedRouter, routerMiddleware } from 'react-router-redux'
 import history from '../history'
 import { composeWithDevTools } from 'redux-devtools-extension'
 import createSagaMiddleware from 'redux-saga'
@@ -54,6 +54,7 @@ const debounceNotify = debounce(notify => notify())
 const sagaMiddleware = createSagaMiddleware()
 
 const store = createStore(rootReducer, composeEnhancers(
+  applyMiddleware(routerMiddleware(history)),
   applyMiddleware(createDebounce()),
   applyMiddleware(sagaMiddleware),
   batchedSubscribe(debounceNotify)
@@ -65,9 +66,9 @@ const renderApp = (Component) => {
   render(
     // <AppContainer>
     <Provider store={store}>
-      <Router history={history}>
+      <ConnectedRouter history={history}>
         <App stats={stats} />
-      </Router>
+      </ConnectedRouter>
     </Provider>,
     // </AppContainer>,
     document.getElementById('app')
