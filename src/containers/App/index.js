@@ -2,6 +2,7 @@ import { connect } from 'react-redux'
 import App from '../../components/App'
 import getPanelWidth from '../../selectors/getPanelWidth'
 import { uiPanelResize } from '../../store/ui/actions'
+import { withRouter } from 'react-router'
 
 const mapStateToProps = (state, ownProps) => ({
   leftWidth: getPanelWidth(state, 'left')
@@ -13,4 +14,4 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
   }
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(App)
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(App))
