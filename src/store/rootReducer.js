@@ -21,7 +21,7 @@ const ignoreList = [
   'NODE_VALUE_UPDATE'
 ]
 
-const rootReducer = combineReducers({
+const reducers = combineReducers({
   nodes: ignoreActions(nodesReducer, difference(ignoreList, ['NODE_VALUE_UPDATE'])),
   availableModules: ignoreActions(availableModulesReducer, ignoreList),
   sketches: ignoreActions(sketchesReducer, ignoreList),
@@ -35,5 +35,9 @@ const rootReducer = combineReducers({
   ui: ignoreActions(uiReducer, ignoreList),
   router: routerReducer
 })
+
+const rootReducer = (state = {}, action) => action.type === 'PROJECT_REHYDRATE'
+? action.payload.data
+: reducers(state, action)
 
 export default rootReducer

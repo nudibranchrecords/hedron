@@ -10,6 +10,15 @@ export function projectLoadRequest () {
   }
 }
 
+export function projectRehydrate (data) {
+  return {
+    type: 'PROJECT_REHYDRATE',
+    payload: {
+      data
+    }
+  }
+}
+
 export function projectLoadSuccess (data) {
   return {
     type: 'PROJECT_LOAD_SUCCESS',

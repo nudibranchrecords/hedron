@@ -4,12 +4,7 @@ import { call, select, takeEvery, put } from 'redux-saga/effects'
 import { watchProject, saveProject, loadProject } from '../sagas'
 import { getProjectData, getProjectFilepath } from '../selectors'
 import { save, load } from '../../../utils/file'
-import { projectLoadSuccess, projectSketchesPathUpdate } from '../actions'
-import { sketchesReplaceAll } from '../../sketches/actions'
-import { nodesReplaceAll } from '../../nodes/actions'
-import { inputsReplaceAll } from '../../inputs/actions'
-import { inputLinksReplaceAll } from '../../inputLinks/actions'
-import { macrosReplaceAll } from '../../macros/actions'
+import { projectLoadSuccess, projectRehydrate } from '../actions'
 
 test('(Saga) watchProject', (t) => {
   const generator = watchProject()
@@ -82,44 +77,14 @@ test('(Saga) loadProject', (t) => {
 
   t.deepEqual(
     generator.next(projectData).value,
-    put(projectSketchesPathUpdate(projectData.project.sketchesPath)),
-    '3.1 Dispatches projectSketchesPathUpdate'
-  )
-
-  t.deepEqual(
-    generator.next(projectData).value,
-    put(sketchesReplaceAll(projectData.sketches)),
-    '3.2 Dispatches sketchesReplaceAll'
-  )
-
-  t.deepEqual(
-    generator.next().value,
-    put(nodesReplaceAll(projectData.nodes)),
-    '4. Dispatches nodesReplaceAll'
-  )
-
-  t.deepEqual(
-    generator.next().value,
-    put(inputsReplaceAll(projectData.inputs)),
-    '5. Dispatches inputsReplaceAll'
-  )
-
-  t.deepEqual(
-    generator.next().value,
-    put(inputLinksReplaceAll(projectData.inputLinks)),
-    '5. Dispatches inputLinksReplaceAll'
-  )
-
-  t.deepEqual(
-    generator.next().value,
-    put(macrosReplaceAll(projectData.macros)),
-    '5. Dispatches macrosReplaceAll'
+    put(projectRehydrate(projectData)),
+    '3. Fires PROJECT_REHYDRATE with data'
   )
 
   t.deepEqual(
     generator.next().value,
     put(projectLoadSuccess(projectData)),
-    '6. Fires PROJECT_LOAD_SUCCESS with data'
+    '4. Fires PROJECT_LOAD_SUCCESS with data'
   )
 
   t.equal(generator.next().done, true, 'Generator ends')
