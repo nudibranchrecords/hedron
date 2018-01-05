@@ -43,6 +43,13 @@ class PanelDragger extends React.Component {
     document.addEventListener('mouseup', onMouseUp)
   }
 
+  componentDidMount () {
+    // Force repaint after mounting to fix up components
+    setTimeout(() => {
+      uiEventEmitter.emit('repaint')
+    }, 1000)
+  }
+
   handleMouseMove (e) {
     const diff = (e.screenX - this.pos) / window.innerWidth * 100
     const newVal = Math.max(0, Math.min(100, this.currentPos + diff))
