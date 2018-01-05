@@ -8,7 +8,7 @@ const Bar = styled.canvas`
   cursor: pointer;
 `
 
-class ParamBar extends React.Component {
+class ValueBar extends React.Component {
 
   constructor (props) {
     super(props)
@@ -24,9 +24,7 @@ class ParamBar extends React.Component {
 
     this.setSize()
 
-    uiEventEmitter.on('repaint', () => {
-      this.setSize()
-    })
+    uiEventEmitter.on('repaint', this.setSize)
 
     this.ticker = setInterval(() => {
       this.draw(this.props.value)
@@ -36,6 +34,7 @@ class ParamBar extends React.Component {
   componentWillUnmount () {
     clearInterval(this.ticker)
     clearInterval(this.sizer)
+    uiEventEmitter.removeListener('repaint', this.setSize)
   }
 
   setSize () {
@@ -108,10 +107,10 @@ class ParamBar extends React.Component {
   }
 }
 
-ParamBar.propTypes = {
+ValueBar.propTypes = {
   value: PropTypes.number.isRequired,
   onChange: PropTypes.func.isRequired,
   onMouseDown: PropTypes.func
 }
 
-export default ParamBar
+export default ValueBar
