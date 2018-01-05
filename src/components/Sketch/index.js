@@ -18,6 +18,7 @@ const Params = styled.div`
   display: flex;
   flex-wrap: wrap;
   margin: 0 -0.25rem;
+  position: relative;
 `
 
 const Item = styled.div`
