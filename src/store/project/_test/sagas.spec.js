@@ -5,6 +5,7 @@ import { watchProject, saveProject, loadProject } from '../sagas'
 import { getProjectData, getProjectFilepath } from '../selectors'
 import { save, load } from '../../../utils/file'
 import { projectLoadSuccess, projectRehydrate } from '../actions'
+import history from '../../../history'
 
 test('(Saga) watchProject', (t) => {
   const generator = watchProject()
@@ -72,7 +73,12 @@ test('(Saga) loadProject', (t) => {
     sketches: '@@sketches',
     nodes: '@@nodes',
     shots: '@@shots',
-    inputLinks: '@@inputLinks'
+    inputLinks: '@@inputLinks',
+    router: {
+      location: {
+        pathname: '/foo/bar'
+      }
+    }
   }
 
   t.deepEqual(
@@ -85,6 +91,12 @@ test('(Saga) loadProject', (t) => {
     generator.next().value,
     put(projectLoadSuccess(projectData)),
     '4. Fires PROJECT_LOAD_SUCCESS with data'
+  )
+
+  t.deepEqual(
+    generator.next().value,
+    call([history, history.replace], '/foo/bar'),
+    '5. Matches history with router state'
   )
 
   t.equal(generator.next().done, true, 'Generator ends')
