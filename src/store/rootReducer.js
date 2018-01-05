@@ -1,5 +1,6 @@
 import { combineReducers } from 'redux'
 import { ignoreActions } from 'redux-ignore'
+import { routerReducer } from 'react-router-redux'
 import difference from 'lodash/difference'
 
 import sketchesReducer from './sketches/reducer'
@@ -31,7 +32,8 @@ const rootReducer = combineReducers({
   midi: ignoreActions(midiReducer, ignoreList),
   displays: ignoreActions(displaysReducer, ignoreList),
   macros: ignoreActions(macroReducer, ignoreList),
-  ui: ignoreActions(uiReducer, ignoreList)
+  ui: ignoreActions(uiReducer, ignoreList),
+  router: routerReducer
 })
 
 export default rootReducer
