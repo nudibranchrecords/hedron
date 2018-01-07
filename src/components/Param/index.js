@@ -114,7 +114,7 @@ const IconInfo = styled.div`
   }
 `
 const Param = ({
-  title, nodeId, inputLinkIds, infoText, isOpen, onOpenClick, children
+  title, nodeId, inputLinkIds, infoText, isOpen, onOpenClick, children, numInputs, numMacros
 }) => (
   <Wrapper>
     <Inner isOpen={isOpen}>
@@ -127,8 +127,8 @@ const Param = ({
           <Info onClick={onOpenClick}>
             <span><Icon glyph={inputIcon} />Audio Low</span>
             <IconInfo>
-              <span><Icon glyph={inputIcon} />1</span>
-              <span><Icon glyph={macroIcon} />0</span>
+              {numInputs !== undefined && (<span><Icon glyph={inputIcon} />{numInputs}</span>)}
+              {numMacros !== undefined && (<span><Icon glyph={macroIcon} />{numMacros}</span>)}
             </IconInfo>
           </Info>
         </Row>
@@ -154,7 +154,9 @@ Param.propTypes = {
   ),
   isOpen: PropTypes.bool,
   onOpenClick: PropTypes.func.isRequired,
-  children: PropTypes.node
+  children: PropTypes.node,
+  numInputs: PropTypes.number,
+  numMacros: PropTypes.number
 }
 
 export default Param
