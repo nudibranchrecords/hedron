@@ -107,6 +107,7 @@ const Info = styled.div`
 
 const IconInfo = styled.div`
   display: flex;
+  margin-left: auto;
 
   > span {
     display: flex;
@@ -114,7 +115,7 @@ const IconInfo = styled.div`
   }
 `
 const Param = ({
-  title, nodeId, inputLinkIds, infoText, isOpen, onOpenClick, children, numInputs, numMacros
+  title, nodeId, inputLinkIds, infoText, isOpen, onOpenClick, children, numInputs, numMacros, inputLinkTitle
 }) => (
   <Wrapper>
     <Inner isOpen={isOpen}>
@@ -125,7 +126,7 @@ const Param = ({
             <ParamBar nodeId={nodeId} />
           </BarCol>
           <Info onClick={onOpenClick}>
-            <span><Icon glyph={inputIcon} />Audio Low</span>
+            {inputLinkTitle && <span><Icon glyph={inputIcon} />{inputLinkTitle}</span>}
             <IconInfo>
               {numInputs !== undefined && (<span><Icon glyph={inputIcon} />{numInputs}</span>)}
               {numMacros !== undefined && (<span><Icon glyph={macroIcon} />{numMacros}</span>)}
@@ -156,7 +157,8 @@ Param.propTypes = {
   onOpenClick: PropTypes.func.isRequired,
   children: PropTypes.node,
   numInputs: PropTypes.number,
-  numMacros: PropTypes.number
+  numMacros: PropTypes.number,
+  inputLinkTitle: PropTypes.string
 }
 
 export default Param
