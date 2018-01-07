@@ -51,12 +51,11 @@ const Bottom = styled.div`
   position: absolute;
   left: 0.25rem;
   right: 0.25rem;
-  height: 200px;
   margin-top: 0.5rem;
 `
 
 const Padder = styled.div`
-  height: calc(200px + 0.5rem);
+  height: calc(${props => props.height}px + 0.5rem);
 
   &:after {
     display: block;
@@ -114,45 +113,76 @@ const IconInfo = styled.div`
     margin-left: 0.3rem;
   }
 `
-const Param = ({
-  title, nodeId, inputLinkIds, infoText, isOpen, onOpenClick, children, numInputs, numMacros, inputLinkTitle
-}) => (
-  <Wrapper>
-    <Inner isOpen={isOpen}>
-      <Top>
-        <Row>
-          <BarCol>
-            <Title>{title}</Title>
-            <ParamBar nodeId={nodeId} />
-          </BarCol>
-          <Info onClick={onOpenClick}>
-            {inputLinkTitle && <span><Icon glyph={inputIcon} />{inputLinkTitle}</span>}
-            <IconInfo>
-              {numInputs !== undefined && (<span><Icon glyph={inputIcon} />{numInputs}</span>)}
-              {numMacros !== undefined && (<span><Icon glyph={macroIcon} />{numMacros}</span>)}
-            </IconInfo>
-          </Info>
-        </Row>
-      </Top>
-    </Inner>
-    {isOpen &&
-      <div>
-        <Bottom>
-          {children}
-        </Bottom>
-        <Padder />
-      </div>
+
+class Param extends React.Component {
+  constructor () {
+    super()
+    this.state = {
+      bottomHeight: 0
     }
-  </Wrapper>
-)
+  }
+  componentDidMount () {
+    this.calculateHeights()
+  }
+
+  componentDidUpdate (prevProps, prevState) {
+    if (
+        (prevProps.isOpen === false && this.props.isOpen === true) ||
+        (prevProps.numInputs !== this.props.numInputs) ||
+        (prevProps.numMacros !== this.props.numMacros)
+    ) {
+      this.calculateHeights()
+    }
+  }
+
+  calculateHeights () {
+    if (this.bottomEl) {
+      this.setState({
+        bottomHeight: this.bottomEl.offsetHeight
+      })
+    }
+  }
+
+  render () {
+    const { title, nodeId, isOpen, onOpenClick,
+    children, numInputs, numMacros, inputLinkTitle } = this.props
+
+    return (
+      <Wrapper>
+        <Inner isOpen={isOpen}>
+          <Top>
+            <Row>
+              <BarCol>
+                <Title>{title}</Title>
+                <ParamBar nodeId={nodeId} />
+              </BarCol>
+              <Info onClick={onOpenClick}>
+                {inputLinkTitle && <span><Icon glyph={inputIcon} />{inputLinkTitle}</span>}
+                <IconInfo>
+                  {numInputs !== undefined && (<span><Icon glyph={inputIcon} />{numInputs}</span>)}
+                  {numMacros !== undefined && (<span><Icon glyph={macroIcon} />{numMacros}</span>)}
+                </IconInfo>
+              </Info>
+            </Row>
+          </Top>
+        </Inner>
+        {isOpen &&
+        <div>
+          <Bottom innerRef={node => { this.bottomEl = node }}>
+            {children}
+          </Bottom>
+          <Padder height={this.state.bottomHeight} />
+        </div>
+      }
+      </Wrapper>
+    )
+  }
+
+}
 
 Param.propTypes = {
   title: PropTypes.string.isRequired,
   nodeId: PropTypes.string.isRequired,
-  infoText: PropTypes.string,
-  inputLinkIds: PropTypes.arrayOf(
-    PropTypes.string
-  ),
   isOpen: PropTypes.bool,
   onOpenClick: PropTypes.func.isRequired,
   children: PropTypes.node,
