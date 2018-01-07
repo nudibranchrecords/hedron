@@ -6,9 +6,12 @@ test('(Selector) project - getProjectData', (t) => {
   const state = {
     project: '@@project',
     availableModules: '@@availableModules',
+    midi: '@@midi',
     inputs: '@@inputs',
     sketches: '@@sketches',
-    params: '@@params'
+    params: '@@params',
+    displays: '@@displays',
+    clock: '@@clock'
   }
   deepFreeze(state)
 
@@ -21,7 +24,7 @@ test('(Selector) project - getProjectData', (t) => {
 
   const actual = getProjectData(state)
 
-  t.deepEqual(actual, expected, 'Returns project object')
+  t.deepEqual(actual, expected, 'Returns project object without: availableModules, midi, displays, clock')
   t.end()
 })
 
