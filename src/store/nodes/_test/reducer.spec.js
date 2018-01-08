@@ -73,7 +73,7 @@ test('(Reducer) nodesReducer - Updates correct node value on NODE_VALUE_UPDATE',
   t.end()
 })
 
-test('(Reducer) nodesReducer - Adds input link id on nodeInputLinkAdd()', (t) => {
+test('(Reducer) nodesReducer - Adds input link id on rNodeInputLinkAdd()', (t) => {
   let originalState, actualState
 
   originalState = {
@@ -93,15 +93,15 @@ test('(Reducer) nodesReducer - Adds input link id on nodeInputLinkAdd()', (t) =>
 
   deepFreeze(originalState)
 
-  actualState = nodesReducer(originalState, a.nodeInputLinkAdd('01', 'XXX'))
+  actualState = nodesReducer(originalState, a.rNodeInputLinkAdd('01', 'XXX'))
 
   t.deepEqual(actualState['01'].inputLinkIds, ['XXX'])
 
-  actualState = nodesReducer(actualState, a.nodeInputLinkAdd('01', 'YYY'))
+  actualState = nodesReducer(actualState, a.rNodeInputLinkAdd('01', 'YYY'))
 
   t.deepEqual(actualState['01'].inputLinkIds, ['XXX', 'YYY'])
 
-  actualState = nodesReducer(actualState, a.nodeInputLinkAdd('02', 'AAA'))
+  actualState = nodesReducer(actualState, a.rNodeInputLinkAdd('02', 'AAA'))
 
   t.deepEqual(actualState['02'].inputLinkIds, ['AAA'])
 
@@ -477,6 +477,82 @@ test('(Reducer) nodesReducer - opens/closes node on NODE_OPEN_TOGGLE', (t) => {
       id: '01'
     }
   })
+
+  t.deepEqual(actualState, expectedState)
+
+  t.end()
+})
+
+test('(Reducer) nodesReducer - changes tab index on NODE_OPEN_TAB', (t) => {
+  let originalState, expectedState, actualState
+
+  originalState = {
+    '01': {
+      title: 'Rotation X',
+      key: 'rotX',
+      value: 0.1,
+      isOpen: true,
+      input: {
+        id: 'audio_0'
+      },
+      openedTabIndex: undefined
+    },
+    '02': {
+      title: 'Rotation Y',
+      key: 'rotY',
+      isOpen: false,
+      input: undefined,
+      openedTabIndex: 1
+    }
+  }
+
+  deepFreeze(originalState)
+
+  expectedState = {
+    '01': {
+      title: 'Rotation X',
+      key: 'rotX',
+      value: 0.1,
+      isOpen: true,
+      input: {
+        id: 'audio_0'
+      },
+      openedTabIndex: 2
+    },
+    '02': {
+      title: 'Rotation Y',
+      key: 'rotY',
+      isOpen: false,
+      input: undefined,
+      openedTabIndex: 1
+    }
+  }
+
+  actualState = nodesReducer(originalState, a.nodeTabOpen('01', 2))
+
+  t.deepEqual(actualState, expectedState)
+
+  expectedState = {
+    '01': {
+      title: 'Rotation X',
+      key: 'rotX',
+      value: 0.1,
+      isOpen: true,
+      input: {
+        id: 'audio_0'
+      },
+      openedTabIndex: 2
+    },
+    '02': {
+      title: 'Rotation Y',
+      key: 'rotY',
+      isOpen: false,
+      input: undefined,
+      openedTabIndex: 5
+    }
+  }
+
+  actualState = nodesReducer(actualState, a.nodeTabOpen('02', 5))
 
   t.deepEqual(actualState, expectedState)
 

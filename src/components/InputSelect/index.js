@@ -1,11 +1,13 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import Select from 'react-select'
+import styled from 'styled-components'
 
 const options = [
   {
     value: false,
-    label: 'None'
+    label: 'Choose',
+    disabled: true
   },
   {
     value: 'audio_0',
@@ -37,10 +39,14 @@ const options = [
   }
 ]
 
+const Wrapper = styled.div`
+  min-width: 5rem;
+`
+
 const InputSelect = ({ inputId, onInputChange }) => (
-  <div>
+  <Wrapper>
     <Select clearable={false} searchable={false} options={options} onChange={onInputChange} value={inputId} />
-  </div>
+  </Wrapper>
 )
 
 InputSelect.propTypes = {

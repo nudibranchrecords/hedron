@@ -3,7 +3,7 @@ import { getDefaultModifierIds } from './selectors'
 import getInputLink from '../../selectors/getInputLink'
 import getNode from '../../selectors/getNode'
 import { rInputLinkCreate, rInputLinkDelete } from './actions'
-import { rNodeCreate, uNodeCreate, uNodeDelete, nodeInputLinkAdd, nodeInputLinkRemove } from '../nodes/actions'
+import { rNodeCreate, uNodeCreate, uNodeDelete, uNodeInputLinkAdd, nodeInputLinkRemove } from '../nodes/actions'
 import { inputAssignedLinkCreate, inputAssignedLinkDelete } from '../inputs/actions'
 import lfoGenerateOptions from '../../utils/lfoGenerateOptions'
 import midiGenerateOptions from '../../utils/midiGenerateOptions'
@@ -99,7 +99,7 @@ export function* inputLinkCreate (action) {
     }
 
     yield put(rInputLinkCreate(linkId, link))
-    yield put(nodeInputLinkAdd(p.nodeId, linkId))
+    yield put(uNodeInputLinkAdd(p.nodeId, linkId))
     yield put(inputAssignedLinkCreate(p.inputId, linkId, p.deviceId))
   }
 }
