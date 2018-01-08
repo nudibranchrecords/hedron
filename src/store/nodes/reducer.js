@@ -115,12 +115,12 @@ const nodesReducer = (state = defaultState, action) => {
         }
       }
     }
-    case 'NODE_ACTIVE_INPUT_LINK_UPDATE': {
+    case 'NODE_ACTIVE_INPUT_LINK_TOGGLE': {
       return {
         ...state,
         [p.nodeId] : {
           ...state[p.nodeId],
-          activeInputLinkId: p.linkId
+          activeInputLinkId: p.linkId !== state[p.nodeId].activeInputLinkId ? p.linkId : undefined
         }
       }
     }

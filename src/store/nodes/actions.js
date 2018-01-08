@@ -139,9 +139,9 @@ export function nodeTabOpen (nodeId, tabIndex) {
   }
 }
 
-export function nodeActiveInputLinkUpdate (nodeId, linkId) {
+export function nodeActiveInputLinkToggle (nodeId, linkId) {
   return {
-    type: 'NODE_ACTIVE_INPUT_LINK_UPDATE',
+    type: 'NODE_ACTIVE_INPUT_LINK_TOGGLE',
     payload: {
       nodeId, linkId
     }

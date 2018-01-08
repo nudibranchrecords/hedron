@@ -29,7 +29,7 @@ class InputLink extends React.Component {
   }
 
   render () {
-    const { modifierIds, lfoOptionIds, size, midiOptionIds, title, onDeleteClick, onActivateToggle } = this.props
+    const { modifierIds, lfoOptionIds, size, midiOptionIds, title, onDeleteClick, onActivateToggle, isActive } = this.props
     return (
       <div>
         <Wrapper>
@@ -51,7 +51,7 @@ class InputLink extends React.Component {
             ))}
         </Wrapper>
         <Row justify='space-between'>
-          <Button onClick={onActivateToggle}>Activate</Button>
+          <Button onClick={onActivateToggle}>{isActive ? 'Disable' : 'Activate'}</Button>
           <Button onClick={onDeleteClick}>Delete "{title}"</Button>
         </Row>
       </div>
@@ -61,6 +61,7 @@ class InputLink extends React.Component {
 
 InputLink.propTypes = {
   title: PropTypes.string.isRequired,
+  isActive: PropTypes.bool,
   onDeleteClick: PropTypes.func.isRequired,
   onActivateToggle: PropTypes.func.isRequired,
   modifierIds: PropTypes.arrayOf(
