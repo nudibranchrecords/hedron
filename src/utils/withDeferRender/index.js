@@ -1,8 +1,9 @@
 import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 
 const delay = 70
 
-const withDeferRender = Presentational =>
+const withDeferRender = Presentational => {
   class DeferRender extends Component {
     state = {
       shouldRender: false
@@ -23,5 +24,12 @@ const withDeferRender = Presentational =>
       return <Presentational {...this.props} />
     }
   }
+
+  DeferRender.propTypes = {
+    index: PropTypes.number.isRequired
+  }
+
+  return DeferRender
+}
 
 export default withDeferRender
