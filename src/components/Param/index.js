@@ -142,7 +142,6 @@ class Param extends React.Component {
   }
 
   calculateHeights () {
-    console.log(this)
     if (this.bottomEl) {
       this.setState({
         bottomHeight: this.bottomEl.offsetHeight

@@ -49,7 +49,7 @@ const SketchParam = (props) => (
       </AddNew>
     </Top>
 
-    {props.currentInputLinkId && <InputLink id={props.currentInputLinkId} />}
+    {props.currentInputLinkId && <InputLink id={props.currentInputLinkId} nodeId={props.nodeId} />}
   </Param>
 )
 

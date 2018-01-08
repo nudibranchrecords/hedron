@@ -4,10 +4,13 @@ import Modifier from '../../containers/Modifier'
 import Select from '../../containers/Select'
 import styled from 'styled-components'
 import uiEventEmitter from '../../utils/uiEventEmitter'
+import Button from '../../components/Button'
+import Row from '../../components/Row'
 
 const Wrapper = styled.div`
   display: flex;
   flex-wrap: wrap;
+  margin-bottom: 0.5rem;
 `
 
 const Item = styled.div`
@@ -26,7 +29,7 @@ class InputLink extends React.Component {
   }
 
   render () {
-    const { modifierIds, lfoOptionIds, size, midiOptionIds } = this.props
+    const { modifierIds, lfoOptionIds, size, midiOptionIds, title, onDeleteClick } = this.props
     return (
       <div>
         <Wrapper>
@@ -47,12 +50,17 @@ class InputLink extends React.Component {
             </Item>
             ))}
         </Wrapper>
+        <Row justify='space-between'>
+          <Button onClick={onDeleteClick}>Delete "{title}"</Button>
+        </Row>
       </div>
     )
   }
 }
 
 InputLink.propTypes = {
+  title: PropTypes.string.isRequired,
+  onDeleteClick: PropTypes.func.isRequired,
   modifierIds: PropTypes.arrayOf(
     PropTypes.string
   ),

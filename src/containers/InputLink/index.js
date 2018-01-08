@@ -3,6 +3,8 @@ import InputLink from '../../components/InputLink'
 import getInputLinkLfoOptionIds from '../../selectors/getInputLinkLfoOptionIds'
 import getInputLinkModifierIds from '../../selectors/getInputLinkModifierIds'
 import getInputLinkMidiOptionIds from '../../selectors/getInputLinkMidiOptionIds'
+import { uInputLinkDelete } from '../../store/inputLinks/actions'
+import { nodeTabOpen } from '../../store/nodes/actions'
 
 const mapStateToProps = (state, ownProps) => ({
   title: state.inputLinks[ownProps.id].title,
@@ -11,6 +13,13 @@ const mapStateToProps = (state, ownProps) => ({
   midiOptionIds: getInputLinkMidiOptionIds(state, ownProps.id)
 })
 
+const mapDispatchToProps = (dispatch, ownProps) => ({
+  onDeleteClick: () => {
+    dispatch(uInputLinkDelete(ownProps.id))
+    dispatch(nodeTabOpen(ownProps.nodeId, 0))
+  }
+})
+
 export default connect(
-  mapStateToProps
+  mapStateToProps, mapDispatchToProps
 )(InputLink)
