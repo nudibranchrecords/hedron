@@ -111,6 +111,38 @@ test('(Selector) inputs - getAssignedLinks - one input link isnt active', (t) =>
   t.end()
 })
 
+test('(Selector) inputs - getAssignedLinks - inputLink doesnt have node but another input link', (t) => {
+  const state = {
+    inputs: {
+      foo_input: {
+        assignedLinkIds: ['XX']
+      }
+    },
+    nodes: {
+
+    },
+    inputLinks: {
+      XX: {
+        nodeId: 'INPUTLINKID',
+        inputLinkIdToToggle: 'INPUTLINKID'
+      }
+    }
+  }
+  deepFreeze(state)
+
+  const expected = [
+    {
+      nodeId: 'INPUTLINKID',
+      inputLinkIdToToggle: 'INPUTLINKID'
+    }
+  ]
+
+  const actual = getAssignedLinks(state, 'foo_input')
+
+  t.deepEqual(actual, expected, 'Returns inputlink without node')
+  t.end()
+})
+
 test('(Selector) inputs - getAssignedLinks - inputLinks dont exist', (t) => {
   const state = {
     inputs: {

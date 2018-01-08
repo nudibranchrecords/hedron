@@ -10,7 +10,10 @@ const midiReducer = (state = defaultState, action) => {
     case 'MIDI_START_LEARNING': {
       return {
         ...state,
-        learning: p.nodeId
+        learning: {
+          id: p.nodeId,
+          type: p.type
+        }
       }
     }
     case 'MIDI_STOP_LEARNING': {

@@ -4,7 +4,7 @@ import getInputLinkLfoOptionIds from '../../selectors/getInputLinkLfoOptionIds'
 import getInputLinkModifierIds from '../../selectors/getInputLinkModifierIds'
 import getInputLinkMidiOptionIds from '../../selectors/getInputLinkMidiOptionIds'
 import getIsInputLinkActive from '../../selectors/getIsInputLinkActive'
-import { uInputLinkDelete } from '../../store/inputLinks/actions'
+import { uInputLinkDelete, uInputLinkCreate } from '../../store/inputLinks/actions'
 import { nodeTabOpen, nodeActiveInputLinkToggle } from '../../store/nodes/actions'
 
 const mapStateToProps = (state, ownProps) => ({
@@ -22,6 +22,9 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
   },
   onActivateToggle: () => {
     dispatch(nodeActiveInputLinkToggle(ownProps.nodeId, ownProps.id))
+  },
+  onActivateAssignClick: () => {
+    dispatch(uInputLinkCreate(ownProps.id, 'midi', 'inputLinkToggle'))
   }
 })
 

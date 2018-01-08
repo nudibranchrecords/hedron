@@ -14,7 +14,7 @@ export const getAssignedLinks = (state, inputId) => {
       throw (new Error(`getAssignedLinks: Missing assigned link for input ${inputId}: ${id}`))
     }
 
-    if (node.activeInputLinkId === id) {
+    if (link.inputLinkIdToToggle || node.activeInputLinkId === id) {
       arr.push(link)
     }
   }
