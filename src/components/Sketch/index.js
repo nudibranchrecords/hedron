@@ -47,7 +47,7 @@ const Sketch = ({ title, params, shots, onDeleteClick, sketchId }) => (
         <Params>
           {params.map((id, index) => (
             <Item key={id}>
-              <SketchParam nodeId={id} index={index} />
+              <SketchParam nodeId={id} index={index} sketchId={sketchId} />
             </Item>
           ))}
         </Params>

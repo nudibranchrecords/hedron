@@ -166,7 +166,8 @@ test('(Saga) handleSketchCreate', (t) => {
       title: 'Cubey Boy',
       moduleId: 'cubey',
       paramIds: ['PARAM1', 'PARAM2'],
-      shotIds: ['SHOT1', 'SHOT2']
+      shotIds: ['SHOT1', 'SHOT2'],
+      openedNodes: {}
     })),
     'Dispatch sketch create action'
   )
@@ -215,7 +216,8 @@ test('(Saga) handleSketchCreate (no params or shots)', (t) => {
       title: 'Cubey Boy',
       moduleId: 'cubey',
       paramIds: [],
-      shotIds: []
+      shotIds: [],
+      openedNodes: {}
     })),
     'Dispatch sketch create action'
   )
