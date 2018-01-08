@@ -36,9 +36,19 @@ export function rNodeDelete (id) {
   }
 }
 
-export function nodeInputLinkAdd (id, linkId) {
+export function uNodeInputLinkAdd (id, linkId) {
   return {
-    type: 'NODE_INPUT_LINK_ADD',
+    type: 'U_NODE_INPUT_LINK_ADD',
+    payload: {
+      id,
+      linkId
+    }
+  }
+}
+
+export function rNodeInputLinkAdd (id, linkId) {
+  return {
+    type: 'R_NODE_INPUT_LINK_ADD',
     payload: {
       id,
       linkId
@@ -116,6 +126,15 @@ export function nodeOpenToggle (id) {
     type: 'NODE_OPEN_TOGGLE',
     payload: {
       id
+    }
+  }
+}
+
+export function nodeTabOpen (nodeId, tabIndex) {
+  return {
+    type: 'NODE_TAB_OPEN',
+    payload: {
+      nodeId, tabIndex
     }
   }
 }

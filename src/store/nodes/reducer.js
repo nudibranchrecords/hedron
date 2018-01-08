@@ -33,7 +33,7 @@ const nodesReducer = (state = defaultState, action) => {
         }
       }
     }
-    case 'NODE_INPUT_LINK_ADD': {
+    case 'R_NODE_INPUT_LINK_ADD': {
       if (!state[p.id]) {
         return state
       }
@@ -103,6 +103,15 @@ const nodesReducer = (state = defaultState, action) => {
         [p.id] : {
           ...state[p.id],
           isOpen: !state[p.id].isOpen
+        }
+      }
+    }
+    case 'NODE_TAB_OPEN': {
+      return {
+        ...state,
+        [p.nodeId] : {
+          ...state[p.nodeId],
+          openedTabIndex: p.tabIndex
         }
       }
     }

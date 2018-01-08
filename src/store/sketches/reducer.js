@@ -18,6 +18,18 @@ const sketchesReducer = (state = defaultState, action) => {
     case 'SKETCHES_REPLACE_ALL': {
       return p.sketches
     }
+    case 'SKETCH_NODE_OPENED_TOGGLE': {
+      return {
+        ...state,
+        [p.sketchId]: {
+          ...state[p.sketchId],
+          openedNodes: {
+            ...state[p.sketchId].openedNodes,
+            [p.nodeType]: p.nodeId !== state[p.sketchId].openedNodes[p.nodeType] ? p.nodeId : undefined
+          }
+        }
+      }
+    }
     default:
       return state
   }

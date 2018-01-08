@@ -88,4 +88,4 @@ if (isDevelopment && devConfig && devConfig.defaultProject) {
   store.dispatch(projectLoadRequest())
 }
 
-if (module.hot) module.hot.accept('../components/App', () => renderApp(App))
+if (module.hot) module.hot.accept('../containers/App', () => renderApp(App))

@@ -2,6 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import uiEventEmitter from '../../utils/uiEventEmitter'
+import theme from '../../utils/theme'
 
 const Wrapper = styled.div`
   position: absolute;
@@ -18,7 +19,7 @@ const Wrapper = styled.div`
     left: 50%;
     display: block;
     content: "";
-    border-right: 1px dashed #666;
+    border-right: 1px dashed ${theme.lineColor1};
   }
 `
 class PanelDragger extends React.Component {
@@ -41,6 +42,13 @@ class PanelDragger extends React.Component {
 
     document.addEventListener('mousemove', this.handleMouseMove)
     document.addEventListener('mouseup', onMouseUp)
+  }
+
+  componentDidMount () {
+    // Force repaint after mounting to fix up components
+    setTimeout(() => {
+      uiEventEmitter.emit('repaint')
+    }, 1000)
   }
 
   handleMouseMove (e) {

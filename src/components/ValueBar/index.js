@@ -2,9 +2,10 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import uiEventEmitter from '../../utils/uiEventEmitter'
+import theme from '../../utils/theme'
 
 const Bar = styled.canvas`
-  background: #222;
+  background: ${theme.bgColorDark2};
   cursor: pointer;
 `
 
@@ -20,7 +21,8 @@ class ValueBar extends React.Component {
 
   componentDidMount () {
     this.containerEl = this.canvas.parentElement
-    this.height = this.canvas.height = 16
+    this.height = 16 * 2
+    this.canvas.height = this.height
 
     this.setSize()
 
@@ -45,7 +47,10 @@ class ValueBar extends React.Component {
 
     this.sizer = setTimeout(() => {
       this.canvas.style.display = 'block'
-      this.width = this.canvas.width = this.containerEl.offsetWidth
+      this.width = this.containerEl.offsetWidth * 2
+      this.canvas.width = this.width
+      this.canvas.style.width = this.width / 2 + 'px'
+      this.canvas.style.height = this.height / 2 + 'px'
       this.draw(this.props.value, true)
     }, 1)
   }
@@ -79,19 +84,28 @@ class ValueBar extends React.Component {
       const innerWidth = this.width - barWidth
       const pos = innerWidth * newVal
       const context = this.canvas.getContext('2d')
-      context.fillStyle = '#FFFFFF'
+      const roundedVal = Math.round(newVal * 1000) / 1000
+
+      context.font = '18px Arial'
+      context.textAlign = 'right'
 
       if (this.oldVal) {
         const oldPos = innerWidth * this.oldVal
-          // Only clear the area from the last position
+        // Only clear the area from the last position
         context.clearRect(oldPos - 1, 0, barWidth + 2, this.height)
+        // And the text area
+        context.clearRect(this.width - 60, 0, 60, this.height)
       } else {
         context.clearRect(0, 0, this.width, this.height)
       }
 
       this.oldVal = newVal
 
+      // Draw value as text
+      context.fillStyle = theme.textColorLight1
+      context.fillText(roundedVal.toFixed(3), innerWidth - 5, this.height - 10)
       // Draw bar at new position
+      context.fillStyle = '#fff'
       context.fillRect(pos, 0, barWidth, this.height)
     }
   }

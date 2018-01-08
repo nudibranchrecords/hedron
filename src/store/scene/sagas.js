@@ -53,7 +53,8 @@ export function* handleSketchCreate (action) {
     title: module.defaultTitle,
     moduleId: moduleId,
     paramIds,
-    shotIds
+    shotIds,
+    openedNodes: {}
   }))
 
   yield call([history, history.push], '/sketches/view/' + uniqueSketchId)

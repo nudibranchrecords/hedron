@@ -5,7 +5,7 @@ import lfoGenerateOptions from '../../../utils/lfoGenerateOptions'
 import midiGenerateOptions from '../../../utils/midiGenerateOptions'
 import { getDefaultModifierIds } from '../selectors'
 import getNode from '../../../selectors/getNode'
-import { uNodeCreate, rNodeCreate, nodeInputLinkAdd } from '../../nodes/actions'
+import { uNodeCreate, rNodeCreate, uNodeInputLinkAdd } from '../../nodes/actions'
 import { rInputLinkCreate, uInputLinkCreate } from '../actions'
 import { inputAssignedLinkCreate } from '../../inputs/actions'
 import { midiStartLearning } from '../../midi/actions'
@@ -173,7 +173,7 @@ test('(Saga) inputLinkCreate', (t) => {
 
   t.deepEqual(
     generator.next().value,
-    put(nodeInputLinkAdd(nodeId, linkId)),
+    put(uNodeInputLinkAdd(nodeId, linkId)),
     '6. Add input link id to node'
   )
 
@@ -354,7 +354,7 @@ test('(Saga) inputLinkCreate - LFO', (t) => {
 
   t.deepEqual(
     generator.next().value,
-    put(nodeInputLinkAdd(nodeId, linkId)),
+    put(uNodeInputLinkAdd(nodeId, linkId)),
     '6. Add input link id to node'
   )
 
@@ -461,7 +461,7 @@ test('(Saga) inputLinkCreate (type midi)', (t) => {
 
   t.deepEqual(
     generator.next().value,
-    put(nodeInputLinkAdd(nodeId, linkId)),
+    put(uNodeInputLinkAdd(nodeId, linkId)),
     '6. Add input link id to node'
   )
 

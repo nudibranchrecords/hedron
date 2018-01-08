@@ -16,7 +16,15 @@ const Wrapper = styled.div`
 
 const Params = styled.div`
   display: flex;
-  flex-direction: column;
+  flex-wrap: wrap;
+  margin: 0 -0.25rem;
+  position: relative;
+`
+
+const Item = styled.div`
+  flex: 0 0 33.33%;
+  width: 33.33%;
+  padding: 0.25rem;
 `
 
 const Bottom = styled.div`
@@ -38,7 +46,9 @@ const Sketch = ({ title, params, shots, onDeleteClick, sketchId }) => (
         <h3>Params</h3>
         <Params>
           {params.map((id, index) => (
-            <SketchParam nodeId={id} key={id} index={index} />
+            <Item key={id}>
+              <SketchParam nodeId={id} index={index} sketchId={sketchId} />
+            </Item>
           ))}
         </Params>
       </div>
