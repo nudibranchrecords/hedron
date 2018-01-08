@@ -7,6 +7,7 @@ import inputIcon from '../../assets/icons/input.icon.txt'
 import macroIcon from '../../assets/icons/macro.icon.txt'
 import IconComponent from '../Icon'
 import theme from '../../utils/theme'
+import uiEventEmitter from '../../utils/uiEventEmitter'
 
 const Wrapper = styled.div`
   width: 100%;
@@ -117,9 +118,17 @@ class Param extends React.Component {
     this.state = {
       bottomHeight: 0
     }
+    this.calculateHeights = this.calculateHeights.bind(this)
+
+    uiEventEmitter.on('repaint', this.calculateHeights)
   }
+
   componentDidMount () {
     this.calculateHeights()
+  }
+
+  componentWillUnmount () {
+    uiEventEmitter.removeListener('repaint', this.calculateHeights)
   }
 
   componentDidUpdate (prevProps, prevState) {
@@ -133,6 +142,7 @@ class Param extends React.Component {
   }
 
   calculateHeights () {
+    console.log(this)
     if (this.bottomEl) {
       this.setState({
         bottomHeight: this.bottomEl.offsetHeight
