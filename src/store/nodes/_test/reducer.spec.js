@@ -558,3 +558,66 @@ test('(Reducer) nodesReducer - changes tab index on NODE_OPEN_TAB', (t) => {
 
   t.end()
 })
+
+test('(Reducer) nodesReducer - changes activeInputLinkId on nodeActiveInputLinkUpdate()', (t) => {
+  let originalState, expectedState, actualState
+
+  originalState = {
+    '01': {
+      title: 'Rotation X',
+      key: 'rotX',
+      value: 0.1,
+      isOpen: true
+    },
+    '02': {
+      title: 'Rotation Y',
+      key: 'rotY',
+      isOpen: false,
+      input: undefined
+    }
+  }
+
+  deepFreeze(originalState)
+
+  expectedState = {
+    '01': {
+      title: 'Rotation X',
+      key: 'rotX',
+      value: 0.1,
+      isOpen: true,
+      activeInputLinkId: 'XX'
+    },
+    '02': {
+      title: 'Rotation Y',
+      key: 'rotY',
+      isOpen: false,
+      input: undefined
+    }
+  }
+
+  actualState = nodesReducer(originalState, a.nodeActiveInputLinkUpdate('01', 'XX'))
+
+  t.deepEqual(actualState, expectedState)
+
+  expectedState = {
+    '01': {
+      title: 'Rotation X',
+      key: 'rotX',
+      value: 0.1,
+      isOpen: true,
+      activeInputLinkId: 'YY'
+    },
+    '02': {
+      title: 'Rotation Y',
+      key: 'rotY',
+      isOpen: false,
+      input: undefined
+    }
+  }
+
+  actualState = nodesReducer(actualState, a.nodeActiveInputLinkUpdate('01', 'YY'))
+
+  t.deepEqual(actualState, expectedState)
+
+  t.end()
+})

@@ -138,3 +138,12 @@ export function nodeTabOpen (nodeId, tabIndex) {
     }
   }
 }
+
+export function nodeActiveInputLinkUpdate (nodeId, linkId) {
+  return {
+    type: 'NODE_ACTIVE_INPUT_LINK_UPDATE',
+    payload: {
+      nodeId, linkId
+    }
+  }
+}

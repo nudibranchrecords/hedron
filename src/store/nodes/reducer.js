@@ -115,6 +115,15 @@ const nodesReducer = (state = defaultState, action) => {
         }
       }
     }
+    case 'NODE_ACTIVE_INPUT_LINK_UPDATE': {
+      return {
+        ...state,
+        [p.nodeId] : {
+          ...state[p.nodeId],
+          activeInputLinkId: p.linkId
+        }
+      }
+    }
     default:
       return state
   }
