@@ -15,10 +15,10 @@ export default (store) => {
         timeStamp: rawMessage.timeStamp
       }))
 
-      const learningId = state.midi.learning
+      const learning = state.midi.learning
 
-      if (learningId) {
-        store.dispatch(uInputLinkCreate(learningId, m.id, 'midi', rawMessage.target.name))
+      if (learning) {
+        store.dispatch(uInputLinkCreate(learning.id, m.id, learning.type, rawMessage.target.name))
         store.dispatch(midiStopLearning())
       } else {
         store.dispatch(inputFired(m.id, m.value, {

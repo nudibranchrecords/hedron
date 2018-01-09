@@ -31,6 +31,7 @@ const options = [
   },
   {
     value: 'midi',
+    type: 'midi',
     label: 'MIDI'
   },
   {

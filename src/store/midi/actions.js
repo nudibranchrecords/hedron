@@ -1,7 +1,7 @@
-export function midiStartLearning (nodeId) {
+export function midiStartLearning (nodeId, type) {
   return {
     type: 'MIDI_START_LEARNING',
-    payload: { nodeId }
+    payload: { nodeId, type }
   }
 }
 

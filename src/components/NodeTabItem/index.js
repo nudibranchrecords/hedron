@@ -9,9 +9,19 @@ const Wrapper = styled.div`
   padding: 0.25rem 0.5rem;
   text-transform: uppercase;
   border: 1px solid ${theme.lineColor1};
-  color: ${props => props.isSelected ? theme.textColorLight1 : '#111'};
-  background: ${props => props.isSelected ? theme.bgColorLight1 : 'transparent'};
-  border-color: ${props => props.isSelected ? theme.lineColor2 : theme.lineColor1};
+  color: ${props => props.isSelected ? 'white' : '#111'};
+
+  background-color: ${props => {
+    let color = props.isSelected ? theme.bgColorLight1 : 'transparent'
+    color = props.isActive && props.isSelected ? theme.actionColor1 : color
+    return color
+  }};
+
+  border-color: ${props => {
+    let color = props.isActive ? theme.actionColor1 : theme.lineColor1
+    color = props.isSelected ? 'white' : color
+    return color
+  }};
   cursor: pointer;
 
   span {
@@ -24,8 +34,8 @@ const Wrapper = styled.div`
   }
 `
 
-const NodeTabItem = ({ title, isSelected, onClick }) => (
-  <Wrapper isSelected={isSelected} onClick={onClick}>
+const NodeTabItem = ({ title, isSelected, onClick, isActive }) => (
+  <Wrapper isSelected={isSelected} isActive={isActive} onClick={onClick}>
     {title}
   </Wrapper>
 )
@@ -33,6 +43,7 @@ const NodeTabItem = ({ title, isSelected, onClick }) => (
 NodeTabItem.propTypes = {
   title: PropTypes.string.isRequired,
   isSelected: PropTypes.bool,
+  isActive: PropTypes.bool,
   onClick: PropTypes.func.isRequired
 }
 

@@ -23,37 +23,42 @@ export function* inputLinkCreate (action) {
   const modifierIds = []
   const lfoOptionIds = []
   const midiOptionIds = []
-  let bankIndex
+  let bankIndex, inputLinkIdToToggle, node, nodeType
 
   if (p.inputId === 'midi') {
-    yield put(midiStartLearning(p.nodeId))
+    yield put(midiStartLearning(p.nodeId, p.inputType))
   } else {
     const linkId = yield call(uid)
-    const node = yield select(getNode, p.nodeId)
 
-    if (p.inputType !== 'midi') {
-      const modifiers = yield call(getAll)
-      const defaultModifierIds = yield select(getDefaultModifierIds)
+    if (p.inputType === 'inputLinkToggle') {
+      inputLinkIdToToggle = p.nodeId
+    } else {
+      node = yield select(getNode, p.nodeId)
+      nodeType = node.type
+      if (p.inputType !== 'midi') {
+        const modifiers = yield call(getAll)
+        const defaultModifierIds = yield select(getDefaultModifierIds)
 
-      for (let i = 0; i < defaultModifierIds.length; i++) {
-        const id = defaultModifierIds[i]
-        const config = modifiers[id].config
+        for (let i = 0; i < defaultModifierIds.length; i++) {
+          const id = defaultModifierIds[i]
+          const config = modifiers[id].config
 
-        for (let j = 0; j < config.title.length; j++) {
-          if (!config.type || config.type === p.inputType) {
-            const modifierId = yield call(uid)
-            const modifier = {
-              id: modifierId,
-              key: id,
-              title: config.title[j],
-              value: config.defaultValue[j],
-              passToNext: j < config.title.length - 1,
-              inputLinkIds: [],
-              type: config.type
+          for (let j = 0; j < config.title.length; j++) {
+            if (!config.type || config.type === p.inputType) {
+              const modifierId = yield call(uid)
+              const modifier = {
+                id: modifierId,
+                key: id,
+                title: config.title[j],
+                value: config.defaultValue[j],
+                passToNext: j < config.title.length - 1,
+                inputLinkIds: [],
+                type: config.type
+              }
+
+              modifierIds.push(modifierId)
+              yield put(rNodeCreate(modifierId, modifier))
             }
-
-            modifierIds.push(modifierId)
-            yield put(rNodeCreate(modifierId, modifier))
           }
         }
       }
@@ -70,7 +75,7 @@ export function* inputLinkCreate (action) {
       }
     }
 
-    if (p.inputType === 'midi') {
+    if (p.inputType === 'midi' || p.inputType === 'inputLinkToggle') {
       bankIndex = yield select(getCurrentBankIndex, p.deviceId)
       const midiOpts = yield call(midiGenerateOptions)
 
@@ -90,16 +95,19 @@ export function* inputLinkCreate (action) {
       },
       id: linkId,
       nodeId: p.nodeId,
-      nodeType: node.type,
+      nodeType,
       deviceId: p.deviceId,
       bankIndex,
       modifierIds,
       lfoOptionIds,
-      midiOptionIds
+      midiOptionIds,
+      inputLinkIdToToggle
     }
 
     yield put(rInputLinkCreate(linkId, link))
-    yield put(uNodeInputLinkAdd(p.nodeId, linkId))
+    if (node) {
+      yield put(uNodeInputLinkAdd(p.nodeId, linkId))
+    }
     yield put(inputAssignedLinkCreate(p.inputId, linkId, p.deviceId))
   }
 }

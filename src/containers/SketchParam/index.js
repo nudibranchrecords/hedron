@@ -6,8 +6,7 @@ import withDeferRender from '../../utils/withDeferRender'
 
 const mapStateToProps = (state, ownProps) => {
   const node = getNode(state, ownProps.nodeId)
-   // Just using first input link to face the "active" one for now
-  const activeInputLinkId = node.inputLinkIds[0]
+  const activeInputLinkId = node.activeInputLinkId
   const activeInputLink = activeInputLinkId && getInputLink(state, activeInputLinkId)
   const inputLinkIds = node.inputLinkIds
   return {

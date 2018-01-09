@@ -558,3 +558,86 @@ test('(Reducer) nodesReducer - changes tab index on NODE_OPEN_TAB', (t) => {
 
   t.end()
 })
+
+test('(Reducer) nodesReducer - changes activeInputLinkId on nodeActiveInputLinkToggle()', (t) => {
+  let originalState, expectedState, actualState
+
+  originalState = {
+    '01': {
+      title: 'Rotation X',
+      key: 'rotX',
+      value: 0.1,
+      isOpen: true
+    },
+    '02': {
+      title: 'Rotation Y',
+      key: 'rotY',
+      isOpen: false,
+      input: undefined
+    }
+  }
+
+  deepFreeze(originalState)
+
+  expectedState = {
+    '01': {
+      title: 'Rotation X',
+      key: 'rotX',
+      value: 0.1,
+      isOpen: true,
+      activeInputLinkId: 'XX'
+    },
+    '02': {
+      title: 'Rotation Y',
+      key: 'rotY',
+      isOpen: false,
+      input: undefined
+    }
+  }
+
+  actualState = nodesReducer(originalState, a.nodeActiveInputLinkToggle('01', 'XX'))
+
+  t.deepEqual(actualState, expectedState, 'Adds id when undefined')
+
+  expectedState = {
+    '01': {
+      title: 'Rotation X',
+      key: 'rotX',
+      value: 0.1,
+      isOpen: true,
+      activeInputLinkId: 'YY'
+    },
+    '02': {
+      title: 'Rotation Y',
+      key: 'rotY',
+      isOpen: false,
+      input: undefined
+    }
+  }
+
+  actualState = nodesReducer(actualState, a.nodeActiveInputLinkToggle('01', 'YY'))
+
+  t.deepEqual(actualState, expectedState, 'Adds id when existing id')
+
+  expectedState = {
+    '01': {
+      title: 'Rotation X',
+      key: 'rotX',
+      value: 0.1,
+      isOpen: true,
+      activeInputLinkId: undefined
+    },
+    '02': {
+      title: 'Rotation Y',
+      key: 'rotY',
+      isOpen: false,
+      input: undefined
+    }
+  }
+
+  actualState = nodesReducer(actualState, a.nodeActiveInputLinkToggle('01', 'YY'))
+
+  t.deepEqual(actualState, expectedState, 'Sets id to undefined when same id')
+
+  t.end()
+})

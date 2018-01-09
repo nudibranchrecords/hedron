@@ -138,3 +138,12 @@ export function nodeTabOpen (nodeId, tabIndex) {
     }
   }
 }
+
+export function nodeActiveInputLinkToggle (nodeId, linkId) {
+  return {
+    type: 'NODE_ACTIVE_INPUT_LINK_TOGGLE',
+    payload: {
+      nodeId, linkId
+    }
+  }
+}

@@ -7,13 +7,14 @@ import { select, takeEvery, put, call } from 'redux-saga/effects'
 import proxyquire from 'proxyquire'
 
 import { getAssignedLinks } from '../selectors'
-import { nodeValueUpdate } from '../../nodes/actions'
+import { nodeValueUpdate, nodeActiveInputLinkToggle } from '../../nodes/actions'
 import { inputLinkShotFired, inputLinkShotDisarm, inputLinkShotArm } from '../../inputLinks/actions'
 import { projectError } from '../../project/actions'
 
 import getNodes from '../../../selectors/getNodes'
 import getNodesValues from '../../../selectors/getNodesValues'
 import getNode from '../../../selectors/getNode'
+import getInputLink from '../../../selectors/getInputLink'
 import getCurrentBankIndex from '../../../selectors/getCurrentBankIndex'
 import lfoProcess from '../../../utils/lfoProcess'
 import midiValueProcess from '../../../utils/midiValueProcess'
@@ -863,6 +864,60 @@ test('(Saga) handleInput (shot - audio val is under 0.5, disarmed)', (t) => {
     generator.next().value,
     put(nodeValueUpdate('XX', 0.4, meta)),
     '6. Dispatches node update action'
+  )
+
+  t.equal(generator.next().done, true, 'generator ends')
+
+  t.end()
+})
+
+test('(Saga) handleInput - has inputLinkIdToToggle', (t) => {
+  const meta = { type: 'midi' }
+  const payload = {
+    value: 0.4,
+    inputId: 'midi_xxx',
+    meta
+  }
+  const generator = handleInput({
+    payload
+  })
+
+  t.deepEqual(
+    generator.next().value,
+    call(debounceInput, payload),
+    '0. Call debounceInput'
+  )
+
+  const messageCount = 1
+
+  t.deepEqual(
+    generator.next(messageCount).value,
+    select(getAssignedLinks, 'midi_xxx'),
+    '1. Gets assigned links'
+  )
+
+  const links = [
+    {
+      id: 'LINK1',
+      inputLinkIdToToggle: 'XX',
+      nodeId: 'NN'
+    }
+  ]
+
+  t.deepEqual(
+    generator.next(links).value,
+    select(getInputLink, 'XX'),
+    '1.1 Get input link'
+  )
+
+  const link = {
+    nodeId: 'NN'
+  }
+
+  t.deepEqual(
+    generator.next(link).value,
+    put(nodeActiveInputLinkToggle('NN', 'XX')),
+    '6. Dispatches node active input link toggle'
   )
 
   t.equal(generator.next().done, true, 'generator ends')
