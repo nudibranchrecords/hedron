@@ -1,11 +1,11 @@
 import { select, takeEvery, put, call } from 'redux-saga/effects'
 import { getAssignedLinks } from './selectors'
-import { nodeValueUpdate, nodeActiveInputLinkToggle } from '../nodes/actions'
+import { nodeValueUpdate } from '../nodes/actions'
 import { inputLinkShotFired, inputLinkShotDisarm, inputLinkShotArm } from '../inputLinks/actions'
 import { projectError } from '../project/actions'
 import getNodes from '../../selectors/getNodes'
 import getNode from '../../selectors/getNode'
-import getInputLink from '../../selectors/getInputLink'
+import getLinkableAction from '../../selectors/getLinkableAction'
 import getNodesValues from '../../selectors/getNodesValues'
 import getCurrentBankIndex from '../../selectors/getCurrentBankIndex'
 import lfoProcess from '../../utils/lfoProcess'
@@ -24,9 +24,9 @@ export function* handleInput (action) {
       const links = yield select(getAssignedLinks, p.inputId)
 
       for (let i = 0; i < links.length; i++) {
-        if (links[i].inputLinkIdToToggle) {
-          const otherLink = yield select(getInputLink, links[i].inputLinkIdToToggle)
-          yield put(nodeActiveInputLinkToggle(otherLink.nodeId, links[i].inputLinkIdToToggle))
+        if (links[i].linkType === 'linkableAction') {
+          const linkableAction = yield select(getLinkableAction, links[i].nodeId)
+          yield put(linkableAction.action)
         } else {
           let value = p.value
           let modifiers

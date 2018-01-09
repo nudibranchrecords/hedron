@@ -7,14 +7,14 @@ import { select, takeEvery, put, call } from 'redux-saga/effects'
 import proxyquire from 'proxyquire'
 
 import { getAssignedLinks } from '../selectors'
-import { nodeValueUpdate, nodeActiveInputLinkToggle } from '../../nodes/actions'
+import { nodeValueUpdate } from '../../nodes/actions'
 import { inputLinkShotFired, inputLinkShotDisarm, inputLinkShotArm } from '../../inputLinks/actions'
 import { projectError } from '../../project/actions'
 
 import getNodes from '../../../selectors/getNodes'
 import getNodesValues from '../../../selectors/getNodesValues'
 import getNode from '../../../selectors/getNode'
-import getInputLink from '../../../selectors/getInputLink'
+import getLinkableAction from '../../../selectors/getLinkableAction'
 import getCurrentBankIndex from '../../../selectors/getCurrentBankIndex'
 import lfoProcess from '../../../utils/lfoProcess'
 import midiValueProcess from '../../../utils/midiValueProcess'
@@ -871,7 +871,7 @@ test('(Saga) handleInput (shot - audio val is under 0.5, disarmed)', (t) => {
   t.end()
 })
 
-test('(Saga) handleInput - has inputLinkIdToToggle', (t) => {
+test('(Saga) handleInput - linkType is "linkableAction"', (t) => {
   const meta = { type: 'midi' }
   const payload = {
     value: 0.4,
@@ -899,25 +899,25 @@ test('(Saga) handleInput - has inputLinkIdToToggle', (t) => {
   const links = [
     {
       id: 'LINK1',
-      inputLinkIdToToggle: 'XX',
-      nodeId: 'NN'
+      nodeId: 'NN',
+      linkType: 'linkableAction'
     }
   ]
 
   t.deepEqual(
     generator.next(links).value,
-    select(getInputLink, 'XX'),
-    '1.1 Get input link'
+    select(getLinkableAction, 'NN'),
+    '1.1 Get linkableAction'
   )
 
-  const link = {
-    nodeId: 'NN'
+  const linkableAction = {
+    action: { foo: 'bar' }
   }
 
   t.deepEqual(
-    generator.next(link).value,
-    put(nodeActiveInputLinkToggle('NN', 'XX')),
-    '6. Dispatches node active input link toggle'
+    generator.next(linkableAction).value,
+    put({ foo: 'bar' }),
+    '6. Dispatch action from linkableAction'
   )
 
   t.equal(generator.next().done, true, 'generator ends')

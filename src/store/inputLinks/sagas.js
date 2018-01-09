@@ -3,8 +3,10 @@ import { getDefaultModifierIds } from './selectors'
 import getInputLink from '../../selectors/getInputLink'
 import getNode from '../../selectors/getNode'
 import { rInputLinkCreate, rInputLinkDelete } from './actions'
-import { rNodeCreate, uNodeCreate, uNodeDelete, uNodeInputLinkAdd, nodeInputLinkRemove } from '../nodes/actions'
+import { rNodeCreate, uNodeCreate, uNodeDelete, uNodeInputLinkAdd,
+  nodeInputLinkRemove, nodeActiveInputLinkToggle } from '../nodes/actions'
 import { inputAssignedLinkCreate, inputAssignedLinkDelete } from '../inputs/actions'
+import { linkableActionCreate, linkableActionInputLinkAdd } from '../linkableActions/actions'
 import lfoGenerateOptions from '../../utils/lfoGenerateOptions'
 import midiGenerateOptions from '../../utils/midiGenerateOptions'
 import { midiStartLearning } from '../midi/actions'
@@ -23,16 +25,17 @@ export function* inputLinkCreate (action) {
   const modifierIds = []
   const lfoOptionIds = []
   const midiOptionIds = []
-  let bankIndex, inputLinkIdToToggle, node, nodeType
+  let linkableActions = {}
+  let bankIndex, node, nodeType, linkType
 
   if (p.inputId === 'midi') {
     yield put(midiStartLearning(p.nodeId, p.inputType))
   } else {
     const linkId = yield call(uid)
-
-    if (p.inputType === 'inputLinkToggle') {
-      inputLinkIdToToggle = p.nodeId
+    if (p.inputType === 'linkableAction') {
+      linkType = 'linkableAction'
     } else {
+      linkType = 'node'
       node = yield select(getNode, p.nodeId)
       nodeType = node.type
       if (p.inputType !== 'midi') {
@@ -75,16 +78,25 @@ export function* inputLinkCreate (action) {
       }
     }
 
-    if (p.inputType === 'midi' || p.inputType === 'inputLinkToggle') {
+    if (p.inputType === 'midi' || linkType === 'linkableAction') {
       bankIndex = yield select(getCurrentBankIndex, p.deviceId)
-      const midiOpts = yield call(midiGenerateOptions)
 
-      for (let key in midiOpts) {
-        const item = midiOpts[key]
-        midiOptionIds.push(item.id)
+      if (linkType === 'node') {
+        const midiOpts = yield call(midiGenerateOptions)
 
-        yield put(uNodeCreate(item.id, item))
+        for (let key in midiOpts) {
+          const item = midiOpts[key]
+          midiOptionIds.push(item.id)
+
+          yield put(uNodeCreate(item.id, item))
+        }
       }
+    }
+
+    if (linkType === 'node') {
+      const toggleActionId = yield call(uid)
+      yield put(linkableActionCreate(toggleActionId, nodeActiveInputLinkToggle(p.nodeId, linkId)))
+      linkableActions.toggleActivate = toggleActionId
     }
 
     const link = {
@@ -101,12 +113,15 @@ export function* inputLinkCreate (action) {
       modifierIds,
       lfoOptionIds,
       midiOptionIds,
-      inputLinkIdToToggle
+      linkableActions,
+      linkType
     }
 
     yield put(rInputLinkCreate(linkId, link))
-    if (node) {
+    if (linkType === 'node') {
       yield put(uNodeInputLinkAdd(p.nodeId, linkId))
+    } else if (linkType === 'linkableAction') {
+      yield put(linkableActionInputLinkAdd(p.nodeId, linkId))
     }
     yield put(inputAssignedLinkCreate(p.inputId, linkId, p.deviceId))
   }
