@@ -20,11 +20,10 @@ const ButtonCol = styled.div`
   }
 `
 
-const Modifier = (
+const MacroLink = (
   { title, nodeId, onDeleteClick }
 ) => (
-  <SubNode>
-    {title}
+  <SubNode nodeId={nodeId} title={title} noInfo>
     <Row>
       <BarCol>
         <ParamBar nodeId={nodeId} />
@@ -36,10 +35,10 @@ const Modifier = (
   </SubNode>
 )
 
-Modifier.propTypes = {
+MacroLink.propTypes = {
   title: PropTypes.string.isRequired,
   nodeId: PropTypes.string.isRequired,
   onDeleteClick: PropTypes.func.isRequired
 }
 
-export default Modifier
+export default MacroLink

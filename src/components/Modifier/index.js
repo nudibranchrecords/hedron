@@ -1,7 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import ParamBar from '../../containers/ParamBar'
-import NodeInputInfo from '../../containers/NodeInputInfo'
 import styled from 'styled-components'
 import MidiButton from '../MidiButton'
 import SubNode from '../SubNode'
@@ -19,8 +18,7 @@ const ButtonCol = styled.div`
 const Modifier = (
   { title, nodeId, onAssignClick }
 ) => (
-  <SubNode>
-    {title}
+  <SubNode nodeId={nodeId} title={title}>
     <Row>
       <BarCol>
         <ParamBar nodeId={nodeId} />
@@ -29,7 +27,6 @@ const Modifier = (
         <MidiButton onClick={onAssignClick} />
       </ButtonCol>
     </Row>
-    <NodeInputInfo nodeId={nodeId} />
   </SubNode>
 )
 
