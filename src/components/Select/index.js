@@ -5,15 +5,13 @@ import styled from 'styled-components'
 import Row from '../Row'
 import MidiButton from '../MidiButton'
 import SubNode from '../SubNode'
-import NodeInputInfo from '../../containers/NodeInputInfo'
 
 const SelectCol = styled.div`
   flex: 1;
 `
 
 const Select = ({ nodeId, options, onChange, title, value, onAssignClick }) => (
-  <SubNode>
-    {title}
+  <SubNode nodeId={nodeId} title={title}>
     <Row>
       <SelectCol>
         <ReactSelect
@@ -26,7 +24,6 @@ const Select = ({ nodeId, options, onChange, title, value, onAssignClick }) => (
       </SelectCol>
       <MidiButton onClick={onAssignClick} />
     </Row>
-    <NodeInputInfo nodeId={nodeId} />
   </SubNode>
 )
 
