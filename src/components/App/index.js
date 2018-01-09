@@ -9,6 +9,7 @@ import { Route } from 'react-router'
 import styled from 'styled-components'
 import NavItem from '../NavItem'
 import PanelDragger from '../PanelDragger'
+import MidiLearn from '../../containers/MidiLearn'
 
 const Wrapper = styled.div`
   display: flex;
@@ -36,7 +37,6 @@ const Bar = styled.div`
   background: #111;
   height: 100%;
 `
-
 const App = ({ stats, leftWidth, onLeftDrag }) => (
   <Wrapper>
     <Left width={leftWidth}>
@@ -52,6 +52,7 @@ const App = ({ stats, leftWidth, onLeftDrag }) => (
       <SketchesNav />
       <NavItem to='/macros'>Macros</NavItem>
     </Bar>
+    <MidiLearn />
   </Wrapper>
 )
 
