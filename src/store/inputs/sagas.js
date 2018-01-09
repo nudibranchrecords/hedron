@@ -41,7 +41,7 @@ export function* handleInput (action) {
               let midiValue = value
               value = currNode.value
               const o = yield select(getNodesValues, links[i].midiOptionIds)
-              value = yield call(midiValueProcess, value, midiValue, messageCount, o.sensitity)
+              value = yield call(midiValueProcess, value, midiValue, messageCount, o.sensitity, currNode)
             }
           }
 
@@ -68,12 +68,6 @@ export function* handleInput (action) {
             }
 
             switch (links[i].nodeType) {
-              case 'select': {
-                const node = yield select(getNode, links[i].nodeId)
-                const options = node.options
-                value = options[Math.floor(options.length * value)].value
-                break
-              }
               case 'shot': {
                 const node = yield select(getNode, links[i].nodeId)
                 if (p.meta && p.meta.noteOn) {
