@@ -111,6 +111,41 @@ test('(Selector) inputs - getAssignedLinks - one input link isnt active', (t) =>
   t.end()
 })
 
+test('(Selector) inputs - getAssignedLinks - subNode links', (t) => {
+  const state = {
+    inputs: {
+      foo_input: {
+        assignedLinkIds: ['XX', 'YY']
+      }
+    },
+    nodes: {
+      nx: {
+        activeInputLinkId: undefined,
+        subNode: true
+      },
+      ny: {
+        activeInputLinkId: undefined,
+        subNode: true
+      }
+    },
+    inputLinks: {
+      XX: { nodeId: 'nx' },
+      YY: { nodeId: 'ny' }
+    }
+  }
+  deepFreeze(state)
+
+  const expected = [
+    { nodeId: 'nx' },
+    { nodeId: 'ny' }
+  ]
+
+  const actual = getAssignedLinks(state, 'foo_input')
+
+  t.deepEqual(actual, expected, 'Returns all subNode links, even if not "active"')
+  t.end()
+})
+
 test('(Selector) inputs - getAssignedLinks - inputLink type is linkableAction instead of node', (t) => {
   const state = {
     inputs: {
@@ -132,7 +167,7 @@ test('(Selector) inputs - getAssignedLinks - inputLink type is linkableAction in
 
   const expected = [
     {
-      odeId: 'INPUTLINKID',
+      nodeId: 'INPUTLINKID',
       linkType: 'linkableAction'
     }
   ]

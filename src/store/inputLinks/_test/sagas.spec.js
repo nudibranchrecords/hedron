@@ -95,7 +95,8 @@ test('(Saga) inputLinkCreate', (t) => {
     passToNext: false,
     value: 0.2,
     type: 'audio',
-    inputLinkIds: []
+    inputLinkIds: [],
+    subNode: true
   }
 
   t.deepEqual(
@@ -118,7 +119,8 @@ test('(Saga) inputLinkCreate', (t) => {
     passToNext: true,
     value: 0.5,
     type: undefined,
-    inputLinkIds: []
+    inputLinkIds: [],
+    subNode: true
   }
 
   t.deepEqual(
@@ -141,7 +143,8 @@ test('(Saga) inputLinkCreate', (t) => {
     passToNext: false,
     value: 0.5,
     type: undefined,
-    inputLinkIds: []
+    inputLinkIds: [],
+    subNode: true
   }
 
   t.deepEqual(
@@ -278,7 +281,8 @@ test('(Saga) inputLinkCreate - LFO', (t) => {
     passToNext: true,
     value: 0.5,
     type: undefined,
-    inputLinkIds: []
+    inputLinkIds: [],
+    subNode: true
   }
 
   t.deepEqual(
@@ -301,7 +305,8 @@ test('(Saga) inputLinkCreate - LFO', (t) => {
     passToNext: false,
     value: 0.5,
     type: undefined,
-    inputLinkIds: []
+    inputLinkIds: [],
+    subNode: true
   }
 
   t.deepEqual(
