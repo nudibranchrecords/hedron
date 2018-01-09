@@ -3,7 +3,7 @@ import MidiLearn from '../../components/MidiLearn'
 
 const mapStateToProps = (state, ownProps) => {
   return {
-    isVisible: state.midi.learning
+    isVisible: state.midi.learning !== false
   }
 }
 
