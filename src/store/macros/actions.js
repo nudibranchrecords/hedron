@@ -46,6 +46,13 @@ export function rMacroCreate (id, nodeId) {
   }
 }
 
+export function rMacroOpenToggle (id) {
+  return {
+    type: 'R_MACRO_OPEN_TOGGLE',
+    payload: { id }
+  }
+}
+
 export function rMacroLearningToggle (id) {
   return {
     type: 'R_MACRO_LEARNING_TOGGLE',

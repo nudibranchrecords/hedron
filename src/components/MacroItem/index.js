@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import Button from '../Button'
-import Param from '../../containers/Param'
+import Param from '../../components/Param'
 import MacroLink from '../../containers/MacroLink'
 import InputLink from '../../containers/InputLink'
 import Row from '../Row'
@@ -14,11 +14,11 @@ const Links = styled.div`
 `
 
 const MacroItem = ({
-  nodeId, onLearningClick, onDeleteClick, paramLinks,
-  inputLinkIds, isLearning, macroId, inputSettingsAreVisible, paramLinksAreVisible
+  nodeId, onLearningClick, onDeleteClick, paramLinks, inputLinkIds, isLearning,
+  macroId, inputSettingsAreVisible, paramLinksAreVisible, isOpen, title, onOpenClick, numInputs
 }) => (
   <div>
-    <Param nodeId={nodeId}>
+    <Param isOpen={isOpen} title={title} onOpenClick={onOpenClick} nodeId={nodeId} numInputs={numInputs}>
       {
         inputSettingsAreVisible &&
         <div>
@@ -67,7 +67,11 @@ MacroItem.propTypes = {
   onLearningClick: PropTypes.func.isRequired,
   onDeleteClick: PropTypes.func.isRequired,
   inputSettingsAreVisible: PropTypes.bool,
-  paramLinksAreVisible: PropTypes.bool
+  paramLinksAreVisible: PropTypes.bool,
+  isOpen: PropTypes.bool,
+  title: PropTypes.string.isRequired,
+  onOpenClick: PropTypes.func.isRequired,
+  numInputs: PropTypes.number.isRequired
 }
 
 export default MacroItem

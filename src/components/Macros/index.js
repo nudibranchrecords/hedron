@@ -12,16 +12,20 @@ const Wrapper = styled.div`
   overflow: auto;
 `
 
+const Inner = styled.ul`
+  position: relative;
+`
+
 const Macros = ({ items, onAddClick }) => (
   <Wrapper>
     <h2>Macros</h2>
-    <ul>
+    <Inner>
       {items.map(({ id }) => (
         <li key={id}>
           <MacroItem id={id} />
         </li>
       ))}
-    </ul>
+    </Inner>
     <div>
       <Button size='large' onClick={onAddClick}>Add Macro</Button>
     </div>

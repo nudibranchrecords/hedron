@@ -2,6 +2,7 @@ import { omit } from 'lodash'
 
 const defaultState = {
   learningId: false,
+  openedId: undefined,
   items: {}
 }
 
@@ -81,6 +82,12 @@ const macroReducer = (state = defaultState, action) => {
             }
           }
         }
+      }
+    }
+    case 'R_MACRO_OPEN_TOGGLE': {
+      return {
+        ...state,
+        openedId: p.id !== state.openedId ? p.id : undefined
       }
     }
     case 'MACROS_REPLACE_ALL': {
