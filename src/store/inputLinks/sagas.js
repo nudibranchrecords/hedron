@@ -6,7 +6,8 @@ import { rInputLinkCreate, rInputLinkDelete } from './actions'
 import { rNodeCreate, uNodeCreate, uNodeDelete, uNodeInputLinkAdd,
   nodeInputLinkRemove, nodeActiveInputLinkToggle } from '../nodes/actions'
 import { inputAssignedLinkCreate, inputAssignedLinkDelete } from '../inputs/actions'
-import { linkableActionCreate, linkableActionInputLinkAdd } from '../linkableActions/actions'
+import { linkableActionCreate, linkableActionInputLinkAdd,
+  linkableActionInputLinkRemove, linkableActionDelete } from '../linkableActions/actions'
 import lfoGenerateOptions from '../../utils/lfoGenerateOptions'
 import midiGenerateOptions from '../../utils/midiGenerateOptions'
 import { midiStartLearning } from '../midi/actions'
@@ -142,7 +143,16 @@ export function* inputLinkDelete (action) {
     }
   }
 
-  yield put(nodeInputLinkRemove(nodeId, p.id))
+  if (link.linkType === 'linkableAction') {
+    yield put(linkableActionInputLinkRemove(nodeId, p.id))
+  } else {
+    yield put(nodeInputLinkRemove(nodeId, p.id))
+  }
+
+  for (const key in link.linkableActions) {
+    yield put(linkableActionDelete(link.linkableActions[key]))
+  }
+
   yield put(rInputLinkDelete(p.id))
 }
 
