@@ -342,73 +342,6 @@ test('(Saga) handleInput (lfo)', (t) => {
   t.end()
 })
 
-test('(Saga) handleInput (select node)', (t) => {
-  const payload = {
-    inputId: 'midi_xxx',
-    value: 0.34
-  }
-
-  const generator = handleInput({
-    payload
-  })
-
-  t.deepEqual(
-    generator.next().value,
-    call(debounceInput, payload),
-    '0. Call debounceInput'
-  )
-
-  const messageCount = 1
-
-  t.deepEqual(
-    generator.next(messageCount).value,
-    select(getAssignedLinks, 'midi_xxx'),
-    '1. Gets assigned links'
-  )
-
-  const links = [
-    {
-      nodeId: 'XX',
-      nodeType: 'select'
-    }
-  ]
-
-  t.deepEqual(
-    generator.next(links).value,
-    select(getNode, 'XX'),
-    '1.1 Get node'
-  )
-
-  const node = {
-    options: [
-      { value: 'one' },
-      { value: 'two' },
-      { value: 'three' },
-      { value: 'four' },
-      { value: 'five' },
-      { value: 'six' },
-      { value: 'seven' },
-      { value: 'eight' },
-      { value: 'nine' },
-      { value: 'ten' }
-    ]
-  }
-
-  t.deepEqual(
-    generator.next(node).value,
-    put(nodeValueUpdate('XX', 'four')),
-    '2. Dispatches node update action, converting value to option'
-  )
-
-  t.deepEqual(
-    generator.throw({ message: 'Error!' }).value,
-    put(projectError('Error!')),
-    'Dispatches project error if some error'
-  )
-
-  t.end()
-})
-
 test('(Saga) handleInput (shot - noteOn)', (t) => {
   const meta = { 'noteOn': true }
   const payload = {
@@ -597,7 +530,7 @@ test('(Saga) handleInput (midi - banks)', (t) => {
 
   t.deepEqual(
     generator.next(midiOptionNodes).value,
-    call(midiValueProcess, 0.7, 0.5, messageCount, 0.11),
+    call(midiValueProcess, 0.7, 0.5, messageCount, 0.11, node),
     'Calls midiValueProcess using nodeValue, midi action value and number of messages'
   )
 
