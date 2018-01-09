@@ -111,7 +111,7 @@ test('(Selector) inputs - getAssignedLinks - one input link isnt active', (t) =>
   t.end()
 })
 
-test('(Selector) inputs - getAssignedLinks - inputLink doesnt have node but another input link', (t) => {
+test('(Selector) inputs - getAssignedLinks - inputLink type is linkableAction instead of node', (t) => {
   const state = {
     inputs: {
       foo_input: {
@@ -124,7 +124,7 @@ test('(Selector) inputs - getAssignedLinks - inputLink doesnt have node but anot
     inputLinks: {
       XX: {
         nodeId: 'INPUTLINKID',
-        inputLinkIdToToggle: 'INPUTLINKID'
+        linkType: 'linkableAction'
       }
     }
   }
@@ -132,8 +132,8 @@ test('(Selector) inputs - getAssignedLinks - inputLink doesnt have node but anot
 
   const expected = [
     {
-      nodeId: 'INPUTLINKID',
-      inputLinkIdToToggle: 'INPUTLINKID'
+      odeId: 'INPUTLINKID',
+      linkType: 'linkableAction'
     }
   ]
 

@@ -5,10 +5,11 @@ import lfoGenerateOptions from '../../../utils/lfoGenerateOptions'
 import midiGenerateOptions from '../../../utils/midiGenerateOptions'
 import { getDefaultModifierIds } from '../selectors'
 import getNode from '../../../selectors/getNode'
-import { uNodeCreate, rNodeCreate, uNodeInputLinkAdd } from '../../nodes/actions'
+import { uNodeCreate, rNodeCreate, uNodeInputLinkAdd, nodeActiveInputLinkToggle } from '../../nodes/actions'
 import { rInputLinkCreate, uInputLinkCreate } from '../actions'
 import { inputAssignedLinkCreate } from '../../inputs/actions'
 import { midiStartLearning } from '../../midi/actions'
+import { linkableActionCreate, linkableActionInputLinkAdd } from '../../linkableActions/actions'
 import getCurrentBankIndex from '../../../selectors/getCurrentBankIndex'
 
 import uid from 'uid'
@@ -149,6 +150,20 @@ test('(Saga) inputLinkCreate', (t) => {
     '4x. Create node (modifier)'
   )
 
+  t.deepEqual(
+    generator.next().value,
+    call(uid),
+    'Generate unique ID for linkableAction'
+  )
+
+  const actionId = '@@__TOGGLE_ACTIVATE'
+
+  t.deepEqual(
+    generator.next(actionId).value,
+    put(linkableActionCreate(actionId, nodeActiveInputLinkToggle(nodeId, linkId))),
+    'Dispatch linkableAction create'
+  )
+
   const link = {
     id: linkId,
     title: inputId,
@@ -163,7 +178,10 @@ test('(Saga) inputLinkCreate', (t) => {
     modifierIds: ['xxx', 'yyy', 'zzz'],
     lfoOptionIds: [],
     midiOptionIds: [],
-    inputLinkIdToToggle: undefined
+    linkableActions: {
+      toggleActivate: actionId
+    },
+    linkType: 'node'
   }
 
   t.deepEqual(
@@ -331,6 +349,20 @@ test('(Saga) inputLinkCreate - LFO', (t) => {
     'Dispatch node create action'
   )
 
+  t.deepEqual(
+    generator.next().value,
+    call(uid),
+    'Generate unique ID for linkableAction'
+  )
+
+  const actionId = '@@__TOGGLE_ACTIVATE'
+
+  t.deepEqual(
+    generator.next(actionId).value,
+    put(linkableActionCreate(actionId, nodeActiveInputLinkToggle(nodeId, linkId))),
+    'Dispatch linkableAction create'
+  )
+
   const link = {
     id: linkId,
     title: inputId,
@@ -345,7 +377,10 @@ test('(Saga) inputLinkCreate - LFO', (t) => {
     modifierIds: ['yyy', 'zzz'],
     lfoOptionIds: ['LFO1', 'LFO2'],
     midiOptionIds: [],
-    inputLinkIdToToggle: undefined
+    linkableActions: {
+      toggleActivate: actionId
+    },
+    linkType: 'node'
   }
 
   t.deepEqual(
@@ -439,6 +474,20 @@ test('(Saga) inputLinkCreate (type midi)', (t) => {
     'Dispatch node create action'
   )
 
+  t.deepEqual(
+    generator.next().value,
+    call(uid),
+    'Generate unique ID for linkableAction'
+  )
+
+  const actionId = '@@__TOGGLE_ACTIVATE'
+
+  t.deepEqual(
+    generator.next(actionId).value,
+    put(linkableActionCreate(actionId, nodeActiveInputLinkToggle(nodeId, linkId))),
+    'Dispatch linkableAction create'
+  )
+
   const link = {
     id: linkId,
     title: inputId,
@@ -453,7 +502,10 @@ test('(Saga) inputLinkCreate (type midi)', (t) => {
     modifierIds: [],
     lfoOptionIds: [],
     midiOptionIds: ['MIDI1', 'MIDI2'],
-    inputLinkIdToToggle: undefined
+    linkableActions: {
+      toggleActivate: actionId
+    },
+    linkType: 'node'
   }
 
   t.deepEqual(
@@ -495,10 +547,10 @@ test('(Saga) inputLinkCreate (midi)', (t) => {
   t.end()
 })
 
-test('(Saga) inputLinkCreate (inputLinkIdToToggle)', (t) => {
+test('(Saga) inputLinkCreate (linkableAction)', (t) => {
   const nodeId = 'INPUTLINK1'
   const inputId = 'midi_xxx'
-  const inputType = 'inputLinkToggle'
+  const inputType = 'linkableAction'
   const deviceId = 'DEVICE1'
 
   const generator = inputLinkCreate(uInputLinkCreate(nodeId, inputId, inputType, deviceId))
@@ -519,41 +571,6 @@ test('(Saga) inputLinkCreate (inputLinkIdToToggle)', (t) => {
 
   const bankIndex = 3
 
-  t.deepEqual(
-    generator.next(bankIndex).value,
-    call(midiGenerateOptions),
-    'Generate options for Midi'
-  )
-
-  const midiOpts = [
-    {
-      id: 'MIDI1',
-      foo: 'bar'
-    },
-    {
-      id: 'MIDI2',
-      foo: 'lorem'
-    }
-  ]
-
-  t.deepEqual(
-    generator.next(midiOpts).value,
-    put(uNodeCreate('MIDI1', {
-      id: 'MIDI1',
-      foo: 'bar'
-    })),
-    'Dispatch node create action'
-  )
-
-  t.deepEqual(
-    generator.next().value,
-    put(uNodeCreate('MIDI2', {
-      id: 'MIDI2',
-      foo: 'lorem'
-    })),
-    'Dispatch node create action'
-  )
-
   const link = {
     id: linkId,
     title: inputId,
@@ -562,25 +579,32 @@ test('(Saga) inputLinkCreate (inputLinkIdToToggle)', (t) => {
       type: inputType
     },
     nodeId,
+    nodeType: undefined,
     bankIndex,
     deviceId,
-    nodeType: undefined,
     modifierIds: [],
     lfoOptionIds: [],
-    midiOptionIds: ['MIDI1', 'MIDI2'],
-    inputLinkIdToToggle: nodeId
+    midiOptionIds: [],
+    linkableActions: {},
+    linkType: 'linkableAction'
   }
 
   t.deepEqual(
-    generator.next().value,
+    generator.next(bankIndex).value,
     put(rInputLinkCreate(linkId, link)),
     '5. Create input link'
   )
 
   t.deepEqual(
     generator.next().value,
+    put(linkableActionInputLinkAdd(nodeId, linkId)),
+    '6. Add input link id to linkableAction'
+  )
+
+  t.deepEqual(
+    generator.next().value,
     put(inputAssignedLinkCreate(inputId, linkId, deviceId)),
-    '6. Update assigned link in input'
+    '7. Update assigned link in input'
   )
 
   t.equal(generator.next().done, true, 'Generator ends')

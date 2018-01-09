@@ -6,7 +6,7 @@ import styled from 'styled-components'
 import uiEventEmitter from '../../utils/uiEventEmitter'
 import Button from '../../components/Button'
 import Row from '../../components/Row'
-import MidiButton from '../../components/MidiButton'
+import InputLinkMidiControl from '../../containers/InputLinkMidiControl'
 
 const Wrapper = styled.div`
   display: flex;
@@ -34,8 +34,8 @@ class InputLink extends React.Component {
   }
 
   render () {
-    const { modifierIds, lfoOptionIds, size, midiOptionIds, title,
-      onDeleteClick, onActivateToggle, isActive, onActivateAssignClick } = this.props
+    const { modifierIds, lfoOptionIds, size, midiOptionIds, title, toggleActionId,
+      onDeleteClick, onActivateToggle, isActive } = this.props
     return (
       <div>
         <Wrapper>
@@ -59,7 +59,7 @@ class InputLink extends React.Component {
         <Row justify='space-between'>
           <Row>
             <ActivateButton onClick={onActivateToggle}>{isActive ? 'Disable' : 'Activate'}</ActivateButton>
-            <MidiButton onClick={onActivateAssignClick} />
+            <InputLinkMidiControl linkableActionId={toggleActionId} />
           </Row>
 
           <Button onClick={onDeleteClick}>Delete "{title}"</Button>
@@ -74,7 +74,6 @@ InputLink.propTypes = {
   isActive: PropTypes.bool,
   onDeleteClick: PropTypes.func.isRequired,
   onActivateToggle: PropTypes.func.isRequired,
-  onActivateAssignClick: PropTypes.func.isRequired,
   modifierIds: PropTypes.arrayOf(
     PropTypes.string
   ),
@@ -85,7 +84,8 @@ InputLink.propTypes = {
     PropTypes.string
   ),
   size: PropTypes.string,
-  id: PropTypes.string.isRequired
+  id: PropTypes.string.isRequired,
+  toggleActionId: PropTypes.string.isRequired
 }
 
 export default InputLink
