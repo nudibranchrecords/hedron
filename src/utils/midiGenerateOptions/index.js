@@ -7,7 +7,8 @@ export default () => {
       key: 'sensitity',
       id: uid(),
       value: 0.5,
-      inputLinkIds: []
+      inputLinkIds: [],
+      subNode: true
     }
   ]
 }
