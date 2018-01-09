@@ -3,17 +3,22 @@ import InputLink from '../../components/InputLink'
 import getInputLinkLfoOptionIds from '../../selectors/getInputLinkLfoOptionIds'
 import getInputLinkModifierIds from '../../selectors/getInputLinkModifierIds'
 import getInputLinkMidiOptionIds from '../../selectors/getInputLinkMidiOptionIds'
+import getInputLink from '../../selectors/getInputLink'
 import getIsInputLinkActive from '../../selectors/getIsInputLinkActive'
 import { uInputLinkDelete, uInputLinkCreate } from '../../store/inputLinks/actions'
 import { nodeTabOpen, nodeActiveInputLinkToggle } from '../../store/nodes/actions'
 
-const mapStateToProps = (state, ownProps) => ({
-  title: state.inputLinks[ownProps.id].title,
-  modifierIds: getInputLinkModifierIds(state, ownProps.id),
-  lfoOptionIds: getInputLinkLfoOptionIds(state, ownProps.id),
-  midiOptionIds: getInputLinkMidiOptionIds(state, ownProps.id),
-  isActive: getIsInputLinkActive(state, ownProps.id)
-})
+const mapStateToProps = (state, ownProps) => {
+  const link = getInputLink(state, ownProps.id)
+  return {
+    title: state.inputLinks[ownProps.id].title,
+    modifierIds: getInputLinkModifierIds(state, ownProps.id),
+    lfoOptionIds: getInputLinkLfoOptionIds(state, ownProps.id),
+    midiOptionIds: getInputLinkMidiOptionIds(state, ownProps.id),
+    isActive: getIsInputLinkActive(state, ownProps.id),
+    toggleActionId: link.linkableActions.toggleActivate
+  }
+}
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
   onDeleteClick: () => {
