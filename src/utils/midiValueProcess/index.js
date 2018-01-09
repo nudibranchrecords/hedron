@@ -3,9 +3,9 @@
 // Absolute type MIDI will completely replace the values
 // *** Currently just doing encoder type ***
 
-export default (nodeValue, midiValue, messageCount, sensitity = 0.5) => {
+export default (nodeValue, midiValue, messageCount, sensitivity = 0.5) => {
   let value
-  const s = sensitity * 0.014
+  const s = sensitivity * 0.014
   if (midiValue === 1) {
     value = nodeValue - (s * messageCount)
   } else {
