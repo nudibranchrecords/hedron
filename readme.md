@@ -17,6 +17,8 @@ module.exports = {
 }
 ```
 
+Setting `defaultProject` to the path of a saved project (e.g. `/Users/alex/Desktop/foo.json`) will mean that Hedron will restart every time changes are made to the sketches folder of that project. This can be useful when developing content.
+
 Start development with:
 
 `yarn start`
