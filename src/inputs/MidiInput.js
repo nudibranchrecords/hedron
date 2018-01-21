@@ -21,6 +21,7 @@ export default (store) => {
         store.dispatch(uInputLinkCreate(learning.id, m.id, learning.type, rawMessage.target.name))
         store.dispatch(midiStopLearning())
       } else {
+        console.log(rawMessage, m)
         store.dispatch(inputFired(m.id, m.value, {
           noteOn: m.type === 'noteOn',
           type: 'midi'
