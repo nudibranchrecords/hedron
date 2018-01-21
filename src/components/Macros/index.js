@@ -3,6 +3,8 @@ import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import Button from '../Button'
 import ViewHeader from '../ViewHeader'
+import Items from '../Items'
+import Item from '../Item'
 import MacroItem from '../../containers/MacroItem'
 
 const Wrapper = styled.div`
@@ -11,20 +13,16 @@ const Wrapper = styled.div`
   flex-direction: column;
 `
 
-const Inner = styled.ul`
-  position: relative;
-`
-
 const Macros = ({ items, onAddClick }) => (
   <Wrapper>
     <ViewHeader>Macros</ViewHeader>
-    <Inner>
+    <Items>
       {items.map(({ id }) => (
-        <li key={id}>
+        <Item key={id}>
           <MacroItem id={id} />
-        </li>
+        </Item>
       ))}
-    </Inner>
+    </Items>
     <div>
       <Button size='large' onClick={onAddClick}>Add Macro</Button>
     </div>

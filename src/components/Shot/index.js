@@ -8,8 +8,6 @@ import ShotButton from '../../containers/ShotButton'
 import InputLink from '../../containers/InputLink'
 
 const Wrapper = styled(Node)`
-  flex: 0 0 25%;
-  width: 25%;
   padding: 0.5rem;
 `
 

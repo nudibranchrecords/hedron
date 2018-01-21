@@ -6,6 +6,8 @@ import Row from '../Row'
 import Button from '../Button'
 import ViewHeader from '../ViewHeader'
 import ViewSubheader from '../ViewSubheader'
+import Items from '../Items'
+import Item from '../Item'
 import styled from 'styled-components'
 
 const Wrapper = styled.div`
@@ -14,27 +16,10 @@ const Wrapper = styled.div`
   flex-direction: column;
 `
 
-const Params = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  margin: 0 -0.25rem;
-  position: relative;
-`
-
-const Item = styled.div`
-  flex: 0 0 33.33%;
-  width: 33.33%;
-  padding: 0.25rem;
-`
-
 const Bottom = styled.div`
   margin-top: auto;
   padding-top: 3rem;
   text-align: right;
-`
-
-const Shots = styled(Row)`
-  flex-wrap: wrap;
 `
 
 const Sketch = ({ title, params, shots, onDeleteClick, sketchId }) => (
@@ -44,24 +29,26 @@ const Sketch = ({ title, params, shots, onDeleteClick, sketchId }) => (
     {params.length > 0 &&
       <div>
         <ViewSubheader>Params</ViewSubheader>
-        <Params>
+        <Items>
           {params.map((id, index) => (
             <Item key={id}>
               <SketchParam nodeId={id} index={index} sketchId={sketchId} />
             </Item>
           ))}
-        </Params>
+        </Items>
       </div>
     }
 
     {shots.length > 0 &&
       <div>
         <ViewSubheader>Shots</ViewSubheader>
-        <Shots>
+        <Items>
           {shots.map((id) => (
-            <Shot nodeId={id} key={id} />
+            <Item key={id}>
+              <Shot nodeId={id} />
+            </Item>
           ))}
-        </Shots>
+        </Items>
       </div>
     }
 

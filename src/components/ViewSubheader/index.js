@@ -1,7 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
-import theme from '../../utils/theme'
 
 const Wrapper = styled.h2`
   font-weight: normal;
