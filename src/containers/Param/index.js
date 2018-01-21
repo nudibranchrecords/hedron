@@ -3,6 +3,7 @@ import Param from '../../components/Param'
 import getNode from '../../selectors/getNode'
 import { sketchNodeOpenedToggle } from '../../store/sketches/actions'
 import getIsSketchNodeOpened from '../../selectors/getIsSketchNodeOpened'
+import { inputLinkShotFired } from '../../store/inputLinks/actions'
 
 const mapStateToProps = (state, ownProps) => {
   const node = getNode(state, ownProps.nodeId)
@@ -18,12 +19,19 @@ const mapStateToProps = (state, ownProps) => {
   }
 }
 
-const mapDispatchToProps = (dispatch, ownProps) => ({
-  onOpenClick: () => {
-    const type = ownProps.type || 'param'
-    dispatch(sketchNodeOpenedToggle(ownProps.sketchId, ownProps.nodeId, type))
+const mapDispatchToProps = (dispatch, ownProps) => {
+  const type = ownProps.type || 'param'
+
+  return {
+    onOpenClick: () => {
+      dispatch(sketchNodeOpenedToggle(ownProps.sketchId, ownProps.nodeId, type))
+    },
+    onParamBarClick: type === 'shot'
+    ? () => {
+      dispatch(inputLinkShotFired(ownProps.sketchId, ownProps.shotMethod))
+    } : undefined
   }
-})
+}
 
 const ParamContainer = connect(
   mapStateToProps,
