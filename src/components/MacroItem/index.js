@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import Button from '../Button'
 import Param from '../../components/Param'
 import MacroLink from '../../containers/MacroLink'
-import InputLink from '../../containers/InputLink'
+import InputLinkUI from '../../containers/InputLinkUI'
 import Row from '../Row'
 import styled from 'styled-components'
 
@@ -13,24 +13,20 @@ const Links = styled.div`
   margin-bottom: 0.5rem;
 `
 
+const Bottom = styled.div`
+  margin-top: 1rem;
+`
+
 const MacroItem = ({
   nodeId, onLearningClick, onDeleteClick, paramLinks, inputLinkIds, isLearning,
   macroId, inputSettingsAreVisible, paramLinksAreVisible, isOpen, title, onOpenClick, numInputs
 }) => (
   <div>
     <Param isOpen={isOpen} title={title} onOpenClick={onOpenClick} nodeId={nodeId} numInputs={numInputs}>
-      {
-        inputSettingsAreVisible &&
-        <div>
-          <h5>Input settings</h5>
-          <Links>
-            {inputLinkIds.map(id => (
-              <InputLink id={id} key={id} />
-            ))}
-          </Links>
-        </div>
-      }
-      {
+      <InputLinkUI nodeId={nodeId} />
+
+      <Bottom>
+        {
         paramLinksAreVisible &&
         <div>
           <h5>Connected Params</h5>
@@ -46,6 +42,7 @@ const MacroItem = ({
           </Links>
         </div>
       }
+      </Bottom>
 
       <Row justify='space-between'>
         <Button onClick={onLearningClick}>
