@@ -150,7 +150,7 @@ class Param extends React.Component {
   }
 
   render () {
-    const { title, nodeId, isOpen, onOpenClick,
+    const { title, nodeId, isOpen, onOpenClick, onParamBarClick,
     children, numInputs, numMacros, inputLinkTitle } = this.props
 
     return (
@@ -160,7 +160,7 @@ class Param extends React.Component {
             <Row>
               <BarCol>
                 <Title>{title}</Title>
-                <ParamBar nodeId={nodeId} />
+                <ParamBar nodeId={nodeId} onMouseDown={onParamBarClick} />
               </BarCol>
               <Info onClick={onOpenClick}>
                 {inputLinkTitle && <span><Icon glyph={inputIcon} />{inputLinkTitle}</span>}
@@ -191,6 +191,7 @@ Param.propTypes = {
   nodeId: PropTypes.string.isRequired,
   isOpen: PropTypes.bool,
   onOpenClick: PropTypes.func.isRequired,
+  onParamBarClick: PropTypes.func,
   children: PropTypes.node,
   numInputs: PropTypes.number,
   numMacros: PropTypes.number,

@@ -1,9 +1,9 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import Button from '../Button'
-import Param from '../../containers/Param'
+import Param from '../../components/Param'
 import MacroLink from '../../containers/MacroLink'
-import InputLink from '../../containers/InputLink'
+import InputLinkUI from '../../containers/InputLinkUI'
 import Row from '../Row'
 import styled from 'styled-components'
 
@@ -13,24 +13,20 @@ const Links = styled.div`
   margin-bottom: 0.5rem;
 `
 
+const Bottom = styled.div`
+  margin-top: 1rem;
+`
+
 const MacroItem = ({
-  nodeId, onLearningClick, onDeleteClick, paramLinks,
-  inputLinkIds, isLearning, macroId, inputSettingsAreVisible, paramLinksAreVisible
+  nodeId, onLearningClick, onDeleteClick, paramLinks, inputLinkIds, isLearning,
+  macroId, inputSettingsAreVisible, paramLinksAreVisible, isOpen, title, onOpenClick, numInputs
 }) => (
   <div>
-    <Param nodeId={nodeId}>
-      {
-        inputSettingsAreVisible &&
-        <div>
-          <h5>Input settings</h5>
-          <Links>
-            {inputLinkIds.map(id => (
-              <InputLink id={id} key={id} />
-            ))}
-          </Links>
-        </div>
-      }
-      {
+    <Param isOpen={isOpen} title={title} onOpenClick={onOpenClick} nodeId={nodeId} numInputs={numInputs}>
+      <InputLinkUI nodeId={nodeId} />
+
+      <Bottom>
+        {
         paramLinksAreVisible &&
         <div>
           <h5>Connected Params</h5>
@@ -46,6 +42,7 @@ const MacroItem = ({
           </Links>
         </div>
       }
+      </Bottom>
 
       <Row justify='space-between'>
         <Button onClick={onLearningClick}>
@@ -67,7 +64,11 @@ MacroItem.propTypes = {
   onLearningClick: PropTypes.func.isRequired,
   onDeleteClick: PropTypes.func.isRequired,
   inputSettingsAreVisible: PropTypes.bool,
-  paramLinksAreVisible: PropTypes.bool
+  paramLinksAreVisible: PropTypes.bool,
+  isOpen: PropTypes.bool,
+  title: PropTypes.string.isRequired,
+  onOpenClick: PropTypes.func.isRequired,
+  numInputs: PropTypes.number.isRequired
 }
 
 export default MacroItem
