@@ -5,7 +5,6 @@ import Button from '../Button'
 import MacroItem from '../../containers/MacroItem'
 
 const Wrapper = styled.div`
-  padding: 0.5rem;
   display: flex;
   height: 100%;
   flex-direction: column;

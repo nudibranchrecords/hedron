@@ -8,7 +8,6 @@ import Clock from '../../containers/Clock'
 import Devices from '../../containers/Devices'
 
 const Wrapper = styled.div`
-  padding: 0.5rem;
   display: flex;
   height: 100%;
   flex-direction: column;

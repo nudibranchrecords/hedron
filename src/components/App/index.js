@@ -23,10 +23,12 @@ const Wrapper = styled.div`
 const Left = styled.div`
   flex: 0 0 ${props => props.width}%;
   position: relative;
+  padding: 0.5rem;
 `
 
 const Right = styled.div`
   flex: 1;
+  padding: 0.5rem;
 `
 
 const Bar = styled.div`

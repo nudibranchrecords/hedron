@@ -7,7 +7,6 @@ import Button from '../Button'
 import styled from 'styled-components'
 
 const Wrapper = styled.div`
-  padding: 0.5rem;
   display: flex;
   height: 100%;
   flex-direction: column;
