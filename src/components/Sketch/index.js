@@ -43,9 +43,9 @@ const Sketch = ({ title, params, shots, onDeleteClick, sketchId }) => (
       <div>
         <ViewSubheader>Shots</ViewSubheader>
         <Items>
-          {shots.map((id) => (
+          {shots.map((id, index) => (
             <Item key={id}>
-              <Shot nodeId={id} />
+              <Shot nodeId={id} index={index} />
             </Item>
           ))}
         </Items>

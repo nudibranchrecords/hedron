@@ -1,5 +1,6 @@
 import { connect } from 'react-redux'
 import Shot from '../../components/Shot'
+import withDeferRender from '../../utils/withDeferRender'
 
 const mapStateToProps = (state, ownProps) => {
   return {
@@ -12,4 +13,4 @@ const mapStateToProps = (state, ownProps) => {
 export default connect(
   mapStateToProps,
   null
-)(Shot)
+)(withDeferRender(Shot))
