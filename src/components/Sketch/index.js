@@ -5,6 +5,7 @@ import Shot from '../../containers/Shot'
 import Row from '../Row'
 import Button from '../Button'
 import ViewHeader from '../ViewHeader'
+import ViewSubheader from '../ViewSubheader'
 import styled from 'styled-components'
 
 const Wrapper = styled.div`
@@ -42,7 +43,7 @@ const Sketch = ({ title, params, shots, onDeleteClick, sketchId }) => (
 
     {params.length > 0 &&
       <div>
-        <h3>Params</h3>
+        <ViewSubheader>Params</ViewSubheader>
         <Params>
           {params.map((id, index) => (
             <Item key={id}>
@@ -55,7 +56,7 @@ const Sketch = ({ title, params, shots, onDeleteClick, sketchId }) => (
 
     {shots.length > 0 &&
       <div>
-        <h3>Shots</h3>
+        <ViewSubheader>Shots</ViewSubheader>
         <Shots>
           {shots.map((id) => (
             <Shot nodeId={id} key={id} />
