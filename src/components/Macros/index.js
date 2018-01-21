@@ -2,13 +2,13 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import Button from '../Button'
+import ViewHeader from '../ViewHeader'
 import MacroItem from '../../containers/MacroItem'
 
 const Wrapper = styled.div`
   display: flex;
   height: 100%;
   flex-direction: column;
-  overflow: auto;
 `
 
 const Inner = styled.ul`
@@ -17,7 +17,7 @@ const Inner = styled.ul`
 
 const Macros = ({ items, onAddClick }) => (
   <Wrapper>
-    <h2>Macros</h2>
+    <ViewHeader>Macros</ViewHeader>
     <Inner>
       {items.map(({ id }) => (
         <li key={id}>

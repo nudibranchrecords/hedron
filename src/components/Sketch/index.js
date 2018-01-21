@@ -4,13 +4,13 @@ import SketchParam from '../../containers/SketchParam'
 import Shot from '../../containers/Shot'
 import Row from '../Row'
 import Button from '../Button'
+import ViewHeader from '../ViewHeader'
 import styled from 'styled-components'
 
 const Wrapper = styled.div`
   display: flex;
   height: 100%;
   flex-direction: column;
-  overflow: auto;
 `
 
 const Params = styled.div`
@@ -38,7 +38,7 @@ const Shots = styled(Row)`
 
 const Sketch = ({ title, params, shots, onDeleteClick, sketchId }) => (
   <Wrapper>
-    <h2>{title}</h2>
+    <ViewHeader>{title}</ViewHeader>
 
     {params.length > 0 &&
       <div>
