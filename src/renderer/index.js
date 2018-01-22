@@ -77,7 +77,7 @@ const renderApp = (Component) => {
 
 renderApp(App)
 
-initiateAudio(store)
+// initiateAudio(store)
 initiateMidi(store)
 initiateGeneratedClock(store)
 initiateScreens(store)
