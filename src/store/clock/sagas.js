@@ -25,6 +25,11 @@ export const clockReset = () => {
 export const newPulse = () => {
   pulses++
   delta += deltaInc
+  pp16Count++
+
+  if (pp16Count > pp16PerBar - 1) {
+    pp16Count = 0
+  }
 
   if (pulses > ppqn - 1) {
     pulses = 0
@@ -33,7 +38,7 @@ export const newPulse = () => {
       beats = 0
     }
   }
-  return { pulses, beats, delta }
+  return { pulses, beats, delta, pp16Count }
 }
 
 export const calcBpm = () => {
@@ -47,13 +52,12 @@ export const calcBpm = () => {
 }
 
 export function* clockUpdate (action) {
-  pp16Count++
   const p = action.payload
   const info = yield call(newPulse)
   yield put(inputFired('lfo', info.delta, { type: 'lfo' }))
 
-  if (pp16Count % pp16 === 0) {
-    yield put(inputFired('beat-16', pp16Count / pp16, { type: 'beat' }))
+  if (info.pp16Count % pp16 === 0) {
+    yield put(inputFired('beat-16', info.pp16Count / pp16))
   }
 
   if (!p.bpmCalcIgnore) {
@@ -67,10 +71,6 @@ export function* clockUpdate (action) {
   if (info.pulses === 0) {
     bpm = p.bpm || bpm
     yield put(a.clockBeatInc(bpm))
-  }
-
-  if (pp16Count > pp16PerBar) {
-    pp16Count = 0
   }
 }
 

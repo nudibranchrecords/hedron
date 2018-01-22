@@ -10,6 +10,7 @@ import { linkableActionCreate, linkableActionInputLinkAdd,
   linkableActionInputLinkRemove, linkableActionDelete } from '../linkableActions/actions'
 import lfoGenerateOptions from '../../utils/lfoGenerateOptions'
 import midiGenerateOptions from '../../utils/midiGenerateOptions'
+import sequencerGenerateOptions from '../../utils/sequencerGenerateOptions'
 import { midiStartLearning } from '../midi/actions'
 import getCurrentBankIndex from '../../selectors/getCurrentBankIndex'
 import { getAll } from '../../externals/modifiers'
@@ -27,7 +28,7 @@ export function* inputLinkCreate (action) {
   const lfoOptionIds = []
   const midiOptionIds = []
   let linkableActions = {}
-  let bankIndex, node, nodeType, linkType
+  let bankIndex, node, nodeType, linkType, sequencerGridId
 
   if (p.inputId === 'midi') {
     yield put(midiStartLearning(p.nodeId, p.inputType))
@@ -39,7 +40,7 @@ export function* inputLinkCreate (action) {
       linkType = 'node'
       node = yield select(getNode, p.nodeId)
       nodeType = node.type
-      if (p.inputType !== 'midi') {
+      if (p.inputType !== 'midi' && p.inputId !== 'beat-16') {
         const modifiers = yield call(getAll)
         const defaultModifierIds = yield select(getDefaultModifierIds)
 
@@ -80,6 +81,12 @@ export function* inputLinkCreate (action) {
       }
     }
 
+    if (p.inputId === 'beat-16') {
+      const seqOpts = yield call(sequencerGenerateOptions)
+      sequencerGridId = seqOpts.grid.id
+      yield put(uNodeCreate(sequencerGridId, seqOpts.grid))
+    }
+
     if (p.inputType === 'midi' || linkType === 'linkableAction') {
       bankIndex = yield select(getCurrentBankIndex, p.deviceId)
 
@@ -116,6 +123,7 @@ export function* inputLinkCreate (action) {
       lfoOptionIds,
       midiOptionIds,
       linkableActions,
+      sequencerGridId,
       linkType
     }
 
