@@ -16,15 +16,6 @@ export function clockBeatInc (bpm) {
   }
 }
 
-export function clockBpmUpdate (bpm) {
-  return {
-    type: 'CLOCK_BPM_UPDATE',
-    payload: {
-      bpm
-    }
-  }
-}
-
 export function clockReset () {
   return {
     type: 'CLOCK_RESET'
