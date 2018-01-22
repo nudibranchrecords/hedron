@@ -54,12 +54,8 @@ export function* clockUpdate (action) {
   }
 
   if (info.pulses === 0) {
-    yield put(a.clockBeatInc())
-  }
-
-  if (info.beats === 0) {
     bpm = p.bpm || bpm
-    yield put(a.clockBpmUpdate(bpm))
+    yield put(a.clockBeatInc(bpm))
   }
 }
 

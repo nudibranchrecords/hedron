@@ -11,11 +11,12 @@ export default (store) => {
   const targetPPQN = 48
   let fakeTickEnabled = false
   let lastPulseTime = now()
+  let state = store.getState()
 
   const calcMSPerPulse = (bpm) => 60000 / bpm / targetPPQN
 
   const onMessage = (rawMessage) => {
-    const state = store.getState()
+    state = store.getState()
     const m = processMidiMessage(rawMessage)
 
     if (m.type !== 'timingClock') {
@@ -50,7 +51,6 @@ export default (store) => {
   // Constantly check the time to see if enough has passed for
   // fake pulse to fire
   const loop = () => {
-    const state = store.getState()
     const time = now()
     if (!state.clock.isGenerated && fakeTickEnabled) {
       const mspp = calcMSPerPulse(state.clock.bpm)
