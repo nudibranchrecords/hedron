@@ -446,6 +446,142 @@ test('(Saga) handleInput (macro - noteOn)', (t) => {
   t.end()
 })
 
+test('(Saga) handleInput (shot - beat-16 sequencer - not in sequence)', (t) => {
+  const payload = {
+    value: 12,
+    inputId: 'beat-16'
+  }
+  const generator = handleInput({
+    payload
+  })
+
+  t.deepEqual(
+    generator.next().value,
+    call(debounceInput, payload),
+    '0. Call debounceInput'
+  )
+
+  const messageCount = 1
+
+  t.deepEqual(
+    generator.next(messageCount).value,
+    select(getAssignedLinks, 'beat-16'),
+    '1. Gets assigned links'
+  )
+
+  const links = [
+    {
+      nodeId: 'XX',
+      nodeType: 'shot',
+      sequencerGridId: 'SEQ01'
+    }
+  ]
+
+  t.deepEqual(
+    generator.next(links).value,
+    select(getNode, 'XX'),
+    '1.1 Get node'
+  )
+
+  const node = {
+    sketchId: 'fooSketch',
+    method: 'barMethod'
+  }
+
+  t.deepEqual(
+    generator.next(node).value,
+    select(getNode, 'SEQ01'),
+    '2 Get node for sequencer grid'
+  )
+
+  const seqNode = {
+    value: [
+      1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 1, 0, 1, 1 // index 12 is "0"
+    ]
+  }
+
+  t.deepEqual(
+    generator.next(seqNode).value,
+    put(nodeValueUpdate('XX', 0)),
+    '5. Dispatches node update action (skips firing shot as not in sequence)'
+  )
+
+  t.equal(generator.next().done, true, 'generator ends')
+
+  t.end()
+})
+
+test('(Saga) handleInput (shot - beat-16 sequencer - in sequence)', (t) => {
+  const payload = {
+    value: 5,
+    inputId: 'beat-16'
+  }
+  const generator = handleInput({
+    payload
+  })
+
+  t.deepEqual(
+    generator.next().value,
+    call(debounceInput, payload),
+    '0. Call debounceInput'
+  )
+
+  const messageCount = 1
+
+  t.deepEqual(
+    generator.next(messageCount).value,
+    select(getAssignedLinks, 'beat-16'),
+    '1. Gets assigned links'
+  )
+
+  const links = [
+    {
+      nodeId: 'XX',
+      nodeType: 'shot',
+      sequencerGridId: 'SEQ01'
+    }
+  ]
+
+  t.deepEqual(
+    generator.next(links).value,
+    select(getNode, 'XX'),
+    '1.1 Get node'
+  )
+
+  const node = {
+    sketchId: 'fooSketch',
+    method: 'barMethod'
+  }
+
+  t.deepEqual(
+    generator.next(node).value,
+    select(getNode, 'SEQ01'),
+    '2 Get node for sequencer grid'
+  )
+
+  const seqNode = {
+    value: [
+      1, 0, 1, 0, 1, 1, 1, 0, 1, 0, 1, 1, 0, 1, 1 // index 5 is "1"
+    ]
+  }
+
+  t.deepEqual(
+    generator.next(seqNode).value,
+    put(inputLinkShotFired('fooSketch', 'barMethod')),
+    '4. Dispatches node shot fired action'
+  )
+
+  t.deepEqual(
+    generator.next().value,
+    put(nodeValueUpdate('XX', 0)),
+    '5. Dispatches node update action'
+  )
+
+  t.equal(generator.next().done, true, 'generator ends')
+
+  t.end()
+})
+
 test('(Saga) handleInput (midi - banks)', (t) => {
   let bankIndex
   const meta = { type: 'midi' }

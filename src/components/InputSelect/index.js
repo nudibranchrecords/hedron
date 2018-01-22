@@ -37,6 +37,10 @@ const options = [
   {
     value: 'lfo',
     label: 'LFO'
+  },
+  {
+    value: 'beat-16',
+    label: 'Beat'
   }
 ]
 

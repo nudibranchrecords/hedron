@@ -7,6 +7,7 @@ import uiEventEmitter from '../../utils/uiEventEmitter'
 import Button from '../../components/Button'
 import Row from '../../components/Row'
 import InputLinkMidiControl from '../../containers/InputLinkMidiControl'
+import SequencerGrid from '../../containers/SequencerGrid'
 
 const Wrapper = styled.div`
   display: flex;
@@ -35,7 +36,7 @@ class InputLink extends React.Component {
 
   render () {
     const { modifierIds, lfoOptionIds, size, midiOptionIds, title, toggleActionId,
-      onDeleteClick, onActivateToggle, isActive } = this.props
+      sequencerGridId, onDeleteClick, onActivateToggle, isActive } = this.props
     return (
       <div>
         <Wrapper>
@@ -49,12 +50,14 @@ class InputLink extends React.Component {
               <Modifier nodeId={id} />
             </Item>
           ))}
-
           {midiOptionIds && midiOptionIds.map((id) => (
             <Item key={id} size={size}>
               <Modifier nodeId={id} />
             </Item>
-            ))}
+          ))}
+          {sequencerGridId &&
+            <SequencerGrid nodeId={sequencerGridId} />
+          }
         </Wrapper>
         <Row justify='space-between'>
           <Row>
@@ -85,6 +88,7 @@ InputLink.propTypes = {
   ),
   size: PropTypes.string,
   id: PropTypes.string.isRequired,
+  sequencerGridId: PropTypes.string,
   toggleActionId: PropTypes.string.isRequired
 }
 

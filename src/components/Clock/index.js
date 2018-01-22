@@ -32,7 +32,7 @@ Clock.propTypes = {
   beat: PropTypes.number.isRequired,
   bar: PropTypes.number.isRequired,
   phrase: PropTypes.number.isRequired,
-  bpm: PropTypes.number.isRequired,
+  bpm: PropTypes.number,
   onClick: PropTypes.func.isRequired
 }
 

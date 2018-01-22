@@ -3,47 +3,74 @@ import * as a from './actions'
 import { inputFired } from '../inputs/actions'
 import now from 'performance-now'
 
-let deltaInc = Math.PI * 2 / 48
-let pulses, delta, beats, lastBar
+const actualPpqn = 24
+const ppqn = 48
+const pulsesPerCalc = 96
+const pp16 = ppqn / 16 // Pulses per 16th beat
+const pp16PerBar = pp16 * 16 * 4
+let pp16Count = 0
+let calcPulseCount = 0
+
+let deltaInc = Math.PI / ppqn
+let pulses, delta, beats, lastPulse, bpm
 
 export const clockReset = () => {
   pulses = 0
   delta = 0
   beats = 0
-  lastBar = now()
+  pp16Count = 0
+  lastPulse = now()
 }
 
 export const newPulse = () => {
   pulses++
   delta += deltaInc
-  if (pulses > 23) {
+  pp16Count++
+
+  if (pp16Count > pp16PerBar - 1) {
+    pp16Count = 0
+  }
+
+  if (pulses > ppqn - 1) {
     pulses = 0
     beats++
     if (beats > 3) {
       beats = 0
     }
   }
-  return { pulses, beats, delta }
+  return { pulses, beats, delta, pp16Count }
 }
 
 export const calcBpm = () => {
-  let newBar = now()
-  let msperbar = newBar - lastBar
-  lastBar = newBar
-  return Math.round(240000 / msperbar)
+  let newPulse = now()
+  // multiplying by actual PPQN because we need to
+  // get genuine speed of clock (we're ignoring faked pulses here)
+  let msPerBeat = (newPulse - lastPulse) * actualPpqn / pulsesPerCalc
+  lastPulse = newPulse
+
+  return Math.round(60000 / msPerBeat)
 }
 
-export function* clockUpdate () {
+export function* clockUpdate (action) {
+  const p = action.payload
   const info = yield call(newPulse)
   yield put(inputFired('lfo', info.delta, { type: 'lfo' }))
 
-  if (info.pulses === 0) {
-    yield put(a.clockBeatInc())
+  if (info.pp16Count % pp16 === 0) {
+    yield put(inputFired('beat-16', info.pp16Count / pp16))
+  }
 
-    if (info.beats === 0) {
-      const bpm = yield call(calcBpm)
-      yield put(a.clockBpmUpdate(bpm))
+  if (!p.bpmCalcIgnore) {
+    calcPulseCount++
+    if (calcPulseCount === pulsesPerCalc) {
+      calcPulseCount = 0
+      bpm = yield call(calcBpm)
     }
+  }
+
+  if (info.pulses === 0) {
+    bpm = p.bpm || bpm
+    yield put(a.clockBeatInc(bpm))
   }
 }
 

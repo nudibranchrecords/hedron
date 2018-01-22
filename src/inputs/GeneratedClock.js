@@ -4,7 +4,8 @@ let store
 let requestId
 let marker
 let bpm = 120
-let mspp = (60 / (bpm * 24)) * 1000
+const ppqn = 48
+let mspp = (60 / (bpm * ppqn)) * 1000
 
 const loop = () => {
   // Only pulse clock if is generated
@@ -14,7 +15,7 @@ const loop = () => {
 
     while (diff > mspp) {
       // Pulse if so
-      store.dispatch(clockPulse())
+      store.dispatch(clockPulse(bpm, true))
       // Increase next time to check against by time per pulse
       marker += mspp
       // Loop over in case missed more than one pulse
