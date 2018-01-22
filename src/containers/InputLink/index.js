@@ -16,7 +16,8 @@ const mapStateToProps = (state, ownProps) => {
     lfoOptionIds: getInputLinkLfoOptionIds(state, ownProps.id),
     midiOptionIds: getInputLinkMidiOptionIds(state, ownProps.id),
     isActive: getIsInputLinkActive(state, ownProps.id),
-    toggleActionId: link.linkableActions.toggleActivate
+    toggleActionId: link.linkableActions.toggleActivate,
+    sequencerGridId: link.sequencerGridId
   }
 }
 
