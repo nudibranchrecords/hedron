@@ -1,6 +1,9 @@
-export function clockPulse () {
+export function clockPulse (bpm, bpmCalcIgnore) {
   return {
-    type: 'CLOCK_PULSE'
+    type: 'CLOCK_PULSE',
+    payload: {
+      bpm, bpmCalcIgnore
+    }
   }
 }
 
