@@ -40,7 +40,7 @@ const options = [
   },
   {
     value: 'beat-16',
-    label: 'Beat'
+    label: 'Sequencer'
   }
 ]
 
