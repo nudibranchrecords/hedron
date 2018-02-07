@@ -446,10 +446,10 @@ test('(Saga) handleInput (macro - noteOn)', (t) => {
   t.end()
 })
 
-test('(Saga) handleInput (shot - beat-16 sequencer - not in sequence)', (t) => {
+test('(Saga) handleInput (shot - seq-step sequencer - not in sequence)', (t) => {
   const payload = {
     value: 12,
-    inputId: 'beat-16'
+    inputId: 'seq-step'
   }
   const generator = handleInput({
     payload
@@ -465,7 +465,7 @@ test('(Saga) handleInput (shot - beat-16 sequencer - not in sequence)', (t) => {
 
   t.deepEqual(
     generator.next(messageCount).value,
-    select(getAssignedLinks, 'beat-16'),
+    select(getAssignedLinks, 'seq-step'),
     '1. Gets assigned links'
   )
 
@@ -511,10 +511,10 @@ test('(Saga) handleInput (shot - beat-16 sequencer - not in sequence)', (t) => {
   t.end()
 })
 
-test('(Saga) handleInput (shot - beat-16 sequencer - in sequence)', (t) => {
+test('(Saga) handleInput (shot - seq-step sequencer - in sequence)', (t) => {
   const payload = {
     value: 5,
-    inputId: 'beat-16'
+    inputId: 'seq-step'
   }
   const generator = handleInput({
     payload
@@ -530,7 +530,7 @@ test('(Saga) handleInput (shot - beat-16 sequencer - in sequence)', (t) => {
 
   t.deepEqual(
     generator.next(messageCount).value,
-    select(getAssignedLinks, 'beat-16'),
+    select(getAssignedLinks, 'seq-step'),
     '1. Gets assigned links'
   )
 
