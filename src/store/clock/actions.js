@@ -7,12 +7,9 @@ export function clockPulse (bpm, bpmCalcIgnore) {
   }
 }
 
-export function clockBeatInc (bpm) {
+export function clockBeatInc () {
   return {
-    type: 'CLOCK_BEAT_INC',
-    payload: {
-      bpm
-    }
+    type: 'CLOCK_BEAT_INC'
   }
 }
 
