@@ -3,18 +3,18 @@ import * as a from './actions'
 import { inputFired } from '../inputs/actions'
 import now from 'performance-now'
 
-const actualPpqn = 24
 const ppqn = 48
-const pulsesPerCalc = 96
-let calcPulseCount = 0
 let deltaInc = Math.PI / ppqn
-let pulses, delta, beats, lastPulse, bpm, pp16Count
+let pulses, delta, beats, lastBar
+let pp16Count = 0
+const pp16 = ppqn / 16 // Pulses per 16th beat
+const pp16PerBar = pp16 * 16 * 4
 
 export const clockReset = () => {
   pulses = 0
   delta = 0
   beats = 0
-  lastPulse = now()
+  lastBar = now()
 }
 
 export const newPulse = () => {
@@ -26,7 +26,7 @@ export const newPulse = () => {
     pp16Count = 0
   }
 
-  if (pulses > ppqn - 1) {
+  if (pulses > 23) {
     pulses = 0
     beats++
     if (beats > 3) {
@@ -37,17 +37,13 @@ export const newPulse = () => {
 }
 
 export const calcBpm = () => {
-  let newPulse = now()
-  // multiplying by actual PPQN because we need to
-  // get genuine speed of clock (we're ignoring faked pulses here)
-  let msPerBeat = (newPulse - lastPulse) * actualPpqn / pulsesPerCalc
-  lastPulse = newPulse
-
-  return Math.round(60000 / msPerBeat)
+  let newBar = now()
+  let msperbar = newBar - lastBar
+  lastBar = newBar
+  return Math.round(240000 / msperbar)
 }
 
-export function* clockUpdate (action) {
-  const p = action.payload
+export function* clockUpdate () {
   const info = yield call(newPulse)
   yield put(inputFired('lfo', info.delta, { type: 'lfo' }))
 
@@ -55,21 +51,13 @@ export function* clockUpdate (action) {
     yield put(inputFired('beat-16', info.pp16Count / pp16))
   }
 
-  if (!p.bpmCalcIgnore) {
-    calcPulseCount++
-    if (calcPulseCount === pulsesPerCalc) {
-      calcPulseCount = 0
-      bpm = yield call(calcBpm)
-    }
-  }
-
   if (info.pulses === 0) {
     yield put(a.clockBeatInc())
-  }
 
-  if (info.beats === 0) {
-    bpm = p.bpm || bpm
-    yield put(a.clockBpmUpdate(bpm))
+    if (info.beats === 0) {
+      const bpm = yield call(calcBpm)
+      yield put(a.clockBpmUpdate(bpm))
+    }
   }
 }
 

@@ -3,17 +3,8 @@ import { midiStopLearning, midiUpdateDevices, midiMessage } from '../store/midi/
 import { uInputLinkCreate } from '../store/inputLinks/actions'
 import { clockPulse } from '../store/clock/actions'
 import processMidiMessage from '../utils/processMidiMessage'
-import now from 'performance-now'
 
 export default (store) => {
-  // Actual PPQN is 24, we're multiplying the number of pulses
-  // to 48 by firing an extra pulse inbetween every real pulse
-  const targetPPQN = 48
-  let fakeTickEnabled = false
-  let lastPulseTime = now()
-
-  const calcMSPerPulse = (bpm) => 60000 / bpm / targetPPQN
-
   const onMessage = (rawMessage) => {
     const state = store.getState()
     const m = processMidiMessage(rawMessage)
@@ -40,32 +31,9 @@ export default (store) => {
       // Only dispatch clock pulse if no generated clock
       if (!state.clock.isGenerated) {
         store.dispatch(clockPulse())
-        // Real pulse has happened, set vars for fake pulse to occur
-        fakeTickEnabled = true
-        lastPulseTime = now()
       }
     }
   }
-
-  // Constantly check the time to see if enough has passed for
-  // fake pulse to fire
-  const loop = () => {
-    const state = store.getState()
-    const time = now()
-    if (!state.clock.isGenerated && fakeTickEnabled) {
-      const mspp = calcMSPerPulse(state.clock.bpm)
-      if (time > lastPulseTime + mspp) {
-        // Dispatch clockpulse with "bpmCalcIgnore" set to true
-        store.dispatch(clockPulse(null, true))
-        // Once fired, disable fake pulse from firing again until
-        // real pulse has fired
-        fakeTickEnabled = false
-      }
-    }
-    requestAnimationFrame(loop)
-  }
-
-  loop()
 
   navigator.requestMIDIAccess().then((midiAccess) => {
     const devices = {}
