@@ -23,6 +23,7 @@ export function* handleSketchCreate (action) {
       paramIds.push(uniqueId)
       yield put(uNodeCreate(uniqueId, {
         title: param.title,
+        type: 'param',
         key: param.key,
         value: param.defaultValue,
         id: uniqueId,
