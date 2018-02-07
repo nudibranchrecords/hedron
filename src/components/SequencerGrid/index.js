@@ -14,7 +14,7 @@ const Item = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  width: ${100 / 16}%;
+  width: ${100 / 8}%;
   height: 1rem;
   border: 1px solid ${theme.bgColorDark1};
   background: ${props => props.isActive ? theme.actionColor1 : theme.bgColorDark2};
@@ -51,7 +51,7 @@ class SequencerGrid extends React.Component {
             onMouseDown={() => this.setState({ mouseDown: true })}
             onMouseUp={() => this.setState({ mouseDown: false })}
             >
-            {index % 16 + 1}
+            {index % 8 + 1}
           </Item>
         ))}
       </Wrapper>

@@ -87,6 +87,7 @@ test('(Saga) handleSketchCreate', (t) => {
     put(uNodeCreate(uniqueId, {
       title: 'Rotate X',
       key: 'RotX',
+      type: 'param',
       id: uniqueId,
       value: 0.1,
       isOpen: false,
@@ -108,6 +109,7 @@ test('(Saga) handleSketchCreate', (t) => {
     put(uNodeCreate(uniqueId, {
       title: 'Rotate Y',
       key: 'RotY',
+      type: 'param',
       id: uniqueId,
       value: 0.5,
       inputLinkIds: [],

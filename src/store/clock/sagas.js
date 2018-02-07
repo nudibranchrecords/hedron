@@ -3,74 +3,61 @@ import * as a from './actions'
 import { inputFired } from '../inputs/actions'
 import now from 'performance-now'
 
-const actualPpqn = 24
-const ppqn = 48
-const pulsesPerCalc = 96
-const pp16 = ppqn / 16 // Pulses per 16th beat
-const pp16PerBar = pp16 * 16 * 4
-let pp16Count = 0
-let calcPulseCount = 0
-
+const ppqn = 24
 let deltaInc = Math.PI / ppqn
-let pulses, delta, beats, lastPulse, bpm
+let pulses, delta, beats, lastBar
+let seqStepCount = 0 // Sequencer step count
+const ppSeqStep = ppqn / 8 // Pulses per 8th beat
+const seqStepPerBar = ppSeqStep * 8 * 4
 
 export const clockReset = () => {
   pulses = 0
   delta = 0
   beats = 0
-  pp16Count = 0
-  lastPulse = now()
+  lastBar = now()
 }
 
 export const newPulse = () => {
   pulses++
   delta += deltaInc
-  pp16Count++
+  seqStepCount++
 
-  if (pp16Count > pp16PerBar - 1) {
-    pp16Count = 0
+  if (seqStepCount > seqStepPerBar - 1) {
+    seqStepCount = 0
   }
 
-  if (pulses > ppqn - 1) {
+  if (pulses > 23) {
     pulses = 0
     beats++
     if (beats > 3) {
       beats = 0
     }
   }
-  return { pulses, beats, delta, pp16Count }
+  return { pulses, beats, delta, seqStepCount }
 }
 
 export const calcBpm = () => {
-  let newPulse = now()
-  // multiplying by actual PPQN because we need to
-  // get genuine speed of clock (we're ignoring faked pulses here)
-  let msPerBeat = (newPulse - lastPulse) * actualPpqn / pulsesPerCalc
-  lastPulse = newPulse
-
-  return Math.round(60000 / msPerBeat)
+  let newBar = now()
+  let msperbar = newBar - lastBar
+  lastBar = newBar
+  return Math.round(240000 / msperbar)
 }
 
-export function* clockUpdate (action) {
-  const p = action.payload
+export function* clockUpdate () {
   const info = yield call(newPulse)
   yield put(inputFired('lfo', info.delta, { type: 'lfo' }))
 
-  if (info.pp16Count % pp16 === 0) {
-    yield put(inputFired('beat-16', info.pp16Count / pp16))
-  }
-
-  if (!p.bpmCalcIgnore) {
-    calcPulseCount++
-    if (calcPulseCount === pulsesPerCalc) {
-      calcPulseCount = 0
-      bpm = yield call(calcBpm)
-    }
+  if (info.seqStepCount % ppSeqStep === 0) {
+    yield put(inputFired('seq-step', info.seqStepCount / ppSeqStep))
   }
 
   if (info.pulses === 0) {
-    bpm = p.bpm || bpm
-    yield put(a.clockBeatInc(bpm))
+    yield put(a.clockBeatInc())
+
+    if (info.beats === 0) {
+      const bpm = yield call(calcBpm)
+      yield put(a.clockBpmUpdate(bpm))
+    }
   }
 }
 

@@ -539,9 +539,9 @@ test('(Saga) inputLinkCreate (type midi)', (t) => {
   t.end()
 })
 
-test('(Saga) inputLinkCreate (id beat-16)', (t) => {
+test('(Saga) inputLinkCreate (id seq-step)', (t) => {
   const nodeId = 'NODE1'
-  const inputId = 'beat-16'
+  const inputId = 'seq-step'
   const inputType = undefined
   const deviceId = 'DEVICE1'
 

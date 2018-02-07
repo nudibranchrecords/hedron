@@ -1,7 +1,7 @@
 const defaultState = {
   beat: 0,
   bpm: 0,
-  isGenerated: false
+  isGenerated: true
 }
 
 const clockReducer = (state = defaultState, action) => {
@@ -14,7 +14,12 @@ const clockReducer = (state = defaultState, action) => {
 
       return {
         ...state,
-        beat,
+        beat
+      }
+    }
+    case 'CLOCK_BPM_UPDATE': {
+      return {
+        ...state,
         bpm: p.bpm
       }
     }

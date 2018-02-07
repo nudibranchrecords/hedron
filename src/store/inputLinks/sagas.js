@@ -40,7 +40,7 @@ export function* inputLinkCreate (action) {
       linkType = 'node'
       node = yield select(getNode, p.nodeId)
       nodeType = node.type
-      if (p.inputType !== 'midi' && p.inputId !== 'beat-16') {
+      if (p.inputType !== 'midi' && p.inputId !== 'seq-step') {
         const modifiers = yield call(getAll)
         const defaultModifierIds = yield select(getDefaultModifierIds)
 
@@ -81,7 +81,7 @@ export function* inputLinkCreate (action) {
       }
     }
 
-    if (p.inputId === 'beat-16') {
+    if (p.inputId === 'seq-step') {
       const seqOpts = yield call(sequencerGenerateOptions)
       sequencerGridId = seqOpts.grid.id
       yield put(uNodeCreate(sequencerGridId, seqOpts.grid))
