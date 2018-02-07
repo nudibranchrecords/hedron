@@ -24,13 +24,14 @@ export function* handleInput (action) {
       const links = yield select(getAssignedLinks, p.inputId)
 
       for (let i = 0; i < links.length; i++) {
+        let skip
+
         if (links[i].linkType === 'linkableAction') {
           const linkableAction = yield select(getLinkableAction, links[i].nodeId)
           yield put(linkableAction.action)
         } else {
           let value = p.value
           let modifiers
-          let skip
           if (p.meta && p.meta.type === 'midi') {
             const currentDeviceBank = yield select(getCurrentBankIndex, links[i].deviceId)
             if (currentDeviceBank !== links[i].bankIndex) skip = true
@@ -77,7 +78,7 @@ export function* handleInput (action) {
                   if (seqNode.value[value] === 1) {
                     yield put(inputLinkShotFired(node.sketchId, node.method))
                   }
-                  value = 0
+                  skip = true
                 } else if (value > 0.5 && links[i].armed) {
                   yield put(inputLinkShotFired(node.sketchId, node.method))
                   yield put(inputLinkShotDisarm(links[i].id))
@@ -93,7 +94,9 @@ export function* handleInput (action) {
               }
             }
 
-            yield put(nodeValueUpdate(links[i].nodeId, value, p.meta))
+            if (!skip) {
+              yield put(nodeValueUpdate(links[i].nodeId, value, p.meta))
+            }
           }
         }
       }

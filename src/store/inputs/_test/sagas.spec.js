@@ -500,13 +500,7 @@ test('(Saga) handleInput (shot - seq-step sequencer - not in sequence)', (t) => 
     ]
   }
 
-  t.deepEqual(
-    generator.next(seqNode).value,
-    put(nodeValueUpdate('XX', 0)),
-    '5. Dispatches node update action (skips firing shot as not in sequence)'
-  )
-
-  t.equal(generator.next().done, true, 'generator ends')
+  t.equal(generator.next(seqNode).done, true, 'generator ends (doesnt update node)')
 
   t.end()
 })
@@ -571,13 +565,7 @@ test('(Saga) handleInput (shot - seq-step sequencer - in sequence)', (t) => {
     '4. Dispatches node shot fired action'
   )
 
-  t.deepEqual(
-    generator.next().value,
-    put(nodeValueUpdate('XX', 0)),
-    '5. Dispatches node update action'
-  )
-
-  t.equal(generator.next().done, true, 'generator ends')
+  t.equal(generator.next().done, true, 'generator ends (doesnt update node)')
 
   t.end()
 })
