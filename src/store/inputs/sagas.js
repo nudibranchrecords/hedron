@@ -72,7 +72,7 @@ export function* handleInput (action) {
                 const node = yield select(getNode, links[i].nodeId)
                 if (p.meta && p.meta.noteOn) {
                   yield put(inputLinkShotFired(node.sketchId, node.method))
-                } else if (p.inputId === 'beat-16') {
+                } else if (p.inputId === 'sequencer-step') {
                   const seqNode = yield select(getNode, links[i].sequencerGridId)
                   if (seqNode.value[value] === 1) {
                     yield put(inputLinkShotFired(node.sketchId, node.method))

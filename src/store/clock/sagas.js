@@ -3,12 +3,12 @@ import * as a from './actions'
 import { inputFired } from '../inputs/actions'
 import now from 'performance-now'
 
-const ppqn = 48
+const ppqn = 24
 let deltaInc = Math.PI / ppqn
 let pulses, delta, beats, lastBar
-let pp16Count = 0
-const pp16 = ppqn / 16 // Pulses per 16th beat
-const pp16PerBar = pp16 * 16 * 4
+let seqStepCount = 0 // Sequencer step count
+const ppSeqStep = ppqn / 8 // Pulses per 8th beat
+const seqStepPerBar = ppSeqStep * 8 * 4
 
 export const clockReset = () => {
   pulses = 0
@@ -20,10 +20,10 @@ export const clockReset = () => {
 export const newPulse = () => {
   pulses++
   delta += deltaInc
-  pp16Count++
+  seqStepCount++
 
-  if (pp16Count > pp16PerBar - 1) {
-    pp16Count = 0
+  if (seqStepCount > seqStepPerBar - 1) {
+    seqStepCount = 0
   }
 
   if (pulses > 23) {
@@ -33,7 +33,7 @@ export const newPulse = () => {
       beats = 0
     }
   }
-  return { pulses, beats, delta, pp16Count }
+  return { pulses, beats, delta, seqStepCount }
 }
 
 export const calcBpm = () => {
@@ -47,8 +47,8 @@ export function* clockUpdate () {
   const info = yield call(newPulse)
   yield put(inputFired('lfo', info.delta, { type: 'lfo' }))
 
-  if (info.pp16Count % pp16 === 0) {
-    yield put(inputFired('beat-16', info.pp16Count / pp16))
+  if (info.seqStepCount % ppSeqStep === 0) {
+    yield put(inputFired('sequencer-step', info.seqStepCount / ppSeqStep))
   }
 
   if (info.pulses === 0) {

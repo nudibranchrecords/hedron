@@ -39,7 +39,7 @@ const options = [
     label: 'LFO'
   },
   {
-    value: 'beat-16',
+    value: 'sequencer-step',
     label: 'Sequencer'
   }
 ]
