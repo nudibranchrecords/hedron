@@ -48,7 +48,7 @@ export function* clockUpdate () {
   yield put(inputFired('lfo', info.delta, { type: 'lfo' }))
 
   if (info.seqStepCount % ppSeqStep === 0) {
-    yield put(inputFired('sequencer-step', info.seqStepCount / ppSeqStep))
+    yield put(inputFired('seq-step', info.seqStepCount / ppSeqStep))
   }
 
   if (info.pulses === 0) {
