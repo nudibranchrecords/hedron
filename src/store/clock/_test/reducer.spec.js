@@ -6,31 +6,28 @@ import * as a from '../actions'
 
 returnsPreviousState(paramsReducer)
 
-test('(Reducer) clockReducer -  - Increases beat on CLOCK_BEAT_INC and updated bpm', (t) => {
+test('(Reducer) clockReducer -  - Increases beat on CLOCK_BEAT_INC', (t) => {
   let originalState, expectedState, actualState
 
   originalState = {
-    beat: 1,
-    bpm: 120
+    beat: 1
   }
 
   deepFreeze(originalState)
 
   expectedState = {
-    beat: 2,
-    bpm: 150
+    beat: 2
   }
 
-  actualState = paramsReducer(originalState, a.clockBeatInc(150))
+  actualState = paramsReducer(originalState, a.clockBeatInc())
 
   t.deepEqual(actualState, expectedState)
 
   expectedState = {
-    beat: 3,
-    bpm: 150
+    beat: 3
   }
 
-  actualState = paramsReducer(actualState, a.clockBeatInc(150))
+  actualState = paramsReducer(actualState, a.clockBeatInc())
 
   t.deepEqual(actualState, expectedState)
 
@@ -61,27 +58,52 @@ test('(Reducer) clockReducer - loops back to 0 after 64 beats', (t) => {
   let originalState, expectedState, actualState
 
   originalState = {
-    beat: 62,
-    bpm: 150
+    beat: 62
   }
 
   deepFreeze(originalState)
 
   expectedState = {
-    beat: 63,
-    bpm: 150
+    beat: 63
   }
 
-  actualState = paramsReducer(originalState, a.clockBeatInc(150))
+  actualState = paramsReducer(originalState, a.clockBeatInc())
 
   t.deepEqual(actualState, expectedState)
 
   expectedState = {
-    beat: 0,
-    bpm: 150
+    beat: 0
   }
 
-  actualState = paramsReducer(actualState, a.clockBeatInc(150))
+  actualState = paramsReducer(actualState, a.clockBeatInc())
+
+  t.deepEqual(actualState, expectedState)
+
+  t.end()
+})
+
+test('(Reducer) clockReducer - updates BPM on CLOCK_BPM_UPDATE', (t) => {
+  let originalState, expectedState, actualState
+
+  originalState = {
+    bpm: undefined
+  }
+
+  deepFreeze(originalState)
+
+  expectedState = {
+    bpm: 120
+  }
+
+  actualState = paramsReducer(originalState, a.clockBpmUpdate(120))
+
+  t.deepEqual(actualState, expectedState)
+
+  expectedState = {
+    bpm: 110
+  }
+
+  actualState = paramsReducer(actualState, a.clockBpmUpdate(110))
 
   t.deepEqual(actualState, expectedState)
 
@@ -115,3 +137,4 @@ test('(Reducer) clockReducer - switches mode on clockGeneratedToggle', (t) => {
 
   t.end()
 })
+

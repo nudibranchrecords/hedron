@@ -6,19 +6,14 @@ import now from 'performance-now'
 const actualPpqn = 24
 const ppqn = 48
 const pulsesPerCalc = 96
-const pp16 = ppqn / 16 // Pulses per 16th beat
-const pp16PerBar = pp16 * 16 * 4
-let pp16Count = 0
 let calcPulseCount = 0
-
 let deltaInc = Math.PI / ppqn
-let pulses, delta, beats, lastPulse, bpm
+let pulses, delta, beats, lastPulse, bpm, pp16Count
 
 export const clockReset = () => {
   pulses = 0
   delta = 0
   beats = 0
-  pp16Count = 0
   lastPulse = now()
 }
 
