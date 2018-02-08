@@ -6,16 +6,15 @@ import getIsInputLinkActive from '../../selectors/getIsInputLinkActive'
 
 const mapStateToProps = (state, ownProps) => {
   const node = getNode(state, ownProps.nodeId)
-  const linkId = node.inputLinkIds[node.openedTabIndex]
   return {
     title: state.inputLinks[ownProps.id].title,
-    isSelected: ownProps.id === linkId,
+    isSelected: ownProps.id === node.openedLinkId,
     isActive: getIsInputLinkActive(state, ownProps.id)
   }
 }
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
-  onClick: () => { dispatch(nodeTabOpen(ownProps.nodeId, ownProps.index)) }
+  onClick: () => { dispatch(nodeTabOpen(ownProps.nodeId, ownProps.id)) }
 })
 
 export default connect(

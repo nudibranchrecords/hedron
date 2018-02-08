@@ -130,11 +130,11 @@ export function nodeOpenToggle (id) {
   }
 }
 
-export function nodeTabOpen (nodeId, tabIndex) {
+export function nodeTabOpen (nodeId, linkId) {
   return {
     type: 'NODE_TAB_OPEN',
     payload: {
-      nodeId, tabIndex
+      nodeId, linkId
     }
   }
 }
