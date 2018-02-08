@@ -91,7 +91,7 @@ const nodesReducer = (state = defaultState, action) => {
     case 'R_NODE_INPUT_UPDATE': {
       return {
         ...state,
-        [p.nodeId] : {
+        [p.nodeId]: {
           ...state[p.nodeId],
           input: p.input
         }
@@ -100,7 +100,7 @@ const nodesReducer = (state = defaultState, action) => {
     case 'NODE_OPEN_TOGGLE': {
       return {
         ...state,
-        [p.id] : {
+        [p.id]: {
           ...state[p.id],
           isOpen: !state[p.id].isOpen
         }
@@ -109,16 +109,16 @@ const nodesReducer = (state = defaultState, action) => {
     case 'NODE_TAB_OPEN': {
       return {
         ...state,
-        [p.nodeId] : {
+        [p.nodeId]: {
           ...state[p.nodeId],
-          openedTabIndex: p.tabIndex
+          openedLinkId: p.linkId
         }
       }
     }
     case 'NODE_ACTIVE_INPUT_LINK_TOGGLE': {
       return {
         ...state,
-        [p.nodeId] : {
+        [p.nodeId]: {
           ...state[p.nodeId],
           activeInputLinkId: p.linkId !== state[p.nodeId].activeInputLinkId ? p.linkId : undefined
         }

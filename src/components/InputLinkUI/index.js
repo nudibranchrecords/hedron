@@ -36,7 +36,14 @@ const InputLinkUI = ({ inputLinkIds, nodeId, currentInputLinkId }) => (
   <div>
     <Top>
       <Tabs>
-        {inputLinkIds.map((id, index) => (
+        {inputLinkIds.alwaysActive.map((id, index) => (
+          <TabItem key={id}>
+            <InputLinkTabItem id={id} index={index} nodeId={nodeId} />
+          </TabItem>
+        ))}
+      </Tabs>
+      <Tabs>
+        {inputLinkIds.toggledActive.map((id, index) => (
           <TabItem key={id}>
             <InputLinkTabItem id={id} index={index} nodeId={nodeId} />
           </TabItem>
@@ -53,9 +60,14 @@ const InputLinkUI = ({ inputLinkIds, nodeId, currentInputLinkId }) => (
 )
 
 InputLinkUI.propTypes = {
-  inputLinkIds: PropTypes.arrayOf(
-    PropTypes.string
-  ),
+  inputLinkIds: PropTypes.shape({
+    alwaysActive: PropTypes.arrayOf(
+      PropTypes.string
+    ).isRequired,
+    toggledActive: PropTypes.arrayOf(
+      PropTypes.string
+    ).isRequired
+  }).isRequired,
   nodeId: PropTypes.string.isRequired,
   currentInputLinkId: PropTypes.string
 }

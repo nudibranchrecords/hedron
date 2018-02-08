@@ -483,7 +483,7 @@ test('(Reducer) nodesReducer - opens/closes node on NODE_OPEN_TOGGLE', (t) => {
   t.end()
 })
 
-test('(Reducer) nodesReducer - changes tab index on NODE_OPEN_TAB', (t) => {
+test('(Reducer) nodesReducer - changes openedLinkId on NODE_OPEN_TAB', (t) => {
   let originalState, expectedState, actualState
 
   originalState = {
@@ -495,14 +495,14 @@ test('(Reducer) nodesReducer - changes tab index on NODE_OPEN_TAB', (t) => {
       input: {
         id: 'audio_0'
       },
-      openedTabIndex: undefined
+      openedLinkId: undefined
     },
     '02': {
       title: 'Rotation Y',
       key: 'rotY',
       isOpen: false,
       input: undefined,
-      openedTabIndex: 1
+      openedLinkId: 1
     }
   }
 
@@ -517,14 +517,14 @@ test('(Reducer) nodesReducer - changes tab index on NODE_OPEN_TAB', (t) => {
       input: {
         id: 'audio_0'
       },
-      openedTabIndex: 2
+      openedLinkId: 2
     },
     '02': {
       title: 'Rotation Y',
       key: 'rotY',
       isOpen: false,
       input: undefined,
-      openedTabIndex: 1
+      openedLinkId: 1
     }
   }
 
@@ -541,14 +541,14 @@ test('(Reducer) nodesReducer - changes tab index on NODE_OPEN_TAB', (t) => {
       input: {
         id: 'audio_0'
       },
-      openedTabIndex: 2
+      openedLinkId: 2
     },
     '02': {
       title: 'Rotation Y',
       key: 'rotY',
       isOpen: false,
       input: undefined,
-      openedTabIndex: 5
+      openedLinkId: 5
     }
   }
 

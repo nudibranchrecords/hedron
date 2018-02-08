@@ -9,14 +9,14 @@ export const getAssignedLinks = (state, inputId) => {
     const id = ids[i]
     const link = state.inputLinks[id]
     const node = state.nodes[link.nodeId]
+    const isMidi = link.input && link.input.type === 'midi'
 
     if (link === undefined) {
       throw (new Error(`getAssignedLinks: Missing assigned link for input ${inputId}: ${id}`))
     }
 
     if (
-      link.linkType === 'linkableAction' ||
-      node.subNode ||
+      isMidi ||
       node.activeInputLinkId === id) {
       arr.push(link)
     }

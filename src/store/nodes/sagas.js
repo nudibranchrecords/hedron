@@ -28,12 +28,9 @@ export function* nodeDelete (action) {
 
 export function* nodeInputLinkAdd (action) {
   const p = action.payload
-  const node = yield select(getNode, p.id)
-
-  const newTabIndex = node.inputLinkIds.length
 
   yield put(rNodeInputLinkAdd(p.id, p.linkId))
-  yield put(nodeTabOpen(p.id, newTabIndex))
+  yield put(nodeTabOpen(p.id, p.linkId))
 }
 
 export function* watchNodes () {
