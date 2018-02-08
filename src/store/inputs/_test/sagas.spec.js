@@ -570,8 +570,7 @@ test('(Saga) handleInput (shot - seq-step sequencer - in sequence)', (t) => {
   t.end()
 })
 
-test('(Saga) handleInput (midi - banks)', (t) => {
-  let bankIndex
+test('(Saga) handleInput (midi)', (t) => {
   const meta = { type: 'midi' }
   const payload = {
     value: 0.5,
@@ -599,41 +598,14 @@ test('(Saga) handleInput (midi - banks)', (t) => {
 
   const links = [
     {
-      nodeId: 'XX',
-      deviceId: 'D1',
-      bankIndex: 1
-    },
-    {
       nodeId: 'YY',
       deviceId: 'D2',
-      bankIndex: 2,
       midiOptionIds: ['MIDI1']
-    },
-    {
-      nodeId: 'ZZ',
-      deviceId: 'D3',
-      bankIndex: 3
     }
   ]
 
   t.deepEqual(
     generator.next(links).value,
-    select(getCurrentBankIndex, 'D1'),
-    'Gets current bank index for device D1'
-  )
-
-  bankIndex = 100
-
-  t.deepEqual(
-    generator.next(bankIndex).value,
-    select(getCurrentBankIndex, 'D2'),
-    'Gets current bank index for device D2'
-  )
-
-  bankIndex = 2
-
-  t.deepEqual(
-    generator.next(bankIndex).value,
     select(getNode, 'YY'),
     'Gets node because matches with current bank'
   )
@@ -665,14 +637,6 @@ test('(Saga) handleInput (midi - banks)', (t) => {
     put(nodeValueUpdate('YY', val, meta)),
     'Dispatches node update action with newly generated value'
   )
-
-  t.deepEqual(
-    generator.next(bankIndex).value,
-    select(getCurrentBankIndex, 'D3'),
-    'Gets current bank index for device D3'
-  )
-
-  bankIndex = 1
 
   t.equal(generator.next().done, true, 'generator ends')
 
