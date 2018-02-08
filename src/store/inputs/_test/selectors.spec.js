@@ -111,7 +111,7 @@ test('(Selector) inputs - getAssignedLinks - one input link isnt active', (t) =>
   t.end()
 })
 
-test('(Selector) inputs - getAssignedLinks - subNode links', (t) => {
+test('(Selector) inputs - getAssignedLinks - link type midi', (t) => {
   const state = {
     inputs: {
       foo_input: {
@@ -120,61 +120,36 @@ test('(Selector) inputs - getAssignedLinks - subNode links', (t) => {
     },
     nodes: {
       nx: {
-        activeInputLinkId: undefined,
-        subNode: true
+        activeInputLinkId: undefined
       },
       ny: {
-        activeInputLinkId: undefined,
-        subNode: true
+        activeInputLinkId: undefined
       }
     },
     inputLinks: {
-      XX: { nodeId: 'nx' },
+      XX: {
+        nodeId: 'nx',
+        input: {
+          type: 'midi'
+        }
+      },
       YY: { nodeId: 'ny' }
     }
   }
   deepFreeze(state)
 
   const expected = [
-    { nodeId: 'nx' },
-    { nodeId: 'ny' }
-  ]
-
-  const actual = getAssignedLinks(state, 'foo_input')
-
-  t.deepEqual(actual, expected, 'Returns all subNode links, even if not "active"')
-  t.end()
-})
-
-test('(Selector) inputs - getAssignedLinks - inputLink type is linkableAction instead of node', (t) => {
-  const state = {
-    inputs: {
-      foo_input: {
-        assignedLinkIds: ['XX']
-      }
-    },
-    nodes: {
-
-    },
-    inputLinks: {
-      XX: {
-        nodeId: 'INPUTLINKID',
-        linkType: 'linkableAction'
-      }
-    }
-  }
-  deepFreeze(state)
-
-  const expected = [
     {
-      nodeId: 'INPUTLINKID',
-      linkType: 'linkableAction'
+      nodeId: 'nx',
+      input: {
+        type: 'midi'
+      }
     }
   ]
 
   const actual = getAssignedLinks(state, 'foo_input')
 
-  t.deepEqual(actual, expected, 'Returns inputlink without node')
+  t.deepEqual(actual, expected, 'Always returns input link with input type of midi, even if inactive')
   t.end()
 })
 
