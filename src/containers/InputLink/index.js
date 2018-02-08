@@ -5,6 +5,7 @@ import getInputLinkModifierIds from '../../selectors/getInputLinkModifierIds'
 import getInputLinkMidiOptionIds from '../../selectors/getInputLinkMidiOptionIds'
 import getInputLink from '../../selectors/getInputLink'
 import getIsInputLinkActive from '../../selectors/getIsInputLinkActive'
+import getCanInputLinkDisable from '../../selectors/getCanInputLinkDisable'
 import { uInputLinkDelete, uInputLinkCreate } from '../../store/inputLinks/actions'
 import { nodeTabOpen, nodeActiveInputLinkToggle } from '../../store/nodes/actions'
 
@@ -16,6 +17,7 @@ const mapStateToProps = (state, ownProps) => {
     lfoOptionIds: getInputLinkLfoOptionIds(state, ownProps.id),
     midiOptionIds: getInputLinkMidiOptionIds(state, ownProps.id),
     isActive: getIsInputLinkActive(state, ownProps.id),
+    isActivateVisible: getCanInputLinkDisable(state, ownProps.id),
     toggleActionId: link.linkableActions.toggleActivate,
     sequencerGridId: link.sequencerGridId
   }

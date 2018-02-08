@@ -19,6 +19,10 @@ const ActivateButton = styled(Button)`
   margin-right: 0.25rem;
 `
 
+const DeleteButton = styled(Button)`
+  margin-left: auto;
+`
+
 const Item = styled.div`
   flex: ${props => props.size === 'small' ? '1' : '0 0 25%'};
   width: ${props => props.size === 'small' ? '100%' : '25%'};
@@ -36,7 +40,7 @@ class InputLink extends React.Component {
 
   render () {
     const { modifierIds, lfoOptionIds, size, midiOptionIds, title, toggleActionId,
-      sequencerGridId, onDeleteClick, onActivateToggle, isActive } = this.props
+      sequencerGridId, onDeleteClick, onActivateToggle, isActive, isActivateVisible } = this.props
     return (
       <div>
         <Wrapper>
@@ -60,12 +64,14 @@ class InputLink extends React.Component {
           }
         </Wrapper>
         <Row justify='space-between'>
-          <Row>
-            <ActivateButton onClick={onActivateToggle}>{isActive ? 'Disable' : 'Activate'}</ActivateButton>
-            <InputLinkMidiControl linkableActionId={toggleActionId} />
-          </Row>
+          {isActivateVisible &&
+            <Row>
+              <ActivateButton onClick={onActivateToggle}>{isActive ? 'Disable' : 'Activate'}</ActivateButton>
+              <InputLinkMidiControl linkableActionId={toggleActionId} />
+            </Row>
+          }
 
-          <Button onClick={onDeleteClick}>Delete "{title}"</Button>
+          <DeleteButton onClick={onDeleteClick}>Delete "{title}"</DeleteButton>
         </Row>
       </div>
     )
@@ -89,7 +95,8 @@ InputLink.propTypes = {
   size: PropTypes.string,
   id: PropTypes.string.isRequired,
   sequencerGridId: PropTypes.string,
-  toggleActionId: PropTypes.string.isRequired
+  toggleActionId: PropTypes.string.isRequired,
+  isActivateVisible: PropTypes.bool
 }
 
 export default InputLink
