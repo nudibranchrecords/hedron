@@ -9,7 +9,7 @@ export default (store) => {
     const state = store.getState()
     const m = processMidiMessage(rawMessage)
 
-    if (m.type !== 'timingClock') {
+    if (m.type !== 'timingClock' && m.type !== 'noteOff') {
       store.dispatch(midiMessage(rawMessage.target.name, {
         data: rawMessage.data,
         timeStamp: rawMessage.timeStamp
