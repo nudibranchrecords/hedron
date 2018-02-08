@@ -191,6 +191,103 @@ test('(Selector) inputs - getAssignedLinks - link type midi', (t) => {
   t.end()
 })
 
+test('(Selector) inputs - getAssignedLinks - link has device Id and bank index (doesnt match current)', (t) => {
+  const state = {
+    inputs: {
+      foo_input: {
+        assignedLinkIds: ['XX', 'YY'],
+        deviceId: 'DEVICE_1'
+      }
+    },
+    midi: {
+      devices: {
+        DEVICE_1: {
+          bankIndex: 1
+        }
+      }
+    },
+    nodes: {
+      nx: {
+        activeInputLinkId: 'XX'
+      },
+      ny: {
+        activeInputLinkId: 'YY'
+      }
+    },
+    inputLinks: {
+      XX: {
+        nodeId: 'nx',
+        deviceId: 'DEVICE_1',
+        bankIndex: 2
+      },
+      YY: { nodeId: 'ny' }
+    }
+  }
+  deepFreeze(state)
+
+  const expected = [
+    {
+      nodeId: 'ny'
+    }
+  ]
+
+  const actual = getAssignedLinks(state, 'foo_input')
+
+  t.deepEqual(actual, expected, 'Doesnt return one of the links because bankIndex doesnt match')
+  t.end()
+})
+
+test('(Selector) inputs - getAssignedLinks - link has device Id and bank index (does match current)', (t) => {
+  const state = {
+    inputs: {
+      foo_input: {
+        assignedLinkIds: ['XX', 'YY'],
+        deviceId: 'DEVICE_1'
+      }
+    },
+    midi: {
+      devices: {
+        DEVICE_1: {
+          bankIndex: 1
+        }
+      }
+    },
+    nodes: {
+      nx: {
+        activeInputLinkId: 'XX'
+      },
+      ny: {
+        activeInputLinkId: 'YY'
+      }
+    },
+    inputLinks: {
+      XX: {
+        nodeId: 'nx',
+        deviceId: 'DEVICE_1',
+        bankIndex: 1
+      },
+      YY: { nodeId: 'ny' }
+    }
+  }
+  deepFreeze(state)
+
+  const expected = [
+    {
+      nodeId: 'nx',
+      deviceId: 'DEVICE_1',
+      bankIndex: 1
+    },
+    {
+      nodeId: 'ny'
+    }
+  ]
+
+  const actual = getAssignedLinks(state, 'foo_input')
+
+  t.deepEqual(actual, expected, 'Doesnt return one of the links because bankIndex doesnt match')
+  t.end()
+})
+
 test('(Selector) inputs - getAssignedLinks - inputLinks dont exist', (t) => {
   const state = {
     inputs: {
