@@ -153,6 +153,44 @@ test('(Selector) inputs - getAssignedLinks - link type midi', (t) => {
   t.end()
 })
 
+test('(Selector) inputs - getAssignedLinks - link type midi', (t) => {
+  const state = {
+    inputs: {
+      foo_input: {
+        assignedLinkIds: ['XX', 'YY']
+      }
+    },
+    nodes: {
+      nx: {
+        activeInputLinkId: undefined
+      },
+      ny: {
+        activeInputLinkId: undefined
+      }
+    },
+    inputLinks: {
+      XX: { nodeId: 'nx' },
+      YY: {
+        nodeId: '@@',
+        linkType: 'linkableAction'
+      }
+    }
+  }
+  deepFreeze(state)
+
+  const expected = [
+    {
+      nodeId: '@@',
+      linkType: 'linkableAction'
+    }
+  ]
+
+  const actual = getAssignedLinks(state, 'foo_input')
+
+  t.deepEqual(actual, expected, 'Always returns input link with linkType of linkableAction, even if inactive')
+  t.end()
+})
+
 test('(Selector) inputs - getAssignedLinks - inputLinks dont exist', (t) => {
   const state = {
     inputs: {
