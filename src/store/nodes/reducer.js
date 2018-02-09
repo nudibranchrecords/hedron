@@ -10,13 +10,10 @@ const nodesReducer = (state = defaultState, action) => {
       if (!state[p.id]) {
         return state
       }
-      return {
-        ...state,
-        [p.id]: {
-          ...state[p.id],
-          value: p.value
-        }
-      }
+      // Intentionally mutating state as these values are updating
+      // VERY often. Mutating alleviates garbage collection issues
+      state[p.id].value = p.value
+      return state
     }
     case 'R_NODE_DELETE': {
       return _.omit(state, [p.id])
