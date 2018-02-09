@@ -22,8 +22,6 @@ test('(Reducer) nodesReducer - Updates correct node value on NODE_VALUE_UPDATE',
     }
   }
 
-  deepFreeze(originalState)
-
   expectedState = {
     '01': {
       title: 'Rotation X',
