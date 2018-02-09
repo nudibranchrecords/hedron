@@ -881,7 +881,7 @@ test('(Saga) macroTargetParamLinkAdd', (t) => {
   t.end()
 })
 
-test('(Saga) handleNodeValueBatchUpdate - do nothing if not macro', (t) => {
+test('(Saga) handleNodeValueBatchUpdate - do nothing if not macro or midi', (t) => {
   const generator = handleNodeValueBatchUpdate(
     nodeValuesBatchUpdate([
       {
@@ -893,6 +893,49 @@ test('(Saga) handleNodeValueBatchUpdate - do nothing if not macro', (t) => {
         value: 0.2
       }
     ], { type: '@@@' })
+  )
+
+  t.equal(generator.next().done, true, 'Generator ends')
+  t.end()
+})
+
+test('(Saga) handleNodeValueBatchUpdate - if type is midi, loop through', (t) => {
+  const meta = { type: 'midi' }
+  const generator = handleNodeValueBatchUpdate(
+    nodeValuesBatchUpdate([
+      {
+        id: 'xx',
+        value: 0.1
+      },
+      {
+        id: 'yy',
+        value: 0.2
+      }
+    ], meta)
+  )
+
+  t.deepEqual(
+    generator.next().value,
+    call(handleNodeValueUpdate, {
+      payload: {
+        meta,
+        id: 'xx',
+        value: 0.1
+      }
+    }),
+    '3.1 Call node update handle saga'
+  )
+
+  t.deepEqual(
+    generator.next().value,
+    call(handleNodeValueUpdate, {
+      payload: {
+        meta,
+        id: 'yy',
+        value: 0.2
+      }
+    }),
+    '3.2 Call node update handle saga'
   )
 
   t.equal(generator.next().done, true, 'Generator ends')

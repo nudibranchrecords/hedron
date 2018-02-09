@@ -175,26 +175,30 @@ export function* handleNodeValueUpdate (action) {
 
 export function* handleNodeValueBatchUpdate (action) {
   const p = action.payload
+  let doLoop = false
+  const type = p.meta && p.meta.type
 
+  if (type === 'midi') doLoop = true
   // Only do extra macro logic if coming from a macro
-  if (p.meta && p.meta.type === 'macro') {
-    let skip = true
-    const macro = yield select(getMacro, p.meta.macroId)
-    const node = yield select(getNode, macro.nodeId)
+  if (type === 'macro' || doLoop) {
+    if (!doLoop) {
+      const macro = yield select(getMacro, p.meta.macroId)
+      const node = yield select(getNode, macro.nodeId)
 
-    // Dont skip if macro value is false
-    if (node.value === false) {
-      skip = false
-    } else {
-      // Dont skip if last macro id doesnt match this one
-      const lastMacroId = yield select(getMacroLastId)
+      // Dont skip if macro value is false
+      if (node.value === false) {
+        doLoop = true
+      } else {
+        // Dont skip if last macro id doesnt match this one
+        const lastMacroId = yield select(getMacroLastId)
 
-      if (lastMacroId !== p.meta.macroId) {
-        skip = false
+        if (lastMacroId !== p.meta.macroId) {
+          doLoop = true
+        }
       }
     }
 
-    if (!skip) {
+    if (doLoop) {
       for (let i = 0; i < p.values.length; i++) {
         const node = p.values[i]
         yield call(handleNodeValueUpdate, {
@@ -205,7 +209,10 @@ export function* handleNodeValueBatchUpdate (action) {
           }
         })
       }
-      yield put(rMacroUpdateLastId(p.meta.macroId))
+
+      if (type === 'macro') {
+        yield put(rMacroUpdateLastId(p.meta.macroId))
+      }
     }
   }
 }
