@@ -38,7 +38,7 @@
     "lodash": "^4.17.4",
     "performance-now": "^2.1.0",
     "proxyquire": "^1.7.11",
-    "react": "16",
+    "react": "^16.2.0",
     "react-addons-perf": "^15.4.2",
     "react-create-class": "^1.0.0",
     "react-dom": "16",
