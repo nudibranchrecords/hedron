@@ -77,11 +77,12 @@ export function nodeValueUpdate (id, value, meta) {
   }
 }
 
-export function nodeValuesBatchUpdate (values) {
+export function nodeValuesBatchUpdate (values, meta) {
   return {
     type: 'NODE_VALUES_BATCH_UPDATE',
     payload: {
-      values
+      values,
+      meta
     }
   }
 }

@@ -5,16 +5,21 @@ import getMacro from '../../../selectors/getMacro'
 import { shouldItLearn } from '../utils'
 import getMacroTargetParamLink from '../../../selectors/getMacroTargetParamLink'
 import getMacroLearningId from '../../../selectors/getMacroLearningId'
+import getMacroLastId from '../../../selectors/getMacroLastId'
 import macroInterpolate from '../../../utils/macroInterpolate'
+import isInputTypeHuman from '../../../utils/isInputTypeHuman'
 import { select, put, call } from 'redux-saga/effects'
-import { rNodeCreate, nodeValueUpdate, rNodeConnectedMacroAdd } from '../../nodes/actions'
 import {
-  rMacroTargetParamLinkUpdateStartValue,
+  rNodeCreate, nodeValueUpdate, rNodeConnectedMacroAdd,
+  nodeValuesBatchUpdate
+} from '../../nodes/actions'
+import {
+  rMacroTargetParamLinkUpdateStartValue, rMacroUpdateLastId,
   uMacroCreate, rMacroCreate, uMacroTargetParamLinkAdd, rMacroTargetParamLinkCreate
 } from '../actions'
 import {
   macroCreate, macroTargetParamLinkAdd, macroProcess, handleNodeValueUpdate,
-  macroLearnFromParam
+  macroLearnFromParam, handleNodeValueBatchUpdate
 } from '../sagas'
 import uid from 'uid'
 
@@ -90,6 +95,24 @@ test('(Saga) macroLearnFromParam (link does exist)', (t) => {
   t.end()
 })
 
+test(`(Saga) handleNodeValueUpdate (does nothing if senderType isn't human)`, (t) => {
+  const nodeId = 'XXX'
+  const newVal = 0.5
+  const action = nodeValueUpdate(nodeId, newVal, { type: 'alien' })
+  const generator = handleNodeValueUpdate(action)
+
+  t.deepEqual(
+    generator.next().value,
+    call(isInputTypeHuman, 'alien'),
+    '0. Check if input type is human'
+  )
+
+  const isHuman = false
+
+  t.equal(generator.next(isHuman).done, true, 'Generator ends')
+  t.end()
+})
+
 test(`(Saga) handleNodeValueUpdate (does nothing if node
   value update isnt a macro AND it shouldnt learn AND it doesnt have any connectedMacroIds)`, (t) => {
   const nodeId = 'XXX'
@@ -99,6 +122,14 @@ test(`(Saga) handleNodeValueUpdate (does nothing if node
 
   t.deepEqual(
     generator.next().value,
+    call(isInputTypeHuman, undefined),
+    '0. Check if input type is human'
+  )
+
+  const isHuman = true
+
+  t.deepEqual(
+    generator.next(isHuman).value,
     select(getNode, 'XXX'),
     '0. Get node'
   )
@@ -136,6 +167,14 @@ test(`(Saga) handleNodeValueUpdate (does nothing if input is from a macro and no
 
   t.deepEqual(
     generator.next().value,
+    call(isInputTypeHuman, 'macro'),
+    '0. Check if input type is human'
+  )
+
+  const isHuman = true
+
+  t.deepEqual(
+    generator.next(isHuman).value,
     select(getNode, 'XXX'),
     '0. Get node'
   )
@@ -174,6 +213,14 @@ test(`(Saga) handleNodeValueUpdate
 
   t.deepEqual(
     generator.next().value,
+    call(isInputTypeHuman, undefined),
+    '0. Check if input type is human'
+  )
+
+  const isHuman = true
+
+  t.deepEqual(
+    generator.next(isHuman).value,
     select(getNode, paramId),
     '0. Get node'
   )
@@ -298,6 +345,14 @@ except for the macro being called)`, (t) => {
 
   t.deepEqual(
     generator.next().value,
+    call(isInputTypeHuman, 'macro'),
+    '0. Check if input type is human'
+  )
+
+  const isHuman = true
+
+  t.deepEqual(
+    generator.next(isHuman).value,
     select(getNode, paramId),
     '0. Get node'
   )
@@ -374,6 +429,14 @@ is already set to false, as this signifies it has already been reset)`, (t) => {
 
   t.deepEqual(
     generator.next().value,
+    call(isInputTypeHuman, 'macro'),
+    '0. Check if input type is human'
+  )
+
+  const isHuman = true
+
+  t.deepEqual(
+    generator.next(isHuman).value,
     select(getNode, paramId),
     '0. Get node'
   )
@@ -436,6 +499,14 @@ test('(Saga) handleNodeValueUpdate (call macroProcess if node is macro)', (t) =>
 
   t.deepEqual(
     generator.next().value,
+    call(isInputTypeHuman, undefined),
+    '0. Check if input type is human'
+  )
+
+  const isHuman = true
+
+  t.deepEqual(
+    generator.next(isHuman).value,
     select(getNode, 'XXX'),
     '0. Get node'
   )
@@ -470,6 +541,14 @@ test('(Saga) handleNodeValueUpdate (call macroProcess if node is macro, ignore l
 
   t.deepEqual(
     generator.next().value,
+    call(isInputTypeHuman, undefined),
+    '0. Check if input type is human'
+  )
+
+  const isHuman = true
+
+  t.deepEqual(
+    generator.next(isHuman).value,
     select(getNode, 'XXX'),
     '0. Get node'
   )
@@ -504,6 +583,14 @@ test('(Saga) handleNodeValueUpdate (call macroLearnFromParam if learning ID and 
 
   t.deepEqual(
     generator.next().value,
+    call(isInputTypeHuman, undefined),
+    '0. Check if input type is human'
+  )
+
+  const isHuman = true
+
+  t.deepEqual(
+    generator.next(isHuman).value,
     select(getNode, 'XXX'),
     '0. Get node'
   )
@@ -587,16 +674,10 @@ test('(Saga) macroProcess (update linked params with correct val, start vals exi
     '3.1 Call interpolation function'
   )
 
-  const val = 0.88888
+  const val1 = 0.22222
 
   t.deepEqual(
-    generator.next(val).value,
-    put(nodeValueUpdate('p1', val, { type: 'macro', macroId: 'YYY' })),
-    '3.1 Update target param'
-  )
-
-  t.deepEqual(
-    generator.next().value,
+    generator.next(val1).value,
     select(getNode, 'n2'),
     '3.0 Get node for link 2'
   )
@@ -616,8 +697,17 @@ test('(Saga) macroProcess (update linked params with correct val, start vals exi
 
   t.deepEqual(
     generator.next(val2).value,
-    put(nodeValueUpdate('p2', val2, { type: 'macro', macroId: 'YYY' })),
-    '3.1 Update target param'
+    put(nodeValuesBatchUpdate([
+      {
+        id: 'p1',
+        value: val1
+      },
+      {
+        id: 'p2',
+        value: val2
+      }
+    ], { type: 'macro', macroId: 'YYY' })),
+    '4 Update values in one action'
   )
 
   t.equal(generator.next().done, true, 'Generator ends')
@@ -689,8 +779,13 @@ test('(Saga) macroProcess (update linked params with correct val, start vals don
 
   t.deepEqual(
     generator.next(val).value,
-    put(nodeValueUpdate('p1', val, { type: 'macro', macroId })),
-    '3.4 Update target param'
+    put(nodeValuesBatchUpdate([
+      {
+        id: 'p1',
+        value: val
+      }
+    ], { type: 'macro', macroId: 'YYY' })),
+    '4 Update values in one action'
   )
 
   t.equal(generator.next().done, true, 'Generator ends')
@@ -780,6 +875,218 @@ test('(Saga) macroTargetParamLinkAdd', (t) => {
     generator.next().value,
     put(rNodeConnectedMacroAdd(paramId, macroId)),
     '4. Add macro id to param node'
+  )
+
+  t.equal(generator.next().done, true, 'Generator ends')
+  t.end()
+})
+
+test('(Saga) handleNodeValueBatchUpdate - do nothing if not macro', (t) => {
+  const generator = handleNodeValueBatchUpdate(
+    nodeValuesBatchUpdate([
+      {
+        id: 'xx',
+        value: 0.1
+      },
+      {
+        id: 'yy',
+        value: 0.2
+      }
+    ], { type: '@@@' })
+  )
+
+  t.equal(generator.next().done, true, 'Generator ends')
+  t.end()
+})
+
+test(`(Saga) handleNodeValueBatchUpdate - do nothing if macro value isnt false
+AND lastId matches`, (t) => {
+  const generator = handleNodeValueBatchUpdate(
+    nodeValuesBatchUpdate([
+      {
+        id: 'xx',
+        value: 0.1
+      },
+      {
+        id: 'yy',
+        value: 0.2
+      }
+    ], { type: 'macro', macroId: 'fooMacro' })
+  )
+
+  t.deepEqual(
+    generator.next().value,
+    select(getMacro, 'fooMacro'),
+    '1. Get macro'
+  )
+
+  const macro = {
+    nodeId: 'node1'
+  }
+
+  t.deepEqual(
+    generator.next(macro).value,
+    select(getNode, 'node1'),
+    '2. Get node'
+  )
+
+  const node = {
+    value: 0.5
+  }
+
+  t.deepEqual(
+    generator.next(node).value,
+    select(getMacroLastId),
+    '1. Get macro last id'
+  )
+
+  const lastId = 'fooMacro'
+
+  t.equal(generator.next(lastId).done, true, 'Generator ends')
+  t.end()
+})
+
+test('(Saga) handleNodeValueBatchUpdate - loop through param values if macro value is false', (t) => {
+  const meta = { type: 'macro', macroId: 'fooMacro' }
+  const generator = handleNodeValueBatchUpdate(
+    nodeValuesBatchUpdate([
+      {
+        id: 'xx',
+        value: 0.1
+      },
+      {
+        id: 'yy',
+        value: 0.2
+      }
+    ], meta)
+  )
+
+  t.deepEqual(
+    generator.next().value,
+    select(getMacro, 'fooMacro'),
+    '1. Get macro'
+  )
+
+  const macro = {
+    nodeId: 'node1'
+  }
+
+  t.deepEqual(
+    generator.next(macro).value,
+    select(getNode, 'node1'),
+    '2. Get node'
+  )
+
+  const node = {
+    value: false
+  }
+
+  t.deepEqual(
+    generator.next(node).value,
+    call(handleNodeValueUpdate, {
+      payload: {
+        meta,
+        id: 'xx',
+        value: 0.1
+      }
+    }),
+    '3.1 Call node update handle saga'
+  )
+
+  t.deepEqual(
+    generator.next(node).value,
+    call(handleNodeValueUpdate, {
+      payload: {
+        meta,
+        id: 'yy',
+        value: 0.2
+      }
+    }),
+    '3.2 Call node update handle saga'
+  )
+
+  t.deepEqual(
+    generator.next().value,
+    put(rMacroUpdateLastId(meta.macroId)),
+    '4. Dispatch action to set this macro as last one'
+  )
+
+  t.equal(generator.next().done, true, 'Generator ends')
+  t.end()
+})
+
+test(`(Saga) handleNodeValueBatchUpdate - loop through param values if macro value isnt false
+BUT lastId doesnt match`, (t) => {
+  const meta = { type: 'macro', macroId: 'fooMacro' }
+  const generator = handleNodeValueBatchUpdate(
+    nodeValuesBatchUpdate([
+      {
+        id: 'xx',
+        value: 0.1
+      },
+      {
+        id: 'yy',
+        value: 0.2
+      }
+    ], meta)
+  )
+
+  t.deepEqual(
+    generator.next().value,
+    select(getMacro, 'fooMacro'),
+    '1. Get macro'
+  )
+
+  const macro = {
+    nodeId: 'node1'
+  }
+
+  t.deepEqual(
+    generator.next(macro).value,
+    select(getNode, 'node1'),
+    '2. Get node'
+  )
+
+  const node = {
+    value: 0.2
+  }
+
+  t.deepEqual(
+    generator.next(node).value,
+    select(getMacroLastId),
+    '1. Get macro last id'
+  )
+
+  const lastId = '@@@@@@'
+
+  t.deepEqual(
+    generator.next(lastId).value,
+    call(handleNodeValueUpdate, {
+      payload: {
+        meta,
+        id: 'xx',
+        value: 0.1
+      }
+    }),
+    '3.1 Call node update handle saga'
+  )
+
+  t.deepEqual(
+    generator.next(node).value,
+    call(handleNodeValueUpdate, {
+      payload: {
+        meta,
+        id: 'yy',
+        value: 0.2
+      }
+    }),
+    '3.2 Call node update handle saga'
+  )
+
+  t.deepEqual(
+    generator.next().value,
+    put(rMacroUpdateLastId(meta.macroId)),
+    '4. Dispatch action to set this macro as last one'
   )
 
   t.equal(generator.next().done, true, 'Generator ends')

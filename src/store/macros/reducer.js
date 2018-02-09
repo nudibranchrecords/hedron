@@ -3,6 +3,7 @@ import { omit } from 'lodash'
 const defaultState = {
   learningId: false,
   openedId: undefined,
+  lastId: undefined,
   items: {}
 }
 
@@ -88,6 +89,12 @@ const macroReducer = (state = defaultState, action) => {
       return {
         ...state,
         openedId: p.id !== state.openedId ? p.id : undefined
+      }
+    }
+    case 'R_MACRO_UPDATE_LAST_ID': {
+      return {
+        ...state,
+        lastId: p.id
       }
     }
     case 'MACROS_REPLACE_ALL': {
