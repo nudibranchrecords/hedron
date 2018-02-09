@@ -71,6 +71,147 @@ test('(Reducer) nodesReducer - Updates correct node value on NODE_VALUE_UPDATE',
   t.end()
 })
 
+test('(Reducer) nodesReducer - Updates multiple node values on nodeValuesBatchUpdate()', (t) => {
+  let originalState, expectedState, actualState
+
+  originalState = {
+    '01': {
+      title: 'Rotation X',
+      key: 'rotX',
+      value: 0.1
+    },
+    '02': {
+      title: 'Rotation Y',
+      key: 'rotY',
+      value: 0.2
+    },
+    '03': {
+      title: 'Rotation Z',
+      key: 'rotZ',
+      value: 0.3
+    },
+    '04': {
+      title: 'Scale',
+      key: 'scale',
+      value: 0.4
+    }
+  }
+
+  expectedState = {
+    '01': {
+      title: 'Rotation X',
+      key: 'rotX',
+      value: 0.11
+    },
+    '02': {
+      title: 'Rotation Y',
+      key: 'rotY',
+      value: 0.22
+    },
+    '03': {
+      title: 'Rotation Z',
+      key: 'rotZ',
+      value: 0.33
+    },
+    '04': {
+      title: 'Scale',
+      key: 'scale',
+      value: 0.44
+    }
+  }
+
+  actualState = nodesReducer(originalState, a.nodeValuesBatchUpdate([
+    {
+      id: '01',
+      value: 0.11
+    },
+    {
+      id: '02',
+      value: 0.22
+    },
+    {
+      id: '03',
+      value: 0.33
+    },
+    {
+      id: '04',
+      value: 0.44
+    }
+  ]))
+
+  t.deepEqual(actualState, expectedState)
+
+  expectedState = {
+    '01': {
+      title: 'Rotation X',
+      key: 'rotX',
+      value: 0.11
+    },
+    '02': {
+      title: 'Rotation Y',
+      key: 'rotY',
+      value: 0.5
+    },
+    '03': {
+      title: 'Rotation Z',
+      key: 'rotZ',
+      value: 0.6
+    },
+    '04': {
+      title: 'Scale',
+      key: 'scale',
+      value: 0.44
+    }
+  }
+
+  actualState = nodesReducer(actualState, a.nodeValuesBatchUpdate([
+    {
+      id: '02',
+      value: 0.5
+    },
+    {
+      id: '03',
+      value: 0.6
+    }
+  ]))
+
+  t.deepEqual(actualState, expectedState)
+
+  expectedState = {
+    '01': {
+      title: 'Rotation X',
+      key: 'rotX',
+      value: 0.11
+    },
+    '02': {
+      title: 'Rotation Y',
+      key: 'rotY',
+      value: 0.7
+    },
+    '03': {
+      title: 'Rotation Z',
+      key: 'rotZ',
+      value: 0.6
+    },
+    '04': {
+      title: 'Scale',
+      key: 'scale',
+      value: 0.44
+    }
+  }
+
+  actualState = nodesReducer(actualState, a.nodeValuesBatchUpdate([
+    {
+      id: '02',
+      value: 0.7
+    }
+  ]))
+
+  t.deepEqual(actualState, expectedState)
+
+  t.end()
+})
+
 test('(Reducer) nodesReducer - Adds input link id on rNodeInputLinkAdd()', (t) => {
   let originalState, actualState
 

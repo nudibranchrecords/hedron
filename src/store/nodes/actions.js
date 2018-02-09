@@ -77,6 +77,15 @@ export function nodeValueUpdate (id, value, meta) {
   }
 }
 
+export function nodeValuesBatchUpdate (values) {
+  return {
+    type: 'NODE_VALUES_BATCH_UPDATE',
+    payload: {
+      values
+    }
+  }
+}
+
 export function nodesReplaceAll (nodes) {
   return {
     type: 'NODES_REPLACE_ALL',
