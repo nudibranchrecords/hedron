@@ -29,8 +29,15 @@ class ValueBar extends React.Component {
     uiEventEmitter.on('repaint', this.setSize)
 
     this.ticker = setInterval(() => {
-      this.draw(this.props.value)
-    }, 100)
+      this.draw(this.getValue())
+    }, 40)
+  }
+
+  getValue () {
+    // Grab the value for the param directly from the store
+    // This is for performance reasons as it prevents React
+    // from doing unecessary (and expensive) diffing
+    return this.context.store.getState().nodes[this.props.nodeId].value
   }
 
   componentWillUnmount () {
@@ -51,7 +58,7 @@ class ValueBar extends React.Component {
       this.canvas.width = this.width
       this.canvas.style.width = this.width / 2 + 'px'
       this.canvas.style.height = this.height / 2 + 'px'
-      this.draw(this.props.value, true)
+      this.draw(this.getValue(), true)
     }, 1)
   }
 
@@ -61,7 +68,7 @@ class ValueBar extends React.Component {
 
   handleMouseDown (e) {
     this.pos = e.nativeEvent.screenX
-    this.currentValue = this.props.value
+    this.currentValue = this.getValue()
 
     const onMouseUp = (e) => {
       document.removeEventListener('mouseup', onMouseUp)
@@ -123,9 +130,13 @@ class ValueBar extends React.Component {
 }
 
 ValueBar.propTypes = {
-  value: PropTypes.number.isRequired,
+  nodeId: PropTypes.string.isRequired,
   onChange: PropTypes.func.isRequired,
   onMouseDown: PropTypes.func
+}
+
+ValueBar.contextTypes = {
+  store: PropTypes.object.isRequired
 }
 
 export default ValueBar
