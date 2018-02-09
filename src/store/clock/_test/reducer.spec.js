@@ -13,8 +13,6 @@ test('(Reducer) clockReducer -  - Increases beat on CLOCK_BEAT_INC', (t) => {
     beat: 1
   }
 
-  deepFreeze(originalState)
-
   expectedState = {
     beat: 2
   }
@@ -41,8 +39,6 @@ test('(Reducer) clockReducer - resets beat on CLOCK_RESET', (t) => {
     beat: 100
   }
 
-  deepFreeze(originalState)
-
   expectedState = {
     beat: 0
   }
@@ -60,8 +56,6 @@ test('(Reducer) clockReducer - loops back to 0 after 64 beats', (t) => {
   originalState = {
     beat: 62
   }
-
-  deepFreeze(originalState)
 
   expectedState = {
     beat: 63
@@ -88,8 +82,6 @@ test('(Reducer) clockReducer - updates BPM on CLOCK_BPM_UPDATE', (t) => {
   originalState = {
     bpm: undefined
   }
-
-  deepFreeze(originalState)
 
   expectedState = {
     bpm: 120
@@ -137,4 +129,3 @@ test('(Reducer) clockReducer - switches mode on clockGeneratedToggle', (t) => {
 
   t.end()
 })
-

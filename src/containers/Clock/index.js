@@ -15,5 +15,11 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps
+  mapDispatchToProps,
+  null,
+  {
+    // We are mutating state of clock
+    // so this means component always updates
+    areStatesEqual: () => false
+  }
 )(Clock)

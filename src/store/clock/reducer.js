@@ -11,23 +11,19 @@ const clockReducer = (state = defaultState, action) => {
     case 'CLOCK_BEAT_INC': {
       let beat = state.beat + 1
       if (beat > 63) beat = 0
-
-      return {
-        ...state,
-        beat
-      }
+      // Purposefully mutating state
+      state.beat = beat
+      return state
     }
     case 'CLOCK_BPM_UPDATE': {
-      return {
-        ...state,
-        bpm: p.bpm
-      }
+      // Purposefully mutating state
+      state.bpm = p.bpm
+      return state
     }
     case 'CLOCK_RESET': {
-      return {
-        ...state,
-        beat: 0
-      }
+      // Purposefully mutating state
+      state.beat = 0
+      return state
     }
     case 'CLOCK_GENERATED_TOGGLE': {
       return {
