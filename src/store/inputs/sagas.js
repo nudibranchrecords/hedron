@@ -1,6 +1,6 @@
 import { select, takeEvery, put, call } from 'redux-saga/effects'
 import { getAssignedLinks } from './selectors'
-import { nodeValueUpdate } from '../nodes/actions'
+import { nodeValuesBatchUpdate } from '../nodes/actions'
 import { inputLinkShotFired, inputLinkShotDisarm, inputLinkShotArm } from '../inputLinks/actions'
 import { projectError } from '../project/actions'
 import getNodes from '../../selectors/getNodes'
@@ -18,6 +18,7 @@ export function* handleInput (action) {
   if (messageCount) {
     try {
       const links = yield select(getAssignedLinks, p.inputId)
+      const values = []
 
       for (let i = 0; i < links.length; i++) {
         let skip
@@ -85,9 +86,15 @@ export function* handleInput (action) {
           }
 
           if (!skip) {
-            yield put(nodeValueUpdate(links[i].nodeId, value, p.meta))
+            values.push({
+              id: links[i].nodeId,
+              value
+            })
           }
         }
+      }
+      if (values.length) {
+        yield put(nodeValuesBatchUpdate(values, p.meta))
       }
     } catch (error) {
       console.error(error)
