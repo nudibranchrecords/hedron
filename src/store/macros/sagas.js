@@ -119,9 +119,9 @@ export function* macroLearnFromParam (p, macroId) {
 }
 
 // When a node value is updated, a few things can happen:
-// 1. Macro is processed
-// 2. New param is added to a macro (learning)
-// 3. A node value has changed that has macros assigned to it:
+// 1. MACRO: Macro is processed
+// 2. OTHER VALUE: New param is added to a macro (learning)
+// 3. OTHER VALUE: A node value has changed that has macros assigned to it:
 //    - The macros assigned to it need to be reset to false
 //      (to stop value jumping next time they are used)
 //    - If the action has come from a macro, this macro should
@@ -131,30 +131,29 @@ export function* handleNodeValueUpdate (action) {
   const senderType = p.meta && p.meta.type
   const senderMacroId = p.meta && p.meta.macroId
 
-  const isHuman = yield call(isInputTypeHuman, senderType)
+  const node = yield select(getNode, p.id)
 
-  if (isHuman) {
-    const node = yield select(getNode, p.id)
-    const nodeMacroIds = node.connectedMacroIds
+  if (node.type === 'macro' && senderType !== 'macro') {
+    // Normal behaviour, simple process of macro using value of node
+    yield call(macroProcess, p, node)
+  } else if (node.type !== 'macro') {
+    const isHuman = yield call(isInputTypeHuman, senderType)
 
-    const learningId = yield select(getMacroLearningId)
-
-    if (node.type === 'macro' && senderType !== 'macro') {
-      // Normal behaviour, simple process of macro using value of node
-      yield call(macroProcess, p, node)
-    } else {
+    if (isHuman) {
+      const learningId = yield select(getMacroLearningId)
       // Learning logic here
       const learn = yield call(shouldItLearn, learningId, node, p)
       if (learn) {
         yield call(macroLearnFromParam, p, learningId)
       }
-      // If this node has macros assigned to it
+      const nodeMacroIds = node.connectedMacroIds
+        // If this node has macros assigned to it
       if (nodeMacroIds) {
-        // Go through the macros
+          // Go through the macros
         for (let i = 0; i < nodeMacroIds.length; i++) {
           const macroId = nodeMacroIds[i]
-          // If this action has not come from the macro assigned to it
-          // then reset that macro and relevant start vals
+            // If this action has not come from the macro assigned to it
+            // then reset that macro and relevant start vals
           if (senderMacroId !== macroId) {
             const macro = yield select(getMacro, macroId)
             const node = yield select(getNode, macro.nodeId)
@@ -178,41 +177,43 @@ export function* handleNodeValueBatchUpdate (action) {
   let doLoop = false
   const type = p.meta && p.meta.type
 
-  if (type === 'midi') doLoop = true
-  // Only do extra macro logic if coming from a macro
-  if (type === 'macro' || doLoop) {
-    if (!doLoop) {
-      const macro = yield select(getMacro, p.meta.macroId)
-      const node = yield select(getNode, macro.nodeId)
+  // Anything that isn't a macro should go straight to the loop
+  if (type !== 'macro') doLoop = true
 
-      // Dont skip if macro value is false
-      if (node.value === false) {
+  // Macro stuff doesnt necessarily have to go through the loop
+  // if already has done, so we check to see
+  if (!doLoop) {
+    const macro = yield select(getMacro, p.meta.macroId)
+    const node = yield select(getNode, macro.nodeId)
+
+    // Do loop if macro value is false
+    if (node.value === false) {
+      doLoop = true
+    } else {
+      // Do loop if last macro id doesnt match this one
+      const lastMacroId = yield select(getMacroLastId)
+
+      if (lastMacroId !== p.meta.macroId) {
         doLoop = true
-      } else {
-        // Dont skip if last macro id doesnt match this one
-        const lastMacroId = yield select(getMacroLastId)
-
-        if (lastMacroId !== p.meta.macroId) {
-          doLoop = true
-        }
       }
     }
+  }
 
-    if (doLoop) {
-      for (let i = 0; i < p.values.length; i++) {
-        const node = p.values[i]
-        yield call(handleNodeValueUpdate, {
-          payload: {
-            meta: p.meta,
-            id: node.id,
-            value: node.value
-          }
-        })
-      }
+  if (doLoop) {
+    for (let i = 0; i < p.values.length; i++) {
+      const node = p.values[i]
+      yield call(handleNodeValueUpdate, {
+        payload: {
+          meta: p.meta,
+          id: node.id,
+          value: node.value
+        }
+      })
+    }
 
-      if (type === 'macro') {
-        yield put(rMacroUpdateLastId(p.meta.macroId))
-      }
+    if (type === 'macro') {
+      // Set last macro ID so no need to do loop again for this macro
+      yield put(rMacroUpdateLastId(p.meta.macroId))
     }
   }
 }

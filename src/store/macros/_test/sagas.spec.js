@@ -95,14 +95,24 @@ test('(Saga) macroLearnFromParam (link does exist)', (t) => {
   t.end()
 })
 
-test(`(Saga) handleNodeValueUpdate (does nothing if senderType isn't human)`, (t) => {
+test(`(Saga) handleNodeValueUpdate (does nothing if node type isn't macro and sender isn't human)`, (t) => {
   const nodeId = 'XXX'
   const newVal = 0.5
   const action = nodeValueUpdate(nodeId, newVal, { type: 'alien' })
   const generator = handleNodeValueUpdate(action)
 
   t.deepEqual(
-    generator.next().value,
+    generator.next(isHuman).value,
+    select(getNode, 'XXX'),
+    '0. Get node'
+  )
+
+  const node = {
+    type: '@@@'
+  }
+
+  t.deepEqual(
+    generator.next(node).value,
     call(isInputTypeHuman, 'alien'),
     '0. Check if input type is human'
   )
@@ -113,8 +123,9 @@ test(`(Saga) handleNodeValueUpdate (does nothing if senderType isn't human)`, (t
   t.end()
 })
 
-test(`(Saga) handleNodeValueUpdate (does nothing if node
-  value update isnt a macro AND it shouldnt learn AND it doesnt have any connectedMacroIds)`, (t) => {
+test(`(Saga) handleNodeValueUpdate
+  (does nothing if node type isnt a macro AND is human AND it shouldnt learn
+  AND it doesnt have any connectedMacroIds)`, (t) => {
   const nodeId = 'XXX'
   const newVal = 0.5
   const action = nodeValueUpdate(nodeId, newVal)
@@ -122,14 +133,6 @@ test(`(Saga) handleNodeValueUpdate (does nothing if node
 
   t.deepEqual(
     generator.next().value,
-    call(isInputTypeHuman, undefined),
-    '0. Check if input type is human'
-  )
-
-  const isHuman = true
-
-  t.deepEqual(
-    generator.next(isHuman).value,
     select(getNode, 'XXX'),
     '0. Get node'
   )
@@ -141,6 +144,14 @@ test(`(Saga) handleNodeValueUpdate (does nothing if node
 
   t.deepEqual(
     generator.next(node).value,
+    call(isInputTypeHuman, undefined),
+    '0. Check if input type is human'
+  )
+
+  const isHuman = true
+
+  t.deepEqual(
+    generator.next(isHuman).value,
     select(getMacroLearningId),
     '1. Check macro learning Id'
   )
@@ -167,40 +178,41 @@ test(`(Saga) handleNodeValueUpdate (does nothing if input is from a macro and no
 
   t.deepEqual(
     generator.next().value,
-    call(isInputTypeHuman, 'macro'),
-    '0. Check if input type is human'
-  )
-
-  const isHuman = true
-
-  t.deepEqual(
-    generator.next(isHuman).value,
     select(getNode, 'XXX'),
     '0. Get node'
   )
 
   const node = {
-    type: 'macro',
-    connectedMacroIds: []
+    type: 'macro'
+  }
+
+  t.equal(generator.next(node).done, true, 'Generator ends')
+  t.end()
+})
+
+test('(Saga) handleNodeValueUpdate (call macroProcess if node is macro)', (t) => {
+  const nodeId = 'XXX'
+  const newVal = 0.5
+  const action = nodeValueUpdate(nodeId, newVal)
+  const generator = handleNodeValueUpdate(action)
+
+  t.deepEqual(
+    generator.next().value,
+    select(getNode, 'XXX'),
+    '0. Get node'
+  )
+
+  const node = {
+    type: 'macro'
   }
 
   t.deepEqual(
     generator.next(node).value,
-    select(getMacroLearningId),
-    '1. Check macro learning Id'
+    call(macroProcess, action.payload, node),
+    '2. Call macroProcess, passing in action payload and node'
   )
 
-  const id = true
-
-  t.deepEqual(
-    generator.next(id).value,
-    call(shouldItLearn, id, node, action.payload),
-    '2. Check if node should learn'
-  )
-
-  const learn = false
-
-  t.equal(generator.next(learn).done, true, 'Generator ends')
+  t.equal(generator.next().done, true, 'Generator ends')
   t.end()
 })
 
@@ -213,14 +225,6 @@ test(`(Saga) handleNodeValueUpdate
 
   t.deepEqual(
     generator.next().value,
-    call(isInputTypeHuman, undefined),
-    '0. Check if input type is human'
-  )
-
-  const isHuman = true
-
-  t.deepEqual(
-    generator.next(isHuman).value,
     select(getNode, paramId),
     '0. Get node'
   )
@@ -231,7 +235,15 @@ test(`(Saga) handleNodeValueUpdate
   }
 
   t.deepEqual(
-    generator.next(node).value,
+      generator.next(node).value,
+      call(isInputTypeHuman, undefined),
+      '0. Check if input type is human'
+    )
+
+  const isHuman = true
+
+  t.deepEqual(
+    generator.next(isHuman).value,
     select(getMacroLearningId),
     '1. Check macro learning Id'
   )
@@ -345,14 +357,6 @@ except for the macro being called)`, (t) => {
 
   t.deepEqual(
     generator.next().value,
-    call(isInputTypeHuman, 'macro'),
-    '0. Check if input type is human'
-  )
-
-  const isHuman = true
-
-  t.deepEqual(
-    generator.next(isHuman).value,
     select(getNode, paramId),
     '0. Get node'
   )
@@ -364,6 +368,14 @@ except for the macro being called)`, (t) => {
 
   t.deepEqual(
     generator.next(node).value,
+    call(isInputTypeHuman, 'macro'),
+    '0. Check if input type is human'
+  )
+
+  const isHuman = true
+
+  t.deepEqual(
+    generator.next(isHuman).value,
     select(getMacroLearningId),
     '1. Check macro learning Id'
   )
@@ -429,14 +441,6 @@ is already set to false, as this signifies it has already been reset)`, (t) => {
 
   t.deepEqual(
     generator.next().value,
-    call(isInputTypeHuman, 'macro'),
-    '0. Check if input type is human'
-  )
-
-  const isHuman = true
-
-  t.deepEqual(
-    generator.next(isHuman).value,
     select(getNode, paramId),
     '0. Get node'
   )
@@ -448,6 +452,14 @@ is already set to false, as this signifies it has already been reset)`, (t) => {
 
   t.deepEqual(
     generator.next(node).value,
+    call(isInputTypeHuman, 'macro'),
+    '0. Check if input type is human'
+  )
+
+  const isHuman = true
+
+  t.deepEqual(
+    generator.next(isHuman).value,
     select(getMacroLearningId),
     '1. Check macro learning Id'
   )
@@ -491,90 +503,6 @@ is already set to false, as this signifies it has already been reset)`, (t) => {
   t.end()
 })
 
-test('(Saga) handleNodeValueUpdate (call macroProcess if node is macro)', (t) => {
-  const nodeId = 'XXX'
-  const newVal = 0.5
-  const action = nodeValueUpdate(nodeId, newVal)
-  const generator = handleNodeValueUpdate(action)
-
-  t.deepEqual(
-    generator.next().value,
-    call(isInputTypeHuman, undefined),
-    '0. Check if input type is human'
-  )
-
-  const isHuman = true
-
-  t.deepEqual(
-    generator.next(isHuman).value,
-    select(getNode, 'XXX'),
-    '0. Get node'
-  )
-
-  const node = {
-    type: 'macro'
-  }
-
-  t.deepEqual(
-    generator.next(node).value,
-    select(getMacroLearningId),
-    '1. Check macro learning Id'
-  )
-
-  const id = false
-
-  t.deepEqual(
-    generator.next(id).value,
-    call(macroProcess, action.payload, node),
-    '2. Call macroProcess, passing in action payload and node'
-  )
-
-  t.equal(generator.next().done, true, 'Generator ends')
-  t.end()
-})
-
-test('(Saga) handleNodeValueUpdate (call macroProcess if node is macro, ignore learningId)', (t) => {
-  const nodeId = 'XXX'
-  const newVal = 0.5
-  const action = nodeValueUpdate(nodeId, newVal)
-  const generator = handleNodeValueUpdate(action)
-
-  t.deepEqual(
-    generator.next().value,
-    call(isInputTypeHuman, undefined),
-    '0. Check if input type is human'
-  )
-
-  const isHuman = true
-
-  t.deepEqual(
-    generator.next(isHuman).value,
-    select(getNode, 'XXX'),
-    '0. Get node'
-  )
-
-  const node = {
-    type: 'macro'
-  }
-
-  t.deepEqual(
-    generator.next(node).value,
-    select(getMacroLearningId),
-    '1. Check macro learning Id'
-  )
-
-  const id = 1
-
-  t.deepEqual(
-    generator.next(id).value,
-    call(macroProcess, action.payload, node),
-    '2. Call macroProcess, passing in action payload and node'
-  )
-
-  t.equal(generator.next().done, true, 'Generator ends')
-  t.end()
-})
-
 test('(Saga) handleNodeValueUpdate (call macroLearnFromParam if learning ID and not a macro)', (t) => {
   const nodeId = 'XXX'
   const newVal = 0.5
@@ -583,14 +511,6 @@ test('(Saga) handleNodeValueUpdate (call macroLearnFromParam if learning ID and 
 
   t.deepEqual(
     generator.next().value,
-    call(isInputTypeHuman, undefined),
-    '0. Check if input type is human'
-  )
-
-  const isHuman = true
-
-  t.deepEqual(
-    generator.next(isHuman).value,
     select(getNode, 'XXX'),
     '0. Get node'
   )
@@ -601,6 +521,14 @@ test('(Saga) handleNodeValueUpdate (call macroLearnFromParam if learning ID and 
 
   t.deepEqual(
     generator.next(node).value,
+    call(isInputTypeHuman, undefined),
+    '0. Check if input type is human'
+  )
+
+  const isHuman = true
+
+  t.deepEqual(
+    generator.next(isHuman).value,
     select(getMacroLearningId),
     '1. Check macro learning Id'
   )
@@ -881,26 +809,8 @@ test('(Saga) macroTargetParamLinkAdd', (t) => {
   t.end()
 })
 
-test('(Saga) handleNodeValueBatchUpdate - do nothing if not macro or midi', (t) => {
-  const generator = handleNodeValueBatchUpdate(
-    nodeValuesBatchUpdate([
-      {
-        id: 'xx',
-        value: 0.1
-      },
-      {
-        id: 'yy',
-        value: 0.2
-      }
-    ], { type: '@@@' })
-  )
-
-  t.equal(generator.next().done, true, 'Generator ends')
-  t.end()
-})
-
-test('(Saga) handleNodeValueBatchUpdate - if type is midi, loop through', (t) => {
-  const meta = { type: 'midi' }
+test('(Saga) handleNodeValueBatchUpdate - Any type apart from macro, loop through', (t) => {
+  const meta = { type: '@@@' }
   const generator = handleNodeValueBatchUpdate(
     nodeValuesBatchUpdate([
       {
