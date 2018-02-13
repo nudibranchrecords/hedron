@@ -7,15 +7,12 @@ export default (store) => {
     const bandIds = ['audio_0', 'audio_1', 'audio_2', 'audio_3']
 
     let bands, i
-    const loop = () => {
+    window.setInterval(() => {
       bands = input.update()
       for (i = 0; i < bands.length; i++) {
         store.dispatch(inputFired(bandIds[i], bands[i], { type: 'audio' }))
       }
-
-      requestAnimationFrame(loop)
-    }
-    loop()
+    }, 30)
   }
 
   navigator.getUserMedia({
