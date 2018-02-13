@@ -27,5 +27,11 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps
+  mapDispatchToProps,
+  null,
+  {
+    // We are mutating state of nodes
+    // so this means component always updates
+    areStatesEqual: () => false
+  }
 )(Select)
