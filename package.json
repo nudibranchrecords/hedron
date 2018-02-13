@@ -52,7 +52,7 @@
     "redux-batched-subscribe": "^0.1.6",
     "redux-debounce": "^1.0.1",
     "redux-ignore": "^1.2.4",
-    "redux-saga": "^0.14.5",
+    "redux-saga": "^0.16.0",
     "stats.js": "^0.17.0",
     "styled-components": "^2.2.3",
     "tap-diff": "^0.1.1",
