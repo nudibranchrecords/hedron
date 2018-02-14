@@ -37,5 +37,12 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
 })
 
 export default connect(
-  mapStateToProps, mapDispatchToProps
+  mapStateToProps,
+  mapDispatchToProps,
+  null,
+  {
+    areStatesEqual: (next, prev) =>
+    next.nodes === prev.nodes &&
+    next.inputLinks === next.inputLinks
+  }
 )(InputLink)

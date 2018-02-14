@@ -35,5 +35,12 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps
+  mapDispatchToProps,
+  null,
+  {
+    areStatesEqual: (next, prev) =>
+      next.nodes === prev.nodes &&
+      next.macros.learningId === prev.macros.learningId &&
+      next.macros.openedId === prev.macros.openedId
+  }
 )(MacroItem)
