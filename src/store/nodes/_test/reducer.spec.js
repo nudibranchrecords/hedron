@@ -71,6 +71,79 @@ test('(Reducer) nodesReducer - Updates correct node value on NODE_VALUE_UPDATE',
   t.end()
 })
 
+test('(Reducer) nodesReducer - does not mutate value on NODE_VALUE_UPDATE when meta.dontMutate is true', (t) => {
+  let originalState, expectedState, actualState
+
+  originalState = {
+    '01': {
+      title: 'Rotation X',
+      key: 'rotX',
+      value: 0.1
+    },
+    '02': {
+      title: 'Rotation Y',
+      key: 'rotY',
+      value: 0.2
+    }
+  }
+
+  deepFreeze(originalState)
+
+  expectedState = {
+    '01': {
+      title: 'Rotation X',
+      key: 'rotX',
+      value: 1
+    },
+    '02': {
+      title: 'Rotation Y',
+      key: 'rotY',
+      value: 0.2
+    }
+  }
+
+  actualState = nodesReducer(originalState, {
+    type: 'NODE_VALUE_UPDATE',
+    payload: {
+      id: '01',
+      value: 1,
+      meta: {
+        dontMutate: true
+      }
+    }
+  })
+
+  t.deepEqual(actualState, expectedState)
+
+  expectedState = {
+    '01': {
+      title: 'Rotation X',
+      key: 'rotX',
+      value: 1
+    },
+    '02': {
+      title: 'Rotation Y',
+      key: 'rotY',
+      value: 2
+    }
+  }
+
+  actualState = nodesReducer(actualState, {
+    type: 'NODE_VALUE_UPDATE',
+    payload: {
+      id: '02',
+      value: 2,
+      meta: {
+        dontMutate: true
+      }
+    }
+  })
+
+  t.deepEqual(actualState, expectedState)
+
+  t.end()
+})
+
 test('(Reducer) nodesReducer - Updates multiple node values on nodeValuesBatchUpdate()', (t) => {
   let originalState, expectedState, actualState
 
