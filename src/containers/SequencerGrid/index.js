@@ -12,7 +12,9 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
     // Toggle whatever index was clicked
     steps = steps.slice(0)
     steps[index] = steps[index] === 1 ? 0 : 1
-    dispatch(nodeValueUpdate(ownProps.nodeId, steps))
+    dispatch(nodeValueUpdate(ownProps.nodeId, steps, {
+      dontMutate: true
+    }))
   }
 })
 
@@ -21,8 +23,7 @@ export default connect(
   mapDispatchToProps,
   null,
   {
-    // We are mutating state of nodes
-    // so this means component always updates
-    areStatesEqual: () => false
+    areStatesEqual: (next, prev) =>
+      next.nodes === prev.nodes
   }
 )(SequencerGrid)
