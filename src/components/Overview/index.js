@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import Viewer from '../../containers/Viewer'
 import Menu from '../../containers/Menu'
 import styled from 'styled-components'
-import AudioAnalyzer from '../../containers/AudioAnalyzer'
+import AudioAnalyzer from '../../components/AudioAnalyzer'
 import Clock from '../../containers/Clock'
 import Devices from '../../containers/Devices'
 

@@ -12,10 +12,16 @@ class AudioAnalyzer extends React.Component {
     this.barWidth = this.width / this.barCount
     this.ctx = this.canvas.getContext('2d')
 
+    let bands, inputs
+
     const loop = () => {
-      this.drawGraph(this.props.bands)
+      inputs = this.context.store.getState().inputs
+      bands = [inputs.audio_0.value, inputs.audio_1.value, inputs.audio_2.value, inputs.audio_3.value]
+
+      this.drawGraph(bands)
       requestAnimationFrame(loop)
     }
+
     loop()
   }
 
@@ -46,8 +52,8 @@ class AudioAnalyzer extends React.Component {
   }
 }
 
-AudioAnalyzer.propTypes = {
-  bands: PropTypes.arrayOf(PropTypes.number)
+AudioAnalyzer.contextTypes = {
+  store: PropTypes.object.isRequired
 }
 
 export default AudioAnalyzer
