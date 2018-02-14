@@ -11,6 +11,6 @@ window.addEventListener('resize', e => {
 
 window.setInterval(() => {
   uiEventEmitter.emit('slow-tick')
-}, 40)
+}, 32)
 
 export default uiEventEmitter

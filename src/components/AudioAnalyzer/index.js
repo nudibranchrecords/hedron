@@ -1,9 +1,15 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import uiEventEmitter from '../../utils/uiEventEmitter'
 
-let height, val, offset, hue, i
+let height, val, offset, hue, i, inputs, bands
 
 class AudioAnalyzer extends React.Component {
+
+  constructor (props) {
+    super(props)
+    this.draw = this.draw.bind(this)
+  }
 
   componentDidMount () {
     this.width = this.canvas.width = 80
@@ -12,17 +18,18 @@ class AudioAnalyzer extends React.Component {
     this.barWidth = this.width / this.barCount
     this.ctx = this.canvas.getContext('2d')
 
-    let bands, inputs
+    uiEventEmitter.on('slow-tick', this.draw)
+  }
 
-    const loop = () => {
-      inputs = this.context.store.getState().inputs
-      bands = [inputs.audio_0.value, inputs.audio_1.value, inputs.audio_2.value, inputs.audio_3.value]
+  componentWillUnmount () {
+    uiEventEmitter.removeListener('slow-tick', this.draw)
+  }
 
-      this.drawGraph(bands)
-      requestAnimationFrame(loop)
-    }
+  draw () {
+    inputs = this.context.store.getState().inputs
+    bands = [inputs.audio_0.value, inputs.audio_1.value, inputs.audio_2.value, inputs.audio_3.value]
 
-    loop()
+    this.drawGraph(bands)
   }
 
   drawGraph (data) {
