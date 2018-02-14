@@ -11,6 +11,7 @@
     "test:dev": "NODE_ENV=test tape-watch -r babel-register src/**/*.spec.js -p tap-diff",
     "compile": "electron-webpack",
     "dist": "yarn compile && electron-builder",
+    "dist:dev": "yarn dist -- --dir -c.compression=store -c.mac.identity=null && open dist/mac/hedron.app/ --args --distDev",
     "start": "yarn electron-webpack dev"
   },
   "electronWebpack": {
@@ -33,6 +34,7 @@
     "babel-register": "^6.22.0",
     "create-react-class": "^15.5.2",
     "electron-debug": "^1.4.0",
+    "electron-log": "^2.2.14",
     "history": "^4.6.1",
     "jsonfile": "^2.4.0",
     "lodash": "^4.17.4",
@@ -81,6 +83,7 @@
     "eslint-plugin-standard": "^2.0.1",
     "jsdom": "^11.5.1",
     "jsdom-global": "^3.0.2",
+    "minimist": "^1.2.0",
     "nwjs-builder-phoenix": "^1.14.1",
     "redux-debounced": "^0.4.0",
     "redux-devtools-extension": "^2.13.2",

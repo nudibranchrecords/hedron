@@ -1,3 +1,4 @@
+import { ipcRenderer } from 'electron'
 import React from 'react'
 import { render } from 'react-dom'
 import { Provider } from 'react-redux'
@@ -76,17 +77,30 @@ const renderApp = (Component) => {
   )
 }
 
+const loadDefaultProject = () => {
+  if (devConfig && devConfig.defaultProject) {
+    store.dispatch(projectFilepathUpdate(devConfig.defaultProject))
+    store.dispatch(projectLoadRequest())
+  }
+}
+
 renderApp(App)
 
-initiateAudio(store)
+// initiateAudio(store)
 initiateMidi(store)
 initiateGeneratedClock(store)
 initiateScreens(store)
 Engine.run(store, stats)
 
-if (isDevelopment && devConfig && devConfig.defaultProject) {
-  store.dispatch(projectFilepathUpdate(devConfig.defaultProject))
-  store.dispatch(projectLoadRequest())
+if (isDevelopment) {
+  loadDefaultProject()
 }
+
+// Load default project if running the app with '--devDist'
+ipcRenderer.on('args', (event, data) => {
+  if (data.distDev) {
+    loadDefaultProject()
+  }
+})
 
 if (module.hot) module.hot.accept('../containers/App', () => renderApp(App))
