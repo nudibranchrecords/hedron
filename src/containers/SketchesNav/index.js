@@ -13,6 +13,8 @@ export default connect(
   null,
   null,
   {
-    areStatesEqual: (next, prev) => next.sketches === prev.sketches
+    areStatesEqual: (next, prev) =>
+      next.sketches === prev.sketches &&
+      next.router === prev.router
   }
 )(SketchesNav)
