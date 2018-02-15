@@ -20,7 +20,7 @@ const FilePath = styled.span`
 const Menu = ({
   onSaveClick, onSaveAsClick, onLoadClick,
   filePath, saveIsDisabled, onSendOutputChange, clockIsGenerated, onClockToggleClick,
-  displayOptions
+  displayOptions, onDevToolsClick
 }) => {
   return (
     <Row>
@@ -38,6 +38,9 @@ const Menu = ({
       </Row>
 
       <Right>
+        <Button onClick={onDevToolsClick}>
+            Open DevTools
+        </Button>
         <Button onClick={onClockToggleClick}>
             Mock Clock is: {clockIsGenerated ? 'ON' : 'OFF'}
         </Button>
@@ -56,7 +59,8 @@ Menu.propTypes = {
   onClockToggleClick: PropTypes.func.isRequired,
   clockIsGenerated: PropTypes.bool,
   displayOptions: PropTypes.array.isRequired,
-  saveIsDisabled: PropTypes.bool
+  saveIsDisabled: PropTypes.bool,
+  onDevToolsClick: PropTypes.func.isRequired
 }
 
 export default Menu

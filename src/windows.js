@@ -30,3 +30,7 @@ export const sendOutput = (index) => {
     world.setOutput(outputWin)
   }, 1000)
 }
+
+export const openDevTools = () => {
+  ipcRenderer.send('open-dev-tools')
+}

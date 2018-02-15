@@ -5,6 +5,7 @@ import Menu from '../../components/Menu'
 import { projectSave, projectLoadRequest, projectFilepathUpdate } from '../../store/project/actions'
 import { windowSendOutput } from '../../store/windows/actions'
 import { clockGeneratedToggle } from '../../store/clock/actions'
+import { openDevTools } from '../../windows'
 
 const { dialog } = electron.remote
 
@@ -19,7 +20,8 @@ const mapStateToProps = (state, ownProps) => ({
       value: index,
       label: width + 'x' + height
     }
-  })
+  }),
+  onDevToolsClick: () => { openDevTools() }
 })
 
 const fileFilters = [

@@ -47,6 +47,10 @@ function createMainWindow () {
     }
   })
 
+  ipcMain.on('open-dev-tools', () => {
+    mainWindow.webContents.openDevTools()
+  })
+
   // Set url for `win`
     // points to `webpack-dev-server` in development
     // points to `index.html` in production
