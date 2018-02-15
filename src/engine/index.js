@@ -1,10 +1,9 @@
 import { getSketches } from '../externals/sketches'
 import getSketchParams from '../selectors/getSketchParams'
 import { availableModulesReplaceAll } from '../store/availableModules/actions'
+import { projectError } from '../store/project/actions'
 import now from 'performance-now'
 import world from './world'
-
-let store
 
 class Engine {
   constructor () {
@@ -14,13 +13,18 @@ class Engine {
   }
 
   loadSketchModules (url) {
-    this.sketchesFolder = url
-    this.allModules = getSketches(url)
+    try {
+      this.sketchesFolder = url
+      this.allModules = getSketches(url)
 
-    Object.keys(this.allModules).forEach((key) => {
-      const config = this.allModules[key].config
-      this.modules[key] = config
-    })
+      Object.keys(this.allModules).forEach((key) => {
+        const config = this.allModules[key].config
+        this.modules[key] = config
+      })
+    } catch (error) {
+      console.error(error)
+      this.store.dispatch(projectError(`Sketches failed to load: ${error.message}`))
+    }
   }
 
   setCanvas (canvas) {
@@ -52,7 +56,7 @@ class Engine {
   }
 
   fireShot (sketchId, method) {
-    const state = store.getState()
+    const state = this.store.getState()
 
     this.sketches.forEach((sketch) => {
       if (sketch.id === sketchId) {
@@ -80,15 +84,15 @@ class Engine {
     let oldTime = now()
     let elapsedFrames = 1
     let newTime
-    store = injectedStore
+    this.store = injectedStore
 
     // Give store module params
-    store.dispatch(availableModulesReplaceAll(this.modules))
+    this.store.dispatch(availableModulesReplaceAll(this.modules))
 
     const loop = () => {
       stats.begin()
       const spf = 1000 / 60
-      const state = store.getState()
+      const state = this.store.getState()
       const params = getSketchParams(state)
 
       this.sketches.forEach(sketch => sketch.module.update(

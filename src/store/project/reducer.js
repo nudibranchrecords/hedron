@@ -1,6 +1,7 @@
 const defaultState = {
   filePath: undefined,
-  sketchesPath: undefined
+  sketchesPath: undefined,
+  errors: []
 }
 
 const projectReducer = (state = defaultState, action) => {
@@ -17,6 +18,12 @@ const projectReducer = (state = defaultState, action) => {
       return {
         ...state,
         sketchesPath: p.path
+      }
+    }
+    case 'PROJECT_ERROR': {
+      return {
+        ...state,
+        errors: [...state.errors, p.message]
       }
     }
     default:
