@@ -11,6 +11,7 @@ import { rNodeCreate, nodeValueUpdate, uNodeDelete, rNodeConnectedMacroAdd,
 import { rMacroCreate, rMacroDelete, rMacroTargetParamLinkCreate, rMacroTargetParamLinkDelete,
         rMacroTargetParamLinkUpdateStartValue, uMacroTargetParamLinkAdd, rMacroLearningToggle
 } from './actions'
+import { projectError } from '../project/actions'
 
 import uid from 'uid'
 
@@ -108,39 +109,44 @@ export function* macroLearnFromParam (p, macroId) {
 }
 
 export function* handleNodeValueUpdate (action) {
-  const p = action.payload
-  const senderType = p.meta && p.meta.type
-  const senderMacroId = p.meta && p.meta.macroId
+  try {
+    const p = action.payload
+    const senderType = p.meta && p.meta.type
+    const senderMacroId = p.meta && p.meta.macroId
 
-  const node = yield select(getNode, p.id)
-  const nodeMacroIds = node.connectedMacroIds
+    const node = yield select(getNode, p.id)
+    const nodeMacroIds = node.connectedMacroIds
 
-  const learningId = yield select(getMacroLearningId)
+    const learningId = yield select(getMacroLearningId)
 
-  if (node.type === 'macro' && senderType !== 'macro') {
-    yield call(macroProcess, p, node)
-  } else {
-    const learn = yield call(shouldItLearn, learningId, node, p)
-    if (learn) {
-      yield call(macroLearnFromParam, p, learningId)
-    }
-    if (nodeMacroIds) {
-      for (let i = 0; i < nodeMacroIds.length; i++) {
-        const macroId = nodeMacroIds[i]
-        if (senderMacroId !== macroId) {
-          const macro = yield select(getMacro, macroId)
-          const node = yield select(getNode, macro.nodeId)
+    if (node.type === 'macro' && senderType !== 'macro') {
+      yield call(macroProcess, p, node)
+    } else {
+      const learn = yield call(shouldItLearn, learningId, node, p)
+      if (learn) {
+        yield call(macroLearnFromParam, p, learningId)
+      }
+      if (nodeMacroIds) {
+        for (let i = 0; i < nodeMacroIds.length; i++) {
+          const macroId = nodeMacroIds[i]
+          if (senderMacroId !== macroId) {
+            const macro = yield select(getMacro, macroId)
+            const node = yield select(getNode, macro.nodeId)
 
-          if (node.value !== false) {
-            for (const key in macro.targetParamLinks) {
-              yield put(rMacroTargetParamLinkUpdateStartValue(macroId, key, false))
+            if (node.value !== false) {
+              for (const key in macro.targetParamLinks) {
+                yield put(rMacroTargetParamLinkUpdateStartValue(macroId, key, false))
+              }
+
+              yield put(nodeValueUpdate(macro.nodeId, false, { type: 'macro' }))
             }
-
-            yield put(nodeValueUpdate(macro.nodeId, false, { type: 'macro' }))
           }
         }
       }
     }
+  } catch (error) {
+    console.error(error)
+    yield put(projectError(`Failed to process macro: ${error.message}`))
   }
 }
 
