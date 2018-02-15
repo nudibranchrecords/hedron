@@ -4,15 +4,15 @@ import { inputFired } from '../store/inputs/actions'
 export default (store) => {
   const gotStream = (stream) => {
     const input = new AudioAnalyzer(stream)
+    const bandIds = ['audio_0', 'audio_1', 'audio_2', 'audio_3']
 
-    const loop = () => {
-      const bands = input.update()
-      bands.forEach((val, index) => {
-        store.dispatch(inputFired('audio_' + index, val, { type: 'audio' }))
-      })
-      requestAnimationFrame(loop)
-    }
-    loop()
+    let bands, i
+    window.setInterval(() => {
+      bands = input.update()
+      for (i = 0; i < bands.length; i++) {
+        store.dispatch(inputFired(bandIds[i], bands[i], { type: 'audio' }))
+      }
+    }, 30)
   }
 
   navigator.getUserMedia({

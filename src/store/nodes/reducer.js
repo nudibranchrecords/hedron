@@ -10,13 +10,29 @@ const nodesReducer = (state = defaultState, action) => {
       if (!state[p.id]) {
         return state
       }
-      return {
-        ...state,
-        [p.id]: {
-          ...state[p.id],
-          value: p.value
+
+      if (p.meta && p.meta.dontMutate) {
+        return {
+          ...state,
+          [p.id]: {
+            ...state[p.id],
+            value: p.value
+          }
         }
+      } else {
+        // Intentionally mutating state as these values are updating
+        // VERY often. Mutating alleviates garbage collection issues
+        state[p.id].value = p.value
       }
+
+      return state
+    }
+    case 'NODE_VALUES_BATCH_UPDATE': {
+      for (let i = 0; i < p.values.length; i++) {
+        const node = p.values[i]
+        state[node.id].value = node.value
+      }
+      return state
     }
     case 'R_NODE_DELETE': {
       return _.omit(state, [p.id])

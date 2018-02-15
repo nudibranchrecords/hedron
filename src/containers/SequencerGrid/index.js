@@ -12,11 +12,18 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
     // Toggle whatever index was clicked
     steps = steps.slice(0)
     steps[index] = steps[index] === 1 ? 0 : 1
-    dispatch(nodeValueUpdate(ownProps.nodeId, steps))
+    dispatch(nodeValueUpdate(ownProps.nodeId, steps, {
+      dontMutate: true
+    }))
   }
 })
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps
+  mapDispatchToProps,
+  null,
+  {
+    areStatesEqual: (next, prev) =>
+      next.nodes === prev.nodes
+  }
 )(SequencerGrid)

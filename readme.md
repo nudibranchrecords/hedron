@@ -23,6 +23,17 @@ Start development with:
 
 `yarn start`
 
+To package the app:
+
+`yarn dist`
+
+To quickly run a production build without packaging, run:
+
+`yarn dist:dev`
+
+The above script also behaves similarly to `yarn start` in that it will look for
+a default project and open Chrome DevTools automatically.
+
 Run tests with:
 
 `yarn test:dev`

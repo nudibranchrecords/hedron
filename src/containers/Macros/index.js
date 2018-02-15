@@ -13,5 +13,10 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps
+  mapDispatchToProps,
+  null,
+  {
+    areStatesEqual: (next, prev) =>
+    Object.keys(next.macros.items).length === Object.keys(prev.macros.items).length
+  }
 )(Macros)

@@ -17,6 +17,7 @@ class ValueBar extends React.Component {
     this.handleMouseDown = this.handleMouseDown.bind(this)
     this.handleMouseMove = this.handleMouseMove.bind(this)
     this.setSize = this.setSize.bind(this)
+    this.draw = this.draw.bind(this)
   }
 
   componentDidMount () {
@@ -27,16 +28,20 @@ class ValueBar extends React.Component {
     this.setSize()
 
     uiEventEmitter.on('repaint', this.setSize)
+    uiEventEmitter.on('slow-tick', this.draw)
+  }
 
-    this.ticker = setInterval(() => {
-      this.draw(this.props.value)
-    }, 100)
+  getValue () {
+    // Grab the value for the param directly from the store
+    // This is for performance reasons as it prevents React
+    // from doing unecessary (and expensive) diffing
+    return this.context.store.getState().nodes[this.props.nodeId].value
   }
 
   componentWillUnmount () {
-    clearInterval(this.ticker)
     clearInterval(this.sizer)
     uiEventEmitter.removeListener('repaint', this.setSize)
+    uiEventEmitter.removeListener('slow-tick', this.draw)
   }
 
   setSize () {
@@ -51,7 +56,7 @@ class ValueBar extends React.Component {
       this.canvas.width = this.width
       this.canvas.style.width = this.width / 2 + 'px'
       this.canvas.style.height = this.height / 2 + 'px'
-      this.draw(this.props.value, true)
+      this.draw(true)
     }, 1)
   }
 
@@ -61,7 +66,7 @@ class ValueBar extends React.Component {
 
   handleMouseDown (e) {
     this.pos = e.nativeEvent.screenX
-    this.currentValue = this.props.value
+    this.currentValue = this.getValue()
 
     const onMouseUp = (e) => {
       document.removeEventListener('mouseup', onMouseUp)
@@ -78,7 +83,8 @@ class ValueBar extends React.Component {
     this.props.onChange(newVal)
   }
 
-  draw (newVal, force) {
+  draw (force) {
+    const newVal = this.getValue()
     if (newVal !== this.oldVal || force) {
       const barWidth = 2
       const innerWidth = this.width - barWidth
@@ -123,9 +129,13 @@ class ValueBar extends React.Component {
 }
 
 ValueBar.propTypes = {
-  value: PropTypes.number.isRequired,
+  nodeId: PropTypes.string.isRequired,
   onChange: PropTypes.func.isRequired,
   onMouseDown: PropTypes.func
+}
+
+ValueBar.contextTypes = {
+  store: PropTypes.object.isRequired
 }
 
 export default ValueBar

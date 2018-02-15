@@ -60,5 +60,12 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps
+  mapDispatchToProps,
+  null,
+  {
+    areStatesEqual: (next, prev) =>
+      next.project === prev.project &&
+      next.clock === prev.clock &&
+      next.displays === prev.displays
+  }
 )(Menu)

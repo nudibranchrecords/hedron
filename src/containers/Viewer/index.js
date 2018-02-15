@@ -10,5 +10,9 @@ const mapStateToProps = (state, ownProps) => (
 
 export default connect(
   mapStateToProps,
-  null
+  null,
+  null,
+  {
+    areStatesEqual: () => true
+  }
 )(Viewer)

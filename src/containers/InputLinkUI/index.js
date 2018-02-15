@@ -17,5 +17,12 @@ const mapStateToProps = (state, ownProps) => {
 }
 
 export default connect(
-  mapStateToProps
+  mapStateToProps,
+  null,
+  null,
+  {
+    areStatesEqual: (next, prev) =>
+      next.nodes === prev.nodes &&
+      next.inputLinks === prev.inputLinks
+  }
 )(InputLinkUI)

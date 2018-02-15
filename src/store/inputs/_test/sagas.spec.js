@@ -7,7 +7,7 @@ import { select, takeEvery, put, call } from 'redux-saga/effects'
 import proxyquire from 'proxyquire'
 
 import { getAssignedLinks } from '../selectors'
-import { nodeValueUpdate } from '../../nodes/actions'
+import { nodeValuesBatchUpdate } from '../../nodes/actions'
 import { inputLinkShotFired, inputLinkShotDisarm, inputLinkShotArm } from '../../inputLinks/actions'
 import { projectError } from '../../project/actions'
 
@@ -15,7 +15,6 @@ import getNodes from '../../../selectors/getNodes'
 import getNodesValues from '../../../selectors/getNodesValues'
 import getNode from '../../../selectors/getNode'
 import getLinkableAction from '../../../selectors/getLinkableAction'
-import getCurrentBankIndex from '../../../selectors/getCurrentBankIndex'
 import lfoProcess from '../../../utils/lfoProcess'
 import midiValueProcess from '../../../utils/midiValueProcess'
 import debounceInput from '../../../utils/debounceInput'
@@ -41,12 +40,12 @@ test('(Saga) watchInputs', (t) => {
   t.end()
 })
 
-const payload = {
-  value: 0.2,
-  inputId: 'audio_0'
-}
-
 test('(Saga) handleInput (no modifiers)', (t) => {
+  const payload = {
+    value: 0.2,
+    inputId: 'audio_0'
+  }
+
   const generator = handleInput({
     payload
   })
@@ -76,14 +75,17 @@ test('(Saga) handleInput (no modifiers)', (t) => {
 
   t.deepEqual(
     generator.next(links).value,
-    put(nodeValueUpdate('XX', 0.2)),
-    '2.x Dispatches node update action'
-  )
-
-  t.deepEqual(
-    generator.next(links).value,
-    put(nodeValueUpdate('YY', 0.2)),
-    '2.x Dispatches node update action'
+    put(nodeValuesBatchUpdate([
+      {
+        id: 'XX',
+        value: 0.2
+      },
+      {
+        id: 'YY',
+        value: 0.2
+      }
+    ], undefined)),
+    '2. Dispatches batch node update action'
   )
 
   t.deepEqual(
@@ -189,8 +191,13 @@ test('(Saga) handleInput (modifiers)', (t) => {
 
   t.deepEqual(
     generator.next(modifiedValue).value,
-    put(nodeValueUpdate('XX', 0.9)),
-    '2.x Dispatches node update action'
+    put(nodeValuesBatchUpdate([
+      {
+        id: 'XX',
+        value: 0.9
+      }
+    ], undefined)),
+    '2. Dispatches batch node update action'
   )
 
   t.deepEqual(
@@ -264,8 +271,13 @@ test('(Saga) handleInput (ignore audio type modifiers)', (t) => {
 
   t.deepEqual(
     generator.next(modifiedValue).value,
-    put(nodeValueUpdate('XX', 0.9)),
-    '2.x Dispatches node update action'
+    put(nodeValuesBatchUpdate([
+      {
+        id: 'XX',
+        value: 0.9
+      }
+    ], undefined)),
+    '2. Dispatches batch node update action'
   )
 
   t.deepEqual(
@@ -329,10 +341,14 @@ test('(Saga) handleInput (lfo)', (t) => {
 
   t.deepEqual(
     generator.next(lfoValue).value,
-    put(nodeValueUpdate('XX', 0.9)),
-    '4. Dispatches node update action'
+    put(nodeValuesBatchUpdate([
+      {
+        id: 'XX',
+        value: 0.9
+      }
+    ], undefined)),
+    '4. Dispatches batch node update action'
   )
-
   t.deepEqual(
     generator.throw({ message: 'Error!' }).value,
     put(projectError('Error!')),
@@ -393,8 +409,13 @@ test('(Saga) handleInput (shot - noteOn)', (t) => {
 
   t.deepEqual(
     generator.next().value,
-    put(nodeValueUpdate('XX', 0.5, meta)),
-    '5. Dispatches node update action'
+    put(nodeValuesBatchUpdate([
+      {
+        id: 'XX',
+        value: 0.5
+      }
+    ], meta)),
+    '5. Dispatches batch node update action'
   )
 
   t.equal(generator.next().done, true, 'generator ends')
@@ -437,8 +458,13 @@ test('(Saga) handleInput (macro - noteOn)', (t) => {
 
   t.deepEqual(
     generator.next(links).value,
-    put(nodeValueUpdate('XX', 1, meta)),
-    '5. Dispatches node update action with value of 1'
+    put(nodeValuesBatchUpdate([
+      {
+        id: 'XX',
+        value: 1
+      }
+    ], meta)),
+    '5. Dispatches batch node update action with value of 1'
   )
 
   t.equal(generator.next().done, true, 'generator ends')
@@ -634,8 +660,13 @@ test('(Saga) handleInput (midi)', (t) => {
 
   t.deepEqual(
     generator.next(val).value,
-    put(nodeValueUpdate('YY', val, meta)),
-    'Dispatches node update action with newly generated value'
+    put(nodeValuesBatchUpdate([
+      {
+        id: 'YY',
+        value: val
+      }
+    ], meta)),
+    'Dispatches batch node update action with newly generated value'
   )
 
   t.equal(generator.next().done, true, 'generator ends')
@@ -702,9 +733,14 @@ test('(Saga) handleInput (shot - audio val is over 0.5, armed)', (t) => {
   )
 
   t.deepEqual(
-    generator.next().value,
-    put(nodeValueUpdate('XX', 1, meta)),
-    '6. Dispatches node update action'
+    generator.next(links).value,
+    put(nodeValuesBatchUpdate([
+      {
+        id: 'XX',
+        value: 1
+      }
+    ], meta)),
+    '6. Dispatches batch node update action'
   )
 
   t.equal(generator.next().done, true, 'generator ends')
@@ -759,8 +795,13 @@ test('(Saga) handleInput (shot - audio val is over 0.5, disarmed)', (t) => {
 
   t.deepEqual(
     generator.next(node).value,
-    put(nodeValueUpdate('XX', 1, meta)),
-    '2. Dispatches node update action'
+    put(nodeValuesBatchUpdate([
+      {
+        id: 'XX',
+        value: 1
+      }
+    ], meta)),
+    '6. Dispatches batch node update action'
   )
 
   t.equal(generator.next().done, true, 'generator ends')
@@ -820,9 +861,14 @@ test('(Saga) handleInput (shot - audio val is under 0.5, armed)', (t) => {
   )
 
   t.deepEqual(
-    generator.next().value,
-    put(nodeValueUpdate('XX', 0.4, meta)),
-    '6. Dispatches node update action'
+    generator.next(links).value,
+    put(nodeValuesBatchUpdate([
+      {
+        id: 'XX',
+        value: 0.4
+      }
+    ], meta)),
+    '6. Dispatches batch node update action'
   )
 
   t.equal(generator.next().done, true, 'generator ends')
@@ -882,8 +928,13 @@ test('(Saga) handleInput (shot - audio val is under 0.5, disarmed)', (t) => {
   )
 
   t.deepEqual(
-    generator.next().value,
-    put(nodeValueUpdate('XX', 0.4, meta)),
+    generator.next(links).value,
+    put(nodeValuesBatchUpdate([
+      {
+        id: 'XX',
+        value: 0.4
+      }
+    ], meta)),
     '6. Dispatches node update action'
   )
 

@@ -19,11 +19,11 @@ import linkableActionsReducer from './linkableActions/reducer'
 const ignoreList = [
   'CLOCK_PULSE', 'CLOCK_BEAT_INC',
   'CLOCK_BPM_UPDATE', 'INPUT_FIRED',
-  'NODE_VALUE_UPDATE'
+  'NODE_VALUE_UPDATE', 'NODE_VALUES_BATCH_UPDATE'
 ]
 
 const reducers = combineReducers({
-  nodes: ignoreActions(nodesReducer, difference(ignoreList, ['NODE_VALUE_UPDATE'])),
+  nodes: ignoreActions(nodesReducer, difference(ignoreList, ['NODE_VALUE_UPDATE', 'NODE_VALUES_BATCH_UPDATE'])),
   availableModules: ignoreActions(availableModulesReducer, ignoreList),
   sketches: ignoreActions(sketchesReducer, ignoreList),
   project: ignoreActions(projectReducer, ignoreList),
