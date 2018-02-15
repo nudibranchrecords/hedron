@@ -14,6 +14,7 @@ import { rMacroCreate, rMacroDelete, rMacroTargetParamLinkCreate, rMacroTargetPa
         rMacroTargetParamLinkUpdateStartValue, uMacroTargetParamLinkAdd, rMacroLearningToggle,
         rMacroUpdateLastId
 } from './actions'
+import { projectError } from '../project/actions'
 
 import uid from 'uid'
 
@@ -127,48 +128,53 @@ export function* macroLearnFromParam (p, macroId) {
 //    - If the action has come from a macro, this macro should
 //      not be reset to false
 export function* handleNodeValueUpdate (action) {
-  const p = action.payload
-  const senderType = p.meta && p.meta.type
-  const senderMacroId = p.meta && p.meta.macroId
+  try {
+    const p = action.payload
+    const senderType = p.meta && p.meta.type
+    const senderMacroId = p.meta && p.meta.macroId
 
-  const node = yield select(getNode, p.id)
+    const node = yield select(getNode, p.id)
 
-  if (node.type === 'macro' && senderType !== 'macro') {
+    if (node.type === 'macro' && senderType !== 'macro') {
     // Normal behaviour, simple process of macro using value of node
-    yield call(macroProcess, p, node)
-  } else if (node.type !== 'macro') {
-    const isHuman = yield call(isInputTypeHuman, senderType)
+      yield call(macroProcess, p, node)
+    } else if (node.type !== 'macro') {
+      const isHuman = yield call(isInputTypeHuman, senderType)
 
-    if (isHuman) {
-      const learningId = yield select(getMacroLearningId)
+      if (isHuman) {
+        const learningId = yield select(getMacroLearningId)
       // Learning logic here
-      const learn = yield call(shouldItLearn, learningId, node, p)
-      if (learn) {
-        yield call(macroLearnFromParam, p, learningId)
-      }
-      const nodeMacroIds = node.connectedMacroIds
+        const learn = yield call(shouldItLearn, learningId, node, p)
+        if (learn) {
+          yield call(macroLearnFromParam, p, learningId)
+        }
+        const nodeMacroIds = node.connectedMacroIds
         // If this node has macros assigned to it
-      if (nodeMacroIds) {
+        if (nodeMacroIds) {
           // Go through the macros
-        for (let i = 0; i < nodeMacroIds.length; i++) {
-          const macroId = nodeMacroIds[i]
+          for (let i = 0; i < nodeMacroIds.length; i++) {
+            const macroId = nodeMacroIds[i]
             // If this action has not come from the macro assigned to it
             // then reset that macro and relevant start vals
-          if (senderMacroId !== macroId) {
-            const macro = yield select(getMacro, macroId)
-            const node = yield select(getNode, macro.nodeId)
+            if (senderMacroId !== macroId) {
+              const macro = yield select(getMacro, macroId)
+              const node = yield select(getNode, macro.nodeId)
 
-            if (node.value !== false) {
-              for (const key in macro.targetParamLinks) {
-                yield put(rMacroTargetParamLinkUpdateStartValue(macroId, key, false))
+              if (node.value !== false) {
+                for (const key in macro.targetParamLinks) {
+                  yield put(rMacroTargetParamLinkUpdateStartValue(macroId, key, false))
+                }
+
+                yield put(nodeValueUpdate(macro.nodeId, false, { type: 'macro' }))
               }
-
-              yield put(nodeValueUpdate(macro.nodeId, false, { type: 'macro' }))
             }
           }
         }
       }
     }
+  } catch (error) {
+    console.error(error)
+    yield put(projectError(`Failed to process macro: ${error.message}`))
   }
 }
 
