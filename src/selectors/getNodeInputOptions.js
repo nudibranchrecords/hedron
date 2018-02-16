@@ -30,12 +30,18 @@ export default (state, nodeId) => {
       value: 'midi',
       type: 'midi',
       label: 'MIDI'
-    },
-    {
-      value: 'lfo',
-      label: 'LFO'
     }
   ]
+
+  if (node.type !== 'shot') {
+    options.push(
+      {
+        value: 'lfo',
+        label: 'LFO'
+      }
+    )
+  }
+
   if (node.type === 'shot') {
     options.push(
       {
