@@ -5,28 +5,26 @@ import styled from 'styled-components'
 const Wrapper = styled.div`
   width: 100%;
   position: relative;
+
+  > canvas {
+    position: absolute;
+    left: 0;
+    top:0;
+    height: 100%;
+    width: 100%;
+  }
 `
 
 class Viewer extends React.Component {
   render () {
     return (
-      <Wrapper>
-        <canvas ref={this.props.canvasRef}
-          style={{
-            position: 'absolute',
-            left: 0,
-            top:0,
-            height: '100%',
-            width: '100%'
-          }}
-        />
-      </Wrapper>
+      <Wrapper innerRef={this.props.containerElRef} />
     )
   }
 }
 
 Viewer.propTypes = {
-  canvasRef: PropTypes.func
+  containerElRef: PropTypes.func
 }
 
 export default Viewer

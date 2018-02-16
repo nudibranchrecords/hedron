@@ -27,6 +27,10 @@ export const sendOutput = (index) => {
   outputWin.document.body.style.margin = '0'
   outputWin.document.body.style.cursor = 'none'
 
+  outputWin.addEventListener('beforeunload', () => {
+    world.stopOutput()
+  })
+
   setTimeout(() => {
     world.setOutput(outputWin)
   }, 1000)
