@@ -8,8 +8,8 @@ const Wrapper = styled.div`
   font-size: 0.7rem;
   padding: 0.25rem 0.5rem;
   text-transform: uppercase;
-  border: 1px solid ${theme.lineColor1};
-  color: ${props => props.isSelected ? 'white' : '#111'};
+  border: 1px solid ${theme.lineColor2};
+  color: ${props => props.isSelected ? 'white' : '#ddd'};
 
   background-color: ${props => {
     let color = props.isSelected ? theme.bgColorLight1 : 'transparent'
