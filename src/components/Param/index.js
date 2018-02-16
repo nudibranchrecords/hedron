@@ -24,6 +24,10 @@ const Inner = styled(Node)`
     border-bottom-right-radius: 0;
     border-color: white;
   `};
+
+  ${props => props.isActive && `
+    border-color: ${theme.actionColor1};
+  `}
 `
 
 const BarCol = styled.div`
@@ -50,6 +54,10 @@ const Bottom = styled.div`
   left: 0.25rem;
   right: 0.25rem;
   margin-top: 0.5rem;
+
+  ${props => props.isActive && `
+    border-color: ${theme.actionColor1};
+  `}
 `
 
 const Padder = styled.div`
@@ -65,6 +73,10 @@ const Padder = styled.div`
     border-bottom: 0;
     height: calc(0.5rem + 1px);
     background: ${theme.bgColorDark1};
+
+    ${props => props.isActive && `
+      border-color: ${theme.actionColor1};
+    `}
   }
 `
 
@@ -151,11 +163,11 @@ class Param extends React.Component {
 
   render () {
     const { title, nodeId, isOpen, onOpenClick, onParamBarClick,
-    children, numInputs, numMacros, inputLinkTitle } = this.props
+    children, numInputs, numMacros, inputLinkTitle, isActive } = this.props
 
     return (
       <Wrapper>
-        <Inner isOpen={isOpen}>
+        <Inner isOpen={isOpen} isActive={isActive}>
           <Top>
             <Row>
               <BarCol>
@@ -174,10 +186,10 @@ class Param extends React.Component {
         </Inner>
         {isOpen &&
         <div>
-          <Bottom innerRef={node => { this.bottomEl = node }}>
+          <Bottom isActive={isActive} innerRef={node => { this.bottomEl = node }}>
             {children}
           </Bottom>
-          <Padder height={this.state.bottomHeight} />
+          <Padder isActive={isActive} height={this.state.bottomHeight} />
         </div>
       }
       </Wrapper>
@@ -190,6 +202,7 @@ Param.propTypes = {
   title: PropTypes.string.isRequired,
   nodeId: PropTypes.string.isRequired,
   isOpen: PropTypes.bool,
+  isActive: PropTypes.bool,
   onOpenClick: PropTypes.func.isRequired,
   onParamBarClick: PropTypes.func,
   children: PropTypes.node,
