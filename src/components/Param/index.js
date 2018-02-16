@@ -22,7 +22,7 @@ const Inner = styled(Node)`
     border-bottom: 0;
     border-bottom-left-radius: 0;
     border-bottom-right-radius: 0;
-    border-color: ${theme.lineColor2};
+    border-color: white;
   `};
 `
 
@@ -45,7 +45,7 @@ const Row = styled.div`
 const Bottom = styled.div`
   align-items: center;
   padding: 0.5rem 0.25rem 0.5rem 0.5rem;
-  border: 1px solid ${theme.lineColor2};
+  border: 1px solid white;
   position: absolute;
   left: 0.25rem;
   right: 0.25rem;
@@ -60,7 +60,7 @@ const Padder = styled.div`
     position: relative;
     z-index: 2;
     content: "";
-    border: 1px solid ${theme.lineColor2};
+    border: 1px solid white;
     border-top-style: dashed;
     border-bottom: 0;
     height: calc(0.5rem + 1px);
