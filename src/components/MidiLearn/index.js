@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
+import Button from '../Button'
 
 const Wrapper = styled.div`
   position: fixed;
@@ -15,7 +16,6 @@ const Wrapper = styled.div`
   justify-content: center;
 
   p {
-    margin-bottom: 0;
     font-size: 1rem;
   }
 `
@@ -26,13 +26,14 @@ const Inner = styled.div`
   padding: 3rem;
   text-align: center;
 `
-const MidiLearn = ({ isVisible }) => (
+const MidiLearn = ({ isVisible, onCancelClick }) => (
   <div>
     {isVisible &&
       <Wrapper>
         <Inner>
           <h2>Learning Midi</h2>
           <p>Use a MIDI control to teach (press a button or twiddle a knob!)</p>
+          <Button onClick={onCancelClick}>Cancel</Button>
         </Inner>
       </Wrapper>
     }
@@ -42,5 +43,6 @@ const MidiLearn = ({ isVisible }) => (
 export default MidiLearn
 
 MidiLearn.propTypes = {
-  isVisible: PropTypes.bool
+  isVisible: PropTypes.bool,
+  onCancelClick: PropTypes.func.isRequired
 }

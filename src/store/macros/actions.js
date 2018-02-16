@@ -67,6 +67,12 @@ export function rMacroLearningToggle (id) {
   }
 }
 
+export function rMacroLearningStop () {
+  return {
+    type: 'R_MACRO_LEARNING_STOP'
+  }
+}
+
 export function rMacroTargetParamLinkCreate (macroId, paramId, nodeId) {
   return {
     type: 'R_MACRO_TARGET_PARAM_LINK_CREATE',

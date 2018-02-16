@@ -1,7 +1,8 @@
 import styled from 'styled-components'
+import theme from '../../utils/theme'
 
 const Button = styled.button`
-  background: #da5782;
+  background: ${theme.actionColor1};
   border: 0;
   color: white;
   cursor: pointer;
@@ -12,6 +13,17 @@ const Button = styled.button`
   &:hover {
     background: #ef6091;
   }
+
+  ${props => props.reversed && `
+    background: white;
+    color: ${theme.actionColor1};
+
+    &:hover {
+      color: white;
+    }
+  `}
+
+
 `
 
 export default Button

@@ -22,7 +22,14 @@ const MacroItem = ({
   macroId, inputSettingsAreVisible, paramLinksAreVisible, isOpen, title, onOpenClick, numInputs
 }) => (
   <div>
-    <Param isOpen={isOpen} title={title} onOpenClick={onOpenClick} nodeId={nodeId} numInputs={numInputs}>
+    <Param
+      isOpen={isOpen}
+      isActive={isLearning}
+      title={title}
+      onOpenClick={onOpenClick}
+      nodeId={nodeId}
+      numInputs={numInputs}
+    >
       <InputLinkUI nodeId={nodeId} />
 
       <Bottom>
