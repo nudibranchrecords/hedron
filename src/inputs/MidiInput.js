@@ -48,7 +48,6 @@ export default (store) => {
       entry.onmidimessage = onMessage
     })
 
-    console.log(devices)
     store.dispatch(midiUpdateDevices(devices))
   }
 
