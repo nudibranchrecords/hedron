@@ -100,10 +100,14 @@ test('(Saga) handleInput (no modifiers)', (t) => {
 test('(Saga) handleInput (modifiers)', (t) => {
   let modifiedValue, modifierNodes
 
+  const meta = {
+    type: 'audio'
+  }
+
   const payload = {
     value: 0.2,
     inputId: 'audio_0',
-    type: 'audio'
+    meta
   }
 
   const generator = handleInput({
@@ -196,7 +200,7 @@ test('(Saga) handleInput (modifiers)', (t) => {
         id: 'XX',
         value: 0.9
       }
-    ], undefined)),
+    ], meta)),
     '2. Dispatches batch node update action'
   )
 
