@@ -71,7 +71,7 @@ const Padder = styled.div`
     border: 1px solid white;
     border-top-style: dashed;
     border-bottom: 0;
-    height: calc(0.5rem + 1px);
+    height: calc(0.5rem + 2px);
     background: ${theme.bgColorDark1};
 
     ${props => props.isActive && `

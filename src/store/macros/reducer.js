@@ -36,6 +36,12 @@ const macroReducer = (state = defaultState, action) => {
         learningId: state.learningId !== false ? false : p.id
       }
     }
+    case 'R_MACRO_LEARNING_STOP': {
+      return {
+        ...state,
+        learningId: false
+      }
+    }
     case 'R_MACRO_TARGET_PARAM_LINK_CREATE': {
       return {
         ...state,

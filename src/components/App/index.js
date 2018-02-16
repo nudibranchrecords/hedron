@@ -10,6 +10,8 @@ import styled from 'styled-components'
 import NavItem from '../NavItem'
 import PanelDragger from '../PanelDragger'
 import MidiLearn from '../../containers/MidiLearn'
+import theme from '../../utils/theme'
+import MainViewOuter from '../../containers/MainViewOuter'
 
 const Wrapper = styled.div`
   display: flex;
@@ -28,8 +30,17 @@ const Left = styled.div`
 
 const Right = styled.div`
   flex: 1;
+`
+
+const RightInner = styled.div`
+  flex: 1;
   padding: 0.5rem;
   overflow: auto;
+`
+
+const Notification = styled.div`
+  background: ${theme.actionColor1};
+  padding: 0.5rem;
 `
 
 const Bar = styled.div`
@@ -47,9 +58,11 @@ const App = ({ stats, leftWidth, onLeftDrag }) => (
       <PanelDragger onHandleDrag={onLeftDrag} position={leftWidth} />
     </Left>
     <Right>
-      <Route path='/sketches/view/:sketchId' component={CurrentSketch} />
-      <Route path='/sketches/add' component={AddSketch} />
-      <Route path='/macros' component={Macros} />
+      <MainViewOuter>
+        <Route path='/sketches/view/:sketchId' component={CurrentSketch} />
+        <Route path='/sketches/add' component={AddSketch} />
+        <Route path='/macros' component={Macros} />
+      </MainViewOuter>
     </Right>
     <Bar>
       <SketchesNav />
