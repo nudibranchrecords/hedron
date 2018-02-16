@@ -103,4 +103,10 @@ ipcRenderer.on('args', (event, data) => {
   }
 })
 
-if (module.hot) module.hot.accept('../containers/App', () => renderApp(App))
+if (module.hot) {
+  module.hot.accept('../containers/App', () => {
+    // Pausing engine after HMR to stop lag issue
+    Engine.pause()
+    renderApp(App)
+  })
+}

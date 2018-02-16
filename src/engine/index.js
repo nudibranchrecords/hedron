@@ -10,6 +10,7 @@ class Engine {
     this.allModules = {}
     this.modules = {}
     this.sketches = []
+    this.isRunning = false
   }
 
   loadSketchModules (url) {
@@ -85,6 +86,7 @@ class Engine {
     let elapsedFrames = 1
     let newTime
     this.store = injectedStore
+    this.isRunning = true
 
     // Give store module params
     this.store.dispatch(availableModulesReplaceAll(this.modules))
@@ -106,9 +108,15 @@ class Engine {
       elapsedFrames = (newTime - oldTime) / spf
       tick += elapsedFrames
       oldTime = newTime
-      requestAnimationFrame(loop)
+      if (this.isRunning) {
+        requestAnimationFrame(loop)
+      }
     }
     loop()
+  }
+
+  pause () {
+    this.isRunning = false
   }
 }
 
