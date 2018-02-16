@@ -35,8 +35,14 @@ function createMainWindow () {
       event.preventDefault()
       event.newGuest = new BrowserWindow(options)
 
-      ipcMain.on('reposition-output-window', (e, display) => {
+      const outputSetBounds = (e, display) => {
         event.newGuest.setBounds(display.bounds)
+      }
+
+      ipcMain.on('reposition-output-window', outputSetBounds)
+
+      event.newGuest.on('closed', () => {
+        ipcMain.removeListener('reposition-output-window', outputSetBounds)
       })
 
       if (!isDevelopment) {
