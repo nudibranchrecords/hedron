@@ -44,6 +44,7 @@ const nodesReducer = (state = defaultState, action) => {
           id: p.id,
           value: 0,
           inputLinkIds: [],
+          shotCount: 0,
           connectedMacroIds: [],
           ...p.node
         }
@@ -137,6 +138,15 @@ const nodesReducer = (state = defaultState, action) => {
         [p.nodeId]: {
           ...state[p.nodeId],
           activeInputLinkId: p.linkId !== state[p.nodeId].activeInputLinkId ? p.linkId : undefined
+        }
+      }
+    }
+    case 'NODE_SHOT_FIRED': {
+      return {
+        ...state,
+        [p.nodeId]: {
+          ...state[p.nodeId],
+          shotCount: state[p.nodeId].shotCount + 1
         }
       }
     }

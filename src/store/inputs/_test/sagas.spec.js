@@ -7,8 +7,8 @@ import { select, takeEvery, put, call } from 'redux-saga/effects'
 import proxyquire from 'proxyquire'
 
 import { getAssignedLinks } from '../selectors'
-import { nodeValuesBatchUpdate } from '../../nodes/actions'
-import { inputLinkShotFired, inputLinkShotDisarm, inputLinkShotArm } from '../../inputLinks/actions'
+import { nodeValuesBatchUpdate, nodeShotFired } from '../../nodes/actions'
+import { inputLinkShotDisarm, inputLinkShotArm } from '../../inputLinks/actions'
 import { projectError } from '../../project/actions'
 
 import getNodes from '../../../selectors/getNodes'
@@ -403,7 +403,7 @@ test('(Saga) handleInput (shot - noteOn)', (t) => {
 
   t.deepEqual(
     generator.next(node).value,
-    put(inputLinkShotFired('fooSketch', 'barMethod')),
+    put(nodeShotFired('XX', 'fooSketch', 'barMethod')),
     '4. Dispatches node shot fired action'
   )
 
@@ -587,7 +587,7 @@ test('(Saga) handleInput (shot - seq-step sequencer - in sequence)', (t) => {
 
   t.deepEqual(
     generator.next(seqNode).value,
-    put(inputLinkShotFired('fooSketch', 'barMethod')),
+    put(nodeShotFired('XX', 'fooSketch', 'barMethod')),
     '4. Dispatches node shot fired action'
   )
 
@@ -722,7 +722,7 @@ test('(Saga) handleInput (shot - audio val is over 0.333, armed)', (t) => {
 
   t.deepEqual(
     generator.next(node).value,
-    put(inputLinkShotFired('fooSketch', 'barMethod')),
+    put(nodeShotFired('XX', 'fooSketch', 'barMethod')),
     '4. Dispatches input link shot fired action'
   )
 

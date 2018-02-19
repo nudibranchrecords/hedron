@@ -210,7 +210,8 @@ Param.propTypes = {
   children: PropTypes.node,
   numInputs: PropTypes.number,
   numMacros: PropTypes.number,
-  inputLinkTitle: PropTypes.string
+  inputLinkTitle: PropTypes.string,
+  type: PropTypes.string.isRequired
 }
 
 export default Param

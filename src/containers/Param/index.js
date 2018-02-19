@@ -3,7 +3,7 @@ import Param from '../../components/Param'
 import getNode from '../../selectors/getNode'
 import { sketchNodeOpenedToggle } from '../../store/sketches/actions'
 import getIsSketchNodeOpened from '../../selectors/getIsSketchNodeOpened'
-import { inputLinkShotFired } from '../../store/inputLinks/actions'
+import { nodeShotFired } from '../../store/nodes/actions'
 
 const mapStateToProps = (state, ownProps) => {
   const node = getNode(state, ownProps.nodeId)
@@ -29,7 +29,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     },
     onParamBarClick: type === 'shot'
     ? () => {
-      dispatch(inputLinkShotFired(ownProps.sketchId, ownProps.shotMethod))
+      dispatch(nodeShotFired(ownProps.nodeId, ownProps.sketchId, ownProps.shotMethod))
     } : undefined
   }
 }

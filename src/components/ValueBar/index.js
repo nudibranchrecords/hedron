@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import uiEventEmitter from '../../utils/uiEventEmitter'
 import theme from '../../utils/theme'
+import now from 'performance-now'
 
 const Bar = styled.canvas`
   background: ${theme.bgColorDark2};
@@ -40,6 +41,7 @@ class ValueBar extends React.Component {
     const height = this.props.type === 'param' ? 2 : 6
     this.height = 16 * height
     this.canvas.height = this.height
+    this.ctx = this.canvas.getContext('2d')
 
     this.setSize()
 
@@ -52,6 +54,12 @@ class ValueBar extends React.Component {
     // This is for performance reasons as it prevents React
     // from doing unecessary (and expensive) diffing
     return this.context.store.getState().nodes[this.props.nodeId].value
+  }
+
+  componentWillReceiveProps (nextProps) {
+    if (nextProps.shotCount !== this.props.shotCount) {
+      this.flash()
+    }
   }
 
   componentWillUnmount () {
@@ -97,37 +105,46 @@ class ValueBar extends React.Component {
 
   draw (force) {
     const newVal = this.getValue()
-    if (newVal !== this.oldVal || force) {
+    const clearShot = now() - this.lastShotTime > 30
+    if (newVal !== this.oldVal || force || clearShot) {
       const barWidth = 2
       const innerWidth = this.width - barWidth
       const pos = innerWidth * newVal
-      const context = this.canvas.getContext('2d')
+
       const roundedVal = Math.round(newVal * 1000) / 1000
 
-      context.font = '18px Arial'
-      context.textAlign = 'right'
+      this.ctx.font = '18px Arial'
+      this.ctx.textAlign = 'right'
 
-      if (this.oldVal) {
+      if (this.oldVal && !this.hasShot) {
         const oldPos = innerWidth * this.oldVal
         // Only clear the area from the last position
-        context.clearRect(oldPos - 1, 0, barWidth + 2, this.height)
+        this.ctx.clearRect(oldPos - 1, 0, barWidth + 2, this.height)
         // And the text area
-        context.clearRect(this.width - 60, 0, 60, this.height)
+        this.ctx.clearRect(this.width - 60, 0, 60, this.height)
       } else {
-        context.clearRect(0, 0, this.width, this.height)
+        this.ctx.clearRect(0, 0, this.width, this.height)
+        this.hasShot = false
       }
 
       this.oldVal = newVal
 
       if (!this.props.hideBar) {
         // Draw value as text
-        context.fillStyle = theme.textColorLight1
-        context.fillText(roundedVal.toFixed(3), innerWidth - 5, this.height - 10)
+        this.ctx.fillStyle = theme.textColorLight1
+        this.ctx.fillText(roundedVal.toFixed(3), innerWidth - 5, this.height - 10)
         // Draw bar at new position
-        context.fillStyle = '#fff'
-        context.fillRect(pos, 0, barWidth, this.height)
+        this.ctx.fillStyle = '#fff'
+        this.ctx.fillRect(pos, 0, barWidth, this.height)
       }
     }
+  }
+
+  flash () {
+    this.lastShotTime = now()
+    this.hasShot = true
+    this.ctx.fillStyle = theme.actionColor1
+    this.ctx.fillRect(0, 0, this.width, this.height)
   }
 
   render () {
@@ -149,7 +166,8 @@ ValueBar.propTypes = {
   onMouseDown: PropTypes.func,
   type: PropTypes.string.isRequired,
   hideBar: PropTypes.bool,
-  markerIsVisible: PropTypes.bool
+  markerIsVisible: PropTypes.bool,
+  shotCount: PropTypes.number
 }
 
 ValueBar.contextTypes = {

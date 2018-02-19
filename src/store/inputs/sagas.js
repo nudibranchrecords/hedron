@@ -1,7 +1,7 @@
 import { select, takeEvery, put, call } from 'redux-saga/effects'
 import { getAssignedLinks } from './selectors'
-import { nodeValuesBatchUpdate } from '../nodes/actions'
-import { inputLinkShotFired, inputLinkShotDisarm, inputLinkShotArm } from '../inputLinks/actions'
+import { nodeValuesBatchUpdate, nodeShotFired } from '../nodes/actions'
+import { inputLinkShotDisarm, inputLinkShotArm } from '../inputLinks/actions'
 import { projectError } from '../project/actions'
 import getNodes from '../../selectors/getNodes'
 import getNode from '../../selectors/getNode'
@@ -61,17 +61,19 @@ export function* handleInput (action) {
 
           switch (links[i].nodeType) {
             case 'shot': {
-              const node = yield select(getNode, links[i].nodeId)
+              const nodeId = links[i].nodeId
+              const node = yield select(getNode, nodeId)
+
               if (p.meta && p.meta.noteOn) {
-                yield put(inputLinkShotFired(node.sketchId, node.method))
+                yield put(nodeShotFired(nodeId, node.sketchId, node.method))
               } else if (p.inputId === 'seq-step') {
                 const seqNode = yield select(getNode, links[i].sequencerGridId)
                 if (seqNode.value[value] === 1) {
-                  yield put(inputLinkShotFired(node.sketchId, node.method))
+                  yield put(nodeShotFired(nodeId, node.sketchId, node.method))
                 }
                 skip = true
               } else if (value > 0.333 && links[i].armed) {
-                yield put(inputLinkShotFired(node.sketchId, node.method))
+                yield put(nodeShotFired(nodeId, node.sketchId, node.method))
                 yield put(inputLinkShotDisarm(links[i].id))
               } else if (value < 0.333) {
                 yield put(inputLinkShotArm(links[i].id))

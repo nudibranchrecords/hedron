@@ -330,7 +330,8 @@ test('(Reducer) nodesReducer - Adds node on R_NODE_CREATE, adds extra properties
       value: 0.1,
       id: '01',
       inputLinkIds: [],
-      connectedMacroIds: []
+      connectedMacroIds: [],
+      shotCount: 0
     },
     '02': {
       title: 'Rotation Y',
@@ -338,7 +339,8 @@ test('(Reducer) nodesReducer - Adds node on R_NODE_CREATE, adds extra properties
       value: 0.2,
       id: '02',
       inputLinkIds: [],
-      connectedMacroIds: []
+      connectedMacroIds: [],
+      shotCount: 0
     }
   }
 
@@ -349,7 +351,8 @@ test('(Reducer) nodesReducer - Adds node on R_NODE_CREATE, adds extra properties
       value: 0.1,
       id: '01',
       inputLinkIds: [],
-      connectedMacroIds: []
+      connectedMacroIds: [],
+      shotCount: 0
     },
     '02': {
       title: 'Rotation Y',
@@ -357,7 +360,8 @@ test('(Reducer) nodesReducer - Adds node on R_NODE_CREATE, adds extra properties
       value: 0.2,
       id: '02',
       inputLinkIds: [],
-      connectedMacroIds: []
+      connectedMacroIds: [],
+      shotCount: 0
     },
     '03': {
       title: 'Rotation X',
@@ -365,7 +369,8 @@ test('(Reducer) nodesReducer - Adds node on R_NODE_CREATE, adds extra properties
       value: 0.2,
       id: '03',
       inputLinkIds: [],
-      connectedMacroIds: []
+      connectedMacroIds: [],
+      shotCount: 0
     }
   }
 
@@ -391,7 +396,8 @@ test('(Reducer) nodesReducer - Adds node on R_NODE_CREATE, adds extra properties
       value: 0.1,
       id: '01',
       inputLinkIds: [],
-      connectedMacroIds: []
+      connectedMacroIds: [],
+      shotCount: 0
     },
     '02': {
       title: 'Rotation Y',
@@ -399,7 +405,8 @@ test('(Reducer) nodesReducer - Adds node on R_NODE_CREATE, adds extra properties
       value: 0.2,
       id: '02',
       inputLinkIds: [],
-      connectedMacroIds: []
+      connectedMacroIds: [],
+      shotCount: 0
     },
     '03': {
       title: 'Rotation X',
@@ -407,7 +414,8 @@ test('(Reducer) nodesReducer - Adds node on R_NODE_CREATE, adds extra properties
       value: 0.2,
       id: '03',
       inputLinkIds: [],
-      connectedMacroIds: []
+      connectedMacroIds: [],
+      shotCount: 0
     },
     '04': {
       title: 'Scale',
@@ -415,7 +423,8 @@ test('(Reducer) nodesReducer - Adds node on R_NODE_CREATE, adds extra properties
       value: 0,
       id: '04',
       inputLinkIds: [],
-      connectedMacroIds: []
+      connectedMacroIds: [],
+      shotCount: 0
     }
   }
 
