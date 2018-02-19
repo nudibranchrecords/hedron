@@ -101,31 +101,3 @@ test('(Reducer) clockReducer - updates BPM on CLOCK_BPM_UPDATE', (t) => {
 
   t.end()
 })
-
-test('(Reducer) clockReducer - switches mode on clockGeneratedToggle', (t) => {
-  let originalState, expectedState, actualState
-
-  originalState = {
-    isGenerated: true
-  }
-
-  deepFreeze(originalState)
-
-  expectedState = {
-    isGenerated: false
-  }
-
-  actualState = paramsReducer(originalState, a.clockGeneratedToggle(120))
-
-  t.deepEqual(actualState, expectedState)
-
-  expectedState = {
-    isGenerated: true
-  }
-
-  actualState = paramsReducer(actualState, a.clockGeneratedToggle(110))
-
-  t.deepEqual(actualState, expectedState)
-
-  t.end()
-})

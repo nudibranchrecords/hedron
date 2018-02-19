@@ -1,6 +1,8 @@
 import { combineReducers } from 'redux'
 import { ignoreActions } from 'redux-ignore'
 import { routerReducer } from 'react-router-redux'
+import { reducer as formReducer } from 'redux-form'
+
 import difference from 'lodash/difference'
 
 import sketchesReducer from './sketches/reducer'
@@ -15,6 +17,7 @@ import displaysReducer from './displays/reducer'
 import macroReducer from './macros/reducer'
 import uiReducer from './ui/reducer'
 import linkableActionsReducer from './linkableActions/reducer'
+import settingsReducer from './settings/reducer'
 
 const ignoreList = [
   'CLOCK_PULSE', 'CLOCK_BEAT_INC',
@@ -35,7 +38,9 @@ const reducers = combineReducers({
   displays: ignoreActions(displaysReducer, ignoreList),
   macros: ignoreActions(macroReducer, ignoreList),
   ui: ignoreActions(uiReducer, ignoreList),
-  router: routerReducer
+  router: ignoreActions(routerReducer, ignoreList),
+  settings: ignoreActions(settingsReducer, ignoreList),
+  form: ignoreActions(formReducer, ignoreList)
 })
 
 const rootReducer = (state = {}, action) => action.type === 'PROJECT_REHYDRATE'
