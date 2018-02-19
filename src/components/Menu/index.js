@@ -18,6 +18,7 @@ const Button = styled(ButtonComponent)`
 
 const Section = styled(Row)`
   justify-content: space-between;
+  align-items: flex-end;
   margin-top: 1rem;
 `
 
@@ -35,7 +36,7 @@ const Error = styled.div`
 
 const Menu = ({
   onSaveClick, onSaveAsClick, onLoadClick,
-  filePath, saveIsDisabled, onSendOutputChange, clockIsGenerated, onClockToggleClick,
+  filePath, saveIsDisabled, onSendOutputChange,
   displayOptions, onDevToolsClick, errorMessage
 }) => {
   return (
@@ -61,9 +62,9 @@ const Menu = ({
           </Row>
         </div>
         <div>
-          <h5>Clock</h5>
-          <Button onClick={onClockToggleClick}>
-            Mock Clock is: {clockIsGenerated ? 'ON' : 'OFF'}
+
+          <Button to='/settings'>
+            Settings
           </Button>
         </div>
       </Section>
@@ -91,8 +92,6 @@ Menu.propTypes = {
   onSaveAsClick: PropTypes.func.isRequired,
   onLoadClick: PropTypes.func.isRequired,
   onSendOutputChange: PropTypes.func.isRequired,
-  onClockToggleClick: PropTypes.func.isRequired,
-  clockIsGenerated: PropTypes.bool,
   displayOptions: PropTypes.array.isRequired,
   saveIsDisabled: PropTypes.bool,
   onDevToolsClick: PropTypes.func.isRequired,

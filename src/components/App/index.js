@@ -4,13 +4,13 @@ import CurrentSketch from '../../containers/CurrentSketch'
 import AddSketch from '../../containers/AddSketch'
 import SketchesNav from '../../containers/SketchesNav'
 import Macros from '../../containers/Macros'
+import Settings from '../Settings'
 import Overview from '../Overview'
 import { Route } from 'react-router'
 import styled from 'styled-components'
 import NavItem from '../NavItem'
 import PanelDragger from '../PanelDragger'
 import MidiLearn from '../../containers/MidiLearn'
-import theme from '../../utils/theme'
 import MainViewOuter from '../../containers/MainViewOuter'
 
 const Wrapper = styled.div`
@@ -32,17 +32,6 @@ const Right = styled.div`
   flex: 1;
 `
 
-const RightInner = styled.div`
-  flex: 1;
-  padding: 0.5rem;
-  overflow: auto;
-`
-
-const Notification = styled.div`
-  background: ${theme.actionColor1};
-  padding: 0.5rem;
-`
-
 const Bar = styled.div`
   display: flex;
   flex-direction: column;
@@ -62,6 +51,7 @@ const App = ({ stats, leftWidth, onLeftDrag }) => (
         <Route path='/sketches/view/:sketchId' component={CurrentSketch} />
         <Route path='/sketches/add' component={AddSketch} />
         <Route path='/macros' component={Macros} />
+        <Route path='/settings' component={Settings} />
       </MainViewOuter>
     </Right>
     <Bar>
