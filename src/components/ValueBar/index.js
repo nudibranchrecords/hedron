@@ -9,6 +9,21 @@ const Bar = styled.canvas`
   cursor: pointer;
 `
 
+const Wrapper = styled.div`
+  position: relative;
+
+  &:after {
+    content: '';
+    position: absolute;
+    display: ${props => props.markerIsVisible ? 'block' : 'none'};
+    left: 33.3%;
+    bottom: 0;
+    height: 100%;
+    width: 1px;
+    background: ${theme.actionColor1};
+  }
+`
+
 class ValueBar extends React.Component {
 
   constructor (props) {
@@ -22,7 +37,8 @@ class ValueBar extends React.Component {
 
   componentDidMount () {
     this.containerEl = this.canvas.parentElement
-    this.height = 16 * 2
+    const height = this.props.type === 'param' ? 2 : 6
+    this.height = 16 * height
     this.canvas.height = this.height
 
     this.setSize()
@@ -58,10 +74,6 @@ class ValueBar extends React.Component {
       this.canvas.style.height = this.height / 2 + 'px'
       this.draw(true)
     }, 1)
-  }
-
-  shouldComponentUpdate () {
-    return false
   }
 
   handleMouseDown (e) {
@@ -107,23 +119,26 @@ class ValueBar extends React.Component {
 
       this.oldVal = newVal
 
-      // Draw value as text
-      context.fillStyle = theme.textColorLight1
-      context.fillText(roundedVal.toFixed(3), innerWidth - 5, this.height - 10)
-      // Draw bar at new position
-      context.fillStyle = '#fff'
-      context.fillRect(pos, 0, barWidth, this.height)
+      if (!this.props.hideBar) {
+        // Draw value as text
+        context.fillStyle = theme.textColorLight1
+        context.fillText(roundedVal.toFixed(3), innerWidth - 5, this.height - 10)
+        // Draw bar at new position
+        context.fillStyle = '#fff'
+        context.fillRect(pos, 0, barWidth, this.height)
+      }
     }
   }
 
   render () {
+    const { markerIsVisible } = this.props
     return (
-      <div>
+      <Wrapper markerIsVisible={markerIsVisible}>
         <Bar
           innerRef={node => { this.canvas = node }}
           onMouseDown={this.props.onMouseDown || this.handleMouseDown}
         />
-      </div>
+      </Wrapper>
     )
   }
 }
@@ -131,7 +146,10 @@ class ValueBar extends React.Component {
 ValueBar.propTypes = {
   nodeId: PropTypes.string.isRequired,
   onChange: PropTypes.func.isRequired,
-  onMouseDown: PropTypes.func
+  onMouseDown: PropTypes.func,
+  type: PropTypes.string.isRequired,
+  hideBar: PropTypes.bool,
+  markerIsVisible: PropTypes.bool
 }
 
 ValueBar.contextTypes = {

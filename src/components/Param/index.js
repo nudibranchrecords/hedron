@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import ParamBar from '../../containers/ParamBar'
 import Node from '../Node'
-import styled from 'styled-components'
+import styled, { ThemeProvider } from 'styled-components'
 import inputIcon from '../../assets/icons/input.icon.txt'
 import macroIcon from '../../assets/icons/macro.icon.txt'
 import IconComponent from '../Icon'
@@ -163,36 +163,38 @@ class Param extends React.Component {
 
   render () {
     const { title, nodeId, isOpen, onOpenClick, onParamBarClick,
-    children, numInputs, numMacros, inputLinkTitle, isActive } = this.props
+    children, numInputs, numMacros, inputLinkTitle, isActive, type } = this.props
 
     return (
-      <Wrapper>
-        <Inner isOpen={isOpen} isActive={isActive}>
-          <Top>
-            <Row>
-              <BarCol>
-                <Title>{title}</Title>
-                <ParamBar nodeId={nodeId} onMouseDown={onParamBarClick} />
-              </BarCol>
-              <Info onClick={onOpenClick}>
-                {inputLinkTitle && <span><Icon glyph={inputIcon} />{inputLinkTitle}</span>}
-                <IconInfo>
-                  {numInputs !== undefined && (<span><Icon glyph={inputIcon} />{numInputs}</span>)}
-                  {numMacros !== undefined && (<span><Icon glyph={macroIcon} />{numMacros}</span>)}
-                </IconInfo>
-              </Info>
-            </Row>
-          </Top>
-        </Inner>
-        {isOpen &&
-        <div>
-          <Bottom isActive={isActive} innerRef={node => { this.bottomEl = node }}>
-            {children}
-          </Bottom>
-          <Padder isActive={isActive} height={this.state.bottomHeight} />
-        </div>
-      }
-      </Wrapper>
+      <ThemeProvider theme={{ type }}>
+        <Wrapper>
+          <Inner isOpen={isOpen} isActive={isActive}>
+            <Top>
+              <Row>
+                <BarCol>
+                  <Title>{title}</Title>
+                  <ParamBar nodeId={nodeId} onMouseDown={onParamBarClick} />
+                </BarCol>
+                <Info onClick={onOpenClick}>
+                  {inputLinkTitle && <span><Icon glyph={inputIcon} />{inputLinkTitle}</span>}
+                  <IconInfo>
+                    {numInputs !== undefined && (<span><Icon glyph={inputIcon} />{numInputs}</span>)}
+                    {numMacros !== undefined && (<span><Icon glyph={macroIcon} />{numMacros}</span>)}
+                  </IconInfo>
+                </Info>
+              </Row>
+            </Top>
+          </Inner>
+          {isOpen &&
+          <div>
+            <Bottom isActive={isActive} innerRef={node => { this.bottomEl = node }}>
+              {children}
+            </Bottom>
+            <Padder isActive={isActive} height={this.state.bottomHeight} />
+          </div>
+          }
+        </Wrapper>
+      </ThemeProvider>
     )
   }
 

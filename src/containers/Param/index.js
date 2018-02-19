@@ -12,6 +12,7 @@ const mapStateToProps = (state, ownProps) => {
   const type = ownProps.type || 'param'
 
   return {
+    type,
     numInputs: inputLinkIds.length,
     numMacros: node.connectedMacroIds.length,
     title: param.title,

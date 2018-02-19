@@ -70,10 +70,10 @@ export function* handleInput (action) {
                   yield put(inputLinkShotFired(node.sketchId, node.method))
                 }
                 skip = true
-              } else if (value > 0.5 && links[i].armed) {
+              } else if (value > 0.333 && links[i].armed) {
                 yield put(inputLinkShotFired(node.sketchId, node.method))
                 yield put(inputLinkShotDisarm(links[i].id))
-              } else if (value < 0.5) {
+              } else if (value < 0.333) {
                 yield put(inputLinkShotArm(links[i].id))
               }
               break
