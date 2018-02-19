@@ -4,12 +4,14 @@ let store
 let requestId
 let marker
 let diff
-let bpm = 120
-let mspp = (60 / (bpm * 24)) * 1000
 
 const loop = () => {
   // Only pulse clock if is generated
-  if (store.getState().clock.isGenerated) {
+  const settings = store.getState().settings
+  const bpm = settings.clockBpm
+  const mspp = (60 / (bpm * 24)) * 1000
+
+  if (settings.clockGenerated) {
     // Check to see if time passed is more than time per pulse
     diff = window.performance.now() - marker
 
