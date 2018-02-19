@@ -1,9 +1,13 @@
+import tapTempoFunc from 'tap-tempo'
 import { clockPulse } from '../store/clock/actions'
+import { settingsUpdate } from '../store/settings/actions'
 
 let store
 let requestId
 let marker
 let diff
+
+const tapTempo = tapTempoFunc()
 
 const loop = () => {
   // Only pulse clock if is generated
@@ -35,8 +39,14 @@ export const stopGeneratedClock = () => {
   requestId = undefined
 }
 
+export const tap = tapTempo.tap
+
 export default (injectedStore) => {
   store = injectedStore
+
+  tapTempo.on('tempo', (bpm) => {
+    store.dispatch(settingsUpdate({ clockBpm: Math.round(bpm) }))
+  })
 
   marker = window.performance.now()
   loop()

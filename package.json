@@ -60,6 +60,7 @@
     "stats.js": "^0.17.0",
     "styled-components": "^2.2.3",
     "tap-diff": "^0.1.1",
+    "tap-tempo": "^0.1.1",
     "three": "^0.89.0",
     "uid": "^0.0.2"
   },

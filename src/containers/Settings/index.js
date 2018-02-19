@@ -4,7 +4,8 @@ import { settingsUpdate } from '../../store/settings/actions'
 import { reduxForm } from 'redux-form'
 
 const mapStateToProps = (state, ownProps) => ({
-  initialValues: state.settings
+  initialValues: state.settings,
+  enableReinitialize: true
 })
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
