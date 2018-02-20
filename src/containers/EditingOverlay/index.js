@@ -1,16 +1,17 @@
 import { connect } from 'react-redux'
 import EditingOverlay from '../../components/EditingOverlay'
 import { uiEditingClose } from '../../store/ui/actions'
-import getNode from '../../selectors/getNode'
+import getUiIsEditingNode from '../../selectors/getUiIsEditingNode'
 
 const mapStateToProps = (state, ownProps) => {
   const isEditing = state.ui.isEditing
-  const node = isEditing && getNode(state, isEditing.id)
+  const node = getUiIsEditingNode(state)
 
   return {
-    id: isEditing && isEditing.id,
+    id: isEditing ? isEditing.id : undefined,
+    type: isEditing ? isEditing.type : undefined,
     isVisible: isEditing !== false,
-    title: `Editing: ${node.title}`
+    title: node ? `Editing: ${node.title}` : undefined
   }
 }
 

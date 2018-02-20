@@ -2,11 +2,12 @@ import { connect } from 'react-redux'
 import EditingOverlayFormComponent from '../../components/EditingOverlayForm'
 import { uiEditingClose } from '../../store/ui/actions'
 import { nodeTitleUpdate } from '../../store/nodes/actions'
-import getNode from '../../selectors/getNode'
+import { sketchTitleUpdate } from '../../store/sketches/actions'
+import getUiIsEditingNode from '../../selectors/getUiIsEditingNode'
 import { reduxForm } from 'redux-form'
 
 const mapStateToProps = (state, ownProps) => {
-  const node = getNode(state, ownProps.id)
+  const node = getUiIsEditingNode(state)
 
   return {
     initialValues: {
@@ -19,7 +20,14 @@ const mapStateToProps = (state, ownProps) => {
 const mapDispatchToProps = (dispatch, ownProps) => ({
   onSubmit: (values) => {
     dispatch(uiEditingClose())
-    dispatch(nodeTitleUpdate(ownProps.id, values.title))
+    switch (ownProps.type) {
+      case 'nodeTitle':
+        dispatch(nodeTitleUpdate(ownProps.id, values.title))
+        break
+      case 'sketchTitle':
+        dispatch(sketchTitleUpdate(ownProps.id, values.title))
+        break
+    }
   }
 })
 

@@ -4,6 +4,11 @@ import styled from 'styled-components'
 import theme from '../../utils/theme'
 import { Link as RouterLink } from 'react-router-dom'
 
+const sizes = {
+  large: '1.5rem',
+  small: '0.7rem'
+}
+
 const Wrapper = styled.span`
   background: ${theme.actionColor1};
   display: inline-block;
@@ -12,7 +17,7 @@ const Wrapper = styled.span`
   border: 0;
   color: white;
   cursor: pointer;
-  font-size: ${props => props.size === 'large' ? '1.5rem' : 'auto'};
+  font-size: ${props => sizes[props.size] || 'auto'};
   opacity: ${props => props.disabled ? 0.5 : 1};
   pointer-events: ${props => props.disabled ? 'none' : 'auto'};
 

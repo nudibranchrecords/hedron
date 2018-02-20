@@ -21,9 +21,9 @@ const Bottom = styled.div`
   text-align: right;
 `
 
-const Sketch = ({ title, params, shots, onDeleteClick, sketchId }) => (
+const Sketch = ({ title, params, shots, onDeleteClick, sketchId, onRenameClick }) => (
   <Wrapper>
-    <ViewHeader>{title}</ViewHeader>
+    <ViewHeader onButtonClick={onRenameClick} buttonText='Rename'>{title}</ViewHeader>
 
     {params.length > 0 &&
       <div>
@@ -66,8 +66,8 @@ Sketch.propTypes = {
   shots: PropTypes.arrayOf(
     PropTypes.string
   ).isRequired,
-  onDeleteClick: PropTypes.func.isRequired
-
+  onDeleteClick: PropTypes.func.isRequired,
+  onRenameClick: PropTypes.func.isRequired
 }
 
 export default Sketch
