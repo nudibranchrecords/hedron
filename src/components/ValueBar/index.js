@@ -20,8 +20,8 @@ const Wrapper = styled.div`
     left: 33.3%;
     bottom: 0;
     height: 100%;
-    width: 1px;
-    background: ${theme.actionColor1};
+    width: 0;
+    border-left: 1px solid ${theme.actionColor1};
   }
 `
 
@@ -183,10 +183,9 @@ ValueBar.propTypes = {
   nodeId: PropTypes.string.isRequired,
   onChange: PropTypes.func.isRequired,
   onMouseDown: PropTypes.func,
-  type: PropTypes.string.isRequired,
+  type: PropTypes.string,
   hideBar: PropTypes.bool,
-  markerIsVisible: PropTypes.bool,
-  shotCount: PropTypes.number
+  markerIsVisible: PropTypes.bool
 }
 
 ValueBar.contextTypes = {
