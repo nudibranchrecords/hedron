@@ -4,6 +4,7 @@ import getMacro from '../../selectors/getMacro'
 import getIsMacroOpened from '../../selectors/getIsMacroOpened'
 import getNode from '../../selectors/getNode'
 import getNodeInputLinkIds from '../../selectors/getNodeInputLinkIds'
+import getInputLink from '../../selectors/getInputLink'
 import { rMacroLearningToggle, uMacroDelete, rMacroOpenToggle } from '../../store/macros/actions'
 import { values } from 'lodash'
 
@@ -12,6 +13,9 @@ const mapStateToProps = (state, ownProps) => {
   const inputLinkIds = getNodeInputLinkIds(state, macro.nodeId)
   const paramLinks = values(macro.targetParamLinks)
   const node = getNode(state, macro.nodeId)
+
+  const activeInputLinkId = node.activeInputLinkId
+  const activeInputLink = activeInputLinkId && getInputLink(state, activeInputLinkId)
 
   return {
     nodeId: macro.nodeId,
@@ -23,7 +27,8 @@ const mapStateToProps = (state, ownProps) => {
     inputSettingsAreVisible: inputLinkIds.length > 0,
     paramLinksAreVisible: paramLinks.length > 0,
     isLearning: state.macros.learningId === ownProps.id,
-    numInputs: inputLinkIds.length
+    numInputs: inputLinkIds.length,
+    inputLinkTitle: activeInputLink && activeInputLink.title
   }
 }
 

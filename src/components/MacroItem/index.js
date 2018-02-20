@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import Button from '../Button'
+import ButtonComponent from '../Button'
 import Param from '../../components/Param'
 import MacroLink from '../../containers/MacroLink'
 import InputLinkUI from '../../containers/InputLinkUI'
@@ -17,9 +17,19 @@ const Bottom = styled.div`
   margin-top: 1rem;
 `
 
+const Button = styled(ButtonComponent)`
+  margin-right: 1rem;
+
+  &:last-child {
+    margin-right: 0;
+    margin-left: auto;
+  }
+`
+
 const MacroItem = ({
   nodeId, onLearningClick, onDeleteClick, paramLinks, inputLinkIds, isLearning,
-  macroId, inputSettingsAreVisible, paramLinksAreVisible, isOpen, title, onOpenClick, numInputs
+  macroId, inputSettingsAreVisible, paramLinksAreVisible, isOpen, title, onOpenClick, numInputs,
+  inputLinkTitle
 }) => (
   <div>
     <Param
@@ -29,6 +39,7 @@ const MacroItem = ({
       onOpenClick={onOpenClick}
       nodeId={nodeId}
       numInputs={numInputs}
+      inputLinkTitle={inputLinkTitle}
     >
       <InputLinkUI nodeId={nodeId} />
 
@@ -51,10 +62,11 @@ const MacroItem = ({
       }
       </Bottom>
 
-      <Row justify='space-between'>
+      <Row>
         <Button onClick={onLearningClick}>
           {isLearning ? 'Stop Learning' : 'Start Learning'}
         </Button>
+        <Button>Rename</Button>
         <Button onClick={onDeleteClick}>Delete Macro</Button>
       </Row>
     </Param>
@@ -75,7 +87,8 @@ MacroItem.propTypes = {
   isOpen: PropTypes.bool,
   title: PropTypes.string.isRequired,
   onOpenClick: PropTypes.func.isRequired,
-  numInputs: PropTypes.number.isRequired
+  numInputs: PropTypes.number.isRequired,
+  inputLinkTitle: PropTypes.string
 }
 
 export default MacroItem
