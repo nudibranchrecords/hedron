@@ -47,19 +47,26 @@ class ValueBar extends React.Component {
 
     uiEventEmitter.on('repaint', this.setSize)
     uiEventEmitter.on('slow-tick', this.draw)
+
+    this.shotCount = this.getData().shotCount
   }
 
-  getValue () {
+  getData () {
     // Grab the value for the param directly from the store
     // This is for performance reasons as it prevents React
     // from doing unecessary (and expensive) diffing
-    return this.context.store.getState().nodes[this.props.nodeId].value
+    const node = this.context.store.getState().nodes[this.props.nodeId]
+    return {
+      value: node.value,
+      shotCount: node.shotCount
+    }
   }
 
-  componentWillReceiveProps (nextProps) {
-    if (nextProps.shotCount !== this.props.shotCount) {
-      this.flash()
-    }
+  shouldComponentUpdate (nextProps) {
+    return (
+      nextProps.markerIsVisible !== this.props.markerIsVisible ||
+      nextProps.hideBar !== this.props.hideBar
+    )
   }
 
   componentWillUnmount () {
@@ -86,7 +93,7 @@ class ValueBar extends React.Component {
 
   handleMouseDown (e) {
     this.pos = e.nativeEvent.screenX
-    this.currentValue = this.getValue()
+    this.currentValue = this.getData().value
 
     const onMouseUp = (e) => {
       document.removeEventListener('mouseup', onMouseUp)
@@ -104,7 +111,19 @@ class ValueBar extends React.Component {
   }
 
   draw (force) {
-    const newVal = this.getValue()
+    const data = this.getData()
+    const newVal = data.value
+    const shotCount = data.shotCount
+
+    // Flash if new shot has happened
+    if (shotCount !== this.shotCount) {
+      this.shotCount = shotCount
+      this.lastShotTime = now()
+      this.hasShot = true
+      this.ctx.fillStyle = theme.actionColor1
+      this.ctx.fillRect(0, 0, this.width, this.height)
+    }
+
     const clearShot = now() - this.lastShotTime > 30
     if (newVal !== this.oldVal || force || clearShot) {
       const barWidth = 2
@@ -138,13 +157,6 @@ class ValueBar extends React.Component {
         this.ctx.fillRect(pos, 0, barWidth, this.height)
       }
     }
-  }
-
-  flash () {
-    this.lastShotTime = now()
-    this.hasShot = true
-    this.ctx.fillStyle = theme.actionColor1
-    this.ctx.fillRect(0, 0, this.width, this.height)
   }
 
   render () {

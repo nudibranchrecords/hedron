@@ -14,8 +14,7 @@ const mapStateToProps = (state, ownProps) => {
   return {
     type,
     hideBar,
-    markerIsVisible: type === 'shot' && !hideBar && inputLink.armed,
-    shotCount: node.shotCount
+    markerIsVisible: type === 'shot' && !hideBar && inputLink.armed
   }
 }
 
