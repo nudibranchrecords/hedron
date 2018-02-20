@@ -29,7 +29,7 @@ const Button = styled(ButtonComponent)`
 const MacroItem = ({
   nodeId, onLearningClick, onDeleteClick, paramLinks, inputLinkIds, isLearning,
   macroId, inputSettingsAreVisible, paramLinksAreVisible, isOpen, title, onOpenClick, numInputs,
-  inputLinkTitle
+  inputLinkTitle, onRenameClick
 }) => (
   <div>
     <Param
@@ -66,7 +66,7 @@ const MacroItem = ({
         <Button onClick={onLearningClick}>
           {isLearning ? 'Stop Learning' : 'Start Learning'}
         </Button>
-        <Button>Rename</Button>
+        <Button onClick={() => { onRenameClick(nodeId) }}>Rename</Button>
         <Button onClick={onDeleteClick}>Delete Macro</Button>
       </Row>
     </Param>
@@ -88,7 +88,8 @@ MacroItem.propTypes = {
   title: PropTypes.string.isRequired,
   onOpenClick: PropTypes.func.isRequired,
   numInputs: PropTypes.number.isRequired,
-  inputLinkTitle: PropTypes.string
+  inputLinkTitle: PropTypes.string,
+  onRenameClick: PropTypes.func.isRequired
 }
 
 export default MacroItem

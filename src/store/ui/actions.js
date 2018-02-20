@@ -6,3 +6,18 @@ export function uiPanelResize (panelName, value) {
     }
   }
 }
+
+export function uiEditingOpen (type, id) {
+  return {
+    type: 'UI_EDITING_OPEN',
+    payload: {
+      type, id
+    }
+  }
+}
+
+export function uiEditingClose () {
+  return {
+    type: 'UI_EDITING_CLOSE'
+  }
+}

@@ -11,6 +11,7 @@ import styled from 'styled-components'
 import NavItem from '../NavItem'
 import PanelDragger from '../PanelDragger'
 import MidiLearn from '../../containers/MidiLearn'
+import EditingOverlay from '../../containers/EditingOverlay'
 import MainViewOuter from '../../containers/MainViewOuter'
 
 const Wrapper = styled.div`
@@ -59,6 +60,7 @@ const App = ({ stats, leftWidth, onLeftDrag }) => (
       <NavItem to='/macros'>Macros</NavItem>
     </Bar>
     <MidiLearn />
+    <EditingOverlay />
   </Wrapper>
 )
 
