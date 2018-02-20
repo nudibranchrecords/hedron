@@ -1,15 +1,21 @@
+import tapTempoFunc from 'tap-tempo'
 import { clockPulse } from '../store/clock/actions'
+import { settingsUpdate } from '../store/settings/actions'
 
 let store
 let requestId
 let marker
 let diff
-let bpm = 120
-let mspp = (60 / (bpm * 24)) * 1000
+
+const tapTempo = tapTempoFunc()
 
 const loop = () => {
   // Only pulse clock if is generated
-  if (store.getState().clock.isGenerated) {
+  const settings = store.getState().settings
+  const bpm = settings.clockBpm
+  const mspp = (60 / (bpm * 24)) * 1000
+
+  if (settings.clockGenerated) {
     // Check to see if time passed is more than time per pulse
     diff = window.performance.now() - marker
 
@@ -33,8 +39,14 @@ export const stopGeneratedClock = () => {
   requestId = undefined
 }
 
+export const tap = tapTempo.tap
+
 export default (injectedStore) => {
   store = injectedStore
+
+  tapTempo.on('tempo', (bpm) => {
+    store.dispatch(settingsUpdate({ clockBpm: Math.round(bpm) }))
+  })
 
   marker = window.performance.now()
   loop()

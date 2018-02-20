@@ -14,6 +14,7 @@ import debounceInput from '../../utils/debounceInput'
 
 export function* handleInput (action) {
   const p = action.payload
+  const inputType = p.meta && p.meta.type
   const messageCount = yield call(debounceInput, p)
   if (messageCount) {
     try {
@@ -29,7 +30,7 @@ export function* handleInput (action) {
         } else {
           let value = p.value
           let modifiers
-          if (p.meta && p.meta.type === 'midi') {
+          if (inputType === 'midi') {
             const currNode = yield select(getNode, links[i].nodeId)
 
             let midiValue = value
@@ -48,7 +49,7 @@ export function* handleInput (action) {
             let vals = []
             for (let j = 0; j < modifiers.length; j++) {
               const m = modifiers[j]
-              if (!m.type || m.type === p.type) {
+              if (!m.type || m.type === inputType) {
                 vals.push(m.value)
                 if (!m.passToNext) {
                   value = yield call(work, m.key, vals, value)

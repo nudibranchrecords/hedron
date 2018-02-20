@@ -1,8 +1,14 @@
+import React from 'react'
+import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import theme from '../../utils/theme'
+import { Link as RouterLink } from 'react-router-dom'
 
-const Button = styled.button`
+const css = `
   background: ${theme.actionColor1};
+  display: inline-block;
+  padding: 0.2rem 0.35rem;
+  text-decoration: none;
   border: 0;
   color: white;
   cursor: pointer;
@@ -22,8 +28,26 @@ const Button = styled.button`
       color: white;
     }
   `}
-
-
 `
+
+const Plain = styled.button`
+  ${css}
+`
+
+const Link = styled(RouterLink)`
+  ${css}
+`
+
+const Button = (props) => {
+  if (props.to) {
+    return (<Link to='/' {...props} />)
+  } else {
+    return (<Plain {...props} />)
+  }
+}
+
+Button.propTypes = {
+  to: PropTypes.string
+}
 
 export default Button

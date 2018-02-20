@@ -35,9 +35,10 @@ export default (store) => {
     }
   }
 
-  navigator.requestMIDIAccess().then((midiAccess) => {
+  const processDevices = ports => {
     const devices = {}
-    midiAccess.inputs.forEach((entry) => {
+
+    ports.forEach((entry) => {
       devices[entry.name] = {
         title: entry.name,
         id: entry.name,
@@ -46,6 +47,15 @@ export default (store) => {
       }
       entry.onmidimessage = onMessage
     })
+
     store.dispatch(midiUpdateDevices(devices))
+  }
+
+  navigator.requestMIDIAccess().then((midiAccess) => {
+    processDevices(midiAccess.inputs)
+
+    midiAccess.onstatechange = () => {
+      processDevices(midiAccess.inputs)
+    }
   })
 }

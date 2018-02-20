@@ -54,11 +54,13 @@
     "redux": "^3.6.0",
     "redux-batched-subscribe": "^0.1.6",
     "redux-debounce": "^1.0.1",
+    "redux-form": "^7.2.3",
     "redux-ignore": "^1.2.4",
     "redux-saga": "^0.16.0",
     "stats.js": "^0.17.0",
     "styled-components": "^2.2.3",
     "tap-diff": "^0.1.1",
+    "tap-tempo": "^0.1.1",
     "three": "^0.89.0",
     "uid": "^0.0.2"
   },
