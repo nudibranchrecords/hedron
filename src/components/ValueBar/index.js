@@ -114,18 +114,19 @@ class ValueBar extends React.Component {
     const data = this.getData()
     const newVal = data.value
     const shotCount = data.shotCount
+    let flashOpacity = 0
 
     // Flash if new shot has happened
     if (shotCount !== this.shotCount) {
       this.shotCount = shotCount
       this.lastShotTime = now()
-      this.hasShot = true
-      this.ctx.fillStyle = theme.actionColor1
-      this.ctx.fillRect(0, 0, this.width, this.height)
     }
 
-    const clearShot = now() - this.lastShotTime > 30
-    if (newVal !== this.oldVal || force || clearShot) {
+    if (this.lastShotTime) {
+      flashOpacity = 1 - ((now() - this.lastShotTime) / 200)
+    }
+
+    if (newVal !== this.oldVal || force || flashOpacity > 0) {
       const barWidth = 2
       const innerWidth = this.width - barWidth
       const pos = innerWidth * newVal
@@ -135,7 +136,7 @@ class ValueBar extends React.Component {
       this.ctx.font = '18px Arial'
       this.ctx.textAlign = 'right'
 
-      if (this.oldVal && !this.hasShot) {
+      if (this.oldVal && flashOpacity < 0 && !this.flashIsPainted) {
         const oldPos = innerWidth * this.oldVal
         // Only clear the area from the last position
         this.ctx.clearRect(oldPos - 1, 0, barWidth + 2, this.height)
@@ -143,7 +144,13 @@ class ValueBar extends React.Component {
         this.ctx.clearRect(this.width - 60, 0, 60, this.height)
       } else {
         this.ctx.clearRect(0, 0, this.width, this.height)
-        this.hasShot = false
+        this.flashIsPainted = false
+      }
+
+      if (flashOpacity > 0) {
+        this.ctx.fillStyle = `rgba(218,87,130,${flashOpacity})`
+        this.ctx.fillRect(0, 0, this.width, this.height)
+        this.flashIsPainted = true
       }
 
       this.oldVal = newVal
