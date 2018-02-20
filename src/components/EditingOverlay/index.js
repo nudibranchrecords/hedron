@@ -1,14 +1,15 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import OverlayModal from '../OverlayModal'
+import EditingOverlayForm from '../../containers/EditingOverlayForm'
 
-const EditingOverlay = ({ isVisible, onCancelClick }) => (
+const EditingOverlay = ({ isVisible, onCancelClick, title, id }) => (
   <OverlayModal
     isVisible={isVisible}
-    title='Editing'
+    title={title}
     onCancelClick={onCancelClick}
   >
-    <p>Editing</p>
+    <EditingOverlayForm id={id} />
   </OverlayModal>
 )
 
@@ -16,5 +17,10 @@ export default EditingOverlay
 
 EditingOverlay.propTypes = {
   isVisible: PropTypes.bool,
-  onCancelClick: PropTypes.func.isRequired
+  onCancelClick: PropTypes.func.isRequired,
+  title: PropTypes.string,
+  id: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.bool
+  ])
 }

@@ -150,6 +150,15 @@ const nodesReducer = (state = defaultState, action) => {
         }
       }
     }
+    case 'NODE_TITLE_UPDATE': {
+      return {
+        ...state,
+        [p.nodeId]: {
+          ...state[p.nodeId],
+          title: p.value
+        }
+      }
+    }
     default:
       return state
   }

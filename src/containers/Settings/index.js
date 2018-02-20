@@ -13,7 +13,7 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
 })
 
 const SettingsForm = reduxForm({
-  form: 'settings' // a unique identifier for this form
+  form: 'settings'
 })(SettingsComponent)
 
 export default connect(
