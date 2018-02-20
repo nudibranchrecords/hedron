@@ -12,8 +12,9 @@ import { rNodeCreate, nodeValueUpdate, uNodeDelete, rNodeConnectedMacroAdd,
 } from '../nodes/actions'
 import { rMacroCreate, rMacroDelete, rMacroTargetParamLinkCreate, rMacroTargetParamLinkDelete,
         rMacroTargetParamLinkUpdateStartValue, uMacroTargetParamLinkAdd, rMacroLearningToggle,
-        rMacroUpdateLastId
+        rMacroUpdateLastId, rMacroOpenToggle
 } from './actions'
+import { uiEditingOpen } from '../ui/actions'
 import { projectError } from '../project/actions'
 
 import uid from 'uid'
@@ -29,6 +30,8 @@ export function* macroCreate (action) {
     value: 0
   }))
   yield put(rMacroCreate(macroId, nodeId))
+  yield put(rMacroOpenToggle(macroId))
+  yield put(uiEditingOpen('nodeTitle', nodeId))
 }
 
 export function* macroDelete (action) {

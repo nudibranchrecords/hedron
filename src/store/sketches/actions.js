@@ -27,3 +27,10 @@ export function sketchNodeOpenedToggle (sketchId, nodeId, nodeType) {
     payload: { sketchId, nodeId, nodeType }
   }
 }
+
+export function sketchTitleUpdate (sketchId, value) {
+  return {
+    type: 'SKETCH_TITLE_UPDATE',
+    payload: { sketchId, value }
+  }
+}

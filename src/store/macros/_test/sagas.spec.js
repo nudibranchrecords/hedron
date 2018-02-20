@@ -14,9 +14,10 @@ import {
   nodeValuesBatchUpdate
 } from '../../nodes/actions'
 import {
-  rMacroTargetParamLinkUpdateStartValue, rMacroUpdateLastId,
+  rMacroTargetParamLinkUpdateStartValue, rMacroUpdateLastId, rMacroOpenToggle,
   uMacroCreate, rMacroCreate, uMacroTargetParamLinkAdd, rMacroTargetParamLinkCreate
 } from '../actions'
+import { uiEditingOpen } from '../../ui/actions'
 import {
   macroCreate, macroTargetParamLinkAdd, macroProcess, handleNodeValueUpdate,
   macroLearnFromParam, handleNodeValueBatchUpdate
@@ -755,6 +756,18 @@ test('(Saga) macroCreate', (t) => {
     generator.next().value,
     put(rMacroCreate('XX1', 'XX2')),
     '3. Create macro item in state'
+  )
+
+  t.deepEqual(
+    generator.next().value,
+    put(rMacroOpenToggle('XX1')),
+    '4. Open newly created macro'
+  )
+
+  t.deepEqual(
+    generator.next().value,
+    put(uiEditingOpen('nodeTitle', 'XX2')),
+    '5. Open macro title edit'
   )
 
   t.equal(generator.next().done, true, 'Generator ends')
