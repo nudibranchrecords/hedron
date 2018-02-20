@@ -13,8 +13,6 @@ const EditingOverlay = ({ isVisible, onCancelClick, title, id }) => (
   </OverlayModal>
 )
 
-export default EditingOverlay
-
 EditingOverlay.propTypes = {
   isVisible: PropTypes.bool,
   onCancelClick: PropTypes.func.isRequired,
@@ -24,3 +22,5 @@ EditingOverlay.propTypes = {
     PropTypes.bool
   ])
 }
+
+export default EditingOverlay
