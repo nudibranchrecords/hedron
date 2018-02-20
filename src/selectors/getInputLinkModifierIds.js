@@ -6,7 +6,7 @@ export default (state, id) => {
   if (link.nodeType === 'shot') {
     if (link.input.type === 'audio') {
       return link.modifierIds.filter(id => {
-        return state.nodes[id].key === 'gain'
+        return state.nodes[id].key !== 'threshold'
       })
     } else {
       return undefined
