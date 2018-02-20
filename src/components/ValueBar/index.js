@@ -3,10 +3,26 @@ import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import uiEventEmitter from '../../utils/uiEventEmitter'
 import theme from '../../utils/theme'
+import now from 'performance-now'
 
 const Bar = styled.canvas`
   background: ${theme.bgColorDark2};
   cursor: pointer;
+`
+
+const Wrapper = styled.div`
+  position: relative;
+
+  &:after {
+    content: '';
+    position: absolute;
+    display: ${props => props.markerIsVisible ? 'block' : 'none'};
+    left: 33.3%;
+    bottom: 0;
+    height: 100%;
+    width: 1px;
+    background: ${theme.actionColor1};
+  }
 `
 
 class ValueBar extends React.Component {
@@ -22,20 +38,35 @@ class ValueBar extends React.Component {
 
   componentDidMount () {
     this.containerEl = this.canvas.parentElement
-    this.height = 16 * 2
+    const height = this.props.type === 'shot' ? 6 : 2
+    this.height = 16 * height
     this.canvas.height = this.height
+    this.ctx = this.canvas.getContext('2d')
 
     this.setSize()
 
     uiEventEmitter.on('repaint', this.setSize)
     uiEventEmitter.on('slow-tick', this.draw)
+
+    this.shotCount = this.getData().shotCount
   }
 
-  getValue () {
+  getData () {
     // Grab the value for the param directly from the store
     // This is for performance reasons as it prevents React
     // from doing unecessary (and expensive) diffing
-    return this.context.store.getState().nodes[this.props.nodeId].value
+    const node = this.context.store.getState().nodes[this.props.nodeId]
+    return {
+      value: node.value,
+      shotCount: node.shotCount
+    }
+  }
+
+  shouldComponentUpdate (nextProps) {
+    return (
+      nextProps.markerIsVisible !== this.props.markerIsVisible ||
+      nextProps.hideBar !== this.props.hideBar
+    )
   }
 
   componentWillUnmount () {
@@ -60,13 +91,9 @@ class ValueBar extends React.Component {
     }, 1)
   }
 
-  shouldComponentUpdate () {
-    return false
-  }
-
   handleMouseDown (e) {
     this.pos = e.nativeEvent.screenX
-    this.currentValue = this.getValue()
+    this.currentValue = this.getData().value
 
     const onMouseUp = (e) => {
       document.removeEventListener('mouseup', onMouseUp)
@@ -84,46 +111,70 @@ class ValueBar extends React.Component {
   }
 
   draw (force) {
-    const newVal = this.getValue()
-    if (newVal !== this.oldVal || force) {
+    const data = this.getData()
+    const newVal = data.value
+    const shotCount = data.shotCount
+    let flashOpacity = 0
+
+    // Flash if new shot has happened
+    if (shotCount !== this.shotCount) {
+      this.shotCount = shotCount
+      this.lastShotTime = now()
+    }
+
+    if (this.lastShotTime) {
+      flashOpacity = 1 - ((now() - this.lastShotTime) / 200)
+    }
+
+    if (newVal !== this.oldVal || force || flashOpacity > 0) {
       const barWidth = 2
       const innerWidth = this.width - barWidth
       const pos = innerWidth * newVal
-      const context = this.canvas.getContext('2d')
+
       const roundedVal = Math.round(newVal * 1000) / 1000
 
-      context.font = '18px Arial'
-      context.textAlign = 'right'
+      this.ctx.font = '18px Arial'
+      this.ctx.textAlign = 'right'
 
-      if (this.oldVal) {
+      if (this.oldVal && flashOpacity < 0 && !this.flashIsPainted) {
         const oldPos = innerWidth * this.oldVal
         // Only clear the area from the last position
-        context.clearRect(oldPos - 1, 0, barWidth + 2, this.height)
+        this.ctx.clearRect(oldPos - 1, 0, barWidth + 2, this.height)
         // And the text area
-        context.clearRect(this.width - 60, 0, 60, this.height)
+        this.ctx.clearRect(this.width - 60, 0, 60, this.height)
       } else {
-        context.clearRect(0, 0, this.width, this.height)
+        this.ctx.clearRect(0, 0, this.width, this.height)
+        this.flashIsPainted = false
+      }
+
+      if (flashOpacity > 0) {
+        this.ctx.fillStyle = `rgba(218,87,130,${flashOpacity})`
+        this.ctx.fillRect(0, 0, this.width, this.height)
+        this.flashIsPainted = true
       }
 
       this.oldVal = newVal
 
-      // Draw value as text
-      context.fillStyle = theme.textColorLight1
-      context.fillText(roundedVal.toFixed(3), innerWidth - 5, this.height - 10)
-      // Draw bar at new position
-      context.fillStyle = '#fff'
-      context.fillRect(pos, 0, barWidth, this.height)
+      if (!this.props.hideBar) {
+        // Draw value as text
+        this.ctx.fillStyle = theme.textColorLight1
+        this.ctx.fillText(roundedVal.toFixed(3), innerWidth - 5, this.height - 10)
+        // Draw bar at new position
+        this.ctx.fillStyle = '#fff'
+        this.ctx.fillRect(pos, 0, barWidth, this.height)
+      }
     }
   }
 
   render () {
+    const { markerIsVisible } = this.props
     return (
-      <div>
+      <Wrapper markerIsVisible={markerIsVisible}>
         <Bar
           innerRef={node => { this.canvas = node }}
           onMouseDown={this.props.onMouseDown || this.handleMouseDown}
         />
-      </div>
+      </Wrapper>
     )
   }
 }
@@ -131,7 +182,11 @@ class ValueBar extends React.Component {
 ValueBar.propTypes = {
   nodeId: PropTypes.string.isRequired,
   onChange: PropTypes.func.isRequired,
-  onMouseDown: PropTypes.func
+  onMouseDown: PropTypes.func,
+  type: PropTypes.string.isRequired,
+  hideBar: PropTypes.bool,
+  markerIsVisible: PropTypes.bool,
+  shotCount: PropTypes.number
 }
 
 ValueBar.contextTypes = {

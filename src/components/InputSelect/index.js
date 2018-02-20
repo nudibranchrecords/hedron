@@ -7,17 +7,19 @@ const Wrapper = styled.div`
   min-width: 5rem;
 `
 
-const InputSelect = ({ inputId, onInputChange, options }) => (
+const InputSelect = ({ onInputChange, options }) => (
   <Wrapper>
-    <Select clearable={false} searchable={false} options={options} onChange={onInputChange} value={inputId} />
+    <Select
+      value={false}
+      clearable={false}
+      searchable={false}
+      options={options}
+      onChange={onInputChange}
+    />
   </Wrapper>
 )
 
 InputSelect.propTypes = {
-  inputId: PropTypes.oneOfType([
-    PropTypes.string,
-    PropTypes.bool
-  ]),
   onInputChange: PropTypes.func.isRequired,
   options: PropTypes.arrayOf(
     PropTypes.object

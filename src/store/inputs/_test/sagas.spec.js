@@ -7,8 +7,8 @@ import { select, takeEvery, put, call } from 'redux-saga/effects'
 import proxyquire from 'proxyquire'
 
 import { getAssignedLinks } from '../selectors'
-import { nodeValuesBatchUpdate } from '../../nodes/actions'
-import { inputLinkShotFired, inputLinkShotDisarm, inputLinkShotArm } from '../../inputLinks/actions'
+import { nodeValuesBatchUpdate, nodeShotFired } from '../../nodes/actions'
+import { inputLinkShotDisarm, inputLinkShotArm } from '../../inputLinks/actions'
 import { projectError } from '../../project/actions'
 
 import getNodes from '../../../selectors/getNodes'
@@ -407,7 +407,7 @@ test('(Saga) handleInput (shot - noteOn)', (t) => {
 
   t.deepEqual(
     generator.next(node).value,
-    put(inputLinkShotFired('fooSketch', 'barMethod')),
+    put(nodeShotFired('XX', 'fooSketch', 'barMethod')),
     '4. Dispatches node shot fired action'
   )
 
@@ -591,7 +591,7 @@ test('(Saga) handleInput (shot - seq-step sequencer - in sequence)', (t) => {
 
   t.deepEqual(
     generator.next(seqNode).value,
-    put(inputLinkShotFired('fooSketch', 'barMethod')),
+    put(nodeShotFired('XX', 'fooSketch', 'barMethod')),
     '4. Dispatches node shot fired action'
   )
 
@@ -678,7 +678,7 @@ test('(Saga) handleInput (midi)', (t) => {
   t.end()
 })
 
-test('(Saga) handleInput (shot - audio val is over 0.5, armed)', (t) => {
+test('(Saga) handleInput (shot - audio val is over 0.333, armed)', (t) => {
   const meta = { type: 'audio' }
   const payload = {
     value: 1,
@@ -726,7 +726,7 @@ test('(Saga) handleInput (shot - audio val is over 0.5, armed)', (t) => {
 
   t.deepEqual(
     generator.next(node).value,
-    put(inputLinkShotFired('fooSketch', 'barMethod')),
+    put(nodeShotFired('XX', 'fooSketch', 'barMethod')),
     '4. Dispatches input link shot fired action'
   )
 
@@ -752,7 +752,7 @@ test('(Saga) handleInput (shot - audio val is over 0.5, armed)', (t) => {
   t.end()
 })
 
-test('(Saga) handleInput (shot - audio val is over 0.5, disarmed)', (t) => {
+test('(Saga) handleInput (shot - audio val is over 0.333, disarmed)', (t) => {
   const meta = { type: 'audio' }
   const payload = {
     value: 1,
@@ -813,10 +813,10 @@ test('(Saga) handleInput (shot - audio val is over 0.5, disarmed)', (t) => {
   t.end()
 })
 
-test('(Saga) handleInput (shot - audio val is under 0.5, armed)', (t) => {
+test('(Saga) handleInput (shot - audio val is under 0.333, armed)', (t) => {
   const meta = { type: 'audio' }
   const payload = {
-    value: 0.4,
+    value: 0.2,
     inputId: 'audio_1',
     meta
   }
@@ -869,7 +869,7 @@ test('(Saga) handleInput (shot - audio val is under 0.5, armed)', (t) => {
     put(nodeValuesBatchUpdate([
       {
         id: 'XX',
-        value: 0.4
+        value: 0.2
       }
     ], meta)),
     '6. Dispatches batch node update action'
@@ -880,10 +880,10 @@ test('(Saga) handleInput (shot - audio val is under 0.5, armed)', (t) => {
   t.end()
 })
 
-test('(Saga) handleInput (shot - audio val is under 0.5, disarmed)', (t) => {
+test('(Saga) handleInput (shot - audio val is under 0.333, disarmed)', (t) => {
   const meta = { type: 'audio' }
   const payload = {
-    value: 0.4,
+    value: 0.2,
     inputId: 'audio_1',
     meta
   }
@@ -936,7 +936,7 @@ test('(Saga) handleInput (shot - audio val is under 0.5, disarmed)', (t) => {
     put(nodeValuesBatchUpdate([
       {
         id: 'XX',
-        value: 0.4
+        value: 0.2
       }
     ], meta)),
     '6. Dispatches node update action'
