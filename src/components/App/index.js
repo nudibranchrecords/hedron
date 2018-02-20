@@ -36,7 +36,6 @@ const Right = styled.div`
 const Bar = styled.div`
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
   flex: 0 0 3rem;
   background: #111;
   height: 100%;
