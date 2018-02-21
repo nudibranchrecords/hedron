@@ -3,8 +3,8 @@ import uid from 'uid'
 export default () => {
   return [
     {
-      title: 'MIDI Sensitity',
-      key: 'sensitity',
+      title: 'MIDI Sensitivity',
+      key: 'sensitivity',
       id: uid(),
       value: 0.5,
       inputLinkIds: [],
