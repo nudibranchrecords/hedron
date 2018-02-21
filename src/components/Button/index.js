@@ -20,9 +20,15 @@ const Wrapper = styled.span`
   font-size: ${props => sizes[props.size] || 'auto'};
   opacity: ${props => props.disabled ? 0.5 : 1};
   pointer-events: ${props => props.disabled ? 'none' : 'auto'};
+  transition: 0.2s;
 
   &:hover {
     background: #ef6091;
+
+
+  &:active {
+    transform: scale(0.9);
+    transition: 0s;
   }
 
   ${props => props.reversed && `
