@@ -1,3 +1,5 @@
+const tryRequire = require('try-require')
+
 const config = {
   module: {
     rules: [
@@ -10,18 +12,18 @@ const config = {
 }
 
 if (process.env.NODE_ENV === 'development') {
-  const devConfig = require('./dev.config.js')
-  let defaultProject
-  if (devConfig.defaultProject) {
-    defaultProject = require(devConfig.defaultProject)
-  }
-  const sketchesPath = defaultProject && defaultProject.project.sketchesPath
+  const devConfig = tryRequire('./dev.config.js')
   let devServerOptions = {}
 
-  if (sketchesPath) {
-    devServerOptions = {
-      contentBase: sketchesPath,
-      watchContentBase: true
+  if (devConfig && devConfig.defaultProject) {
+    const defaultProject = require(devConfig.defaultProject)
+    const sketchesPath = defaultProject.project.sketchesPath
+
+    if (sketchesPath) {
+      devServerOptions = {
+        contentBase: sketchesPath,
+        watchContentBase: true
+      }
     }
   }
 

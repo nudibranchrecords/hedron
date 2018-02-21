@@ -63,6 +63,7 @@
     "tap-diff": "^0.1.1",
     "tap-tempo": "^0.1.1",
     "three": "^0.89.0",
+    "try-require": "^1.2.1",
     "uid": "^0.0.2"
   },
   "devDependencies": {

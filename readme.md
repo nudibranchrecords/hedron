@@ -2,13 +2,16 @@
 
 Perform live shows your three.js creations.
 
-## Dev setup
+## Quick start
 
-Once you've cloned the repo locally, install dependencies with:
+1. Make sure [Node.js](https://nodejs.org/en/) is installed on your machine.
+2. Clone/download the repo and navigate to the root directory in terminal.
+3. Run `yarn` to install dependencies.
+4. Launch Hedron in dev mode with `yarn start`.
 
-`yarn`
+## dev.config.js
 
-You'll then need to add `dev.config.js` to `/config`.
+You can get extra functionality by adding `dev.config.js` to `/config`.
 
 ```javascript
 // config/dev.config.js
@@ -17,23 +20,14 @@ module.exports = {
 }
 ```
 
-Setting `defaultProject` to the path of a saved project (e.g. `/Users/alex/Desktop/foo.json`) will mean that Hedron will restart every time changes are made to the sketches folder of that project. This can be useful when developing content.
+Setting `defaultProject` to the path of a saved project (e.g. `/Users/alex/Desktop/foo.json`) can help improve your workflow when developing:
+* The project will load automatically on load/restart
+* The project sketches folder will be watched for changes, triggering a restart
 
-Start development with:
+## Scripts
 
-`yarn start`
+Package the app with `yarn dist`.
 
-To package the app:
+To quickly run a production build without packaging, run `yarn dist:dev`. Behaves similarly to `yarn start` in that it will look for a default project and open Chrome DevTools automatically. However it will not do any sort of live refreshing.
 
-`yarn dist`
-
-To quickly run a production build without packaging, run:
-
-`yarn dist:dev`
-
-The above script also behaves similarly to `yarn start` in that it will look for
-a default project and open Chrome DevTools automatically.
-
-Run tests with:
-
-`yarn test:dev`
+Run tests with `yarn test:dev`.

@@ -16,6 +16,7 @@ import Engine from '../Engine'
 import { initiateScreens } from '../windows'
 import Stats from 'stats.js'
 import createDebounce from 'redux-debounced'
+import tryRequire from 'try-require'
 
 import 'react-select/dist/react-select.css'
 import '../style.css'
@@ -27,7 +28,7 @@ import initiateGeneratedClock from '../inputs/GeneratedClock'
 import debounce from 'lodash/debounce'
 
 const isDevelopment = process.env.NODE_ENV !== 'production'
-const devConfig = require('../../config/dev.config')
+const devConfig = tryRequire('../../config/dev.config')
 
 const stats = new Stats()
 stats.dom.setAttribute('style', '')
