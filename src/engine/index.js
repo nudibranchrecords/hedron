@@ -95,11 +95,12 @@ class Engine {
       stats.begin()
       const spf = 1000 / 60
       const state = this.store.getState()
-      const params = getSketchParams(state)
+      const allParams = getSketchParams(state)
 
-      this.sketches.forEach(sketch => sketch.module.update(
-        params, tick, elapsedFrames
-      ))
+      this.sketches.forEach(sketch => {
+        const params = getSketchParams(state, sketch.id)
+        sketch.module.update(params, tick, elapsedFrames, allParams)
+      })
 
       world.render()
 
