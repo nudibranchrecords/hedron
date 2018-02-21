@@ -1,7 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import Modifier from '../../containers/Modifier'
-import Select from '../../containers/Select'
+import Control from '../../containers/Control'
 import styled from 'styled-components'
 import uiEventEmitter from '../../utils/uiEventEmitter'
 import Button from '../../components/Button'
@@ -53,17 +52,17 @@ class InputLink extends React.Component {
         <Wrapper>
           {lfoOptionIds && lfoOptionIds.map((id) => (
             <Item key={id} size={size}>
-              <Select nodeId={id} />
+              <Control nodeId={id} />
             </Item>
           ))}
           {modifierIds && modifierIds.map((id) => (
             <Item key={id} size={size}>
-              <Modifier nodeId={id} />
+              <Control nodeId={id} />
             </Item>
           ))}
           {midiOptionIds && midiOptionIds.map((id) => (
             <Item key={id} size={size}>
-              <Modifier nodeId={id} />
+              <Control nodeId={id} />
             </Item>
           ))}
           {sequencerGridId &&
