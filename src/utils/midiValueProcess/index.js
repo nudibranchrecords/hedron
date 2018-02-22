@@ -35,11 +35,13 @@ export const getValue = (nodeValue, midiValue, midiOptions, messageCount) => {
 export default (node, midiValue, midiOptions, messageCount) => {
   if (node.type === 'select') {
     const opts = node.options
+    const maxLength = opts.length
     let index = opts.findIndex(item => item.value === node.value)
-    const oldVal = index / opts.length
+    const oldVal = index / maxLength
     const newVal = getValue(oldVal, midiValue, midiOptions, 15)
+
     if (midiOptions.controlType === 'abs') {
-      index = Math.floor(newVal * opts.length)
+      index = Math.floor(newVal * maxLength)
     } else {
       if (newVal > oldVal) {
         index++
@@ -47,7 +49,7 @@ export default (node, midiValue, midiOptions, messageCount) => {
         index--
       }
     }
-
+    index = Math.max(0, Math.min(maxLength - 1, index))
     return opts[index].value
   } else {
     return getValue(node.value, midiValue, midiOptions, messageCount)

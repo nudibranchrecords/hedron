@@ -271,5 +271,36 @@ test('(Util) midiValueProcess - type is select, controlType rel1', (t) => {
   expected = 'six'
 
   t.equal(actual, expected, 'Returns correct value from option, ignores messageCount')
+
+  // Changing node value to lowest
+  node.value = 'one'
+
+  midiValue = 1 // DOWN
+  midiOptions = {
+    controlType: 'rel1',
+    sensitivity: 0.5
+  }
+  messageCount = 1
+
+  actual = midiValueProcess(node, midiValue, midiOptions, messageCount)
+  expected = 'one'
+
+  t.equal(actual, expected, 'Stays at lowest after decrease message')
+
+  // Changing node value to lowest
+  node.value = 'ten'
+
+  midiValue = 0.5 // UP
+  midiOptions = {
+    controlType: 'rel1',
+    sensitivity: 0.5
+  }
+  messageCount = 1
+
+  actual = midiValueProcess(node, midiValue, midiOptions, messageCount)
+  expected = 'ten'
+
+  t.equal(actual, expected, 'Stays at highest after increase message')
+
   t.end()
 })
