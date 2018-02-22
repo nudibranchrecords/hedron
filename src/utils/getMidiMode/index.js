@@ -20,6 +20,7 @@ let lastData = false
 
 export const clear = () => {
   storedVals = []
+  lastData = false
 }
 
 export const newData = (data, type) => {

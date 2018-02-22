@@ -2,6 +2,7 @@ import { inputFired } from '../store/inputs/actions'
 import { midiStopLearning, midiUpdateDevices, midiMessage } from '../store/midi/actions'
 import { uInputLinkCreate } from '../store/inputLinks/actions'
 import { clockPulse } from '../store/clock/actions'
+import { newData as teachMidi } from '../utils/getMidiMode'
 import processMidiMessage from '../utils/processMidiMessage'
 
 export default (store) => {
@@ -18,8 +19,21 @@ export default (store) => {
       const learning = state.midi.learning
 
       if (learning) {
-        store.dispatch(uInputLinkCreate(learning.id, m.id, learning.type, rawMessage.target.name))
-        store.dispatch(midiStopLearning())
+        let controlType
+        const mode = teachMidi(rawMessage.data, m.type)
+
+        if (mode !== 'learning') {
+          if (mode === 'ignore') {
+            controlType = undefined
+          } else {
+            // abs, rel1, rel2, rel3
+            controlType = mode
+          }
+          store.dispatch(uInputLinkCreate(
+            learning.id, m.id, learning.type, rawMessage.target.name, controlType
+          ))
+          store.dispatch(midiStopLearning())
+        }
       } else {
         store.dispatch(inputFired(m.id, m.value, {
           noteOn: m.type === 'noteOn',
