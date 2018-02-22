@@ -1,4 +1,4 @@
-export default (state, nodeIds) => {
+export default (state, nodeIds = []) => {
   if (nodeIds.length === 0) return {}
 
   const obj = {}

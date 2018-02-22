@@ -1,17 +1,16 @@
 import { connect } from 'react-redux'
 import Shot from '../../components/Shot'
-import getNodeInputLinkIds from '../../selectors/getNodeInputLinkIds'
+import withDeferRender from '../../utils/withDeferRender'
 
 const mapStateToProps = (state, ownProps) => {
   return {
     title: state.nodes[ownProps.nodeId].title,
     sketchId: state.nodes[ownProps.nodeId].sketchId,
-    method: state.nodes[ownProps.nodeId].method,
-    inputLinkIds: getNodeInputLinkIds(state, ownProps.nodeId)
+    method: state.nodes[ownProps.nodeId].method
   }
 }
 
 export default connect(
   mapStateToProps,
   null
-)(Shot)
+)(withDeferRender(Shot))

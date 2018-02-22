@@ -36,9 +36,19 @@ export function rNodeDelete (id) {
   }
 }
 
-export function nodeInputLinkAdd (id, linkId) {
+export function uNodeInputLinkAdd (id, linkId) {
   return {
-    type: 'NODE_INPUT_LINK_ADD',
+    type: 'U_NODE_INPUT_LINK_ADD',
+    payload: {
+      id,
+      linkId
+    }
+  }
+}
+
+export function rNodeInputLinkAdd (id, linkId) {
+  return {
+    type: 'R_NODE_INPUT_LINK_ADD',
     payload: {
       id,
       linkId
@@ -62,6 +72,16 @@ export function nodeValueUpdate (id, value, meta) {
     payload: {
       id,
       value,
+      meta
+    }
+  }
+}
+
+export function nodeValuesBatchUpdate (values, meta) {
+  return {
+    type: 'NODE_VALUES_BATCH_UPDATE',
+    payload: {
+      values,
       meta
     }
   }
@@ -116,6 +136,43 @@ export function nodeOpenToggle (id) {
     type: 'NODE_OPEN_TOGGLE',
     payload: {
       id
+    }
+  }
+}
+
+export function nodeTabOpen (nodeId, linkId) {
+  return {
+    type: 'NODE_TAB_OPEN',
+    payload: {
+      nodeId, linkId
+    }
+  }
+}
+
+export function nodeActiveInputLinkToggle (nodeId, linkId) {
+  return {
+    type: 'NODE_ACTIVE_INPUT_LINK_TOGGLE',
+    payload: {
+      nodeId, linkId
+    }
+  }
+}
+
+export function nodeShotFired (nodeId, sketchId, method) {
+  return {
+    type: 'NODE_SHOT_FIRED',
+    payload: {
+      nodeId, sketchId, method
+    }
+  }
+}
+
+export function nodeTitleUpdate (nodeId, value) {
+  return {
+    type: 'NODE_TITLE_UPDATE',
+    payload: {
+      nodeId,
+      value
     }
   }
 }

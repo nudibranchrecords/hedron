@@ -11,7 +11,7 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
   onAssignClick: () => {
-    dispatch(uInputLinkCreate(ownProps.nodeId, 'midi'))
+    dispatch(uInputLinkCreate(ownProps.nodeId, 'midi', 'midi'))
   }
 })
 

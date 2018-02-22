@@ -2,6 +2,8 @@ import { omit } from 'lodash'
 
 const defaultState = {
   learningId: false,
+  openedId: undefined,
+  lastId: undefined,
   items: {}
 }
 
@@ -32,6 +34,12 @@ const macroReducer = (state = defaultState, action) => {
       return {
         ...state,
         learningId: state.learningId !== false ? false : p.id
+      }
+    }
+    case 'R_MACRO_LEARNING_STOP': {
+      return {
+        ...state,
+        learningId: false
       }
     }
     case 'R_MACRO_TARGET_PARAM_LINK_CREATE': {
@@ -81,6 +89,18 @@ const macroReducer = (state = defaultState, action) => {
             }
           }
         }
+      }
+    }
+    case 'R_MACRO_OPEN_TOGGLE': {
+      return {
+        ...state,
+        openedId: p.id !== state.openedId ? p.id : undefined
+      }
+    }
+    case 'R_MACRO_UPDATE_LAST_ID': {
+      return {
+        ...state,
+        lastId: p.id
       }
     }
     case 'MACROS_REPLACE_ALL': {

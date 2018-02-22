@@ -87,6 +87,7 @@ test('(Saga) handleSketchCreate', (t) => {
     put(uNodeCreate(uniqueId, {
       title: 'Rotate X',
       key: 'RotX',
+      type: 'param',
       id: uniqueId,
       value: 0.1,
       isOpen: false,
@@ -108,6 +109,7 @@ test('(Saga) handleSketchCreate', (t) => {
     put(uNodeCreate(uniqueId, {
       title: 'Rotate Y',
       key: 'RotY',
+      type: 'param',
       id: uniqueId,
       value: 0.5,
       inputLinkIds: [],
@@ -166,7 +168,8 @@ test('(Saga) handleSketchCreate', (t) => {
       title: 'Cubey Boy',
       moduleId: 'cubey',
       paramIds: ['PARAM1', 'PARAM2'],
-      shotIds: ['SHOT1', 'SHOT2']
+      shotIds: ['SHOT1', 'SHOT2'],
+      openedNodes: {}
     })),
     'Dispatch sketch create action'
   )
@@ -215,7 +218,8 @@ test('(Saga) handleSketchCreate (no params or shots)', (t) => {
       title: 'Cubey Boy',
       moduleId: 'cubey',
       paramIds: [],
-      shotIds: []
+      shotIds: [],
+      openedNodes: {}
     })),
     'Dispatch sketch create action'
   )

@@ -2,20 +2,16 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import SketchParam from '../../containers/SketchParam'
 import Shot from '../../containers/Shot'
-import Row from '../Row'
 import Button from '../Button'
+import ViewHeader from '../ViewHeader'
+import ViewSubheader from '../ViewSubheader'
+import Items from '../Items'
+import Item from '../Item'
 import styled from 'styled-components'
 
 const Wrapper = styled.div`
-  padding: 0.5rem;
   display: flex;
   height: 100%;
-  flex-direction: column;
-  overflow: auto;
-`
-
-const Params = styled.div`
-  display: flex;
   flex-direction: column;
 `
 
@@ -25,33 +21,33 @@ const Bottom = styled.div`
   text-align: right;
 `
 
-const Shots = styled(Row)`
-  flex-wrap: wrap;
-`
-
-const Sketch = ({ title, params, shots, onDeleteClick, sketchId }) => (
+const Sketch = ({ title, params, shots, onDeleteClick, sketchId, onRenameClick }) => (
   <Wrapper>
-    <h2>{title}</h2>
+    <ViewHeader onButtonClick={onRenameClick} buttonText='Rename'>{title}</ViewHeader>
 
     {params.length > 0 &&
       <div>
-        <h3>Params</h3>
-        <Params>
+        <ViewSubheader>Params</ViewSubheader>
+        <Items>
           {params.map((id, index) => (
-            <SketchParam nodeId={id} key={id} index={index} />
+            <Item key={id}>
+              <SketchParam nodeId={id} index={index} sketchId={sketchId} />
+            </Item>
           ))}
-        </Params>
+        </Items>
       </div>
     }
 
     {shots.length > 0 &&
       <div>
-        <h3>Shots</h3>
-        <Shots>
-          {shots.map((id) => (
-            <Shot nodeId={id} key={id} />
+        <ViewSubheader>Shots</ViewSubheader>
+        <Items>
+          {shots.map((id, index) => (
+            <Item key={id}>
+              <Shot nodeId={id} index={index} />
+            </Item>
           ))}
-        </Shots>
+        </Items>
       </div>
     }
 
@@ -70,8 +66,8 @@ Sketch.propTypes = {
   shots: PropTypes.arrayOf(
     PropTypes.string
   ).isRequired,
-  onDeleteClick: PropTypes.func.isRequired
-
+  onDeleteClick: PropTypes.func.isRequired,
+  onRenameClick: PropTypes.func.isRequired
 }
 
 export default Sketch

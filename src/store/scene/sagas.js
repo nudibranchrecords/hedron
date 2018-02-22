@@ -23,6 +23,7 @@ export function* handleSketchCreate (action) {
       paramIds.push(uniqueId)
       yield put(uNodeCreate(uniqueId, {
         title: param.title,
+        type: 'param',
         key: param.key,
         value: param.defaultValue,
         id: uniqueId,
@@ -53,7 +54,8 @@ export function* handleSketchCreate (action) {
     title: module.defaultTitle,
     moduleId: moduleId,
     paramIds,
-    shotIds
+    shotIds,
+    openedNodes: {}
   }))
 
   yield call([history, history.push], '/sketches/view/' + uniqueSketchId)

@@ -1,37 +1,52 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import uiEventEmitter from '../../utils/uiEventEmitter'
+
+let height, val, offset, hue, i, inputs, bands
 
 class AudioAnalyzer extends React.Component {
+
+  constructor (props) {
+    super(props)
+    this.draw = this.draw.bind(this)
+  }
 
   componentDidMount () {
     this.width = this.canvas.width = 80
     this.height = this.canvas.height = 48
     this.barCount = 4
     this.barWidth = this.width / this.barCount
+    this.ctx = this.canvas.getContext('2d')
 
-    const loop = () => {
-      this.drawGraph(this.props.bands)
-      requestAnimationFrame(loop)
-    }
-    loop()
+    uiEventEmitter.on('slow-tick', this.draw)
+  }
+
+  componentWillUnmount () {
+    uiEventEmitter.removeListener('slow-tick', this.draw)
+  }
+
+  draw () {
+    inputs = this.context.store.getState().inputs
+    bands = [inputs.audio_0.value, inputs.audio_1.value, inputs.audio_2.value, inputs.audio_3.value]
+
+    this.drawGraph(bands)
   }
 
   drawGraph (data) {
     if (!data) return
 
-    let ctx = this.canvas.getContext('2d')
-    ctx.fillStyle = 'black'
-    ctx.fillRect(0, 0, this.width, this.height)
+    this.ctx.fillStyle = 'black'
+    this.ctx.fillRect(0, 0, this.width, this.height)
 
     // Create background bars
-    for (let i = 0; i < data.length; i++) {
-      const val = data[ i ]
-      const height = this.height * val
-      const offset = this.height - height - 1
-      const hue = i / data.length * 360
+    for (i = 0; i < data.length; i++) {
+      val = data[ i ]
+      height = this.height * val
+      offset = this.height - height - 1
+      hue = i / data.length * 360
 
-      ctx.fillStyle = 'hsla(' + hue + ', 100%, 50%, 1)'
-      ctx.fillRect(i * this.barWidth, offset, this.barWidth, height)
+      this.ctx.fillStyle = 'hsla(' + hue + ', 100%, 50%, 1)'
+      this.ctx.fillRect(i * this.barWidth, offset, this.barWidth, height)
     }
   }
 
@@ -44,8 +59,8 @@ class AudioAnalyzer extends React.Component {
   }
 }
 
-AudioAnalyzer.propTypes = {
-  bands: PropTypes.arrayOf(PropTypes.number)
+AudioAnalyzer.contextTypes = {
+  store: PropTypes.object.isRequired
 }
 
 export default AudioAnalyzer

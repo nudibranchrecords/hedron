@@ -3,9 +3,14 @@ import { getDefaultModifierIds } from './selectors'
 import getInputLink from '../../selectors/getInputLink'
 import getNode from '../../selectors/getNode'
 import { rInputLinkCreate, rInputLinkDelete } from './actions'
-import { rNodeCreate, uNodeCreate, uNodeDelete, nodeInputLinkAdd, nodeInputLinkRemove } from '../nodes/actions'
+import { rNodeCreate, uNodeCreate, uNodeDelete, uNodeInputLinkAdd,
+  nodeInputLinkRemove, nodeActiveInputLinkToggle } from '../nodes/actions'
 import { inputAssignedLinkCreate, inputAssignedLinkDelete } from '../inputs/actions'
+import { linkableActionCreate, linkableActionInputLinkAdd,
+  linkableActionInputLinkRemove, linkableActionDelete } from '../linkableActions/actions'
 import lfoGenerateOptions from '../../utils/lfoGenerateOptions'
+import midiGenerateOptions from '../../utils/midiGenerateOptions'
+import sequencerGenerateOptions from '../../utils/sequencerGenerateOptions'
 import { midiStartLearning } from '../midi/actions'
 import getCurrentBankIndex from '../../selectors/getCurrentBankIndex'
 import { getAll } from '../../externals/modifiers'
@@ -21,51 +26,90 @@ export function* inputLinkCreate (action) {
   const p = action.payload
   const modifierIds = []
   const lfoOptionIds = []
-  let bankIndex
+  const midiOptionIds = []
+  let linkableActions = {}
+  let bankIndex, node, nodeType, linkType, sequencerGridId
 
   if (p.inputId === 'midi') {
-    yield put(midiStartLearning(p.nodeId))
+    yield put(midiStartLearning(p.nodeId, p.inputType))
   } else {
     const linkId = yield call(uid)
-    const node = yield select(getNode, p.nodeId)
+    if (p.inputType === 'linkableAction') {
+      linkType = 'linkableAction'
+    } else {
+      linkType = 'node'
+      node = yield select(getNode, p.nodeId)
+      nodeType = node.type
+      if (p.inputType !== 'midi' && p.inputId !== 'seq-step') {
+        const modifiers = yield call(getAll)
+        const defaultModifierIds = yield select(getDefaultModifierIds)
 
-    if (p.inputType !== 'midi') {
-      const modifiers = yield call(getAll)
-      const defaultModifierIds = yield select(getDefaultModifierIds)
+        for (let i = 0; i < defaultModifierIds.length; i++) {
+          const id = defaultModifierIds[i]
+          const config = modifiers[id].config
 
-      for (let i = 0; i < defaultModifierIds.length; i++) {
-        const id = defaultModifierIds[i]
-        const config = modifiers[id].config
+          for (let j = 0; j < config.title.length; j++) {
+            if (!config.type || config.type === p.inputType) {
+              const modifierId = yield call(uid)
+              const modifier = {
+                id: modifierId,
+                key: id,
+                title: config.title[j],
+                value: config.defaultValue[j],
+                passToNext: j < config.title.length - 1,
+                inputLinkIds: [],
+                type: config.type,
+                subNode: true
+              }
 
-        for (let j = 0; j < config.title.length; j++) {
-          const modifierId = yield call(uid)
-          const modifier = {
-            id: modifierId,
-            key: id,
-            title: config.title[j],
-            value: config.defaultValue[j],
-            passToNext: j < config.title.length - 1,
-            inputLinkIds: [],
-            type: config.type
+              modifierIds.push(modifierId)
+              yield put(rNodeCreate(modifierId, modifier))
+            }
           }
-
-          modifierIds.push(modifierId)
-          yield put(rNodeCreate(modifierId, modifier))
         }
       }
     }
 
-    const lfoOpts = yield call(lfoGenerateOptions)
+    if (p.inputId === 'lfo') {
+      const lfoOpts = yield call(lfoGenerateOptions)
 
-    for (let key in lfoOpts) {
-      const item = lfoOpts[key]
-      lfoOptionIds.push(item.id)
+      for (let key in lfoOpts) {
+        const item = lfoOpts[key]
+        lfoOptionIds.push(item.id)
 
-      yield put(uNodeCreate(item.id, item))
+        yield put(uNodeCreate(item.id, item))
+      }
     }
 
-    if (p.inputType === 'midi') {
+    if (p.inputId === 'seq-step') {
+      const seqOpts = yield call(sequencerGenerateOptions)
+      sequencerGridId = seqOpts.grid.id
+      yield put(uNodeCreate(sequencerGridId, seqOpts.grid))
+    }
+
+    if (p.inputType === 'midi' || linkType === 'linkableAction') {
       bankIndex = yield select(getCurrentBankIndex, p.deviceId)
+
+      if (linkType === 'node') {
+        const midiOpts = yield call(midiGenerateOptions)
+
+        for (let key in midiOpts) {
+          const item = midiOpts[key]
+          midiOptionIds.push(item.id)
+
+          if (item.key === 'controlType' && p.controlType) {
+            item.value = p.controlType
+          }
+
+          yield put(uNodeCreate(item.id, item))
+        }
+      }
+    }
+
+    if (linkType === 'node') {
+      const toggleActionId = yield call(uid)
+      yield put(linkableActionCreate(toggleActionId, nodeActiveInputLinkToggle(p.nodeId, linkId)))
+      linkableActions.toggleActivate = toggleActionId
     }
 
     const link = {
@@ -76,15 +120,23 @@ export function* inputLinkCreate (action) {
       },
       id: linkId,
       nodeId: p.nodeId,
-      nodeType: node.type,
+      nodeType,
       deviceId: p.deviceId,
       bankIndex,
       modifierIds,
-      lfoOptionIds
+      lfoOptionIds,
+      midiOptionIds,
+      linkableActions,
+      sequencerGridId,
+      linkType
     }
 
     yield put(rInputLinkCreate(linkId, link))
-    yield put(nodeInputLinkAdd(p.nodeId, linkId))
+    if (linkType === 'node') {
+      yield put(uNodeInputLinkAdd(p.nodeId, linkId))
+    } else if (linkType === 'linkableAction') {
+      yield put(linkableActionInputLinkAdd(p.nodeId, linkId))
+    }
     yield put(inputAssignedLinkCreate(p.inputId, linkId, p.deviceId))
   }
 }
@@ -104,7 +156,16 @@ export function* inputLinkDelete (action) {
     }
   }
 
-  yield put(nodeInputLinkRemove(nodeId, p.id))
+  if (link.linkType === 'linkableAction') {
+    yield put(linkableActionInputLinkRemove(nodeId, p.id))
+  } else {
+    yield put(nodeInputLinkRemove(nodeId, p.id))
+  }
+
+  for (const key in link.linkableActions) {
+    yield put(linkableActionDelete(link.linkableActions[key]))
+  }
+
   yield put(rInputLinkDelete(p.id))
 }
 

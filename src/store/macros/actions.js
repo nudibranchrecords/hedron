@@ -25,6 +25,13 @@ export function rMacroDelete (id) {
   }
 }
 
+export function rMacroUpdateLastId (id) {
+  return {
+    type: 'R_MACRO_UPDATE_LAST_ID',
+    payload: { id }
+  }
+}
+
 export function uMacroTargetParamLinkAdd (macroId, paramId) {
   return {
     type: 'U_MACRO_TARGET_PARAM_LINK_ADD',
@@ -46,10 +53,23 @@ export function rMacroCreate (id, nodeId) {
   }
 }
 
+export function rMacroOpenToggle (id) {
+  return {
+    type: 'R_MACRO_OPEN_TOGGLE',
+    payload: { id }
+  }
+}
+
 export function rMacroLearningToggle (id) {
   return {
     type: 'R_MACRO_LEARNING_TOGGLE',
     payload: { id }
+  }
+}
+
+export function rMacroLearningStop () {
+  return {
+    type: 'R_MACRO_LEARNING_STOP'
   }
 }
 

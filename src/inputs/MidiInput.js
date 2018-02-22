@@ -2,6 +2,7 @@ import { inputFired } from '../store/inputs/actions'
 import { midiStopLearning, midiUpdateDevices, midiMessage } from '../store/midi/actions'
 import { uInputLinkCreate } from '../store/inputLinks/actions'
 import { clockPulse } from '../store/clock/actions'
+import { newData as teachMidi } from '../utils/getMidiMode'
 import processMidiMessage from '../utils/processMidiMessage'
 
 export default (store) => {
@@ -9,17 +10,30 @@ export default (store) => {
     const state = store.getState()
     const m = processMidiMessage(rawMessage)
 
-    if (m.type !== 'timingClock') {
+    if (m.type !== 'timingClock' && m.type !== 'noteOff') {
       store.dispatch(midiMessage(rawMessage.target.name, {
         data: rawMessage.data,
         timeStamp: rawMessage.timeStamp
       }))
 
-      const learningId = state.midi.learning
+      const learning = state.midi.learning
 
-      if (learningId) {
-        store.dispatch(uInputLinkCreate(learningId, m.id, 'midi', rawMessage.target.name))
-        store.dispatch(midiStopLearning())
+      if (learning) {
+        let controlType
+        const mode = teachMidi(rawMessage.data, m.type)
+
+        if (mode !== 'learning') {
+          if (mode === 'ignore') {
+            controlType = undefined
+          } else {
+            // abs, rel1, rel2, rel3
+            controlType = mode
+          }
+          store.dispatch(uInputLinkCreate(
+            learning.id, m.id, learning.type, rawMessage.target.name, controlType
+          ))
+          store.dispatch(midiStopLearning())
+        }
       } else {
         store.dispatch(inputFired(m.id, m.value, {
           noteOn: m.type === 'noteOn',
@@ -35,9 +49,10 @@ export default (store) => {
     }
   }
 
-  navigator.requestMIDIAccess().then((midiAccess) => {
+  const processDevices = ports => {
     const devices = {}
-    midiAccess.inputs.forEach((entry) => {
+
+    ports.forEach((entry) => {
       devices[entry.name] = {
         title: entry.name,
         id: entry.name,
@@ -46,6 +61,15 @@ export default (store) => {
       }
       entry.onmidimessage = onMessage
     })
+
     store.dispatch(midiUpdateDevices(devices))
+  }
+
+  navigator.requestMIDIAccess().then((midiAccess) => {
+    processDevices(midiAccess.inputs)
+
+    midiAccess.onstatechange = () => {
+      processDevices(midiAccess.inputs)
+    }
   })
 }

@@ -95,11 +95,11 @@ test('(Selector) getInputLinkModifierIds (node type "shot" input type audio)', (
     },
     nodes: {
       mod1: {
-        key: 'gain',
+        key: 'foo',
         id: 'mod1'
       },
       mod2: {
-        key: 'foo',
+        key: 'threshold',
         id: 'mod2'
       },
       mod3: {
@@ -111,7 +111,7 @@ test('(Selector) getInputLinkModifierIds (node type "shot" input type audio)', (
 
   const actual = getInputLinkModifierIds(state, 'xxx')
 
-  t.deepEqual(actual, ['mod1'], 'Only returns gain modifier')
+  t.deepEqual(actual, ['mod1', 'mod3'], 'Filters out threshold modifier')
   t.end()
 })
 

@@ -1,45 +1,44 @@
 import { select, takeEvery, put, call } from 'redux-saga/effects'
 import { getAssignedLinks } from './selectors'
-import { nodeValueUpdate } from '../nodes/actions'
-import { inputLinkShotFired, inputLinkShotDisarm, inputLinkShotArm } from '../inputLinks/actions'
+import { nodeValuesBatchUpdate, nodeShotFired } from '../nodes/actions'
+import { inputLinkShotDisarm, inputLinkShotArm } from '../inputLinks/actions'
 import { projectError } from '../project/actions'
 import getNodes from '../../selectors/getNodes'
 import getNode from '../../selectors/getNode'
+import getLinkableAction from '../../selectors/getLinkableAction'
 import getNodesValues from '../../selectors/getNodesValues'
-import getCurrentBankIndex from '../../selectors/getCurrentBankIndex'
 import lfoProcess from '../../utils/lfoProcess'
 import midiValueProcess from '../../utils/midiValueProcess'
 import { work } from '../../externals/modifiers'
 import debounceInput from '../../utils/debounceInput'
 
-// let frameHasPassed = true
-// let messageCount = 1
-
 export function* handleInput (action) {
   const p = action.payload
+  const inputType = p.meta && p.meta.type
   const messageCount = yield call(debounceInput, p)
   if (messageCount) {
     try {
       const links = yield select(getAssignedLinks, p.inputId)
+      const values = []
 
       for (let i = 0; i < links.length; i++) {
-        let value = p.value
-        let modifiers
         let skip
-        if (p.meta && p.meta.type === 'midi') {
-          const currentDeviceBank = yield select(getCurrentBankIndex, links[i].deviceId)
-          if (currentDeviceBank !== links[i].bankIndex) skip = true
 
-          if (!skip) {
+        if (links[i].linkType === 'linkableAction') {
+          const linkableAction = yield select(getLinkableAction, links[i].nodeId)
+          yield put(linkableAction.action)
+        } else {
+          let value = p.value
+          let modifiers
+          if (inputType === 'midi') {
             const currNode = yield select(getNode, links[i].nodeId)
 
             let midiValue = value
             value = currNode.value
-            value = yield call(midiValueProcess, value, midiValue, messageCount)
+            const options = yield select(getNodesValues, links[i].midiOptionIds)
+            value = yield call(midiValueProcess, currNode, midiValue, options, messageCount)
           }
-        }
 
-        if (!skip) {
           if (p.inputId === 'lfo') {
             let o = yield select(getNodesValues, links[i].lfoOptionIds)
             value = yield call(lfoProcess, value, o.shape, o.rate)
@@ -50,7 +49,7 @@ export function* handleInput (action) {
             let vals = []
             for (let j = 0; j < modifiers.length; j++) {
               const m = modifiers[j]
-              if (!m.type || m.type === p.type) {
+              if (!m.type || m.type === inputType) {
                 vals.push(m.value)
                 if (!m.passToNext) {
                   value = yield call(work, m.key, vals, value)
@@ -62,20 +61,22 @@ export function* handleInput (action) {
           }
 
           switch (links[i].nodeType) {
-            case 'select': {
-              const node = yield select(getNode, links[i].nodeId)
-              const options = node.options
-              value = options[Math.floor(options.length * value)].value
-              break
-            }
             case 'shot': {
-              const node = yield select(getNode, links[i].nodeId)
+              const nodeId = links[i].nodeId
+              const node = yield select(getNode, nodeId)
+
               if (p.meta && p.meta.noteOn) {
-                yield put(inputLinkShotFired(node.sketchId, node.method))
-              } else if (value > 0.5 && links[i].armed) {
-                yield put(inputLinkShotFired(node.sketchId, node.method))
+                yield put(nodeShotFired(nodeId, node.sketchId, node.method))
+              } else if (p.inputId === 'seq-step') {
+                const seqNode = yield select(getNode, links[i].sequencerGridId)
+                if (seqNode.value[value] === 1) {
+                  yield put(nodeShotFired(nodeId, node.sketchId, node.method))
+                }
+                skip = true
+              } else if (value > 0.333 && links[i].armed) {
+                yield put(nodeShotFired(nodeId, node.sketchId, node.method))
                 yield put(inputLinkShotDisarm(links[i].id))
-              } else if (value < 0.5) {
+              } else if (value < 0.333) {
                 yield put(inputLinkShotArm(links[i].id))
               }
               break
@@ -87,10 +88,16 @@ export function* handleInput (action) {
             }
           }
 
-          yield put(nodeValueUpdate(links[i].nodeId, value, p.meta))
+          if (!skip) {
+            values.push({
+              id: links[i].nodeId,
+              value
+            })
+          }
         }
-        // frameHasPassed = false
-        // messageCount = 1
+      }
+      if (values.length) {
+        yield put(nodeValuesBatchUpdate(values, p.meta))
       }
     } catch (error) {
       console.error(error)

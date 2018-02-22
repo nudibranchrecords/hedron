@@ -1,5 +1,4 @@
 import test from 'tape'
-import deepFreeze from 'deep-freeze'
 import paramsReducer from '../reducer'
 import { returnsPreviousState } from '../../../testUtils'
 import * as a from '../actions'
@@ -12,8 +11,6 @@ test('(Reducer) clockReducer -  - Increases beat on CLOCK_BEAT_INC', (t) => {
   originalState = {
     beat: 1
   }
-
-  deepFreeze(originalState)
 
   expectedState = {
     beat: 2
@@ -41,8 +38,6 @@ test('(Reducer) clockReducer - resets beat on CLOCK_RESET', (t) => {
     beat: 100
   }
 
-  deepFreeze(originalState)
-
   expectedState = {
     beat: 0
   }
@@ -60,8 +55,6 @@ test('(Reducer) clockReducer - loops back to 0 after 64 beats', (t) => {
   originalState = {
     beat: 62
   }
-
-  deepFreeze(originalState)
 
   expectedState = {
     beat: 63
@@ -89,8 +82,6 @@ test('(Reducer) clockReducer - updates BPM on CLOCK_BPM_UPDATE', (t) => {
     bpm: undefined
   }
 
-  deepFreeze(originalState)
-
   expectedState = {
     bpm: 120
   }
@@ -109,32 +100,3 @@ test('(Reducer) clockReducer - updates BPM on CLOCK_BPM_UPDATE', (t) => {
 
   t.end()
 })
-
-test('(Reducer) clockReducer - switches mode on clockGeneratedToggle', (t) => {
-  let originalState, expectedState, actualState
-
-  originalState = {
-    isGenerated: true
-  }
-
-  deepFreeze(originalState)
-
-  expectedState = {
-    isGenerated: false
-  }
-
-  actualState = paramsReducer(originalState, a.clockGeneratedToggle(120))
-
-  t.deepEqual(actualState, expectedState)
-
-  expectedState = {
-    isGenerated: true
-  }
-
-  actualState = paramsReducer(actualState, a.clockGeneratedToggle(110))
-
-  t.deepEqual(actualState, expectedState)
-
-  t.end()
-})
-

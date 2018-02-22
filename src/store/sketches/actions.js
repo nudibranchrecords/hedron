@@ -20,3 +20,17 @@ export function sketchesReplaceAll (sketches) {
     }
   }
 }
+
+export function sketchNodeOpenedToggle (sketchId, nodeId, nodeType) {
+  return {
+    type: 'SKETCH_NODE_OPENED_TOGGLE',
+    payload: { sketchId, nodeId, nodeType }
+  }
+}
+
+export function sketchTitleUpdate (sketchId, value) {
+  return {
+    type: 'SKETCH_TITLE_UPDATE',
+    payload: { sketchId, value }
+  }
+}

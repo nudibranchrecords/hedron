@@ -3,12 +3,12 @@ import PropTypes from 'prop-types'
 import Viewer from '../../containers/Viewer'
 import Menu from '../../containers/Menu'
 import styled from 'styled-components'
-import AudioAnalyzer from '../../containers/AudioAnalyzer'
+import AudioAnalyzer from '../../components/AudioAnalyzer'
 import Clock from '../../containers/Clock'
 import Devices from '../../containers/Devices'
+import theme from '../../utils/theme'
 
 const Wrapper = styled.div`
-  padding: 0.5rem;
   display: flex;
   height: 100%;
   flex-direction: column;
@@ -24,9 +24,12 @@ const Bottom = styled.div`
 const Tools = styled.div`
   display: flex;
   margin-bottom: 1rem;
+  background: ${theme.bgColorDark3};
+  padding: 0.5rem;
 
   & > div {
     height: 48px;
+    margin-right: 0.5rem
   }
 `
 

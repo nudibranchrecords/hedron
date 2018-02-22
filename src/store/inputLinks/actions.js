@@ -1,11 +1,12 @@
-export function uInputLinkCreate (nodeId, inputId, inputType, deviceId) {
+export function uInputLinkCreate (nodeId, inputId, inputType, deviceId, controlType) {
   return {
     type: 'U_INPUT_LINK_CREATE',
     payload: {
       nodeId,
       inputId,
       inputType,
-      deviceId
+      deviceId,
+      controlType
     }
   }
 }
@@ -64,15 +65,6 @@ export function rInputLinkUpdate (linkId, input) {
     payload: {
       linkId,
       input
-    }
-  }
-}
-
-export function inputLinkShotFired (sketchId, method) {
-  return {
-    type: 'INPUT_LINK_SHOT_FIRED',
-    payload: {
-      sketchId, method
     }
   }
 }

@@ -8,14 +8,14 @@ import getSketchesPath from '../../selectors/getSketchesPath'
 proxyquire.noCallThru()
 
 const engine = proxyquire('../index', {
-  'sketches' : {}
+  'sketches': {}
 }).default
 
 const {
   watchSketches, handleAddSketch, handleRemoveSketch,
   handleInitiateSketches, handleShotFired
 } = proxyquire('../sagas', {
-  'sketches' : []
+  'sketches': []
 })
 
 test('(Saga) watchSketches', (t) => {
@@ -40,8 +40,8 @@ test('(Saga) watchSketches', (t) => {
 
   t.deepEqual(
     generator.next().value,
-    takeEvery('INPUT_LINK_SHOT_FIRED', handleShotFired),
-    'INPUT_LINK_SHOT_FIRED'
+    takeEvery('NODE_SHOT_FIRED', handleShotFired),
+    'NODE_SHOT_FIRED'
   )
   t.end()
 })

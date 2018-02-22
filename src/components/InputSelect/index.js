@@ -1,54 +1,29 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import Select from 'react-select'
+import styled from 'styled-components'
 
-const options = [
-  {
-    value: false,
-    label: 'None'
-  },
-  {
-    value: 'audio_0',
-    type: 'audio',
-    label: 'Low'
-  },
-  {
-    value: 'audio_1',
-    type: 'audio',
-    label: 'Low-Mid'
-  },
-  {
-    value: 'audio_2',
-    type: 'audio',
-    label: 'Mid'
-  },
-  {
-    value: 'audio_3',
-    type: 'audio',
-    label: 'High'
-  },
-  {
-    value: 'midi',
-    label: 'MIDI'
-  },
-  {
-    value: 'lfo',
-    label: 'LFO'
-  }
-]
+const Wrapper = styled.div`
+  min-width: 5rem;
+`
 
-const InputSelect = ({ inputId, onInputChange }) => (
-  <div>
-    <Select clearable={false} searchable={false} options={options} onChange={onInputChange} value={inputId} />
-  </div>
+const InputSelect = ({ onInputChange, options }) => (
+  <Wrapper>
+    <Select
+      value={false}
+      clearable={false}
+      searchable={false}
+      options={options}
+      onChange={onInputChange}
+    />
+  </Wrapper>
 )
 
 InputSelect.propTypes = {
-  inputId: PropTypes.oneOfType([
-    PropTypes.string,
-    PropTypes.bool
-  ]),
-  onInputChange: PropTypes.func.isRequired
+  onInputChange: PropTypes.func.isRequired,
+  options: PropTypes.arrayOf(
+    PropTypes.object
+  ).isRequired
 }
 
 export default InputSelect

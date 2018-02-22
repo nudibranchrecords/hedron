@@ -9,6 +9,7 @@ export default () => {
       value: 'sine',
       type: 'select',
       inputLinkIds: [],
+      subNode: true,
       options: [
         {
           value: 'sine',
@@ -39,6 +40,7 @@ export default () => {
       value: 1,
       type: 'select',
       inputLinkIds: [],
+      subNode: true,
       options: [
         {
           value: 32,

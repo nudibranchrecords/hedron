@@ -1,18 +1,19 @@
 import * as THREE from 'three'
+import uiEventEmitter from '../utils/uiEventEmitter'
 
 class World {
-  setScene (canvas) {
+  setScene (el) {
     if (!this.canvas) {
-      this.canvas = canvas
-      this.renderer = new THREE.WebGLRenderer({ canvas: this.canvas })
+      this.viewerEl = el
+      this.renderer = new THREE.WebGLRenderer()
+      this.canvas = this.renderer.domElement
       this.scene = new THREE.Scene()
       this.camera = new THREE.PerspectiveCamera(75, null, 1, 1000000)
       this.camera.position.z = 1000
-      this.viewerEl = this.renderer.domElement.parentElement
+      this.viewerEl.appendChild(this.canvas)
       this.setSize()
 
-      window.addEventListener('resize', e => {
-        e.preventDefault()
+      uiEventEmitter.on('repaint', () => {
         this.setSize()
       })
     }
@@ -52,6 +53,7 @@ class World {
   }
 
   setOutput (win) {
+    this.stopOutput()
     const container = win.document.querySelector('div')
 
     this.width = container.offsetWidth
@@ -59,8 +61,8 @@ class World {
     this.outputEl = container
 
     // Move renderer canvas to new window
-    this.outputEl.appendChild(this.renderer.domElement)
-    this.renderer.domElement.setAttribute('style', '')
+    this.outputEl.appendChild(this.canvas)
+    this.canvas.setAttribute('style', '')
 
     // Setup preview canvas to replace renderer canvas in controls window
     this.previewCanvas = document.createElement('canvas')
@@ -74,8 +76,18 @@ class World {
     this.setSize()
 
     win.addEventListener('resize', () => {
-      this.setSize()
+      uiEventEmitter.emit('repaint')
     })
+  }
+
+  stopOutput () {
+    this.viewerEl.innerHTML = ''
+    this.canvas.setAttribute('style', '')
+    this.viewerEl.appendChild(this.canvas)
+
+    this.isSendingOutput = false
+
+    this.setSize()
   }
 
   render () {

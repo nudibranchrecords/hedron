@@ -4,6 +4,7 @@ import NavItem from '../NavItem'
 import styled from 'styled-components'
 
 const Wrapper = styled.nav`
+  margin-bottom: 2rem;
 `
 
 const SketchesNav = ({ items }) => (

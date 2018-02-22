@@ -4,14 +4,14 @@ import { connect } from 'react-redux'
 import Menu from '../../components/Menu'
 import { projectSave, projectLoadRequest, projectFilepathUpdate } from '../../store/project/actions'
 import { windowSendOutput } from '../../store/windows/actions'
-import { clockGeneratedToggle } from '../../store/clock/actions'
+import { openDevTools } from '../../windows'
+import getProjectErrorLatest from '../../selectors/getProjectErrorLatest'
 
 const { dialog } = electron.remote
 
 const mapStateToProps = (state, ownProps) => ({
   filePath: state.project.filePath,
   saveIsDisabled: !state.project.filePath,
-  clockIsGenerated: state.clock.isGenerated,
   displayOptions: state.displays.list.map((item, index) => {
     const width = item && item.bounds && item.bounds.width
     const height = item && item.bounds && item.bounds.height
@@ -19,7 +19,9 @@ const mapStateToProps = (state, ownProps) => ({
       value: index,
       label: width + 'x' + height
     }
-  })
+  }),
+  onDevToolsClick: () => { openDevTools() },
+  errorMessage: getProjectErrorLatest(state)
 })
 
 const fileFilters = [
@@ -50,11 +52,16 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
       }
     })
   },
-  onSendOutputChange: index => dispatch(windowSendOutput(index)),
-  onClockToggleClick: () => dispatch(clockGeneratedToggle())
+  onSendOutputChange: index => dispatch(windowSendOutput(index))
 })
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps
+  mapDispatchToProps,
+  null,
+  {
+    areStatesEqual: (next, prev) =>
+      next.project === prev.project &&
+      next.displays === prev.displays
+  }
 )(Menu)

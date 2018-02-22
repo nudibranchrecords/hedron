@@ -1,20 +1,17 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import Param from '../../containers/Param'
-import InputLink from '../../containers/InputLink'
+import InputLinkUI from '../../containers/InputLinkUI'
 
-const SketchParam = (props) => (
-  <Param {...props}>
-    {props.inputLinkIds.map(id => (
-      <InputLink id={id} key={id} />
-    ))}
+const SketchParam = ({ nodeId, sketchId }) => (
+  <Param nodeId={nodeId} sketchId={sketchId}>
+    <InputLinkUI nodeId={nodeId} />
   </Param>
 )
 
 SketchParam.propTypes = {
-  inputLinkIds: PropTypes.arrayOf(
-    PropTypes.string
-  )
+  nodeId: PropTypes.string.isRequired,
+  sketchId: PropTypes.string.isRequired
 }
 
 export default SketchParam

@@ -17,11 +17,14 @@ test('(Reducer) midiReducer', (t) => {
   deepFreeze(originalState)
 
   expectedState = {
-    learning: 'XXX',
+    learning: {
+      id: 'XXX',
+      type: 'foo'
+    },
     devices: {}
   }
 
-  actualState = midiReducer(originalState, a.midiStartLearning('XXX'))
+  actualState = midiReducer(originalState, a.midiStartLearning('XXX', 'foo'))
 
   t.deepEqual(actualState, expectedState, 'sets id on midiStartLearning')
 

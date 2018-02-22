@@ -25,8 +25,17 @@ export const sendOutput = (index) => {
 
   outputWin.document.write('<div style="width:100vw;height:100vh;"></div>')
   outputWin.document.body.style.margin = '0'
+  outputWin.document.body.style.cursor = 'none'
+
+  outputWin.addEventListener('beforeunload', () => {
+    world.stopOutput()
+  })
 
   setTimeout(() => {
     world.setOutput(outputWin)
   }, 1000)
+}
+
+export const openDevTools = () => {
+  ipcRenderer.send('open-dev-tools')
 }

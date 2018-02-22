@@ -4,13 +4,18 @@ import getMacro from '../../selectors/getMacro'
 import { shouldItLearn } from './utils'
 import getMacroLearningId from '../../selectors/getMacroLearningId'
 import getMacroTargetParamLink from '../../selectors/getMacroTargetParamLink'
+import getMacroLastId from '../../selectors/getMacroLastId'
 import macroInterpolate from '../../utils/macroInterpolate'
+import isInputTypeHuman from '../../utils/isInputTypeHuman'
 import { rNodeCreate, nodeValueUpdate, uNodeDelete, rNodeConnectedMacroAdd,
-          rNodeConnectedMacroRemove
+          rNodeConnectedMacroRemove, nodeValuesBatchUpdate
 } from '../nodes/actions'
 import { rMacroCreate, rMacroDelete, rMacroTargetParamLinkCreate, rMacroTargetParamLinkDelete,
-        rMacroTargetParamLinkUpdateStartValue, uMacroTargetParamLinkAdd, rMacroLearningToggle
+        rMacroTargetParamLinkUpdateStartValue, uMacroTargetParamLinkAdd, rMacroLearningToggle,
+        rMacroUpdateLastId, rMacroOpenToggle
 } from './actions'
+import { uiEditingOpen } from '../ui/actions'
+import { projectError } from '../project/actions'
 
 import uid from 'uid'
 
@@ -25,6 +30,8 @@ export function* macroCreate (action) {
     value: 0
   }))
   yield put(rMacroCreate(macroId, nodeId))
+  yield put(rMacroOpenToggle(macroId))
+  yield put(uiEditingOpen('nodeTitle', nodeId))
 }
 
 export function* macroDelete (action) {
@@ -81,6 +88,7 @@ export function* macroProcess (p, node) {
   const m = yield select(getMacro, node.macroId)
   const links = m.targetParamLinks
   const keys = Object.keys(links)
+  const values = []
 
   for (let i = 0; i < keys.length; i++) {
     const l = links[keys[i]]
@@ -92,8 +100,15 @@ export function* macroProcess (p, node) {
     }
     const n = yield select(getNode, l.nodeId)
     const val = yield call(macroInterpolate, startValue, n.value, p.value)
-    yield put(nodeValueUpdate(l.paramId, val, { type: 'macro', macroId: node.macroId }))
+    values.push(
+      {
+        id: l.paramId,
+        value: val
+      }
+    )
   }
+
+  yield put(nodeValuesBatchUpdate(values, { type: 'macro', macroId: node.macroId }))
 }
 
 export function* macroLearnFromParam (p, macroId) {
@@ -107,39 +122,107 @@ export function* macroLearnFromParam (p, macroId) {
   yield put(nodeValueUpdate(link.nodeId, p.value))
 }
 
+// When a node value is updated, a few things can happen:
+// 1. MACRO: Macro is processed
+// 2. OTHER VALUE: New param is added to a macro (learning)
+// 3. OTHER VALUE: A node value has changed that has macros assigned to it:
+//    - The macros assigned to it need to be reset to false
+//      (to stop value jumping next time they are used)
+//    - If the action has come from a macro, this macro should
+//      not be reset to false
 export function* handleNodeValueUpdate (action) {
-  const p = action.payload
-  const senderType = p.meta && p.meta.type
-  const senderMacroId = p.meta && p.meta.macroId
+  try {
+    const p = action.payload
+    const senderType = p.meta && p.meta.type
+    const senderMacroId = p.meta && p.meta.macroId
 
-  const node = yield select(getNode, p.id)
-  const nodeMacroIds = node.connectedMacroIds
+    const node = yield select(getNode, p.id)
 
-  const learningId = yield select(getMacroLearningId)
+    if (node.type === 'macro' && senderType !== 'macro') {
+    // Normal behaviour, simple process of macro using value of node
+      yield call(macroProcess, p, node)
+    } else if (node.type !== 'macro') {
+      const isHuman = yield call(isInputTypeHuman, senderType)
 
-  if (node.type === 'macro' && senderType !== 'macro') {
-    yield call(macroProcess, p, node)
-  } else {
-    const learn = yield call(shouldItLearn, learningId, node, p)
-    if (learn) {
-      yield call(macroLearnFromParam, p, learningId)
-    }
-    if (nodeMacroIds) {
-      for (let i = 0; i < nodeMacroIds.length; i++) {
-        const macroId = nodeMacroIds[i]
-        if (senderMacroId !== macroId) {
-          const macro = yield select(getMacro, macroId)
-          const node = yield select(getNode, macro.nodeId)
+      if (isHuman) {
+        const learningId = yield select(getMacroLearningId)
+      // Learning logic here
+        const learn = yield call(shouldItLearn, learningId, node, p)
+        if (learn) {
+          yield call(macroLearnFromParam, p, learningId)
+        }
+        const nodeMacroIds = node.connectedMacroIds
+        // If this node has macros assigned to it
+        if (nodeMacroIds) {
+          // Go through the macros
+          for (let i = 0; i < nodeMacroIds.length; i++) {
+            const macroId = nodeMacroIds[i]
+            // If this action has not come from the macro assigned to it
+            // then reset that macro and relevant start vals
+            if (senderMacroId !== macroId) {
+              const macro = yield select(getMacro, macroId)
+              const node = yield select(getNode, macro.nodeId)
 
-          if (node.value !== false) {
-            for (const key in macro.targetParamLinks) {
-              yield put(rMacroTargetParamLinkUpdateStartValue(macroId, key, false))
+              if (node.value !== false) {
+                for (const key in macro.targetParamLinks) {
+                  yield put(rMacroTargetParamLinkUpdateStartValue(macroId, key, false))
+                }
+
+                yield put(nodeValueUpdate(macro.nodeId, false, { type: 'macro' }))
+              }
             }
-
-            yield put(nodeValueUpdate(macro.nodeId, false, { type: 'macro' }))
           }
         }
       }
+    }
+  } catch (error) {
+    console.error(error)
+    yield put(projectError(`Failed to process macro: ${error.message}`))
+  }
+}
+
+export function* handleNodeValueBatchUpdate (action) {
+  const p = action.payload
+  let doLoop = false
+  const type = p.meta && p.meta.type
+
+  // Anything that isn't a macro should go straight to the loop
+  if (type !== 'macro') doLoop = true
+
+  // Macro stuff doesnt necessarily have to go through the loop
+  // if already has done, so we check to see
+  if (!doLoop) {
+    const macro = yield select(getMacro, p.meta.macroId)
+    const node = yield select(getNode, macro.nodeId)
+
+    // Do loop if macro value is false
+    if (node.value === false) {
+      doLoop = true
+    } else {
+      // Do loop if last macro id doesnt match this one
+      const lastMacroId = yield select(getMacroLastId)
+
+      if (lastMacroId !== p.meta.macroId) {
+        doLoop = true
+      }
+    }
+  }
+
+  if (doLoop) {
+    for (let i = 0; i < p.values.length; i++) {
+      const node = p.values[i]
+      yield call(handleNodeValueUpdate, {
+        payload: {
+          meta: p.meta,
+          id: node.id,
+          value: node.value
+        }
+      })
+    }
+
+    if (type === 'macro') {
+      // Set last macro ID so no need to do loop again for this macro
+      yield put(rMacroUpdateLastId(p.meta.macroId))
     }
   }
 }
@@ -150,4 +233,5 @@ export function* watchMacros () {
   yield takeEvery('U_MACRO_TARGET_PARAM_LINK_ADD', macroTargetParamLinkAdd)
   yield takeEvery('U_MACRO_TARGET_PARAM_LINK_DELETE', macroTargetParamLinkDelete)
   yield takeEvery('NODE_VALUE_UPDATE', handleNodeValueUpdate)
+  yield takeEvery('NODE_VALUES_BATCH_UPDATE', handleNodeValueBatchUpdate)
 }

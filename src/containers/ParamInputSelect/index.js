@@ -1,13 +1,11 @@
 import { connect } from 'react-redux'
 import InputSelect from '../../components/InputSelect'
 import { uInputLinkCreate } from '../../store/inputLinks/actions'
-import getNodeInputId from '../../selectors/getNodeInputId'
+import getNodeInputOptions from '../../selectors/getNodeInputOptions'
 
-const mapStateToProps = (state, ownProps) => {
-  return {
-    inputId: getNodeInputId(state, ownProps.nodeId)
-  }
-}
+const mapStateToProps = (state, ownProps) => ({
+  options: getNodeInputOptions(state, ownProps.nodeId)
+})
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
@@ -19,5 +17,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps
+  mapDispatchToProps,
+  null,
+  {
+    areStatesEqual: () => true
+  }
 )(InputSelect)

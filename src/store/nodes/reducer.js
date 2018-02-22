@@ -10,13 +10,29 @@ const nodesReducer = (state = defaultState, action) => {
       if (!state[p.id]) {
         return state
       }
-      return {
-        ...state,
-        [p.id]: {
-          ...state[p.id],
-          value: p.value
+
+      if (p.meta && p.meta.dontMutate) {
+        return {
+          ...state,
+          [p.id]: {
+            ...state[p.id],
+            value: p.value
+          }
         }
+      } else {
+        // Intentionally mutating state as these values are updating
+        // VERY often. Mutating alleviates garbage collection issues
+        state[p.id].value = p.value
       }
+
+      return state
+    }
+    case 'NODE_VALUES_BATCH_UPDATE': {
+      for (let i = 0; i < p.values.length; i++) {
+        const node = p.values[i]
+        state[node.id].value = node.value
+      }
+      return state
     }
     case 'R_NODE_DELETE': {
       return _.omit(state, [p.id])
@@ -28,12 +44,13 @@ const nodesReducer = (state = defaultState, action) => {
           id: p.id,
           value: 0,
           inputLinkIds: [],
+          shotCount: 0,
           connectedMacroIds: [],
           ...p.node
         }
       }
     }
-    case 'NODE_INPUT_LINK_ADD': {
+    case 'R_NODE_INPUT_LINK_ADD': {
       if (!state[p.id]) {
         return state
       }
@@ -91,7 +108,7 @@ const nodesReducer = (state = defaultState, action) => {
     case 'R_NODE_INPUT_UPDATE': {
       return {
         ...state,
-        [p.nodeId] : {
+        [p.nodeId]: {
           ...state[p.nodeId],
           input: p.input
         }
@@ -100,9 +117,45 @@ const nodesReducer = (state = defaultState, action) => {
     case 'NODE_OPEN_TOGGLE': {
       return {
         ...state,
-        [p.id] : {
+        [p.id]: {
           ...state[p.id],
           isOpen: !state[p.id].isOpen
+        }
+      }
+    }
+    case 'NODE_TAB_OPEN': {
+      return {
+        ...state,
+        [p.nodeId]: {
+          ...state[p.nodeId],
+          openedLinkId: p.linkId
+        }
+      }
+    }
+    case 'NODE_ACTIVE_INPUT_LINK_TOGGLE': {
+      return {
+        ...state,
+        [p.nodeId]: {
+          ...state[p.nodeId],
+          activeInputLinkId: p.linkId !== state[p.nodeId].activeInputLinkId ? p.linkId : undefined
+        }
+      }
+    }
+    case 'NODE_SHOT_FIRED': {
+      return {
+        ...state,
+        [p.nodeId]: {
+          ...state[p.nodeId],
+          shotCount: state[p.nodeId].shotCount + 1
+        }
+      }
+    }
+    case 'NODE_TITLE_UPDATE': {
+      return {
+        ...state,
+        [p.nodeId]: {
+          ...state[p.nodeId],
+          title: p.value
         }
       }
     }
