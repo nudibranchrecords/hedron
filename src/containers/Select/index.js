@@ -15,9 +15,7 @@ const mapStateToProps = (state, ownProps) => {
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     onChange: value => {
-      dispatch(nodeValueUpdate(ownProps.nodeId, value.value, {
-        dontMutate: true
-      }))
+      dispatch(nodeValueUpdate(ownProps.nodeId, value.value))
     },
     onAssignClick: () => {
       dispatch(uInputLinkCreate(ownProps.nodeId, 'midi', 'midi'))
@@ -30,7 +28,6 @@ export default connect(
   mapDispatchToProps,
   null,
   {
-    areStatesEqual: (next, prev) =>
-      next.nodes === prev.nodes
+    areStatesEqual: () => false
   }
 )(Select)
