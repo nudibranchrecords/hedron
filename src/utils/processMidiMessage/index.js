@@ -21,7 +21,7 @@ export default message => {
     type = 'timingClock'
   }
 
-  if (d2) {
+  if (d2 !== undefined) {
     value = d2 / 127
   }
 

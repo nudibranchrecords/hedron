@@ -97,6 +97,10 @@ export function* inputLinkCreate (action) {
           const item = midiOpts[key]
           midiOptionIds.push(item.id)
 
+          if (item.key === 'controlType' && p.controlType) {
+            item.value = p.controlType
+          }
+
           yield put(uNodeCreate(item.id, item))
         }
       }

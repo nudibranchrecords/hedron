@@ -418,8 +418,9 @@ test('(Saga) inputLinkCreate (type midi)', (t) => {
   const inputId = 'midi_xxx'
   const inputType = 'midi'
   const deviceId = 'DEVICE1'
+  const controlType = 'rel1'
 
-  const generator = inputLinkCreate(uInputLinkCreate(nodeId, inputId, inputType, deviceId))
+  const generator = inputLinkCreate(uInputLinkCreate(nodeId, inputId, inputType, deviceId, controlType))
 
   t.deepEqual(
     generator.next().value,
@@ -456,11 +457,12 @@ test('(Saga) inputLinkCreate (type midi)', (t) => {
   const midiOpts = [
     {
       id: 'MIDI1',
-      foo: 'bar'
+      key: 'bar'
     },
     {
       id: 'MIDI2',
-      foo: 'lorem'
+      key: 'controlType',
+      value: 'abs'
     }
   ]
 
@@ -468,7 +470,7 @@ test('(Saga) inputLinkCreate (type midi)', (t) => {
     generator.next(midiOpts).value,
     put(uNodeCreate('MIDI1', {
       id: 'MIDI1',
-      foo: 'bar'
+      key: 'bar'
     })),
     'Dispatch node create action'
   )
@@ -477,9 +479,10 @@ test('(Saga) inputLinkCreate (type midi)', (t) => {
     generator.next().value,
     put(uNodeCreate('MIDI2', {
       id: 'MIDI2',
-      foo: 'lorem'
+      key: 'controlType',
+      value: controlType
     })),
-    'Dispatch node create action'
+    'Dispatch node create action (with value as passed in controlType)'
   )
 
   t.deepEqual(

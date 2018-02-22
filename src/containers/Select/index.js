@@ -30,7 +30,6 @@ export default connect(
   mapDispatchToProps,
   null,
   {
-    areStatesEqual: (next, prev) =>
-      next.nodes === prev.nodes
+    areStatesEqual: () => false
   }
 )(Select)

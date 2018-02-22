@@ -651,12 +651,13 @@ test('(Saga) handleInput (midi)', (t) => {
   )
 
   const midiOptionNodes = {
-    sensitity: 0.11
+    foo: 0.11,
+    bar: 0.33
   }
 
   t.deepEqual(
     generator.next(midiOptionNodes).value,
-    call(midiValueProcess, 0.7, 0.5, messageCount, 0.11, node),
+    call(midiValueProcess, node, 0.5, midiOptionNodes, messageCount),
     'Calls midiValueProcess using nodeValue, midi action value and number of messages'
   )
 
