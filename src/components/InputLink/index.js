@@ -40,7 +40,8 @@ class InputLink extends React.Component {
   shouldComponentUpdate (prevProps) {
     return (
       this.props.isActive !== prevProps.isActive ||
-      this.props.id !== prevProps.id
+      this.props.id !== prevProps.id ||
+      this.props.midiOptionIds.length !== prevProps.midiOptionIds.length
     )
   }
 
