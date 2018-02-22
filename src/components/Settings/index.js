@@ -13,7 +13,7 @@ const Wrapper = styled.div`
 const Settings = () => (
   <Wrapper>
     <ViewHeader>Settings</ViewHeader>
-    <Form>
+    <Form onSubmit={e => e.preventDefault()}>
       <label htmlFor='clockGenerated'>Clock generated</label>
       <Field name='clockGenerated' component='input' type='checkbox' />
       <label htmlFor='clockBpm'>Clock generated BPM</label>
