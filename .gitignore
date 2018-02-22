@@ -2,8 +2,4 @@
 *.log
 node_modules
 dist
-sketches/*
-!sketches/grid
-!sketches/solid
-!sketches/env
 config/dev.config.js
