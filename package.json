@@ -6,8 +6,8 @@
   "scripts": {
     "lint": "eslint bin build config server src tests",
     "lint:css": "stylelint \"src/components/**/*.js\"",
-    "lint:fix": "npm run lint -- --fix",
-    "test": "NODE_ENV=test tape -r babel-register src/**/*.spec.js  | tap-colorize --info '#B788CE'",
+    "lint:fix": "yarn lint -- --fix",
+    "test": "yarn lint && NODE_ENV=test tape-watch --once -r babel-register src/**/*.spec.js -p tap-diff",
     "test:dev": "NODE_ENV=test tape-watch -r babel-register src/**/*.spec.js -p tap-diff",
     "compile": "electron-webpack",
     "dist": "yarn compile && electron-builder",
