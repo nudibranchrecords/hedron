@@ -52,17 +52,6 @@ const Menu = ({
           </Row>
         </div>
         <div>
-          <h5>Displays</h5>
-          <Row>
-            {
-              displayOptions.map((item, index) => (
-                <Button key={index} onClick={() => onSendOutputChange(index)}>{item.label}</Button>
-              ))
-            }
-          </Row>
-        </div>
-        <div>
-
           <Button to='/settings'>
             Settings
           </Button>
