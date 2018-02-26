@@ -13,6 +13,7 @@ import PanelDragger from '../PanelDragger'
 import MidiLearn from '../../containers/MidiLearn'
 import EditingOverlay from '../../containers/EditingOverlay'
 import MainViewOuter from '../../containers/MainViewOuter'
+import Home from '../../containers/Home'
 
 const Wrapper = styled.div`
   display: flex;
@@ -48,6 +49,7 @@ const App = ({ stats, leftWidth, onLeftDrag }) => (
     </Left>
     <Right>
       <MainViewOuter>
+        <Route path='/' exact component={Home} />
         <Route path='/sketches/view/:sketchId' component={CurrentSketch} />
         <Route path='/sketches/add' component={AddSketch} />
         <Route path='/macros' component={Macros} />
