@@ -14,11 +14,13 @@ const projectMenu = {
     },
     {
       label: 'Save',
-      click: () => { onClick('project-save') }
+      click: () => { onClick('project-save') },
+      accelerator: 'CommandOrControl+S'
     },
     {
       label: 'Save As...',
-      click: () => { onClick('project-save-as') }
+      click: () => { onClick('project-save-as') },
+      accelerator: 'CommandOrControl+Shift+S'
     },
     {
       label: 'Load',
