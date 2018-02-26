@@ -49,6 +49,12 @@ export function projectFilepathUpdate (filePath) {
   }
 }
 
+export function projectChooseSketchesFolder () {
+  return {
+    type: 'PROJECT_CHOOSE_SKETCHES_FOLDER'
+  }
+}
+
 export function projectSketchesPathUpdate (path) {
   return {
     type: 'PROJECT_SKETCHES_PATH_UPDATE',

@@ -1,7 +1,8 @@
 import 'babel-polyfill'
 import test from 'tape'
 import { call, select, takeEvery, put } from 'redux-saga/effects'
-import { watchProject, saveProject, loadProjectRequest, saveAsProject, loadProject } from '../sagas'
+import { watchProject, saveProject, loadProjectRequest,
+  saveAsProject, loadProject, chooseSketchesFolder } from '../sagas'
 import { getProjectData, getProjectFilepath } from '../selectors'
 import { save, load } from '../../../utils/file'
 import { projectLoadSuccess, projectRehydrate, projectSaveAs } from '../actions'
@@ -29,6 +30,14 @@ test('(Saga) watchProject', (t) => {
     takeEvery('PROJECT_SAVE_AS', saveAsProject, dispatch),
     'pass dispatch to save as'
   )
+
+  t.deepEqual(
+    generator.next().value,
+    takeEvery('PROJECT_CHOOSE_SKETCHES_FOLDER', chooseSketchesFolder, dispatch),
+    'pass dispatch to choose chooseSketchesFolder'
+  )
+
+  t.equal(generator.next().done, true, 'Generator ends')
   t.end()
 })
 
@@ -57,6 +66,7 @@ test('(Saga) saveProject (filepath exists)', (t) => {
     '3. Saves file'
   )
 
+  t.equal(generator.next().done, true, 'Generator ends')
   t.end()
 })
 
@@ -77,6 +87,7 @@ test('(Saga) saveProject (filepath doesnt exist)', (t) => {
     '2. Dispatch projectSaveAs because there is no filepath to use'
   )
 
+  t.equal(generator.next().done, true, 'Generator ends')
   t.end()
 })
 
