@@ -64,7 +64,7 @@ const store = createStore(rootReducer, composeEnhancers(
   batchedSubscribe(debounceNotify)
 ))
 
-sagaMiddleware.run(rootSaga)
+sagaMiddleware.run(rootSaga, store.dispatch)
 
 const renderApp = (Component) => {
   render(

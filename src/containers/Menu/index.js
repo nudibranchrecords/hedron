@@ -11,15 +11,6 @@ const { dialog } = electron.remote
 
 const mapStateToProps = (state, ownProps) => ({
   filePath: state.project.filePath,
-  saveIsDisabled: !state.project.filePath,
-  displayOptions: state.displays.list.map((item, index) => {
-    const width = item && item.bounds && item.bounds.width
-    const height = item && item.bounds && item.bounds.height
-    return {
-      value: index,
-      label: width + 'x' + height
-    }
-  }),
   errorMessage: getProjectErrorLatest(state)
 })
 
@@ -27,36 +18,9 @@ const fileFilters = [
   { name: 'JSON', extensions: ['json'] }
 ]
 
-const mapDispatchToProps = (dispatch, ownProps) => ({
-  onSaveClick: () => dispatch(projectSave()),
-  onSaveAsClick: () => {
-    dialog.showSaveDialog({
-      filters: fileFilters
-    },
-    filePath => {
-      if (filePath) {
-        dispatch(projectFilepathUpdate(filePath))
-        dispatch(projectSave())
-      }
-    })
-  },
-  onLoadClick: () => {
-    dialog.showOpenDialog({
-      filters: fileFilters
-    },
-    filePath => {
-      if (filePath) {
-        dispatch(projectFilepathUpdate(filePath[0]))
-        dispatch(projectLoadRequest())
-      }
-    })
-  },
-  onSendOutputChange: index => dispatch(windowSendOutput(index))
-})
-
 export default connect(
   mapStateToProps,
-  mapDispatchToProps,
+  null,
   null,
   {
     areStatesEqual: (next, prev) =>
