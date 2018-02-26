@@ -1,6 +1,36 @@
 import { Menu, ipcMain } from 'electron'
 import { mainWindow } from './mainWindow'
 
+const onClick = (...args) => {
+  mainWindow.webContents.send('app-menu-click', ...args)
+}
+
+const projectMenu = {
+  label: 'Project',
+  submenu: [
+    {
+      label: 'New',
+      role: 'forcereload'
+    },
+    {
+      label: 'Save',
+      click: () => { onClick('project-save') }
+    },
+    {
+      label: 'Save As...',
+      click: () => { onClick('project-save-as') }
+    },
+    {
+      label: 'Load',
+      click: () => { onClick('project-load') }
+    },
+    {
+      label: 'Settings',
+      click: () => { onClick('project-settings') }
+    }
+  ]
+}
+
 const displayMenu = {
   label: 'Displays',
   submenu: []
@@ -10,6 +40,7 @@ const template = [
   {
     label: 'Hedron'
   },
+  projectMenu,
   displayMenu,
   {
     label: 'View',
