@@ -1,10 +1,11 @@
 import Home from '../../components/Home'
-import { projectChooseSketchesFolder } from '../../store/project/actions'
+import { projectChooseSketchesFolder, projectLoad } from '../../store/project/actions'
 import { connect } from 'react-redux'
 
 const mapDispatchToProps = (dispatch, ownProps) => (
   {
-    onChooseFolderClick: () => { dispatch(projectChooseSketchesFolder()) }
+    onChooseFolderClick: () => { dispatch(projectChooseSketchesFolder()) },
+    onLoadClick: () => { dispatch(projectLoad()) }
   }
 )
 
