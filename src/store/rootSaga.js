@@ -9,9 +9,9 @@ import { watchClock } from './clock/sagas'
 import { watchWindows } from './windows/sagas'
 import { watchMacros } from './macros/sagas'
 
-export default function* rootSaga () {
+export default function* rootSaga (dispatch) {
   yield [
-    fork(watchProject),
+    fork(watchProject, dispatch),
     fork(watchScene),
     fork(watchSketches),
     fork(watchInputs),

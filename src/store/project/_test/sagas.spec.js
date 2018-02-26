@@ -1,46 +1,58 @@
 import 'babel-polyfill'
 import test from 'tape'
 import { call, select, takeEvery, put } from 'redux-saga/effects'
-import { watchProject, saveProject, loadProject } from '../sagas'
+import { watchProject, saveProject, loadProjectRequest, saveAsProject, loadProject } from '../sagas'
 import { getProjectData, getProjectFilepath } from '../selectors'
 import { save, load } from '../../../utils/file'
-import { projectLoadSuccess, projectRehydrate } from '../actions'
+import { projectLoadSuccess, projectRehydrate, projectSaveAs } from '../actions'
 import history from '../../../history'
 
 test('(Saga) watchProject', (t) => {
-  const generator = watchProject()
+  const dispatch = () => 'foo'
+
+  const generator = watchProject(dispatch)
   t.deepEqual(
     generator.next().value,
     takeEvery('PROJECT_SAVE', saveProject)
   )
   t.deepEqual(
     generator.next().value,
-    takeEvery('PROJECT_LOAD_REQUEST', loadProject)
+    takeEvery('PROJECT_LOAD', loadProject, dispatch),
+    'pass dispatch to loadProjet'
+  )
+  t.deepEqual(
+    generator.next().value,
+    takeEvery('PROJECT_LOAD_REQUEST', loadProjectRequest)
+  )
+  t.deepEqual(
+    generator.next().value,
+    takeEvery('PROJECT_SAVE_AS', saveAsProject, dispatch),
+    'pass dispatch to save as'
   )
   t.end()
 })
 
-test('(Saga) saveProject', (t) => {
+test('(Saga) saveProject (filepath exists)', (t) => {
   const generator = saveProject()
 
   t.deepEqual(
     generator.next().value,
-    select(getProjectData),
-    '1. Gets project data'
-  )
-
-  const projectData = { foo: 'bar' }
-
-  t.deepEqual(
-    generator.next(projectData).value,
     select(getProjectFilepath),
-    '2. Gets project filepath'
+    '1. Gets project filepath'
   )
 
   const filePath = 'some/path'
 
   t.deepEqual(
     generator.next(filePath).value,
+    select(getProjectData),
+    '2. Gets project data'
+  )
+
+  const projectData = { foo: 'bar' }
+
+  t.deepEqual(
+    generator.next(projectData).value,
     call(save, filePath, projectData),
     '3. Saves file'
   )
@@ -48,8 +60,28 @@ test('(Saga) saveProject', (t) => {
   t.end()
 })
 
+test('(Saga) saveProject (filepath doesnt exist)', (t) => {
+  const generator = saveProject()
+
+  t.deepEqual(
+    generator.next().value,
+    select(getProjectFilepath),
+    '1. Gets project filepath'
+  )
+
+  const filePath = undefined
+
+  t.deepEqual(
+    generator.next(filePath).value,
+    put(projectSaveAs()),
+    '2. Dispatch projectSaveAs because there is no filepath to use'
+  )
+
+  t.end()
+})
+
 test('(Saga) loadProject', (t) => {
-  const generator = loadProject()
+  const generator = loadProjectRequest()
 
   t.deepEqual(
     generator.next(projectData).value,

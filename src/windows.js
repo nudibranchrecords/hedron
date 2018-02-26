@@ -4,7 +4,9 @@ import { displaysListUpdate } from './store/displays/actions'
 let store
 
 const updateDisplays = () => {
-  store.dispatch(displaysListUpdate(screen.getAllDisplays()))
+  const displays = screen.getAllDisplays()
+  ipcRenderer.send('update-displays', displays)
+  store.dispatch(displaysListUpdate(displays))
 }
 
 export const initiateScreens = (injectedStore) => {
@@ -35,6 +37,10 @@ export const sendOutput = (index) => {
     world.setOutput(outputWin)
   }, 1000)
 }
+
+ipcRenderer.on('send-output', (e, index) => {
+  sendOutput(index)
+})
 
 export const openDevTools = () => {
   ipcRenderer.send('open-dev-tools')

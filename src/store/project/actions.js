@@ -4,6 +4,18 @@ export function projectSave () {
   }
 }
 
+export function projectLoad () {
+  return {
+    type: 'PROJECT_LOAD'
+  }
+}
+
+export function projectSaveAs () {
+  return {
+    type: 'PROJECT_SAVE_AS'
+  }
+}
+
 export function projectLoadRequest () {
   return {
     type: 'PROJECT_LOAD_REQUEST'

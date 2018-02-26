@@ -14,6 +14,7 @@ import rootReducer from '../store/rootReducer'
 import App from '../containers/App'
 import Engine from '../Engine'
 import { initiateScreens } from '../windows'
+import { initiateMenuHandler } from './menuHandler'
 import Stats from 'stats.js'
 import createDebounce from 'redux-debounced'
 import tryRequire from 'try-require'
@@ -63,7 +64,7 @@ const store = createStore(rootReducer, composeEnhancers(
   batchedSubscribe(debounceNotify)
 ))
 
-sagaMiddleware.run(rootSaga)
+sagaMiddleware.run(rootSaga, store.dispatch)
 
 const renderApp = (Component) => {
   render(
@@ -87,6 +88,7 @@ const loadDefaultProject = () => {
 
 renderApp(App)
 
+initiateMenuHandler(store)
 initiateAudio(store)
 initiateMidi(store)
 initiateGeneratedClock(store)
