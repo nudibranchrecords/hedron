@@ -20,7 +20,6 @@ const mapStateToProps = (state, ownProps) => ({
       label: width + 'x' + height
     }
   }),
-  onDevToolsClick: () => { openDevTools() },
   errorMessage: getProjectErrorLatest(state)
 })
 

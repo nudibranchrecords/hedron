@@ -57,20 +57,15 @@ const Menu = ({
           </Button>
         </div>
       </Section>
-      <Section>
-
-        <div>
-          <h5>Dev</h5>
-          <Row align='center'>
-            <Button onClick={onDevToolsClick}>
-              Open DevTools
-            </Button>
-            {errorMessage && <Error>{errorMessage}</Error>}
-          </Row>
-        </div>
-
-      </Section>
-
+      {errorMessage &&
+        <Section>
+          <div>
+            <Row align='center'>
+              <Error>{errorMessage}</Error>
+            </Row>
+          </div>
+        </Section>
+      }
     </div>
   )
 }
