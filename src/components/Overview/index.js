@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import Viewer from '../../containers/Viewer'
-import Menu from '../../containers/Menu'
+import ProjectDetails from '../../containers/ProjectDetails'
 import styled from 'styled-components'
 import AudioAnalyzer from '../../components/AudioAnalyzer'
 import Clock from '../../containers/Clock'
@@ -57,7 +57,7 @@ class Overview extends React.Component {
             <Devices />
           </Top>
           <Bottom>
-            <Menu />
+            <ProjectDetails />
           </Bottom>
         </Scroller>
       </Wrapper>
