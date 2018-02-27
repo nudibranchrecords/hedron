@@ -3,7 +3,6 @@ import { save, load } from '../../utils/file'
 import { getProjectData, getProjectFilepath } from './selectors'
 import { projectLoadSuccess, projectRehydrate, projectError, projectSaveAs } from './actions'
 import history from '../../history'
-import engine from '../../Engine'
 import { remote } from 'electron'
 import {
   projectSave, projectLoadRequest, projectFilepathUpdate, projectSketchesPathUpdate
