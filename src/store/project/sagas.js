@@ -71,7 +71,7 @@ export function* chooseSketchesFolder (dispatch) {
   filePath => {
     if (filePath) {
       dispatch(projectSketchesPathUpdate(filePath[0]))
-      engine.loadSketchModules(filePath[0])
+      dispatch(projectLoadSuccess())
       history.push('/sketches/add')
     }
   })
