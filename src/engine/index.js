@@ -24,7 +24,10 @@ class Engine {
       })
     } catch (error) {
       console.error(error)
-      this.store.dispatch(projectError(`Sketches failed to load: ${error.message}`))
+      this.store.dispatch(projectError(`Sketches failed to load: ${error.message}`, {
+        popup: 'true',
+        type: 'badSketchFolder'
+      }))
     }
   }
 
