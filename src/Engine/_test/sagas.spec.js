@@ -1,9 +1,10 @@
 import 'babel-polyfill'
 import test from 'tape'
-import { apply, select, takeEvery } from 'redux-saga/effects'
+import { apply, select, takeEvery, put } from 'redux-saga/effects'
 import proxyquire from 'proxyquire'
 import { getAllSketches } from '../selectors'
 import getSketchesPath from '../../selectors/getSketchesPath'
+import { projectError } from '../../store/project/actions'
 
 proxyquire.noCallThru()
 
@@ -112,6 +113,20 @@ test('(Saga) handleInitiateSketches', (t) => {
     '3. Initiate sketches'
   )
 
+  t.end()
+})
+
+test('(Saga) handleInitiateSketches - error', (t) => {
+  const generator = handleInitiateSketches()
+  generator.next()
+
+  t.deepEqual(
+    generator.throw(Error('omg!')).value,
+      put(projectError(`Failed to initiate sketches: omg!`)),
+    '0. Dispatch project error on error'
+  )
+
+  t.equal(generator.next().done, true, 'Generator ends')
   t.end()
 })
 
