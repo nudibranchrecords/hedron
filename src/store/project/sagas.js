@@ -2,7 +2,7 @@ import { call, select, takeEvery, put } from 'redux-saga/effects'
 import { save, load } from '../../utils/file'
 import { getProjectData, getProjectFilepath } from './selectors'
 import { projectLoadSuccess, projectRehydrate, projectError,
-  projectSaveAs, projectErrorAdd, projectErrorPopupOpen } from './actions'
+  projectSaveAs, projectErrorAdd, projectErrorPopupOpen, projectErrorPopupClose } from './actions'
 import history from '../../history'
 import { remote } from 'electron'
 import {
@@ -72,6 +72,7 @@ export function* chooseSketchesFolder (dispatch) {
     if (filePath) {
       dispatch(projectSketchesPathUpdate(filePath[0]))
       dispatch(projectLoadSuccess())
+      dispatch(projectErrorPopupClose())
       history.push('/sketches/add')
     }
   })
