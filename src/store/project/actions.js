@@ -64,11 +64,36 @@ export function projectSketchesPathUpdate (path) {
   }
 }
 
-export function projectError (message) {
+export function projectError (message, meta) {
   return {
     type: 'PROJECT_ERROR',
     payload: {
+      message, meta
+    }
+  }
+}
+
+export function projectErrorAdd (message) {
+  return {
+    type: 'PROJECT_ERROR_ADD',
+    payload: {
       message
     }
+  }
+}
+
+export function projectErrorPopupOpen (message, type) {
+  return {
+    type: 'PROJECT_ERROR_POPUP_OPEN',
+    payload: {
+      message,
+      type
+    }
+  }
+}
+
+export function projectErrorPopupClose (message, type) {
+  return {
+    type: 'PROJECT_ERROR_POPUP_CLOSE'
   }
 }

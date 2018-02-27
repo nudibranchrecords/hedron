@@ -1,9 +1,9 @@
 import { call, select, takeEvery, put } from 'redux-saga/effects'
 import { save, load } from '../../utils/file'
 import { getProjectData, getProjectFilepath } from './selectors'
-import { projectLoadSuccess, projectRehydrate, projectError, projectSaveAs } from './actions'
+import { projectLoadSuccess, projectRehydrate, projectError,
+  projectSaveAs, projectErrorAdd, projectErrorPopupOpen, projectErrorPopupClose } from './actions'
 import history from '../../history'
-import engine from '../../Engine'
 import { remote } from 'electron'
 import {
   projectSave, projectLoadRequest, projectFilepathUpdate, projectSketchesPathUpdate
@@ -71,10 +71,20 @@ export function* chooseSketchesFolder (dispatch) {
   filePath => {
     if (filePath) {
       dispatch(projectSketchesPathUpdate(filePath[0]))
-      engine.loadSketchModules(filePath[0])
+      dispatch(projectLoadSuccess())
+      dispatch(projectErrorPopupClose())
       history.push('/sketches/add')
     }
   })
+}
+
+export function* handleProjectError (action) {
+  const p = action.payload
+  yield put(projectErrorAdd(p.message))
+
+  if (p.meta && p.meta.popup && p.meta.type) {
+    yield put(projectErrorPopupOpen(p.message, p.meta.type))
+  }
 }
 
 export function* watchProject (dispatch) {
@@ -83,4 +93,5 @@ export function* watchProject (dispatch) {
   yield takeEvery('PROJECT_LOAD_REQUEST', loadProjectRequest)
   yield takeEvery('PROJECT_SAVE_AS', saveAsProject, dispatch)
   yield takeEvery('PROJECT_CHOOSE_SKETCHES_FOLDER', chooseSketchesFolder, dispatch)
+  yield takeEvery('PROJECT_ERROR', handleProjectError)
 }

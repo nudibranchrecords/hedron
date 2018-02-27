@@ -2,10 +2,11 @@ import 'babel-polyfill'
 import test from 'tape'
 import { call, select, takeEvery, put } from 'redux-saga/effects'
 import { watchProject, saveProject, loadProjectRequest,
-  saveAsProject, loadProject, chooseSketchesFolder } from '../sagas'
+  saveAsProject, loadProject, chooseSketchesFolder, handleProjectError } from '../sagas'
 import { getProjectData, getProjectFilepath } from '../selectors'
 import { save, load } from '../../../utils/file'
-import { projectLoadSuccess, projectRehydrate, projectSaveAs } from '../actions'
+import { projectLoadSuccess, projectRehydrate, projectSaveAs,
+  projectError, projectErrorAdd, projectErrorPopupOpen } from '../actions'
 import history from '../../../history'
 
 test('(Saga) watchProject', (t) => {
@@ -35,6 +36,11 @@ test('(Saga) watchProject', (t) => {
     generator.next().value,
     takeEvery('PROJECT_CHOOSE_SKETCHES_FOLDER', chooseSketchesFolder, dispatch),
     'pass dispatch to choose chooseSketchesFolder'
+  )
+
+  t.deepEqual(
+    generator.next().value,
+    takeEvery('PROJECT_ERROR', handleProjectError)
   )
 
   t.equal(generator.next().done, true, 'Generator ends')
@@ -140,6 +146,48 @@ test('(Saga) loadProject', (t) => {
     generator.next().value,
     call([history, history.replace], '/foo/bar'),
     '5. Matches history with router state'
+  )
+
+  t.equal(generator.next().done, true, 'Generator ends')
+  t.end()
+})
+
+test('(Saga) handleProjectError (normal error)', (t) => {
+  const errorMessage = 'foo error!'
+  const generator = handleProjectError(
+    projectError(errorMessage)
+  )
+
+  t.deepEqual(
+    generator.next().value,
+    put(projectErrorAdd(errorMessage)),
+    '1. Dispatch projectErrorAdd'
+  )
+
+  t.equal(generator.next().done, true, 'Generator ends')
+  t.end()
+})
+
+test('(Saga) handleProjectError (popup error)', (t) => {
+  const errorMessage = 'foo error!'
+  const meta = {
+    popup: true,
+    type: 'foo'
+  }
+  const generator = handleProjectError(
+    projectError(errorMessage, meta)
+  )
+
+  t.deepEqual(
+    generator.next().value,
+    put(projectErrorAdd(errorMessage)),
+    '1. Dispatch projectErrorAdd'
+  )
+
+  t.deepEqual(
+    generator.next().value,
+    put(projectErrorPopupOpen(errorMessage, meta.type)),
+    '2. Dispatch projectErrorPopup'
   )
 
   t.equal(generator.next().done, true, 'Generator ends')

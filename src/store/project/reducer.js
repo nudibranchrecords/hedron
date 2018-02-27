@@ -1,7 +1,8 @@
 const defaultState = {
   filePath: undefined,
   sketchesPath: undefined,
-  errors: []
+  errors: [],
+  errorPopup: false
 }
 
 const projectReducer = (state = defaultState, action) => {
@@ -20,10 +21,25 @@ const projectReducer = (state = defaultState, action) => {
         sketchesPath: p.path
       }
     }
-    case 'PROJECT_ERROR': {
+    case 'PROJECT_ERROR_ADD': {
       return {
         ...state,
         errors: [...state.errors, p.message]
+      }
+    }
+    case 'PROJECT_ERROR_POPUP_OPEN': {
+      return {
+        ...state,
+        errorPopup: {
+          message: p.message,
+          type: p.type
+        }
+      }
+    }
+    case 'PROJECT_ERROR_POPUP_CLOSE': {
+      return {
+        ...state,
+        errorPopup: false
       }
     }
     default:

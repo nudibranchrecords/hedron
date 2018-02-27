@@ -1,7 +1,8 @@
-import { apply, select, takeEvery } from 'redux-saga/effects'
+import { apply, select, takeEvery, put } from 'redux-saga/effects'
 import engine from './'
 import { getAllSketches } from './selectors'
 import getSketchesPath from '../selectors/getSketchesPath'
+import { projectError } from '../store/project/actions'
 
 export function* handleAddSketch (action) {
   const id = action.payload.id
@@ -14,10 +15,15 @@ export function* handleRemoveSketch (action) {
 }
 
 export function* handleInitiateSketches () {
-  const sketchesPath = yield select(getSketchesPath)
-  const allSketches = yield select(getAllSketches)
-  yield apply(engine, engine.loadSketchModules, [sketchesPath])
-  yield apply(engine, engine.initiateSketches, [allSketches])
+  try {
+    const sketchesPath = yield select(getSketchesPath)
+    const allSketches = yield select(getAllSketches)
+    yield apply(engine, engine.loadSketchModules, [sketchesPath])
+    yield apply(engine, engine.initiateSketches, [allSketches])
+  } catch (error) {
+    console.log(error)
+    yield put(projectError(`Failed to initiate sketches: ${error.message}`))
+  }
 }
 
 export function* handleShotFired (action) {

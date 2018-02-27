@@ -12,6 +12,7 @@ import NavItem from '../NavItem'
 import PanelDragger from '../PanelDragger'
 import MidiLearn from '../../containers/MidiLearn'
 import EditingOverlay from '../../containers/EditingOverlay'
+import ErrorOverlay from '../../containers/ErrorOverlay'
 import MainViewOuter from '../../containers/MainViewOuter'
 import Home from '../../containers/Home'
 
@@ -62,6 +63,7 @@ const App = ({ stats, leftWidth, onLeftDrag }) => (
     </Bar>
     <MidiLearn />
     <EditingOverlay />
+    <ErrorOverlay />
   </Wrapper>
 )
 
