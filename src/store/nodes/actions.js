@@ -167,12 +167,12 @@ export function nodeShotFired (nodeId, sketchId, method) {
   }
 }
 
-export function nodeTitleUpdate (nodeId, value) {
+export function nodeUpdate (nodeId, obj) {
   return {
-    type: 'NODE_TITLE_UPDATE',
+    type: 'NODE_UPDATE',
     payload: {
       nodeId,
-      value
+      obj
     }
   }
 }

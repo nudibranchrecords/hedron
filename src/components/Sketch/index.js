@@ -16,12 +16,14 @@ const Wrapper = styled.div`
 `
 
 const Bottom = styled.div`
+  display: flex;
   margin-top: auto;
   padding-top: 3rem;
   text-align: right;
+  justify-content: space-between;
 `
 
-const Sketch = ({ title, params, shots, onDeleteClick, sketchId, onRenameClick }) => (
+const Sketch = ({ title, params, shots, onDeleteClick, sketchId, onRenameClick, onReimportClick }) => (
   <Wrapper>
     <ViewHeader onButtonClick={onRenameClick} buttonText='Rename'>{title}</ViewHeader>
 
@@ -53,6 +55,7 @@ const Sketch = ({ title, params, shots, onDeleteClick, sketchId, onRenameClick }
 
     <Bottom>
       <Button onClick={onDeleteClick}>Delete Sketch</Button>
+      <Button onClick={onReimportClick}>Reimport</Button>
     </Bottom>
   </Wrapper>
 )
@@ -67,7 +70,8 @@ Sketch.propTypes = {
     PropTypes.string
   ).isRequired,
   onDeleteClick: PropTypes.func.isRequired,
-  onRenameClick: PropTypes.func.isRequired
+  onRenameClick: PropTypes.func.isRequired,
+  onReimportClick: PropTypes.func.isRequired
 }
 
 export default Sketch

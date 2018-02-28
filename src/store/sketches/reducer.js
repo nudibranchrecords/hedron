@@ -30,12 +30,12 @@ const sketchesReducer = (state = defaultState, action) => {
         }
       }
     }
-    case 'SKETCH_TITLE_UPDATE': {
+    case 'SKETCH_UPDATE': {
       return {
         ...state,
         [p.sketchId]: {
           ...state[p.sketchId],
-          title: p.value
+          ...p.obj
         }
       }
     }

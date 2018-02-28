@@ -1,8 +1,8 @@
 import { connect } from 'react-redux'
 import EditingOverlayFormComponent from '../../components/EditingOverlayForm'
 import { uiEditingClose } from '../../store/ui/actions'
-import { nodeTitleUpdate } from '../../store/nodes/actions'
-import { sketchTitleUpdate } from '../../store/sketches/actions'
+import { nodeUpdate } from '../../store/nodes/actions'
+import { sketchUpdate } from '../../store/sketches/actions'
 import getUiIsEditingNode from '../../selectors/getUiIsEditingNode'
 import { reduxForm } from 'redux-form'
 
@@ -22,10 +22,10 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
     dispatch(uiEditingClose())
     switch (ownProps.type) {
       case 'nodeTitle':
-        dispatch(nodeTitleUpdate(ownProps.id, values.title))
+        dispatch(nodeUpdate(ownProps.id, { title: values.title }))
         break
       case 'sketchTitle':
-        dispatch(sketchTitleUpdate(ownProps.id, values.title))
+        dispatch(sketchUpdate(ownProps.id, { title: values.title }))
         break
     }
   }
