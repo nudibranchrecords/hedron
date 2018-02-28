@@ -11,3 +11,10 @@ export function sceneSketchDelete (id) {
     payload: { id }
   }
 }
+
+export function sceneSketchReimport (id) {
+  return {
+    type: 'SCENE_SKETCH_REIMPORT',
+    payload: { id }
+  }
+}

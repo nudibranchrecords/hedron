@@ -1,8 +1,11 @@
 import { call, select, takeEvery, put } from 'redux-saga/effects'
 import { getModule, getSketchParamIds, getSketchShotIds } from './selectors'
-import { sketchCreate, sketchDelete } from '../sketches/actions'
-import { uNodeCreate, uNodeDelete } from '../nodes/actions'
+import { sketchCreate, sketchDelete, sketchUpdate } from '../sketches/actions'
+import { uNodeCreate, uNodeDelete, nodeUpdate } from '../nodes/actions'
 import getSketches from '../../selectors/getSketches'
+import getSketch from '../../selectors/getSketch'
+import getNode from '../../selectors/getNode'
+import getSketchParams from '../../selectors/getSketchParams'
 import history from '../../history'
 import uid from 'uid'
 
@@ -83,7 +86,50 @@ export function* handleSketchDelete (action) {
   yield call([history, history.push], '/sketches/view/' + lastId)
 }
 
+export function* handleSketchReimport (action) {
+  const id = action.payload.id
+  const sketch = yield select(getSketch, id)
+  const module = yield select(getModule, sketch.moduleId)
+  let paramIds = sketch.paramIds
+  const sketchParams = {}
+
+  for (let i = 0; i < paramIds.length; i++) {
+    const param = yield select(getNode, paramIds[i])
+    sketchParams[param.key] = param
+  }
+
+  const moduleParams = module.params
+
+  // Look through the loaded module's params for new ones
+  for (let i = 0; i < moduleParams.length; i++) {
+    const moduleParam = moduleParams[i]
+    const sketchParam = sketchParams[moduleParam.key]
+
+    if (!sketchParam) {
+      // If module param doesnt exist in sketch, it needs to be created
+      const uniqueId = yield call(uid)
+      paramIds.push(uniqueId)
+      yield put(uNodeCreate(uniqueId, {
+        title: moduleParam.title,
+        type: 'param',
+        key: moduleParam.key,
+        value: moduleParam.defaultValue,
+        id: uniqueId,
+        inputLinkIds: [],
+        isOpen: false
+      }))
+    } else {
+      // If param does exist, the title may still change
+      const id = sketchParam.id
+      yield put(nodeUpdate(id, { title: moduleParam.title }))
+    }
+  }
+
+  yield put(sketchUpdate(id, { paramIds }))
+}
+
 export function* watchScene () {
   yield takeEvery('SCENE_SKETCH_CREATE', handleSketchCreate)
   yield takeEvery('SCENE_SKETCH_DELETE', handleSketchDelete)
+  yield takeEvery('SCENE_SKETCH_REIMPORT', handleSketchReimport)
 }
