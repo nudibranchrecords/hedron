@@ -12,7 +12,7 @@ const config = {
 }
 
 if (process.env.NODE_ENV === 'development') {
-  const devConfig = tryRequire('./dev.config.js')
+  const devConfig = tryRequire('./dev.config.js', require)
   let devServerOptions = {}
 
   if (devConfig && devConfig.defaultProject) {
