@@ -25,6 +25,25 @@ const Inner = styled.div`
   border-radius: 10px;
   padding: 3rem;
   text-align: center;
+  position: relative;
+`
+
+const Close = styled.div`
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  height: 1rem;
+  width: 1rem;
+  line-height: 1rem;
+  text-align: center;
+  font-weight: bold;
+  font-size: 2rem;
+  opacity: 0.5;
+  cursor: pointer;
+
+  &:hover {
+    opacity: 1;
+  }
 `
 const OverlayModal = ({ isVisible, title, onCancelClick, children }) => (
   <div>
@@ -33,7 +52,7 @@ const OverlayModal = ({ isVisible, title, onCancelClick, children }) => (
         <Inner>
           {title && <h2>{title}</h2>}
           {children}
-          {onCancelClick && <Button onClick={onCancelClick}>Cancel</Button>}
+          {onCancelClick && <Close onClick={onCancelClick}>&times;</Close>}
         </Inner>
       </Wrapper>
     }

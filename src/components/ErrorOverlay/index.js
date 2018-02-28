@@ -5,12 +5,13 @@ import OverlayModal from '../OverlayModal'
 import Button from '../Button'
 
 const ErrorMessage = styled.p`
-  color: red;
+  opacity: 0.5;
   font-size: 0.8rem !important;
+  margin: 0;
 `
 
 const Wrapper = styled.div`
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
 `
 
 const ErrorOverlay = ({ isVisible, onCancelClick, type, message, onChooseSketchFolderClick }) => {
@@ -33,8 +34,9 @@ const ErrorOverlay = ({ isVisible, onCancelClick, type, message, onChooseSketchF
       title={'Something went wrong'}
       onCancelClick={onCancelClick}
     >
-      <ErrorMessage>Error: {message}</ErrorMessage>
+
       {inner}
+      <ErrorMessage>{message}</ErrorMessage>
 
     </OverlayModal>
   )
