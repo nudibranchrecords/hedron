@@ -100,7 +100,7 @@ export function* handleSketchReimport (action) {
 
   for (let i = 0; i < shotIds.length; i++) {
     const shot = yield select(getNode, shotIds[i])
-    sketchShots[shot.key] = shot
+    sketchShots[shot.method] = shot
   }
 
   const moduleParams = module.params
@@ -114,7 +114,9 @@ export function* handleSketchReimport (action) {
     if (!sketchParam) {
       // If module param doesnt exist in sketch, it needs to be created
       const uniqueId = yield call(uid)
-      paramIds.splice(i, 0, uniqueId)
+      paramIds = [
+        ...paramIds.slice(0, i), uniqueId, ...paramIds.slice(i)
+      ]
       yield put(uNodeCreate(uniqueId, {
         title: moduleParam.title,
         type: 'param',
@@ -133,12 +135,14 @@ export function* handleSketchReimport (action) {
   // Look through the loaded module's shots for new ones
   for (let i = 0; i < moduleShots.length; i++) {
     const moduleShot = moduleShots[i]
-    const sketchShot = sketchShots[moduleShots.method]
+    const sketchShot = sketchShots[moduleShot.method]
 
     if (!sketchShot) {
       // If module shot doesnt exist in sketch, it needs to be created
       const uniqueId = yield call(uid)
-      shotIds.splice(i, 0, uniqueId)
+      shotIds = [
+        ...shotIds.slice(0, i), uniqueId, ...shotIds.slice(i)
+      ]
       yield put(uNodeCreate(uniqueId, {
         id: uniqueId,
         value: 0,
@@ -155,7 +159,7 @@ export function* handleSketchReimport (action) {
     }
   }
 
-  yield put(sketchUpdate(id, { paramIds }))
+  yield put(sketchUpdate(id, { paramIds, shotIds }))
 }
 
 export function* watchScene () {

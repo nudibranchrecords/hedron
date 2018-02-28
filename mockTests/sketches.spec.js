@@ -393,7 +393,7 @@ test('(mock) Sketches - Reimport Sketch (simple)', (t) => {
 })
 
 test('(mock) Sketches - Reimport Sketch (params and shots)', (t) => {
-  uniqueId = 2
+  uniqueId = 3
 
   const store = createStore(rootReducer, {
     availableModules: {
@@ -433,6 +433,17 @@ test('(mock) Sketches - Reimport Sketch (params and shots)', (t) => {
         connectedMacroIds: [],
         type: 'param',
         key: 'speed'
+      },
+      id_3: {
+        id: 'id_3',
+        title: 'Explode',
+        value: 0,
+        inputLinkIds: [],
+        shotCount: 0,
+        connectedMacroIds: [],
+        type: 'shot',
+        method: 'explode',
+        sketchId: 'id_1'
       }
     },
     sketches: {
@@ -440,7 +451,7 @@ test('(mock) Sketches - Reimport Sketch (params and shots)', (t) => {
         title: 'Foo',
         moduleId: 'foo',
         paramIds: ['id_2'],
-        shotIds: [],
+        shotIds: ['id_3'],
         openedNodes: {}
       }
     }
@@ -454,13 +465,13 @@ test('(mock) Sketches - Reimport Sketch (params and shots)', (t) => {
   state = store.getState()
 
   t.deepEqual(
-    state.sketches['id_1'].paramIds, ['id_2', 'id_3'],
+    state.sketches['id_1'].paramIds, ['id_2', 'id_4'],
    'After reimporting, sketch has new paramId'
   )
 
   t.deepEqual(
-    state.sketches['id_1'].shotIds, ['id_4', 'id_5'],
-   'After reimporting, sketch has new shotIds'
+    state.sketches['id_1'].shotIds, ['id_3', 'id_5'],
+   'After reimporting, sketch has new shotId'
   )
 
   t.deepEqual(
@@ -478,16 +489,6 @@ test('(mock) Sketches - Reimport Sketch (params and shots)', (t) => {
       },
       id_3: {
         id: 'id_3',
-        title: 'Scale',
-        value: 0.2,
-        inputLinkIds: [],
-        shotCount: 0,
-        connectedMacroIds: [],
-        type: 'param',
-        key: 'scale'
-      },
-      id_4: {
-        id: 'id_4',
         title: 'Explode',
         value: 0,
         inputLinkIds: [],
@@ -496,6 +497,16 @@ test('(mock) Sketches - Reimport Sketch (params and shots)', (t) => {
         type: 'shot',
         method: 'explode',
         sketchId: 'id_1'
+      },
+      id_4: {
+        id: 'id_4',
+        title: 'Scale',
+        value: 0.2,
+        inputLinkIds: [],
+        shotCount: 0,
+        connectedMacroIds: [],
+        type: 'param',
+        key: 'scale'
       },
       id_5: {
         id: 'id_5',
@@ -516,7 +527,7 @@ test('(mock) Sketches - Reimport Sketch (params and shots)', (t) => {
 })
 
 test('(mock) Sketches - Reimport Sketch (with shot and param title changes)', (t) => {
-  uniqueId = 2
+  uniqueId = 3
 
   const store = createStore(rootReducer, {
     availableModules: {
@@ -553,9 +564,9 @@ test('(mock) Sketches - Reimport Sketch (with shot and param title changes)', (t
         type: 'param',
         key: 'speed'
       },
-      id_4: {
-        id: 'id_4',
-        title: 'Explode',
+      id_3: {
+        id: 'id_3',
+        title: 'Explode New',
         value: 0,
         inputLinkIds: [],
         shotCount: 0,
@@ -570,7 +581,7 @@ test('(mock) Sketches - Reimport Sketch (with shot and param title changes)', (t
         title: 'Foo',
         moduleId: 'foo',
         paramIds: ['id_2'],
-        shotIds: [],
+        shotIds: ['id_3'],
         openedNodes: {}
       }
     }
@@ -584,7 +595,7 @@ test('(mock) Sketches - Reimport Sketch (with shot and param title changes)', (t
   state = store.getState()
 
   t.deepEqual(
-    state.sketches['id_1'].paramIds, ['id_2', 'id_3'],
+    state.sketches['id_1'].paramIds, ['id_2', 'id_4'],
    'After reimporting, sketch has new paramId'
   )
 
@@ -601,8 +612,8 @@ test('(mock) Sketches - Reimport Sketch (with shot and param title changes)', (t
         type: 'param',
         key: 'speed'
       },
-      id_4: {
-        id: 'id_4',
+      id_3: {
+        id: 'id_3',
         title: 'Explode New',
         value: 0,
         inputLinkIds: [],
@@ -612,8 +623,8 @@ test('(mock) Sketches - Reimport Sketch (with shot and param title changes)', (t
         method: 'explode',
         sketchId: 'id_1'
       },
-      id_3: {
-        id: 'id_3',
+      id_4: {
+        id: 'id_4',
         title: 'Scale',
         value: 0.2,
         inputLinkIds: [],
