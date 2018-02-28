@@ -3,7 +3,7 @@ import proxyquire from 'proxyquire'
 import { createStore, applyMiddleware, combineReducers } from 'redux'
 import createSagaMiddleware from 'redux-saga'
 const sagaMiddleware = createSagaMiddleware()
-import { sceneSketchCreate, sceneSketchReimport } from '../src/store/scene/actions'
+import { sceneSketchCreate, sceneSketchDelete, sceneSketchReimport } from '../src/store/scene/actions'
 
 import { fork } from 'redux-saga/effects'
 import { watchNodes } from '../src/store/nodes/sagas'
@@ -51,6 +51,30 @@ test('(mock) Sketches - Add Sketch', (t) => {
           }
         ],
         shots: []
+      },
+      bar: {
+        defaultTitle: 'Bar',
+        params: [
+          {
+            key: 'scale',
+            title: 'Scale',
+            defaultValue: 0.2
+          },
+          {
+            key: 'color',
+            title: 'Color',
+            defaultValue: 0.1
+          }
+        ],
+        shots: [
+          {
+            method: 'explode',
+            title: 'Explode'
+          }
+        ]
+      },
+      boring: {
+        defaultTitle: 'Boring'
       }
     },
     nodes: {},
@@ -62,8 +86,10 @@ test('(mock) Sketches - Add Sketch', (t) => {
 
   state = store.getState()
   t.deepEqual(state.nodes, {}, 'nodes start empty')
+
   store.dispatch(sceneSketchCreate('foo'))
   state = store.getState()
+
   t.deepEqual(state.sketches, {
     id_1: {
       title: 'Foo',
@@ -83,12 +109,145 @@ test('(mock) Sketches - Add Sketch', (t) => {
       shotCount: 0,
       connectedMacroIds: [],
       type: 'param',
-      key: 'speed',
-      isOpen: false
+      key: 'speed'
     }
   }, 'After creating sketch, node item is created for param')
+
+  store.dispatch(sceneSketchCreate('bar'))
+  state = store.getState()
+
+  t.deepEqual(state.sketches, {
+    id_1: {
+      title: 'Foo',
+      moduleId: 'foo',
+      paramIds: ['id_2'],
+      shotIds: [],
+      openedNodes: {}
+    },
+    id_3: {
+      title: 'Bar',
+      moduleId: 'bar',
+      paramIds: ['id_4', 'id_5'],
+      shotIds: ['id_6'],
+      openedNodes: {}
+    }
+  }, 'After creating sketch, sketch item is created')
+
+  t.deepEqual(state.nodes, {
+    id_2: {
+      id: 'id_2',
+      title: 'Speed',
+      value: 0.5,
+      inputLinkIds: [],
+      shotCount: 0,
+      connectedMacroIds: [],
+      type: 'param',
+      key: 'speed'
+    },
+    id_4: {
+      id: 'id_4',
+      title: 'Scale',
+      value: 0.2,
+      inputLinkIds: [],
+      shotCount: 0,
+      connectedMacroIds: [],
+      type: 'param',
+      key: 'scale'
+    },
+    id_5: {
+      id: 'id_5',
+      title: 'Color',
+      value: 0.1,
+      inputLinkIds: [],
+      shotCount: 0,
+      connectedMacroIds: [],
+      type: 'param',
+      key: 'color'
+    },
+    id_6: {
+      id: 'id_6',
+      title: 'Explode',
+      value: 0,
+      inputLinkIds: [],
+      shotCount: 0,
+      connectedMacroIds: [],
+      type: 'shot',
+      method: 'explode',
+      sketchId: 'id_3'
+    }
+  }, 'After creating sketch, node items are created for params and shot')
+
+  store.dispatch(sceneSketchDelete('id_1'))
+  state = store.getState()
+
+  t.deepEqual(state.sketches, {
+    id_3: {
+      title: 'Bar',
+      moduleId: 'bar',
+      paramIds: ['id_4', 'id_5'],
+      shotIds: ['id_6'],
+      openedNodes: {}
+    }
+  }, 'After deleting sketch, sketch item is removed')
+
+  t.deepEqual(state.nodes, {
+    id_4: {
+      id: 'id_4',
+      title: 'Scale',
+      value: 0.2,
+      inputLinkIds: [],
+      shotCount: 0,
+      connectedMacroIds: [],
+      type: 'param',
+      key: 'scale'
+    },
+    id_5: {
+      id: 'id_5',
+      title: 'Color',
+      value: 0.1,
+      inputLinkIds: [],
+      shotCount: 0,
+      connectedMacroIds: [],
+      type: 'param',
+      key: 'color'
+    },
+    id_6: {
+      id: 'id_6',
+      title: 'Explode',
+      value: 0,
+      inputLinkIds: [],
+      shotCount: 0,
+      connectedMacroIds: [],
+      type: 'shot',
+      method: 'explode',
+      sketchId: 'id_3'
+    }
+  }, 'After deleting sketch, node items are removed')
+
+  store.dispatch(sceneSketchDelete('id_3'))
+  state = store.getState()
+
+  t.deepEqual(state.sketches, {}, 'After deleting sketch, sketch item is removed')
+  t.deepEqual(state.nodes, {}, 'After deleting sketch, node items are removed')
+
+  store.dispatch(sceneSketchCreate('boring'))
+  state = store.getState()
+
+  t.deepEqual(state.sketches, {
+    id_7: {
+      title: 'Boring',
+      moduleId: 'boring',
+      paramIds: [],
+      shotIds: [],
+      openedNodes: {}
+    }
+  }, 'After creating sketch, sketch item is created')
+
+  t.deepEqual(state.nodes, {}, 'After creating sketch, no nodes created (because sketch has no params/shots)')
+
   t.end()
 })
+
 test('(mock) Sketches - Reimport Sketch (Unedited sketch)', (t) => {
   uniqueId = 2
 
@@ -115,8 +274,7 @@ test('(mock) Sketches - Reimport Sketch (Unedited sketch)', (t) => {
         shotCount: 0,
         connectedMacroIds: [],
         type: 'param',
-        key: 'speed',
-        isOpen: false
+        key: 'speed'
       }
     },
     sketches: {
@@ -178,8 +336,7 @@ test('(mock) Sketches - Reimport Sketch (simple)', (t) => {
         shotCount: 0,
         connectedMacroIds: [],
         type: 'param',
-        key: 'speed',
-        isOpen: false
+        key: 'speed'
       }
     },
     sketches: {
@@ -216,8 +373,7 @@ test('(mock) Sketches - Reimport Sketch (simple)', (t) => {
         shotCount: 0,
         connectedMacroIds: [],
         type: 'param',
-        key: 'speed',
-        isOpen: false
+        key: 'speed'
       },
       id_3: {
         id: 'id_3',
@@ -227,8 +383,7 @@ test('(mock) Sketches - Reimport Sketch (simple)', (t) => {
         shotCount: 0,
         connectedMacroIds: [],
         type: 'param',
-        key: 'scale',
-        isOpen: false
+        key: 'scale'
       }
     },
    'After reimporting, new node exists'
@@ -268,8 +423,7 @@ test('(mock) Sketches - Reimport Sketch (with title change)', (t) => {
         shotCount: 0,
         connectedMacroIds: [],
         type: 'param',
-        key: 'speed',
-        isOpen: false
+        key: 'speed'
       }
     },
     sketches: {
@@ -306,8 +460,7 @@ test('(mock) Sketches - Reimport Sketch (with title change)', (t) => {
         shotCount: 0,
         connectedMacroIds: [],
         type: 'param',
-        key: 'speed',
-        isOpen: false
+        key: 'speed'
       },
       id_3: {
         id: 'id_3',
@@ -317,8 +470,7 @@ test('(mock) Sketches - Reimport Sketch (with title change)', (t) => {
         shotCount: 0,
         connectedMacroIds: [],
         type: 'param',
-        key: 'scale',
-        isOpen: false
+        key: 'scale'
       }
     },
    'After reimporting, new node exists, old node title has changed'
@@ -363,8 +515,7 @@ test('(mock) Sketches - Reimport Sketch (Different order)', (t) => {
         shotCount: 0,
         connectedMacroIds: [],
         type: 'param',
-        key: 'speed',
-        isOpen: false
+        key: 'speed'
       },
       id_3: {
         id: 'id_3',
@@ -374,8 +525,7 @@ test('(mock) Sketches - Reimport Sketch (Different order)', (t) => {
         shotCount: 0,
         connectedMacroIds: [],
         type: 'param',
-        key: 'scale',
-        isOpen: false
+        key: 'scale'
       }
     },
     sketches: {
@@ -412,8 +562,7 @@ test('(mock) Sketches - Reimport Sketch (Different order)', (t) => {
         shotCount: 0,
         connectedMacroIds: [],
         type: 'param',
-        key: 'speed',
-        isOpen: false
+        key: 'speed'
       },
       id_3: {
         id: 'id_3',
@@ -423,8 +572,7 @@ test('(mock) Sketches - Reimport Sketch (Different order)', (t) => {
         shotCount: 0,
         connectedMacroIds: [],
         type: 'param',
-        key: 'scale',
-        isOpen: false
+        key: 'scale'
       },
       id_4: {
         id: 'id_4',
@@ -434,8 +582,7 @@ test('(mock) Sketches - Reimport Sketch (Different order)', (t) => {
         shotCount: 0,
         connectedMacroIds: [],
         type: 'param',
-        key: 'bar',
-        isOpen: false
+        key: 'bar'
       }
     },
    'After reimporting, new node exists'

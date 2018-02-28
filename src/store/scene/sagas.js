@@ -5,7 +5,6 @@ import { uNodeCreate, uNodeDelete, nodeUpdate } from '../nodes/actions'
 import getSketches from '../../selectors/getSketches'
 import getSketch from '../../selectors/getSketch'
 import getNode from '../../selectors/getNode'
-import getSketchParams from '../../selectors/getSketchParams'
 import history from '../../history'
 import uid from 'uid'
 
@@ -30,8 +29,7 @@ export function* handleSketchCreate (action) {
         key: param.key,
         value: param.defaultValue,
         id: uniqueId,
-        inputLinkIds,
-        isOpen: false
+        inputLinkIds
       }))
     }
   }
@@ -115,8 +113,7 @@ export function* handleSketchReimport (action) {
         key: moduleParam.key,
         value: moduleParam.defaultValue,
         id: uniqueId,
-        inputLinkIds: [],
-        isOpen: false
+        inputLinkIds: []
       }))
     } else {
       // If param does exist, the title may still change
