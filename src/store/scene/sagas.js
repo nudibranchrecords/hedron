@@ -108,7 +108,7 @@ export function* handleSketchReimport (action) {
     if (!sketchParam) {
       // If module param doesnt exist in sketch, it needs to be created
       const uniqueId = yield call(uid)
-      paramIds.push(uniqueId)
+      paramIds.splice(i, 0, uniqueId)
       yield put(uNodeCreate(uniqueId, {
         title: moduleParam.title,
         type: 'param',

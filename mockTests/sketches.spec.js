@@ -295,7 +295,6 @@ test('(mock) Sketches - Reimport Sketch (with title change)', (t) => {
    'After reimporting, sketch has new paramId'
   )
 
-  console.log(state.nodes)
   t.deepEqual(
     state.nodes,
     {
@@ -323,6 +322,123 @@ test('(mock) Sketches - Reimport Sketch (with title change)', (t) => {
       }
     },
    'After reimporting, new node exists, old node title has changed'
+  )
+
+  t.end()
+})
+
+test('(mock) Sketches - Reimport Sketch (Different order)', (t) => {
+  uniqueId = 3
+
+  const store = createStore(rootReducer, {
+    availableModules: {
+      foo: {
+        defaultTitle: 'Foo',
+        params: [
+          {
+            key: 'speed',
+            title: 'Speed',
+            defaultValue: 0.5
+          },
+          {
+            key: 'bar',
+            title: 'Bar',
+            defaultValue: 0.5
+          },
+          {
+            key: 'scale',
+            title: 'Scale',
+            defaultValue: 0.2
+          }
+        ],
+        shots: []
+      }
+    },
+    nodes: {
+      id_2: {
+        id: 'id_2',
+        title: 'Speed',
+        value: 0.5,
+        inputLinkIds: [],
+        shotCount: 0,
+        connectedMacroIds: [],
+        type: 'param',
+        key: 'speed',
+        isOpen: false
+      },
+      id_3: {
+        id: 'id_3',
+        title: 'Scale',
+        value: 0.2,
+        inputLinkIds: [],
+        shotCount: 0,
+        connectedMacroIds: [],
+        type: 'param',
+        key: 'scale',
+        isOpen: false
+      }
+    },
+    sketches: {
+      id_1: {
+        title: 'Foo',
+        moduleId: 'foo',
+        paramIds: ['id_2', 'id_3'],
+        shotIds: [],
+        openedNodes: {}
+      }
+    }
+  }, applyMiddleware(sagaMiddleware))
+  sagaMiddleware.run(rootSaga, store.dispatch)
+
+  let state
+
+  store.dispatch(sceneSketchReimport('id_1'))
+
+  state = store.getState()
+
+  t.deepEqual(
+    state.sketches['id_1'].paramIds, ['id_2', 'id_4', 'id_3'],
+   'After reimporting, sketch has new paramId in middle of array'
+  )
+
+  t.deepEqual(
+    state.nodes,
+    {
+      id_2: {
+        id: 'id_2',
+        title: 'Speed',
+        value: 0.5,
+        inputLinkIds: [],
+        shotCount: 0,
+        connectedMacroIds: [],
+        type: 'param',
+        key: 'speed',
+        isOpen: false
+      },
+      id_3: {
+        id: 'id_3',
+        title: 'Scale',
+        value: 0.2,
+        inputLinkIds: [],
+        shotCount: 0,
+        connectedMacroIds: [],
+        type: 'param',
+        key: 'scale',
+        isOpen: false
+      },
+      id_4: {
+        id: 'id_4',
+        title: 'Bar',
+        value: 0.5,
+        inputLinkIds: [],
+        shotCount: 0,
+        connectedMacroIds: [],
+        type: 'param',
+        key: 'bar',
+        isOpen: false
+      }
+    },
+   'After reimporting, new node exists'
   )
 
   t.end()
