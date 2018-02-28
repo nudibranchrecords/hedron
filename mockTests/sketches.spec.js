@@ -392,7 +392,7 @@ test('(mock) Sketches - Reimport Sketch (simple)', (t) => {
   t.end()
 })
 
-test('(mock) Sketches - Reimport Sketch (with title change)', (t) => {
+test('(mock) Sketches - Reimport Sketch (params and shots)', (t) => {
   uniqueId = 2
 
   const store = createStore(rootReducer, {
@@ -402,7 +402,7 @@ test('(mock) Sketches - Reimport Sketch (with title change)', (t) => {
         params: [
           {
             key: 'speed',
-            title: 'Speed New',
+            title: 'Speed',
             defaultValue: 0.5
           },
           {
@@ -411,7 +411,16 @@ test('(mock) Sketches - Reimport Sketch (with title change)', (t) => {
             defaultValue: 0.2
           }
         ],
-        shots: []
+        shots: [
+          {
+            method: 'explode',
+            title: 'Explode'
+          },
+          {
+            method: 'spin',
+            title: 'Spin'
+          }
+        ]
       }
     },
     nodes: {
@@ -450,11 +459,16 @@ test('(mock) Sketches - Reimport Sketch (with title change)', (t) => {
   )
 
   t.deepEqual(
+    state.sketches['id_1'].shotIds, ['id_4', 'id_5'],
+   'After reimporting, sketch has new shotIds'
+  )
+
+  t.deepEqual(
     state.nodes,
     {
       id_2: {
         id: 'id_2',
-        title: 'Speed New',
+        title: 'Speed',
         value: 0.5,
         inputLinkIds: [],
         shotCount: 0,
@@ -471,9 +485,145 @@ test('(mock) Sketches - Reimport Sketch (with title change)', (t) => {
         connectedMacroIds: [],
         type: 'param',
         key: 'scale'
+      },
+      id_4: {
+        id: 'id_4',
+        title: 'Explode',
+        value: 0,
+        inputLinkIds: [],
+        shotCount: 0,
+        connectedMacroIds: [],
+        type: 'shot',
+        method: 'explode',
+        sketchId: 'id_1'
+      },
+      id_5: {
+        id: 'id_5',
+        title: 'Spin',
+        value: 0,
+        inputLinkIds: [],
+        shotCount: 0,
+        connectedMacroIds: [],
+        type: 'shot',
+        method: 'spin',
+        sketchId: 'id_1'
       }
     },
-   'After reimporting, new node exists, old node title has changed'
+   'After reimporting, new nodes exist'
+  )
+
+  t.end()
+})
+
+test('(mock) Sketches - Reimport Sketch (with shot and param title changes)', (t) => {
+  uniqueId = 2
+
+  const store = createStore(rootReducer, {
+    availableModules: {
+      foo: {
+        defaultTitle: 'Foo',
+        params: [
+          {
+            key: 'speed',
+            title: 'Speed New',
+            defaultValue: 0.5
+          },
+          {
+            key: 'scale',
+            title: 'Scale',
+            defaultValue: 0.2
+          }
+        ],
+        shots: [
+          {
+            method: 'explode',
+            title: 'Explode New'
+          }
+        ]
+      }
+    },
+    nodes: {
+      id_2: {
+        id: 'id_2',
+        title: 'Speed',
+        value: 0.5,
+        inputLinkIds: [],
+        shotCount: 0,
+        connectedMacroIds: [],
+        type: 'param',
+        key: 'speed'
+      },
+      id_4: {
+        id: 'id_4',
+        title: 'Explode',
+        value: 0,
+        inputLinkIds: [],
+        shotCount: 0,
+        connectedMacroIds: [],
+        type: 'shot',
+        method: 'explode',
+        sketchId: 'id_1'
+      }
+    },
+    sketches: {
+      id_1: {
+        title: 'Foo',
+        moduleId: 'foo',
+        paramIds: ['id_2'],
+        shotIds: [],
+        openedNodes: {}
+      }
+    }
+  }, applyMiddleware(sagaMiddleware))
+  sagaMiddleware.run(rootSaga, store.dispatch)
+
+  let state
+
+  store.dispatch(sceneSketchReimport('id_1'))
+
+  state = store.getState()
+
+  t.deepEqual(
+    state.sketches['id_1'].paramIds, ['id_2', 'id_3'],
+   'After reimporting, sketch has new paramId'
+  )
+
+  t.deepEqual(
+    state.nodes,
+    {
+      id_2: {
+        id: 'id_2',
+        title: 'Speed New',
+        value: 0.5,
+        inputLinkIds: [],
+        shotCount: 0,
+        connectedMacroIds: [],
+        type: 'param',
+        key: 'speed'
+      },
+      id_4: {
+        id: 'id_4',
+        title: 'Explode New',
+        value: 0,
+        inputLinkIds: [],
+        shotCount: 0,
+        connectedMacroIds: [],
+        type: 'shot',
+        method: 'explode',
+        sketchId: 'id_1'
+      },
+      id_3: {
+        id: 'id_3',
+        title: 'Scale',
+        value: 0.2,
+        inputLinkIds: [],
+        shotCount: 0,
+        connectedMacroIds: [],
+        type: 'param',
+        key: 'scale'
+      }
+    },
+   'After reimporting, new node exists, old nodes titles have changed'
   )
 
   t.end()

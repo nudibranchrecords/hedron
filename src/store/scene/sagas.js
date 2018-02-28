@@ -89,14 +89,22 @@ export function* handleSketchReimport (action) {
   const sketch = yield select(getSketch, id)
   const module = yield select(getModule, sketch.moduleId)
   let paramIds = sketch.paramIds
+  let shotIds = sketch.shotIds
   const sketchParams = {}
+  const sketchShots = {}
 
   for (let i = 0; i < paramIds.length; i++) {
     const param = yield select(getNode, paramIds[i])
     sketchParams[param.key] = param
   }
 
+  for (let i = 0; i < shotIds.length; i++) {
+    const shot = yield select(getNode, shotIds[i])
+    sketchShots[shot.key] = shot
+  }
+
   const moduleParams = module.params
+  const moduleShots = module.shots
 
   // Look through the loaded module's params for new ones
   for (let i = 0; i < moduleParams.length; i++) {
@@ -119,6 +127,31 @@ export function* handleSketchReimport (action) {
       // If param does exist, the title may still change
       const id = sketchParam.id
       yield put(nodeUpdate(id, { title: moduleParam.title }))
+    }
+  }
+
+  // Look through the loaded module's shots for new ones
+  for (let i = 0; i < moduleShots.length; i++) {
+    const moduleShot = moduleShots[i]
+    const sketchShot = sketchShots[moduleShots.method]
+
+    if (!sketchShot) {
+      // If module shot doesnt exist in sketch, it needs to be created
+      const uniqueId = yield call(uid)
+      shotIds.splice(i, 0, uniqueId)
+      yield put(uNodeCreate(uniqueId, {
+        id: uniqueId,
+        value: 0,
+        type: 'shot',
+        title: moduleShot.title,
+        method: moduleShot.method,
+        sketchId: id,
+        inputLinkIds: []
+      }))
+    } else {
+      // If param does exist, the title may still change
+      const id = sketchShot.id
+      yield put(nodeUpdate(id, { title: sketchShot.title }))
     }
   }
 
