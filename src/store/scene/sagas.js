@@ -81,7 +81,13 @@ export function* handleSketchDelete (action) {
   const sketches = yield select(getSketches)
   const sketchKeys = Object.keys(sketches)
   const lastId = sketchKeys[sketchKeys.length - 1]
-  yield call([history, history.push], '/sketches/view/' + lastId)
+  let url
+  if (lastId !== undefined) {
+    url = '/sketches/view/' + lastId
+  } else {
+    url = '/sketches/add'
+  }
+  yield call([history, history.push], url)
 }
 
 export function* handleSketchReimport (action) {
