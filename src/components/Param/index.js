@@ -103,6 +103,7 @@ const Info = styled.div`
   justify-content: space-between;
   font-size: 0.6rem;
   cursor: pointer;
+  text-transform: uppercase;
 
   > span {
     display: flex;
