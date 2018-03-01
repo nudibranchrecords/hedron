@@ -74,6 +74,14 @@ export const createMainWindow = () => {
     mainWindow = null
   })
 
+  mainWindow.on('hide', () => {
+    mainWindow.webContents.send('window-hide')
+  })
+
+  mainWindow.on('show', () => {
+    mainWindow.webContents.send('window-show')
+  })
+
   mainWindow.webContents.send('devtools-opened', () => {
     mainWindow.focus()
     setImmediate(() => {

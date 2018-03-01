@@ -1,6 +1,7 @@
 import tapTempoFunc from 'tap-tempo'
 import { clockPulse } from '../store/clock/actions'
 import { settingsUpdate } from '../store/settings/actions'
+import { ipcRenderer } from 'electron'
 
 let store
 let requestId
@@ -34,12 +35,29 @@ const loop = () => {
   requestId = requestAnimationFrame(loop)
 }
 
+// Stop and start only used for when window is hidden/shown
+// otherwise settings.clockGenerated is used
 export const stopGeneratedClock = () => {
   cancelAnimationFrame(requestId)
   requestId = undefined
 }
 
+export const startGeneratedClock = () => {
+  marker = window.performance.now()
+  requestId = requestAnimationFrame(loop)
+}
+
 export const tap = tapTempo.tap
+
+ipcRenderer.on('window-hide', () => {
+  console.log('hid', Date.now())
+  stopGeneratedClock()
+})
+
+ipcRenderer.on('window-show', () => {
+  console.log('sho', Date.now())
+  startGeneratedClock()
+})
 
 export default (injectedStore) => {
   store = injectedStore
