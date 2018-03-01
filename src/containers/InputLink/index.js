@@ -26,7 +26,7 @@ const mapStateToProps = (state, ownProps) => {
 const mapDispatchToProps = (dispatch, ownProps) => ({
   onDeleteClick: () => {
     dispatch(uInputLinkDelete(ownProps.id))
-    dispatch(nodeTabOpen(ownProps.nodeId, 0))
+    dispatch(nodeTabOpen(ownProps.nodeId, undefined))
   },
   onActivateToggle: () => {
     dispatch(nodeActiveInputLinkToggle(ownProps.nodeId, ownProps.id))
