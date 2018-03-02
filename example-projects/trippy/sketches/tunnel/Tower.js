@@ -1,4 +1,4 @@
-const { Object3D, ShaderMaterial, Color, BoxBufferGeometry } = require('three')
+const { Object3D, ShaderMaterial, Color, BoxBufferGeometry, UniformsUtils, UniformsLib } = require('three')
 const Block = require('./Block')
 const Pipes = require('./Pipes')
 const glsl = require('glslify')
@@ -31,15 +31,20 @@ class Tower {
     this.wavyMats = []
 
     for (let i = 0; i < numWavyMats; i++) {
-      const mat = new ShaderMaterial({
-        vertexShader: vertShader,
-        fragmentShader: fragShader,
-        uniforms: {
+      const uniforms = UniformsUtils.merge([
+        UniformsLib[ 'fog' ],
+        {
           iTime: { value: Date.now(), type: 'f' },
           seed: { value: Math.random() * 100 },
           color1: { value: new Color(colors[0]) },
           color2: { value: new Color(0x2EFFFD) }
         }
+      ])
+      const mat = new ShaderMaterial({
+        vertexShader: vertShader,
+        fragmentShader: fragShader,
+        fog: true,
+        uniforms
       })
 
       this.wavyMats.push(mat)
@@ -60,6 +65,8 @@ class Tower {
         }
       }
     }
+
+    // this.flashAllBlocksOn()
   }
 
   removeBlocks () {

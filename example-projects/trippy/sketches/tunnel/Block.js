@@ -1,5 +1,16 @@
 const { Object3D, MeshLambertMaterial, Mesh } = require('three')
 const TWEEN = require('@tweenjs/tween.js')
+const PI_HALF = Math.PI / 2
+
+const roundRot = rot => {
+  const diff = rot % PI_HALF
+
+  if (diff === 0) {
+    return rot
+  } else {
+    return rot + (PI_HALF - diff)
+  }
+}
 
 class Block {
   constructor (x, y, z, blockSize, colors, towerWidth, towerHeight, wavyMats, cubeGeom) {
@@ -90,31 +101,18 @@ class Block {
 
   spin () {
     const axis = ['X', 'Y', 'Z']
+    const nextRot = {
+      rotX: roundRot(this.props.rotX),
+      rotY: roundRot(this.props.rotY),
+      rotZ: roundRot(this.props.rotZ)
+    }
     const i = Math.floor(Math.random() * 3)
-    const r = this.props[`rot${axis[i]}`] + Math.PI / 2
+    nextRot[`rot${axis[i]}`] += Math.PI / 2
 
     new TWEEN.Tween(this.props)
-      .to({ [`rot${axis[i]}`]: r }, this.blockSpinSpeed)
+      .to(nextRot, this.blockSpinSpeed)
       .easing(TWEEN.Easing.Quadratic.Out)
       .start()
-  }
-
-  shapeShift () {
-    if (!this.visible && Math.random() > 0.7) {
-      let s, c
-      if (Math.random() > 0.5) {
-        c = 1
-        s = 0.001
-      } else {
-        c = 0.001
-        s = 1
-      }
-
-      new TWEEN.Tween(this.props)
-        .to({ cubeScale: c, sphereScale: s }, 500)
-        .easing(TWEEN.Easing.Quadratic.Out)
-        .start()
-    }
   }
 
   flicker (hide, cb) {
@@ -306,18 +304,23 @@ class Block {
     )
 
     if (permittedMoves.length) {
+      const roundMoves = {
+        xPos: Math.round(this.props.xPos),
+        yPos: Math.round(this.props.yPos),
+        zPos: Math.round(this.props.zPos)
+      }
+
       const i = Math.floor(Math.random() * permittedMoves.length)
       const move = moves[permittedMoves[i]]
-      nextMove = { [move.prop]: move.val }
+
+      nextMove = Object.assign({}, roundMoves, { [move.prop]: move.val })
+
       doTween = true
     }
 
-    this.nextProps = Object.assign({}, this.props, nextMove)
-
     if (doTween) {
-      if (this.shiftTween) {
-        this.shiftTween.stop()
-      }
+      this.nextProps = Object.assign({}, this.props, nextMove)
+
       this.shiftTween = new TWEEN.Tween(this.props)
         .to(nextMove, this.blockShiftSpeed)
         .easing(TWEEN.Easing.Bounce.Out)

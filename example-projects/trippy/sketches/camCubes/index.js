@@ -11,7 +11,7 @@ class CamCubes {
     this.root.add(this.group)
 
     videoTexture.on('got-feed', (texture) => {
-      this.mat = new THREE.MeshBasicMaterial({
+      this.mat = new THREE.MeshLambertMaterial({
         map: texture
       })
 

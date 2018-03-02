@@ -7,7 +7,7 @@ class Tunnel {
     world.scene.fog = new THREE.FogExp2()
     this.root = new THREE.Group()
     const groupSize = 500
-    const towerHeight = 20
+    const towerHeight = 10
     const towerWidth = 5
     const blockSize = groupSize / towerWidth
 

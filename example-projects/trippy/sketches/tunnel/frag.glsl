@@ -7,6 +7,9 @@ uniform float seed;
 uniform vec3 color1;
 uniform vec3 color2;
 
+#pragma glslify: import('./chunks/common.glsl')
+#pragma glslify: import('./chunks/fog_pars_fragment.glsl')
+
 vec2 GetGradient(vec2 intPos, float t) {
     float rand = fract(sin(dot(intPos, vec2(12.9898, 78.233))) * seed);;
     float angle = 6.283185 * rand + 4.0 * t * rand;
@@ -35,8 +38,11 @@ float Pseudo3dNoise(vec3 pos) {
 
 
 void main() {
+
+
 	vec2 uv = vUv.xy;
   float noiseVal = 0.5 + 0.5 * Pseudo3dNoise(vec3(uv * 1.0, iTime / 2.));
   noiseVal = mod(noiseVal, 0.1) * 10.;
   gl_FragColor = vec4(mix(color1, color2, noiseVal), 1.);
+  #pragma glslify: import('./chunks/fog_fragment.glsl')
 }
