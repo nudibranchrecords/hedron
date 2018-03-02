@@ -34,6 +34,7 @@ class ValueBar extends React.Component {
     this.handleMouseMove = this.handleMouseMove.bind(this)
     this.setSize = this.setSize.bind(this)
     this.draw = this.draw.bind(this)
+    this.flashFading = false
   }
 
   componentDidMount () {
@@ -119,6 +120,7 @@ class ValueBar extends React.Component {
     // Flash if new shot has happened
     if (shotCount !== this.shotCount) {
       this.shotCount = shotCount
+      this.flashFading = true
       this.lastShotTime = now()
     }
 
@@ -126,7 +128,7 @@ class ValueBar extends React.Component {
       flashOpacity = 1 - ((now() - this.lastShotTime) / 200)
     }
 
-    if (newVal !== this.oldVal || force || flashOpacity > 0) {
+    if (newVal !== this.oldVal || force || this.flashFading) {
       const barWidth = 2
       const innerWidth = this.width - barWidth
       const pos = innerWidth * newVal
@@ -147,10 +149,14 @@ class ValueBar extends React.Component {
         this.flashIsPainted = false
       }
 
-      if (flashOpacity > 0) {
+      if (this.flashFading) {
         this.ctx.fillStyle = `rgba(218,87,130,${flashOpacity})`
         this.ctx.fillRect(0, 0, this.width, this.height)
         this.flashIsPainted = true
+
+        if (flashOpacity === 0) {
+          this.flashFading = false
+        }
       }
 
       this.oldVal = newVal
