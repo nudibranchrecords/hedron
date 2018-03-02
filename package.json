@@ -27,6 +27,7 @@
     }
   },
   "dependencies": {
+    "@tweenjs/tween.js": "^17.2.0",
     "babel-loader": "^6.3.2",
     "babel-plugin-transform-object-rest-spread": "^6.22.0",
     "babel-polyfill": "^6.23.0",
@@ -36,6 +37,7 @@
     "electron-debug": "^1.4.0",
     "electron-log": "^2.2.14",
     "eventemitter3": "^3.0.1",
+    "glslify": "^6.1.1",
     "history": "^4.6.1",
     "jsonfile": "^2.4.0",
     "lodash": "^4.17.4",
