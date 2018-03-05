@@ -15,6 +15,7 @@ class Env {
     this.directionalLight1.position.set(-0.5, 0.5, 0.5)
 
     this.centralPointLight = new THREE.PointLight(0xffffff, 1, 10000)
+    // this.centralPointLight.position.z = -1000
     this.world.scene.add(this.centralPointLight)
 
     this.world.scene.add(this.directionalLight1)
