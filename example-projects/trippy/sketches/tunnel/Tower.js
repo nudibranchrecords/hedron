@@ -43,7 +43,7 @@ class Tower {
       const mat = new ShaderMaterial({
         vertexShader: vertShader,
         fragmentShader: fragShader,
-        fog: true,
+        fog: false,
         uniforms
       })
 
@@ -66,7 +66,7 @@ class Tower {
       }
     }
 
-    // this.flashAllBlocksOn()
+    this.flashBlocks()
   }
 
   removeBlocks () {
@@ -161,12 +161,12 @@ class Tower {
   update (p, t, f, color) {
     const blocks = this.blocks
     let { tunnelScale, zSpeed, perlinSpeed } = p
-    const speed = zSpeed * f * 20
+    const speed = ((zSpeed * 2) - 1) * f * 20
     const scale = 1 + (10 * tunnelScale)
 
     this.props.perlinTime += perlinSpeed * f / 10
 
-    this.group.position.z -= speed
+    this.group.position.z += speed
 
     if (this.group.position.z < this.minZ && !this.isFlickering) {
       this.isFlickering = true
@@ -175,6 +175,9 @@ class Tower {
         const diff = Math.abs(this.group.position.z) - Math.abs(this.minZ)
         this.group.position.z = this.maxZ - diff
       })
+    } else if (this.group.position.z > this.maxZ && !this.isFlickering) {
+      const diff = this.group.position.z - this.maxZ
+      this.group.position.z = this.minZ + diff
     }
 
     this.tower.scale.set(scale, scale, 1)

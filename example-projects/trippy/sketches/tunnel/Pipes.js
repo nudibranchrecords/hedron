@@ -6,7 +6,7 @@ class Pipes {
     this.pipes = []
     this.numPipes = 3
     this.group = new Object3D()
-    this.group.visible = false
+    this.group.visible = true
     this.material = new MeshBasicMaterial({ wireframe: true, color: 0x2EFFFD, fog: false })
 
     for (let i = 0; i < this.numPipes; i++) {

@@ -97,7 +97,7 @@ class Tunnel {
     this.tower2.pipesAllOn()
   }
 
-  update (p, t, f, allParams) {
+  update (p, t, f) {
     const { rotSpeed, rotTweenSpeed, colorH, colorS, colorL } = p
     const color = new THREE.Color().setHSL(colorH, colorS, colorL)
     this.tower1.update(p, t, f, color)
