@@ -11,7 +11,7 @@ class Blobs {
     this.renderer = renderer
     this.scene = scene
 
-    this.cubeCamera = new CubeCamera(1, 10000, 64)
+    this.cubeCamera = new CubeCamera(1, 5000, 64)
 
     setTimeout(() => {
       this.cubeCamera.update(this.renderer, this.scene)
