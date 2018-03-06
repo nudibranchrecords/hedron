@@ -16,11 +16,16 @@ const Wrapper = styled.div`
 `
 
 const Bottom = styled.div`
-  display: flex;
   margin-top: auto;
   padding-top: 3rem;
-  text-align: right;
-  justify-content: space-between;
+  padding-bottom: 0.5rem;
+  flex: 0 0 2rem;
+
+  & > div {
+    display: flex;
+    text-align: right;
+    justify-content: space-between;
+  }
 `
 
 const Sketch = ({ title, params, shots, onDeleteClick, sketchId, onRenameClick, onReimportClick }) => (
@@ -54,8 +59,10 @@ const Sketch = ({ title, params, shots, onDeleteClick, sketchId, onRenameClick, 
     }
 
     <Bottom>
-      <Button onClick={onDeleteClick}>Delete Sketch</Button>
-      <Button onClick={onReimportClick}>Reimport</Button>
+      <div>
+        <Button onClick={onDeleteClick}>Delete Sketch</Button>
+        <Button onClick={onReimportClick}>Reimport</Button>
+      </div>
     </Bottom>
   </Wrapper>
 )

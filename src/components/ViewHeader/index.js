@@ -13,6 +13,7 @@ const Wrapper = styled.h1`
   font-size: 1.2rem;
   background: ${theme.bgColorDark2};
   padding: 0.5rem;
+  flex: 0 0 2rem;
   margin: -0.5rem -0.5rem 0.5rem;
   border-bottom: 1px solid ${theme.lineColor2};
   color: ${theme.textColorLight1};
