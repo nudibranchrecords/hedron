@@ -4,6 +4,20 @@ Perform live shows with your three.js creations.
 
 ![Hedron UI](http://nudibranchrecords.github.io/hedron/ui.gif)
 
+## Features
+
+📥Import [three.js](https://github.com/mrdoob/three.js/) sketches without having to recompile
+🌇 Layer up multiple sketches in the same scene
+🔊 Control variables using audio, MIDI and BPM based LFO
+🕹️ Call functions using audio, MIDI and BPM based sequencer
+⚡ Define macros to control multiple variables at once
+⏲️ Use MIDI clock input or tap tempo to get BPM
+🎛️ Use virtual MIDI banks to get the most out of your controller
+💡 Use MIDI Learn to quickly assign controls
+⚙️ Support for multiple MIDI control modes (abs, rel1, rel2, rel3)
+📽️ Easily send output picture to external display
+💾 Save / load using JSON project files
+
 ## Quick start
 
 1. Make sure [Node.js](https://nodejs.org/en/) is installed on your machine.
