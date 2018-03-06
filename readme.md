@@ -8,17 +8,17 @@ Perform live shows with your three.js creations.
 
 ## Features
 
-📥Import [three.js](https://github.com/mrdoob/three.js/) sketches without having to recompile
-🌇 Layer up multiple sketches in the same scene
-🔊 Control variables using audio, MIDI and BPM based LFO
-🕹️ Call functions using audio, MIDI and BPM based sequencer
-⚡ Define macros to control multiple variables at once
-⏲️ Use MIDI clock input or tap tempo to get BPM
-🎛️ Use virtual MIDI banks to get the most out of your controller
-💡 Use MIDI Learn to quickly assign controls
-⚙️ Support for multiple MIDI control modes (abs, rel1, rel2, rel3)
-📽️ Easily send output picture to external display
-💾 Save / load using JSON project files
+- 📥Import [three.js](https://github.com/mrdoob/three.js/) sketches without having to recompile
+- 🌇 Layer up multiple sketches in the same scene
+- 🔊 Control variables using audio, MIDI and BPM based LFO
+- 🕹️ Call functions using audio, MIDI and BPM based sequencer
+- ⚡ Define macros to control multiple variables at once
+- ⏲️ Use MIDI clock input or tap tempo to get BPM
+- 🎛️ Use virtual MIDI banks to get the most out of your controller
+- 💡 Use MIDI Learn to quickly assign controls
+- ⚙️ Support for multiple MIDI control modes (abs, rel1, rel2, rel3)
+- 📽️ Easily send output picture to external display
+- 💾 Save / load using JSON project files
 
 ## Getting Started
 
@@ -34,7 +34,9 @@ $ yarn
 $ yarn start
 ```
 
-`yarn start` opens the app in dev mode, you may want to close the dev tools on the right hand side of the window. Run `yarn dist` to package up the app for best performance and no dev tools.
+`yarn start` opens the app in dev mode, you'll probably want to close the dev tools on the right hand side of the window.
+
+Run `yarn dist` to package up the app for best performance and no dev tools. Once the build is complete, you'll find the app inside `/dist`.
 
 ### Load trippy example project
 
