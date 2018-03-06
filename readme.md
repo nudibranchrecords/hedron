@@ -1,6 +1,8 @@
 # Hedron
 
-Perform live shows your three.js creations.
+Perform live shows with your three.js creations.
+
+![Hedron UI](http://nudibranchrecords.github.io/hedron/ui.gif)
 
 ## Quick start
 
