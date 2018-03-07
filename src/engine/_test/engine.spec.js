@@ -40,7 +40,7 @@ getSketchesStub.withArgs('foo/bar').returns(
 
 function FrogModule () { this.root = 'frogRoot' }
 
-test('Engine', (t) => {
+test('engine', (t) => {
   let expected
 
   const engine = proxyquire('../', {

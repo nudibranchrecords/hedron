@@ -13,7 +13,10 @@ const mapStateToProps = (state, ownProps) => ({
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
   onResetClick: () => { dispatch(clockReset()) },
-  onTapTempoClick: () => { tap() }
+  onTapTempoClick: () => {
+    tap()
+    dispatch(clockReset())
+  }
 })
 
 export default connect(

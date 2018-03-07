@@ -12,7 +12,7 @@ import { batchedSubscribe } from 'redux-batched-subscribe'
 import rootSaga from '../store/rootSaga'
 import rootReducer from '../store/rootReducer'
 import App from '../containers/App'
-import Engine from '../Engine'
+import engine from '../engine'
 import { initiateScreens } from '../windows'
 import { initiateMenuHandler } from './menuHandler'
 import Stats from 'stats.js'
@@ -93,7 +93,7 @@ initiateAudio(store)
 initiateMidi(store)
 initiateGeneratedClock(store)
 initiateScreens(store)
-Engine.run(store, stats)
+engine.run(store, stats)
 
 if (isDevelopment) {
   loadDefaultProject()
@@ -109,7 +109,7 @@ ipcRenderer.on('args', (event, data) => {
 if (module.hot) {
   module.hot.accept('../containers/App', () => {
     // Pausing engine after HMR to stop lag issue
-    Engine.pause()
+    engine.pause()
     renderApp(App)
   })
 }

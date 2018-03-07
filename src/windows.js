@@ -1,4 +1,4 @@
-import world from './Engine/world.js'
+import world from './engine/world.js'
 import { screen, ipcRenderer } from 'electron'
 import { displaysListUpdate } from './store/displays/actions'
 let store
