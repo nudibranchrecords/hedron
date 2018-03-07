@@ -64,7 +64,8 @@ export function* loadProjectRequest () {
   }
 }
 
-export function* chooseSketchesFolder (dispatch) {
+export function* chooseSketchesFolder (dispatch, action) {
+  const p = action.payload
   remote.dialog.showOpenDialog({
     properties: ['openDirectory']
   },
@@ -73,7 +74,9 @@ export function* chooseSketchesFolder (dispatch) {
       dispatch(projectSketchesPathUpdate(filePath[0]))
       dispatch(projectLoadSuccess())
       dispatch(projectErrorPopupClose())
-      history.push('/sketches/add')
+      if (!p.disableRedirect) {
+        history.push('/sketches/add')
+      }
     }
   })
 }
