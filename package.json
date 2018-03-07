@@ -2,7 +2,7 @@
   "name": "hedron",
   "version": "0.1.0",
   "repository": {},
-  "license": "MIT",
+  "license": "AGPL-3.0+",
   "scripts": {
     "lint": "eslint bin build config server src tests",
     "lint:css": "stylelint \"src/components/**/*.js\"",
