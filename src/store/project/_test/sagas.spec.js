@@ -7,7 +7,7 @@ import { getProjectData, getProjectFilepath } from '../selectors'
 import { save, load } from '../../../utils/file'
 import { projectLoadSuccess, projectRehydrate, projectError, projectSaveAs,
   projectErrorAdd, projectErrorPopupOpen, projectFilepathUpdate
-} from './actions'
+} from '../actions'
 import history from '../../../history'
 
 test('(Saga) watchProject', (t) => {
