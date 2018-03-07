@@ -5,7 +5,7 @@ import { projectError } from '../store/project/actions'
 import now from 'performance-now'
 import world from './world'
 
-class engine {
+class Engine {
   constructor () {
     this.allModules = {}
     this.modules = {}
@@ -124,4 +124,4 @@ class engine {
   }
 }
 
-export default new engine()
+export default new Engine()
