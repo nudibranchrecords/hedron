@@ -1,6 +1,6 @@
 import { connect } from 'react-redux'
 import Viewer from '../../components/Viewer'
-import world from '../../Engine/world'
+import world from '../../engine/world'
 
 const mapStateToProps = (state, ownProps) => (
   {
