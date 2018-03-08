@@ -1,5 +1,6 @@
 
 
+
 # Hedron
 
 Perform live shows with your three.js creations.
@@ -14,7 +15,7 @@ Perform live shows with your three.js creations.
 - 🕹️ Call functions using audio, MIDI and BPM based sequencer
 - ⚡ Define macros to control multiple variables at once
 - ⏲️ Use MIDI clock input or tap tempo to get BPM
-- 🎛️ Use virtual MIDI banks to get the most out of your controller
+- 🎛️ Use virtual MIDI banks to get the most out of your controllers
 - 💡 Use MIDI Learn to quickly assign controls
 - ⚙️ Support for multiple MIDI control modes (abs, rel1, rel2, rel3)
 - 📽️ Easily send output picture to external display
@@ -42,7 +43,8 @@ Run `yarn dist` to package up the app for best performance and no dev tools. Onc
 
 1. Choose "Load Existing Project". Locate the repo directory. Open `example-projects/trippy/project.json`
 2. An alert will appear. Choose "Locate Sketch Folder" and open `/example-projects/trippy/sketches`
-3. 😎
+3. Play it some music, tap BPM, experiment with the controls
+4. 😎
 
 ## User Guide
 Head to the [User Guide](https://github.com/nudibranchrecords/hedron/wiki/Hedron-User-Guide) to learn how to use Hedron.
@@ -50,6 +52,9 @@ Head to the [User Guide](https://github.com/nudibranchrecords/hedron/wiki/Hedron
 
 ## Creating Sketches
 Head to the [Creating Sketches Guide](https://github.com/nudibranchrecords/hedron/wiki/Creating-Sketches) to learn how to create sketches.
+
+## Get in touch
+Made something awesome in Hedron you'd like to share? Need help or have some cool ideas? Let's talk! Find Alex on Twitter: [@funtriangles](https://twitter.com/funtriangles), or email: [alex@funwithtriangles.net](mailto:https://twitter.com/funtriangles).
 
 ## Contributing to Hedron
 
