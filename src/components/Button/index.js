@@ -24,7 +24,7 @@ const Wrapper = styled.span`
 
   &:hover {
     background: #ef6091;
-
+  }
 
   &:active {
     transform: scale(0.9);
@@ -46,17 +46,13 @@ const Link = styled(RouterLink)`
   text-decoration: none;
 `
 
-const Button = (props) => {
-  return (
-    <Wrapper {...props}>
-      {props.to
+const Button = (props) =>
+  <Wrapper {...props}>
+    {props.to
         ? <Link to='/' {...props} />
         : <a>{props.children}</a>
       }
-    </Wrapper>
-
-  )
-}
+  </Wrapper>
 
 Button.propTypes = {
   to: PropTypes.string,
