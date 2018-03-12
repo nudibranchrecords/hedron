@@ -8,12 +8,11 @@ export default state => {
 
   if (isEditing) {
     switch (isEditing.type) {
-      case 'nodeTitle':
-        node = isEditing && getNode(state, isEditing.id)
-        break
       case 'sketchTitle':
         node = isEditing && getSketch(state, isEditing.id)
         break
+      default:
+        node = isEditing && getNode(state, isEditing.id)
     }
   }
 

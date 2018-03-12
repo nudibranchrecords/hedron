@@ -163,8 +163,8 @@ class Param extends React.Component {
   }
 
   render () {
-    const { title, nodeId, isOpen, onOpenClick, onParamBarClick,
-    children, numInputs, numMacros, inputLinkTitle, isActive, type } = this.props
+    const { title, nodeId, isOpen, onOpenClick, onParamBarClick, onParamBarDoubleClick,
+    children, numInputs, numMacros, inputLinkTitle, isActive, type, isEditing } = this.props
 
     return (
       <ThemeProvider theme={{ type }}>
@@ -172,10 +172,16 @@ class Param extends React.Component {
           <Inner isOpen={isOpen} isActive={isActive}>
             <Top>
               <Row>
-                <BarCol>
-                  <Title>{title}</Title>
-                  <ParamBar nodeId={nodeId} onMouseDown={onParamBarClick} />
-                </BarCol>
+                { isEditing
+                  ? <p>Editing</p>
+                  : <BarCol onDoubleClick={onParamBarDoubleClick}>
+                    <Title>{title}</Title>
+                    <ParamBar
+                      nodeId={nodeId}
+                      onMouseDown={onParamBarClick}
+                    />
+                  </BarCol>
+                }
                 <Info onClick={onOpenClick}>
                   {inputLinkTitle && <span><Icon glyph={inputIcon} />{inputLinkTitle}</span>}
                   <IconInfo>
@@ -208,11 +214,13 @@ Param.propTypes = {
   isActive: PropTypes.bool,
   onOpenClick: PropTypes.func.isRequired,
   onParamBarClick: PropTypes.func,
+  onParamBarDoubleClick: PropTypes.func,
   children: PropTypes.node,
   numInputs: PropTypes.number,
   numMacros: PropTypes.number,
   inputLinkTitle: PropTypes.string,
-  type: PropTypes.string
+  type: PropTypes.string,
+  isEditing: PropTypes.bool
 }
 
 export default Param

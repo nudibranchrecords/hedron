@@ -1,3 +1,5 @@
+import { LOCATION_CHANGE } from 'react-router-redux'
+
 const defaultState = {
   panelWidths: {
     left: 50
@@ -27,12 +29,14 @@ const uiReducer = (state = defaultState, action) => {
         }
       }
     }
-    case 'UI_EDITING_CLOSE': {
-      return {
-        ...state,
-        isEditing: false
+    case 'UI_EDITING_CLOSE':
+    case LOCATION_CHANGE:
+      {
+        return {
+          ...state,
+          isEditing: false
+        }
       }
-    }
     default:
       return state
   }
