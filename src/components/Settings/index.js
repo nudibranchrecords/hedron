@@ -1,8 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import ViewHeader from '../ViewHeader'
-import Form from '../Form'
-import { Field } from 'redux-form'
+import Input from '../Input'
 
 const Wrapper = styled.div`
   display: flex;
@@ -13,12 +12,10 @@ const Wrapper = styled.div`
 const Settings = () => (
   <Wrapper>
     <ViewHeader>Settings</ViewHeader>
-    <Form onSubmit={e => e.preventDefault()}>
-      <label htmlFor='clockGenerated'>Clock generated</label>
-      <Field name='clockGenerated' component='input' type='checkbox' />
-      <label htmlFor='clockBpm'>Clock generated BPM</label>
-      <Field name='clockBpm' component='input' type='text' />
-    </Form>
+    <form onSubmit={e => e.preventDefault()}>
+      <Input name='clockGenerated' label='Clock Generated' type='checkbox' />
+      <Input name='clockBpm' label='Clock BPM' />
+    </form>
   </Wrapper>
 )
 
