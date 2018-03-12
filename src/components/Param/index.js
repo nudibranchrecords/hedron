@@ -8,6 +8,7 @@ import macroIcon from '../../assets/icons/macro.icon.txt'
 import IconComponent from '../Icon'
 import theme from '../../utils/theme'
 import uiEventEmitter from '../../utils/uiEventEmitter'
+import ParamValueForm from '../../containers/ParamValueForm'
 
 const Wrapper = styled.div`
   width: 100%;
@@ -173,7 +174,7 @@ class Param extends React.Component {
             <Top>
               <Row>
                 { isEditing
-                  ? <p>Editing</p>
+                  ? <ParamValueForm id={nodeId} />
                   : <BarCol onDoubleClick={onParamBarDoubleClick}>
                     <Title>{title}</Title>
                     <ParamBar
