@@ -10,10 +10,10 @@ class ParamvalueForm extends React.Component {
   }
 
   render () {
-    const { handleSubmit, label, onBlur } = this.props
+    const { handleSubmit, onBlur } = this.props
     return (
       <form onSubmit={handleSubmit}>
-        <Input name='paramValue' id='editing_param' label={label} onBlur={onBlur} />
+        <Input name='paramValue' id='editing_param' onBlur={onBlur} />
       </form>
     )
   }
@@ -21,7 +21,7 @@ class ParamvalueForm extends React.Component {
 
 ParamvalueForm.propTypes = {
   handleSubmit: PropTypes.func.isRequired,
-  label: PropTypes.string.isRequired
+  onBlur: PropTypes.func.isRequired
 }
 
 export default ParamvalueForm
