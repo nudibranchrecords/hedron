@@ -32,12 +32,13 @@ const Wrapper = styled.div`
   }
 `
 
-const Input = ({ name, id, label, type = 'text' }) => {
+const Input = (props) => {
+  const { name, id, label, type = 'text' } = props
   const fieldId = id || name
   return (
     <Wrapper>
       {label && <label htmlFor={fieldId}>{label}</label>}
-      <Field name={name} id={fieldId} component='input' type={type} />
+      <Field component='input' type={type} {...props} />
     </Wrapper>
 
   )
