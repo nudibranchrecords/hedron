@@ -7,7 +7,14 @@ class ParamvalueForm extends React.Component {
   componentDidMount () {
     const input = document.querySelector('#editing_param')
     input.focus()
-    input.select()
+
+    // If value is 1 or 0, select whole numnber
+    if (input.value === '1' || input.value === '0') {
+      input.select()
+    } else {
+    // If value is decimal, select digits after decimal place
+      input.setSelectionRange(2, 5)
+    }
   }
 
   render () {

@@ -13,7 +13,7 @@ const Wrapper = styled.div`
     font-size: 1rem;
   }
 
-  input[type='text'] {
+  input[type='text'], input[type=number] {
     font-size: 1rem;
     display: block;
     border: 1px solid #aaa;
@@ -26,6 +26,12 @@ const Wrapper = styled.div`
     &:focus {
       border-color: white;
     }
+  }
+
+  input[type=number]::-webkit-inner-spin-button,
+  input[type=number]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
   }
 
   input[type='checkbox'] {
