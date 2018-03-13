@@ -19,7 +19,7 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
   onSubmit: (values) => {
-    const value = Math.max(Math.min(values.paramValue, 1), 0)
+    const value = Math.max(Math.min(parseFloat(values.paramValue), 1), 0)
     dispatch(uiEditingClose())
     dispatch(nodeValueUpdate(ownProps.id, value))
   },
