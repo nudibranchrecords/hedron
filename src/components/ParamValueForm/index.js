@@ -4,14 +4,16 @@ import Input from '../Input'
 
 class ParamvalueForm extends React.Component {
   componentDidMount () {
-    document.querySelector('#editing_param').focus()
+    const input = document.querySelector('#editing_param')
+    input.focus()
+    input.select()
   }
 
   render () {
-    const { handleSubmit, label } = this.props
+    const { handleSubmit, label, onBlur } = this.props
     return (
       <form onSubmit={handleSubmit}>
-        <Input name='paramValue' id='editing_param' label={label} />
+        <Input name='paramValue' id='editing_param' label={label} onBlur={onBlur} />
       </form>
     )
   }

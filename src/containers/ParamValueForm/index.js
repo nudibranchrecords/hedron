@@ -21,6 +21,9 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
   onSubmit: (values) => {
     dispatch(uiEditingClose())
     dispatch(nodeValueUpdate(ownProps.id, values.paramValue))
+  },
+  onBlur: () => {
+    dispatch(uiEditingClose())
   }
 })
 
