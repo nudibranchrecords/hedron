@@ -5,12 +5,15 @@ import { sketchNodeOpenedToggle } from '../../store/sketches/actions'
 import getIsSketchNodeOpened from '../../selectors/getIsSketchNodeOpened'
 import getActiveInputsText from '../../selectors/getActiveInputsText'
 import { nodeShotFired } from '../../store/nodes/actions'
+import { uiEditingOpen } from '../../store/ui/actions'
+import getUiIsEditingNode from '../../selectors/getUiIsEditingNode'
 
 const mapStateToProps = (state, ownProps) => {
   const node = getNode(state, ownProps.nodeId)
   const inputLinkIds = node.inputLinkIds
   const param = state.nodes[ownProps.nodeId]
   const type = ownProps.type || 'param'
+  const editingNode = getUiIsEditingNode(state)
 
   const inputLinkTitle = getActiveInputsText(state, ownProps.nodeId)
 
@@ -20,6 +23,7 @@ const mapStateToProps = (state, ownProps) => {
     numMacros: node.connectedMacroIds.length,
     title: param.title,
     isOpen: getIsSketchNodeOpened(state, ownProps.sketchId, ownProps.nodeId, type),
+    isEditing: editingNode && editingNode.id === ownProps.nodeId,
     inputLinkTitle
   }
 }
@@ -34,7 +38,10 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     onParamBarClick: type === 'shot'
     ? () => {
       dispatch(nodeShotFired(ownProps.nodeId, ownProps.sketchId, ownProps.shotMethod))
-    } : undefined
+    } : undefined,
+    onParamBarDoubleClick: () => {
+      dispatch(uiEditingOpen('paramValue', ownProps.nodeId))
+    }
   }
 }
 
