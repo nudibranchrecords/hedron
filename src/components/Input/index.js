@@ -2,6 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { Field } from 'redux-form'
+import theme from '../../utils/theme'
 
 const Wrapper = styled.div`
   margin-bottom: 1rem;
@@ -16,10 +17,11 @@ const Wrapper = styled.div`
     font-size: 1rem;
     display: block;
     border: 1px solid #aaa;
-    background: transparent;
+    background: ${theme.bgColorDark2};
     color: white;
     padding: 0.2rem;
     outline: none;
+    width: 100%;
 
     &:focus {
       border-color: white;

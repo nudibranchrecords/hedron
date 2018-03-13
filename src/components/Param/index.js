@@ -31,6 +31,21 @@ const Inner = styled(Node)`
   `}
 `
 
+const ValueForm = styled.div`
+  position: absolute;
+  width: 2.5rem;
+  height: 0.5rem;
+  top: 0;
+  right: 0;
+  z-index: 1;
+
+  & input {
+    font-size: 0.7rem !important;
+    padding: 0.15rem !important;
+    text-align: right;
+  }
+`
+
 const BarCol = styled.div`
   width: 100%;
   position: relative;
@@ -88,7 +103,7 @@ const Title = styled.div`
   font-size: 0.6rem;
   z-index: 1;
   position: absolute;
-  top: 0.1rem;
+  top: 0.25rem;
   left: 0.2rem;
   width: 1000px;
   pointer-events: none;
@@ -173,16 +188,20 @@ class Param extends React.Component {
           <Inner isOpen={isOpen} isActive={isActive}>
             <Top>
               <Row>
-                { isEditing
-                  ? <ParamValueForm id={nodeId} />
-                  : <BarCol onDoubleClick={onParamBarDoubleClick}>
-                    <Title>{title}</Title>
-                    <ParamBar
-                      nodeId={nodeId}
-                      onMouseDown={onParamBarClick}
+
+                <BarCol onDoubleClick={onParamBarDoubleClick}>
+                  <Title>{title}</Title>
+                  <ParamBar
+                    nodeId={nodeId}
+                    onMouseDown={onParamBarClick}
                     />
-                  </BarCol>
-                }
+                  { isEditing &&
+                    <ValueForm>
+                      <ParamValueForm id={nodeId} />
+                    </ValueForm>
+                  }
+                </BarCol>
+
                 <Info onClick={onOpenClick}>
                   {inputLinkTitle && <span><Icon glyph={inputIcon} />{inputLinkTitle}</span>}
                   <IconInfo>
