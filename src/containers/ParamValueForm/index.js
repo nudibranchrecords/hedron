@@ -10,7 +10,7 @@ const mapStateToProps = (state, ownProps) => {
 
   return {
     initialValues: {
-      paramValue: node.value
+      paramValue: Math.round(node.value * 1000) / 1000
     },
     label: node.title,
     enableReinitialize: true
@@ -19,8 +19,9 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
   onSubmit: (values) => {
+    const value = Math.max(Math.min(values.paramValue, 1), 0)
     dispatch(uiEditingClose())
-    dispatch(nodeValueUpdate(ownProps.id, values.paramValue))
+    dispatch(nodeValueUpdate(ownProps.id, value))
   },
   onBlur: () => {
     dispatch(uiEditingClose())

@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import Input from '../Input'
+import paramValue from '../../utils/fieldNormalizers/paramValue'
 
 class ParamvalueForm extends React.Component {
   componentDidMount () {
@@ -13,7 +14,12 @@ class ParamvalueForm extends React.Component {
     const { handleSubmit, onBlur } = this.props
     return (
       <form onSubmit={handleSubmit}>
-        <Input name='paramValue' id='editing_param' onBlur={onBlur} />
+        <Input
+          name='paramValue'
+          id='editing_param'
+          normalize={paramValue}
+          onBlur={onBlur}
+        />
       </form>
     )
   }
