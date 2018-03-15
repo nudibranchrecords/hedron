@@ -87,33 +87,36 @@ class Engine {
     let tick = 0
     let oldTime = now()
     let elapsedFrames = 1
+    let delta
     let newTime
     this.store = injectedStore
     this.isRunning = true
-
+    world.initiate(injectedStore)
     // Give store module params
     this.store.dispatch(availableModulesReplaceAll(this.modules))
 
     const loop = () => {
-      stats.begin()
-      const spf = 1000 / 60
-      const state = this.store.getState()
-      const allParams = getSketchParams(state)
-
-      this.sketches.forEach(sketch => {
-        const params = getSketchParams(state, sketch.id)
-        sketch.module.update(params, tick, elapsedFrames, allParams)
-      })
-
-      world.render()
-
-      stats.end()
-      newTime = now()
-      elapsedFrames = (newTime - oldTime) / spf
-      tick += elapsedFrames
-      oldTime = newTime
       if (this.isRunning) {
         requestAnimationFrame(loop)
+      }
+      const state = this.store.getState()
+      const spf = 1000 / state.settings.throttledFPS
+      const allParams = getSketchParams(state)
+
+      newTime = now()
+      delta = newTime - oldTime
+      elapsedFrames = delta / spf
+      tick += elapsedFrames
+      oldTime = newTime - (delta % spf)
+
+      if (delta > spf || state.settings.throttledFPS >= 60) {
+        stats.begin()
+        this.sketches.forEach(sketch => {
+          const params = getSketchParams(state, sketch.id)
+          sketch.module.update(params, tick, elapsedFrames, allParams)
+        })
+        world.render()
+        stats.end()
       }
     }
     loop()

@@ -46,7 +46,7 @@ const Input = (props) => {
   return (
     <Wrapper>
       {label && <label htmlFor={fieldId}>{label}</label>}
-      <Field component='input' type={type} {...props} />
+      <Field component='input' id={fieldId} type={type} {...props} />
     </Wrapper>
 
   )
