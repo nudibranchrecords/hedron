@@ -11,20 +11,31 @@ class World {
     this.viewerEl = el
   }
 
-  setScene () {
-    if (!this.canvas) {
-      this.renderer = new THREE.WebGLRenderer()
-      this.canvas = this.renderer.domElement
-      this.scene = new THREE.Scene()
-      this.camera = new THREE.PerspectiveCamera(75, null, 1, 1000000)
-      this.camera.position.z = 1000
-      this.viewerEl.appendChild(this.canvas)
-      this.setSize()
+  setRenderer () {
+    const settings = this.store.getState().settings
 
-      uiEventEmitter.on('repaint', () => {
-        this.setSize()
-      })
-    }
+    this.renderer = new THREE.WebGLRenderer({
+      antialias: settings.antialias
+    })
+    this.canvas = this.renderer.domElement
+    this.viewerEl.innerHTML = ''
+    this.viewerEl.appendChild(this.canvas)
+  }
+
+  setScene () {
+    this.setRenderer()
+
+    this.scene = new THREE.Scene()
+    this.camera = new THREE.PerspectiveCamera(75, null, 1, 1000000)
+    this.camera.position.z = 1000
+
+    this.setSize()
+    uiEventEmitter.on('reset-renderer', () => {
+      this.setRenderer()
+    })
+    uiEventEmitter.on('repaint', () => {
+      this.setSize()
+    })
   }
 
   setSize () {
