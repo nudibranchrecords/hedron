@@ -2,24 +2,44 @@ import * as THREE from 'three'
 import uiEventEmitter from '../utils/uiEventEmitter'
 
 class World {
-  setScene (el) {
-    if (!this.canvas) {
-      this.viewerEl = el
-      this.renderer = new THREE.WebGLRenderer()
-      this.canvas = this.renderer.domElement
-      this.scene = new THREE.Scene()
-      this.camera = new THREE.PerspectiveCamera(75, null, 1, 1000000)
-      this.camera.position.z = 1000
-      this.viewerEl.appendChild(this.canvas)
-      this.setSize()
+  initiate (injectedStore) {
+    this.store = injectedStore
+    this.setScene()
+  }
 
-      uiEventEmitter.on('repaint', () => {
-        this.setSize()
-      })
-    }
+  setViewerEl (el) {
+    this.viewerEl = el
+  }
+
+  setRenderer () {
+    const settings = this.store.getState().settings
+
+    this.renderer = new THREE.WebGLRenderer({
+      antialias: settings.antialias
+    })
+    this.canvas = this.renderer.domElement
+    this.viewerEl.innerHTML = ''
+    this.viewerEl.appendChild(this.canvas)
+  }
+
+  setScene () {
+    this.setRenderer()
+
+    this.scene = new THREE.Scene()
+    this.camera = new THREE.PerspectiveCamera(75, null, 1, 1000000)
+    this.camera.position.z = 1000
+
+    this.setSize()
+    uiEventEmitter.on('reset-renderer', () => {
+      this.setRenderer()
+    })
+    uiEventEmitter.on('repaint', () => {
+      this.setSize()
+    })
   }
 
   setSize () {
+    const settings = this.store.getState().settings
     let width, ratio
 
     if (this.isSendingOutput) {
@@ -33,7 +53,7 @@ class World {
     } else {
       // Basic width and ratio if no output
       width = this.viewerEl.offsetWidth
-      ratio = 16 / 9
+      ratio = settings.aspectW / settings.aspectH
     }
 
     const perc = 100 / ratio
