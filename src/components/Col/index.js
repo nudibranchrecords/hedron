@@ -1,7 +1,11 @@
 import styled from 'styled-components'
 
 const Col = styled.div`
-  flex: 1;
+  ${props => props.perc
+    ? `flex: 0 0 ${props.perc}%;`
+    : `flex: 1;`
+  }
+
   padding-right: 1rem;
 
   &:last-child {
