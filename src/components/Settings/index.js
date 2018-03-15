@@ -17,28 +17,28 @@ const Settings = () => (
     <form onSubmit={e => e.preventDefault()}>
       <h2>Clock</h2>
       <Row>
-        <Col perc='25'>
-          <Input name='clockGenerated' label='Clock Generated' type='checkbox' />
+        <Col width='6rem'>
+          <Input name='clockGenerated' label='Generated' type='checkbox' />
         </Col>
-        <Col perc='25'>
-          <Input name='clockBpm' label='Clock BPM' type='number' />
+        <Col width='4rem'>
+          <Input name='clockBpm' label='BPM' type='number' />
         </Col>
       </Row>
       <h2>Aspect Ratio (when not sending to display)</h2>
       <Row>
-        <Col perc='10'>
+        <Col width='4rem'>
           <Input name='aspectW' label='Width' type='number' />
         </Col>
-        <Col perc='10'>
+        <Col width='4rem'>
           <Input name='aspectH' label='Height' type='number' />
         </Col>
       </Row>
       <h2>Renderer</h2>
       <Row>
-        <Col perc='25'>
+        <Col width='8rem'>
           <Input name='antialias' label='Antialiasing' type='checkbox' />
         </Col>
-        <Col perc='25'>
+        <Col width='8rem'>
           <Input name='throttledFPS' label='Throttled FPS' type='number' />
         </Col>
       </Row>
