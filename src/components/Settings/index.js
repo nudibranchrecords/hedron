@@ -14,7 +14,7 @@ const Settings = () => (
     <ViewHeader>Settings</ViewHeader>
     <form onSubmit={e => e.preventDefault()}>
       <Input name='clockGenerated' label='Clock Generated' type='checkbox' />
-      <Input name='clockBpm' label='Clock BPM' />
+      <Input name='clockBpm' label='Clock BPM' type='number' />
     </form>
   </Wrapper>
 )
