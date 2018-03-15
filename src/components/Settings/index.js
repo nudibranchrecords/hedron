@@ -38,6 +38,9 @@ const Settings = () => (
         <Col perc='25'>
           <Input name='antialias' label='Antialiasing' type='checkbox' />
         </Col>
+        <Col perc='25'>
+          <Input name='throttledFPS' label='Throttled FPS' type='number' />
+        </Col>
       </Row>
     </form>
   </Wrapper>
