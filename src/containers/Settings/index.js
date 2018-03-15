@@ -1,6 +1,7 @@
 import { connect } from 'react-redux'
 import SettingsComponent from '../../components/Settings'
 import { settingsUpdate } from '../../store/settings/actions'
+import uiEventEmitter from '../../utils/uiEventEmitter'
 import { reduxForm } from 'redux-form'
 
 const mapStateToProps = (state, ownProps) => ({
@@ -9,7 +10,10 @@ const mapStateToProps = (state, ownProps) => ({
 })
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
-  onChange: (values) => { dispatch(settingsUpdate(values)) }
+  onChange: (values) => {
+    dispatch(settingsUpdate(values))
+    uiEventEmitter.emit('repaint')
+  }
 })
 
 const SettingsForm = reduxForm({

@@ -90,7 +90,7 @@ class Engine {
     let newTime
     this.store = injectedStore
     this.isRunning = true
-
+    world.initiate(injectedStore)
     // Give store module params
     this.store.dispatch(availableModulesReplaceAll(this.modules))
 

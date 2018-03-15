@@ -2,9 +2,17 @@ import * as THREE from 'three'
 import uiEventEmitter from '../utils/uiEventEmitter'
 
 class World {
-  setScene (el) {
+  initiate (injectedStore) {
+    this.store = injectedStore
+    this.setScene()
+  }
+
+  setViewerEl (el) {
+    this.viewerEl = el
+  }
+
+  setScene () {
     if (!this.canvas) {
-      this.viewerEl = el
       this.renderer = new THREE.WebGLRenderer()
       this.canvas = this.renderer.domElement
       this.scene = new THREE.Scene()
@@ -20,6 +28,7 @@ class World {
   }
 
   setSize () {
+    const settings = this.store.getState().settings
     let width, ratio
 
     if (this.isSendingOutput) {
@@ -33,7 +42,7 @@ class World {
     } else {
       // Basic width and ratio if no output
       width = this.viewerEl.offsetWidth
-      ratio = 16 / 9
+      ratio = settings.aspectW / settings.aspectH
     }
 
     const perc = 100 / ratio
