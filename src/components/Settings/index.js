@@ -33,6 +33,12 @@ const Settings = () => (
           <Input name='aspectH' label='Height' type='number' />
         </Col>
       </Row>
+      <h2>Renderer</h2>
+      <Row>
+        <Col perc='25'>
+          <Input name='antialias' label='Antialiasing' type='checkbox' />
+        </Col>
+      </Row>
     </form>
   </Wrapper>
 )
