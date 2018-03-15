@@ -4,7 +4,7 @@ import world from '../../engine/world'
 
 const mapStateToProps = (state, ownProps) => (
   {
-    containerElRef: (el) => world.setScene(el)
+    containerElRef: (el) => world.setViewerEl(el)
   }
 )
 

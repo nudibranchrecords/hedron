@@ -1,6 +1,8 @@
 const defaultState = {
   clockGenerated: true,
-  clockBpm: 120
+  clockBpm: 120,
+  aspectW: 16,
+  aspectH: 9
 }
 
 const settingsReducer = (state = defaultState, action) => {
