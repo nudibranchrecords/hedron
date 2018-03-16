@@ -1,5 +1,6 @@
 import uid from 'uid'
-import { rSceneCreate, rSceneDelete, sceneSketchDelete } from './actions'
+import { rSceneCreate, rSceneDelete } from './actions'
+import { uSketchDelete } from '../sketches/actions'
 import getScene from '../../selectors/getScene'
 
 const handleSceneCreate = (action, store) => {
@@ -17,8 +18,7 @@ const handleSceneDelete = (action, store) => {
   const scene = getScene(state, p.id)
 
   scene.sketchIds.forEach(sketchId => {
-    console.log(sketchId)
-    store.dispatch(sceneSketchDelete(sketchId))
+    store.dispatch(uSketchDelete(sketchId))
   })
   store.dispatch(rSceneDelete(p.id))
 }

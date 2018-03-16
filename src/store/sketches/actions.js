@@ -1,3 +1,24 @@
+export function uSketchCreate (moduleId) {
+  return {
+    type: 'U_SKETCH_CREATE',
+    payload: { moduleId }
+  }
+}
+
+export function uSketchDelete (id) {
+  return {
+    type: 'U_SKETCH_DELETE',
+    payload: { id }
+  }
+}
+
+export function uSketchReimport (id) {
+  return {
+    type: 'U_SKETCH_REIMPORT',
+    payload: { id }
+  }
+}
+
 export function sketchCreate (id, sketch) {
   return {
     type: 'SKETCH_CREATE',

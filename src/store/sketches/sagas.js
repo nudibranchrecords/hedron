@@ -1,10 +1,12 @@
 import { call, select, takeEvery, put } from 'redux-saga/effects'
-import { getModule, getSketchParamIds, getSketchShotIds } from './selectors'
-import { sketchCreate, sketchDelete, sketchUpdate } from '../sketches/actions'
+import { sketchCreate, sketchDelete, sketchUpdate } from './actions'
 import { uNodeCreate, uNodeDelete, nodeUpdate } from '../nodes/actions'
 import getSketches from '../../selectors/getSketches'
 import getSketch from '../../selectors/getSketch'
 import getNode from '../../selectors/getNode'
+import getModule from '../../selectors/getModule'
+import getSketchParamIds from '../../selectors/getSketchParamIds'
+import getSketchShotIds from '../../selectors/getSketchShotIds'
 import history from '../../history'
 import uid from 'uid'
 
@@ -168,8 +170,8 @@ export function* handleSketchReimport (action) {
   yield put(sketchUpdate(id, { paramIds, shotIds }))
 }
 
-export function* watchScenes () {
-  yield takeEvery('SCENE_SKETCH_CREATE', handleSketchCreate)
-  yield takeEvery('SCENE_SKETCH_DELETE', handleSketchDelete)
-  yield takeEvery('SCENE_SKETCH_REIMPORT', handleSketchReimport)
+export function* watchSketches () {
+  yield takeEvery('U_SKETCH_CREATE', handleSketchCreate)
+  yield takeEvery('U_SKETCH_DELETE', handleSketchDelete)
+  yield takeEvery('U_SKETCH_REIMPORT', handleSketchReimport)
 }

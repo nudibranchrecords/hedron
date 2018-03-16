@@ -26,7 +26,7 @@ const uid = () => {
   return 'id_' + uniqueId
 }
 
-const { watchScenes } = proxyquire('../src/store/scenes/sagas', {
+const { watchSketches } = proxyquire('../src/store/sketches/sagas', {
   'uid': uid
 })
 
@@ -36,7 +36,7 @@ const scenesListener = proxyquire('../src/store/scenes/listener', {
 
 function* rootSaga (dispatch) {
   yield [
-    fork(watchScenes),
+    fork(watchSketches),
     fork(watchNodes)
   ]
 }

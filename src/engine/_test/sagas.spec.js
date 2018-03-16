@@ -13,14 +13,14 @@ const engine = proxyquire('../index', {
 }).default
 
 const {
-  watchSketches, handleAddSketch, handleRemoveSketch,
+  watchEngine, handleAddSketch, handleRemoveSketch,
   handleInitiateSketches, handleShotFired
 } = proxyquire('../sagas', {
   'sketches': []
 })
 
 test('(Saga) watchSketches', (t) => {
-  const generator = watchSketches()
+  const generator = watchEngine()
   t.deepEqual(
     generator.next().value,
     takeEvery('SKETCH_CREATE', handleAddSketch),
