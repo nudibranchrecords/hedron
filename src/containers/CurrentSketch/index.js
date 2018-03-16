@@ -1,6 +1,6 @@
 import { connect } from 'react-redux'
 import Sketch from '../../components/Sketch'
-import { sceneSketchDelete, sceneSketchReimport } from '../../store/scene/actions'
+import { sceneSketchDelete, sceneSketchReimport } from '../../store/scenes/actions'
 import { uiEditingOpen } from '../../store/ui/actions'
 
 const mapStateToProps = (state, ownProps) => {

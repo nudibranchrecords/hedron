@@ -3,7 +3,7 @@ import proxyquire from 'proxyquire'
 import { createStore, applyMiddleware, combineReducers } from 'redux'
 import createSagaMiddleware from 'redux-saga'
 const sagaMiddleware = createSagaMiddleware()
-import { sceneSketchCreate, sceneSketchDelete, sceneSketchReimport } from '../src/store/scene/actions'
+import { sceneSketchCreate, sceneSketchDelete, sceneSketchReimport } from '../src/store/scenes/actions'
 
 import { fork } from 'redux-saga/effects'
 import { watchNodes } from '../src/store/nodes/sagas'
@@ -25,7 +25,7 @@ const uid = () => {
   return 'id_' + uniqueId
 }
 
-const { watchScene } = proxyquire('../src/store/scene/sagas', {
+const { watchScene } = proxyquire('../src/store/scenes/sagas', {
   'uid': uid
 })
 
