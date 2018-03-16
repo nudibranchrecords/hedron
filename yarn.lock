@@ -6473,6 +6473,10 @@ reduce-function-call@^1.0.1:
   dependencies:
     balanced-match "^0.4.2"
 
+redux-action-listeners@^1.0.2:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/redux-action-listeners/-/redux-action-listeners-1.0.2.tgz#c4ed5e85d58d01b066b33dc1d1c7153b08f50c6b"
+
 redux-batched-subscribe@^0.1.6:
   version "0.1.6"
   resolved "https://registry.yarnpkg.com/redux-batched-subscribe/-/redux-batched-subscribe-0.1.6.tgz#de928602708df7198b4d0c98c7119df993780d59"

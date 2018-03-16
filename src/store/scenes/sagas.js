@@ -168,7 +168,7 @@ export function* handleSketchReimport (action) {
   yield put(sketchUpdate(id, { paramIds, shotIds }))
 }
 
-export function* watchScene () {
+export function* watchScenes () {
   yield takeEvery('SCENE_SKETCH_CREATE', handleSketchCreate)
   yield takeEvery('SCENE_SKETCH_DELETE', handleSketchDelete)
   yield takeEvery('SCENE_SKETCH_REIMPORT', handleSketchReimport)

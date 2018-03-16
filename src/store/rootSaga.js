@@ -3,7 +3,7 @@ import { watchSketches } from '../engine/sagas'
 import { watchProject } from './project/sagas'
 import { watchNodes } from './nodes/sagas'
 import { watchInputLinks } from './inputLinks/sagas'
-import { watchScene } from './scenes/sagas'
+import { watchScenes } from './scenes/sagas'
 import { watchInputs } from './inputs/sagas'
 import { watchClock } from './clock/sagas'
 import { watchWindows } from './windows/sagas'
@@ -12,7 +12,7 @@ import { watchMacros } from './macros/sagas'
 export default function* rootSaga (dispatch) {
   yield [
     fork(watchProject, dispatch),
-    fork(watchScene),
+    fork(watchScenes),
     fork(watchSketches),
     fork(watchInputs),
     fork(watchInputLinks),
