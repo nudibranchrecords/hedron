@@ -18,7 +18,7 @@ const handleSceneDelete = (action, store) => {
   const scene = getScene(state, p.id)
 
   scene.sketchIds.forEach(sketchId => {
-    store.dispatch(uSketchDelete(sketchId))
+    store.dispatch(uSketchDelete(sketchId, p.id))
   })
   store.dispatch(rSceneDelete(p.id))
 }

@@ -1,14 +1,14 @@
-export function uSketchCreate (moduleId) {
+export function uSketchCreate (moduleId, sceneId) {
   return {
     type: 'U_SKETCH_CREATE',
-    payload: { moduleId }
+    payload: { moduleId, sceneId }
   }
 }
 
-export function uSketchDelete (id) {
+export function uSketchDelete (id, sceneId) {
   return {
     type: 'U_SKETCH_DELETE',
-    payload: { id }
+    payload: { id, sceneId }
   }
 }
 

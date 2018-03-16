@@ -1,4 +1,5 @@
 import { sketchCreate, sketchDelete, sketchUpdate } from './actions'
+import { rSceneSketchAdd, rSceneSketchRemove } from '../scenes/actions'
 import { uNodeCreate, uNodeDelete, nodeUpdate } from '../nodes/actions'
 import getSketches from '../../selectors/getSketches'
 import getSketch from '../../selectors/getSketch'
@@ -12,12 +13,14 @@ import uid from 'uid'
 const handleSketchCreate = (action, store) => {
   let uniqueId
   const state = store.getState()
-  const moduleId = action.payload.moduleId
+  const { moduleId, sceneId } = action.payload
   const uniqueSketchId = uid()
   const module = getModule(state, moduleId)
   const paramIds = []
   const inputLinkIds = []
   const shotIds = []
+
+  store.dispatch(rSceneSketchAdd(sceneId, uniqueSketchId))
 
   if (module.params) {
     for (let i = 0; i < module.params.length; i++) {
@@ -66,8 +69,10 @@ const handleSketchCreate = (action, store) => {
 
 const handleSketchDelete = (action, store) => {
   let state = store.getState()
-  const id = action.payload.id
+  const { id, sceneId } = action.payload
   const paramIds = getSketchParamIds(state, id)
+  
+  store.dispatch(rSceneSketchRemove(sceneId, id))
 
   for (let i = 0; i < paramIds.length; i++) {
     store.dispatch(uNodeDelete(paramIds[i]))

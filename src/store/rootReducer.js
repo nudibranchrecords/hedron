@@ -5,6 +5,7 @@ import { reducer as formReducer } from 'redux-form'
 
 import difference from 'lodash/difference'
 
+import scenesReducer from './scenes/reducer'
 import sketchesReducer from './sketches/reducer'
 import projectReducer from './project/reducer'
 import inputsReducer from './inputs/reducer'
@@ -28,6 +29,7 @@ const ignoreList = [
 const reducers = combineReducers({
   nodes: ignoreActions(nodesReducer, difference(ignoreList, ['NODE_VALUE_UPDATE', 'NODE_VALUES_BATCH_UPDATE'])),
   availableModules: ignoreActions(availableModulesReducer, ignoreList),
+  scenes: ignoreActions(scenesReducer, ignoreList),
   sketches: ignoreActions(sketchesReducer, ignoreList),
   project: ignoreActions(projectReducer, ignoreList),
   inputs: ignoreActions(inputsReducer, difference(ignoreList, ['INPUT_FIRED'])),

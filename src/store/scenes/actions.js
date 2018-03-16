@@ -28,3 +28,21 @@ export function rSceneDelete (id) {
     }
   }
 }
+
+export function rSceneSketchAdd (id, sketchId) {
+  return {
+    type: 'R_SCENE_SKETCH_ADD',
+    payload: {
+      id, sketchId
+    }
+  }
+}
+
+export function rSceneSketchRemove (id, sketchId) {
+  return {
+    type: 'R_SCENE_SKETCH_REMOVE',
+    payload: {
+      id, sketchId
+    }
+  }
+}
