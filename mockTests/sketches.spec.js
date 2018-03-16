@@ -3,7 +3,7 @@ import proxyquire from 'proxyquire'
 import { createStore, applyMiddleware, combineReducers } from 'redux'
 import createSagaMiddleware from 'redux-saga'
 const sagaMiddleware = createSagaMiddleware()
-import { sceneSketchCreate, sceneSketchDelete, sceneSketchReimport } from '../src/store/scenes/actions'
+import { uSketchCreate, uSketchDelete, uSketchReimport } from '../src/store/sketches/actions'
 
 import { fork } from 'redux-saga/effects'
 import { watchNodes } from '../src/store/nodes/sagas'
@@ -25,13 +25,13 @@ const uid = () => {
   return 'id_' + uniqueId
 }
 
-const { watchScenes } = proxyquire('../src/store/scenes/sagas', {
+const { watchSketches } = proxyquire('../src/store/sketches/sagas', {
   'uid': uid
 })
 
 function* rootSaga (dispatch) {
   yield [
-    fork(watchScenes),
+    fork(watchSketches),
     fork(watchNodes)
   ]
 }
@@ -87,7 +87,7 @@ test('(mock) Sketches - Add Sketch', (t) => {
   state = store.getState()
   t.deepEqual(state.nodes, {}, 'nodes start empty')
 
-  store.dispatch(sceneSketchCreate('foo'))
+  store.dispatch(uSketchCreate('foo'))
   state = store.getState()
 
   t.deepEqual(state.sketches, {
@@ -113,7 +113,7 @@ test('(mock) Sketches - Add Sketch', (t) => {
     }
   }, 'After creating sketch, node item is created for param')
 
-  store.dispatch(sceneSketchCreate('bar'))
+  store.dispatch(uSketchCreate('bar'))
   state = store.getState()
 
   t.deepEqual(state.sketches, {
@@ -177,7 +177,7 @@ test('(mock) Sketches - Add Sketch', (t) => {
     }
   }, 'After creating sketch, node items are created for params and shot')
 
-  store.dispatch(sceneSketchDelete('id_1'))
+  store.dispatch(uSketchDelete('id_1'))
   state = store.getState()
 
   t.deepEqual(state.sketches, {
@@ -224,13 +224,13 @@ test('(mock) Sketches - Add Sketch', (t) => {
     }
   }, 'After deleting sketch, node items are removed')
 
-  store.dispatch(sceneSketchDelete('id_3'))
+  store.dispatch(uSketchDelete('id_3'))
   state = store.getState()
 
   t.deepEqual(state.sketches, {}, 'After deleting sketch, sketch item is removed')
   t.deepEqual(state.nodes, {}, 'After deleting sketch, node items are removed')
 
-  store.dispatch(sceneSketchCreate('boring'))
+  store.dispatch(uSketchCreate('boring'))
   state = store.getState()
 
   t.deepEqual(state.sketches, {
@@ -293,7 +293,7 @@ test('(mock) Sketches - Reimport Sketch (Unedited sketch)', (t) => {
 
   let state
 
-  store.dispatch(sceneSketchReimport('id_1'))
+  store.dispatch(uSketchReimport('id_1'))
 
   state = store.getState()
 
@@ -353,7 +353,7 @@ test('(mock) Sketches - Reimport Sketch (simple)', (t) => {
 
   let state
 
-  store.dispatch(sceneSketchReimport('id_1'))
+  store.dispatch(uSketchReimport('id_1'))
 
   state = store.getState()
 
@@ -460,7 +460,7 @@ test('(mock) Sketches - Reimport Sketch (params and shots)', (t) => {
 
   let state
 
-  store.dispatch(sceneSketchReimport('id_1'))
+  store.dispatch(uSketchReimport('id_1'))
 
   state = store.getState()
 
@@ -590,7 +590,7 @@ test('(mock) Sketches - Reimport Sketch (with shot and param title changes)', (t
 
   let state
 
-  store.dispatch(sceneSketchReimport('id_1'))
+  store.dispatch(uSketchReimport('id_1'))
 
   state = store.getState()
 
@@ -703,7 +703,7 @@ test('(mock) Sketches - Reimport Sketch (Different order)', (t) => {
 
   let state
 
-  store.dispatch(sceneSketchReimport('id_1'))
+  store.dispatch(uSketchReimport('id_1'))
 
   state = store.getState()
 

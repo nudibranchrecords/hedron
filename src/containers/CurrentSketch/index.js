@@ -1,6 +1,6 @@
 import { connect } from 'react-redux'
 import Sketch from '../../components/Sketch'
-import { sceneSketchDelete, sceneSketchReimport } from '../../store/scenes/actions'
+import { uSketchDelete, uSketchReimport } from '../../store/sketches/actions'
 import { uiEditingOpen } from '../../store/ui/actions'
 
 const mapStateToProps = (state, ownProps) => {
@@ -16,9 +16,9 @@ const mapStateToProps = (state, ownProps) => {
 const mapDispatchToProps = (dispatch, ownProps) => {
   const sketchId = ownProps.match.params.sketchId
   return {
-    onDeleteClick: () => dispatch(sceneSketchDelete(sketchId)),
+    onDeleteClick: () => dispatch(uSketchDelete(sketchId)),
     onRenameClick: () => dispatch(uiEditingOpen('sketchTitle', sketchId)),
-    onReimportClick: () => dispatch(sceneSketchReimport(sketchId))
+    onReimportClick: () => dispatch(uSketchReimport(sketchId))
   }
 }
 
