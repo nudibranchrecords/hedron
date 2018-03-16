@@ -2,7 +2,7 @@ import { connect } from 'react-redux'
 import AddSketch from '../../components/AddSketch'
 import { getModules } from './selectors'
 import getSketchesPath from '../../selectors/getSketchesPath'
-import { sceneSketchCreate } from '../../store/scene/actions'
+import { sceneSketchCreate } from '../../store/scenes/actions'
 import { projectChooseSketchesFolder } from '../../store/project/actions'
 
 const mapStateToProps = (state, ownProps) => (
