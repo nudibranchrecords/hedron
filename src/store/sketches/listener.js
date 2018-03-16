@@ -65,7 +65,7 @@ const handleSketchCreate = (action, store) => {
 }
 
 const handleSketchDelete = (action, store) => {
-  const state = store.getState()
+  let state = store.getState()
   const id = action.payload.id
   const paramIds = getSketchParamIds(state, id)
 
@@ -80,7 +80,8 @@ const handleSketchDelete = (action, store) => {
   }
 
   store.dispatch(sketchDelete(id))
-
+  
+  state = store.getState()
   const sketches = getSketches(state)
   const sketchKeys = Object.keys(sketches)
   const lastId = sketchKeys[sketchKeys.length - 1]
