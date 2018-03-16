@@ -14,15 +14,14 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
     dispatch(settingsUpdate(values))
     uiEventEmitter.emit('reset-renderer')
     uiEventEmitter.emit('repaint')
-
   }
 })
 
-const SettingsForm = reduxForm({
+const Settings = reduxForm({
   form: 'settings'
 })(SettingsComponent)
 
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(SettingsForm)
+)(Settings)
