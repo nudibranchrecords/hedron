@@ -1,5 +1,6 @@
 import test from 'tape'
 import proxyquire from 'proxyquire'
+import listen from 'redux-action-listeners'
 import { createStore, applyMiddleware, combineReducers } from 'redux'
 import createSagaMiddleware from 'redux-saga'
 const sagaMiddleware = createSagaMiddleware()
@@ -25,13 +26,20 @@ const uid = () => {
   return 'id_' + uniqueId
 }
 
-const { watchSketches } = proxyquire('../src/store/sketches/sagas', {
+const sketchesListener = proxyquire('../src/store/sketches/listener', {
   'uid': uid
-})
+}).default
+
+const rootListener = {
+  types: 'all',
+
+  handleAction (action, dispatched, store) {
+    sketchesListener(action, store)
+  }
+}
 
 function* rootSaga (dispatch) {
   yield [
-    fork(watchSketches),
     fork(watchNodes)
   ]
 }
@@ -79,7 +87,7 @@ test('(mock) Sketches - Add Sketch', (t) => {
     },
     nodes: {},
     sketches: {}
-  }, applyMiddleware(sagaMiddleware))
+  }, applyMiddleware(sagaMiddleware, listen(rootListener)))
   sagaMiddleware.run(rootSaga, store.dispatch)
 
   let state
@@ -288,7 +296,8 @@ test('(mock) Sketches - Reimport Sketch (Unedited sketch)', (t) => {
     }
   }
 
-  const store = createStore(rootReducer, defaultState, applyMiddleware(sagaMiddleware))
+  const store = createStore(rootReducer, defaultState,
+    applyMiddleware(sagaMiddleware, listen(rootListener)))
   sagaMiddleware.run(rootSaga, store.dispatch)
 
   let state
@@ -348,7 +357,7 @@ test('(mock) Sketches - Reimport Sketch (simple)', (t) => {
         openedNodes: {}
       }
     }
-  }, applyMiddleware(sagaMiddleware))
+  }, applyMiddleware(sagaMiddleware, listen(rootListener)))
   sagaMiddleware.run(rootSaga, store.dispatch)
 
   let state
@@ -455,7 +464,7 @@ test('(mock) Sketches - Reimport Sketch (params and shots)', (t) => {
         openedNodes: {}
       }
     }
-  }, applyMiddleware(sagaMiddleware))
+  }, applyMiddleware(sagaMiddleware, listen(rootListener)))
   sagaMiddleware.run(rootSaga, store.dispatch)
 
   let state
@@ -585,7 +594,7 @@ test('(mock) Sketches - Reimport Sketch (with shot and param title changes)', (t
         openedNodes: {}
       }
     }
-  }, applyMiddleware(sagaMiddleware))
+  }, applyMiddleware(sagaMiddleware, listen(rootListener)))
   sagaMiddleware.run(rootSaga, store.dispatch)
 
   let state
@@ -698,7 +707,7 @@ test('(mock) Sketches - Reimport Sketch (Different order)', (t) => {
         openedNodes: {}
       }
     }
-  }, applyMiddleware(sagaMiddleware))
+  }, applyMiddleware(sagaMiddleware, listen(rootListener)))
   sagaMiddleware.run(rootSaga, store.dispatch)
 
   let state

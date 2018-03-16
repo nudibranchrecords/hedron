@@ -1,4 +1,3 @@
-import { call, select, takeEvery, put } from 'redux-saga/effects'
 import { sketchCreate, sketchDelete, sketchUpdate } from './actions'
 import { uNodeCreate, uNodeDelete, nodeUpdate } from '../nodes/actions'
 import getSketches from '../../selectors/getSketches'
@@ -10,11 +9,12 @@ import getSketchShotIds from '../../selectors/getSketchShotIds'
 import history from '../../history'
 import uid from 'uid'
 
-export function* handleSketchCreate (action) {
+const handleSketchCreate = (action, store) => {
   let uniqueId
+  const state = store.getState()
   const moduleId = action.payload.moduleId
-  const uniqueSketchId = yield call(uid)
-  const module = yield select(getModule, moduleId)
+  const uniqueSketchId = uid()
+  const module = getModule(state, moduleId)
   const paramIds = []
   const inputLinkIds = []
   const shotIds = []
@@ -23,9 +23,9 @@ export function* handleSketchCreate (action) {
     for (let i = 0; i < module.params.length; i++) {
       const param = module.params[i]
 
-      uniqueId = yield call(uid)
+      uniqueId = uid()
       paramIds.push(uniqueId)
-      yield put(uNodeCreate(uniqueId, {
+      store.dispatch(uNodeCreate(uniqueId, {
         title: param.title,
         type: 'param',
         key: param.key,
@@ -39,9 +39,9 @@ export function* handleSketchCreate (action) {
   if (module.shots) {
     for (let i = 0; i < module.shots.length; i++) {
       const shot = module.shots[i]
-      uniqueId = yield call(uid)
+      uniqueId = uid()
       shotIds.push(uniqueId)
-      yield put(uNodeCreate(uniqueId, {
+      store.dispatch(uNodeCreate(uniqueId, {
         id: uniqueId,
         value: 0,
         type: 'shot',
@@ -53,7 +53,7 @@ export function* handleSketchCreate (action) {
     }
   }
 
-  yield put(sketchCreate(uniqueSketchId, {
+  store.dispatch(sketchCreate(uniqueSketchId, {
     title: module.defaultTitle,
     moduleId: moduleId,
     paramIds,
@@ -61,26 +61,27 @@ export function* handleSketchCreate (action) {
     openedNodes: {}
   }))
 
-  yield call([history, history.push], '/sketches/view/' + uniqueSketchId)
+  history.push('/sketches/view/' + uniqueSketchId)
 }
 
-export function* handleSketchDelete (action) {
+const handleSketchDelete = (action, store) => {
+  const state = store.getState()
   const id = action.payload.id
-  const paramIds = yield select(getSketchParamIds, id)
+  const paramIds = getSketchParamIds(state, id)
 
   for (let i = 0; i < paramIds.length; i++) {
-    yield put(uNodeDelete(paramIds[i]))
+    store.dispatch(uNodeDelete(paramIds[i]))
   }
 
-  const shotIds = yield select(getSketchShotIds, id)
+  const shotIds = getSketchShotIds(state, id)
 
   for (let i = 0; i < shotIds.length; i++) {
-    yield put(uNodeDelete(shotIds[i]))
+    store.dispatch(uNodeDelete(shotIds[i]))
   }
 
-  yield put(sketchDelete(id))
+  store.dispatch(sketchDelete(id))
 
-  const sketches = yield select(getSketches)
+  const sketches = getSketches(state)
   const sketchKeys = Object.keys(sketches)
   const lastId = sketchKeys[sketchKeys.length - 1]
   let url
@@ -89,25 +90,26 @@ export function* handleSketchDelete (action) {
   } else {
     url = '/sketches/add'
   }
-  yield call([history, history.push], url)
+  history.push(url)
 }
 
-export function* handleSketchReimport (action) {
+const handleSketchReimport = (action, store) => {
+  const state = store.getState()
   const id = action.payload.id
-  const sketch = yield select(getSketch, id)
-  const module = yield select(getModule, sketch.moduleId)
+  const sketch = getSketch(state, id)
+  const module = getModule(state, sketch.moduleId)
   let paramIds = sketch.paramIds
   let shotIds = sketch.shotIds
   const sketchParams = {}
   const sketchShots = {}
 
   for (let i = 0; i < paramIds.length; i++) {
-    const param = yield select(getNode, paramIds[i])
+    const param = getNode(state, paramIds[i])
     sketchParams[param.key] = param
   }
 
   for (let i = 0; i < shotIds.length; i++) {
-    const shot = yield select(getNode, shotIds[i])
+    const shot = getNode(state, shotIds[i])
     sketchShots[shot.method] = shot
   }
 
@@ -121,11 +123,11 @@ export function* handleSketchReimport (action) {
 
     if (!sketchParam) {
       // If module param doesnt exist in sketch, it needs to be created
-      const uniqueId = yield call(uid)
+      const uniqueId = uid()
       paramIds = [
         ...paramIds.slice(0, i), uniqueId, ...paramIds.slice(i)
       ]
-      yield put(uNodeCreate(uniqueId, {
+      store.dispatch(uNodeCreate(uniqueId, {
         title: moduleParam.title,
         type: 'param',
         key: moduleParam.key,
@@ -136,7 +138,7 @@ export function* handleSketchReimport (action) {
     } else {
       // If param does exist, the title may still change
       const id = sketchParam.id
-      yield put(nodeUpdate(id, { title: moduleParam.title }))
+      store.dispatch(nodeUpdate(id, { title: moduleParam.title }))
     }
   }
 
@@ -147,11 +149,11 @@ export function* handleSketchReimport (action) {
 
     if (!sketchShot) {
       // If module shot doesnt exist in sketch, it needs to be created
-      const uniqueId = yield call(uid)
+      const uniqueId = uid()
       shotIds = [
         ...shotIds.slice(0, i), uniqueId, ...shotIds.slice(i)
       ]
-      yield put(uNodeCreate(uniqueId, {
+      store.dispatch(uNodeCreate(uniqueId, {
         id: uniqueId,
         value: 0,
         type: 'shot',
@@ -163,15 +165,23 @@ export function* handleSketchReimport (action) {
     } else {
       // If param does exist, the title may still change
       const id = sketchShot.id
-      yield put(nodeUpdate(id, { title: sketchShot.title }))
+      store.dispatch(nodeUpdate(id, { title: sketchShot.title }))
     }
   }
 
-  yield put(sketchUpdate(id, { paramIds, shotIds }))
+  store.dispatch(sketchUpdate(id, { paramIds, shotIds }))
 }
 
-export function* watchSketches () {
-  yield takeEvery('U_SKETCH_CREATE', handleSketchCreate)
-  yield takeEvery('U_SKETCH_DELETE', handleSketchDelete)
-  yield takeEvery('U_SKETCH_REIMPORT', handleSketchReimport)
+export default (action, store) => {
+  switch (action.type) {
+    case 'U_SKETCH_CREATE':
+      handleSketchCreate(action, store)
+      break
+    case 'U_SKETCH_DELETE':
+      handleSketchDelete(action, store)
+      break
+    case 'U_SKETCH_REIMPORT':
+      handleSketchReimport(action, store)
+      break
+  }
 }
