@@ -80,7 +80,7 @@ const handleSketchDelete = (action, store) => {
   }
 
   store.dispatch(sketchDelete(id))
-  
+
   state = store.getState()
   const sketches = getSketches(state)
   const sketchKeys = Object.keys(sketches)
