@@ -1,7 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import CurrentSketch from '../../containers/CurrentSketch'
-import AddSketch from '../../containers/AddSketch'
+import CurrentScene from '../CurrentScene'
 import SketchesNav from '../../containers/SketchesNav'
 import Macros from '../../containers/Macros'
 import Settings from '../../containers/Settings'
@@ -51,8 +50,7 @@ const App = ({ stats, leftWidth, onLeftDrag }) => (
     <Right>
       <MainViewOuter>
         <Route path='/' exact component={Home} />
-        <Route path='/sketches/view/:sketchId' component={CurrentSketch} />
-        <Route path='/sketches/add' component={AddSketch} />
+        <Route path='/scenes' component={CurrentScene} />
         <Route path='/macros' component={Macros} />
         <Route path='/settings' component={Settings} />
       </MainViewOuter>

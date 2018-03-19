@@ -7,7 +7,7 @@ const Wrapper = styled.nav`
   margin-bottom: 2rem;
 `
 
-const SketchesNav = ({ items }) => (
+const SketchesNav = ({ items, sceneId }) => (
   <Wrapper>
     <ul>
       {items.map(item => (
@@ -15,12 +15,13 @@ const SketchesNav = ({ items }) => (
           <NavItem activeClassName='active' to={`/sketches/view/${item.id}`}>{item.title}</NavItem>
         </li>
       ))}
-      <li><NavItem className='last' to='/sketches/add'>+</NavItem></li>
+      <li><NavItem className='last' to={`/scenes/addSketch/${sceneId}`}>+</NavItem></li>
     </ul>
   </Wrapper>
 )
 
 SketchesNav.propTypes = {
+  sceneId: PropTypes.string.isRequired,
   items: PropTypes.arrayOf(
     PropTypes.shape({
       id: PropTypes.string,
