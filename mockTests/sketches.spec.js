@@ -54,6 +54,20 @@ function* rootSaga (dispatch) {
 test('(mock) Sketches - Add/Delete Sketch', (t) => {
   uniqueId = 0
 
+  const rootReducer = combineReducers(
+    {
+      nodes: nodesReducer,
+      availableModules: availableModulesReducer,
+      sketches: sketchesReducer,
+      scenes: scenesReducer,
+      router: () => ({
+        location: {
+          pathname: 'scenes/addSketch/scene_02'
+        }
+      })
+    }
+  )
+
   const store = createStore(rootReducer, {
     availableModules: {
       foo: {
@@ -309,7 +323,7 @@ test('(mock) Sketches - Add/Delete Sketch', (t) => {
   t.deepEqual(state.sketches, {}, 'After deleting sketch, sketch item is removed')
   t.deepEqual(state.nodes, {}, 'After deleting sketch, node items are removed')
 
-  store.dispatch(uSketchCreate('boring', 'scene_02'))
+  store.dispatch(uSketchCreate('boring'))
   state = store.getState()
 
   t.deepEqual(state.scenes, {
@@ -323,7 +337,7 @@ test('(mock) Sketches - Add/Delete Sketch', (t) => {
         sketchIds: ['id_7']
       }
     }
-  }, 'After creating sketch, sketch id is added to scene')
+  }, 'After creating sketch with no specified scene id, sketch id is added to scene using route')
 
   t.deepEqual(state.sketches, {
     id_7: {

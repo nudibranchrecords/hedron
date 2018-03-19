@@ -7,13 +7,19 @@ import getNode from '../../selectors/getNode'
 import getModule from '../../selectors/getModule'
 import getSketchParamIds from '../../selectors/getSketchParamIds'
 import getSketchShotIds from '../../selectors/getSketchShotIds'
+import getCurrentSceneId from '../../selectors/getCurrentSceneId'
 import history from '../../history'
 import uid from 'uid'
 
 const handleSketchCreate = (action, store) => {
   let uniqueId
   const state = store.getState()
-  const { moduleId, sceneId } = action.payload
+  let { moduleId, sceneId } = action.payload
+
+  if (!sceneId) {
+    sceneId = getCurrentSceneId(state)
+  }
+  console.log(sceneId)
   const uniqueSketchId = uid()
   const module = getModule(state, moduleId)
   const paramIds = []
