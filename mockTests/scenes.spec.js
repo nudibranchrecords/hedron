@@ -70,6 +70,7 @@ test('(mock) Scenes - Add Scene', (t) => {
       items: {
         id_1: {
           id: 'id_1',
+          title: 'New Scene',
           sketchIds: []
         }
       }
@@ -83,10 +84,12 @@ test('(mock) Scenes - Add Scene', (t) => {
       items: {
         id_1: {
           id: 'id_1',
+          title: 'New Scene',
           sketchIds: []
         },
         id_2: {
           id: 'id_2',
+          title: 'New Scene',
           sketchIds: []
         }
       }
