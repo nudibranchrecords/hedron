@@ -5,6 +5,7 @@ import ProjectDetails from '../../containers/ProjectDetails'
 import styled from 'styled-components'
 import AudioAnalyzer from '../../components/AudioAnalyzer'
 import Clock from '../../containers/Clock'
+import SceneManager from '../../containers/SceneManager'
 import Devices from '../../containers/Devices'
 import theme from '../../utils/theme'
 
@@ -54,9 +55,10 @@ class Overview extends React.Component {
 
         <Scroller>
           <Top>
-            <Devices />
+            <SceneManager />
           </Top>
           <Bottom>
+            <Devices />
             <ProjectDetails />
           </Bottom>
         </Scroller>

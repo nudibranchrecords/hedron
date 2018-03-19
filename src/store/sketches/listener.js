@@ -71,7 +71,7 @@ const handleSketchDelete = (action, store) => {
   let state = store.getState()
   const { id, sceneId } = action.payload
   const paramIds = getSketchParamIds(state, id)
-  
+
   store.dispatch(rSceneSketchRemove(sceneId, id))
 
   for (let i = 0; i < paramIds.length; i++) {

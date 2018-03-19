@@ -1,15 +1,23 @@
 import { connect } from 'react-redux'
-import Sketch from '../../components/Sketch'
+import CurrentSketchComponent from '../../components/CurrentSketch'
 import { uSketchDelete, uSketchReimport } from '../../store/sketches/actions'
 import { uiEditingOpen } from '../../store/ui/actions'
 
 const mapStateToProps = (state, ownProps) => {
   const sketchId = ownProps.match.params.sketchId
-  return {
-    title: state.sketches[sketchId].title,
-    params: state.sketches[sketchId].paramIds,
-    sketchId: sketchId,
-    shots: state.sketches[sketchId].shotIds
+
+  if (sketchId) {
+    return {
+      isSketch: true,
+      title: state.sketches[sketchId].title,
+      params: state.sketches[sketchId].paramIds,
+      sketchId: sketchId,
+      shots: state.sketches[sketchId].shotIds
+    }
+  } else {
+    return {
+      isSketch: false
+    }
   }
 }
 
@@ -25,6 +33,6 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 const CurrentSketch = connect(
   mapStateToProps,
   mapDispatchToProps
-)(Sketch)
+)(CurrentSketchComponent)
 
 export default CurrentSketch
