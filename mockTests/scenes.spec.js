@@ -4,7 +4,7 @@ import listen from 'redux-action-listeners'
 import { createStore, applyMiddleware, combineReducers } from 'redux'
 import createSagaMiddleware from 'redux-saga'
 const sagaMiddleware = createSagaMiddleware()
-import { uSceneCreate, uSceneDelete } from '../src/store/scenes/actions'
+import { uSceneCreate, uSceneDelete, sceneSketchSelect } from '../src/store/scenes/actions'
 
 import { fork } from 'redux-saga/effects'
 import { watchNodes } from '../src/store/nodes/sagas'
@@ -168,6 +168,72 @@ test('(mock) Scenes - Delete Scene', (t) => {
       }
     },
   'Scene with sketches, when deleted, removes all sketches and related nodes')
+
+  t.end()
+})
+
+test('(mock) Scenes - Select Sketch', (t) => {
+  const store = createStore(rootReducer, {
+    nodes: {
+    },
+    sketches: {
+    },
+    scenes: {
+      items: {
+        id_1: {
+          id: 'id_1',
+          selectedSketchId: false,
+          sketchIds: ['sketch_03']
+        },
+        id_2: {
+          id: 'id_2',
+          selectedSketchId: 'sketch_01',
+          sketchIds: ['sketch_01', 'sketch_02']
+        }
+      }
+    }
+  }, applyMiddleware(sagaMiddleware, listen(rootListener)))
+  sagaMiddleware.run(rootSaga, store.dispatch)
+
+  let state
+
+  store.dispatch(sceneSketchSelect('id_1', 'sketch_03'))
+  state = store.getState()
+  t.deepEqual(state.scenes,
+    {
+      items: {
+        id_1: {
+          id: 'id_1',
+          selectedSketchId: 'sketch_03',
+          sketchIds: ['sketch_03']
+        },
+        id_2: {
+          id: 'id_2',
+          selectedSketchId: 'sketch_01',
+          sketchIds: ['sketch_01', 'sketch_02']
+        }
+      }
+    },
+  'Sketch id updated when sketch selected')
+
+  store.dispatch(sceneSketchSelect('id_2', 'sketch_01'))
+  state = store.getState()
+  t.deepEqual(state.scenes,
+    {
+      items: {
+        id_1: {
+          id: 'id_1',
+          selectedSketchId: 'sketch_03',
+          sketchIds: ['sketch_03']
+        },
+        id_2: {
+          id: 'id_2',
+          selectedSketchId: 'sketch_01',
+          sketchIds: ['sketch_01', 'sketch_02']
+        }
+      }
+    },
+  'Sketch id updated when sketch selected')
 
   t.end()
 })

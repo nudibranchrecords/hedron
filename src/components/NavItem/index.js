@@ -1,7 +1,9 @@
+import React from 'react'
+import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { NavLink } from 'react-router-dom'
 
-const Item = styled(NavLink)`
+const css = `
   display: block;
   padding: 0.5rem 0.25rem;
   font-size: 0.7rem;
@@ -10,6 +12,7 @@ const Item = styled(NavLink)`
   color: white;
   text-decoration: none;
   border-top: 1px solid #333;
+  cursor: pointer;
 
   &:hover {
     background: #212121;
@@ -26,4 +29,24 @@ const Item = styled(NavLink)`
   }
 `
 
-export default Item
+const RouterLink = styled(NavLink)`
+  ${css}
+`
+
+const NormalLink = styled.a`
+  ${css}
+`
+
+const NavItem = (props) => {
+  if (props.to) {
+    return <RouterLink {...props} />
+  } else {
+    return <NormalLink {...props} />
+  }
+}
+
+NavItem.propTypes = {
+  to: PropTypes.string
+}
+
+export default NavItem

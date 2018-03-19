@@ -1,10 +1,11 @@
 import { connect } from 'react-redux'
 import CurrentSketchComponent from '../../components/CurrentSketch'
 import { uSketchDelete, uSketchReimport } from '../../store/sketches/actions'
+import getSelectedSketchId from '../../selectors/getSelectedSketchId'
 import { uiEditingOpen } from '../../store/ui/actions'
 
 const mapStateToProps = (state, ownProps) => {
-  const sketchId = ownProps.match.params.sketchId
+  const sketchId = getSelectedSketchId(state)
 
   if (sketchId) {
     return {

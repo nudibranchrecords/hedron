@@ -29,6 +29,15 @@ export function rSceneDelete (id) {
   }
 }
 
+export function sceneSketchSelect (id, sketchId) {
+  return {
+    type: 'SCENE_SKETCH_SELECT',
+    payload: {
+      id, sketchId
+    }
+  }
+}
+
 export function rSceneSketchAdd (id, sketchId) {
   return {
     type: 'R_SCENE_SKETCH_ADD',
