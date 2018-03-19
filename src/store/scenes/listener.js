@@ -7,6 +7,7 @@ const handleSceneCreate = (action, store) => {
   const id = uid()
   const scene = {
     id,
+    title: 'New Scene',
     sketchIds: []
   }
   store.dispatch(rSceneCreate(id, scene))
