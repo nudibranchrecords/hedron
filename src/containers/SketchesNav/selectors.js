@@ -1,5 +1,9 @@
+import getCurrentSceneId from '../../selectors/getCurrentSceneId'
+
 export const getSketches = (state) => {
-  return Object.keys(state.sketches).map((id) => (
+  const sceneId = getCurrentSceneId(state)
+  const sketchIds = state.scenes.items[sceneId].sketchIds
+  return sketchIds.map((id) => (
     {
       title: state.sketches[id].title,
       id
