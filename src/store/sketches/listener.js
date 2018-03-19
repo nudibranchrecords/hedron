@@ -19,7 +19,6 @@ const handleSketchCreate = (action, store) => {
   if (!sceneId) {
     sceneId = getCurrentSceneId(state)
   }
-  console.log(sceneId)
   const uniqueSketchId = uid()
   const module = getModule(state, moduleId)
   const paramIds = []
@@ -70,7 +69,7 @@ const handleSketchCreate = (action, store) => {
     openedNodes: {}
   }))
 
-  history.push('/sketches/view/' + uniqueSketchId)
+  history.push('/scenes/view/' + sceneId)
 }
 
 const handleSketchDelete = (action, store) => {
