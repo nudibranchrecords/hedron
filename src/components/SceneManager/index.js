@@ -73,7 +73,7 @@ const SceneManager = ({ items, onAddClick, currentScene, onDeleteClick, onRename
 )
 
 SceneManager.propTypes = {
-  currentScene: PropTypes.object.isRequired,
+  currentScene: PropTypes.object,
   onAddClick: PropTypes.func.isRequired,
   onRenameClick: PropTypes.func.isRequired,
   onDeleteClick: PropTypes.func.isRequired,
