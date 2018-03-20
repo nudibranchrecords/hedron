@@ -41,7 +41,7 @@ const Thumbs = styled.div`
 const ThumbLink = styled(NavLink)` ${BaseLink} `
 const ThumbButton = styled.a` ${BaseLink} `
 
-const SketchesNav = ({ items, onAddClick, currentScene, onDeleteClick, onRenameClick }) => (
+const SceneManager = ({ items, onAddClick, currentScene, onDeleteClick, onRenameClick }) => (
   <Wrapper>
     <Thumbs>
       {items.map(item => (
@@ -54,19 +54,24 @@ const SketchesNav = ({ items, onAddClick, currentScene, onDeleteClick, onRenameC
       ))}
       <ThumbButton onClick={onAddClick}><div>+</div></ThumbButton>
     </Thumbs>
-    <h3>{currentScene.title}</h3>
-    <Row>
-      <Col width='0'>
-        <Button onClick={() => { onRenameClick(currentScene.id) }}>Rename</Button>
-      </Col>
-      <Col width='0'>
-        <Button onClick={() => { onDeleteClick(currentScene.id) }}>Delete</Button>
-      </Col>
-    </Row>
+    {currentScene &&
+      <div>
+        <h3>{currentScene.title}</h3>
+        <Row>
+          <Col width='0'>
+            <Button onClick={() => { onRenameClick(currentScene.id) }}>Rename</Button>
+          </Col>
+          <Col width='0'>
+            <Button onClick={() => { onDeleteClick(currentScene.id) }}>Delete</Button>
+          </Col>
+        </Row>
+      </div>
+    }
+
   </Wrapper>
 )
 
-SketchesNav.propTypes = {
+SceneManager.propTypes = {
   currentScene: PropTypes.object.isRequired,
   onAddClick: PropTypes.func.isRequired,
   onRenameClick: PropTypes.func.isRequired,
@@ -79,4 +84,4 @@ SketchesNav.propTypes = {
   )
 }
 
-export default SketchesNav
+export default SceneManager
