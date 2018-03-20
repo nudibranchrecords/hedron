@@ -1,12 +1,15 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import Button from '../Button'
+import Row from '../Row'
+import Col from '../Col'
 import styled, { css } from 'styled-components'
 import { NavLink } from 'react-router-dom'
 
 const BaseLink = css`
 flex: 0 0 20%;
 color: white;
-padding: 0.5rem;
+padding: 0 0.5rem 0.5rem 0;
 text-decoration: none;
 text-transform: uppercase;
 cursor: pointer;
@@ -33,11 +36,12 @@ const Wrapper = styled.nav`
 
 const Thumbs = styled.div`
   display: flex;
+  margin-bottom: 0.5rem;
 `
 const ThumbLink = styled(NavLink)` ${BaseLink} `
 const ThumbButton = styled.a` ${BaseLink} `
 
-const SketchesNav = ({ items, onAddClick }) => (
+const SketchesNav = ({ items, onAddClick, currentScene, onDeleteClick, onRenameClick }) => (
   <Wrapper>
     <Thumbs>
       {items.map(item => (
@@ -50,11 +54,23 @@ const SketchesNav = ({ items, onAddClick }) => (
       ))}
       <ThumbButton onClick={onAddClick}><div>+</div></ThumbButton>
     </Thumbs>
+    <h3>{currentScene.title}</h3>
+    <Row>
+      <Col width='0'>
+        <Button onClick={() => { onRenameClick(currentScene.id) }}>Rename</Button>
+      </Col>
+      <Col width='0'>
+        <Button onClick={() => { onDeleteClick(currentScene.id) }}>Delete</Button>
+      </Col>
+    </Row>
   </Wrapper>
 )
 
 SketchesNav.propTypes = {
+  currentScene: PropTypes.object.isRequired,
   onAddClick: PropTypes.func.isRequired,
+  onRenameClick: PropTypes.func.isRequired,
+  onDeleteClick: PropTypes.func.isRequired,
   items: PropTypes.arrayOf(
     PropTypes.shape({
       id: PropTypes.string,
