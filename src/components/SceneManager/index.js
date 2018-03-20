@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
-import { Link } from 'react-router-dom'
+import { NavLink } from 'react-router-dom'
 
 const css = `
 flex: 0 0 20%;
@@ -11,13 +11,19 @@ text-decoration: none;
 text-transform: uppercase;
 cursor: pointer;
 
+
  > div {
    display: flex;
    align-items: center;
    justify-content: center;
    text-align: center;
    height: 4rem;
-  background: black;
+   background: black;
+   border: 1px solid black;
+ }
+
+ &.active > div {
+   border-color: white;
  }
 `
 
@@ -28,14 +34,19 @@ const Wrapper = styled.nav`
 const Thumbs = styled.div`
   display: flex;
 `
-const ThumbLink = styled(Link)` ${css} `
+const ThumbLink = styled(NavLink)` ${css} `
 const ThumbButton = styled.a` ${css} `
 
 const SketchesNav = ({ items, onAddClick }) => (
   <Wrapper>
     <Thumbs>
       {items.map(item => (
-        <ThumbLink key={item.id} to={`/scenes/view/${item.id}`}><div>{item.title}</div></ThumbLink>
+        <ThumbLink
+          key={item.id}
+          to={`/scenes/view/${item.id}`}
+        >
+          <div>{item.title}</div>
+        </ThumbLink>
       ))}
       <ThumbButton onClick={onAddClick}><div>+</div></ThumbButton>
     </Thumbs>
