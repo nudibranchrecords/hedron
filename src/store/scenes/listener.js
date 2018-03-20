@@ -2,6 +2,7 @@ import uid from 'uid'
 import { rSceneCreate, rSceneDelete } from './actions'
 import { uSketchDelete } from '../sketches/actions'
 import getScene from '../../selectors/getScene'
+import history from '../../history'
 
 const handleSceneCreate = (action, store) => {
   const id = uid()
@@ -25,6 +26,11 @@ const handleSceneDelete = (action, store) => {
   store.dispatch(rSceneDelete(p.id))
 }
 
+const handleSceneSketchSelect = (action, store) => {
+  const p = action.payload
+  history.push(`/scenes/view/${p.id}`)
+}
+
 export default (action, store) => {
   switch (action.type) {
     case 'U_SCENE_CREATE':
@@ -32,6 +38,9 @@ export default (action, store) => {
       break
     case 'U_SCENE_DELETE':
       handleSceneDelete(action, store)
+      break
+    case 'SCENE_SKETCH_SELECT':
+      handleSceneSketchSelect(action, store)
       break
   }
 }

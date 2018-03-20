@@ -1,9 +1,10 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 import { NavLink } from 'react-router-dom'
+import theme from '../../utils/theme'
 
-const css = `
+const baseLink = css`
   display: block;
   padding: 0.5rem 0.25rem;
   font-size: 0.7rem;
@@ -15,12 +16,16 @@ const css = `
   cursor: pointer;
 
   &:hover {
-    background: #212121;
+    background: #333333;
+
+    ${props => props.isActive && `background: ${theme.actionColor1};`}
   }
 
   &.active {
-    background: #da5782;
+    background: ${theme.actionColor1};
   }
+
+  ${props => props.isActive && `background: ${theme.actionColor1};`}
 
   &.last {
     text-align: center;
@@ -30,11 +35,11 @@ const css = `
 `
 
 const RouterLink = styled(NavLink)`
-  ${css}
+  ${baseLink}
 `
 
 const NormalLink = styled.a`
-  ${css}
+  ${baseLink}
 `
 
 const NavItem = (props) => {
