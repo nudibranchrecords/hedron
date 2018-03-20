@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import SketchParam from '../../containers/SketchParam'
 import Shot from '../../containers/Shot'
 import Button from '../Button'
-import ViewHeader from '../ViewHeader'
+import SceneHeader from '../../containers/SceneHeader'
 import ViewSubheader from '../ViewSubheader'
 import Items from '../Items'
 import Item from '../Item'
@@ -30,7 +30,7 @@ const Bottom = styled.div`
 
 const Sketch = ({ title, params, shots, onDeleteClick, sketchId, onRenameClick, onReimportClick }) => (
   <Wrapper>
-    <ViewHeader onButtonClick={() => { onRenameClick(sketchId) }} buttonText='Rename'>{title}</ViewHeader>
+    <SceneHeader onButtonClick={() => { onRenameClick(sketchId) }} buttonText='Rename'>{title}</SceneHeader>
 
     {params.length > 0 &&
       <div>
