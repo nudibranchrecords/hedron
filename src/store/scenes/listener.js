@@ -1,6 +1,7 @@
 import uid from 'uid'
 import { rSceneCreate, rSceneDelete } from './actions'
 import { uSketchDelete } from '../sketches/actions'
+import { uiEditingOpen } from '../ui/actions'
 import getScene from '../../selectors/getScene'
 import getScenes from '../../selectors/getScenes'
 import history from '../../history'
@@ -14,7 +15,10 @@ const handleSceneCreate = (action, store) => {
     sketchIds: []
   }
   store.dispatch(rSceneCreate(id, scene))
+
   history.push(`/scenes/view/${id}`)
+
+  store.dispatch(uiEditingOpen('sceneTitle', id))
 }
 
 const handleSceneDelete = (action, store) => {
