@@ -11,6 +11,7 @@ import { watchNodes } from '../src/store/nodes/sagas'
 import sketchesReducer from '../src/store/sketches/reducer'
 import scenesReducer from '../src/store/scenes/reducer'
 import nodesReducer from '../src/store/nodes/reducer'
+import uiReducer from '../src/store/ui/reducer'
 
 const rootReducer = combineReducers(
   {
@@ -52,6 +53,15 @@ const rootListener = {
 test('(mock) Scenes - Add Scene', (t) => {
   uniqueId = 0
 
+  const rootReducer = combineReducers(
+    {
+      nodes: nodesReducer,
+      sketches: sketchesReducer,
+      scenes: scenesReducer,
+      ui: uiReducer
+    }
+  )
+
   const store = createStore(rootReducer, {
     nodes: {},
     sketches: {}
@@ -78,6 +88,13 @@ test('(mock) Scenes - Add Scene', (t) => {
     },
   'scene is added to items list when sceneCreate is dispatched')
 
+  t.deepEqual(state.ui.isEditing,
+    {
+      id: 'id_1',
+      type: 'sceneTitle'
+    }
+  , 'UI opens to editing scene')
+
   store.dispatch(uSceneCreate())
   state = store.getState()
   t.deepEqual(state.scenes,
@@ -98,6 +115,13 @@ test('(mock) Scenes - Add Scene', (t) => {
       }
     },
   'scene is added to items list when sceneCreate is dispatched')
+
+  t.deepEqual(state.ui.isEditing,
+    {
+      id: 'id_2',
+      type: 'sceneTitle'
+    }
+  , 'UI opens to editing scene')
 
   t.end()
 })
