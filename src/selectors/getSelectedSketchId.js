@@ -2,5 +2,5 @@ import getCurrentSceneId from './getCurrentSceneId'
 
 export default state => {
   const sceneId = getCurrentSceneId(state)
-  return state.scenes.items[sceneId].selectedSketchId
+  return sceneId ? state.scenes.items[sceneId].selectedSketchId : undefined
 }
