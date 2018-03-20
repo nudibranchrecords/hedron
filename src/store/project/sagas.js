@@ -6,6 +6,7 @@ import { projectLoadSuccess, projectRehydrate, projectError, projectSaveAs,
   projectErrorAdd, projectErrorPopupOpen, projectErrorPopupClose,
   projectSave, projectLoadRequest, projectFilepathUpdate, projectSketchesPathUpdate
 } from './actions'
+import { uSceneCreate } from '../scenes/actions'
 import history from '../../history'
 import { remote } from 'electron'
 
@@ -78,6 +79,9 @@ export function* chooseSketchesFolder (dispatch, action) {
       dispatch(projectErrorPopupClose())
       if (!p.disableRedirect) {
         history.push(`/scenes/addSketch/${sceneId}`)
+      }
+      if (p.createSceneAfter) {
+        dispatch(uSceneCreate())
       }
     }
   })
