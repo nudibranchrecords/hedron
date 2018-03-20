@@ -48,6 +48,7 @@ const SceneManager = ({ items, onAddClick, currentScene, onDeleteClick, onRename
         <ThumbLink
           key={item.id}
           to={`/scenes/view/${item.id}`}
+          isActive={() => currentScene.id === item.id}
         >
           <div>{item.title}</div>
         </ThumbLink>
