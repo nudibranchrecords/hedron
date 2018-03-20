@@ -11,6 +11,13 @@ export function rSceneCreate (id, scene) {
   }
 }
 
+export function sceneRename (id, title) {
+  return {
+    type: 'SCENE_RENAME',
+    payload: { id, title }
+  }
+}
+
 export function uSceneDelete (id) {
   return {
     type: 'U_SCENE_DELETE',

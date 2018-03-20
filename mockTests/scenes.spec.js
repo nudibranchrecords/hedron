@@ -4,7 +4,7 @@ import listen from 'redux-action-listeners'
 import { createStore, applyMiddleware, combineReducers } from 'redux'
 import createSagaMiddleware from 'redux-saga'
 const sagaMiddleware = createSagaMiddleware()
-import { uSceneCreate, uSceneDelete, sceneSketchSelect } from '../src/store/scenes/actions'
+import { uSceneCreate, uSceneDelete, sceneSketchSelect, sceneRename } from '../src/store/scenes/actions'
 
 import { fork } from 'redux-saga/effects'
 import { watchNodes } from '../src/store/nodes/sagas'
@@ -234,6 +234,66 @@ test('(mock) Scenes - Select Sketch', (t) => {
       }
     },
   'Sketch id updated when sketch selected')
+
+  t.end()
+})
+
+test('(mock) Scenes - Rename', (t) => {
+  const store = createStore(rootReducer, {
+    nodes: {
+    },
+    sketches: {
+    },
+    scenes: {
+      items: {
+        id_1: {
+          title: 'Foo Title',
+          id: 'id_1'
+        },
+        id_2: {
+          title: 'Bar Title',
+          id: 'id_2'
+        }
+      }
+    }
+  }, applyMiddleware(sagaMiddleware, listen(rootListener)))
+  sagaMiddleware.run(rootSaga, store.dispatch)
+
+  let state
+
+  store.dispatch(sceneRename('id_1', 'Lorem Ipsum'))
+  state = store.getState()
+  t.deepEqual(state.scenes,
+    {
+      items: {
+        id_1: {
+          title: 'Lorem Ipsum',
+          id: 'id_1'
+        },
+        id_2: {
+          title: 'Bar Title',
+          id: 'id_2'
+        }
+      }
+    },
+  'Scene title updated')
+
+  store.dispatch(sceneRename('id_2', 'Ipsum Dollor'))
+  state = store.getState()
+  t.deepEqual(state.scenes,
+    {
+      items: {
+        id_1: {
+          title: 'Lorem Ipsum',
+          id: 'id_1'
+        },
+        id_2: {
+          title: 'Ipsum Dollor',
+          id: 'id_2'
+        }
+      }
+    },
+  'Scene title updated')
 
   t.end()
 })

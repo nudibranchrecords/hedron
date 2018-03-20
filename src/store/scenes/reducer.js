@@ -47,6 +47,18 @@ const scenesReducer = (state = defaultState, action) => {
         }
       }
     }
+    case 'SCENE_RENAME': {
+      return {
+        ...state,
+        items: {
+          ...state.items,
+          [p.id]: {
+            ...state.items[p.id],
+            title: p.title
+          }
+        }
+      }
+    }
     case 'SCENE_SKETCH_SELECT': {
       return {
         ...state,
