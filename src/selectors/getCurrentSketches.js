@@ -13,5 +13,4 @@ export default state => {
   } else {
     return []
   }
-
 }
