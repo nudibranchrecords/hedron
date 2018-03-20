@@ -112,10 +112,12 @@ test('(mock) Sketches - Add/Delete Sketch', (t) => {
       items: {
         scene_01: {
           id: 'scene_01',
+          selectedSketchId: false,
           sketchIds: []
         },
         scene_02: {
           id: 'scene_02',
+          selectedSketchId: false,
           sketchIds: []
         }
       }
@@ -135,14 +137,16 @@ test('(mock) Sketches - Add/Delete Sketch', (t) => {
     items: {
       scene_01: {
         id: 'scene_01',
+        selectedSketchId: 'id_1',
         sketchIds: ['id_1']
       },
       scene_02: {
         id: 'scene_02',
+        selectedSketchId: false,
         sketchIds: []
       }
     }
-  }, 'After creating sketch, sketch id is added to scene')
+  }, 'After creating sketch, sketch id is added to scene, selectedSketchId is set')
 
   t.deepEqual(state.sketches, {
     id_1: {
@@ -174,10 +178,12 @@ test('(mock) Sketches - Add/Delete Sketch', (t) => {
     items: {
       scene_01: {
         id: 'scene_01',
-        sketchIds: ['id_1', 'id_3']
+        sketchIds: ['id_1', 'id_3'],
+        selectedSketchId: 'id_3'
       },
       scene_02: {
         id: 'scene_02',
+        selectedSketchId: false,
         sketchIds: []
       }
     }
@@ -251,14 +257,16 @@ test('(mock) Sketches - Add/Delete Sketch', (t) => {
     items: {
       scene_01: {
         id: 'scene_01',
-        sketchIds: ['id_3']
+        sketchIds: ['id_3'],
+        selectedSketchId: 'id_3'
       },
       scene_02: {
         id: 'scene_02',
-        sketchIds: []
+        sketchIds: [],
+        selectedSketchId: false
       }
     }
-  }, 'After deleting sketch, sketch id is removed from scene')
+  }, 'After deleting sketch, sketch id is removed from scene, selectedSketchId becomes last in list')
 
   t.deepEqual(state.sketches, {
     id_3: {
@@ -311,14 +319,16 @@ test('(mock) Sketches - Add/Delete Sketch', (t) => {
     items: {
       scene_01: {
         id: 'scene_01',
-        sketchIds: []
+        sketchIds: [],
+        selectedSketchId: false
       },
       scene_02: {
         id: 'scene_02',
-        sketchIds: []
+        sketchIds: [],
+        selectedSketchId: false
       }
     }
-  }, 'After deleting sketch, sketch id is removed from scene')
+  }, 'After deleting sketch, sketch id is removed from scene, selected sketchId becomes false (none left)')
 
   t.deepEqual(state.sketches, {}, 'After deleting sketch, sketch item is removed')
   t.deepEqual(state.nodes, {}, 'After deleting sketch, node items are removed')
@@ -330,11 +340,13 @@ test('(mock) Sketches - Add/Delete Sketch', (t) => {
     items: {
       scene_01: {
         id: 'scene_01',
-        sketchIds: []
+        sketchIds: [],
+        selectedSketchId: false
       },
       scene_02: {
         id: 'scene_02',
-        sketchIds: ['id_7']
+        sketchIds: ['id_7'],
+        selectedSketchId: 'id_7'
       }
     }
   }, 'After creating sketch with no specified scene id, sketch id is added to scene using route')
@@ -350,6 +362,26 @@ test('(mock) Sketches - Add/Delete Sketch', (t) => {
   }, 'After creating sketch, sketch item is created')
 
   t.deepEqual(state.nodes, {}, 'After creating sketch, no nodes created (because sketch has no params/shots)')
+
+  store.dispatch(uSketchDelete('id_7'))
+  state = store.getState()
+
+  t.deepEqual(state.scenes, {
+    items: {
+      scene_01: {
+        id: 'scene_01',
+        sketchIds: [],
+        selectedSketchId: false
+      },
+      scene_02: {
+        id: 'scene_02',
+        sketchIds: [],
+        selectedSketchId: false
+      }
+    }
+  }, 'After deleting sketch with no specified scene id, uses route to determine which scene')
+
+  t.deepEqual(state.sketches, {}, 'After deleting sketch, sketch item is removed')
 
   t.end()
 })

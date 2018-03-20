@@ -30,7 +30,7 @@ const Bottom = styled.div`
 
 const Sketch = ({ title, params, shots, onDeleteClick, sketchId, onRenameClick, onReimportClick }) => (
   <Wrapper>
-    <ViewHeader onButtonClick={onRenameClick} buttonText='Rename'>{title}</ViewHeader>
+    <ViewHeader onButtonClick={() => { onRenameClick(sketchId) }} buttonText='Rename'>{title}</ViewHeader>
 
     {params.length > 0 &&
       <div>
@@ -60,8 +60,8 @@ const Sketch = ({ title, params, shots, onDeleteClick, sketchId, onRenameClick, 
 
     <Bottom>
       <div>
-        <Button onClick={onDeleteClick}>Delete Sketch</Button>
-        <Button onClick={onReimportClick}>Reimport</Button>
+        <Button onClick={() => { onDeleteClick(sketchId) }}>Delete Sketch</Button>
+        <Button onClick={() => { onReimportClick(sketchId) }}>Reimport</Button>
       </div>
     </Bottom>
   </Wrapper>

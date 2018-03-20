@@ -1,7 +1,7 @@
 import { sketchCreate, sketchDelete, sketchUpdate } from './actions'
-import { rSceneSketchAdd, rSceneSketchRemove } from '../scenes/actions'
+import { rSceneSketchAdd, rSceneSketchRemove, sceneSketchSelect } from '../scenes/actions'
 import { uNodeCreate, uNodeDelete, nodeUpdate } from '../nodes/actions'
-import getSketches from '../../selectors/getSketches'
+import getScene from '../../selectors/getScene'
 import getSketch from '../../selectors/getSketch'
 import getNode from '../../selectors/getNode'
 import getModule from '../../selectors/getModule'
@@ -69,12 +69,17 @@ const handleSketchCreate = (action, store) => {
     openedNodes: {}
   }))
 
+  store.dispatch(sceneSketchSelect(sceneId, uniqueSketchId))
+
   history.push('/scenes/view/' + sceneId)
 }
 
 const handleSketchDelete = (action, store) => {
   let state = store.getState()
-  const { id, sceneId } = action.payload
+  let { id, sceneId } = action.payload
+  if (!sceneId) {
+    sceneId = getCurrentSceneId(state)
+  }
   const paramIds = getSketchParamIds(state, id)
 
   store.dispatch(rSceneSketchRemove(sceneId, id))
@@ -92,16 +97,11 @@ const handleSketchDelete = (action, store) => {
   store.dispatch(sketchDelete(id))
 
   state = store.getState()
-  const sketches = getSketches(state)
-  const sketchKeys = Object.keys(sketches)
-  const lastId = sketchKeys[sketchKeys.length - 1]
-  let url
-  if (lastId !== undefined) {
-    url = '/sketches/view/' + lastId
-  } else {
-    url = '/sketches/add'
-  }
-  history.push(url)
+  const currentScene = getScene(state, sceneId)
+  const sketchIds = currentScene.sketchIds
+  const newSceneSketchId = sketchIds[sketchIds.length - 1] || false
+  store.dispatch(sceneSketchSelect(sceneId, newSceneSketchId))
+  history.push('/scenes/view/' + sceneId)
 }
 
 const handleSketchReimport = (action, store) => {
