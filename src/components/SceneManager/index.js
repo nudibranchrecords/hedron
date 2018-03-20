@@ -1,9 +1,9 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 import { NavLink } from 'react-router-dom'
 
-const css = `
+const BaseLink = css`
 flex: 0 0 20%;
 color: white;
 padding: 0.5rem;
@@ -34,8 +34,8 @@ const Wrapper = styled.nav`
 const Thumbs = styled.div`
   display: flex;
 `
-const ThumbLink = styled(NavLink)` ${css} `
-const ThumbButton = styled.a` ${css} `
+const ThumbLink = styled(NavLink)` ${BaseLink} `
+const ThumbButton = styled.a` ${BaseLink} `
 
 const SketchesNav = ({ items, onAddClick }) => (
   <Wrapper>
