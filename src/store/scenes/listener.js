@@ -29,7 +29,9 @@ const handleSceneDelete = (action, store) => {
   state = store.getState()
   const scenes = getScenes(state)
   const lastScene = scenes[scenes.length - 1]
-  history.push(`/scenes/view/${lastScene.id}`)
+  let url = lastScene ? `/scenes/view/${lastScene.id}` : '/'
+
+  history.push(url)
 }
 
 const handleSceneSketchSelect = (action, store) => {
