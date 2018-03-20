@@ -23,11 +23,10 @@ const mapStateToProps = (state, ownProps) => {
 }
 
 const mapDispatchToProps = (dispatch, ownProps) => {
-  const sketchId = ownProps.match.params.sketchId
   return {
-    onDeleteClick: () => dispatch(uSketchDelete(sketchId)),
-    onRenameClick: () => dispatch(uiEditingOpen('sketchTitle', sketchId)),
-    onReimportClick: () => dispatch(uSketchReimport(sketchId))
+    onDeleteClick: sketchId => dispatch(uSketchDelete(sketchId)),
+    onRenameClick: sketchId => dispatch(uiEditingOpen('sketchTitle', sketchId)),
+    onReimportClick: sketchId => dispatch(uSketchReimport(sketchId))
   }
 }
 
