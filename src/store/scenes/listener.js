@@ -13,6 +13,7 @@ const handleSceneCreate = (action, store) => {
     sketchIds: []
   }
   store.dispatch(rSceneCreate(id, scene))
+  history.push(`/scenes/view/${id}`)
 }
 
 const handleSceneDelete = (action, store) => {
