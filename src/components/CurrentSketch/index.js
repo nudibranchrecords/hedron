@@ -1,13 +1,13 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import Sketch from '../../components/Sketch'
-import ViewHeader from '../ViewHeader'
+import SceneHeader from '../../containers/SceneHeader'
 
 const CurrentSketch = (props) =>
   props.isSketch
     ? <Sketch {...props} />
     : <div>
-      <ViewHeader>No Sketches</ViewHeader>
+      <SceneHeader>No Sketches</SceneHeader>
       <p>Add sketches using the "+" in the right hand menu.</p>
     </div>
 
