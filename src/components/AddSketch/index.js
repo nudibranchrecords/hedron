@@ -25,6 +25,7 @@ const AddSketch = ({ items, onAddClick, onChooseFolderClick, sketchesPath }) => 
         </li>
       ))}
     </Items>
+    {items.length === 0 && <p>You haven't chosen the sketch folder for the project yet.</p>}
     <Button onClick={onChooseFolderClick}>Choose Sketch Folder</Button>
     <br />
     {sketchesPath}
