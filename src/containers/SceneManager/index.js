@@ -1,11 +1,13 @@
 import { connect } from 'react-redux'
 import SceneManager from '../../components/SceneManager'
 import getScenes from '../../selectors/getScenes'
-import { uSceneCreate } from '../../store/scenes/actions'
+import getCurrentScene from '../../selectors/getCurrentScene'
+import { uSceneCreate, uSceneDelete } from '../../store/scenes/actions'
 
 const mapStateToProps = (state, ownProps) => (
   {
-    items: getScenes(state)
+    items: getScenes(state),
+    currentScene: getCurrentScene(state)
   }
 )
 
@@ -13,6 +15,9 @@ const mapDispatchToProps = (dispatch, ownProps) => (
   {
     onAddClick: () => {
       dispatch(uSceneCreate())
+    },
+    onDeleteClick: sceneId => {
+      dispatch(uSceneDelete(sceneId))
     }
   }
 )

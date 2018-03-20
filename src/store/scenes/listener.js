@@ -2,6 +2,7 @@ import uid from 'uid'
 import { rSceneCreate, rSceneDelete } from './actions'
 import { uSketchDelete } from '../sketches/actions'
 import getScene from '../../selectors/getScene'
+import getScenes from '../../selectors/getScenes'
 import history from '../../history'
 
 const handleSceneCreate = (action, store) => {
@@ -18,13 +19,17 @@ const handleSceneCreate = (action, store) => {
 
 const handleSceneDelete = (action, store) => {
   const p = action.payload
-  const state = store.getState()
+  let state = store.getState()
   const scene = getScene(state, p.id)
 
   scene.sketchIds.forEach(sketchId => {
     store.dispatch(uSketchDelete(sketchId, p.id))
   })
   store.dispatch(rSceneDelete(p.id))
+  state = store.getState()
+  const scenes = getScenes(state)
+  const lastScene = scenes[scenes.length - 1]
+  history.push(`/scenes/view/${lastScene.id}`)
 }
 
 const handleSceneSketchSelect = (action, store) => {
