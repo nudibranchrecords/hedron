@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import Button from '../Button'
-import ViewHeader from '../ViewHeader'
+import SceneHeader from '../../containers/SceneHeader'
 import styled from 'styled-components'
 
 const Items = styled.ul`
@@ -17,7 +17,7 @@ const Items = styled.ul`
 
 const AddSketch = ({ items, onAddClick, onChooseFolderClick, sketchesPath }) => (
   <div>
-    <ViewHeader>Add Sketch</ViewHeader>
+    <SceneHeader>Add Sketch</SceneHeader>
     <Items>
       {items.map((item) => (
         <li key={item.id}>
