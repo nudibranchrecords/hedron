@@ -17,7 +17,6 @@ import App from '../containers/App'
 import engine from '../engine'
 import { initiateScreens } from '../windows'
 import { initiateMenuHandler } from './menuHandler'
-import { uSceneCreate } from '../store/scenes/actions'
 import Stats from 'stats.js'
 import createDebounce from 'redux-debounced'
 import tryRequire from 'try-require'
@@ -71,8 +70,6 @@ const store = createStore(rootReducer, composeEnhancers(
 ))
 
 sagaMiddleware.run(rootSaga, store.dispatch)
-
-store.dispatch(uSceneCreate())
 
 const renderApp = (Component) => {
   render(

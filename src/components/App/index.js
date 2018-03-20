@@ -1,19 +1,18 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import CurrentScene from '../CurrentScene'
-import SketchesNav from '../../containers/SketchesNav'
 import Macros from '../../containers/Macros'
 import Settings from '../../containers/Settings'
 import Overview from '../Overview'
 import { Route } from 'react-router'
 import styled from 'styled-components'
-import NavItem from '../NavItem'
 import PanelDragger from '../PanelDragger'
 import MidiLearn from '../../containers/MidiLearn'
 import EditingOverlay from '../../containers/EditingOverlay'
 import ErrorOverlay from '../../containers/ErrorOverlay'
 import MainViewOuter from '../../containers/MainViewOuter'
 import Home from '../../containers/Home'
+import ScenesNav from '../ScenesNav'
 
 const Wrapper = styled.div`
   display: flex;
@@ -56,8 +55,7 @@ const App = ({ stats, leftWidth, onLeftDrag }) => (
       </MainViewOuter>
     </Right>
     <Bar>
-      <SketchesNav />
-      <NavItem to='/macros'>Macros</NavItem>
+      <Route path='/scenes' component={ScenesNav} />
     </Bar>
     <MidiLearn />
     <EditingOverlay />
