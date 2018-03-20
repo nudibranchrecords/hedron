@@ -1,13 +1,13 @@
 import { connect } from 'react-redux'
 import SketchesNav from '../../components/SketchesNav'
-import { getSketches } from './selectors'
+import getCurrentSketches from '../../selectors/getCurrentSketches'
 import getCurrentSceneId from '../../selectors/getCurrentSceneId'
 import { sceneSketchSelect } from '../../store/scenes/actions'
 
 const mapStateToProps = (state, ownProps) => {
   return {
     sceneId: getCurrentSceneId(state),
-    items: getSketches(state)
+    items: getCurrentSketches(state)
   }
 }
 
