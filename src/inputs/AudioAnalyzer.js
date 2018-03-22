@@ -9,6 +9,12 @@ class AudioInput {
     this.freqs = new Uint8Array(this.analyser.frequencyBinCount)
 
     this.levelsData = []
+    this.maxLevelsData = []
+    this.maxLevelFalloff = .9999
+    this.maxLevelMinimum = .001
+    for (let i = 0; i < this.numBands; i++) {
+      this.maxLevelsData[ i ] = this.maxLevelMinimum
+    }
 
     source.connect(this.analyser)
 
@@ -25,8 +31,11 @@ class AudioInput {
       for (let j = 0; j < this.levelBins; j++) {
         sum += this.freqs[ (i * this.levelBins) + j ]
       }
-
+      
       this.levelsData[ i ] = (sum / this.levelBins) / 256
+      this.maxLevelsData[ i ] = Math.max(this.maxLevelsData[ i ] * this.maxLevelFalloff, this.maxLevelMinimum)
+      this.maxLevelsData[ i ] = Math.max(this.maxLevelsData[ i ], this.levelsData[ i ])
+      this.levelsData[ i ] = this.levelsData[ i ] / this.maxLevelsData[ i ];      
     }
 
     return this.levelsData
