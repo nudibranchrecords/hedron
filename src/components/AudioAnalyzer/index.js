@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import uiEventEmitter from '../../utils/uiEventEmitter'
+import Control from '../../containers/Control'
 
 let height, val, offset, hue, i, inputs, bands
 
@@ -9,6 +10,8 @@ class AudioAnalyzer extends React.Component {
   constructor (props) {
     super(props)
     this.draw = this.draw.bind(this)
+    this.handleMouseDown = this.handleMouseDown.bind(this)
+    this.isOpen = false
   }
 
   componentDidMount () {
@@ -24,11 +27,16 @@ class AudioAnalyzer extends React.Component {
   componentWillUnmount () {
     uiEventEmitter.removeListener('slow-tick', this.draw)
   }
+  
+  handleMouseDown (e) {
+    this.isOpen = !this.isOpen;
+    this.forceUpdate()
+  }
 
   draw () {
     inputs = this.context.store.getState().inputs
     bands = [inputs.audio_0.value, inputs.audio_1.value, inputs.audio_2.value, inputs.audio_3.value]
-
+    
     this.drawGraph(bands)
   }
 
@@ -43,7 +51,7 @@ class AudioAnalyzer extends React.Component {
       val = data[ i ]
       height = this.height * val
       offset = this.height - height - 1
-      hue = i / data.length * 360
+      hue = i / data.length * 360  
 
       this.ctx.fillStyle = 'hsla(' + hue + ', 100%, 50%, 1)'
       this.ctx.fillRect(i * this.barWidth, offset, this.barWidth, height)
@@ -54,7 +62,17 @@ class AudioAnalyzer extends React.Component {
 
   render () {
     return (
-      <canvas ref={node => { this.canvas = node }} />
+      <div>
+      <canvas ref={node => { this.canvas = node }} 
+      onMouseDown={this.props.onMouseDown || this.handleMouseDown}
+      />
+      {this.isOpen &&
+        <div style={{position:"fixed"}}> 
+          <Control nodeId="audioNormalizeLevels" />
+          <Control nodeId="audioLevelsFalloff" />
+        </div>
+      }
+      </div>
     )
   }
 }
