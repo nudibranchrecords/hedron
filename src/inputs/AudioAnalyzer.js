@@ -9,12 +9,18 @@ class AudioInput {
     this.freqs = new Uint8Array(this.analyser.frequencyBinCount)
 
     this.levelsData = []
-    this.cleanLevelsData = []                 //storing the levels data before normalization so we dont get errors when using a low falloff
-    this.levelsFalloff = 1;                   //how much we reduce the clean bins value each frame, low numbers create a smoother release after sound bumps it up
-    this.normalizeLevels = 0;                 //blends between the pure volume and a normalized result
-    this.maxLevelsData = []                   //stores the highest value we have received for each bin
-    this.maxLevelFalloffMultiplier = .9999    //shaving a small amount off the max value each frame in case of a rare peak, quieter song, etc
-    this.maxLevelMinimum = .001               //stoping divide by zeros
+    // storing the levels data before normalization so we dont get errors when using a low falloff
+    this.cleanLevelsData = []
+    // how much we reduce the clean bins value each frame, low numbers create a smoother release after sound bumps it up
+    this.levelsFalloff = 1
+    // blends between the pure volume and a normalized result
+    this.normalizeLevels = 0
+    // stores the highest value we have received for each bin
+    this.maxLevelsData = []
+    // shaving a small amount off the max value each frame in case of a rare peak, quieter song, etc
+    this.maxLevelFalloffMultiplier = 0.9999
+    // stoping divide by zeros
+    this.maxLevelMinimum = 0.001
     for (let i = 0; i < this.numBands; i++) {
       this.maxLevelsData[ i ] = this.maxLevelMinimum
       this.levelsData[ i ] = this.cleanLevelsData[ i ] = 0
@@ -35,16 +41,16 @@ class AudioInput {
       for (let j = 0; j < this.levelBins; j++) {
         sum += this.freqs[ (i * this.levelBins) + j ]
       }
-      
+
       var band = (sum / this.levelBins) / 256
-      band = Math.max(band, Math.max(0, this.cleanLevelsData[ i ] - this.levelsFalloff));
+      band = Math.max(band, Math.max(0, this.cleanLevelsData[ i ] - this.levelsFalloff))
       this.cleanLevelsData[ i ] = band
       this.maxLevelsData[ i ] = Math.max(this.maxLevelsData[ i ] * this.maxLevelFalloffMultiplier, this.maxLevelMinimum)
       this.maxLevelsData[ i ] = Math.max(this.maxLevelsData[ i ], band)
-      var normalized = band / this.maxLevelsData[ i ];
-      this.levelsData[ i ] =  (1 - this.normalizeLevels) * band + this.normalizeLevels * normalized;
+      var normalized = band / this.maxLevelsData[ i ]
+      this.levelsData[ i ] = (1 - this.normalizeLevels) * band + this.normalizeLevels * normalized
     }
-    
+
     return this.levelsData
   }
 }
