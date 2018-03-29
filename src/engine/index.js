@@ -8,13 +8,14 @@ import { projectError } from '../store/project/actions'
 import now from 'performance-now'
 import renderer from './renderer'
 import Scene from './Scene'
+import { getEngineScenes, setEngineScenes } from './scenes'
 
 class Engine {
   constructor () {
     this.allModules = {}
     this.modules = {}
     this.sketches = {}
-    this.scenes = {}
+    this.scenes = getEngineScenes()
     this.isRunning = false
   }
 
@@ -82,7 +83,7 @@ class Engine {
     const state = this.store.getState()
     const scenes = getScenes(state)
 
-    this.scenes = {}
+    this.scenes = setEngineScenes({})
     this.sketches = {}
 
     // Add new ones
@@ -93,8 +94,6 @@ class Engine {
         this.addSketchToScene(scene.id, sketchId, moduleId)
       })
     })
-
-    renderer.setSize()
   }
 
   run (injectedStore, stats) {
