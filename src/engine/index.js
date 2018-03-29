@@ -36,6 +36,14 @@ class Engine {
     }
   }
 
+  addScene (sceneId) {
+    this.scenes[sceneId] = new Scene()
+  }
+
+  removeScene (sceneId) {
+    delete this.scenes[sceneId]
+  }
+
   addSketchToScene (sceneId, sketchId, moduleId) {
     const meta = {
       sketchesFolder: `file://${this.sketchesFolder}`
@@ -79,7 +87,7 @@ class Engine {
 
     // Add new ones
     scenes.forEach((scene) => {
-      this.scenes[scene.id] = new Scene()
+      this.addScene(scene.id)
       scene.sketchIds.forEach(sketchId => {
         const moduleId = getSketch(state, sketchId).moduleId
         this.addSketchToScene(scene.id, sketchId, moduleId)
