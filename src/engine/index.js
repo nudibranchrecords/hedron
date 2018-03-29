@@ -67,12 +67,7 @@ class Engine {
 
   fireShot (sketchId, method) {
     const state = this.store.getState()
-
-    this.sketches.forEach((sketch) => {
-      if (sketch.id === sketchId) {
-        sketch.module[method](getSketchParams(state, sketch.id))
-      }
-    })
+    this.sketches[sketchId][method](getSketchParams(state, sketchId))
   }
 
   initiateScenes () {
