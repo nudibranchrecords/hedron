@@ -4,6 +4,7 @@ import { availableModulesReplaceAll } from '../store/availableModules/actions'
 import { projectError } from '../store/project/actions'
 import now from 'performance-now'
 import world from './world'
+import Scene from './Scene'
 
 class Engine {
   constructor () {
@@ -11,6 +12,8 @@ class Engine {
     this.modules = {}
     this.sketches = []
     this.isRunning = false
+
+    this.scenes = [new Scene()]
   }
 
   loadSketchModules (url) {
@@ -47,7 +50,7 @@ class Engine {
       module
     })
 
-    world.scene.add(module.root)
+    this.scenes[0].scene.add(module.root)
   }
 
   removeSketch (id) {
@@ -91,7 +94,7 @@ class Engine {
     let newTime
     this.store = injectedStore
     this.isRunning = true
-    world.initiate(injectedStore)
+    world.initiate(injectedStore, this.scenes)
     // Give store module params
     this.store.dispatch(availableModulesReplaceAll(this.modules))
 
@@ -115,7 +118,7 @@ class Engine {
           const params = getSketchParams(state, sketch.id)
           sketch.module.update(params, tick, elapsedFrames, allParams)
         })
-        world.render()
+        world.render(this.scenes[0])
         stats.end()
       }
     }

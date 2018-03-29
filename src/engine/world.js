@@ -2,9 +2,19 @@ import * as THREE from 'three'
 import uiEventEmitter from '../utils/uiEventEmitter'
 
 class World {
-  initiate (injectedStore) {
+  initiate (injectedStore, scenes) {
     this.store = injectedStore
-    this.setScene()
+    this.scenes = scenes
+
+    uiEventEmitter.on('reset-renderer', () => {
+      this.setRenderer()
+    })
+    uiEventEmitter.on('repaint', () => {
+      this.setSize()
+    })
+
+    this.setRenderer()
+    this.setSize()
   }
 
   setViewerEl (el) {
@@ -20,22 +30,6 @@ class World {
     this.canvas = this.renderer.domElement
     this.viewerEl.innerHTML = ''
     this.viewerEl.appendChild(this.canvas)
-  }
-
-  setScene () {
-    this.setRenderer()
-
-    this.scene = new THREE.Scene()
-    this.camera = new THREE.PerspectiveCamera(75, null, 1, 1000000)
-    this.camera.position.z = 1000
-
-    this.setSize()
-    uiEventEmitter.on('reset-renderer', () => {
-      this.setRenderer()
-    })
-    uiEventEmitter.on('repaint', () => {
-      this.setSize()
-    })
   }
 
   setSize () {
@@ -58,11 +52,12 @@ class World {
 
     const perc = 100 / ratio
     const height = width / ratio
+    const scene = this.scenes[0]
 
     this.renderer.setSize(width, height)
 
-    this.camera.aspect = ratio
-    this.camera.updateProjectionMatrix()
+    scene.camera.aspect = ratio
+    scene.camera.updateProjectionMatrix()
 
     // CSS trick to resize canvas
     this.viewerEl.style.paddingBottom = perc + '%'
@@ -110,8 +105,8 @@ class World {
     this.setSize()
   }
 
-  render () {
-    this.renderer.render(this.scene, this.camera)
+  render (scene) {
+    this.renderer.render(scene.scene, scene.camera)
 
     if (this.isSendingOutput) {
       this.previewContext.drawImage(this.renderer.domElement, 0, 0, this.width, this.height)
