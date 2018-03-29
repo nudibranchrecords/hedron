@@ -4,9 +4,8 @@ import { projectError } from '../store/project/actions'
 import engine from './'
 
 export const handleAddSketch = (action) => {
-  const id = action.payload.id
-  const moduleId = action.payload.sketch.moduleId
-  engine.addSketch(id, moduleId)
+  const { sceneId, sketchId, moduleId } = action.payload
+  engine.addSketchToScene(sceneId, sketchId, moduleId)
 }
 
 export const handleRemoveSketch = (action) => {
@@ -31,7 +30,7 @@ export const handleShotFired = (action) => {
 
 export default (action, store) => {
   switch (action.type) {
-    case 'SKETCH_CREATE':
+    case 'ENGINE_SCENE_ADD_SKETCH':
       handleAddSketch(action, store)
       break
     case 'SKETCH_DELETE':
