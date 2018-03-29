@@ -2,7 +2,7 @@ import { loadSketches } from '../externals/sketches'
 import getSketch from '../selectors/getSketch'
 import getScenes from '../selectors/getScenes'
 import getSketchParams from '../selectors/getSketchParams'
-import getCurrentSceneId from '../selectors/getCurrentSceneId'
+import getCurrentScene from '../selectors/getCurrentScene'
 import { availableModulesReplaceAll } from '../store/availableModules/actions'
 import { projectError } from '../store/project/actions'
 import now from 'performance-now'
@@ -13,7 +13,7 @@ class Engine {
   constructor () {
     this.allModules = {}
     this.modules = {}
-    this.sketches = []
+    this.sketches = {}
     this.scenes = {}
     this.isRunning = false
   }
@@ -45,23 +45,16 @@ class Engine {
 
     const module = new this.allModules[moduleId].Module(scene, meta)
 
-    this.sketches.push({
-      sceneId,
-      sketchId,
-      module
-    })
+    this.sketches[sketchId] = module
 
     scene.add(module.root)
   }
 
-  // removeSketch (id) {
-  //   this.sketches.forEach((sketch, index) => {
-  //     if (sketch.id === id) {
-  //       this.sketches.splice(index, 1)
-  //       world.scene.remove(sketch.module.root)
-  //     }
-  //   })
-  // }
+  removeSketchFromScene (sceneId, sketchId) {
+    const sketch = this.sketches[sketchId]
+    this.scenes[sceneId].scene.remove(sketch.root)
+    delete this.sketches[sketchId]
+  }
 
   fireShot (sketchId, method) {
     const state = this.store.getState()
@@ -82,6 +75,7 @@ class Engine {
     const scenes = getScenes(state)
 
     this.scenes = {}
+    this.sketches = {}
 
     // Add new ones
     scenes.forEach((scene) => {
@@ -101,6 +95,8 @@ class Engine {
     let elapsedFrames = 1
     let delta
     let newTime
+    let stateScene
+    let sketch
     this.store = injectedStore
     this.isRunning = true
     renderer.initiate(injectedStore, this.scenes)
@@ -123,13 +119,14 @@ class Engine {
 
       if (delta > spf || state.settings.throttledFPS >= 60) {
         stats.begin()
-        this.sketches.forEach(sketch => {
-          const params = getSketchParams(state, sketch.sketchId)
-          sketch.module.update(params, tick, elapsedFrames, allParams)
-        })
-        const scene = this.scenes[getCurrentSceneId(state)]
-        if (scene) {
-          renderer.render(scene)
+        stateScene = getCurrentScene(state)
+        if (stateScene) {
+          stateScene.sketchIds.forEach(sketchId => {
+            sketch = this.sketches[sketchId]
+            const params = getSketchParams(state, sketchId)
+            sketch.update(params, tick, elapsedFrames, allParams)
+          })
+          renderer.render(this.scenes[stateScene.id])
         }
 
         stats.end()
