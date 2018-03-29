@@ -1,7 +1,7 @@
 import * as THREE from 'three'
 import uiEventEmitter from '../utils/uiEventEmitter'
 
-class World {
+class Renderer {
   initiate (injectedStore, scenes) {
     this.store = injectedStore
     this.scenes = scenes
@@ -111,4 +111,4 @@ class World {
   }
 }
 
-export default new World()
+export default new Renderer()
