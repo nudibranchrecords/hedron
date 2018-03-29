@@ -34,10 +34,6 @@ class Engine {
     }
   }
 
-  setCanvas (canvas) {
-    this.canvas = canvas
-  }
-
   addSketch (id, moduleId) {
     const meta = {
       sketchesFolder: `file://${this.sketchesFolder}`
