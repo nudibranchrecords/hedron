@@ -108,7 +108,6 @@ class Renderer {
   }
 
   render (scene) {
-    // console.log(scene, this.renderer)
     this.renderer.render(scene.scene, scene.camera)
 
     if (this.isSendingOutput) {
