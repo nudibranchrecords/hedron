@@ -1,6 +1,6 @@
 import * as THREE from 'three'
-import { getEngineScenes } from './scenes'
 import uiEventEmitter from '../utils/uiEventEmitter'
+import engine from './'
 
 class Renderer {
   initiate (injectedStore, scenes) {
@@ -55,7 +55,7 @@ class Renderer {
     const height = width / ratio
 
     this.renderer.setSize(width, height)
-    const engineScenes = getEngineScenes()
+    const engineScenes = engine.scenes
 
     for (const key in engineScenes) {
       engineScenes[key].setRatio(ratio)
