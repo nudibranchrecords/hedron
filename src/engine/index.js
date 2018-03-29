@@ -51,11 +51,9 @@ class Engine {
     }
 
     const scene = this.scenes[sceneId].scene
-
     const module = new this.allModules[moduleId].Module(scene, meta)
 
     this.sketches[sketchId] = module
-
     scene.add(module.root)
   }
 
