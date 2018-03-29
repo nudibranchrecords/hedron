@@ -8,8 +8,9 @@ export const handleAddSketch = (action) => {
   engine.addSketchToScene(sceneId, sketchId, moduleId)
 }
 
-export const handleRemoveSketch = (action) => {
-  engine.removeSketch(action.payload.id)
+export const handleDeleteSketch = (action) => {
+  const { sceneId, sketchId } = action.payload
+  engine.removeSketchFromScene(sceneId, sketchId)
 }
 
 export const handleInitiateScenes = (action, store) => {
@@ -30,11 +31,11 @@ export const handleShotFired = (action) => {
 
 export default (action, store) => {
   switch (action.type) {
-    case 'ENGINE_SCENE_ADD_SKETCH':
+    case 'ENGINE_SCENE_SKETCH_ADD':
       handleAddSketch(action, store)
       break
-    case 'SKETCH_DELETE':
-      handleRemoveSketch(action, store)
+    case 'ENGINE_SCENE_SKETCH_DELETE':
+      handleDeleteSketch(action, store)
       break
     case 'PROJECT_LOAD_SUCCESS':
       handleInitiateScenes(action, store)
