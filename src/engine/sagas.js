@@ -1,6 +1,6 @@
 import { apply, select, takeEvery, put } from 'redux-saga/effects'
 import engine from './'
-import { getAllSketches } from './selectors'
+import getScenes from '../selectors/getScenes'
 import getSketchesPath from '../selectors/getSketchesPath'
 import { projectError } from '../store/project/actions'
 
