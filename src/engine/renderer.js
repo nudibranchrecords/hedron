@@ -52,12 +52,8 @@ class World {
 
     const perc = 100 / ratio
     const height = width / ratio
-    const scene = this.scenes[0]
 
     this.renderer.setSize(width, height)
-
-    scene.camera.aspect = ratio
-    scene.camera.updateProjectionMatrix()
 
     // CSS trick to resize canvas
     this.viewerEl.style.paddingBottom = perc + '%'
@@ -106,6 +102,7 @@ class World {
   }
 
   render (scene) {
+    // console.log(scene, this.renderer)
     this.renderer.render(scene.scene, scene.camera)
 
     if (this.isSendingOutput) {
