@@ -38,6 +38,7 @@ class Engine {
 
   addScene (sceneId) {
     this.scenes[sceneId] = new Scene()
+    renderer.setSize()
   }
 
   removeScene (sceneId) {
