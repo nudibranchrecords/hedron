@@ -1,4 +1,5 @@
 import * as THREE from 'three'
+import { getEngineScenes } from './scenes'
 import uiEventEmitter from '../utils/uiEventEmitter'
 
 class Renderer {
@@ -54,6 +55,11 @@ class Renderer {
     const height = width / ratio
 
     this.renderer.setSize(width, height)
+    const engineScenes = getEngineScenes()
+
+    for (const key in engineScenes) {
+      engineScenes[key].setRatio(ratio)
+    }
 
     // CSS trick to resize canvas
     this.viewerEl.style.paddingBottom = perc + '%'
