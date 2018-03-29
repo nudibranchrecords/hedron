@@ -1,9 +1,12 @@
-import { getSketches } from '../externals/sketches'
+import { loadSketches } from '../externals/sketches'
+import getSketch from '../selectors/getSketch'
+import getScenes from '../selectors/getScenes'
 import getSketchParams from '../selectors/getSketchParams'
+import getCurrentSceneId from '../selectors/getCurrentSceneId'
 import { availableModulesReplaceAll } from '../store/availableModules/actions'
 import { projectError } from '../store/project/actions'
 import now from 'performance-now'
-import world from './world'
+import renderer from './renderer'
 import Scene from './Scene'
 
 class Engine {
@@ -11,15 +14,14 @@ class Engine {
     this.allModules = {}
     this.modules = {}
     this.sketches = []
+    this.scenes = {}
     this.isRunning = false
-
-    this.scenes = [new Scene()]
   }
 
   loadSketchModules (url) {
     try {
       this.sketchesFolder = url
-      this.allModules = getSketches(url)
+      this.allModules = loadSketches(url)
 
       Object.keys(this.allModules).forEach((key) => {
         const config = this.allModules[key].config
@@ -34,29 +36,32 @@ class Engine {
     }
   }
 
-  addSketch (id, moduleId) {
+  addSketchToScene (sceneId, sketchId, moduleId) {
     const meta = {
       sketchesFolder: `file://${this.sketchesFolder}`
     }
 
-    const module = new this.allModules[moduleId].Module(world, meta)
+    const scene = this.scenes[sceneId].scene
+
+    const module = new this.allModules[moduleId].Module(scene, meta)
 
     this.sketches.push({
-      id,
+      sceneId,
+      sketchId,
       module
     })
 
-    this.scenes[0].scene.add(module.root)
+    scene.add(module.root)
   }
 
-  removeSketch (id) {
-    this.sketches.forEach((sketch, index) => {
-      if (sketch.id === id) {
-        this.sketches.splice(index, 1)
-        world.scene.remove(sketch.module.root)
-      }
-    })
-  }
+  // removeSketch (id) {
+  //   this.sketches.forEach((sketch, index) => {
+  //     if (sketch.id === id) {
+  //       this.sketches.splice(index, 1)
+  //       world.scene.remove(sketch.module.root)
+  //     }
+  //   })
+  // }
 
   fireShot (sketchId, method) {
     const state = this.store.getState()
@@ -68,18 +73,26 @@ class Engine {
     })
   }
 
-  initiateSketches (sketches) {
+  initiateScenes () {
     // Remove all sketches from world
-    this.sketches.forEach((sketch, index) => {
-      world.scene.remove(sketch.module.root)
-    })
-    this.sketches = []
+    // this.sketches.forEach((sketch, index) => {
+    //   world.scene.remove(sketch.module.root)
+    // })
+    const state = this.store.getState()
+    const scenes = getScenes(state)
+
+    this.scenes = {}
 
     // Add new ones
-    Object.keys(sketches).forEach((sketchId) => {
-      const moduleId = sketches[sketchId].moduleId
-      this.addSketch(sketchId, moduleId)
+    scenes.forEach((scene) => {
+      this.scenes[scene.id] = new Scene()
+      scene.sketchIds.forEach(sketchId => {
+        const moduleId = getSketch(state, sketchId).moduleId
+        this.addSketchToScene(scene.id, sketchId, moduleId)
+      })
     })
+
+    renderer.setSize()
   }
 
   run (injectedStore, stats) {
@@ -90,7 +103,7 @@ class Engine {
     let newTime
     this.store = injectedStore
     this.isRunning = true
-    world.initiate(injectedStore, this.scenes)
+    renderer.initiate(injectedStore, this.scenes)
     // Give store module params
     this.store.dispatch(availableModulesReplaceAll(this.modules))
 
@@ -111,10 +124,14 @@ class Engine {
       if (delta > spf || state.settings.throttledFPS >= 60) {
         stats.begin()
         this.sketches.forEach(sketch => {
-          const params = getSketchParams(state, sketch.id)
+          const params = getSketchParams(state, sketch.sketchId)
           sketch.module.update(params, tick, elapsedFrames, allParams)
         })
-        world.render(this.scenes[0])
+        const scene = this.scenes[getCurrentSceneId(state)]
+        if (scene) {
+          renderer.render(scene)
+        }
+
         stats.end()
       }
     }

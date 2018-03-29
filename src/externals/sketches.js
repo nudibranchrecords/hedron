@@ -2,7 +2,7 @@ require('babel-register')
 const glob = require('glob')
 const path = require('path')
 
-const getSketches = globUrl => {
+const loadSketches = globUrl => {
   const all = {}
   try {
     glob.sync(globUrl + '/*').forEach(function (file) {
@@ -37,5 +37,5 @@ const getSketches = globUrl => {
 }
 
 module.exports = {
-  getSketches
+  loadSketches
 }
