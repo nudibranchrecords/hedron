@@ -1,6 +1,7 @@
 import { sketchCreate, sketchDelete, sketchUpdate } from './actions'
 import { rSceneSketchAdd, rSceneSketchRemove, sceneSketchSelect } from '../scenes/actions'
 import { uNodeCreate, uNodeDelete, nodeUpdate } from '../nodes/actions'
+import { engineSceneAddSketch } from '../../engine/actions'
 import getScene from '../../selectors/getScene'
 import getSketch from '../../selectors/getSketch'
 import getNode from '../../selectors/getNode'
@@ -70,6 +71,7 @@ const handleSketchCreate = (action, store) => {
   }))
 
   store.dispatch(sceneSketchSelect(sceneId, uniqueSketchId))
+  store.dispatch(engineSceneAddSketch(sceneId, uniqueSketchId, moduleId))
 
   history.push('/scenes/view/' + sceneId)
 }
