@@ -1,7 +1,7 @@
 import getSketchesPath from '../selectors/getSketchesPath'
 import { projectError } from '../store/project/actions'
 
-import engine from './'
+import * as engine from './'
 
 export const handleAddScene = (action) => {
   const { sceneId } = action.payload
