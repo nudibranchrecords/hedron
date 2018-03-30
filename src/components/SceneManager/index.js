@@ -41,13 +41,16 @@ const Thumbs = styled.div`
 const ThumbLink = styled(NavLink)` ${BaseLink} `
 const ThumbButton = styled.a` ${BaseLink} `
 
-const SceneManager = ({ items, onAddClick, currentScene, onDeleteClick, onRenameClick }) => (
+const SceneManager = (
+  { items, onAddClick, currentScene, onDeleteClick, onRenameClick, onSelectClick }
+) => (
   <Wrapper>
     <Thumbs>
       {items.map(item => (
         <ThumbLink
           key={item.id}
           to={`/scenes/view/${item.id}`}
+          onClick={() => { onSelectClick(item.id) }}
           isActive={() => currentScene && currentScene.id === item.id}
         >
           <div>{item.title}</div>
