@@ -71,22 +71,29 @@ test('(mock) Scenes - Add Scene', (t) => {
   let state
 
   state = store.getState()
-  t.deepEqual(state.scenes, { items: {} }, 'scenes start with empty items')
+  t.deepEqual(state.scenes,
+    {
+      currentSceneId: false,
+      items: {}
+    },
+  'scenes start with empty items')
 
   store.dispatch(uSceneCreate())
   state = store.getState()
-  t.deepEqual(state.scenes,
+  t.deepEqual(state.scenes.items,
     {
-      items: {
-        id_1: {
-          id: 'id_1',
-          title: 'New Scene',
-          selectedSketchId: false,
-          sketchIds: []
-        }
+      id_1: {
+        id: 'id_1',
+        title: 'New Scene',
+        selectedSketchId: false,
+        sketchIds: []
       }
     },
   'scene is added to items list when sceneCreate is dispatched')
+
+  t.equal(state.scenes.currentSceneId, 'id_1',
+    'scene just created is made current'
+  )
 
   t.deepEqual(state.ui.isEditing,
     {
@@ -97,24 +104,25 @@ test('(mock) Scenes - Add Scene', (t) => {
 
   store.dispatch(uSceneCreate())
   state = store.getState()
-  t.deepEqual(state.scenes,
+  t.deepEqual(state.scenes.items,
     {
-      items: {
-        id_1: {
-          id: 'id_1',
-          title: 'New Scene',
-          selectedSketchId: false,
-          sketchIds: []
-        },
-        id_2: {
-          id: 'id_2',
-          title: 'New Scene',
-          selectedSketchId: false,
-          sketchIds: []
-        }
+      id_1: {
+        id: 'id_1',
+        title: 'New Scene',
+        selectedSketchId: false,
+        sketchIds: []
+      },
+      id_2: {
+        id: 'id_2',
+        title: 'New Scene',
+        selectedSketchId: false,
+        sketchIds: []
       }
     },
   'scene is added to items list when sceneCreate is dispatched')
+  t.equal(state.scenes.currentSceneId, 'id_2',
+    'scene just created is made current'
+  )
 
   t.deepEqual(state.ui.isEditing,
     {
@@ -150,6 +158,7 @@ test('(mock) Scenes - Delete Scene', (t) => {
       }
     },
     scenes: {
+      currentSceneId: 'id_1',
       items: {
         id_1: {
           id: 'id_1',
@@ -168,16 +177,18 @@ test('(mock) Scenes - Delete Scene', (t) => {
 
   store.dispatch(uSceneDelete('id_1'))
   state = store.getState()
-  t.deepEqual(state.scenes,
+  t.deepEqual(state.scenes.items,
     {
-      items: {
-        id_2: {
-          id: 'id_2',
-          sketchIds: ['sketch_01', 'sketch_02']
-        }
+      id_2: {
+        id: 'id_2',
+        sketchIds: ['sketch_01', 'sketch_02']
       }
     },
   'Scene deleted with no sketches just removes that scene')
+  t.equal(state.scenes.currentSceneId, 'id_2',
+    'currentSceneId is changed to last item in list'
+  )
+
   t.equal(Object.keys(state.nodes).length, 3, 'Nodes kept the same')
   t.equal(Object.keys(state.sketches).length, 2, 'Sketches kept the same')
 
@@ -188,7 +199,8 @@ test('(mock) Scenes - Delete Scene', (t) => {
       nodes: {},
       sketches: {},
       scenes: {
-        items: {}
+        items: {},
+        currentSceneId: false
       }
     },
   'Scene with sketches, when deleted, removes all sketches and related nodes')

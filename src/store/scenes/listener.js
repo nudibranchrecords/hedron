@@ -39,7 +39,7 @@ const handleSceneDelete = (action, store) => {
   const lastScene = scenes[scenes.length - 1]
   let url = lastScene ? `/scenes/view` : '/'
 
-  store.dispatch(rSceneSelectCurrent(lastScene && lastScene.id))
+  store.dispatch(rSceneSelectCurrent(lastScene ? lastScene.id : false))
   history.push(url)
 }
 
