@@ -69,13 +69,10 @@ class Engine {
   }
 
   initiateScenes () {
-    // Remove all sketches from world
-    // this.sketches.forEach((sketch, index) => {
-    //   world.scene.remove(sketch.module.root)
-    // })
     const state = this.store.getState()
     const scenes = getScenes(state)
 
+    // Clear scenes and sketches
     this.scenes = {}
     this.sketches = {}
 
