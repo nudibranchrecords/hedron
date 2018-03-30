@@ -5,6 +5,13 @@ export function rSceneSelectCurrent (id) {
   }
 }
 
+export function rSceneSelectChannel (id, channel) {
+  return {
+    type: 'R_SCENE_SELECT_CHANNEL',
+    payload: { id, channel }
+  }
+}
+
 export function uSceneCreate () {
   return {
     type: 'U_SCENE_CREATE'

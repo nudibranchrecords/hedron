@@ -2,13 +2,26 @@ import _ from 'lodash'
 
 const defaultState = {
   items: {},
-  currentSceneId: false
+  currentSceneId: false,
+  channels: {
+    A: false,
+    B: false
+  }
 }
 
 const scenesReducer = (state = defaultState, action) => {
   const p = action.payload
 
   switch (action.type) {
+    case 'R_SCENE_SELECT_CHANNEL': {
+      return {
+        ...state,
+        channels: {
+          ...state.channels,
+          [p.channel]: p.id
+        }
+      }
+    }
     case 'R_SCENE_SELECT_CURRENT': {
       return {
         ...state,
