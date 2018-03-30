@@ -17,6 +17,7 @@ import App from '../containers/App'
 import * as engine from '../engine'
 import { initiateScreens } from '../windows'
 import { initiateMenuHandler } from './menuHandler'
+import setCoreState from '../store/setCoreState'
 import Stats from 'stats.js'
 import createDebounce from 'redux-debounced'
 import tryRequire from 'try-require'
@@ -70,6 +71,8 @@ const store = createStore(rootReducer, composeEnhancers(
 ))
 
 sagaMiddleware.run(rootSaga, store.dispatch)
+
+setCoreState(store)
 
 const renderApp = (Component) => {
   render(
