@@ -4,6 +4,7 @@ import Viewer from '../../containers/Viewer'
 import ProjectDetails from '../../containers/ProjectDetails'
 import styled from 'styled-components'
 import AudioAnalyzer from '../../components/AudioAnalyzer'
+import Crossfader from '../Crossfader'
 import Clock from '../../containers/Clock'
 import SceneManager from '../../containers/SceneManager'
 import Devices from '../../containers/Devices'
@@ -52,6 +53,8 @@ class Overview extends React.Component {
           <div><AudioAnalyzer /></div>
           <div><Clock /></div>
         </Tools>
+
+        <Crossfader />
 
         <Scroller>
           <Top>
