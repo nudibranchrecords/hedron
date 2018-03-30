@@ -4,6 +4,7 @@ import getScenes from '../selectors/getScenes'
 import getScene from '../selectors/getScene'
 import getSketchParams from '../selectors/getSketchParams'
 import getChannelSceneId from '../selectors/getChannelSceneId'
+import getSceneCrossfaderValue from '../selectors/getSceneCrossfaderValue'
 import { availableModulesReplaceAll } from '../store/availableModules/actions'
 import { projectError } from '../store/project/actions'
 import now from 'performance-now'
@@ -128,11 +129,12 @@ export const run = (injectedStore, stats) => {
 
       const channelA = getChannelSceneId(state, 'A')
       const channelB = getChannelSceneId(state, 'B')
+      const mixRatio = getSceneCrossfaderValue(state)
       updateSceneSketches(channelA)
       updateSceneSketches(channelB)
 
       if (channelA || channelB) {
-        renderer.render(scenes[channelA], scenes[channelB])
+        renderer.render(scenes[channelA], scenes[channelB], mixRatio)
       }
 
       stats.end()
