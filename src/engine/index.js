@@ -1,8 +1,9 @@
 import { loadSketches } from '../externals/sketches'
 import getSketch from '../selectors/getSketch'
 import getScenes from '../selectors/getScenes'
+import getScene from '../selectors/getScene'
 import getSketchParams from '../selectors/getSketchParams'
-import getCurrentScene from '../selectors/getCurrentScene'
+import getChannelSceneId from '../selectors/getChannelSceneId'
 import { availableModulesReplaceAll } from '../store/availableModules/actions'
 import { projectError } from '../store/project/actions'
 import now from 'performance-now'
@@ -90,23 +91,31 @@ export const run = (injectedStore, stats) => {
   let tick = 0
   let oldTime = now()
   let elapsedFrames = 1
-  let delta
-  let newTime
-  let stateScene
-  let sketch
+  let delta, newTime, stateScene, sketch, state, spf, allParams
   store = injectedStore
   isRunning = true
   renderer.initiate(injectedStore, scenes)
   // Give store module params
   store.dispatch(availableModulesReplaceAll(modules))
 
+  const updateSceneSketches = (sceneId) => {
+    stateScene = getScene(state, sceneId)
+    if (stateScene) {
+      stateScene.sketchIds.forEach(sketchId => {
+        sketch = sketches[sketchId]
+        const params = getSketchParams(state, sketchId)
+        sketch.update(params, tick, elapsedFrames, allParams)
+      })
+    }
+  }
+
   const loop = () => {
     if (isRunning) {
       requestAnimationFrame(loop)
     }
-    const state = store.getState()
-    const spf = 1000 / state.settings.throttledFPS
-    const allParams = getSketchParams(state)
+    state = store.getState()
+    spf = 1000 / state.settings.throttledFPS
+    allParams = getSketchParams(state)
 
     newTime = now()
     delta = newTime - oldTime
@@ -116,14 +125,14 @@ export const run = (injectedStore, stats) => {
 
     if (delta > spf || state.settings.throttledFPS >= 60) {
       stats.begin()
-      stateScene = getCurrentScene(state)
-      if (stateScene) {
-        stateScene.sketchIds.forEach(sketchId => {
-          sketch = sketches[sketchId]
-          const params = getSketchParams(state, sketchId)
-          sketch.update(params, tick, elapsedFrames, allParams)
-        })
-        renderer.render(scenes[stateScene.id])
+
+      const channelA = getChannelSceneId(state, 'A')
+      const channelB = getChannelSceneId(state, 'B')
+      updateSceneSketches(channelA)
+      updateSceneSketches(channelB)
+
+      if (channelA || channelB) {
+        renderer.render(scenes[channelA], scenes[channelB])
       }
 
       stats.end()
