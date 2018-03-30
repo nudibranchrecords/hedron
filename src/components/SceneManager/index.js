@@ -80,6 +80,7 @@ SceneManager.propTypes = {
   onAddClick: PropTypes.func.isRequired,
   onRenameClick: PropTypes.func.isRequired,
   onDeleteClick: PropTypes.func.isRequired,
+  onSelectClick: PropTypes.func.isRequired,
   items: PropTypes.arrayOf(
     PropTypes.shape({
       id: PropTypes.string,
