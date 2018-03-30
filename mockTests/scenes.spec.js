@@ -71,11 +71,7 @@ test('(mock) Scenes - Add Scene', (t) => {
   let state
 
   state = store.getState()
-  t.deepEqual(state.scenes,
-    {
-      currentSceneId: false,
-      items: {}
-    },
+  t.deepEqual(state.scenes.items, {},
   'scenes start with empty items')
 
   store.dispatch(uSceneCreate())
