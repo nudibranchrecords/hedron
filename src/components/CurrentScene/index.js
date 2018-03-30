@@ -6,8 +6,8 @@ import { Route } from 'react-router'
 
 const CurrentScene = ({ match }) => (
   <div>
-    <Route path={`${match.url}/view/:sceneId`} component={CurrentSketch} />
-    <Route path={`${match.url}/addSketch/:sceneId`} component={AddSketch} />
+    <Route path={`${match.url}/view`} component={CurrentSketch} />
+    <Route path={`${match.url}/addSketch`} component={AddSketch} />
   </div>
 )
 

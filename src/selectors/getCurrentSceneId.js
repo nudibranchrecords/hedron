@@ -1,4 +1,1 @@
-export default state => {
-  const arr = state.router.location.pathname.split('/')
-  return arr[arr.length - 1]
-}
+export default state => state.scenes.currentSceneId

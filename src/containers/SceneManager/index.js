@@ -2,7 +2,7 @@ import { connect } from 'react-redux'
 import SceneManager from '../../components/SceneManager'
 import getScenes from '../../selectors/getScenes'
 import getCurrentScene from '../../selectors/getCurrentScene'
-import { uSceneCreate, uSceneDelete } from '../../store/scenes/actions'
+import { uSceneCreate, uSceneDelete, rSceneSelectCurrent } from '../../store/scenes/actions'
 import { uiEditingOpen } from '../../store/ui/actions'
 
 const mapStateToProps = (state, ownProps) => (
@@ -14,6 +14,9 @@ const mapStateToProps = (state, ownProps) => (
 
 const mapDispatchToProps = (dispatch, ownProps) => (
   {
+    onSelectClick: id => {
+      dispatch(rSceneSelectCurrent(id))
+    },
     onAddClick: () => {
       dispatch(uSceneCreate())
     },
