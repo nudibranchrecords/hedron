@@ -1,10 +1,10 @@
 import { connect } from 'react-redux'
 import Viewer from '../../components/Viewer'
-import renderer from '../../engine/renderer'
+import { setViewerEl } from '../../engine/renderer'
 
 const mapStateToProps = (state, ownProps) => (
   {
-    containerElRef: (el) => renderer.setViewerEl(el)
+    containerElRef: (el) => setViewerEl(el)
   }
 )
 
