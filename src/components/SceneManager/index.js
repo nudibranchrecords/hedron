@@ -17,7 +17,7 @@ const Thumbs = styled.div`
 `
 
 const SceneManager = (
-  { items, onAddClick, currentScene, onDeleteClick, onRenameClick }
+  { items, onAddClick, currentScene, onDeleteClick, onRenameClick, onChannelClick }
 ) => (
   <Wrapper>
     <Thumbs>
@@ -39,6 +39,12 @@ const SceneManager = (
           <Col width='0'>
             <Button onClick={() => { onDeleteClick(currentScene.id) }}>Delete</Button>
           </Col>
+          <Col width='0'>
+            <Button onClick={() => { onChannelClick(currentScene.id, 'A') }}>Add to A</Button>
+          </Col>
+          <Col width='0'>
+            <Button onClick={() => { onChannelClick(currentScene.id, 'B') }}>Add to B</Button>
+          </Col>
         </Row>
       </div>
     }
@@ -51,6 +57,7 @@ SceneManager.propTypes = {
   onAddClick: PropTypes.func.isRequired,
   onRenameClick: PropTypes.func.isRequired,
   onDeleteClick: PropTypes.func.isRequired,
+  onChannelClick: PropTypes.func.isRequired,
   items: PropTypes.arrayOf(
     PropTypes.shape({
       id: PropTypes.string,
