@@ -6,7 +6,7 @@ import getCurrentScene from '../selectors/getCurrentScene'
 import { availableModulesReplaceAll } from '../store/availableModules/actions'
 import { projectError } from '../store/project/actions'
 import now from 'performance-now'
-import renderer from './renderer'
+import * as renderer from './renderer'
 import Scene from './Scene'
 
 export let scenes = {}
