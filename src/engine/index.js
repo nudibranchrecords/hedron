@@ -50,11 +50,11 @@ class Engine {
       sketchesFolder: `file://${this.sketchesFolder}`
     }
 
-    const scene = this.scenes[sceneId].scene
+    const scene = this.scenes[sceneId]
     const module = new this.allModules[moduleId].Module(scene, meta)
 
     this.sketches[sketchId] = module
-    scene.add(module.root)
+    scene.scene.add(module.root)
   }
 
   removeSketchFromScene (sceneId, sketchId) {
