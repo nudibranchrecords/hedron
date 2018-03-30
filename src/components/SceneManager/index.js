@@ -3,32 +3,9 @@ import PropTypes from 'prop-types'
 import Button from '../Button'
 import Row from '../Row'
 import Col from '../Col'
-import styled, { css } from 'styled-components'
-import { NavLink } from 'react-router-dom'
-
-const BaseLink = css`
-flex: 0 0 20%;
-color: white;
-padding: 0 0.5rem 0.5rem 0;
-text-decoration: none;
-text-transform: uppercase;
-cursor: pointer;
-
-
- > div {
-   display: flex;
-   align-items: center;
-   justify-content: center;
-   text-align: center;
-   height: 4rem;
-   background: black;
-   border: 1px solid black;
- }
-
- &.active > div {
-   border-color: white;
- }
-`
+import styled from 'styled-components'
+import SceneThumb from '../SceneThumb'
+import SceneThumbContainer from '../../containers/SceneThumb'
 
 const Wrapper = styled.nav`
   margin-bottom: 2rem;
@@ -38,25 +15,19 @@ const Thumbs = styled.div`
   display: flex;
   margin-bottom: 0.5rem;
 `
-const ThumbLink = styled(NavLink)` ${BaseLink} `
-const ThumbButton = styled.a` ${BaseLink} `
 
 const SceneManager = (
-  { items, onAddClick, currentScene, onDeleteClick, onRenameClick, onSelectClick }
+  { items, onAddClick, currentScene, onDeleteClick, onRenameClick }
 ) => (
   <Wrapper>
     <Thumbs>
       {items.map(item => (
-        <ThumbLink
+        <SceneThumbContainer
           key={item.id}
-          to={`/scenes/view/${item.id}`}
-          onClick={() => { onSelectClick(item.id) }}
-          isActive={() => currentScene && currentScene.id === item.id}
-        >
-          <div>{item.title}</div>
-        </ThumbLink>
+          id={item.id}
+        />
       ))}
-      <ThumbButton onClick={onAddClick}><div>+</div></ThumbButton>
+      <SceneThumb onClick={onAddClick}>+</SceneThumb>
     </Thumbs>
     {currentScene &&
       <div>
@@ -80,7 +51,6 @@ SceneManager.propTypes = {
   onAddClick: PropTypes.func.isRequired,
   onRenameClick: PropTypes.func.isRequired,
   onDeleteClick: PropTypes.func.isRequired,
-  onSelectClick: PropTypes.func.isRequired,
   items: PropTypes.arrayOf(
     PropTypes.shape({
       id: PropTypes.string,
