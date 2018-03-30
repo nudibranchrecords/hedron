@@ -1,6 +1,6 @@
 import * as THREE from 'three'
 import uiEventEmitter from '../utils/uiEventEmitter'
-import engine from './'
+import * as engine from './'
 
 class Renderer {
   initiate (injectedStore, scenes) {
