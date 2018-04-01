@@ -2,7 +2,8 @@ import { connect } from 'react-redux'
 import SceneManager from '../../components/SceneManager'
 import getScenes from '../../selectors/getScenes'
 import getCurrentScene from '../../selectors/getCurrentScene'
-import { uSceneCreate, uSceneDelete, rSceneSelectChannel } from '../../store/scenes/actions'
+import { uSceneCreate, uSceneDelete, rSceneSelectChannel, uSceneSelectChannel }
+  from '../../store/scenes/actions'
 import { uiEditingOpen } from '../../store/ui/actions'
 
 const mapStateToProps = (state, ownProps) => (
@@ -19,6 +20,15 @@ const mapDispatchToProps = (dispatch, ownProps) => (
     },
     onDeleteClick: sceneId => {
       dispatch(uSceneDelete(sceneId))
+    },
+    onClearClick: sceneId => {
+      dispatch(rSceneSelectChannel(sceneId, false))
+    },
+    onActiveClick: sceneId => {
+      dispatch(uSceneSelectChannel(sceneId, 'active'))
+    },
+    onOppositeClick: sceneId => {
+      dispatch(uSceneSelectChannel(sceneId, 'opposite'))
     },
     onRenameClick: sceneId => {
       dispatch(uiEditingOpen('sceneTitle', sceneId))

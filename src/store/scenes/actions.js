@@ -18,6 +18,13 @@ export function uSceneCreate () {
   }
 }
 
+export function uSceneSelectChannel (id, type) {
+  return {
+    type: 'U_SCENE_SELECT_CHANNEL',
+    payload: { id, type }
+  }
+}
+
 export function rSceneCreate (id, scene) {
   return {
     type: 'R_SCENE_CREATE',

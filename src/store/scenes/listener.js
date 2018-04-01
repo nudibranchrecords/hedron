@@ -1,10 +1,11 @@
 import uid from 'uid'
-import { rSceneCreate, rSceneDelete, rSceneSelectCurrent } from './actions'
+import { rSceneCreate, rSceneDelete, rSceneSelectCurrent, rSceneSelectChannel } from './actions'
 import { engineSceneAdd, engineSceneRemove } from '../../engine/actions'
 import { uSketchDelete } from '../sketches/actions'
 import { uiEditingOpen } from '../ui/actions'
 import getScene from '../../selectors/getScene'
 import getScenes from '../../selectors/getScenes'
+import getSceneCrossfaderValue from '../../selectors/getSceneCrossfaderValue'
 import history from '../../history'
 
 const handleSceneCreate = (action, store) => {
@@ -47,6 +48,23 @@ const handleSceneSketchSelect = (action, store) => {
   history.push(`/scenes/view`)
 }
 
+const handleSceneSelectChannel = (action, store) => {
+  const state = store.getState()
+  const p = action.payload
+  const crossfaderValue = getSceneCrossfaderValue(state)
+
+  let channel
+  if (p.type === 'active') {
+    channel = crossfaderValue < 0.5 ? 'A' : 'B'
+  } else if (p.type === 'opposite') {
+    channel = crossfaderValue < 0.5 ? 'B' : 'A'
+  }
+
+  store.dispatch(
+    rSceneSelectChannel(p.id, channel)
+  )
+}
+
 export default (action, store) => {
   switch (action.type) {
     case 'U_SCENE_CREATE':
@@ -54,6 +72,9 @@ export default (action, store) => {
       break
     case 'U_SCENE_DELETE':
       handleSceneDelete(action, store)
+      break
+    case 'U_SCENE_SELECT_CHANNEL':
+      handleSceneSelectChannel(action, store)
       break
     case 'SCENE_SKETCH_SELECT':
       handleSceneSketchSelect(action, store)

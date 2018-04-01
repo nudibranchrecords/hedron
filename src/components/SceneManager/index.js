@@ -59,7 +59,10 @@ const Item = ({ title, onClick, color }) =>
   </Col>
 
 const SceneManager = (
-  { items, onAddClick, currentScene, onDeleteClick, onRenameClick, onChannelClick }
+  {
+    items, onAddClick, currentScene, onDeleteClick, onRenameClick, onChannelClick,
+    onClearClick, onActiveClick, onOppositeClick
+ }
 ) => (
   <Wrapper>
     <Thumbs>
@@ -88,15 +91,15 @@ const SceneManager = (
           />
           <Item
             title='Add to Active'
-            onClick={() => {}}
+            onClick={() => { onActiveClick(currentScene.id) }}
           />
           <Item
             title='Add to Opposite'
-            onClick={() => {}}
+            onClick={() => { onOppositeClick(currentScene.id) }}
           />
           <Item
             title='Clear'
-            onClick={() => {}}
+            onClick={() => { onClearClick(currentScene.id) }}
           />
           <Col>
             <Button onClick={() => { onRenameClick(currentScene.id) }}>Rename</Button>
@@ -116,6 +119,9 @@ SceneManager.propTypes = {
   onRenameClick: PropTypes.func.isRequired,
   onDeleteClick: PropTypes.func.isRequired,
   onChannelClick: PropTypes.func.isRequired,
+  onClearClick: PropTypes.func.isRequired,
+  onActiveClick: PropTypes.func.isRequired,
+  onOppositeClick: PropTypes.func.isRequired,
   items: PropTypes.arrayOf(
     PropTypes.shape({
       id: PropTypes.string,
