@@ -2,6 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import theme from '../../utils/theme'
+import tinyColor from 'tinycolor2'
 import { Link as RouterLink } from 'react-router-dom'
 
 const sizes = {
@@ -9,8 +10,14 @@ const sizes = {
   small: '0.7rem'
 }
 
+const colors = {
+  channelA: theme.channelAColor,
+  channelB: theme.channelBColor,
+  danger: theme.dangerColor
+}
+
 const Wrapper = styled.span`
-  background: ${theme.actionColor1};
+  background: ${props => colors[props.color] || theme.actionColor1};
   display: inline-block;
   padding: 0.2rem 0.35rem;
   text-decoration: none;
@@ -23,7 +30,12 @@ const Wrapper = styled.span`
   transition: 0.2s;
 
   &:hover {
-    background: #ef6091;
+    background: ${
+      props => {
+        const col = colors[props.color] || theme.actionColor1
+        return tinyColor(col).lighten(5).toString()
+      }
+    };
   }
 
   &:active {

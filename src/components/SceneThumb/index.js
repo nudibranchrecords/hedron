@@ -5,7 +5,7 @@ import theme from '../../utils/theme'
 import { Link as LinkComponent } from 'react-router-dom'
 
 const BaseLink = css`
-flex: 0 0 20%;
+flex: 0 0 12.5%;
 color: white;
 padding: 0 0.5rem 0.5rem 0;
 text-decoration: none;
@@ -18,9 +18,10 @@ position: relative;
    align-items: center;
    justify-content: center;
    text-align: center;
-   height: 4rem;
+   height: 3rem;
    background: black;
    border: 1px solid black;
+   font-size: 0.6rem;
 
    ${props => props.isActive && `
      border-color: white;
@@ -32,6 +33,7 @@ const Label = styled.span`
   display: block;
   position: absolute;
   font-weight: bold;
+  font-size: 0.6rem;
   bottom: calc(0.5rem + 1px);
   right: calc(0.5rem + 1px);
   padding: 0.25rem;

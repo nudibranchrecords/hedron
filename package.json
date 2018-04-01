@@ -73,6 +73,7 @@
     "tap-tempo": "^0.1.1",
     "three": "^0.89.0",
     "three-addons": "^1.1.0",
+    "tinycolor2": "^1.4.1",
     "try-require": "^1.2.1",
     "uid": "^0.0.2"
   },
