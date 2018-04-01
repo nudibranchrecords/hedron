@@ -31,6 +31,7 @@ position: relative;
 const Label = styled.span`
   display: block;
   position: absolute;
+  font-weight: bold;
   bottom: calc(0.5rem + 1px);
   right: calc(0.5rem + 1px);
   padding: 0.25rem;
