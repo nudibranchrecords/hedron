@@ -55,7 +55,9 @@ class PanelDragger extends React.Component {
     const diff = (e.screenX - this.pos) / window.innerWidth * 100
     const newVal = Math.max(0, Math.min(100, this.currentPos + diff))
     this.props.onHandleDrag(newVal)
-    uiEventEmitter.emit('repaint')
+    setTimeout(() => {
+      uiEventEmitter.emit('repaint')
+    })
   }
 
   render () {

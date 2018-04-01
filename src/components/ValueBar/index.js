@@ -5,6 +5,8 @@ import uiEventEmitter from '../../utils/uiEventEmitter'
 import theme from '../../utils/theme'
 import now from 'performance-now'
 
+const pixelDensity = 2
+
 const Bar = styled.canvas`
   background: ${theme.bgColorDark2};
   cursor: pointer;
@@ -83,13 +85,13 @@ class ValueBar extends React.Component {
     this.containerEl.style.display = 'block'
 
     this.sizer = setTimeout(() => {
+      this.width = this.containerEl.offsetWidth * pixelDensity
       this.canvas.style.display = 'block'
-      this.width = this.containerEl.offsetWidth * 2
       this.canvas.width = this.width
-      this.canvas.style.width = this.width / 2 + 'px'
-      this.canvas.style.height = this.height / 2 + 'px'
+      this.canvas.style.width = this.width / pixelDensity + 'px'
+      this.canvas.style.height = this.height / pixelDensity + 'px'
       this.draw(true)
-    }, 1)
+    })
   }
 
   handleMouseDown (e) {
