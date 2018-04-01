@@ -1,20 +1,62 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import Button from '../Button'
-import Row from '../Row'
-import Col from '../Col'
+import ButtonComponent from '../Button'
+import RowComponent from '../Row'
 import styled from 'styled-components'
 import SceneThumb from '../SceneThumb'
 import SceneThumbContainer from '../../containers/SceneThumb'
+import InputLinkMidiControl from '../InputLinkMidiControl'
+import theme from '../../utils/theme'
 
 const Wrapper = styled.nav`
   margin-bottom: 2rem;
+`
+
+const Row = styled(RowComponent)`
+  flex-wrap: wrap;
+`
+
+const Button = styled(ButtonComponent)`
 `
 
 const Thumbs = styled.div`
   display: flex;
   margin-bottom: 0.5rem;
 `
+
+const Panel = styled.div`
+  padding: 0.5rem;
+  padding-bottom: 0;
+  background: ${theme.bgColorDark2};
+
+  h4 {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+  }
+
+  svg {
+    fill: #fff;
+    opacity: 0.8;
+    margin-left: 0.2rem;
+
+    &:hover {
+      opacity: 1;
+    }
+  }
+`
+
+const Col = styled.div`
+  margin-right: 1rem;
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.5rem;
+`
+
+const Item = ({ title, onClick, color }) =>
+  <Col>
+    <Button onClick={onClick} color={color}>{title}</Button>
+    <InputLinkMidiControl />
+  </Col>
 
 const SceneManager = (
   { items, onAddClick, currentScene, onDeleteClick, onRenameClick, onChannelClick }
@@ -30,25 +72,41 @@ const SceneManager = (
       <SceneThumb onClick={onAddClick}>+</SceneThumb>
     </Thumbs>
     {currentScene &&
-      <div>
-        <h3>{currentScene.title}</h3>
+      <Panel>
+        <h4>Current scene: {currentScene.title}</h4>
+
         <Row>
-          <Col width='0'>
+          <Item
+            title='Add to A'
+            onClick={() => { onChannelClick(currentScene.id, 'A') }}
+            color='channelA'
+          />
+          <Item
+            title='Add to B'
+            onClick={() => { onChannelClick(currentScene.id, 'B') }}
+            color='channelB'
+          />
+          <Item
+            title='Add to Active'
+            onClick={() => {}}
+          />
+          <Item
+            title='Add to Opposite'
+            onClick={() => {}}
+          />
+          <Item
+            title='Clear'
+            onClick={() => {}}
+          />
+          <Col>
             <Button onClick={() => { onRenameClick(currentScene.id) }}>Rename</Button>
           </Col>
-          <Col width='0'>
-            <Button onClick={() => { onDeleteClick(currentScene.id) }}>Delete</Button>
-          </Col>
-          <Col width='0'>
-            <Button onClick={() => { onChannelClick(currentScene.id, 'A') }}>Add to A</Button>
-          </Col>
-          <Col width='0'>
-            <Button onClick={() => { onChannelClick(currentScene.id, 'B') }}>Add to B</Button>
+          <Col>
+            <Button color='danger' onClick={() => { onDeleteClick(currentScene.id) }}>Delete</Button>
           </Col>
         </Row>
-      </div>
+      </Panel>
     }
-
   </Wrapper>
 )
 
@@ -64,6 +122,12 @@ SceneManager.propTypes = {
       title: PropTypes.string
     })
   )
+}
+
+Item.propTypes = {
+  title: PropTypes.string.isRequired,
+  onClick: PropTypes.func.isRequired,
+  color: PropTypes.string
 }
 
 export default SceneManager

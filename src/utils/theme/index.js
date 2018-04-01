@@ -8,5 +8,6 @@ export default {
   bgColorLight1: '#434343',
   actionColor1: '#DA5782',
   channelAColor: '#E35A59',
-  channelBColor: '#24965C'
+  channelBColor: '#24965C',
+  dangerColor: 'red'
 }
