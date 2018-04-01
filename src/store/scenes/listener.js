@@ -1,6 +1,8 @@
 import uid from 'uid'
-import { rSceneCreate, rSceneDelete, rSceneSelectCurrent, rSceneSelectChannel } from './actions'
+import { rSceneCreate, rSceneDelete, rSceneSelectCurrent,
+  rSceneSelectChannel, uSceneSelectChannel } from './actions'
 import { engineSceneAdd, engineSceneRemove } from '../../engine/actions'
+import { linkableActionCreate } from '../linkableActions/actions'
 import { uSketchDelete } from '../sketches/actions'
 import { uiEditingOpen } from '../ui/actions'
 import getScene from '../../selectors/getScene'
@@ -10,11 +12,46 @@ import history from '../../history'
 
 const handleSceneCreate = (action, store) => {
   const id = uid()
+
+  const la = {
+    addToA: {
+      action: rSceneSelectChannel(id, 'A'),
+      id: uid()
+    },
+    addToB: {
+      action: rSceneSelectChannel(id, 'B'),
+      id: uid()
+    },
+    addToActive: {
+      action: uSceneSelectChannel(id, 'active'),
+      id: uid()
+    },
+    addToOpposite: {
+      action: uSceneSelectChannel(id, 'opposite'),
+      id: uid()
+    },
+    clear: {
+      action: rSceneSelectChannel(id, false),
+      id: uid()
+    }
+  }
+
+  for (const key in la) {
+    store.dispatch(linkableActionCreate(la[key].id, la[key].action))
+  }
+
   const scene = {
     id,
     title: 'New Scene',
     selectedSketchId: false,
-    sketchIds: []
+    sketchIds: [],
+    linkableActionIds: {
+      addToA: la.addToA.id,
+      addToB: la.addToB.id,
+      addToActive: la.addToActive.id,
+      addToOpposite: la.addToOpposite.id,
+      clear: la.clear.id
+    }
   }
   store.dispatch(rSceneCreate(id, scene))
   store.dispatch(engineSceneAdd(id))
