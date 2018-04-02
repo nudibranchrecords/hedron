@@ -56,7 +56,7 @@ export const addSketchToScene = (sceneId, sketchId, moduleId) => {
   const module = new allModules[moduleId].Module(scene, meta)
 
   sketches[sketchId] = module
-  scene.scene.add(module.root)
+  module.root && scene.scene.add(module.root)
 }
 
 export const removeSketchFromScene = (sceneId, sketchId) => {
