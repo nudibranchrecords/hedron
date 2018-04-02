@@ -155,6 +155,16 @@ const renderChannels = (renderer, sceneA, sceneB, mixState) => {
   }
 }
 
+const renderSingle = (renderer, viewerRenderer, mixState, scene, channel) => {
+  if (isSendingOutput && mixState === channel) {
+    previewCanvas.style.display = 'block'
+    previewContext.drawImage(renderer.domElement, 0, 0, rendererWidth, rendererHeight)
+  } else {
+    if (previewCanvas) previewCanvas.style.display = 'none'
+    viewerRenderer.render(scene.scene, scene.camera)
+  }
+}
+
 export const render = (sceneA, sceneB, mixRatio, viewerMode) => {
   quadSceneMain.material.uniforms.mixRatio.value = mixRatio
   let mixState
@@ -182,26 +192,12 @@ export const render = (sceneA, sceneB, mixRatio, viewerMode) => {
         if (previewCanvas) previewCanvas.style.display = 'none'
         renderChannels(viewerRenderer, sceneA, sceneB, mixState)
       }
-
       break
     case 'A':
-      if (isSendingOutput && mixState === 'A') {
-        previewCanvas.style.display = 'block'
-        previewContext.drawImage(renderer.domElement, 0, 0, rendererWidth, rendererHeight)
-      } else {
-        if (previewCanvas) previewCanvas.style.display = 'none'
-        viewerRenderer.render(sceneA.scene, sceneA.camera)
-      }
-
+      renderSingle(renderer, viewerRenderer, mixState, sceneA, 'A')
       break
     case 'B':
-      if (isSendingOutput && mixState === 'B') {
-        previewCanvas.style.display = 'block'
-        previewContext.drawImage(renderer.domElement, 0, 0, rendererWidth, rendererHeight)
-      } else {
-        if (previewCanvas) previewCanvas.style.display = 'none'
-        viewerRenderer.render(sceneB.scene, sceneB.camera)
-      }
+      renderSingle(renderer, viewerRenderer, mixState, sceneB, 'B')
       break
   }
 }
