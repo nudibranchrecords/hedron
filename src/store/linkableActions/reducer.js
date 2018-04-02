@@ -15,7 +15,7 @@ const linkableActionsReducer = (state = defaultState, action) => {
         }
       }
     }
-    case 'LINKABLE_ACTION_DELETE': {
+    case 'R_LINKABLE_ACTION_DELETE': {
       return _.omit(state, [p.id])
     }
     case 'LINKABLE_ACTION_INPUT_LINK_ADD': {

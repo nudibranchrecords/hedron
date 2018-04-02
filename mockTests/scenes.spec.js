@@ -13,15 +13,14 @@ import scenesReducer from '../src/store/scenes/reducer'
 import nodesReducer from '../src/store/nodes/reducer'
 import uiReducer from '../src/store/ui/reducer'
 import linkableActionsReducer from '../src/store/linkableActions/reducer'
-import inputLinksReducer from '../src/store/inputLinks/reducer'
+import linkableActionsListener from '../src/store/linkableActions/listener'
 
 const rootReducer = combineReducers(
   {
     nodes: nodesReducer,
     sketches: sketchesReducer,
     scenes: scenesReducer,
-    linkableActions: linkableActionsReducer,
-    inputLinks: inputLinksReducer
+    linkableActions: linkableActionsReducer
   }
 )
 
@@ -65,6 +64,7 @@ const rootListener = {
   handleAction (action, dispatched, store) {
     scenesListener(action, store)
     sketchesListener(action, store)
+    linkableActionsListener(action, store)
   }
 }
 
@@ -228,7 +228,7 @@ test('(mock) Scenes - Delete Scene', (t) => {
       },
       b01: {
         id: 'b01',
-        inputLinkIds: []
+        inputLinkIds: ['i01']
       }
     }
   }, applyMiddleware(sagaMiddleware, listen(rootListener)))
@@ -273,7 +273,6 @@ test('(mock) Scenes - Delete Scene', (t) => {
   t.equal(Object.keys(state.nodes).length, 0, 'Last scene deleted, nodes are now 0')
   t.equal(Object.keys(state.sketches).length, 0, 'Last scene deleted, sketches are now 0')
   t.equal(Object.keys(state.linkableActions).length, 0, 'Last scene deleted, linkableActions are now 0')
-
   t.deepEqual(state.scenes.channels, {
     A: false,
     B: false
