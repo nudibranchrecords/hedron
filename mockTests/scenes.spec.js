@@ -12,12 +12,16 @@ import sketchesReducer from '../src/store/sketches/reducer'
 import scenesReducer from '../src/store/scenes/reducer'
 import nodesReducer from '../src/store/nodes/reducer'
 import uiReducer from '../src/store/ui/reducer'
+import linkableActionsReducer from '../src/store/linkableActions/reducer'
+import inputLinksReducer from '../src/store/inputLinks/reducer'
 
 const rootReducer = combineReducers(
   {
     nodes: nodesReducer,
     sketches: sketchesReducer,
-    scenes: scenesReducer
+    scenes: scenesReducer,
+    linkableActions: linkableActionsReducer,
+    inputLinks: inputLinksReducer
   }
 )
 
@@ -72,7 +76,8 @@ test('(mock) Scenes - Add Scene', (t) => {
       nodes: nodesReducer,
       sketches: sketchesReducer,
       scenes: scenesReducer,
-      ui: uiReducer
+      ui: uiReducer,
+      linkableActions: linkableActionsReducer
     }
   )
 
@@ -107,6 +112,21 @@ test('(mock) Scenes - Add Scene', (t) => {
 
   t.equal(state.scenes.currentSceneId, 'id_1',
     'scene just created is made current'
+  )
+
+  t.deepEqual(state.linkableActions, {
+    f01: {
+      id: 'f01',
+      action: { type: 'FOO', payload: { 'id': 'id_1' } },
+      inputLinkIds: []
+    },
+    b01: {
+      id: 'b01',
+      action: { type: 'BAR', payload: { 'id': 'id_1' } },
+      inputLinkIds: []
+    }
+  },
+    'linkable actions created'
   )
 
   t.deepEqual(state.ui.isEditing,
@@ -184,12 +204,27 @@ test('(mock) Scenes - Delete Scene', (t) => {
       items: {
         id_1: {
           id: 'id_1',
-          sketchIds: []
+          sketchIds: [],
+          linkableActionIds: {}
         },
         id_2: {
           id: 'id_2',
-          sketchIds: ['sketch_01', 'sketch_02']
+          sketchIds: ['sketch_01', 'sketch_02'],
+          linkableActionIds: {
+            foo: 'f01',
+            bar: 'b01'
+          }
         }
+      }
+    },
+    linkableActions: {
+      f01: {
+        id: 'f01',
+        inputLinkIds: []
+      },
+      b01: {
+        id: 'b01',
+        inputLinkIds: []
       }
     }
   }, applyMiddleware(sagaMiddleware, listen(rootListener)))
@@ -203,7 +238,11 @@ test('(mock) Scenes - Delete Scene', (t) => {
     {
       id_2: {
         id: 'id_2',
-        sketchIds: ['sketch_01', 'sketch_02']
+        sketchIds: ['sketch_01', 'sketch_02'],
+        linkableActionIds: {
+          foo: 'f01',
+          bar: 'b01'
+        }
       }
     },
   'Scene deleted with no sketches just removes that scene')
@@ -213,19 +252,16 @@ test('(mock) Scenes - Delete Scene', (t) => {
 
   t.equal(Object.keys(state.nodes).length, 3, 'Nodes kept the same')
   t.equal(Object.keys(state.sketches).length, 2, 'Sketches kept the same')
+  t.equal(Object.keys(state.linkableActions).length, 2, 'linkableActions kept the same')
 
   store.dispatch(uSceneDelete('id_2'))
   state = store.getState()
-  t.deepEqual(state,
-    {
-      nodes: {},
-      sketches: {},
-      scenes: {
-        items: {},
-        currentSceneId: false
-      }
-    },
-  'Scene with sketches, when deleted, removes all sketches and related nodes')
+
+  t.equal(Object.keys(state.scenes.items).length, 0, 'Last scene deleted, scenes are now 0')
+  t.equal(state.scenes.currentSceneId, false, 'Last scene deleted, currentSceneId is now false')
+  t.equal(Object.keys(state.nodes).length, 0, 'Last scene deleted, nodes are now 0')
+  t.equal(Object.keys(state.sketches).length, 0, 'Last scene deleted, sketches are now 0')
+  t.equal(Object.keys(state.linkableActions).length, 0, 'Last scene deleted, linkableActions are now 0')
 
   t.end()
 })
