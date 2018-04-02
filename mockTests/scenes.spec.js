@@ -27,12 +27,26 @@ const uid = () => {
   return 'id_' + uniqueId
 }
 
+const sceneUtils = {
+  generateSceneLinkableActionIds: id => ({
+    foo: {
+      id: 'f01',
+      action: { type: 'FOO', payload: { id } }
+    },
+    bar: {
+      id: 'b01',
+      action: { type: 'BAR', payload: { id } }
+    }
+  })
+}
+
 const sketchesListener = proxyquire('../src/store/sketches/listener', {
   'uid': uid
 }).default
 
 const scenesListener = proxyquire('../src/store/scenes/listener', {
-  'uid': uid
+  'uid': uid,
+  './utils': sceneUtils
 }).default
 
 function* rootSaga (dispatch) {
@@ -82,7 +96,11 @@ test('(mock) Scenes - Add Scene', (t) => {
         id: 'id_1',
         title: 'New Scene',
         selectedSketchId: false,
-        sketchIds: []
+        sketchIds: [],
+        linkableActionIds: {
+          foo: 'f01',
+          bar: 'b01'
+        }
       }
     },
   'scene is added to items list when sceneCreate is dispatched')
@@ -106,13 +124,21 @@ test('(mock) Scenes - Add Scene', (t) => {
         id: 'id_1',
         title: 'New Scene',
         selectedSketchId: false,
-        sketchIds: []
+        sketchIds: [],
+        linkableActionIds: {
+          foo: 'f01',
+          bar: 'b01'
+        }
       },
       id_2: {
         id: 'id_2',
         title: 'New Scene',
         selectedSketchId: false,
-        sketchIds: []
+        sketchIds: [],
+        linkableActionIds: {
+          foo: 'f01',
+          bar: 'b01'
+        }
       }
     },
   'scene is added to items list when sceneCreate is dispatched')
