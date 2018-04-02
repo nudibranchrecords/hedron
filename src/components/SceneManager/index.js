@@ -141,7 +141,8 @@ SceneManager.propTypes = {
 Item.propTypes = {
   title: PropTypes.string.isRequired,
   onClick: PropTypes.func.isRequired,
-  color: PropTypes.string
+  color: PropTypes.string,
+  linkableActionId: PropTypes.string.isRequired
 }
 
 export default SceneManager
