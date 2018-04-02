@@ -6,7 +6,7 @@ import QuadScene from './QuadScene'
 let store, renderer, canvas, outputEl, viewerEl, isSendingOutput, previewRenderer,
   rendererWidth, rendererHeight, previewCanvas, previewContext
 
-let quadSceneMain, quadScenePreview, rttA, rttB
+let quadSceneMain, rttA, rttB
 
 export const setRenderer = () => {
   const settings = store.getState().settings
