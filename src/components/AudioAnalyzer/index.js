@@ -2,8 +2,15 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import uiEventEmitter from '../../utils/uiEventEmitter'
 import Control from '../../containers/Control'
+import styled from 'styled-components'
+import theme from '../../utils/theme'
 
 let height, val, offset, hue, i, inputs, bands
+
+const SettingsBox = styled.div`
+   background: ${theme.bgColorDark2};
+   position: absolute;
+`
 
 class AudioAnalyzer extends React.Component {
 
@@ -66,10 +73,10 @@ class AudioAnalyzer extends React.Component {
           onMouseDown={this.props.onMouseDown || this.handleMouseDown}
       />
         {this.isOpen &&
-        <div style={{ position:'fixed' }}>
+        <SettingsBox>
           <Control nodeId='audioNormalizeLevels' />
           <Control nodeId='audioLevelsFalloff' />
-        </div>
+        </SettingsBox>
       }
       </div>
     )
