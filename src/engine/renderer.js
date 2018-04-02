@@ -124,24 +124,44 @@ export const stopOutput = () => {
   setSize()
 }
 
+const renderChannels = (renderer, sceneA, sceneB, mixState) => {
+  switch (mixState) {
+    case 'A':
+      sceneA && renderer.render(sceneA.scene, sceneA.camera)
+      break
+    case 'B':
+      sceneB && renderer.render(sceneB.scene, sceneB.camera)
+      break
+    default:
+      sceneA && renderer.render(sceneA.scene, sceneA.camera, rttA, true)
+      sceneB && renderer.render(sceneB.scene, sceneB.camera, rttB, true)
+      renderer.render(quadSceneMain.scene, quadSceneMain.camera)
+      break
+
+  }
+}
+
 export const render = (sceneA, sceneB, mixRatio, viewerMode) => {
   quadSceneMain.material.uniforms.mixRatio.value = mixRatio
+  let mixState
+
+  if (mixRatio === 0) {
+    mixState = 'A'
+  } else if (mixRatio === 1) {
+    mixState = 'B'
+  }
 
   let viewerRenderer = renderer
 
   if (isSendingOutput) {
     viewerRenderer = previewRenderer
 
-    sceneA && renderer.render(sceneA.scene, sceneA.camera, rttA, true)
-    sceneB && renderer.render(sceneB.scene, sceneB.camera, rttB, true)
-    renderer.render(quadSceneMain.scene, quadSceneMain.camera)
+    renderChannels(renderer, sceneA, sceneB, mixState)
   }
 
   switch (viewerMode) {
     case 'mix':
-      sceneA && viewerRenderer.render(sceneA.scene, sceneA.camera, rttA, true)
-      sceneB && viewerRenderer.render(sceneB.scene, sceneB.camera, rttB, true)
-      viewerRenderer.render(quadSceneMain.scene, quadSceneMain.camera)
+      renderChannels(viewerRenderer, sceneA, sceneB, mixState)
       break
     case 'A':
       viewerRenderer.render(sceneA.scene, sceneA.camera)
