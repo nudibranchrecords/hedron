@@ -30,7 +30,7 @@ export const handleInitiateScenes = (action, store) => {
     engine.loadSketchModules(sketchesPath)
     engine.initiateScenes()
   } catch (error) {
-    console.log(error)
+    console.error(error)
     store.dispatch(projectError(`Failed to initiate sketches: ${error.message}`))
   }
 }
