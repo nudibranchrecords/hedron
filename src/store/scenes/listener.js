@@ -3,7 +3,7 @@ import { rSceneCreate, rSceneDelete, rSceneSelectCurrent,
   rSceneSelectChannel } from './actions'
 import { generateSceneLinkableActionIds } from './utils'
 import { engineSceneAdd, engineSceneRemove } from '../../engine/actions'
-import { linkableActionCreate } from '../linkableActions/actions'
+import { linkableActionCreate, linkableActionDelete } from '../linkableActions/actions'
 import { uSketchDelete } from '../sketches/actions'
 import { uiEditingOpen } from '../ui/actions'
 import getScene from '../../selectors/getScene'
@@ -48,6 +48,12 @@ const handleSceneDelete = (action, store) => {
   scene.sketchIds.forEach(sketchId => {
     store.dispatch(uSketchDelete(sketchId, p.id))
   })
+
+  for (const key in scene.linkableActionIds) {
+    const id = scene.linkableActionIds[key]
+    store.dispatch(linkableActionDelete(id))
+  }
+
   store.dispatch(rSceneDelete(p.id))
   store.dispatch(engineSceneRemove(p.id))
   state = store.getState()
