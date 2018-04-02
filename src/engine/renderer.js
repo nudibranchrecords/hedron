@@ -4,7 +4,7 @@ import * as engine from './'
 import QuadScene from './QuadScene'
 
 let store, renderer, canvas, outputEl, viewerEl, isSendingOutput, previewRenderer,
-  rendererWidth, rendererHeight
+  rendererWidth, rendererHeight, previewCanvas, previewContext
 
 let quadSceneMain, quadScenePreview, rttA, rttB
 
@@ -47,6 +47,9 @@ export const setSize = () => {
     width = outputEl.offsetWidth
     ratio = width / outputEl.offsetHeight
 
+    previewCanvas.width = width
+    previewCanvas.height = width / ratio
+
     previewRenderer.setSize(viewerEl.offsetWidth, viewerEl.offsetWidth / ratio)
   } else {
     // Basic width and ratio if no output
@@ -71,6 +74,9 @@ export const setSize = () => {
   for (const key in engineScenes) {
     engineScenes[key].setRatio(ratio)
   }
+
+  rendererWidth = width
+  rendererHeight = height
 
   // CSS trick to resize canvas
   viewerEl.style.paddingBottom = perc + '%'
@@ -104,6 +110,14 @@ export const setOutput = (win) => {
 
   // Setup preview renderer in dom
   viewerEl.appendChild(previewRenderer.domElement)
+
+  // Setup preview canvas in dom
+  // This is used when outputting and dont need to preview other channels,
+  // can directly copy the image from the output canvas
+  previewCanvas = document.createElement('canvas')
+  previewCanvas.style = 'position: absolute; left: 0; height: 0; width:100%; height:100%;'
+  previewContext = previewCanvas.getContext('2d')
+  viewerEl.appendChild(previewCanvas)
 
   isSendingOutput = true
 
@@ -161,13 +175,33 @@ export const render = (sceneA, sceneB, mixRatio, viewerMode) => {
 
   switch (viewerMode) {
     case 'mix':
-      renderChannels(viewerRenderer, sceneA, sceneB, mixState)
+      if (isSendingOutput) {
+        previewCanvas.style.display = 'block'
+        previewContext.drawImage(renderer.domElement, 0, 0, rendererWidth, rendererHeight)
+      } else {
+        if (previewCanvas) previewCanvas.style.display = 'none'
+        renderChannels(viewerRenderer, sceneA, sceneB, mixState)
+      }
+
       break
     case 'A':
-      viewerRenderer.render(sceneA.scene, sceneA.camera)
+      if (isSendingOutput && mixState === 'A') {
+        previewCanvas.style.display = 'block'
+        previewContext.drawImage(renderer.domElement, 0, 0, rendererWidth, rendererHeight)
+      } else {
+        if (previewCanvas) previewCanvas.style.display = 'none'
+        viewerRenderer.render(sceneA.scene, sceneA.camera)
+      }
+
       break
     case 'B':
-      viewerRenderer.render(sceneB.scene, sceneB.camera)
+      if (isSendingOutput && mixState === 'B') {
+        previewCanvas.style.display = 'block'
+        previewContext.drawImage(renderer.domElement, 0, 0, rendererWidth, rendererHeight)
+      } else {
+        if (previewCanvas) previewCanvas.style.display = 'none'
+        viewerRenderer.render(sceneB.scene, sceneB.camera)
+      }
       break
   }
 }
