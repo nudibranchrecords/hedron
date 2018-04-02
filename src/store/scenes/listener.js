@@ -8,6 +8,7 @@ import { uSketchDelete } from '../sketches/actions'
 import { uiEditingOpen } from '../ui/actions'
 import getScene from '../../selectors/getScene'
 import getScenes from '../../selectors/getScenes'
+import getChannelSceneId from '../../selectors/getChannelSceneId'
 import getSceneCrossfaderValue from '../../selectors/getSceneCrossfaderValue'
 import history from '../../history'
 
@@ -45,14 +46,22 @@ const handleSceneDelete = (action, store) => {
   let state = store.getState()
   const scene = getScene(state, p.id)
 
+  // Delete sketches
   scene.sketchIds.forEach(sketchId => {
     store.dispatch(uSketchDelete(sketchId, p.id))
   })
 
+  // Delete linkableActions
   for (const key in scene.linkableActionIds) {
     const id = scene.linkableActionIds[key]
     store.dispatch(linkableActionDelete(id))
   }
+
+  // If scene is in a channel, take it off
+  ['A', 'B'].forEach(channel => {
+    const id = getChannelSceneId(state, channel)
+    if (id === p.id) store.dispatch(rSceneSelectChannel(false, channel))
+  })
 
   store.dispatch(rSceneDelete(p.id))
   store.dispatch(engineSceneRemove(p.id))
