@@ -153,8 +153,8 @@ export const stopOutput = () => {
 export const render = (sceneA, sceneB, mixRatio) => {
   rttMaterial.uniforms.mixRatio.value = mixRatio
 
-  renderer.render(sceneA.scene, sceneA.camera, rttA, true)
-  renderer.render(sceneB.scene, sceneB.camera, rttB, true)
+  sceneA && renderer.render(sceneA.scene, sceneA.camera, rttA, true)
+  sceneB && renderer.render(sceneB.scene, sceneB.camera, rttB, true)
 
   renderer.render(rttScene, rttCamera)
 
