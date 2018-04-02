@@ -8,6 +8,7 @@ import Crossfader from '../../containers/Crossfader'
 import Clock from '../../containers/Clock'
 import SceneManager from '../../containers/SceneManager'
 import Devices from '../../containers/Devices'
+import Control from '../../containers/Control'
 import theme from '../../utils/theme'
 
 const Wrapper = styled.div`
@@ -52,6 +53,7 @@ class Overview extends React.Component {
           <div><div ref={node => node && node.appendChild(this.props.stats.dom)} /></div>
           <div><AudioAnalyzer /></div>
           <div><Clock /></div>
+          <div><Control nodeId='viewerMode' /></div>
         </Tools>
 
         <Crossfader />

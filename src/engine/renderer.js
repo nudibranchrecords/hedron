@@ -124,17 +124,30 @@ export const stopOutput = () => {
   setSize()
 }
 
-export const render = (sceneA, sceneB, mixRatio) => {
+export const render = (sceneA, sceneB, mixRatio, viewerMode) => {
   quadSceneMain.material.uniforms.mixRatio.value = mixRatio
 
-  sceneA && renderer.render(sceneA.scene, sceneA.camera, rttA, true)
-  sceneB && renderer.render(sceneB.scene, sceneB.camera, rttB, true)
-
-  renderer.render(quadSceneMain.scene, quadSceneMain.camera)
+  let viewerRenderer = renderer
 
   if (isSendingOutput) {
-    // Would be much better to make use of rttA and rttB
-    // https://github.com/mrdoob/three.js/issues/13745
-    previewRenderer.render(sceneA.scene, sceneA.camera)
+    viewerRenderer = previewRenderer
+
+    sceneA && renderer.render(sceneA.scene, sceneA.camera, rttA, true)
+    sceneB && renderer.render(sceneB.scene, sceneB.camera, rttB, true)
+    renderer.render(quadSceneMain.scene, quadSceneMain.camera)
+  }
+
+  switch (viewerMode) {
+    case 'mix':
+      sceneA && viewerRenderer.render(sceneA.scene, sceneA.camera, rttA, true)
+      sceneB && viewerRenderer.render(sceneB.scene, sceneB.camera, rttB, true)
+      viewerRenderer.render(quadSceneMain.scene, quadSceneMain.camera)
+      break
+    case 'A':
+      viewerRenderer.render(sceneA.scene, sceneA.camera)
+      break
+    case 'B':
+      viewerRenderer.render(sceneB.scene, sceneB.camera)
+      break
   }
 }
