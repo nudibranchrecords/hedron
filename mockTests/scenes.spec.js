@@ -201,6 +201,10 @@ test('(mock) Scenes - Delete Scene', (t) => {
     },
     scenes: {
       currentSceneId: 'id_1',
+      channels: {
+        A: 'id_1',
+        B: 'id_2'
+      },
       items: {
         id_1: {
           id: 'id_1',
@@ -250,6 +254,13 @@ test('(mock) Scenes - Delete Scene', (t) => {
     'currentSceneId is changed to last item in list'
   )
 
+  t.deepEqual(state.scenes.channels, {
+    A: false,
+    B: 'id_2'
+  },
+    'Scene id is removed from channel'
+  )
+
   t.equal(Object.keys(state.nodes).length, 3, 'Nodes kept the same')
   t.equal(Object.keys(state.sketches).length, 2, 'Sketches kept the same')
   t.equal(Object.keys(state.linkableActions).length, 2, 'linkableActions kept the same')
@@ -262,6 +273,13 @@ test('(mock) Scenes - Delete Scene', (t) => {
   t.equal(Object.keys(state.nodes).length, 0, 'Last scene deleted, nodes are now 0')
   t.equal(Object.keys(state.sketches).length, 0, 'Last scene deleted, sketches are now 0')
   t.equal(Object.keys(state.linkableActions).length, 0, 'Last scene deleted, linkableActions are now 0')
+
+  t.deepEqual(state.scenes.channels, {
+    A: false,
+    B: false
+  },
+    'Scene id is removed from channel'
+  )
 
   t.end()
 })
