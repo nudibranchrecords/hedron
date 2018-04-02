@@ -1,6 +1,6 @@
 import uid from 'uid'
 import { rSceneCreate, rSceneDelete, rSceneSelectCurrent,
-  rSceneSelectChannel } from './actions'
+  rSceneSelectChannel, sceneClearChannel } from './actions'
 import { generateSceneLinkableActionIds } from './utils'
 import { engineSceneAdd, engineSceneRemove } from '../../engine/actions'
 import { linkableActionCreate, linkableActionDelete } from '../linkableActions/actions'
@@ -57,11 +57,7 @@ const handleSceneDelete = (action, store) => {
     store.dispatch(linkableActionDelete(id))
   }
 
-  // If scene is in a channel, take it off
-  ['A', 'B'].forEach(channel => {
-    const id = getChannelSceneId(state, channel)
-    if (id === p.id) store.dispatch(rSceneSelectChannel(false, channel))
-  })
+  store.dispatch(sceneClearChannel(p.id))
 
   store.dispatch(rSceneDelete(p.id))
   store.dispatch(engineSceneRemove(p.id))
@@ -95,6 +91,18 @@ const handleSceneSelectChannel = (action, store) => {
   )
 }
 
+const handleSceneClearChannel = (action, store) => {
+  const state = store.getState()
+  const p = action.payload
+  const channels = ['A', 'B']
+
+  // If scene is in a channel, take it off
+  channels.forEach(channel => {
+    const id = getChannelSceneId(state, channel)
+    if (id === p.id) store.dispatch(rSceneSelectChannel(false, channel))
+  })
+}
+
 export default (action, store) => {
   switch (action.type) {
     case 'U_SCENE_CREATE':
@@ -108,6 +116,9 @@ export default (action, store) => {
       break
     case 'SCENE_SKETCH_SELECT':
       handleSceneSketchSelect(action, store)
+      break
+    case 'SCENE_CLEAR_CHANNEL':
+      handleSceneClearChannel(action, store)
       break
   }
 }

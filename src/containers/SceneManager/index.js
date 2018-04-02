@@ -2,7 +2,10 @@ import { connect } from 'react-redux'
 import SceneManager from '../../components/SceneManager'
 import getScenes from '../../selectors/getScenes'
 import getCurrentScene from '../../selectors/getCurrentScene'
-import { uSceneCreate, uSceneDelete, rSceneSelectChannel, uSceneSelectChannel }
+import {
+  uSceneCreate, uSceneDelete, rSceneSelectChannel,
+  uSceneSelectChannel, sceneClearChannel
+}
   from '../../store/scenes/actions'
 import { uiEditingOpen } from '../../store/ui/actions'
 
@@ -22,7 +25,7 @@ const mapDispatchToProps = (dispatch, ownProps) => (
       dispatch(uSceneDelete(sceneId))
     },
     onClearClick: sceneId => {
-      dispatch(rSceneSelectChannel(sceneId, false))
+      dispatch(sceneClearChannel(sceneId))
     },
     onActiveClick: sceneId => {
       dispatch(uSceneSelectChannel(sceneId, 'active'))

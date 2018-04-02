@@ -12,6 +12,13 @@ export function rSceneSelectChannel (id, channel) {
   }
 }
 
+export function sceneClearChannel (id) {
+  return {
+    type: 'SCENE_CLEAR_CHANNEL',
+    payload: { id }
+  }
+}
+
 export function uSceneCreate () {
   return {
     type: 'U_SCENE_CREATE'
