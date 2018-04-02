@@ -31,7 +31,7 @@ const loadSketches = globUrl => {
 
     return all
   } catch (error) {
-    console.log(error)
+    console.error(error)
     throw new Error(`Failed to load sketch folder: ${error.message}`)
   }
 }

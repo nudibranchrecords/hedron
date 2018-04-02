@@ -65,7 +65,6 @@ const SceneManager = (
  }
 ) => {
   const la = currentScene && currentScene.linkableActionIds
-  console.log(la)
   return (
     <Wrapper>
       <Thumbs>
