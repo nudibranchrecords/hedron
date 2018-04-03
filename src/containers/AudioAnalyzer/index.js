@@ -11,7 +11,12 @@ const mapStateToProps = (state, ownProps) => (
 
 const mapDispatchToProps = (dispatch, ownProps) => (
   {
-    onAnalyzerClick: () => { dispatch(uiEditingToggle('audioAnalyzerPanel')) }
+    onWrapperClick: e => {
+      e.stopPropagation()
+    },
+    onAnalyzerClick: () => {
+      dispatch(uiEditingToggle('audioAnalyzerPanel'))
+    }
   }
 )
 
