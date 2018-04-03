@@ -109,7 +109,12 @@ const SceneManager = (
             linkableActionId={la.clear}
           />
           <Col>
-            <Button onClick={() => { onRenameClick(currentScene.id) }}>Rename</Button>
+            <Button
+              onClick={e => {
+                e.stopPropagation()
+                onRenameClick(currentScene.id)
+              }
+              }>Rename</Button>
           </Col>
           <Col>
             <Button color='danger' onClick={() => { onDeleteClick(currentScene.id) }}>Delete</Button>
