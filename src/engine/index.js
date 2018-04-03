@@ -30,7 +30,10 @@ export const loadSketchModules = (url) => {
       const config = allModules[key].config
       modules[key] = config
     })
+
+    isRunning = true
   } catch (error) {
+    isRunning = false
     console.error(error)
     store.dispatch(projectError(`Sketches failed to load: ${error.message}`, {
       popup: 'true',
@@ -113,32 +116,32 @@ export const run = (injectedStore, stats) => {
   }
 
   const loop = () => {
+    requestAnimationFrame(loop)
     if (isRunning) {
-      requestAnimationFrame(loop)
-    }
-    state = store.getState()
-    spf = 1000 / state.settings.throttledFPS
-    allParams = getSketchParams(state)
+      state = store.getState()
+      spf = 1000 / state.settings.throttledFPS
+      allParams = getSketchParams(state)
 
-    newTime = now()
-    delta = newTime - oldTime
-    elapsedFrames = delta / spf
-    tick += elapsedFrames
-    oldTime = newTime - (delta % spf)
+      newTime = now()
+      delta = newTime - oldTime
+      elapsedFrames = delta / spf
+      tick += elapsedFrames
+      oldTime = newTime - (delta % spf)
 
-    if (delta > spf || state.settings.throttledFPS >= 60) {
-      stats.begin()
+      if (delta > spf || state.settings.throttledFPS >= 60) {
+        stats.begin()
 
-      const channelA = getChannelSceneId(state, 'A')
-      const channelB = getChannelSceneId(state, 'B')
-      const mixRatio = getSceneCrossfaderValue(state)
-      const viewerMode = getViewerMode(state)
-      updateSceneSketches(channelA)
-      updateSceneSketches(channelB)
+        const channelA = getChannelSceneId(state, 'A')
+        const channelB = getChannelSceneId(state, 'B')
+        const mixRatio = getSceneCrossfaderValue(state)
+        const viewerMode = getViewerMode(state)
+        updateSceneSketches(channelA)
+        updateSceneSketches(channelB)
 
-      renderer.render(scenes[channelA], scenes[channelB], mixRatio, viewerMode)
+        renderer.render(scenes[channelA], scenes[channelB], mixRatio, viewerMode)
 
-      stats.end()
+        stats.end()
+      }
     }
   }
   loop()
