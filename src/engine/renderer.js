@@ -3,10 +3,12 @@ import uiEventEmitter from '../utils/uiEventEmitter'
 import * as engine from './'
 import QuadScene from './QuadScene'
 
-let store, renderer, canvas, outputEl, viewerEl, isSendingOutput, previewRenderer,
+let store, canvas, outputEl, viewerEl, isSendingOutput, previewRenderer,
   rendererWidth, rendererHeight, previewCanvas, previewContext
 
 let quadSceneMain, rttA, rttB
+
+export let renderer
 
 export const setRenderer = () => {
   const settings = store.getState().settings
