@@ -1,21 +1,24 @@
 import test from 'tape'
 import proxyquire from 'proxyquire'
+import listen from 'redux-action-listeners'
 import { createStore, applyMiddleware, combineReducers } from 'redux'
 import createSagaMiddleware from 'redux-saga'
 const sagaMiddleware = createSagaMiddleware()
-import { sceneSketchCreate, sceneSketchDelete, sceneSketchReimport } from '../src/store/scene/actions'
+import { uSketchCreate, uSketchDelete, uSketchReimport } from '../src/store/sketches/actions'
 
 import { fork } from 'redux-saga/effects'
 import { watchNodes } from '../src/store/nodes/sagas'
 import sketchesReducer from '../src/store/sketches/reducer'
 import availableModulesReducer from '../src/store/availableModules/reducer'
 import nodesReducer from '../src/store/nodes/reducer'
+import scenesReducer from '../src/store/scenes/reducer'
 
 const rootReducer = combineReducers(
   {
     nodes: nodesReducer,
     availableModules: availableModulesReducer,
-    sketches: sketchesReducer
+    sketches: sketchesReducer,
+    scenes: scenesReducer
   }
 )
 
@@ -25,19 +28,45 @@ const uid = () => {
   return 'id_' + uniqueId
 }
 
-const { watchScene } = proxyquire('../src/store/scene/sagas', {
+const sketchesListener = proxyquire('../src/store/sketches/listener', {
   'uid': uid
-})
+}).default
+
+const scenesListener = proxyquire('../src/store/scenes/listener', {
+  'uid': uid
+}).default
+
+const rootListener = {
+  types: 'all',
+
+  handleAction (action, dispatched, store) {
+    sketchesListener(action, store)
+    scenesListener(action, store)
+  }
+}
 
 function* rootSaga (dispatch) {
   yield [
-    fork(watchScene),
     fork(watchNodes)
   ]
 }
 
-test('(mock) Sketches - Add Sketch', (t) => {
+test('(mock) Sketches - Add/Delete Sketch', (t) => {
   uniqueId = 0
+
+  const rootReducer = combineReducers(
+    {
+      nodes: nodesReducer,
+      availableModules: availableModulesReducer,
+      sketches: sketchesReducer,
+      scenes: scenesReducer,
+      router: () => ({
+        location: {
+          pathname: 'scenes/addSketch/scene_02'
+        }
+      })
+    }
+  )
 
   const store = createStore(rootReducer, {
     availableModules: {
@@ -78,8 +107,23 @@ test('(mock) Sketches - Add Sketch', (t) => {
       }
     },
     nodes: {},
-    sketches: {}
-  }, applyMiddleware(sagaMiddleware))
+    sketches: {},
+    scenes: {
+      currentSceneId: 'scene_02',
+      items: {
+        scene_01: {
+          id: 'scene_01',
+          selectedSketchId: false,
+          sketchIds: []
+        },
+        scene_02: {
+          id: 'scene_02',
+          selectedSketchId: false,
+          sketchIds: []
+        }
+      }
+    }
+  }, applyMiddleware(sagaMiddleware, listen(rootListener)))
   sagaMiddleware.run(rootSaga, store.dispatch)
 
   let state
@@ -87,8 +131,21 @@ test('(mock) Sketches - Add Sketch', (t) => {
   state = store.getState()
   t.deepEqual(state.nodes, {}, 'nodes start empty')
 
-  store.dispatch(sceneSketchCreate('foo'))
+  store.dispatch(uSketchCreate('foo', 'scene_01'))
   state = store.getState()
+
+  t.deepEqual(state.scenes.items, {
+    scene_01: {
+      id: 'scene_01',
+      selectedSketchId: 'id_1',
+      sketchIds: ['id_1']
+    },
+    scene_02: {
+      id: 'scene_02',
+      selectedSketchId: false,
+      sketchIds: []
+    }
+  }, 'After creating sketch, sketch id is added to scene, selectedSketchId is set')
 
   t.deepEqual(state.sketches, {
     id_1: {
@@ -113,8 +170,21 @@ test('(mock) Sketches - Add Sketch', (t) => {
     }
   }, 'After creating sketch, node item is created for param')
 
-  store.dispatch(sceneSketchCreate('bar'))
+  store.dispatch(uSketchCreate('bar', 'scene_01'))
   state = store.getState()
+
+  t.deepEqual(state.scenes.items, {
+    scene_01: {
+      id: 'scene_01',
+      sketchIds: ['id_1', 'id_3'],
+      selectedSketchId: 'id_3'
+    },
+    scene_02: {
+      id: 'scene_02',
+      selectedSketchId: false,
+      sketchIds: []
+    }
+  }, 'After creating sketch, sketch id is added to scene')
 
   t.deepEqual(state.sketches, {
     id_1: {
@@ -177,8 +247,21 @@ test('(mock) Sketches - Add Sketch', (t) => {
     }
   }, 'After creating sketch, node items are created for params and shot')
 
-  store.dispatch(sceneSketchDelete('id_1'))
+  store.dispatch(uSketchDelete('id_1', 'scene_01'))
   state = store.getState()
+
+  t.deepEqual(state.scenes.items, {
+    scene_01: {
+      id: 'scene_01',
+      sketchIds: ['id_3'],
+      selectedSketchId: 'id_3'
+    },
+    scene_02: {
+      id: 'scene_02',
+      sketchIds: [],
+      selectedSketchId: false
+    }
+  }, 'After deleting sketch, sketch id is removed from scene, selectedSketchId becomes last in list')
 
   t.deepEqual(state.sketches, {
     id_3: {
@@ -224,14 +307,40 @@ test('(mock) Sketches - Add Sketch', (t) => {
     }
   }, 'After deleting sketch, node items are removed')
 
-  store.dispatch(sceneSketchDelete('id_3'))
+  store.dispatch(uSketchDelete('id_3', 'scene_01'))
   state = store.getState()
+
+  t.deepEqual(state.scenes.items, {
+    scene_01: {
+      id: 'scene_01',
+      sketchIds: [],
+      selectedSketchId: false
+    },
+    scene_02: {
+      id: 'scene_02',
+      sketchIds: [],
+      selectedSketchId: false
+    }
+  }, 'After deleting sketch, sketch id is removed from scene, selected sketchId becomes false (none left)')
 
   t.deepEqual(state.sketches, {}, 'After deleting sketch, sketch item is removed')
   t.deepEqual(state.nodes, {}, 'After deleting sketch, node items are removed')
 
-  store.dispatch(sceneSketchCreate('boring'))
+  store.dispatch(uSketchCreate('boring'))
   state = store.getState()
+
+  t.deepEqual(state.scenes.items, {
+    scene_01: {
+      id: 'scene_01',
+      sketchIds: [],
+      selectedSketchId: false
+    },
+    scene_02: {
+      id: 'scene_02',
+      sketchIds: ['id_7'],
+      selectedSketchId: 'id_7'
+    }
+  }, 'After creating sketch with no specified scene id, sketch id is added to scene using currentSceneId')
 
   t.deepEqual(state.sketches, {
     id_7: {
@@ -244,6 +353,24 @@ test('(mock) Sketches - Add Sketch', (t) => {
   }, 'After creating sketch, sketch item is created')
 
   t.deepEqual(state.nodes, {}, 'After creating sketch, no nodes created (because sketch has no params/shots)')
+
+  store.dispatch(uSketchDelete('id_7'))
+  state = store.getState()
+
+  t.deepEqual(state.scenes.items, {
+    scene_01: {
+      id: 'scene_01',
+      sketchIds: [],
+      selectedSketchId: false
+    },
+    scene_02: {
+      id: 'scene_02',
+      sketchIds: [],
+      selectedSketchId: false
+    }
+  }, 'After deleting sketch with no specified scene id, uses currentSceneId to determine which scene')
+
+  t.deepEqual(state.sketches, {}, 'After deleting sketch, sketch item is removed')
 
   t.end()
 })
@@ -285,15 +412,19 @@ test('(mock) Sketches - Reimport Sketch (Unedited sketch)', (t) => {
         shotIds: [],
         openedNodes: {}
       }
+    },
+    scenes: {
+      items: {}
     }
   }
 
-  const store = createStore(rootReducer, defaultState, applyMiddleware(sagaMiddleware))
+  const store = createStore(rootReducer, defaultState,
+    applyMiddleware(sagaMiddleware, listen(rootListener)))
   sagaMiddleware.run(rootSaga, store.dispatch)
 
   let state
 
-  store.dispatch(sceneSketchReimport('id_1'))
+  store.dispatch(uSketchReimport('id_1'))
 
   state = store.getState()
 
@@ -348,12 +479,12 @@ test('(mock) Sketches - Reimport Sketch (simple)', (t) => {
         openedNodes: {}
       }
     }
-  }, applyMiddleware(sagaMiddleware))
+  }, applyMiddleware(sagaMiddleware, listen(rootListener)))
   sagaMiddleware.run(rootSaga, store.dispatch)
 
   let state
 
-  store.dispatch(sceneSketchReimport('id_1'))
+  store.dispatch(uSketchReimport('id_1'))
 
   state = store.getState()
 
@@ -455,12 +586,12 @@ test('(mock) Sketches - Reimport Sketch (params and shots)', (t) => {
         openedNodes: {}
       }
     }
-  }, applyMiddleware(sagaMiddleware))
+  }, applyMiddleware(sagaMiddleware, listen(rootListener)))
   sagaMiddleware.run(rootSaga, store.dispatch)
 
   let state
 
-  store.dispatch(sceneSketchReimport('id_1'))
+  store.dispatch(uSketchReimport('id_1'))
 
   state = store.getState()
 
@@ -585,12 +716,12 @@ test('(mock) Sketches - Reimport Sketch (with shot and param title changes)', (t
         openedNodes: {}
       }
     }
-  }, applyMiddleware(sagaMiddleware))
+  }, applyMiddleware(sagaMiddleware, listen(rootListener)))
   sagaMiddleware.run(rootSaga, store.dispatch)
 
   let state
 
-  store.dispatch(sceneSketchReimport('id_1'))
+  store.dispatch(uSketchReimport('id_1'))
 
   state = store.getState()
 
@@ -698,12 +829,12 @@ test('(mock) Sketches - Reimport Sketch (Different order)', (t) => {
         openedNodes: {}
       }
     }
-  }, applyMiddleware(sagaMiddleware))
+  }, applyMiddleware(sagaMiddleware, listen(rootListener)))
   sagaMiddleware.run(rootSaga, store.dispatch)
 
   let state
 
-  store.dispatch(sceneSketchReimport('id_1'))
+  store.dispatch(uSketchReimport('id_1'))
 
   state = store.getState()
 

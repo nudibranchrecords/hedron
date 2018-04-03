@@ -1,4 +1,4 @@
-const popupTypes = ['nodeTitle', 'sketchTitle']
+const popupTypes = ['nodeTitle', 'sketchTitle', 'sceneTitle']
 
 // Some "isEditing" will open a popup, others will not
 export default state => {

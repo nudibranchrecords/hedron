@@ -1,12 +1,12 @@
 const THREE = require('three')
 
 class Env {
-  constructor (world) {
+  constructor (scene) {
     this.root = new THREE.Object3D()
-    this.world = world
+    this.scene = scene
 
     this.clearColor = new THREE.Color()
-    this.world.scene.fog = new THREE.FogExp2()
+    this.scene.scene.fog = new THREE.FogExp2()
 
     this.ambientLight = new THREE.AmbientLight(0xffffff, 0.3)
     this.directionalLight1 = new THREE.DirectionalLight(0xffffff, 0.7)
@@ -16,11 +16,11 @@ class Env {
 
     this.centralPointLight = new THREE.PointLight(0xffffff, 1, 10000)
     // this.centralPointLight.position.z = -1000
-    this.world.scene.add(this.centralPointLight)
+    this.scene.scene.add(this.centralPointLight)
 
-    this.world.scene.add(this.directionalLight1)
-    this.world.scene.add(this.directionalLight2)
-    this.world.scene.add(this.ambientLight)
+    this.scene.scene.add(this.directionalLight1)
+    this.scene.scene.add(this.directionalLight2)
+    this.scene.scene.add(this.ambientLight)
 
     this.props = {}
 
@@ -30,10 +30,10 @@ class Env {
   }
 
   cameraMove (x, y, z) {
-    this.world.camera.position.x = x
-    this.world.camera.position.y = y
-    this.world.camera.position.z = z
-    this.world.camera.lookAt(new THREE.Vector3(0, 0, 0))
+    this.scene.camera.position.x = x
+    this.scene.camera.position.y = y
+    this.scene.camera.position.z = z
+    this.scene.camera.lookAt(new THREE.Vector3(0, 0, 0))
   }
 
   camera1 () {
@@ -56,9 +56,9 @@ class Env {
 
   update (p, t) {
     this.clearColor.setHSL(p.colorH, p.colorS, p.colorL)
-    this.world.scene.fog.density = p.fogDensity * 0.01
-    this.world.scene.fog.color = this.clearColor
-    this.world.scene.background = this.clearColor
+    this.scene.scene.fog.density = p.fogDensity * 0.01
+    this.scene.scene.fog.color = this.clearColor
+    this.scene.scene.background = this.clearColor
 
     this.directionalLight1.intensity = 0.7 * p.mainLightIntensity
     this.directionalLight2.intensity = 0.7 * p.mainLightIntensity

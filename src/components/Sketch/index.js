@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import SketchParam from '../../containers/SketchParam'
 import Shot from '../../containers/Shot'
 import Button from '../Button'
-import ViewHeader from '../ViewHeader'
+import SceneHeader from '../../containers/SceneHeader'
 import ViewSubheader from '../ViewSubheader'
 import Items from '../Items'
 import Item from '../Item'
@@ -30,7 +30,14 @@ const Bottom = styled.div`
 
 const Sketch = ({ title, params, shots, onDeleteClick, sketchId, onRenameClick, onReimportClick }) => (
   <Wrapper>
-    <ViewHeader onButtonClick={onRenameClick} buttonText='Rename'>{title}</ViewHeader>
+    <SceneHeader
+      onButtonClick={e => {
+        e.stopPropagation()
+        onRenameClick(sketchId)
+      }}
+      buttonText='Rename'>
+      {title}
+    </SceneHeader>
 
     {params.length > 0 &&
       <div>
@@ -60,8 +67,8 @@ const Sketch = ({ title, params, shots, onDeleteClick, sketchId, onRenameClick, 
 
     <Bottom>
       <div>
-        <Button onClick={onDeleteClick}>Delete Sketch</Button>
-        <Button onClick={onReimportClick}>Reimport</Button>
+        <Button onClick={() => { onDeleteClick(sketchId) }}>Delete Sketch</Button>
+        <Button onClick={() => { onReimportClick(sketchId) }}>Reimport</Button>
       </div>
     </Bottom>
   </Wrapper>

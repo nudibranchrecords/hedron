@@ -4,7 +4,7 @@ import Input from '../Input'
 
 class EditingOverlayForm extends React.Component {
   componentDidMount () {
-    document.querySelector('#editing_title').focus()
+    document.querySelector('#editing_title').select()
   }
 
   render () {

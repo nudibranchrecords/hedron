@@ -3,6 +3,7 @@ import EditingOverlayFormComponent from '../../components/EditingOverlayForm'
 import { uiEditingClose } from '../../store/ui/actions'
 import { nodeUpdate } from '../../store/nodes/actions'
 import { sketchUpdate } from '../../store/sketches/actions'
+import { sceneRename } from '../../store/scenes/actions'
 import getUiIsEditingNode from '../../selectors/getUiIsEditingNode'
 import { reduxForm } from 'redux-form'
 
@@ -26,6 +27,9 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
         break
       case 'sketchTitle':
         dispatch(sketchUpdate(ownProps.id, { title: values.title }))
+        break
+      case 'sceneTitle':
+        dispatch(sceneRename(ownProps.id, values.title))
         break
     }
   }

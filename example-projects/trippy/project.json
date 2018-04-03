@@ -1,1 +1,2309 @@
-{"nodes":{"mtv4u2n":{"id":"mtv4u2n","value":0.5491084053644838,"inputLinkIds":["lyjwtsd"],"shotCount":0,"connectedMacroIds":[],"title":"Z Speed","type":"param","key":"zSpeed","openedLinkId":"lyjwtsd","activeInputLinkId":"lyjwtsd"},"b7xscqw":{"id":"b7xscqw","value":0,"inputLinkIds":[],"shotCount":0,"connectedMacroIds":[],"title":"Tunnel Scale","type":"param","key":"tunnelScale"},"aslva69":{"id":"aslva69","value":0,"inputLinkIds":[],"shotCount":0,"connectedMacroIds":[],"title":"Rot Speed","type":"param","key":"rotSpeed"},"4tlp5ma":{"id":"4tlp5ma","value":0.5,"inputLinkIds":[],"shotCount":0,"connectedMacroIds":[],"title":"Rot Tween Speed","type":"param","key":"rotTweenSpeed"},"j74jm55":{"id":"j74jm55","value":0.47517730496453897,"inputLinkIds":[],"shotCount":0,"connectedMacroIds":[],"title":"Block Shift Speed","type":"param","key":"blockShiftSpeed"},"ux97k4u":{"id":"ux97k4u","value":0.6507537688442211,"inputLinkIds":[],"shotCount":0,"connectedMacroIds":[],"title":"Block Spin Speed","type":"param","key":"blockSpinSpeed"},"suxy1eo":{"id":"suxy1eo","value":0.31204379562043794,"inputLinkIds":[],"shotCount":0,"connectedMacroIds":[],"title":"Perlin Speed","type":"param","key":"perlinSpeed"},"t0p66we":{"id":"t0p66we","value":0.8092256281407932,"inputLinkIds":["rfdddkt"],"shotCount":0,"connectedMacroIds":[],"title":"color H","type":"param","key":"colorH","openedLinkId":"rfdddkt","activeInputLinkId":"rfdddkt"},"nwaujo8":{"id":"nwaujo8","value":0.4037940379403794,"inputLinkIds":[],"shotCount":0,"connectedMacroIds":[],"title":"color S","type":"param","key":"colorS"},"4redsju":{"id":"4redsju","value":0.34347127932757077,"inputLinkIds":["oynf9ss"],"shotCount":0,"connectedMacroIds":[],"title":"color L","type":"param","key":"colorL","openedLinkId":"oynf9ss","activeInputLinkId":"oynf9ss"},"r0jhd7d":{"id":"r0jhd7d","value":0,"inputLinkIds":["4nw29mk"],"shotCount":3257,"connectedMacroIds":[],"type":"shot","title":"Quarter Turn","method":"quarterTurn","sketchId":"n2f9seu","openedLinkId":"4nw29mk","activeInputLinkId":"4nw29mk"},"msfk9eo":{"id":"msfk9eo","value":0,"inputLinkIds":[],"shotCount":30,"connectedMacroIds":[],"type":"shot","title":"Remove Blocks","method":"removeBlocks","sketchId":"n2f9seu"},"8jnvuvt":{"id":"8jnvuvt","value":0,"inputLinkIds":[],"shotCount":91,"connectedMacroIds":[],"type":"shot","title":"Add Blocks","method":"addBlocks","sketchId":"n2f9seu"},"hqt5mbx":{"id":"hqt5mbx","value":0.007874015748031496,"inputLinkIds":["96eoye1"],"shotCount":6910,"connectedMacroIds":[],"type":"shot","title":"Shift Blocks","method":"shiftBlocks","sketchId":"n2f9seu","openedLinkId":"96eoye1","activeInputLinkId":"96eoye1"},"o4cg9sq":{"id":"o4cg9sq","value":0.007874015748031496,"inputLinkIds":["59c5jkr"],"shotCount":3734,"connectedMacroIds":[],"type":"shot","title":"Spin Blocks","method":"spinBlocks","sketchId":"n2f9seu","openedLinkId":"59c5jkr","activeInputLinkId":"59c5jkr"},"gbgfyna":{"id":"gbgfyna","value":0,"inputLinkIds":["ehfi00i"],"shotCount":7104,"connectedMacroIds":[],"type":"shot","title":"Flash Blocks","method":"flashBlocks","sketchId":"n2f9seu","openedLinkId":"ehfi00i","activeInputLinkId":"ehfi00i"},"6w0ftm4":{"id":"6w0ftm4","value":0,"inputLinkIds":[],"shotCount":175,"connectedMacroIds":[],"type":"shot","title":"Boosted Flash Blocks","method":"boostedFlashBlocks","sketchId":"n2f9seu"},"g2wkdfh":{"id":"g2wkdfh","value":0,"inputLinkIds":[],"shotCount":6,"connectedMacroIds":[],"type":"shot","title":"Flash All On","method":"flashAllBlocksOn","sketchId":"n2f9seu"},"f2vm0ad":{"id":"f2vm0ad","value":0,"inputLinkIds":[],"shotCount":1,"connectedMacroIds":[],"type":"shot","title":"Flash All Off","method":"flashAllBlocksOff","sketchId":"n2f9seu"},"c4co6pp":{"id":"c4co6pp","value":0,"inputLinkIds":[],"shotCount":8,"connectedMacroIds":[],"type":"shot","title":"Pipes On","method":"pipesOn","sketchId":"n2f9seu"},"8f9p3iu":{"id":"8f9p3iu","value":0,"inputLinkIds":[],"shotCount":5,"connectedMacroIds":[],"type":"shot","title":"Pipes Off","method":"pipesOff","sketchId":"n2f9seu"},"vycamse":{"id":"vycamse","value":0,"inputLinkIds":["bk10ujd"],"shotCount":61753,"connectedMacroIds":[],"type":"shot","title":"Pipes Swap","method":"pipesSwap","sketchId":"n2f9seu","openedLinkId":"bk10ujd","activeInputLinkId":"bk10ujd"},"dwpdpd2":{"id":"dwpdpd2","value":0,"inputLinkIds":[],"shotCount":2,"connectedMacroIds":[],"type":"shot","title":"Pipes All On","method":"pipesAllOn","sketchId":"n2f9seu"},"brbdd02":{"id":"brbdd02","value":0.02301051051051051,"inputLinkIds":[],"shotCount":0,"connectedMacroIds":[],"title":"Fog Density","type":"param","key":"fogDensity"},"mii5941":{"id":"mii5941","value":0.8092256281407932,"inputLinkIds":["uyvvqpt"],"shotCount":0,"connectedMacroIds":[],"title":"BG Color H","type":"param","key":"colorH","openedLinkId":"uyvvqpt","activeInputLinkId":"uyvvqpt"},"py6r7ff":{"id":"py6r7ff","value":0.8864976755601756,"inputLinkIds":[],"shotCount":0,"connectedMacroIds":[],"title":"BG Color S","type":"param","key":"colorS"},"2ma5j1g":{"id":"2ma5j1g","value":0.13112313851489188,"inputLinkIds":[],"shotCount":0,"connectedMacroIds":[],"title":"BG Color L","type":"param","key":"colorL"},"n90nnxj":{"id":"n90nnxj","value":0.12901182432432431,"inputLinkIds":[],"shotCount":0,"connectedMacroIds":[],"title":"Main Light Intensity","type":"param","key":"mainLightIntensity"},"ov44t8l":{"id":"ov44t8l","value":0.13449311105561096,"inputLinkIds":[],"shotCount":0,"connectedMacroIds":[],"title":"Central Point Light Distance","type":"param","key":"centralPointLightDistance"},"6m26t93":{"id":"6m26t93","value":0.15524003564211944,"inputLinkIds":["es5vbfo"],"shotCount":0,"connectedMacroIds":[],"title":"Central Point Light Intensity","type":"param","key":"centralPointLightIntensity","openedLinkId":"es5vbfo","activeInputLinkId":"es5vbfo"},"gkfdllj":{"id":"gkfdllj","value":0,"inputLinkIds":[],"shotCount":23,"connectedMacroIds":[],"type":"shot","title":"Camera 1","method":"camera1","sketchId":"ul0vij5","activeInputLinkId":"k69e9kg"},"qm38bu4":{"id":"qm38bu4","value":0,"inputLinkIds":[],"shotCount":7,"connectedMacroIds":[],"type":"shot","title":"Camera 2","method":"camera2","sketchId":"ul0vij5"},"g96s5o3":{"id":"g96s5o3","value":0,"inputLinkIds":[],"shotCount":3,"connectedMacroIds":[],"type":"shot","title":"Camera 3","method":"camera3","sketchId":"ul0vij5"},"18po57c":{"id":"18po57c","value":0,"inputLinkIds":[],"shotCount":67,"connectedMacroIds":[],"type":"shot","title":"Camera Random","method":"cameraRandom","sketchId":"ul0vij5","activeInputLinkId":"c25f2ag"},"toclqb2":{"id":"toclqb2","value":0.8092256281407932,"inputLinkIds":["g3uo60t"],"shotCount":0,"connectedMacroIds":[],"title":"Central Point Light Color H","type":"param","key":"centralPointLightH","openedLinkId":"g3uo60t","activeInputLinkId":"g3uo60t"},"q830h87":{"id":"q830h87","value":0.898681554931555,"inputLinkIds":[],"shotCount":0,"connectedMacroIds":[],"title":"Central Point Light Color S","type":"param","key":"centralPointLightS"},"cgv3uh3":{"id":"cgv3uh3","value":0.43751919533169537,"inputLinkIds":[],"shotCount":0,"connectedMacroIds":[],"title":"Central Point Light Color L","type":"param","key":"centralPointLightL"},"27qwxnb":{"id":"27qwxnb","value":[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"inputLinkIds":[],"shotCount":0,"connectedMacroIds":[]},"14kv630":{"id":"14kv630","value":[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"inputLinkIds":[],"shotCount":0,"connectedMacroIds":[]},"plcj6yt":{"id":"plcj6yt","value":[0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0],"inputLinkIds":[],"shotCount":0,"connectedMacroIds":[]},"xuq8yga":{"id":"xuq8yga","value":[1,0,0,1,0,1,0,0,1,1,1,1,1,1,1,0,1,0,1,0,1,0,0,1,1,1,1,0,0,1,0,0],"inputLinkIds":[],"shotCount":0,"connectedMacroIds":[]},"cpyblt2":{"id":"cpyblt2","value":[1,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0],"inputLinkIds":[],"shotCount":0,"connectedMacroIds":[]},"8o7f07n":{"id":"8o7f07n","value":0,"inputLinkIds":[],"shotCount":0,"connectedMacroIds":[],"key":"threshold","title":"Threshold","passToNext":false,"subNode":true},"we3gse5":{"id":"we3gse5","value":0.5434782608695653,"inputLinkIds":[],"shotCount":0,"connectedMacroIds":[],"key":"range","title":"Lower Range","passToNext":true,"subNode":true},"4s38dd9":{"id":"4s38dd9","value":0.7556568262561326,"inputLinkIds":[],"shotCount":0,"connectedMacroIds":[],"key":"range","title":"Upper Range","passToNext":false,"subNode":true},"kus0iwf":{"id":"kus0iwf","value":"sine","inputLinkIds":[],"shotCount":0,"connectedMacroIds":[],"title":"Shape","key":"shape","type":"select","subNode":true,"options":[{"value":"sine","label":"Sine"},{"value":"square","label":"Square"},{"value":"sawtooth","label":"Sawtooth"},{"value":"rSawtooth","label":"Revese Sawtooth"},{"value":"triangle","label":"Triangle"}]},"7u6c8fn":{"id":"7u6c8fn","value":0.5,"inputLinkIds":[],"shotCount":0,"connectedMacroIds":[],"title":"Rate","key":"rate","type":"select","subNode":true,"options":[{"value":32,"label":"32"},{"value":16,"label":"16"},{"value":8,"label":"8"},{"value":4,"label":"4"},{"value":2,"label":"2"},{"value":1,"label":"1"},{"value":0.5,"label":"1/2"},{"value":0.25,"label":"1/4"},{"value":0.125,"label":"1/8"},{"value":0.0625,"label":"1/16"},{"value":0.03125,"label":"1/32"}]},"bcu6mg5":{"id":"bcu6mg5","value":"sine","inputLinkIds":[],"shotCount":0,"connectedMacroIds":[],"title":"Shape","key":"shape","type":"select","subNode":true,"options":[{"value":"sine","label":"Sine"},{"value":"square","label":"Square"},{"value":"sawtooth","label":"Sawtooth"},{"value":"rSawtooth","label":"Revese Sawtooth"},{"value":"triangle","label":"Triangle"}]},"60tstsa":{"id":"60tstsa","value":0.03125,"inputLinkIds":[],"shotCount":0,"connectedMacroIds":[],"title":"Rate","key":"rate","type":"select","subNode":true,"options":[{"value":32,"label":"32"},{"value":16,"label":"16"},{"value":8,"label":"8"},{"value":4,"label":"4"},{"value":2,"label":"2"},{"value":1,"label":"1"},{"value":0.5,"label":"1/2"},{"value":0.25,"label":"1/4"},{"value":0.125,"label":"1/8"},{"value":0.0625,"label":"1/16"},{"value":0.03125,"label":"1/32"}]},"waunmwf":{"id":"waunmwf","value":0.5,"inputLinkIds":[],"shotCount":0,"connectedMacroIds":[],"title":"MIDI Sensitivity","key":"sensitivity","subNode":true},"cbo8y91":{"id":"cbo8y91","value":"abs","inputLinkIds":[],"shotCount":0,"connectedMacroIds":[],"title":"Control Type","key":"controlType","type":"select","subNode":true,"options":[{"value":"abs","label":"Absolute"},{"value":"rel1","label":"Relative 1"},{"value":"rel2","label":"Relative 2"},{"value":"rel3","label":"Relative 3"}]},"bw0lgyx":{"id":"bw0lgyx","value":0.5,"inputLinkIds":[],"shotCount":0,"connectedMacroIds":[],"title":"MIDI Sensitivity","key":"sensitivity","subNode":true},"w0ynpe4":{"id":"w0ynpe4","value":"rel3","inputLinkIds":[],"shotCount":0,"connectedMacroIds":[],"title":"Control Type","key":"controlType","type":"select","subNode":true,"options":[{"value":"abs","label":"Absolute"},{"value":"rel1","label":"Relative 1"},{"value":"rel2","label":"Relative 2"},{"value":"rel3","label":"Relative 3"}]},"vj4e22t":{"id":"vj4e22t","value":0.5,"inputLinkIds":[],"shotCount":0,"connectedMacroIds":[],"title":"MIDI Sensitivity","key":"sensitivity","subNode":true},"kp85jjl":{"id":"kp85jjl","value":"rel1","inputLinkIds":[],"shotCount":0,"connectedMacroIds":[],"title":"Control Type","key":"controlType","type":"select","subNode":true,"options":[{"value":"abs","label":"Absolute"},{"value":"rel1","label":"Relative 1"},{"value":"rel2","label":"Relative 2"},{"value":"rel3","label":"Relative 3"}]},"5yfl8nx":{"id":"5yfl8nx","value":0.5,"inputLinkIds":[],"shotCount":0,"connectedMacroIds":[],"title":"MIDI Sensitivity","key":"sensitivity","subNode":true},"w5gs8ii":{"id":"w5gs8ii","value":"rel1","inputLinkIds":[],"shotCount":0,"connectedMacroIds":[],"title":"Control Type","key":"controlType","type":"select","subNode":true,"options":[{"value":"abs","label":"Absolute"},{"value":"rel1","label":"Relative 1"},{"value":"rel2","label":"Relative 2"},{"value":"rel3","label":"Relative 3"}]},"ctjg7qo":{"id":"ctjg7qo","value":0.5,"inputLinkIds":[],"shotCount":0,"connectedMacroIds":[],"title":"MIDI Sensitivity","key":"sensitivity","subNode":true},"lr48u46":{"id":"lr48u46","value":"abs","inputLinkIds":[],"shotCount":0,"connectedMacroIds":[],"title":"Control Type","key":"controlType","type":"select","subNode":true,"options":[{"value":"abs","label":"Absolute"},{"value":"rel1","label":"Relative 1"},{"value":"rel2","label":"Relative 2"},{"value":"rel3","label":"Relative 3"}]},"ld3apiw":{"id":"ld3apiw","value":0.5,"inputLinkIds":[],"shotCount":0,"connectedMacroIds":[],"title":"MIDI Sensitivity","key":"sensitivity","subNode":true},"2scl5ca":{"id":"2scl5ca","value":"abs","inputLinkIds":[],"shotCount":0,"connectedMacroIds":[],"title":"Control Type","key":"controlType","type":"select","subNode":true,"options":[{"value":"abs","label":"Absolute"},{"value":"rel1","label":"Relative 1"},{"value":"rel2","label":"Relative 2"},{"value":"rel3","label":"Relative 3"}]},"cm62jvs":{"id":"cm62jvs","value":[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"inputLinkIds":[],"shotCount":0,"connectedMacroIds":[]},"okcam1e":{"id":"okcam1e","value":0.5,"inputLinkIds":[],"shotCount":0,"connectedMacroIds":[],"title":"MIDI Sensitivity","key":"sensitivity","subNode":true},"0yagi0c":{"id":"0yagi0c","value":"rel1","inputLinkIds":[],"shotCount":0,"connectedMacroIds":[],"title":"Control Type","key":"controlType","type":"select","subNode":true,"options":[{"value":"abs","label":"Absolute"},{"value":"rel1","label":"Relative 1"},{"value":"rel2","label":"Relative 2"},{"value":"rel3","label":"Relative 3"}]},"mobd7io":{"id":"mobd7io","value":0.5,"inputLinkIds":[],"shotCount":0,"connectedMacroIds":[],"title":"MIDI Sensitivity","key":"sensitivity","subNode":true},"prt1l64":{"id":"prt1l64","value":"rel1","inputLinkIds":[],"shotCount":0,"connectedMacroIds":[],"title":"Control Type","key":"controlType","type":"select","subNode":true,"options":[{"value":"abs","label":"Absolute"},{"value":"rel1","label":"Relative 1"},{"value":"rel2","label":"Relative 2"},{"value":"rel3","label":"Relative 3"}]},"5tlbkul":{"id":"5tlbkul","value":0.5,"inputLinkIds":[],"shotCount":0,"connectedMacroIds":[],"title":"MIDI Sensitivity","key":"sensitivity","subNode":true},"j30su42":{"id":"j30su42","value":"rel1","inputLinkIds":[],"shotCount":0,"connectedMacroIds":[],"title":"Control Type","key":"controlType","type":"select","subNode":true,"options":[{"value":"abs","label":"Absolute"},{"value":"rel1","label":"Relative 1"},{"value":"rel2","label":"Relative 2"},{"value":"rel3","label":"Relative 3"}]},"psoo728":{"id":"psoo728","value":0.5,"inputLinkIds":[],"shotCount":0,"connectedMacroIds":[],"title":"MIDI Sensitivity","key":"sensitivity","subNode":true},"dpeqfqy":{"id":"dpeqfqy","value":"rel1","inputLinkIds":[],"shotCount":0,"connectedMacroIds":[],"title":"Control Type","key":"controlType","type":"select","subNode":true,"options":[{"value":"abs","label":"Absolute"},{"value":"rel1","label":"Relative 1"},{"value":"rel2","label":"Relative 2"},{"value":"rel3","label":"Relative 3"}]},"redn32p":{"id":"redn32p","value":0,"inputLinkIds":[],"shotCount":0,"connectedMacroIds":[],"key":"threshold","title":"Threshold","passToNext":false,"subNode":true},"yqxwhc0":{"id":"yqxwhc0","value":0,"inputLinkIds":[],"shotCount":0,"connectedMacroIds":[],"key":"range","title":"Lower Range","passToNext":true,"subNode":true},"l1klx9e":{"id":"l1klx9e","value":1,"inputLinkIds":[],"shotCount":0,"connectedMacroIds":[],"key":"range","title":"Upper Range","passToNext":false,"subNode":true},"q3lxb7q":{"id":"q3lxb7q","value":"sine","inputLinkIds":[],"shotCount":0,"connectedMacroIds":[],"title":"Shape","key":"shape","type":"select","subNode":true,"options":[{"value":"sine","label":"Sine"},{"value":"square","label":"Square"},{"value":"sawtooth","label":"Sawtooth"},{"value":"rSawtooth","label":"Revese Sawtooth"},{"value":"triangle","label":"Triangle"}]},"guj1tb2":{"id":"guj1tb2","value":0.03125,"inputLinkIds":[],"shotCount":0,"connectedMacroIds":[],"title":"Rate","key":"rate","type":"select","subNode":true,"options":[{"value":32,"label":"32"},{"value":16,"label":"16"},{"value":8,"label":"8"},{"value":4,"label":"4"},{"value":2,"label":"2"},{"value":1,"label":"1"},{"value":0.5,"label":"1/2"},{"value":0.25,"label":"1/4"},{"value":0.125,"label":"1/8"},{"value":0.0625,"label":"1/16"},{"value":0.03125,"label":"1/32"}]},"ouvvbse":{"id":"ouvvbse","value":0,"inputLinkIds":[],"shotCount":0,"connectedMacroIds":[],"key":"threshold","title":"Threshold","passToNext":false,"subNode":true},"o49mo6a":{"id":"o49mo6a","value":0,"inputLinkIds":[],"shotCount":0,"connectedMacroIds":[],"key":"range","title":"Lower Range","passToNext":true,"subNode":true},"y9gg08r":{"id":"y9gg08r","value":1,"inputLinkIds":[],"shotCount":0,"connectedMacroIds":[],"key":"range","title":"Upper Range","passToNext":false,"subNode":true},"6u65ujh":{"id":"6u65ujh","value":"sine","inputLinkIds":[],"shotCount":0,"connectedMacroIds":[],"title":"Shape","key":"shape","type":"select","subNode":true,"options":[{"value":"sine","label":"Sine"},{"value":"square","label":"Square"},{"value":"sawtooth","label":"Sawtooth"},{"value":"rSawtooth","label":"Revese Sawtooth"},{"value":"triangle","label":"Triangle"}]},"4k6xmqj":{"id":"4k6xmqj","value":0.03125,"inputLinkIds":[],"shotCount":0,"connectedMacroIds":[],"title":"Rate","key":"rate","type":"select","subNode":true,"options":[{"value":32,"label":"32"},{"value":16,"label":"16"},{"value":8,"label":"8"},{"value":4,"label":"4"},{"value":2,"label":"2"},{"value":1,"label":"1"},{"value":0.5,"label":"1/2"},{"value":0.25,"label":"1/4"},{"value":0.125,"label":"1/8"},{"value":0.0625,"label":"1/16"},{"value":0.03125,"label":"1/32"}]},"emf1plf":{"id":"emf1plf","value":0,"inputLinkIds":[],"shotCount":0,"connectedMacroIds":[],"key":"threshold","title":"Threshold","passToNext":false,"subNode":true},"tkwv9yv":{"id":"tkwv9yv","value":0,"inputLinkIds":[],"shotCount":0,"connectedMacroIds":[],"key":"range","title":"Lower Range","passToNext":true,"subNode":true},"d9p8mr8":{"id":"d9p8mr8","value":1,"inputLinkIds":[],"shotCount":0,"connectedMacroIds":[],"key":"range","title":"Upper Range","passToNext":false,"subNode":true},"ruin7kg":{"id":"ruin7kg","value":"sine","inputLinkIds":[],"shotCount":0,"connectedMacroIds":[],"title":"Shape","key":"shape","type":"select","subNode":true,"options":[{"value":"sine","label":"Sine"},{"value":"square","label":"Square"},{"value":"sawtooth","label":"Sawtooth"},{"value":"rSawtooth","label":"Revese Sawtooth"},{"value":"triangle","label":"Triangle"}]},"lmkhb00":{"id":"lmkhb00","value":0.03125,"inputLinkIds":[],"shotCount":0,"connectedMacroIds":[],"title":"Rate","key":"rate","type":"select","subNode":true,"options":[{"value":32,"label":"32"},{"value":16,"label":"16"},{"value":8,"label":"8"},{"value":4,"label":"4"},{"value":2,"label":"2"},{"value":1,"label":"1"},{"value":0.5,"label":"1/2"},{"value":0.25,"label":"1/4"},{"value":0.125,"label":"1/8"},{"value":0.0625,"label":"1/16"},{"value":0.03125,"label":"1/32"}]},"idr2qb4":{"id":"idr2qb4","value":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"inputLinkIds":[],"shotCount":0,"connectedMacroIds":[]},"heghykt":{"id":"heghykt","value":[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"inputLinkIds":[],"shotCount":0,"connectedMacroIds":[]},"7ocxaw1":{"id":"7ocxaw1","value":0,"inputLinkIds":[],"shotCount":0,"connectedMacroIds":[],"key":"threshold","title":"Threshold","passToNext":false,"subNode":true},"0lrisi6":{"id":"0lrisi6","value":0.236921568627451,"inputLinkIds":[],"shotCount":0,"connectedMacroIds":[],"key":"gain","title":"Gain","passToNext":false,"type":"audio","subNode":true},"mjx3g3e":{"id":"mjx3g3e","value":0,"inputLinkIds":[],"shotCount":0,"connectedMacroIds":[],"key":"range","title":"Lower Range","passToNext":true,"subNode":true},"9bwf9ia":{"id":"9bwf9ia","value":1,"inputLinkIds":[],"shotCount":0,"connectedMacroIds":[],"key":"range","title":"Upper Range","passToNext":false,"subNode":true},"vu5749n":{"id":"vu5749n","value":[1,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0],"inputLinkIds":[],"shotCount":0,"connectedMacroIds":[]},"ps58qmj":{"id":"ps58qmj","value":[1,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0],"inputLinkIds":[],"shotCount":0,"connectedMacroIds":[]},"ly6n3mr":{"id":"ly6n3mr","value":0,"inputLinkIds":[],"shotCount":0,"connectedMacroIds":[],"key":"threshold","title":"Threshold","passToNext":false,"subNode":true},"p5majmb":{"id":"p5majmb","value":0.333,"inputLinkIds":[],"shotCount":0,"connectedMacroIds":[],"key":"gain","title":"Gain","passToNext":false,"type":"audio","subNode":true},"x4wxdnd":{"id":"x4wxdnd","value":0,"inputLinkIds":[],"shotCount":0,"connectedMacroIds":[],"key":"range","title":"Lower Range","passToNext":true,"subNode":true},"utiy2mn":{"id":"utiy2mn","value":0.32156862745098036,"inputLinkIds":[],"shotCount":0,"connectedMacroIds":[],"key":"range","title":"Upper Range","passToNext":false,"subNode":true},"5awa4as":{"id":"5awa4as","value":0.05694444444444444,"inputLinkIds":["t1tlgky"],"shotCount":0,"connectedMacroIds":[],"title":"Pos Z","type":"param","key":"posZ","openedLinkId":"t1tlgky"},"kp239vt":{"id":"kp239vt","value":0.5194444444444444,"inputLinkIds":[],"shotCount":0,"connectedMacroIds":[],"title":"Rot Speed X","type":"param","key":"rotSpeedX"},"7ysollp":{"id":"7ysollp","value":0.5041666666666667,"inputLinkIds":[],"shotCount":0,"connectedMacroIds":[],"title":"Rot Speed Y","type":"param","key":"rotSpeedY"},"bdvxch1":{"id":"bdvxch1","value":0.5,"inputLinkIds":[],"shotCount":0,"connectedMacroIds":[],"title":"Rot Speed Z","type":"param","key":"rotSpeedZ"},"059y9gu":{"id":"059y9gu","value":0,"inputLinkIds":[],"shotCount":0,"connectedMacroIds":[],"key":"threshold","title":"Threshold","passToNext":false,"subNode":true},"i0q7qsu":{"id":"i0q7qsu","value":0,"inputLinkIds":[],"shotCount":0,"connectedMacroIds":[],"key":"range","title":"Lower Range","passToNext":true,"subNode":true},"c1w395y":{"id":"c1w395y","value":1,"inputLinkIds":[],"shotCount":0,"connectedMacroIds":[],"key":"range","title":"Upper Range","passToNext":false,"subNode":true},"kwk2qe6":{"id":"kwk2qe6","value":"sine","inputLinkIds":[],"shotCount":0,"connectedMacroIds":[],"title":"Shape","key":"shape","type":"select","subNode":true,"options":[{"value":"sine","label":"Sine"},{"value":"square","label":"Square"},{"value":"sawtooth","label":"Sawtooth"},{"value":"rSawtooth","label":"Revese Sawtooth"},{"value":"triangle","label":"Triangle"}]},"4ta0egh":{"id":"4ta0egh","value":0.0625,"inputLinkIds":[],"shotCount":0,"connectedMacroIds":[],"title":"Rate","key":"rate","type":"select","subNode":true,"options":[{"value":32,"label":"32"},{"value":16,"label":"16"},{"value":8,"label":"8"},{"value":4,"label":"4"},{"value":2,"label":"2"},{"value":1,"label":"1"},{"value":0.5,"label":"1/2"},{"value":0.25,"label":"1/4"},{"value":0.125,"label":"1/8"},{"value":0.0625,"label":"1/16"},{"value":0.03125,"label":"1/32"}]},"ohn7r5s":{"id":"ohn7r5s","value":0,"inputLinkIds":["nmero37"],"shotCount":831,"connectedMacroIds":[],"type":"shot","title":"Spin","method":"spin","sketchId":"ke41k0r","openedLinkId":"nmero37","activeInputLinkId":"nmero37"},"ovsbbaj":{"id":"ovsbbaj","value":0,"inputLinkIds":["ut36y6h"],"shotCount":1578,"connectedMacroIds":[],"type":"shot","title":"Update Reflection","method":"updateReflection","sketchId":"ke41k0r","openedLinkId":"ut36y6h","activeInputLinkId":"ut36y6h"},"bfwr4v0":{"id":"bfwr4v0","value":0.637735251538183,"inputLinkIds":[],"shotCount":0,"connectedMacroIds":[],"title":"Blob Speed","type":"param","key":"blobSpeed"},"h0j13u3":{"id":"h0j13u3","value":0.5108225108225107,"inputLinkIds":[],"shotCount":0,"connectedMacroIds":[],"title":"Num Blobs","type":"param","key":"numBlobs"},"dggm0tj":{"id":"dggm0tj","value":0.15173417464942146,"inputLinkIds":["wfqbeyh"],"shotCount":0,"connectedMacroIds":[],"title":"Blob Strength","type":"param","key":"blobStrength","openedLinkId":"wfqbeyh","activeInputLinkId":"wfqbeyh"},"98616x3":{"id":"98616x3","value":[0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0],"inputLinkIds":[],"shotCount":0,"connectedMacroIds":[]},"ejrydjf":{"id":"ejrydjf","value":[0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0],"inputLinkIds":[],"shotCount":0,"connectedMacroIds":[]},"v6yqx7h":{"id":"v6yqx7h","value":0,"inputLinkIds":[],"shotCount":0,"connectedMacroIds":[],"key":"threshold","title":"Threshold","passToNext":false,"subNode":true},"lgfsbaw":{"id":"lgfsbaw","value":0.09475806451612903,"inputLinkIds":[],"shotCount":0,"connectedMacroIds":[],"key":"range","title":"Lower Range","passToNext":true,"subNode":true},"vh6eo4r":{"id":"vh6eo4r","value":0.7036290322580645,"inputLinkIds":[],"shotCount":0,"connectedMacroIds":[],"key":"range","title":"Upper Range","passToNext":false,"subNode":true},"v2ci02v":{"id":"v2ci02v","value":"sine","inputLinkIds":[],"shotCount":0,"connectedMacroIds":[],"title":"Shape","key":"shape","type":"select","subNode":true,"options":[{"value":"sine","label":"Sine"},{"value":"square","label":"Square"},{"value":"sawtooth","label":"Sawtooth"},{"value":"rSawtooth","label":"Revese Sawtooth"},{"value":"triangle","label":"Triangle"}]},"6wwys9v":{"id":"6wwys9v","value":0.25,"inputLinkIds":[],"shotCount":0,"connectedMacroIds":[],"title":"Rate","key":"rate","type":"select","subNode":true,"options":[{"value":32,"label":"32"},{"value":16,"label":"16"},{"value":8,"label":"8"},{"value":4,"label":"4"},{"value":2,"label":"2"},{"value":1,"label":"1"},{"value":0.5,"label":"1/2"},{"value":0.25,"label":"1/4"},{"value":0.125,"label":"1/8"},{"value":0.0625,"label":"1/16"},{"value":0.03125,"label":"1/32"}]}},"sketches":{"n2f9seu":{"title":"Tunnel","moduleId":"tunnel","paramIds":["mtv4u2n","b7xscqw","aslva69","4tlp5ma","j74jm55","ux97k4u","suxy1eo","t0p66we","nwaujo8","4redsju"],"shotIds":["r0jhd7d","msfk9eo","8jnvuvt","hqt5mbx","o4cg9sq","gbgfyna","6w0ftm4","g2wkdfh","f2vm0ad","c4co6pp","8f9p3iu","vycamse","dwpdpd2"],"openedNodes":{"shot":"o4cg9sq","param":"4redsju"}},"ul0vij5":{"title":"Env","moduleId":"env","paramIds":["brbdd02","mii5941","py6r7ff","2ma5j1g","n90nnxj","ov44t8l","6m26t93","toclqb2","q830h87","cgv3uh3"],"shotIds":["gkfdllj","qm38bu4","g96s5o3","18po57c"],"openedNodes":{"param":"6m26t93","shot":"18po57c"}},"ke41k0r":{"title":"Blobs","moduleId":"blobs","paramIds":["5awa4as","kp239vt","7ysollp","bdvxch1","bfwr4v0","h0j13u3","dggm0tj"],"shotIds":["ohn7r5s","ovsbbaj"],"openedNodes":{"param":"dggm0tj","shot":"ohn7r5s"}}},"project":{"filePath":"@@@","sketchesPath":"@@@","errors":["Sketches failed to load: Failed to load sketch folder: Cannot find module 'glslify-import' from '/Users/alex/AppDev/hedron/example-projects/trippy/sketches/tunnel'","Failed to initiate sketches: Cannot read property 'Module' of undefined"],"errorPopup":false},"inputs":{"audio_0":{"value":0.6016519561068703,"assignedLinkIds":[]},"audio_1":{"value":0.5268964694656488,"assignedLinkIds":[]},"audio_2":{"value":0.4832418893129771,"assignedLinkIds":["oynf9ss","es5vbfo"]},"audio_3":{"value":0.35424618320610685,"assignedLinkIds":[]},"lfo":{"value":423.46050976509906,"assignedLinkIds":["lyjwtsd","rfdddkt","g3uo60t","uyvvqpt","t1tlgky","wfqbeyh"]},"seq-step":{"assignedLinkIds":["4nw29mk","59c5jkr","bk10ujd","96eoye1","ehfi00i","ut36y6h","nmero37"],"value":22},"midi_1900":{"assignedLinkIds":[],"deviceId":"BCR2000 Port 1","value":1},"midi_19050":{"assignedLinkIds":[],"deviceId":"BCR2000 Port 1","value":1},"midi_19060":{"assignedLinkIds":[],"deviceId":"BCR2000 Port 1","value":0.007874015748031496},"midi_1580":{"assignedLinkIds":[],"deviceId":"BCR2000 Port 1","value":0.007874015748031496},"midi_1581":{"assignedLinkIds":[],"deviceId":"BCR2000 Port 1","value":0.007874015748031496}},"inputLinks":{"4nw29mk":{"title":"seq-step","input":{"id":"seq-step"},"id":"4nw29mk","nodeId":"r0jhd7d","nodeType":"shot","modifierIds":[],"lfoOptionIds":[],"midiOptionIds":[],"linkableActions":{"toggleActivate":"mq45v3s"},"sequencerGridId":"14kv630","linkType":"node"},"59c5jkr":{"title":"seq-step","input":{"id":"seq-step"},"id":"59c5jkr","nodeId":"o4cg9sq","nodeType":"shot","modifierIds":[],"lfoOptionIds":[],"midiOptionIds":[],"linkableActions":{"toggleActivate":"4xi6han"},"sequencerGridId":"plcj6yt","linkType":"node"},"bk10ujd":{"title":"seq-step","input":{"id":"seq-step"},"id":"bk10ujd","nodeId":"vycamse","nodeType":"shot","modifierIds":[],"lfoOptionIds":[],"midiOptionIds":[],"linkableActions":{"toggleActivate":"sey8vl9"},"sequencerGridId":"xuq8yga","linkType":"node"},"lyjwtsd":{"title":"lfo","input":{"id":"lfo"},"id":"lyjwtsd","nodeId":"mtv4u2n","nodeType":"param","modifierIds":["8o7f07n","we3gse5","4s38dd9"],"lfoOptionIds":["kus0iwf","7u6c8fn"],"midiOptionIds":[],"linkableActions":{"toggleActivate":"g92727d"},"linkType":"node"},"96eoye1":{"title":"seq-step","input":{"id":"seq-step"},"id":"96eoye1","nodeId":"hqt5mbx","nodeType":"shot","modifierIds":[],"lfoOptionIds":[],"midiOptionIds":[],"linkableActions":{"toggleActivate":"3d85r1u"},"sequencerGridId":"cm62jvs","linkType":"node"},"rfdddkt":{"title":"lfo","input":{"id":"lfo"},"id":"rfdddkt","nodeId":"t0p66we","nodeType":"param","modifierIds":["redn32p","yqxwhc0","l1klx9e"],"lfoOptionIds":["q3lxb7q","guj1tb2"],"midiOptionIds":[],"linkableActions":{"toggleActivate":"atf6m6s"},"linkType":"node"},"g3uo60t":{"title":"lfo","input":{"id":"lfo"},"id":"g3uo60t","nodeId":"toclqb2","nodeType":"param","modifierIds":["ouvvbse","o49mo6a","y9gg08r"],"lfoOptionIds":["6u65ujh","4k6xmqj"],"midiOptionIds":[],"linkableActions":{"toggleActivate":"w3ylrsg"},"linkType":"node"},"uyvvqpt":{"title":"lfo","input":{"id":"lfo"},"id":"uyvvqpt","nodeId":"mii5941","nodeType":"param","modifierIds":["emf1plf","tkwv9yv","d9p8mr8"],"lfoOptionIds":["ruin7kg","lmkhb00"],"midiOptionIds":[],"linkableActions":{"toggleActivate":"kt9k51t"},"linkType":"node"},"oynf9ss":{"title":"audio_2","input":{"id":"audio_2","type":"audio"},"id":"oynf9ss","nodeId":"4redsju","nodeType":"param","modifierIds":["7ocxaw1","0lrisi6","mjx3g3e","9bwf9ia"],"lfoOptionIds":[],"midiOptionIds":[],"linkableActions":{"toggleActivate":"vy85ycj"},"linkType":"node"},"ehfi00i":{"title":"seq-step","input":{"id":"seq-step"},"id":"ehfi00i","nodeId":"gbgfyna","nodeType":"shot","modifierIds":[],"lfoOptionIds":[],"midiOptionIds":[],"linkableActions":{"toggleActivate":"eswyq0x"},"sequencerGridId":"ps58qmj","linkType":"node"},"es5vbfo":{"title":"audio_2","input":{"id":"audio_2","type":"audio"},"id":"es5vbfo","nodeId":"6m26t93","nodeType":"param","modifierIds":["ly6n3mr","p5majmb","x4wxdnd","utiy2mn"],"lfoOptionIds":[],"midiOptionIds":[],"linkableActions":{"toggleActivate":"oi0xdsy"},"linkType":"node"},"t1tlgky":{"title":"lfo","input":{"id":"lfo"},"id":"t1tlgky","nodeId":"5awa4as","nodeType":"param","modifierIds":["059y9gu","i0q7qsu","c1w395y"],"lfoOptionIds":["kwk2qe6","4ta0egh"],"midiOptionIds":[],"linkableActions":{"toggleActivate":"jb1reog"},"linkType":"node"},"ut36y6h":{"title":"seq-step","input":{"id":"seq-step"},"id":"ut36y6h","nodeId":"ovsbbaj","nodeType":"shot","modifierIds":[],"lfoOptionIds":[],"midiOptionIds":[],"linkableActions":{"toggleActivate":"e73ix86"},"sequencerGridId":"98616x3","linkType":"node"},"nmero37":{"title":"seq-step","input":{"id":"seq-step"},"id":"nmero37","nodeId":"ohn7r5s","nodeType":"shot","modifierIds":[],"lfoOptionIds":[],"midiOptionIds":[],"linkableActions":{"toggleActivate":"nx8jnxw"},"sequencerGridId":"ejrydjf","linkType":"node"},"wfqbeyh":{"title":"lfo","input":{"id":"lfo"},"id":"wfqbeyh","nodeId":"dggm0tj","nodeType":"param","modifierIds":["v6yqx7h","lgfsbaw","vh6eo4r"],"lfoOptionIds":["v2ci02v","6wwys9v"],"midiOptionIds":[],"linkableActions":{"toggleActivate":"lhsaish"},"linkType":"node"}},"linkableActions":{"mq45v3s":{"id":"mq45v3s","action":{"type":"NODE_ACTIVE_INPUT_LINK_TOGGLE","payload":{"nodeId":"r0jhd7d","linkId":"4nw29mk"}},"inputLinkIds":[]},"4xi6han":{"id":"4xi6han","action":{"type":"NODE_ACTIVE_INPUT_LINK_TOGGLE","payload":{"nodeId":"o4cg9sq","linkId":"59c5jkr"}},"inputLinkIds":[]},"sey8vl9":{"id":"sey8vl9","action":{"type":"NODE_ACTIVE_INPUT_LINK_TOGGLE","payload":{"nodeId":"vycamse","linkId":"bk10ujd"}},"inputLinkIds":[]},"g92727d":{"id":"g92727d","action":{"type":"NODE_ACTIVE_INPUT_LINK_TOGGLE","payload":{"nodeId":"mtv4u2n","linkId":"lyjwtsd"}},"inputLinkIds":[]},"3d85r1u":{"id":"3d85r1u","action":{"type":"NODE_ACTIVE_INPUT_LINK_TOGGLE","payload":{"nodeId":"hqt5mbx","linkId":"96eoye1"}},"inputLinkIds":[]},"atf6m6s":{"id":"atf6m6s","action":{"type":"NODE_ACTIVE_INPUT_LINK_TOGGLE","payload":{"nodeId":"t0p66we","linkId":"rfdddkt"}},"inputLinkIds":[]},"w3ylrsg":{"id":"w3ylrsg","action":{"type":"NODE_ACTIVE_INPUT_LINK_TOGGLE","payload":{"nodeId":"toclqb2","linkId":"g3uo60t"}},"inputLinkIds":[]},"kt9k51t":{"id":"kt9k51t","action":{"type":"NODE_ACTIVE_INPUT_LINK_TOGGLE","payload":{"nodeId":"mii5941","linkId":"uyvvqpt"}},"inputLinkIds":[]},"vy85ycj":{"id":"vy85ycj","action":{"type":"NODE_ACTIVE_INPUT_LINK_TOGGLE","payload":{"nodeId":"4redsju","linkId":"oynf9ss"}},"inputLinkIds":[]},"eswyq0x":{"id":"eswyq0x","action":{"type":"NODE_ACTIVE_INPUT_LINK_TOGGLE","payload":{"nodeId":"gbgfyna","linkId":"ehfi00i"}},"inputLinkIds":[]},"oi0xdsy":{"id":"oi0xdsy","action":{"type":"NODE_ACTIVE_INPUT_LINK_TOGGLE","payload":{"nodeId":"6m26t93","linkId":"es5vbfo"}},"inputLinkIds":[]},"jb1reog":{"id":"jb1reog","action":{"type":"NODE_ACTIVE_INPUT_LINK_TOGGLE","payload":{"nodeId":"5awa4as","linkId":"t1tlgky"}},"inputLinkIds":[]},"e73ix86":{"id":"e73ix86","action":{"type":"NODE_ACTIVE_INPUT_LINK_TOGGLE","payload":{"nodeId":"ovsbbaj","linkId":"ut36y6h"}},"inputLinkIds":[]},"nx8jnxw":{"id":"nx8jnxw","action":{"type":"NODE_ACTIVE_INPUT_LINK_TOGGLE","payload":{"nodeId":"ohn7r5s","linkId":"nmero37"}},"inputLinkIds":[]},"lhsaish":{"id":"lhsaish","action":{"type":"NODE_ACTIVE_INPUT_LINK_TOGGLE","payload":{"nodeId":"dggm0tj","linkId":"wfqbeyh"}},"inputLinkIds":[]}},"macros":{"learningId":false,"items":{}},"ui":{"panelWidths":{"left":45.83378641749242},"isEditing":false},"router":{"location":{"pathname":"/sketches/view/n2f9seu","search":"","hash":"","key":"gj5mqk"}},"settings":{"clockGenerated":true,"clockBpm":124},"form":{}}
+{
+  "nodes": {
+    "sceneCrossfader": {
+      "id": "sceneCrossfader",
+      "value": 0,
+      "inputLinkIds": [],
+      "shotCount": 0,
+      "connectedMacroIds": [],
+      "title": "Scene Crossfader",
+      "type": "param"
+    },
+    "viewerMode": {
+      "id": "viewerMode",
+      "value": "mix",
+      "inputLinkIds": [],
+      "shotCount": 0,
+      "connectedMacroIds": [],
+      "title": "Viewer Mode",
+      "type": "select",
+      "options": [
+        {
+          "value": "mix",
+          "label": "Mix"
+        },
+        {
+          "value": "A",
+          "label": "A"
+        },
+        {
+          "value": "B",
+          "label": "B"
+        }
+      ]
+    },
+    "audioNormalizeLevels": {
+      "id": "audioNormalizeLevels",
+      "value": 0.5,
+      "inputLinkIds": [],
+      "shotCount": 0,
+      "connectedMacroIds": [],
+      "title": "Normalize Levels",
+      "type": "param"
+    },
+    "audioLevelsFalloff": {
+      "id": "audioLevelsFalloff",
+      "value": 1,
+      "inputLinkIds": [],
+      "shotCount": 0,
+      "connectedMacroIds": [],
+      "title": "Levels Falloff",
+      "type": "param"
+    },
+    "0s6lvul": {
+      "id": "0s6lvul",
+      "value": 0.5778388278388278,
+      "inputLinkIds": [],
+      "shotCount": 0,
+      "connectedMacroIds": [],
+      "title": "Z Speed",
+      "type": "param",
+      "key": "zSpeed"
+    },
+    "vei9jws": {
+      "id": "vei9jws",
+      "value": 0,
+      "inputLinkIds": [],
+      "shotCount": 0,
+      "connectedMacroIds": [],
+      "title": "Tunnel Scale",
+      "type": "param",
+      "key": "tunnelScale"
+    },
+    "usb304w": {
+      "id": "usb304w",
+      "value": 0,
+      "inputLinkIds": [],
+      "shotCount": 0,
+      "connectedMacroIds": [],
+      "title": "Rot Speed",
+      "type": "param",
+      "key": "rotSpeed"
+    },
+    "hdp7xd1": {
+      "id": "hdp7xd1",
+      "value": 0.5,
+      "inputLinkIds": [],
+      "shotCount": 0,
+      "connectedMacroIds": [],
+      "title": "Rot Tween Speed",
+      "type": "param",
+      "key": "rotTweenSpeed"
+    },
+    "7cuaqas": {
+      "id": "7cuaqas",
+      "value": 0.5,
+      "inputLinkIds": [],
+      "shotCount": 0,
+      "connectedMacroIds": [],
+      "title": "Block Shift Speed",
+      "type": "param",
+      "key": "blockShiftSpeed"
+    },
+    "ypj20pn": {
+      "id": "ypj20pn",
+      "value": 0.5,
+      "inputLinkIds": [],
+      "shotCount": 0,
+      "connectedMacroIds": [],
+      "title": "Block Spin Speed",
+      "type": "param",
+      "key": "blockSpinSpeed"
+    },
+    "ftuvkhp": {
+      "id": "ftuvkhp",
+      "value": 0.5,
+      "inputLinkIds": [],
+      "shotCount": 0,
+      "connectedMacroIds": [],
+      "title": "Perlin Speed",
+      "type": "param",
+      "key": "perlinSpeed"
+    },
+    "928kfik": {
+      "id": "928kfik",
+      "value": 0.8916433746142263,
+      "inputLinkIds": [
+        "ys4kblg"
+      ],
+      "shotCount": 0,
+      "connectedMacroIds": [],
+      "title": "color H",
+      "type": "param",
+      "key": "colorH",
+      "openedLinkId": "ys4kblg",
+      "activeInputLinkId": "ys4kblg"
+    },
+    "oekq70k": {
+      "id": "oekq70k",
+      "value": 0.5,
+      "inputLinkIds": [],
+      "shotCount": 0,
+      "connectedMacroIds": [],
+      "title": "color S",
+      "type": "param",
+      "key": "colorS"
+    },
+    "kb2byt3": {
+      "id": "kb2byt3",
+      "value": 0.5192307692307692,
+      "inputLinkIds": [],
+      "shotCount": 0,
+      "connectedMacroIds": [],
+      "title": "color L",
+      "type": "param",
+      "key": "colorL"
+    },
+    "2rkglfv": {
+      "id": "2rkglfv",
+      "value": 0,
+      "inputLinkIds": [
+        "y91yr74"
+      ],
+      "shotCount": 252,
+      "connectedMacroIds": [],
+      "type": "shot",
+      "title": "Quarter Turn",
+      "method": "quarterTurn",
+      "sketchId": "4mipx19",
+      "openedLinkId": "y91yr74",
+      "activeInputLinkId": "y91yr74"
+    },
+    "utd7ext": {
+      "id": "utd7ext",
+      "value": 0,
+      "inputLinkIds": [],
+      "shotCount": 0,
+      "connectedMacroIds": [],
+      "type": "shot",
+      "title": "Remove Blocks",
+      "method": "removeBlocks",
+      "sketchId": "4mipx19"
+    },
+    "covtc3r": {
+      "id": "covtc3r",
+      "value": 0,
+      "inputLinkIds": [],
+      "shotCount": 0,
+      "connectedMacroIds": [],
+      "type": "shot",
+      "title": "Add Blocks",
+      "method": "addBlocks",
+      "sketchId": "4mipx19"
+    },
+    "tcyawv3": {
+      "id": "tcyawv3",
+      "value": 0,
+      "inputLinkIds": [
+        "pqbp3yc"
+      ],
+      "shotCount": 244,
+      "connectedMacroIds": [],
+      "type": "shot",
+      "title": "Shift Blocks",
+      "method": "shiftBlocks",
+      "sketchId": "4mipx19",
+      "openedLinkId": "pqbp3yc",
+      "activeInputLinkId": "pqbp3yc"
+    },
+    "n6u2rgu": {
+      "id": "n6u2rgu",
+      "value": 0,
+      "inputLinkIds": [
+        "oglnu99"
+      ],
+      "shotCount": 236,
+      "connectedMacroIds": [],
+      "type": "shot",
+      "title": "Spin Blocks",
+      "method": "spinBlocks",
+      "sketchId": "4mipx19",
+      "openedLinkId": "oglnu99",
+      "activeInputLinkId": "oglnu99"
+    },
+    "6bcuie8": {
+      "id": "6bcuie8",
+      "value": 0,
+      "inputLinkIds": [
+        "ngb783x"
+      ],
+      "shotCount": 442,
+      "connectedMacroIds": [],
+      "type": "shot",
+      "title": "Flash Blocks",
+      "method": "flashBlocks",
+      "sketchId": "4mipx19",
+      "openedLinkId": "ngb783x",
+      "activeInputLinkId": "ngb783x"
+    },
+    "9h704ki": {
+      "id": "9h704ki",
+      "value": 0,
+      "inputLinkIds": [],
+      "shotCount": 6,
+      "connectedMacroIds": [],
+      "type": "shot",
+      "title": "Boosted Flash Blocks",
+      "method": "boostedFlashBlocks",
+      "sketchId": "4mipx19",
+      "activeInputLinkId": "yydl896"
+    },
+    "a4dx8hv": {
+      "id": "a4dx8hv",
+      "value": 0,
+      "inputLinkIds": [],
+      "shotCount": 0,
+      "connectedMacroIds": [],
+      "type": "shot",
+      "title": "Flash All On",
+      "method": "flashAllBlocksOn",
+      "sketchId": "4mipx19"
+    },
+    "yx0bq36": {
+      "id": "yx0bq36",
+      "value": 0,
+      "inputLinkIds": [],
+      "shotCount": 0,
+      "connectedMacroIds": [],
+      "type": "shot",
+      "title": "Flash All Off",
+      "method": "flashAllBlocksOff",
+      "sketchId": "4mipx19"
+    },
+    "cl04jaf": {
+      "id": "cl04jaf",
+      "value": 0,
+      "inputLinkIds": [],
+      "shotCount": 0,
+      "connectedMacroIds": [],
+      "type": "shot",
+      "title": "Pipes On",
+      "method": "pipesOn",
+      "sketchId": "4mipx19"
+    },
+    "fq7lx8b": {
+      "id": "fq7lx8b",
+      "value": 0,
+      "inputLinkIds": [],
+      "shotCount": 0,
+      "connectedMacroIds": [],
+      "type": "shot",
+      "title": "Pipes Off",
+      "method": "pipesOff",
+      "sketchId": "4mipx19"
+    },
+    "1e6sq5r": {
+      "id": "1e6sq5r",
+      "value": 0.5935977586707601,
+      "inputLinkIds": [
+        "har1p3h"
+      ],
+      "shotCount": 2997,
+      "connectedMacroIds": [],
+      "type": "shot",
+      "title": "Pipes Swap",
+      "method": "pipesSwap",
+      "sketchId": "4mipx19",
+      "openedLinkId": "har1p3h",
+      "activeInputLinkId": "har1p3h"
+    },
+    "913i7q9": {
+      "id": "913i7q9",
+      "value": 0,
+      "inputLinkIds": [],
+      "shotCount": 0,
+      "connectedMacroIds": [],
+      "type": "shot",
+      "title": "Pipes All On",
+      "method": "pipesAllOn",
+      "sketchId": "4mipx19"
+    },
+    "di0yss4": {
+      "id": "di0yss4",
+      "value": 0.03296703296703297,
+      "inputLinkIds": [],
+      "shotCount": 0,
+      "connectedMacroIds": [],
+      "title": "Fog Density",
+      "type": "param",
+      "key": "fogDensity"
+    },
+    "j5obnao": {
+      "id": "j5obnao",
+      "value": 0.29120879120879106,
+      "inputLinkIds": [],
+      "shotCount": 0,
+      "connectedMacroIds": [],
+      "title": "BG Color H",
+      "type": "param",
+      "key": "colorH"
+    },
+    "1ic3j5e": {
+      "id": "1ic3j5e",
+      "value": 0.19230769230769232,
+      "inputLinkIds": [],
+      "shotCount": 0,
+      "connectedMacroIds": [],
+      "title": "BG Color S",
+      "type": "param",
+      "key": "colorS"
+    },
+    "b52kkui": {
+      "id": "b52kkui",
+      "value": 0.2032967032967033,
+      "inputLinkIds": [],
+      "shotCount": 0,
+      "connectedMacroIds": [],
+      "title": "BG Color L",
+      "type": "param",
+      "key": "colorL"
+    },
+    "0gbvtty": {
+      "id": "0gbvtty",
+      "value": 0.027472527472527472,
+      "inputLinkIds": [],
+      "shotCount": 0,
+      "connectedMacroIds": [],
+      "title": "Main Light Intensity",
+      "type": "param",
+      "key": "mainLightIntensity"
+    },
+    "j52vm6n": {
+      "id": "j52vm6n",
+      "value": 0.43131868131868134,
+      "inputLinkIds": [],
+      "shotCount": 0,
+      "connectedMacroIds": [],
+      "title": "Central Point Light Distance",
+      "type": "param",
+      "key": "centralPointLightDistance"
+    },
+    "fg8t2s1": {
+      "id": "fg8t2s1",
+      "value": 0.07967032967032969,
+      "inputLinkIds": [],
+      "shotCount": 0,
+      "connectedMacroIds": [],
+      "title": "Central Point Light Intensity",
+      "type": "param",
+      "key": "centralPointLightIntensity"
+    },
+    "rfs0r6r": {
+      "id": "rfs0r6r",
+      "value": 0.5934065934065934,
+      "inputLinkIds": [],
+      "shotCount": 0,
+      "connectedMacroIds": [],
+      "title": "Central Point Light Color H",
+      "type": "param",
+      "key": "centralPointLightH"
+    },
+    "pvrhqxy": {
+      "id": "pvrhqxy",
+      "value": 0,
+      "inputLinkIds": [],
+      "shotCount": 0,
+      "connectedMacroIds": [],
+      "title": "Central Point Light Color S",
+      "type": "param",
+      "key": "centralPointLightS"
+    },
+    "p30aooi": {
+      "id": "p30aooi",
+      "value": 0.510989010989011,
+      "inputLinkIds": [],
+      "shotCount": 0,
+      "connectedMacroIds": [],
+      "title": "Central Point Light Color L",
+      "type": "param",
+      "key": "centralPointLightL"
+    },
+    "qgb5nue": {
+      "id": "qgb5nue",
+      "value": 0,
+      "inputLinkIds": [],
+      "shotCount": 0,
+      "connectedMacroIds": [],
+      "type": "shot",
+      "title": "Camera 1",
+      "method": "camera1",
+      "sketchId": "ocqps2s"
+    },
+    "nn10yhi": {
+      "id": "nn10yhi",
+      "value": 0,
+      "inputLinkIds": [],
+      "shotCount": 0,
+      "connectedMacroIds": [],
+      "type": "shot",
+      "title": "Camera 2",
+      "method": "camera2",
+      "sketchId": "ocqps2s"
+    },
+    "484bbb6": {
+      "id": "484bbb6",
+      "value": 0,
+      "inputLinkIds": [],
+      "shotCount": 0,
+      "connectedMacroIds": [],
+      "type": "shot",
+      "title": "Camera 3",
+      "method": "camera3",
+      "sketchId": "ocqps2s"
+    },
+    "l7hv666": {
+      "id": "l7hv666",
+      "value": 0,
+      "inputLinkIds": [],
+      "shotCount": 0,
+      "connectedMacroIds": [],
+      "type": "shot",
+      "title": "Camera Random",
+      "method": "cameraRandom",
+      "sketchId": "ocqps2s"
+    },
+    "nap0vp4": {
+      "id": "nap0vp4",
+      "value": 0.07967032967032966,
+      "inputLinkIds": [],
+      "shotCount": 0,
+      "connectedMacroIds": [],
+      "title": "Pos Z",
+      "type": "param",
+      "key": "posZ"
+    },
+    "5a03ptw": {
+      "id": "5a03ptw",
+      "value": 0.5,
+      "inputLinkIds": [],
+      "shotCount": 0,
+      "connectedMacroIds": [],
+      "title": "Rot Speed X",
+      "type": "param",
+      "key": "rotSpeedX"
+    },
+    "9sqssm7": {
+      "id": "9sqssm7",
+      "value": 0.4606227106227106,
+      "inputLinkIds": [],
+      "shotCount": 0,
+      "connectedMacroIds": [],
+      "title": "Rot Speed Y",
+      "type": "param",
+      "key": "rotSpeedY"
+    },
+    "y45y8v3": {
+      "id": "y45y8v3",
+      "value": 0.5164835164835165,
+      "inputLinkIds": [],
+      "shotCount": 0,
+      "connectedMacroIds": [],
+      "title": "Rot Speed Z",
+      "type": "param",
+      "key": "rotSpeedZ"
+    },
+    "kvcndvn": {
+      "id": "kvcndvn",
+      "value": 0.5141941391941391,
+      "inputLinkIds": [],
+      "shotCount": 0,
+      "connectedMacroIds": [],
+      "title": "Blob Speed",
+      "type": "param",
+      "key": "blobSpeed"
+    },
+    "5xblfei": {
+      "id": "5xblfei",
+      "value": 0.1291208791208791,
+      "inputLinkIds": [],
+      "shotCount": 0,
+      "connectedMacroIds": [],
+      "title": "Num Blobs",
+      "type": "param",
+      "key": "numBlobs"
+    },
+    "pyam4a5": {
+      "id": "pyam4a5",
+      "value": 0.7454212454212454,
+      "inputLinkIds": [],
+      "shotCount": 0,
+      "connectedMacroIds": [],
+      "title": "Blob Strength",
+      "type": "param",
+      "key": "blobStrength"
+    },
+    "vh3fvwa": {
+      "id": "vh3fvwa",
+      "value": 0,
+      "inputLinkIds": [],
+      "shotCount": 3,
+      "connectedMacroIds": [],
+      "type": "shot",
+      "title": "Spin",
+      "method": "spin",
+      "sketchId": "ur1s211"
+    },
+    "t57i74c": {
+      "id": "t57i74c",
+      "value": 0,
+      "inputLinkIds": [
+        "8rqkjit"
+      ],
+      "shotCount": 932,
+      "connectedMacroIds": [],
+      "type": "shot",
+      "title": "Update Reflection",
+      "method": "updateReflection",
+      "sketchId": "ur1s211",
+      "openedLinkId": "8rqkjit",
+      "activeInputLinkId": "8rqkjit"
+    },
+    "sxkn122": {
+      "id": "sxkn122",
+      "value": 0.10840479797159404,
+      "inputLinkIds": [
+        "efw1t57"
+      ],
+      "shotCount": 0,
+      "connectedMacroIds": [],
+      "title": "Pos Z",
+      "type": "param",
+      "key": "posZ",
+      "openedLinkId": "efw1t57",
+      "activeInputLinkId": "efw1t57"
+    },
+    "59iwl0f": {
+      "id": "59iwl0f",
+      "value": 0.5224358974358975,
+      "inputLinkIds": [],
+      "shotCount": 0,
+      "connectedMacroIds": [],
+      "title": "Rot Speed X",
+      "type": "param",
+      "key": "rotSpeedX"
+    },
+    "h79kdes": {
+      "id": "h79kdes",
+      "value": 0.5,
+      "inputLinkIds": [],
+      "shotCount": 0,
+      "connectedMacroIds": [],
+      "title": "Rot Speed Y",
+      "type": "param",
+      "key": "rotSpeedY"
+    },
+    "inr1ca9": {
+      "id": "inr1ca9",
+      "value": 0.5,
+      "inputLinkIds": [],
+      "shotCount": 0,
+      "connectedMacroIds": [],
+      "title": "Rot Speed Z",
+      "type": "param",
+      "key": "rotSpeedZ"
+    },
+    "y82phdn": {
+      "id": "y82phdn",
+      "value": 0.5512820512820513,
+      "inputLinkIds": [],
+      "shotCount": 0,
+      "connectedMacroIds": [],
+      "title": "Blob Speed",
+      "type": "param",
+      "key": "blobSpeed"
+    },
+    "wysadp0": {
+      "id": "wysadp0",
+      "value": 0.5,
+      "inputLinkIds": [],
+      "shotCount": 0,
+      "connectedMacroIds": [],
+      "title": "Num Blobs",
+      "type": "param",
+      "key": "numBlobs"
+    },
+    "yf31edd": {
+      "id": "yf31edd",
+      "value": 0.5,
+      "inputLinkIds": [],
+      "shotCount": 0,
+      "connectedMacroIds": [],
+      "title": "Blob Strength",
+      "type": "param",
+      "key": "blobStrength"
+    },
+    "59sl06n": {
+      "id": "59sl06n",
+      "value": 0,
+      "inputLinkIds": [
+        "8ciljw6"
+      ],
+      "shotCount": 1402,
+      "connectedMacroIds": [],
+      "type": "shot",
+      "title": "Spin",
+      "method": "spin",
+      "sketchId": "scpeype",
+      "openedLinkId": "8ciljw6",
+      "activeInputLinkId": "8ciljw6"
+    },
+    "o2y3foc": {
+      "id": "o2y3foc",
+      "value": 0,
+      "inputLinkIds": [
+        "yicpwlx"
+      ],
+      "shotCount": 1389,
+      "connectedMacroIds": [],
+      "type": "shot",
+      "title": "Update Reflection",
+      "method": "updateReflection",
+      "sketchId": "scpeype",
+      "openedLinkId": "yicpwlx",
+      "activeInputLinkId": "yicpwlx"
+    },
+    "kvrxcg0": {
+      "id": "kvrxcg0",
+      "value": 0,
+      "inputLinkIds": [],
+      "shotCount": 0,
+      "connectedMacroIds": [],
+      "title": "Fog Density",
+      "type": "param",
+      "key": "fogDensity"
+    },
+    "k8v9w13": {
+      "id": "k8v9w13",
+      "value": 0.6919721276102919,
+      "inputLinkIds": [
+        "r64s5ih"
+      ],
+      "shotCount": 0,
+      "connectedMacroIds": [],
+      "title": "BG Color H",
+      "type": "param",
+      "key": "colorH",
+      "openedLinkId": "r64s5ih",
+      "activeInputLinkId": "r64s5ih"
+    },
+    "qp1gg1m": {
+      "id": "qp1gg1m",
+      "value": 0.6217948717948718,
+      "inputLinkIds": [],
+      "shotCount": 0,
+      "connectedMacroIds": [],
+      "title": "BG Color S",
+      "type": "param",
+      "key": "colorS"
+    },
+    "ck7fo50": {
+      "id": "ck7fo50",
+      "value": 0.5082417582417582,
+      "inputLinkIds": [],
+      "shotCount": 0,
+      "connectedMacroIds": [],
+      "title": "BG Color L",
+      "type": "param",
+      "key": "colorL"
+    },
+    "yy8kmye": {
+      "id": "yy8kmye",
+      "value": 1,
+      "inputLinkIds": [],
+      "shotCount": 0,
+      "connectedMacroIds": [],
+      "title": "Main Light Intensity",
+      "type": "param",
+      "key": "mainLightIntensity"
+    },
+    "jfe9qam": {
+      "id": "jfe9qam",
+      "value": 0.5,
+      "inputLinkIds": [],
+      "shotCount": 0,
+      "connectedMacroIds": [],
+      "title": "Central Point Light Distance",
+      "type": "param",
+      "key": "centralPointLightDistance"
+    },
+    "kgxq8f6": {
+      "id": "kgxq8f6",
+      "value": 0.5384615384615384,
+      "inputLinkIds": [],
+      "shotCount": 0,
+      "connectedMacroIds": [],
+      "title": "Central Point Light Intensity",
+      "type": "param",
+      "key": "centralPointLightIntensity"
+    },
+    "sbv7x5e": {
+      "id": "sbv7x5e",
+      "value": 1,
+      "inputLinkIds": [],
+      "shotCount": 0,
+      "connectedMacroIds": [],
+      "title": "Central Point Light Color H",
+      "type": "param",
+      "key": "centralPointLightH"
+    },
+    "e79i3yp": {
+      "id": "e79i3yp",
+      "value": 0.625,
+      "inputLinkIds": [],
+      "shotCount": 0,
+      "connectedMacroIds": [],
+      "title": "Central Point Light Color S",
+      "type": "param",
+      "key": "centralPointLightS"
+    },
+    "wf1iwh0": {
+      "id": "wf1iwh0",
+      "value": 0.02564102564102566,
+      "inputLinkIds": [],
+      "shotCount": 0,
+      "connectedMacroIds": [],
+      "title": "Central Point Light Color L",
+      "type": "param",
+      "key": "centralPointLightL"
+    },
+    "jv28hwm": {
+      "id": "jv28hwm",
+      "value": 0,
+      "inputLinkIds": [],
+      "shotCount": 3,
+      "connectedMacroIds": [],
+      "type": "shot",
+      "title": "Camera 1",
+      "method": "camera1",
+      "sketchId": "t9k44bf"
+    },
+    "98uw21m": {
+      "id": "98uw21m",
+      "value": 0,
+      "inputLinkIds": [],
+      "shotCount": 2,
+      "connectedMacroIds": [],
+      "type": "shot",
+      "title": "Camera 2",
+      "method": "camera2",
+      "sketchId": "t9k44bf"
+    },
+    "yn73iwy": {
+      "id": "yn73iwy",
+      "value": 0,
+      "inputLinkIds": [],
+      "shotCount": 0,
+      "connectedMacroIds": [],
+      "type": "shot",
+      "title": "Camera 3",
+      "method": "camera3",
+      "sketchId": "t9k44bf"
+    },
+    "c7ol1m3": {
+      "id": "c7ol1m3",
+      "value": 0,
+      "inputLinkIds": [],
+      "shotCount": 5,
+      "connectedMacroIds": [],
+      "type": "shot",
+      "title": "Camera Random",
+      "method": "cameraRandom",
+      "sketchId": "t9k44bf"
+    },
+    "46oelft": {
+      "id": "46oelft",
+      "value": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "inputLinkIds": [],
+      "shotCount": 0,
+      "connectedMacroIds": []
+    },
+    "3qvmm8l": {
+      "id": "3qvmm8l",
+      "value": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "inputLinkIds": [],
+      "shotCount": 0,
+      "connectedMacroIds": []
+    },
+    "c1chth9": {
+      "id": "c1chth9",
+      "value": 0,
+      "inputLinkIds": [],
+      "shotCount": 0,
+      "connectedMacroIds": [],
+      "key": "threshold",
+      "title": "Threshold",
+      "passToNext": false,
+      "subNode": true
+    },
+    "7g00mcg": {
+      "id": "7g00mcg",
+      "value": 0,
+      "inputLinkIds": [],
+      "shotCount": 0,
+      "connectedMacroIds": [],
+      "key": "range",
+      "title": "Lower Range",
+      "passToNext": true,
+      "subNode": true
+    },
+    "32pkob2": {
+      "id": "32pkob2",
+      "value": 1,
+      "inputLinkIds": [],
+      "shotCount": 0,
+      "connectedMacroIds": [],
+      "key": "range",
+      "title": "Upper Range",
+      "passToNext": false,
+      "subNode": true
+    },
+    "m8huxne": {
+      "id": "m8huxne",
+      "value": "triangle",
+      "inputLinkIds": [],
+      "shotCount": 0,
+      "connectedMacroIds": [],
+      "title": "Shape",
+      "key": "shape",
+      "type": "select",
+      "subNode": true,
+      "options": [
+        {
+          "value": "sine",
+          "label": "Sine"
+        },
+        {
+          "value": "square",
+          "label": "Square"
+        },
+        {
+          "value": "sawtooth",
+          "label": "Sawtooth"
+        },
+        {
+          "value": "rSawtooth",
+          "label": "Revese Sawtooth"
+        },
+        {
+          "value": "triangle",
+          "label": "Triangle"
+        }
+      ]
+    },
+    "316tj0s": {
+      "id": "316tj0s",
+      "value": 0.0625,
+      "inputLinkIds": [],
+      "shotCount": 0,
+      "connectedMacroIds": [],
+      "title": "Rate",
+      "key": "rate",
+      "type": "select",
+      "subNode": true,
+      "options": [
+        {
+          "value": 32,
+          "label": "32"
+        },
+        {
+          "value": 16,
+          "label": "16"
+        },
+        {
+          "value": 8,
+          "label": "8"
+        },
+        {
+          "value": 4,
+          "label": "4"
+        },
+        {
+          "value": 2,
+          "label": "2"
+        },
+        {
+          "value": 1,
+          "label": "1"
+        },
+        {
+          "value": 0.5,
+          "label": "1/2"
+        },
+        {
+          "value": 0.25,
+          "label": "1/4"
+        },
+        {
+          "value": 0.125,
+          "label": "1/8"
+        },
+        {
+          "value": 0.0625,
+          "label": "1/16"
+        },
+        {
+          "value": 0.03125,
+          "label": "1/32"
+        }
+      ]
+    },
+    "vyhlvqd": {
+      "id": "vyhlvqd",
+      "value": [
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "inputLinkIds": [],
+      "shotCount": 0,
+      "connectedMacroIds": []
+    },
+    "6dn9dvu": {
+      "id": "6dn9dvu",
+      "value": [
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "inputLinkIds": [],
+      "shotCount": 0,
+      "connectedMacroIds": []
+    },
+    "o3w2eld": {
+      "id": "o3w2eld",
+      "value": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "inputLinkIds": [],
+      "shotCount": 0,
+      "connectedMacroIds": []
+    },
+    "s7bmq4p": {
+      "id": "s7bmq4p",
+      "value": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "inputLinkIds": [],
+      "shotCount": 0,
+      "connectedMacroIds": []
+    },
+    "jwq6wgd": {
+      "id": "jwq6wgd",
+      "value": [
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "inputLinkIds": [],
+      "shotCount": 0,
+      "connectedMacroIds": []
+    },
+    "uomtkk7": {
+      "id": "uomtkk7",
+      "value": [
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "inputLinkIds": [],
+      "shotCount": 0,
+      "connectedMacroIds": []
+    },
+    "koeh596": {
+      "id": "koeh596",
+      "value": [
+        1,
+        0,
+        0,
+        1,
+        1,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        1,
+        1,
+        1,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        0,
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      "inputLinkIds": [],
+      "shotCount": 0,
+      "connectedMacroIds": []
+    },
+    "hc2qon7": {
+      "id": "hc2qon7",
+      "value": 0,
+      "inputLinkIds": [],
+      "shotCount": 0,
+      "connectedMacroIds": [],
+      "key": "threshold",
+      "title": "Threshold",
+      "passToNext": false,
+      "subNode": true
+    },
+    "qsf8bda": {
+      "id": "qsf8bda",
+      "value": 0.10000000000000003,
+      "inputLinkIds": [],
+      "shotCount": 0,
+      "connectedMacroIds": [],
+      "key": "range",
+      "title": "Lower Range",
+      "passToNext": true,
+      "subNode": true
+    },
+    "i69mg9x": {
+      "id": "i69mg9x",
+      "value": 0.7434782608695651,
+      "inputLinkIds": [],
+      "shotCount": 0,
+      "connectedMacroIds": [],
+      "key": "range",
+      "title": "Upper Range",
+      "passToNext": false,
+      "subNode": true
+    },
+    "ih4jeua": {
+      "id": "ih4jeua",
+      "value": "sine",
+      "inputLinkIds": [],
+      "shotCount": 0,
+      "connectedMacroIds": [],
+      "title": "Shape",
+      "key": "shape",
+      "type": "select",
+      "subNode": true,
+      "options": [
+        {
+          "value": "sine",
+          "label": "Sine"
+        },
+        {
+          "value": "square",
+          "label": "Square"
+        },
+        {
+          "value": "sawtooth",
+          "label": "Sawtooth"
+        },
+        {
+          "value": "rSawtooth",
+          "label": "Revese Sawtooth"
+        },
+        {
+          "value": "triangle",
+          "label": "Triangle"
+        }
+      ]
+    },
+    "f7ot6i4": {
+      "id": "f7ot6i4",
+      "value": 0.125,
+      "inputLinkIds": [],
+      "shotCount": 0,
+      "connectedMacroIds": [],
+      "title": "Rate",
+      "key": "rate",
+      "type": "select",
+      "subNode": true,
+      "options": [
+        {
+          "value": 32,
+          "label": "32"
+        },
+        {
+          "value": 16,
+          "label": "16"
+        },
+        {
+          "value": 8,
+          "label": "8"
+        },
+        {
+          "value": 4,
+          "label": "4"
+        },
+        {
+          "value": 2,
+          "label": "2"
+        },
+        {
+          "value": 1,
+          "label": "1"
+        },
+        {
+          "value": 0.5,
+          "label": "1/2"
+        },
+        {
+          "value": 0.25,
+          "label": "1/4"
+        },
+        {
+          "value": 0.125,
+          "label": "1/8"
+        },
+        {
+          "value": 0.0625,
+          "label": "1/16"
+        },
+        {
+          "value": 0.03125,
+          "label": "1/32"
+        }
+      ]
+    },
+    "ygvc77m": {
+      "id": "ygvc77m",
+      "value": 0,
+      "inputLinkIds": [],
+      "shotCount": 0,
+      "connectedMacroIds": [],
+      "key": "threshold",
+      "title": "Threshold",
+      "passToNext": false,
+      "subNode": true
+    },
+    "i26rtb6": {
+      "id": "i26rtb6",
+      "value": 0,
+      "inputLinkIds": [],
+      "shotCount": 0,
+      "connectedMacroIds": [],
+      "key": "range",
+      "title": "Lower Range",
+      "passToNext": true,
+      "subNode": true
+    },
+    "tybhul4": {
+      "id": "tybhul4",
+      "value": 1,
+      "inputLinkIds": [],
+      "shotCount": 0,
+      "connectedMacroIds": [],
+      "key": "range",
+      "title": "Upper Range",
+      "passToNext": false,
+      "subNode": true
+    },
+    "0lvbofx": {
+      "id": "0lvbofx",
+      "value": "sine",
+      "inputLinkIds": [],
+      "shotCount": 0,
+      "connectedMacroIds": [],
+      "title": "Shape",
+      "key": "shape",
+      "type": "select",
+      "subNode": true,
+      "options": [
+        {
+          "value": "sine",
+          "label": "Sine"
+        },
+        {
+          "value": "square",
+          "label": "Square"
+        },
+        {
+          "value": "sawtooth",
+          "label": "Sawtooth"
+        },
+        {
+          "value": "rSawtooth",
+          "label": "Revese Sawtooth"
+        },
+        {
+          "value": "triangle",
+          "label": "Triangle"
+        }
+      ]
+    },
+    "ouwxsec": {
+      "id": "ouwxsec",
+      "value": 0.0625,
+      "inputLinkIds": [],
+      "shotCount": 0,
+      "connectedMacroIds": [],
+      "title": "Rate",
+      "key": "rate",
+      "type": "select",
+      "subNode": true,
+      "options": [
+        {
+          "value": 32,
+          "label": "32"
+        },
+        {
+          "value": 16,
+          "label": "16"
+        },
+        {
+          "value": 8,
+          "label": "8"
+        },
+        {
+          "value": 4,
+          "label": "4"
+        },
+        {
+          "value": 2,
+          "label": "2"
+        },
+        {
+          "value": 1,
+          "label": "1"
+        },
+        {
+          "value": 0.5,
+          "label": "1/2"
+        },
+        {
+          "value": 0.25,
+          "label": "1/4"
+        },
+        {
+          "value": 0.125,
+          "label": "1/8"
+        },
+        {
+          "value": 0.0625,
+          "label": "1/16"
+        },
+        {
+          "value": 0.03125,
+          "label": "1/32"
+        }
+      ]
+    },
+    "2h25rkg": {
+      "id": "2h25rkg",
+      "value": "sine",
+      "inputLinkIds": [],
+      "shotCount": 0,
+      "connectedMacroIds": [],
+      "title": "Shape",
+      "key": "shape",
+      "type": "select",
+      "subNode": true,
+      "options": [
+        {
+          "value": "sine",
+          "label": "Sine"
+        },
+        {
+          "value": "square",
+          "label": "Square"
+        },
+        {
+          "value": "sawtooth",
+          "label": "Sawtooth"
+        },
+        {
+          "value": "rSawtooth",
+          "label": "Revese Sawtooth"
+        },
+        {
+          "value": "triangle",
+          "label": "Triangle"
+        }
+      ]
+    },
+    "3accxww": {
+      "id": "3accxww",
+      "value": 0.125,
+      "inputLinkIds": [],
+      "shotCount": 0,
+      "connectedMacroIds": [],
+      "title": "Rate",
+      "key": "rate",
+      "type": "select",
+      "subNode": true,
+      "options": [
+        {
+          "value": 32,
+          "label": "32"
+        },
+        {
+          "value": 16,
+          "label": "16"
+        },
+        {
+          "value": 8,
+          "label": "8"
+        },
+        {
+          "value": 4,
+          "label": "4"
+        },
+        {
+          "value": 2,
+          "label": "2"
+        },
+        {
+          "value": 1,
+          "label": "1"
+        },
+        {
+          "value": 0.5,
+          "label": "1/2"
+        },
+        {
+          "value": 0.25,
+          "label": "1/4"
+        },
+        {
+          "value": 0.125,
+          "label": "1/8"
+        },
+        {
+          "value": 0.0625,
+          "label": "1/16"
+        },
+        {
+          "value": 0.03125,
+          "label": "1/32"
+        }
+      ]
+    }
+  },
+  "scenes": {
+    "items": {
+      "o4imxh1": {
+        "id": "o4imxh1",
+        "title": "Scene 1",
+        "selectedSketchId": "4mipx19",
+        "sketchIds": [
+          "4mipx19",
+          "ocqps2s",
+          "scpeype"
+        ],
+        "linkableActionIds": {
+          "addToA": "jcyapan",
+          "addToB": "pcur2h9",
+          "addToActive": "1mcpry9",
+          "addToOpposite": "akqhown",
+          "clear": "pnisikj"
+        }
+      },
+      "bwcbhnc": {
+        "id": "bwcbhnc",
+        "title": "Scene 2",
+        "selectedSketchId": "t9k44bf",
+        "sketchIds": [
+          "ur1s211",
+          "t9k44bf"
+        ],
+        "linkableActionIds": {
+          "addToA": "7joltm2",
+          "addToB": "o77wdca",
+          "addToActive": "hbo3m24",
+          "addToOpposite": "1m10ph8",
+          "clear": "kreswpj"
+        }
+      }
+    },
+    "currentSceneId": "o4imxh1",
+    "channels": {
+      "A": "o4imxh1",
+      "B": "bwcbhnc"
+    }
+  },
+  "sketches": {
+    "4mipx19": {
+      "title": "Tunnel",
+      "moduleId": "tunnel",
+      "paramIds": [
+        "0s6lvul",
+        "vei9jws",
+        "usb304w",
+        "hdp7xd1",
+        "7cuaqas",
+        "ypj20pn",
+        "ftuvkhp",
+        "928kfik",
+        "oekq70k",
+        "kb2byt3"
+      ],
+      "shotIds": [
+        "2rkglfv",
+        "utd7ext",
+        "covtc3r",
+        "tcyawv3",
+        "n6u2rgu",
+        "6bcuie8",
+        "9h704ki",
+        "a4dx8hv",
+        "yx0bq36",
+        "cl04jaf",
+        "fq7lx8b",
+        "1e6sq5r",
+        "913i7q9"
+      ],
+      "openedNodes": {}
+    },
+    "ocqps2s": {
+      "title": "Env",
+      "moduleId": "env",
+      "paramIds": [
+        "di0yss4",
+        "j5obnao",
+        "1ic3j5e",
+        "b52kkui",
+        "0gbvtty",
+        "j52vm6n",
+        "fg8t2s1",
+        "rfs0r6r",
+        "pvrhqxy",
+        "p30aooi"
+      ],
+      "shotIds": [
+        "qgb5nue",
+        "nn10yhi",
+        "484bbb6",
+        "l7hv666"
+      ],
+      "openedNodes": {}
+    },
+    "ur1s211": {
+      "title": "Blobs",
+      "moduleId": "blobs",
+      "paramIds": [
+        "nap0vp4",
+        "5a03ptw",
+        "9sqssm7",
+        "y45y8v3",
+        "kvcndvn",
+        "5xblfei",
+        "pyam4a5"
+      ],
+      "shotIds": [
+        "vh3fvwa",
+        "t57i74c"
+      ],
+      "openedNodes": {
+        "shot": "t57i74c"
+      }
+    },
+    "scpeype": {
+      "title": "Blobs",
+      "moduleId": "blobs",
+      "paramIds": [
+        "sxkn122",
+        "59iwl0f",
+        "h79kdes",
+        "inr1ca9",
+        "y82phdn",
+        "wysadp0",
+        "yf31edd"
+      ],
+      "shotIds": [
+        "59sl06n",
+        "o2y3foc"
+      ],
+      "openedNodes": {
+        "shot": "o2y3foc",
+        "param": "sxkn122"
+      }
+    },
+    "t9k44bf": {
+      "title": "Env",
+      "moduleId": "env",
+      "paramIds": [
+        "kvrxcg0",
+        "k8v9w13",
+        "qp1gg1m",
+        "ck7fo50",
+        "yy8kmye",
+        "jfe9qam",
+        "kgxq8f6",
+        "sbv7x5e",
+        "e79i3yp",
+        "wf1iwh0"
+      ],
+      "shotIds": [
+        "jv28hwm",
+        "98uw21m",
+        "yn73iwy",
+        "c7ol1m3"
+      ],
+      "openedNodes": {
+        "param": "k8v9w13"
+      }
+    }
+  },
+  "project": {
+    "filePath": "/Users/alex/Sites/GitHub/hedron/example-projects/trippy/project.json",
+    "sketchesPath": "/Users/alex/Sites/GitHub/hedron/example-projects/trippy/sketches",
+    "errors": [],
+    "errorPopup": false
+  },
+  "inputs": {
+    "audio_0": {
+      "value": 0.17928759761614443,
+      "assignedLinkIds": []
+    },
+    "audio_1": {
+      "value": 0.08468327266796805,
+      "assignedLinkIds": []
+    },
+    "audio_2": {
+      "value": 0.001454728463449071,
+      "assignedLinkIds": []
+    },
+    "audio_3": {
+      "value": 0,
+      "assignedLinkIds": []
+    },
+    "lfo": {
+      "value": 236.92844595823533,
+      "assignedLinkIds": [
+        "r64s5ih",
+        "efw1t57",
+        "ys4kblg"
+      ]
+    },
+    "seq-step": {
+      "assignedLinkIds": [
+        "8ciljw6",
+        "yicpwlx",
+        "8rqkjit",
+        "y91yr74",
+        "pqbp3yc",
+        "oglnu99",
+        "ngb783x",
+        "har1p3h"
+      ],
+      "value": 27
+    }
+  },
+  "inputLinks": {
+    "8ciljw6": {
+      "title": "seq-step",
+      "input": {
+        "id": "seq-step"
+      },
+      "id": "8ciljw6",
+      "nodeId": "59sl06n",
+      "nodeType": "shot",
+      "modifierIds": [],
+      "lfoOptionIds": [],
+      "midiOptionIds": [],
+      "linkableActions": {
+        "toggleActivate": "mngwmxq"
+      },
+      "sequencerGridId": "46oelft",
+      "linkType": "node"
+    },
+    "yicpwlx": {
+      "title": "seq-step",
+      "input": {
+        "id": "seq-step"
+      },
+      "id": "yicpwlx",
+      "nodeId": "o2y3foc",
+      "nodeType": "shot",
+      "modifierIds": [],
+      "lfoOptionIds": [],
+      "midiOptionIds": [],
+      "linkableActions": {
+        "toggleActivate": "naps24x"
+      },
+      "sequencerGridId": "3qvmm8l",
+      "linkType": "node"
+    },
+    "r64s5ih": {
+      "title": "lfo",
+      "input": {
+        "id": "lfo"
+      },
+      "id": "r64s5ih",
+      "nodeId": "k8v9w13",
+      "nodeType": "param",
+      "modifierIds": [
+        "c1chth9",
+        "7g00mcg",
+        "32pkob2"
+      ],
+      "lfoOptionIds": [
+        "m8huxne",
+        "316tj0s"
+      ],
+      "midiOptionIds": [],
+      "linkableActions": {
+        "toggleActivate": "6loqy6q"
+      },
+      "linkType": "node"
+    },
+    "8rqkjit": {
+      "title": "seq-step",
+      "input": {
+        "id": "seq-step"
+      },
+      "id": "8rqkjit",
+      "nodeId": "t57i74c",
+      "nodeType": "shot",
+      "modifierIds": [],
+      "lfoOptionIds": [],
+      "midiOptionIds": [],
+      "linkableActions": {
+        "toggleActivate": "pl8p2ge"
+      },
+      "sequencerGridId": "vyhlvqd",
+      "linkType": "node"
+    },
+    "y91yr74": {
+      "title": "seq-step",
+      "input": {
+        "id": "seq-step"
+      },
+      "id": "y91yr74",
+      "nodeId": "2rkglfv",
+      "nodeType": "shot",
+      "modifierIds": [],
+      "lfoOptionIds": [],
+      "midiOptionIds": [],
+      "linkableActions": {
+        "toggleActivate": "a4rfv47"
+      },
+      "sequencerGridId": "6dn9dvu",
+      "linkType": "node"
+    },
+    "pqbp3yc": {
+      "title": "seq-step",
+      "input": {
+        "id": "seq-step"
+      },
+      "id": "pqbp3yc",
+      "nodeId": "tcyawv3",
+      "nodeType": "shot",
+      "modifierIds": [],
+      "lfoOptionIds": [],
+      "midiOptionIds": [],
+      "linkableActions": {
+        "toggleActivate": "tykfg94"
+      },
+      "sequencerGridId": "o3w2eld",
+      "linkType": "node"
+    },
+    "oglnu99": {
+      "title": "seq-step",
+      "input": {
+        "id": "seq-step"
+      },
+      "id": "oglnu99",
+      "nodeId": "n6u2rgu",
+      "nodeType": "shot",
+      "modifierIds": [],
+      "lfoOptionIds": [],
+      "midiOptionIds": [],
+      "linkableActions": {
+        "toggleActivate": "53cehe3"
+      },
+      "sequencerGridId": "s7bmq4p",
+      "linkType": "node"
+    },
+    "ngb783x": {
+      "title": "seq-step",
+      "input": {
+        "id": "seq-step"
+      },
+      "id": "ngb783x",
+      "nodeId": "6bcuie8",
+      "nodeType": "shot",
+      "modifierIds": [],
+      "lfoOptionIds": [],
+      "midiOptionIds": [],
+      "linkableActions": {
+        "toggleActivate": "9heiqdi"
+      },
+      "sequencerGridId": "uomtkk7",
+      "linkType": "node"
+    },
+    "har1p3h": {
+      "title": "seq-step",
+      "input": {
+        "id": "seq-step"
+      },
+      "id": "har1p3h",
+      "nodeId": "1e6sq5r",
+      "nodeType": "shot",
+      "modifierIds": [],
+      "lfoOptionIds": [],
+      "midiOptionIds": [],
+      "linkableActions": {
+        "toggleActivate": "c66i99c"
+      },
+      "sequencerGridId": "koeh596",
+      "linkType": "node"
+    },
+    "efw1t57": {
+      "title": "lfo",
+      "input": {
+        "id": "lfo"
+      },
+      "id": "efw1t57",
+      "nodeId": "sxkn122",
+      "nodeType": "param",
+      "modifierIds": [
+        "hc2qon7",
+        "qsf8bda",
+        "i69mg9x"
+      ],
+      "lfoOptionIds": [
+        "ih4jeua",
+        "f7ot6i4"
+      ],
+      "midiOptionIds": [],
+      "linkableActions": {
+        "toggleActivate": "jw3yfb0"
+      },
+      "linkType": "node"
+    },
+    "ys4kblg": {
+      "title": "lfo",
+      "input": {
+        "id": "lfo"
+      },
+      "id": "ys4kblg",
+      "nodeId": "928kfik",
+      "nodeType": "param",
+      "modifierIds": [
+        "ygvc77m",
+        "i26rtb6",
+        "tybhul4"
+      ],
+      "lfoOptionIds": [
+        "0lvbofx",
+        "ouwxsec"
+      ],
+      "midiOptionIds": [],
+      "linkableActions": {
+        "toggleActivate": "l7if4fc"
+      },
+      "linkType": "node"
+    }
+  },
+  "linkableActions": {
+    "jcyapan": {
+      "id": "jcyapan",
+      "action": {
+        "type": "R_SCENE_SELECT_CHANNEL",
+        "payload": {
+          "id": "o4imxh1",
+          "channel": "A"
+        }
+      },
+      "inputLinkIds": []
+    },
+    "pcur2h9": {
+      "id": "pcur2h9",
+      "action": {
+        "type": "R_SCENE_SELECT_CHANNEL",
+        "payload": {
+          "id": "o4imxh1",
+          "channel": "B"
+        }
+      },
+      "inputLinkIds": []
+    },
+    "1mcpry9": {
+      "id": "1mcpry9",
+      "action": {
+        "type": "U_SCENE_SELECT_CHANNEL",
+        "payload": {
+          "id": "o4imxh1",
+          "type": "active"
+        }
+      },
+      "inputLinkIds": []
+    },
+    "akqhown": {
+      "id": "akqhown",
+      "action": {
+        "type": "U_SCENE_SELECT_CHANNEL",
+        "payload": {
+          "id": "o4imxh1",
+          "type": "opposite"
+        }
+      },
+      "inputLinkIds": []
+    },
+    "pnisikj": {
+      "id": "pnisikj",
+      "action": {
+        "type": "SCENE_CLEAR_CHANNEL",
+        "payload": {
+          "id": "o4imxh1"
+        }
+      },
+      "inputLinkIds": []
+    },
+    "7joltm2": {
+      "id": "7joltm2",
+      "action": {
+        "type": "R_SCENE_SELECT_CHANNEL",
+        "payload": {
+          "id": "bwcbhnc",
+          "channel": "A"
+        }
+      },
+      "inputLinkIds": []
+    },
+    "o77wdca": {
+      "id": "o77wdca",
+      "action": {
+        "type": "R_SCENE_SELECT_CHANNEL",
+        "payload": {
+          "id": "bwcbhnc",
+          "channel": "B"
+        }
+      },
+      "inputLinkIds": []
+    },
+    "hbo3m24": {
+      "id": "hbo3m24",
+      "action": {
+        "type": "U_SCENE_SELECT_CHANNEL",
+        "payload": {
+          "id": "bwcbhnc",
+          "type": "active"
+        }
+      },
+      "inputLinkIds": []
+    },
+    "1m10ph8": {
+      "id": "1m10ph8",
+      "action": {
+        "type": "U_SCENE_SELECT_CHANNEL",
+        "payload": {
+          "id": "bwcbhnc",
+          "type": "opposite"
+        }
+      },
+      "inputLinkIds": []
+    },
+    "kreswpj": {
+      "id": "kreswpj",
+      "action": {
+        "type": "SCENE_CLEAR_CHANNEL",
+        "payload": {
+          "id": "bwcbhnc"
+        }
+      },
+      "inputLinkIds": []
+    },
+    "mngwmxq": {
+      "id": "mngwmxq",
+      "action": {
+        "type": "NODE_ACTIVE_INPUT_LINK_TOGGLE",
+        "payload": {
+          "nodeId": "59sl06n",
+          "linkId": "8ciljw6"
+        }
+      },
+      "inputLinkIds": []
+    },
+    "naps24x": {
+      "id": "naps24x",
+      "action": {
+        "type": "NODE_ACTIVE_INPUT_LINK_TOGGLE",
+        "payload": {
+          "nodeId": "o2y3foc",
+          "linkId": "yicpwlx"
+        }
+      },
+      "inputLinkIds": []
+    },
+    "6loqy6q": {
+      "id": "6loqy6q",
+      "action": {
+        "type": "NODE_ACTIVE_INPUT_LINK_TOGGLE",
+        "payload": {
+          "nodeId": "k8v9w13",
+          "linkId": "r64s5ih"
+        }
+      },
+      "inputLinkIds": []
+    },
+    "pl8p2ge": {
+      "id": "pl8p2ge",
+      "action": {
+        "type": "NODE_ACTIVE_INPUT_LINK_TOGGLE",
+        "payload": {
+          "nodeId": "t57i74c",
+          "linkId": "8rqkjit"
+        }
+      },
+      "inputLinkIds": []
+    },
+    "a4rfv47": {
+      "id": "a4rfv47",
+      "action": {
+        "type": "NODE_ACTIVE_INPUT_LINK_TOGGLE",
+        "payload": {
+          "nodeId": "2rkglfv",
+          "linkId": "y91yr74"
+        }
+      },
+      "inputLinkIds": []
+    },
+    "tykfg94": {
+      "id": "tykfg94",
+      "action": {
+        "type": "NODE_ACTIVE_INPUT_LINK_TOGGLE",
+        "payload": {
+          "nodeId": "tcyawv3",
+          "linkId": "pqbp3yc"
+        }
+      },
+      "inputLinkIds": []
+    },
+    "53cehe3": {
+      "id": "53cehe3",
+      "action": {
+        "type": "NODE_ACTIVE_INPUT_LINK_TOGGLE",
+        "payload": {
+          "nodeId": "n6u2rgu",
+          "linkId": "oglnu99"
+        }
+      },
+      "inputLinkIds": []
+    },
+    "9heiqdi": {
+      "id": "9heiqdi",
+      "action": {
+        "type": "NODE_ACTIVE_INPUT_LINK_TOGGLE",
+        "payload": {
+          "nodeId": "6bcuie8",
+          "linkId": "ngb783x"
+        }
+      },
+      "inputLinkIds": []
+    },
+    "c66i99c": {
+      "id": "c66i99c",
+      "action": {
+        "type": "NODE_ACTIVE_INPUT_LINK_TOGGLE",
+        "payload": {
+          "nodeId": "1e6sq5r",
+          "linkId": "har1p3h"
+        }
+      },
+      "inputLinkIds": []
+    },
+    "jw3yfb0": {
+      "id": "jw3yfb0",
+      "action": {
+        "type": "NODE_ACTIVE_INPUT_LINK_TOGGLE",
+        "payload": {
+          "nodeId": "sxkn122",
+          "linkId": "efw1t57"
+        }
+      },
+      "inputLinkIds": []
+    },
+    "l7if4fc": {
+      "id": "l7if4fc",
+      "action": {
+        "type": "NODE_ACTIVE_INPUT_LINK_TOGGLE",
+        "payload": {
+          "nodeId": "928kfik",
+          "linkId": "ys4kblg"
+        }
+      },
+      "inputLinkIds": []
+    }
+  },
+  "macros": {
+    "learningId": false,
+    "items": {}
+  },
+  "ui": {
+    "panelWidths": {
+      "left": 50
+    },
+    "isEditing": false,
+    "openedNode": "sceneCrossfader"
+  },
+  "router": {
+    "location": {
+      "pathname": "/scenes/view",
+      "search": "",
+      "hash": "",
+      "key": "qitkh9"
+    }
+  },
+  "settings": {
+    "clockGenerated": true,
+    "clockBpm": 120,
+    "aspectW": 16,
+    "aspectH": 9,
+    "antialias": false,
+    "throttledFPS": 60
+  },
+  "form": {}
+}

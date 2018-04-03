@@ -30,3 +30,12 @@ export function uiEditingClose () {
     type: 'UI_EDITING_CLOSE'
   }
 }
+
+export function uiNodeToggleOpen (id) {
+  return {
+    type: 'UI_NODE_TOGGLE_OPEN',
+    payload: {
+      id
+    }
+  }
+}

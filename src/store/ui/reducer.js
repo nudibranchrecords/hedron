@@ -4,7 +4,8 @@ const defaultState = {
   panelWidths: {
     left: 50
   },
-  isEditing: false
+  isEditing: false,
+  openedNode: false
 }
 
 const uiReducer = (state = defaultState, action) => {
@@ -48,6 +49,12 @@ const uiReducer = (state = defaultState, action) => {
           isEditing: false
         }
       }
+    case 'UI_NODE_TOGGLE_OPEN': {
+      return {
+        ...state,
+        openedNode: p.id === state.openedNode ? false : p.id
+      }
+    }
     default:
       return state
   }
