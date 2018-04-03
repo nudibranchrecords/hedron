@@ -54,6 +54,7 @@ export const addSketchToScene = (sceneId, sketchId, moduleId) => {
   }
 
   const scene = scenes[sceneId]
+  scene.renderer = renderer.renderer
   const module = new allModules[moduleId].Module(scene, meta)
 
   sketches[sketchId] = module
