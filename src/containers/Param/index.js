@@ -44,6 +44,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       dispatch(nodeShotFired(ownProps.nodeId, ownProps.sketchId, ownProps.shotMethod))
     } : undefined,
     onParamBarDoubleClick: () => {
+      type === 'param' &&
       dispatch(uiEditingOpen('paramValue', ownProps.nodeId))
     }
   }
