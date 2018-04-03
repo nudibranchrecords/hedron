@@ -30,7 +30,14 @@ const Bottom = styled.div`
 
 const Sketch = ({ title, params, shots, onDeleteClick, sketchId, onRenameClick, onReimportClick }) => (
   <Wrapper>
-    <SceneHeader onButtonClick={() => { onRenameClick(sketchId) }} buttonText='Rename'>{title}</SceneHeader>
+    <SceneHeader
+      onButtonClick={e => {
+        e.stopPropagation()
+        onRenameClick(sketchId)
+      }}
+      buttonText='Rename'>
+      {title}
+    </SceneHeader>
 
     {params.length > 0 &&
       <div>
