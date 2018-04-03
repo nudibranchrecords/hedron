@@ -13,6 +13,8 @@ import getSceneCrossfaderValue from '../../selectors/getSceneCrossfaderValue'
 import history from '../../history'
 
 const handleSceneCreate = (action, store) => {
+  const state = store.getState()
+  const allScenes = getScenes(state)
   const id = uid()
 
   const la = generateSceneLinkableActionIds(id)
@@ -36,8 +38,12 @@ const handleSceneCreate = (action, store) => {
   store.dispatch(engineSceneAdd(id))
 
   store.dispatch(rSceneSelectCurrent(id))
-  history.push(`/scenes/view`)
 
+  if (allScenes.length === 0) {
+    store.dispatch(rSceneSelectChannel(id, 'A'))
+  }
+
+  history.push(`/scenes/view`)
   store.dispatch(uiEditingOpen('sceneTitle', id))
 }
 
