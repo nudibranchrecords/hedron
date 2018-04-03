@@ -3,15 +3,14 @@ const { MarchingCubes } = require('three-addons')
 const TWEEN = require('@tweenjs/tween.js')
 
 class Blobs {
-  constructor (world) {
-    const { renderer, scene } = world
+  constructor (injectedScene) {
+    const { scene, renderer } = injectedScene
 
     this.root = new Object3D()
     const scale = 1000
-    this.renderer = renderer
     this.scene = scene
-
-    this.cubeCamera = new CubeCamera(1, 5000, 64)
+    this.renderer = renderer
+    this.cubeCamera = new CubeCamera(1, 3000, 32)
 
     setTimeout(() => {
       this.cubeCamera.update(this.renderer, this.scene)
