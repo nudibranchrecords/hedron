@@ -29,6 +29,17 @@ const uiReducer = (state = defaultState, action) => {
         }
       }
     }
+    case 'UI_EDITING_TOGGLE': {
+      return {
+        ...state,
+        isEditing: state.isEditing
+          ? false
+          : {
+            id: p.id,
+            type: p.type
+          }
+      }
+    }
     case 'UI_EDITING_CLOSE':
     case LOCATION_CHANGE:
       {
