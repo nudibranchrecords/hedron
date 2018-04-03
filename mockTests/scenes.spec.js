@@ -114,6 +114,13 @@ test('(mock) Scenes - Add Scene', (t) => {
     'scene just created is made current'
   )
 
+  t.deepEqual(state.scenes.channels, {
+    A: 'id_1',
+    B: false
+  },
+    'because is first scene, id_1 added to channel A'
+  )
+
   t.deepEqual(state.linkableActions, {
     f01: {
       id: 'f01',
@@ -164,6 +171,13 @@ test('(mock) Scenes - Add Scene', (t) => {
   'scene is added to items list when sceneCreate is dispatched')
   t.equal(state.scenes.currentSceneId, 'id_2',
     'scene just created is made current'
+  )
+
+  t.deepEqual(state.scenes.channels, {
+    A: 'id_1',
+    B: false
+  },
+    'because is NOT first scene, channels remain untouched'
   )
 
   t.deepEqual(state.ui.isEditing,
