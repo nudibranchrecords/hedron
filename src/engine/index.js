@@ -95,9 +95,11 @@ export const initiateScenes = () => {
 
 export const run = (injectedStore, stats) => {
   let tick = 0
-  let oldTime = now()
+  let oldTimeModified = now()
+  let oldTimeReal = now()
   let elapsedFrames = 1
   let delta, newTime, stateScene, sketch, state, spf, allParams
+  const spf60 = 1000 / 60
   store = injectedStore
   isRunning = true
   renderer.initiate(injectedStore, scenes)
@@ -123,10 +125,11 @@ export const run = (injectedStore, stats) => {
       allParams = getSketchParams(state)
 
       newTime = now()
-      delta = newTime - oldTime
-      elapsedFrames = delta / spf
+      delta = newTime - oldTimeModified
+      // Elapsed frames are from the perspective of a 60FPS target
+      // regardless of throttling (so that throttled animations dont slow down)
+      elapsedFrames = (newTime - oldTimeReal) / spf60
       tick += elapsedFrames
-      oldTime = newTime - (delta % spf)
 
       if (delta > spf || state.settings.throttledFPS >= 60) {
         stats.begin()
@@ -141,6 +144,12 @@ export const run = (injectedStore, stats) => {
         renderer.render(scenes[channelA], scenes[channelB], mixRatio, viewerMode)
 
         stats.end()
+
+        // Must take remainder away when throttling FPS
+        // http://codetheory.in/controlling-the-frame-rate-with-requestanimationframe/
+        oldTimeModified = newTime - (delta % spf)
+        // Need real old time for calculating elapsed frames
+        oldTimeReal = newTime
       }
     }
   }
