@@ -32,6 +32,7 @@ const triangle = css`
 `
 
 const SettingsBox = styled.div`
+  visibility: ${props => props.isVisible ? 'visible' : 'hidden'};
   left: 50%;
   width: 9rem;
   margin-left: -4.5rem;
@@ -106,12 +107,10 @@ class AudioAnalyzer extends React.Component {
           <canvas ref={node => { this.canvas = node }}
             onClick={this.props.onAnalyzerClick} />
         </Container>
-        {this.props.isOpen &&
-          <SettingsBox>
-            <Control nodeId='audioNormalizeLevels' />
-            <Control nodeId='audioLevelsFalloff' />
-          </SettingsBox>
-        }
+        <SettingsBox isVisible={this.props.isOpen}>
+          <Control nodeId='audioNormalizeLevels' />
+          <Control nodeId='audioLevelsFalloff' />
+        </SettingsBox>
       </Wrapper>
     )
   }
