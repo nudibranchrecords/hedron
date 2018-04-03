@@ -40,8 +40,8 @@ const Bar = styled.div`
   background: #111;
   height: 100%;
 `
-const App = ({ stats, leftWidth, onLeftDrag }) => (
-  <Wrapper>
+const App = ({ stats, leftWidth, onLeftDrag, onWrapperClick }) => (
+  <Wrapper onClick={onWrapperClick}>
     <Left width={leftWidth}>
       <Overview stats={stats} />
       <PanelDragger onHandleDrag={onLeftDrag} position={leftWidth} />
@@ -68,5 +68,6 @@ export default App
 App.propTypes = {
   stats: PropTypes.object.isRequired,
   leftWidth: PropTypes.number.isRequired,
-  onLeftDrag: PropTypes.func.isRequired
+  onLeftDrag: PropTypes.func.isRequired,
+  onWrapperClick: PropTypes.func.isRequired
 }

@@ -1,8 +1,59 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import uiEventEmitter from '../../utils/uiEventEmitter'
+import Control from '../../containers/Control'
+import styled, { css } from 'styled-components'
+import theme from '../../utils/theme'
 
 let height, val, offset, hue, i, inputs, bands
+
+const triH = 8
+
+const Wrapper = styled.div`
+  position: relative;
+`
+
+const Container = styled.div`
+  cursor: pointer;
+`
+
+const triangle = css`
+  position: absolute;
+  left: 50%;
+  top: -${triH}px;
+  margin-left: -${triH}px;
+  content: "";
+  display: block;
+  width: 0;
+  height: 0;
+  border-bottom: ${triH}px solid ${theme.bgColorDark1};;
+  border-left: ${triH}px solid transparent;
+  border-right: ${triH}px solid transparent;
+`
+
+const SettingsBox = styled.div`
+  visibility: ${props => props.isVisible ? 'visible' : 'hidden'};
+  left: 50%;
+  width: 9rem;
+  margin-left: -4.5rem;
+  margin-top: 0.25rem;
+  border: 1px solid white;
+  background: ${theme.bgColorDark1};
+  position: absolute;
+  padding: 0.5rem 0.25rem 0.25rem 0.5rem;
+
+  &:after {
+    ${triangle}
+  }
+
+  &:before {
+    ${triangle}
+    border-bottom-color: white;
+    border-width: ${triH + 2}px;
+    margin-left: -${triH + 2}px;
+    margin-top: -2px;
+  }
+`
 
 class AudioAnalyzer extends React.Component {
 
@@ -28,7 +79,6 @@ class AudioAnalyzer extends React.Component {
   draw () {
     inputs = this.context.store.getState().inputs
     bands = [inputs.audio_0.value, inputs.audio_1.value, inputs.audio_2.value, inputs.audio_3.value]
-
     this.drawGraph(bands)
   }
 
@@ -50,17 +100,29 @@ class AudioAnalyzer extends React.Component {
     }
   }
 
-  shouldComponentUpdate () { return false }
-
   render () {
     return (
-      <canvas ref={node => { this.canvas = node }} />
+      <Wrapper onClick={this.props.onWrapperClick}>
+        <Container>
+          <canvas ref={node => { this.canvas = node }}
+            onClick={this.props.onAnalyzerClick} />
+        </Container>
+        <SettingsBox isVisible={this.props.isOpen}>
+          <Control nodeId='audioNormalizeLevels' />
+          <Control nodeId='audioLevelsFalloff' />
+        </SettingsBox>
+      </Wrapper>
     )
   }
 }
 
 AudioAnalyzer.contextTypes = {
   store: PropTypes.object.isRequired
+}
+AudioAnalyzer.propTypes = {
+  isOpen: PropTypes.bool,
+  onAnalyzerClick: PropTypes.func.isRequired,
+  onWrapperClick: PropTypes.func.isRequired
 }
 
 export default AudioAnalyzer
