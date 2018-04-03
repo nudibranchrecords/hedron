@@ -59,8 +59,6 @@ class AudioAnalyzer extends React.Component {
   constructor (props) {
     super(props)
     this.draw = this.draw.bind(this)
-    this.handleMouseDown = this.handleMouseDown.bind(this)
-    this.isOpen = false
   }
 
   componentDidMount () {
@@ -75,11 +73,6 @@ class AudioAnalyzer extends React.Component {
 
   componentWillUnmount () {
     uiEventEmitter.removeListener('slow-tick', this.draw)
-  }
-
-  handleMouseDown (e) {
-    this.isOpen = !this.isOpen
-    this.forceUpdate()
   }
 
   draw () {
@@ -106,16 +99,14 @@ class AudioAnalyzer extends React.Component {
     }
   }
 
-  shouldComponentUpdate () { return false }
-
   render () {
     return (
       <Wrapper>
         <Container>
           <canvas ref={node => { this.canvas = node }}
-            onMouseDown={this.props.onMouseDown || this.handleMouseDown} />
+            onClick={this.props.onAnalyzerClick} />
         </Container>
-        {this.isOpen &&
+        {this.props.isOpen &&
           <SettingsBox>
             <Control nodeId='audioNormalizeLevels' />
             <Control nodeId='audioLevelsFalloff' />
@@ -130,7 +121,8 @@ AudioAnalyzer.contextTypes = {
   store: PropTypes.object.isRequired
 }
 AudioAnalyzer.propTypes = {
-  onMouseDown: PropTypes.func
+  isOpen: PropTypes.bool,
+  onAnalyzerClick: PropTypes.func.isRequired
 }
 
 export default AudioAnalyzer
