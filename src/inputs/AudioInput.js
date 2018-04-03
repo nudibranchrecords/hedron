@@ -8,6 +8,8 @@ export default (store) => {
 
     let bands, i
     window.setInterval(() => {
+      input.normalizeLevels = store.getState().nodes['audioNormalizeLevels'].value
+      input.levelsFalloff = Math.pow(store.getState().nodes['audioLevelsFalloff'].value, 2)
       bands = input.update()
       for (i = 0; i < bands.length; i++) {
         store.dispatch(inputFired(bandIds[i], bands[i], { type: 'audio' }))
