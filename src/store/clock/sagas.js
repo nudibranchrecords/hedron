@@ -1,3 +1,5 @@
+import 'babel-polyfill'
+
 import { takeEvery, put, call } from 'redux-saga/effects'
 import * as a from './actions'
 import { inputFired } from '../inputs/actions'

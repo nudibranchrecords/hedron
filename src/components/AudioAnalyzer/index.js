@@ -40,6 +40,7 @@ const SettingsBox = styled.div`
   border: 1px solid white;
   background: ${theme.bgColorDark1};
   position: absolute;
+  z-index: 10;
   padding: 0.5rem 0.25rem 0.25rem 0.5rem;
 
   &:after {
