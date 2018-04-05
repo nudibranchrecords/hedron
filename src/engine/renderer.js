@@ -3,10 +3,10 @@ import uiEventEmitter from '../utils/uiEventEmitter'
 import * as engine from './'
 import QuadScene from './QuadScene'
 
-let store, canvas, outputEl, viewerEl, isSendingOutput, previewRenderer,
-  rendererWidth, rendererHeight, previewCanvas, previewContext
+let store, domEl, outputEl, viewerEl, isSendingOutput, rendererWidth, rendererHeight,
+  previewCanvas, previewContext, outputCanvas, outputContext
 
-let quadSceneMain, rttA, rttB
+let quadScene, rttA, rttB
 
 export let renderer
 
@@ -17,13 +17,9 @@ export const setRenderer = () => {
     antialias: settings.antialias
   })
 
-  previewRenderer = new THREE.WebGLRenderer({
-    antialias: settings.antialias
-  })
-
-  canvas = renderer.domElement
+  domEl = renderer.domElement
   viewerEl.innerHTML = ''
-  viewerEl.appendChild(canvas)
+  viewerEl.appendChild(domEl)
   const renderTargetParameters = {
     minFilter: THREE.LinearFilter,
     magFilter: THREE.LinearFilter,
@@ -33,7 +29,7 @@ export const setRenderer = () => {
   rttA = new THREE.WebGLRenderTarget(null, null, renderTargetParameters)
   rttB = new THREE.WebGLRenderTarget(null, null, renderTargetParameters)
 
-  quadSceneMain = new QuadScene(rttA, rttB)
+  quadScene = new QuadScene(rttA, rttB)
 }
 
 export const setViewerEl = (el) => {
@@ -52,7 +48,10 @@ export const setSize = () => {
     previewCanvas.width = width
     previewCanvas.height = width / ratio
 
-    previewRenderer.setSize(viewerEl.offsetWidth, viewerEl.offsetWidth / ratio)
+    outputCanvas.width = width
+    outputCanvas.height = width / ratio
+
+    renderer.setSize(viewerEl.offsetWidth, viewerEl.offsetWidth / ratio)
   } else {
     // Basic width and ratio if no output
     width = viewerEl.offsetWidth
@@ -69,7 +68,7 @@ export const setSize = () => {
   rttB.setSize(width, height)
 
   // Set sizes for quad scene
-  quadSceneMain.setSize(width, height)
+  quadScene.setSize(width, height)
 
   // Set ratios for each scene
   const engineScenes = engine.scenes
@@ -107,17 +106,22 @@ export const setOutput = (win) => {
   outputEl = container
 
   // Move renderer canvas to new window
-  outputEl.appendChild(canvas)
-  canvas.setAttribute('style', '')
+  outputEl.appendChild(domEl)
+  domEl.setAttribute('style', '')
 
-  // Setup preview renderer in dom
-  viewerEl.appendChild(previewRenderer.domElement)
+  // Setup output canvas
+  // If preview and output are different, this canvas will be used and
+  // renderer renders two different images, with images being copied from
+  // the dom element to both preview and output canvases
+  outputCanvas = document.createElement('canvas')
+  outputCanvas.style = 'position: absolute; left: 0; top:0; height: 0; width:100%; height:100%;'
+  outputContext = outputCanvas.getContext('2d')
+  outputEl.appendChild(outputCanvas)
 
   // Setup preview canvas in dom
-  // This is used when outputting and dont need to preview other channels,
-  // can directly copy the image from the output canvas
+  // Pixels will be copied from renderer dom element to this
   previewCanvas = document.createElement('canvas')
-  previewCanvas.style = 'position: absolute; left: 0; height: 0; width:100%; height:100%;'
+  previewCanvas.style = 'position: absolute; left: 0; top:0; height: 0; width:100%; height:100%;'
   previewContext = previewCanvas.getContext('2d')
   viewerEl.appendChild(previewCanvas)
 
@@ -132,44 +136,44 @@ export const setOutput = (win) => {
 
 export const stopOutput = () => {
   viewerEl.innerHTML = ''
-  canvas.setAttribute('style', '')
-  viewerEl.appendChild(canvas)
+  domEl.setAttribute('style', '')
+  viewerEl.appendChild(domEl)
 
   isSendingOutput = false
 
   setSize()
 }
 
-const renderChannels = (renderer, sceneA, sceneB, mixState) => {
-  switch (mixState) {
+const renderChannels = (sceneA, sceneB) => {
+  sceneA && renderer.render(sceneA.scene, sceneA.camera, rttA, true)
+  sceneB && renderer.render(sceneB.scene, sceneB.camera, rttB, true)
+  renderer.render(quadScene.scene, quadScene.camera)
+}
+
+const renderSingle = (scene) => {
+  scene && renderer.render(scene.scene, scene.camera)
+}
+
+const renderLogic = (sceneA, sceneB, mix) => {
+  switch (mix) {
     case 'A':
-      sceneA && renderer.render(sceneA.scene, sceneA.camera)
+      renderSingle(sceneA)
       break
     case 'B':
-      sceneB && renderer.render(sceneB.scene, sceneB.camera)
+      renderSingle(sceneB)
       break
     default:
-      sceneA && renderer.render(sceneA.scene, sceneA.camera, rttA, true)
-      sceneB && renderer.render(sceneB.scene, sceneB.camera, rttB, true)
-      renderer.render(quadSceneMain.scene, quadSceneMain.camera)
-      break
-
+      renderChannels(sceneA, sceneB, mix)
   }
 }
 
-const renderSingle = (renderer, viewerRenderer, mixState, scene, channel) => {
-  if (isSendingOutput && mixState === channel) {
-    previewCanvas.style.display = 'block'
-    previewContext.drawImage(renderer.domElement, 0, 0, rendererWidth, rendererHeight)
-  } else {
-    if (previewCanvas) previewCanvas.style.display = 'none'
-    viewerRenderer.render(scene.scene, scene.camera)
-  }
+const copyPixels = (context) => {
+  context.drawImage(renderer.domElement, 0, 0, rendererWidth, rendererHeight)
 }
 
 export const render = (sceneA, sceneB, mixRatio, viewerMode) => {
-  quadSceneMain.material.uniforms.mixRatio.value = mixRatio
-  let mixState
+  quadScene.material.uniforms.mixRatio.value = mixRatio
+  let mixState = 'mix'
 
   if (mixRatio === 0) {
     mixState = 'A'
@@ -177,29 +181,38 @@ export const render = (sceneA, sceneB, mixRatio, viewerMode) => {
     mixState = 'B'
   }
 
-  let viewerRenderer = renderer
+  if (!isSendingOutput) {
+    // Always using dom element when not outputting
+    if (previewCanvas) previewCanvas.style.display = 'none'
+    if (viewerMode === 'mix') {
+      renderLogic(sceneA, sceneB, mixState)
+    } else {
+      renderLogic(sceneA, sceneB, viewerMode)
+    }
+  } else {
+    // When outputting, need the preview canvas
+    if (previewCanvas) previewCanvas.style.display = 'block'
+    // mix and preview viewer are the same
+    if (viewerMode === 'mix' || mixState === viewerMode) {
+      // No need for output canvas
+      outputCanvas.style.display = 'none'
+      // Render the correct thing
+      renderLogic(sceneA, sceneB, mixState)
+      // Copy pixels to preview
+      copyPixels(previewContext)
+    } else {
+      // mix and preview are not the same
+      // Show output canvas
+      outputCanvas.style.display = 'block'
 
-  if (isSendingOutput) {
-    viewerRenderer = previewRenderer
-
-    renderChannels(renderer, sceneA, sceneB, mixState)
-  }
-
-  switch (viewerMode) {
-    case 'mix':
-      if (isSendingOutput) {
-        previewCanvas.style.display = 'block'
-        previewContext.drawImage(renderer.domElement, 0, 0, rendererWidth, rendererHeight)
-      } else {
-        if (previewCanvas) previewCanvas.style.display = 'none'
-        renderChannels(viewerRenderer, sceneA, sceneB, mixState)
-      }
-      break
-    case 'A':
-      renderSingle(renderer, viewerRenderer, mixState, sceneA, 'A')
-      break
-    case 'B':
-      renderSingle(renderer, viewerRenderer, mixState, sceneB, 'B')
-      break
+      // Render for output
+      renderLogic(sceneA, sceneB, mixState)
+      // Copy pixels to output canvas
+      copyPixels(outputContext)
+      // Render for preview
+      renderLogic(sceneA, sceneB, viewerMode)
+      // Copy pixels to preview canvas
+      copyPixels(previewContext)
+    }
   }
 }
