@@ -1,7 +1,28 @@
 import * as THREE from 'three'
-import glslify from 'glslify'
-const vert = glslify.file('./src/shaders/simple-vert.glsl')
-const frag = glslify.file('./src/shaders/texture-frag.glsl')
+const vert = `
+  varying vec2 vUv;
+
+  void main() {
+
+  vUv = uv;
+  gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
+
+  }
+`
+const frag = `
+  varying vec2 vUv;
+  uniform sampler2D tDiffuseA;
+  uniform sampler2D tDiffuseB;
+  uniform float mixRatio;
+
+  void main() {
+
+    vec4 a = texture2D( tDiffuseA, vUv );
+    vec4 b = texture2D( tDiffuseB, vUv );
+    gl_FragColor = mix( a, b, mixRatio );
+
+  }
+`
 
 class QuadScene {
   constructor (rttA, rttB) {
