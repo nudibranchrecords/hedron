@@ -7,7 +7,7 @@ import { Link as LinkComponent } from 'react-router-dom'
 const BaseLink = css`
 flex: 0 0 12.5%;
 color: white;
-padding: 0 0.5rem 0.5rem 0;
+padding: 0 0.25rem 0.5rem;
 text-decoration: none;
 text-transform: uppercase;
 cursor: pointer;
