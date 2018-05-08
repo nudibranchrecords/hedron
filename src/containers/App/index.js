@@ -1,7 +1,7 @@
 import { connect } from 'react-redux'
 import App from '../../components/App'
 import getPanelWidth from '../../selectors/getPanelWidth'
-import { uiPanelResize } from '../../store/ui/actions'
+import { uiPanelResize, uiEditingClose } from '../../store/ui/actions'
 import { withRouter } from 'react-router'
 
 const mapStateToProps = (state, ownProps) => ({
@@ -11,6 +11,9 @@ const mapStateToProps = (state, ownProps) => ({
 const mapDispatchToProps = (dispatch, ownProps) => ({
   onLeftDrag: value => {
     dispatch(uiPanelResize('left', value))
+  },
+  onWrapperClick: () => {
+    dispatch(uiEditingClose())
   }
 })
 

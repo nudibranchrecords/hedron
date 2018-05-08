@@ -10,11 +10,13 @@ Perform live shows with your three.js creations.
 ## Features
 
 - 📥Import [three.js](https://github.com/mrdoob/three.js/) sketches without having to recompile
-- 🌇 Layer up multiple sketches in the same scene
+- 🎊 Place multiple sketches in the same scene
 - 🔊 Control variables using audio, MIDI and BPM based LFO
 - 🕹️ Call functions using audio, MIDI and BPM based sequencer
 - ⚡ Define macros to control multiple variables at once
 - ⏲️ Use MIDI clock input or tap tempo to get BPM
+- 🌇🎚️🌋 Create many scenes and crossfade between them
+- 🔍 Preview and compose scenes before displaying them to the audience
 - 🎛️ Use virtual MIDI banks to get the most out of your controllers
 - 💡 Use MIDI Learn to quickly assign controls
 - ⚙️ Support for multiple MIDI control modes (abs, rel1, rel2, rel3)
