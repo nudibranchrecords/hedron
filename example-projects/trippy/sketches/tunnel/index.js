@@ -3,8 +3,8 @@ const TWEEN = require('@tweenjs/tween.js')
 const Tower = require('./Tower')
 
 class Tunnel {
-  constructor (world) {
-    world.scene.fog = new THREE.FogExp2()
+  constructor (scene) {
+    scene.scene.fog = new THREE.FogExp2()
     this.root = new THREE.Group()
     const groupSize = 500
     const towerHeight = 10

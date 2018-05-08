@@ -4,7 +4,8 @@ const defaultState = {
   panelWidths: {
     left: 50
   },
-  isEditing: false
+  isEditing: false,
+  openedNode: false
 }
 
 const uiReducer = (state = defaultState, action) => {
@@ -29,6 +30,17 @@ const uiReducer = (state = defaultState, action) => {
         }
       }
     }
+    case 'UI_EDITING_TOGGLE': {
+      return {
+        ...state,
+        isEditing: state.isEditing
+          ? false
+          : {
+            id: p.id,
+            type: p.type
+          }
+      }
+    }
     case 'UI_EDITING_CLOSE':
     case LOCATION_CHANGE:
       {
@@ -37,6 +49,12 @@ const uiReducer = (state = defaultState, action) => {
           isEditing: false
         }
       }
+    case 'UI_NODE_TOGGLE_OPEN': {
+      return {
+        ...state,
+        openedNode: p.id === state.openedNode ? false : p.id
+      }
+    }
     default:
       return state
   }
