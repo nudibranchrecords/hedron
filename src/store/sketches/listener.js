@@ -35,10 +35,12 @@ const handleSketchCreate = (action, store) => {
       uniqueId = uid()
       paramIds.push(uniqueId)
       store.dispatch(uNodeCreate(uniqueId, {
-        title: param.title,
+        title: param.title ? param.title : param.key,
         type: 'param',
         key: param.key,
         value: param.defaultValue,
+        min:param.min,
+        max:param.max,
         id: uniqueId,
         inputLinkIds
       }))
