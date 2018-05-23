@@ -1,13 +1,18 @@
 import 'babel-polyfill'
 
-import { takeEvery, put, call } from 'redux-saga/effects'
+import {
+  takeEvery,
+  put,
+  call
+} from 'redux-saga/effects'
 import * as a from './actions'
-import { inputFired } from '../inputs/actions'
+import {
+  inputFired
+} from '../inputs/actions'
 import now from 'performance-now'
 
 const ppqn = 24
-let deltaInc = Math.PI / ppqn
-let pulses, delta, beats, lastBar
+let pulses, delta, beats, lastBar, totalBeats
 let seqStepCount = 0 // Sequencer step count
 const ppSeqStep = ppqn / 8 // Pulses per 8th beat
 const seqStepPerBar = ppSeqStep * 8 * 4
@@ -16,14 +21,13 @@ export const clockReset = () => {
   pulses = 0
   delta = 0
   beats = 0
+  totalBeats = 0
   lastBar = now()
 }
 
 export const newPulse = () => {
   pulses++
-  delta += deltaInc
   seqStepCount++
-
   if (seqStepCount > seqStepPerBar - 1) {
     seqStepCount = 0
   }
@@ -31,11 +35,18 @@ export const newPulse = () => {
   if (pulses > 23) {
     pulses = 0
     beats++
+    totalBeats++
     if (beats > 3) {
       beats = 0
     }
   }
-  return { pulses, beats, delta, seqStepCount }
+  delta = pulses / ppqn + totalBeats
+  return {
+    pulses,
+    beats,
+    delta,
+    seqStepCount
+  }
 }
 
 export const calcBpm = () => {
@@ -47,7 +58,9 @@ export const calcBpm = () => {
 
 export function* clockUpdate () {
   const info = yield call(newPulse)
-  yield put(inputFired('lfo', info.delta, { type: 'lfo' }))
+  yield put(inputFired('lfo', info.delta, {
+    type: 'lfo'
+  }))
 
   if (info.seqStepCount % ppSeqStep === 0) {
     yield put(inputFired('seq-step', info.seqStepCount / ppSeqStep))
