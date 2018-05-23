@@ -50,12 +50,10 @@ export const startGeneratedClock = () => {
 export const tap = tapTempo.tap
 
 ipcRenderer.on('window-hide', () => {
-  console.log('hid', Date.now())
   stopGeneratedClock()
 })
 
 ipcRenderer.on('window-show', () => {
-  console.log('sho', Date.now())
   startGeneratedClock()
 })
 
