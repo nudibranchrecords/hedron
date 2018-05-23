@@ -1,25 +1,10 @@
 import AudioAnalyzer from './AudioAnalyzer'
 import { inputFired } from '../store/inputs/actions'
-import { uNodeCreate } from '../store/nodes/actions'
 
 export default (store) => {
   const gotStream = (stream) => {
     const input = new AudioAnalyzer(stream)
     const bandIds = ['audio_0', 'audio_1', 'audio_2', 'audio_3']
-
-    store.dispatch(uNodeCreate('audioNormalizeLevels', {
-      title: 'Normalize Levels',
-      type: 'param',
-      value: input.normalizeLevels,
-      id: 'audioNormalizeLevels'
-    }))
-
-    store.dispatch(uNodeCreate('audioLevelsFalloff', {
-      title: 'Levels Falloff',
-      type: 'param',
-      value: input.levelsFalloff,
-      id: 'audioLevelsFalloff'
-    }))
 
     let bands, i
     window.setInterval(() => {
