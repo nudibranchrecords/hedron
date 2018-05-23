@@ -4,21 +4,21 @@ export default (delta, shape, rate) => {
 
   switch (shape) {
     case 'sine':
-      y = Math.sin(x)
+      y = Math.cos(x * 6.28318530718) * 0.5 + 0.5
       break
     case 'sawtooth':
-      y = (x - Math.floor(x + 0.5)) * 2
+      y = x % 1
       break
     case 'rSawtooth':
-      y = -(x - Math.floor(x + 0.5)) * 2
+      y = 1 - (x % 1)
       break
     case 'square':
-      y = Math.sign(Math.sin(x))
+      y = Math.floor((x % 1) * 2)
       break
     case 'triangle':
-      y = Math.abs((x - Math.floor(x + 0.5)) * 2)
+      y = Math.abs((x % 1) * 2 - 1)
       break
   }
 
-  return (y + 1) / 2 // convert from -1 ~ 1 to 0 ~ 1
+  return y
 }
