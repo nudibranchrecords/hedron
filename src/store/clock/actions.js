@@ -24,3 +24,9 @@ export function clockReset () {
     type: 'CLOCK_RESET'
   }
 }
+
+export function clockSnap () {
+  return {
+    type: 'CLOCK_SNAP'
+  }
+}
