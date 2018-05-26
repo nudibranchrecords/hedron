@@ -1,15 +1,8 @@
 import 'babel-polyfill'
-
-import {
-  takeEvery,
-  put,
-  call
-} from 'redux-saga/effects'
-import * as a from './actions'
-import {
-  inputFired
-} from '../inputs/actions'
 import now from 'performance-now'
+import { takeEvery, put, call } from 'redux-saga/effects'
+import { inputFired } from '../inputs/actions'
+import * as a from './actions'
 
 const ppqn = 24
 let pulses, delta, beats, lastBar, totalBeats
