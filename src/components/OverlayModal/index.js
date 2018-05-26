@@ -13,6 +13,7 @@ const Wrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+  cursor: pointer;
 
   p {
     font-size: 1rem;
@@ -25,6 +26,7 @@ const Inner = styled.div`
   padding: 3rem;
   text-align: center;
   position: relative;
+  cursor: default;
 `
 
 const Close = styled.div`
@@ -47,8 +49,8 @@ const Close = styled.div`
 const OverlayModal = ({ isVisible, title, onCancelClick, children }) => (
   <div>
     {isVisible &&
-      <Wrapper>
-        <Inner>
+      <Wrapper onClick={e => { e.stopPropagation(); onCancelClick() }}>
+        <Inner onClick={e => e.stopPropagation()}>
           {title && <h2>{title}</h2>}
           {children}
           {onCancelClick && <Close onClick={onCancelClick}>&times;</Close>}

@@ -5,8 +5,9 @@ import { watchProject, saveProject, loadProjectRequest,
   saveAsProject, loadProject, chooseSketchesFolder, handleProjectError } from '../sagas'
 import { getProjectData, getProjectFilepath } from '../selectors'
 import { save, load } from '../../../utils/file'
-import { projectLoadSuccess, projectRehydrate, projectSaveAs,
-  projectError, projectErrorAdd, projectErrorPopupOpen } from '../actions'
+import { projectLoadSuccess, projectRehydrate, projectError, projectSaveAs,
+  projectErrorAdd, projectErrorPopupOpen, projectFilepathUpdate
+} from '../actions'
 import history from '../../../history'
 
 test('(Saga) watchProject', (t) => {
@@ -138,14 +139,20 @@ test('(Saga) loadProject', (t) => {
 
   t.deepEqual(
     generator.next().value,
+    put(projectFilepathUpdate(filePath)),
+    '4. Fires projectFilepathUpdate() with new filepath'
+  )
+
+  t.deepEqual(
+    generator.next().value,
     put(projectLoadSuccess(projectData)),
-    '4. Fires PROJECT_LOAD_SUCCESS with data'
+    '5. Fires PROJECT_LOAD_SUCCESS with data'
   )
 
   t.deepEqual(
     generator.next().value,
     call([history, history.replace], '/foo/bar'),
-    '5. Matches history with router state'
+    '6. Matches history with router state'
   )
 
   t.equal(generator.next().done, true, 'Generator ends')

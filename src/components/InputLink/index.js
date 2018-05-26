@@ -29,6 +29,10 @@ const Item = styled.div`
 `
 
 class InputLink extends React.Component {
+  componentDidMount () {
+    uiEventEmitter.emit('repaint')
+  }
+
   componentDidUpdate (prevProps) {
     if (this.props.id !== prevProps.id) {
       setTimeout(() => {

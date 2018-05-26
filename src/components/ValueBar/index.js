@@ -5,6 +5,8 @@ import uiEventEmitter from '../../utils/uiEventEmitter'
 import theme from '../../utils/theme'
 import now from 'performance-now'
 
+const pixelDensity = 2
+
 const Bar = styled.canvas`
   background: ${theme.bgColorDark2};
   cursor: pointer;
@@ -39,7 +41,7 @@ class ValueBar extends React.Component {
 
   componentDidMount () {
     this.containerEl = this.canvas.parentElement
-    const height = this.props.type === 'shot' ? 6 : 2
+    const height = this.props.type === 'shot' ? 6 : 2.5
     this.height = 16 * height
     this.canvas.height = this.height
     this.ctx = this.canvas.getContext('2d')
@@ -83,13 +85,13 @@ class ValueBar extends React.Component {
     this.containerEl.style.display = 'block'
 
     this.sizer = setTimeout(() => {
+      this.width = this.containerEl.offsetWidth * pixelDensity
       this.canvas.style.display = 'block'
-      this.width = this.containerEl.offsetWidth * 2
       this.canvas.width = this.width
-      this.canvas.style.width = this.width / 2 + 'px'
-      this.canvas.style.height = this.height / 2 + 'px'
+      this.canvas.style.width = this.width / pixelDensity + 'px'
+      this.canvas.style.height = this.height / pixelDensity + 'px'
       this.draw(true)
-    }, 1)
+    })
   }
 
   handleMouseDown (e) {
@@ -135,7 +137,7 @@ class ValueBar extends React.Component {
 
       const roundedVal = Math.round(newVal * 1000) / 1000
 
-      this.ctx.font = '18px Arial'
+      this.ctx.font = '24px Arial'
       this.ctx.textAlign = 'right'
 
       if (this.oldVal && flashOpacity < 0 && !this.flashIsPainted) {
@@ -164,7 +166,7 @@ class ValueBar extends React.Component {
       if (!this.props.hideBar) {
         // Draw value as text
         this.ctx.fillStyle = theme.textColorLight1
-        this.ctx.fillText(roundedVal.toFixed(3), innerWidth - 5, this.height - 10)
+        this.ctx.fillText(roundedVal.toFixed(3), innerWidth - 5, this.height - 13)
         // Draw bar at new position
         this.ctx.fillStyle = '#fff'
         this.ctx.fillRect(pos, 0, barWidth, this.height)

@@ -16,7 +16,7 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
     dispatch(projectErrorPopupClose())
   },
   onChooseSketchFolderClick: () => {
-    dispatch(projectChooseSketchesFolder())
+    dispatch(projectChooseSketchesFolder(true))
   }
 })
 

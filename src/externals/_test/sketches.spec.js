@@ -12,7 +12,7 @@ syncStub.withArgs('foo/bar/*').returns(['foo/bar/dog', 'foo/bar/cat', 'foo/bar/f
 syncStub.withArgs('bar/bar/*').returns(['bar/bar/dog', 'bar/bar/cat'])
 syncStub.withArgs('wee/bar/*').returns(['wee/bar/dog'])
 
-const { getSketches } = proxyquire('../sketches', {
+const { loadSketches } = proxyquire('../sketches', {
   glob: {
     // Mocked up sketch files
     sync: syncStub
@@ -35,7 +35,7 @@ const { getSketches } = proxyquire('../sketches', {
 
 })
 
-test('(External) sketches - getSketches()', (t) => {
+test('(External) sketches - loadSketches()', (t) => {
   const expected = {
     dog: {
       Module: 'dogModule',
@@ -50,28 +50,28 @@ test('(External) sketches - getSketches()', (t) => {
       config: 'frogMeta'
     }
   }
-  const actual = getSketches('foo/bar')
+  const actual = loadSketches('foo/bar')
   t.deepEqual(actual, expected, 'Returns modules from files')
   t.end()
 })
 
-test('(External) sketches - getSketches() - one module does not have config', (t) => {
+test('(External) sketches - loadSketches() - one module does not have config', (t) => {
   t.throws(() => {
-    getSketches('bar/bar')
+    loadSketches('bar/bar')
   })
   t.end()
 })
 
-test('(External) sketches - getSketches() - one module does not have index', (t) => {
+test('(External) sketches - loadSketches() - one module does not have index', (t) => {
   t.throws(() => {
-    getSketches('wee/bar')
+    loadSketches('wee/bar')
   })
   t.end()
 })
 
-test('(External) sketches - getSketches() - folder doesnt exist', (t) => {
+test('(External) sketches - loadSketches() - folder doesnt exist', (t) => {
   t.throws(() => {
-    getSketches('foo/@@@@')
+    loadSketches('foo/@@@@')
   })
   t.end()
 })
