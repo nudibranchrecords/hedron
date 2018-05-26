@@ -47,6 +47,8 @@ export const createMainWindow = () => {
       if (!isDevelopment) {
         setTimeout(() => {
           mainWindow.setFullScreen(true)
+          event.newGuest.setAutoHideMenuBar(true)
+          event.newGuest.setMenuBarVisibility(false)
           event.newGuest.setFullScreen(true)
         }, 500)
       }
