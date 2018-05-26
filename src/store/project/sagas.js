@@ -1,13 +1,14 @@
 import { call, select, takeEvery, put } from 'redux-saga/effects'
 import { save, load } from '../../utils/file'
 import { getProjectData, getProjectFilepath } from './selectors'
-import { projectLoadSuccess, projectRehydrate, projectError,
-  projectSaveAs, projectErrorAdd, projectErrorPopupOpen, projectErrorPopupClose } from './actions'
+import getCurrentSceneId from '../../selectors/getCurrentSceneId'
+import { projectLoadSuccess, projectRehydrate, projectError, projectSaveAs,
+  projectErrorAdd, projectErrorPopupOpen, projectErrorPopupClose,
+  projectSave, projectLoadRequest, projectFilepathUpdate, projectSketchesPathUpdate
+} from './actions'
+import { uSceneCreate } from '../scenes/actions'
 import history from '../../history'
 import { remote } from 'electron'
-import {
-  projectSave, projectLoadRequest, projectFilepathUpdate, projectSketchesPathUpdate
-} from '../../store/project/actions'
 
 const fileFilters = [
   { name: 'JSON', extensions: ['json'] }
@@ -56,6 +57,7 @@ export function* loadProjectRequest () {
     const filepath = yield select(getProjectFilepath)
     const projectData = yield call(load, filepath)
     yield put(projectRehydrate(projectData))
+    yield put(projectFilepathUpdate(filepath))
     yield put(projectLoadSuccess(projectData))
     yield call([history, history.replace], projectData.router.location.pathname)
   } catch (error) {
@@ -64,7 +66,9 @@ export function* loadProjectRequest () {
   }
 }
 
-export function* chooseSketchesFolder (dispatch) {
+export function* chooseSketchesFolder (dispatch, action) {
+  const p = action.payload
+  const sceneId = yield select(getCurrentSceneId)
   remote.dialog.showOpenDialog({
     properties: ['openDirectory']
   },
@@ -73,7 +77,12 @@ export function* chooseSketchesFolder (dispatch) {
       dispatch(projectSketchesPathUpdate(filePath[0]))
       dispatch(projectLoadSuccess())
       dispatch(projectErrorPopupClose())
-      history.push('/sketches/add')
+      if (!p.disableRedirect) {
+        history.push(`/scenes/addSketch/${sceneId}`)
+      }
+      if (p.createSceneAfter) {
+        dispatch(uSceneCreate())
+      }
     }
   })
 }

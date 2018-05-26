@@ -2,6 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import theme from '../../utils/theme'
+import tinyColor from 'tinycolor2'
 import { Link as RouterLink } from 'react-router-dom'
 
 const sizes = {
@@ -9,9 +10,15 @@ const sizes = {
   small: '0.7rem'
 }
 
-const Wrapper = styled.span`
-  background: ${theme.actionColor1};
-  display: inline-block;
+const colors = {
+  channelA: theme.channelAColor,
+  channelB: theme.channelBColor,
+  danger: theme.dangerColor
+}
+
+const Inner = styled.span`
+  display: block;
+  background: ${props => colors[props.color] || theme.actionColor1};
   padding: 0.2rem 0.35rem;
   text-decoration: none;
   border: 0;
@@ -22,23 +29,38 @@ const Wrapper = styled.span`
   pointer-events: ${props => props.disabled ? 'none' : 'auto'};
   transition: 0.2s;
 
-  &:hover {
-    background: #ef6091;
-
-
-  &:active {
-    transform: scale(0.9);
-    transition: 0s;
-  }
-
   ${props => props.reversed && `
     background: white;
     color: ${theme.actionColor1};
-
-    &:hover {
-      color: white;
-    }
   `}
+`
+
+const Wrapper = styled.span`
+  display: inline-block;
+  
+  &:hover {
+    ${Inner} {
+      background: ${
+        props => {
+          const col = colors[props.color] || theme.actionColor1
+          return tinyColor(col).lighten(5).toString()
+        }
+      };
+
+      ${props => props.reversed && `
+        color: white;
+      `}
+    }
+  }
+
+  &:active {
+    ${Inner} {
+      transform: scale(0.9);
+      transition: 0s;
+    }
+  }
+
+
 `
 
 const Link = styled(RouterLink)`
@@ -46,21 +68,20 @@ const Link = styled(RouterLink)`
   text-decoration: none;
 `
 
-const Button = (props) => {
-  return (
-    <Wrapper {...props}>
+const Button = ({ onClick, ...props }) =>
+  <Wrapper {...props} onClick={onClick}>
+    <Inner {...props}>
       {props.to
         ? <Link to='/' {...props} />
         : <a>{props.children}</a>
       }
-    </Wrapper>
-
-  )
-}
+    </Inner>
+  </Wrapper>
 
 Button.propTypes = {
   to: PropTypes.string,
-  children: PropTypes.node.isRequired
+  children: PropTypes.node.isRequired,
+  onClick: PropTypes.func
 }
 
 export default Button

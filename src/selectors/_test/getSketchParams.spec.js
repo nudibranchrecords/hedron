@@ -2,7 +2,7 @@ import test from 'tape'
 import deepFreeze from 'deep-freeze'
 import getSketchParams from '../getSketchParams'
 
-test('(Engine) getSketchParams', function (t) {
+test('(engine) getSketchParams', function (t) {
   let actual, expected
 
   const state = {

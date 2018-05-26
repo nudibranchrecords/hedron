@@ -3,9 +3,12 @@ import PropTypes from 'prop-types'
 import Viewer from '../../containers/Viewer'
 import ProjectDetails from '../../containers/ProjectDetails'
 import styled from 'styled-components'
-import AudioAnalyzer from '../../components/AudioAnalyzer'
+import Crossfader from '../../containers/Crossfader'
+import AudioAnalyzer from '../../containers/AudioAnalyzer'
 import Clock from '../../containers/Clock'
+import SceneManager from '../../containers/SceneManager'
 import Devices from '../../containers/Devices'
+import Control from '../../containers/Control'
 import theme from '../../utils/theme'
 
 const Wrapper = styled.div`
@@ -50,13 +53,17 @@ class Overview extends React.Component {
           <div><div ref={node => node && node.appendChild(this.props.stats.dom)} /></div>
           <div><AudioAnalyzer /></div>
           <div><Clock /></div>
+          <div><Control nodeId='viewerMode' /></div>
         </Tools>
+
+        <Crossfader />
 
         <Scroller>
           <Top>
-            <Devices />
+            <SceneManager />
           </Top>
           <Bottom>
+            <Devices />
             <ProjectDetails />
           </Bottom>
         </Scroller>
