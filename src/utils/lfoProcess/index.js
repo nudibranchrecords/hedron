@@ -1,3 +1,6 @@
+import OneDimensionalNoise from '../oneDimensionalNoise'
+const Noise = new OneDimensionalNoise()
+
 export default (delta, shape, rate) => {
   let x = delta * rate
   let y
@@ -17,6 +20,9 @@ export default (delta, shape, rate) => {
       break
     case 'triangle':
       y = Math.abs((x % 1) * 2 - 1)
+      break
+    case 'noise':
+      y = Noise.getValue(x)
       break
   }
 

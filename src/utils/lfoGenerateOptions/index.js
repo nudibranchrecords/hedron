@@ -30,6 +30,10 @@ export default () => {
         {
           value: 'triangle',
           label: 'Triangle'
+        },
+        {
+          value: 'noise',
+          label: 'Noise'
         }
       ]
     },
