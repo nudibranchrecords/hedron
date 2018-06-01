@@ -18,7 +18,7 @@ export const clockReset = () => {
   lastBar = now()
 }
 export const clockSnap = () => {
-  if (pulses > ppqn * .5) {
+  if (pulses > ppqn * 0.5) {
     beats++
     totalBeats++
     pulses = -1
