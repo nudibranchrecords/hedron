@@ -17,6 +17,16 @@ export const clockReset = () => {
   totalBeats = 0
   lastBar = now()
 }
+export const clockSnap = () => {
+  if (pulses > ppqn * 0.5) {
+    beats++
+    totalBeats++
+    pulses = -1
+  } else {
+    pulses = 0
+  }
+  delta = totalBeats
+}
 
 export const newPulse = () => {
   pulses++
@@ -25,7 +35,7 @@ export const newPulse = () => {
     seqStepCount = 0
   }
 
-  if (pulses > 23) {
+  if (pulses > ppqn - 1) {
     pulses = 0
     beats++
     totalBeats++
@@ -72,6 +82,7 @@ export function* clockUpdate () {
 export function* watchClock () {
   yield takeEvery('CLOCK_PULSE', clockUpdate)
   yield takeEvery('CLOCK_RESET', clockReset)
+  yield takeEvery('CLOCK_SNAP', clockSnap)
 }
 
 clockReset()
