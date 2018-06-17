@@ -180,6 +180,16 @@ export function* handleNodeValueUpdate (action) {
     yield put(projectError(`Failed to process macro: ${error.message}`))
   }
 }
+export function* handleNodeRangeUpdate (action) {
+  const p = action.payload
+  const node = yield select(getNode, p.id)
+  if (p.value.min) {
+    node.min = p.value.min
+  }
+  if (p.value.max) {
+    node.max = p.value.max
+  }
+}
 
 export function* handleNodeValueBatchUpdate (action) {
   const p = action.payload
@@ -233,5 +243,6 @@ export function* watchMacros () {
   yield takeEvery('U_MACRO_TARGET_PARAM_LINK_ADD', macroTargetParamLinkAdd)
   yield takeEvery('U_MACRO_TARGET_PARAM_LINK_DELETE', macroTargetParamLinkDelete)
   yield takeEvery('NODE_VALUE_UPDATE', handleNodeValueUpdate)
+  yield takeEvery('NODE_RANGE_UPDATE', handleNodeRangeUpdate)
   yield takeEvery('NODE_VALUES_BATCH_UPDATE', handleNodeValueBatchUpdate)
 }
