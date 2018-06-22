@@ -14,7 +14,7 @@ const Range = ({ min, max }) => (
   <Wrapper>
     <Row>
       <span>Range: min {min}</span>
-      <Input name='min' type='number' normalize={min} />
+      <Input name='min' type='number' value={min} />
       <span>max {max}</span>
       <Input name='max' type='number' value={max} />
     </Row>
