@@ -16,6 +16,10 @@ export default () => {
           label: 'Sine'
         },
         {
+          value: 'cosine',
+          label: 'Cosine'
+        },
+        {
           value: 'square',
           label: 'Square'
         },

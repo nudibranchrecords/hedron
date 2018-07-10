@@ -7,6 +7,9 @@ export default (delta, shape, rate) => {
 
   switch (shape) {
     case 'sine':
+      y = Math.sin(x * 6.28318530718) * 0.5 + 0.5
+      break
+    case 'cosine':
       y = Math.cos(x * 6.28318530718) * 0.5 + 0.5
       break
     case 'sawtooth':
