@@ -12,7 +12,7 @@ import { projectError } from '../store/project/actions'
 import now from 'performance-now'
 import * as renderer from './renderer'
 import Scene from './Scene'
-import {nodeValueUpdate} from '../store/nodes/actions'
+import { nodeValueUpdate } from '../store/nodes/actions'
 
 export let scenes = {}
 
@@ -75,18 +75,18 @@ export const removeSketchFromScene = (sceneId, sketchId) => {
 export const fireShot = (sketchId, method) => {
   const state = store.getState()
 
-	if (sketches[sketchId][method]) {
-      var param = sketches[sketchId][method](getSketchParams(state, sketchId))
-      if (param) {
-        var keys = Object.keys(param);
-        for (var i = 0; i<keys.length; i++) {
-          var id = getSketchParamId(state, sketchId, keys[i])
-          if (id != null) {
-            store.dispatch(nodeValueUpdate(id, param[keys[i]], null))
-          }
+  if (sketches[sketchId][method]) {
+    var param = sketches[sketchId][method](getSketchParams(state, sketchId))
+    if (param) {
+      var keys = Object.keys(param)
+      for (var i = 0; i < keys.length; i++) {
+        var id = getSketchParamId(state, sketchId, keys[i])
+        if (id != null) {
+          store.dispatch(nodeValueUpdate(id, param[keys[i]], null))
         }
       }
     }
+  }
 }
 
 export const initiateScenes = () => {
