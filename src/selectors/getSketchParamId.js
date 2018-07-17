@@ -4,7 +4,7 @@ export default (state, sketchId, paramKey) => {
   for (var i = 0; i < sketchParams.length; i++) {
     var id = sketchParams[i]
     const param = state.nodes[id]
-    if (param.key == paramKey) {
+    if (param.key === paramKey) {
       return id
     }
   }
