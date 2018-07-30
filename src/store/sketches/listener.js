@@ -39,8 +39,8 @@ const handleSketchCreate = (action, store) => {
         type: 'param',
         key: param.key,
         value: param.defaultValue,
-        min:param.min,
-        max:param.max,
+        min: param.min ? param.min : 0,
+        max: param.max ? param.max : 1,
         id: uniqueId,
         inputLinkIds
       }))
@@ -144,17 +144,23 @@ const handleSketchReimport = (action, store) => {
         ...paramIds.slice(0, i), uniqueId, ...paramIds.slice(i)
       ]
       store.dispatch(uNodeCreate(uniqueId, {
-        title: moduleParam.title,
+        title: moduleParam.title ? moduleParam.title : moduleParam.key,
         type: 'param',
         key: moduleParam.key,
         value: moduleParam.defaultValue,
+        min: moduleParam.min ? moduleParam.min : 0,
+        max: moduleParam.max ? moduleParam.max : 1,
         id: uniqueId,
         inputLinkIds: []
       }))
     } else {
       // If param does exist, the title may still change
       const id = sketchParam.id
-      store.dispatch(nodeUpdate(id, { title: moduleParam.title }))
+      store.dispatch(nodeUpdate(id, {
+        title: moduleParam.title ? moduleParam.title : moduleParam.key,
+        min: moduleParam.min ? moduleParam.min : 0,
+        max: moduleParam.max ? moduleParam.max : 1
+      }))
     }
   }
 
