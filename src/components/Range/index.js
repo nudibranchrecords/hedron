@@ -1,11 +1,11 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
-import Input from '../Input'
 import { Field } from 'redux-form'
 import Row from '../Row'
 import Col from '../Col'
 import theme from '../../utils/theme'
+import Button from '../Button'
 
 const Wrapper = styled.div`
   display: flex;
@@ -31,22 +31,29 @@ input {
 `
 
 class Range extends React.Component {
-  
+
+  onKeyPress = (e) => {
+    if (e.key === 'Enter') { this.props.handleSubmit() }
+  }
+
+  onClick = (e) => {
+    this.props.handleSubmit()
+  }
   render () {
-    const{onSubmit} = this.props
-    const props = this.props
-    
+    const { min, max } = this.props.initialValues
+
     return (
       <Wrapper>
         <Row>
-          <Col width='50%'>
-            <label>Range: min</label>
-            <Field component='input' name='min' type='number'/>
+          <Col width='45%'>
+            <label>Range: min {min}</label>
+            <Field component='input' name='min' type='number' onKeyPress={this.onKeyPress} />
           </Col>
-          <Col width='50%'>
-            <label> max</label>
-            <Field component='input' name='max' type='number' />
+          <Col width='45%'>
+            <label> max {max}</label>
+            <Field component='input' name='max' type='number' onKeyPress={this.onKeyPress} />
           </Col>
+          <Button type='submit' onClick={this.onClick}>Set</Button>
         </Row>
       </Wrapper>
     )
@@ -54,6 +61,8 @@ class Range extends React.Component {
 }
 
 Range.propTypes = {
+  handleSubmit: PropTypes.func,
+  initialValues: PropTypes.object
 }
 
 export default Range
