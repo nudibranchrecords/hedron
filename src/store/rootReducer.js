@@ -27,7 +27,8 @@ const ignoreList = [
 ]
 
 const reducers = combineReducers({
-  nodes: ignoreActions(nodesReducer, difference(ignoreList, ['NODE_VALUE_UPDATE', 'NODE_RANGE_UPDATE', 'NODE_VALUES_BATCH_UPDATE'])),
+  nodes: ignoreActions(nodesReducer, difference(ignoreList,
+    ['NODE_VALUE_UPDATE', 'NODE_RANGE_UPDATE', 'NODE_VALUES_BATCH_UPDATE'])),
   availableModules: ignoreActions(availableModulesReducer, ignoreList),
   scenes: ignoreActions(scenesReducer, ignoreList),
   sketches: ignoreActions(sketchesReducer, ignoreList),
