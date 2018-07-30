@@ -7,8 +7,10 @@ import getNode from '../../selectors/getNode'
 const mapStateToProps = (state, ownProps) => {
   const node = getNode(state, ownProps.nodeId)
   return {
-    min: node.min,
-    max: node.max
+    initialValues:{
+      min: node.min,
+      max: node.max
+    }
   }
 }
 
