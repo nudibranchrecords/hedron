@@ -11,13 +11,13 @@ const mapStateToProps = (state, ownProps) => {
       min: node.min,
       max: node.max
     },
-    form: ownProps.nodeId+'range',
+    form: ownProps.nodeId + 'range'
   }
 }
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
-    onChange: (value) => {
+    onSubmit: (value) => {
       dispatch(nodeRangeUpdate(ownProps.nodeId, value))
     }
   }
