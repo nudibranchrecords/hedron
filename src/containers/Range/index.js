@@ -10,7 +10,8 @@ const mapStateToProps = (state, ownProps) => {
     initialValues:{
       min: node.min,
       max: node.max
-    }
+    },
+    form: ownProps.nodeId+'range',
   }
 }
 
@@ -23,7 +24,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 }
 
 const Range = reduxForm({
-  form: 'range'
+  enableReinitialize: true
 })(RangeComponent)
 
 export default connect(
