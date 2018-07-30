@@ -29,6 +29,8 @@ class AudioInput {
     this.normalizeLevels = 0
     // smoothes out the input
     this.smoothing = 0
+    // applies a level of exponentiality to the levels, make only the loudest peaks pop
+    this.levelsPower = 1
     // shaving a small amount off the max levels value each frame in case of a rare peak, quieter song, etc
     this.maxLevelFalloffMultiplier = 0.9999
     // stoping divide by zeros
@@ -77,6 +79,7 @@ class AudioInput {
       normalized = (freq - this.fullMinLevelsData[i]) /
         (this.fullMaxLevelsData[i] - this.fullMinLevelsData[i])
       freq = this.lerp(freq, normalized, this.normalizeLevels)
+      freq = Math.pow(freq, this.levelsPower)
       this.fullLevelsData[i] = this.lerp(freq, this.fullLevelsData[i], this.smoothing)
       this.textureData[i] = Math.floor(this.fullLevelsData[i] * 256)
     }
@@ -105,6 +108,7 @@ class AudioInput {
       this.minLevelsData[i] = Math.min(this.minLevelsData[i], band)
       normalized = (band - this.minLevelsData[i]) / (this.maxLevelsData[i] - this.minLevelsData[i])
       band = this.lerp(band, normalized, this.normalizeLevels)
+      band = Math.pow(band, this.levelsPower)
       this.levelsData[i] = this.lerp(band, this.levelsData[i], this.smoothing)
     }
     return this.levelsData
