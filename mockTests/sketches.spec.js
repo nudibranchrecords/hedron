@@ -251,9 +251,7 @@ test('(mock) Sketches - Add/Delete Sketch', (t) => {
       connectedMacroIds: [],
       type: 'shot',
       method: 'explode',
-      sketchId: 'id_3',
-      min: 0,
-      max: 1
+      sketchId: 'id_3'
     }
   }, 'After creating sketch, node items are created for params and shot')
 
@@ -317,9 +315,7 @@ test('(mock) Sketches - Add/Delete Sketch', (t) => {
       connectedMacroIds: [],
       type: 'shot',
       method: 'explode',
-      sketchId: 'id_3',
-      min: 0,
-      max: 1
+      sketchId: 'id_3'
     }
   }, 'After deleting sketch, node items are removed')
 
@@ -395,6 +391,20 @@ test('(mock) Sketches - Reimport Sketch (Unedited sketch)', (t) => {
   uniqueId = 2
 
   const defaultState = {
+    nodes: {
+      id_2: {
+        id: 'id_2',
+        title: 'Speed',
+        value: 0.5,
+        inputLinkIds: [],
+        shotCount: 0,
+        connectedMacroIds: [],
+        type: 'param',
+        key: 'speed',
+        min: 0,
+        max: 1
+      }
+    },
     availableModules: {
       foo: {
         defaultTitle: 'Foo',
@@ -406,18 +416,6 @@ test('(mock) Sketches - Reimport Sketch (Unedited sketch)', (t) => {
           }
         ],
         shots: []
-      }
-    },
-    nodes: {
-      id_2: {
-        id: 'id_2',
-        title: 'Speed',
-        value: 0.5,
-        inputLinkIds: [],
-        shotCount: 0,
-        connectedMacroIds: [],
-        type: 'param',
-        key: 'speed'
       }
     },
     sketches: {
