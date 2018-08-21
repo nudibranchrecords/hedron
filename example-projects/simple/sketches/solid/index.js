@@ -132,6 +132,13 @@ class Solid {
       }
     })
   }
+
+  /** HEDRON TIP **
+    Do things here for when the sketch is deleted
+  **/
+  destructor () {
+    console.log('Solid sketch deleted!')
+  }
 }
 
 /** HEDRON TIP **
