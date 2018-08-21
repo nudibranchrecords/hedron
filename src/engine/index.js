@@ -12,7 +12,7 @@ import { projectError } from '../store/project/actions'
 import now from 'performance-now'
 import * as renderer from './renderer'
 import Scene from './Scene'
-import { nodeValueUpdate } from '../store/nodes/actions'
+import { nodeValuesBatchUpdate } from '../store/nodes/actions'
 
 export let scenes = {}
 
@@ -81,13 +81,21 @@ export const fireShot = (sketchId, method) => {
 
   if (sketches[sketchId][method]) {
     const params = sketches[sketchId][method](getSketchParams(state, sketchId))
+    const vals = []
     if (params) {
-      const keys = Object.keys(params)
-      for (let i = 0; i < keys.length; i++) {
-        const id = getSketchParamId(state, sketchId, keys[i])
+      for (const key in params) {
+        const id = getSketchParamId(state, sketchId, key)
         if (id != null) {
-          store.dispatch(nodeValueUpdate(id, params[keys[i]], null))
+          vals.push(
+            {
+              id,
+              value: params[key]
+            }
+          )
         }
+      }
+      if (vals.length) {
+        store.dispatch(nodeValuesBatchUpdate(vals))
       }
     }
   }
