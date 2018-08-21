@@ -73,6 +73,9 @@ export const addSketchToScene = (sceneId, sketchId, moduleId) => {
 export const removeSketchFromScene = (sceneId, sketchId) => {
   const sketch = sketches[sketchId]
   scenes[sceneId].scene.remove(sketch.root)
+  if (sketch.destructor) {
+    sketch.destructor(scenes[sceneId])
+  }
   delete sketches[sketchId]
 }
 
