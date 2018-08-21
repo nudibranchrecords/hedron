@@ -14,7 +14,7 @@ const THREE = require('three')
 **/
 class Solid {
 
-  constructor () {
+  constructor (scene, meta, params) {
     /** HEDRON TIP **
       Must define a "root" property as a THREE.Group or THREE.Object3D
       Hedron looks for this and will add it to the scene.
@@ -57,11 +57,8 @@ class Solid {
       this.group.add(mesh)
     })
 
-    // Index of meshes for shapeshifting
-    this.currentMeshIndex = -1
-
-    // Do one shapeshift to start (hides all but one mesh)
-    this.shapeShift()
+    // Update the shape based on params
+    this.updateShape(params.meshIndex)
   }
 
   /** HEDRON TIP **
@@ -104,17 +101,31 @@ class Solid {
     All methods of the class (except "update") are exposed as "shots".
     These are single functions that can fire rather than paramaters than slowly change.
     See config.js to see how these are defined.
-  **/
-  shapeShift () {
-    // Increase index to shapeshift
-    this.currentMeshIndex ++
-    // If at end of array, loop round
-    if (this.currentMeshIndex > this.meshes.length - 1) this.currentMeshIndex = 0
 
+    Current params are given as an argument
+  **/
+  shapeShift (params) {
+    let meshIndex = params.meshIndex
+
+    // Increase index to shapeshift
+    meshIndex++
+
+    // If at end of array, loop round
+    if (meshIndex > this.meshes.length - 1) meshIndex = 0
+
+    this.updateShape(meshIndex)
+
+    /** HEDRON TIP **
+      If you've updated some params inside the shot, you'll need to return these new values
+    **/
+    return { meshIndex }
+  }
+
+  updateShape (meshIndex) {
     // Loop through meshes and only show the mesh
     // that matches with current index
     this.meshes.forEach((mesh, index) => {
-      if (this.currentMeshIndex !== index) {
+      if (meshIndex !== index) {
         mesh.visible = false
       } else {
         mesh.visible = true

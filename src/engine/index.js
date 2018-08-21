@@ -60,7 +60,11 @@ export const addSketchToScene = (sceneId, sketchId, moduleId) => {
 
   const scene = scenes[sceneId]
   scene.renderer = renderer.renderer
-  const module = new allModules[moduleId].Module(scene, meta)
+
+  const state = store.getState()
+  const params = getSketchParams(state, sketchId)
+
+  const module = new allModules[moduleId].Module(scene, meta, params)
 
   sketches[sketchId] = module
   module.root && scene.scene.add(module.root)
@@ -76,13 +80,13 @@ export const fireShot = (sketchId, method) => {
   const state = store.getState()
 
   if (sketches[sketchId][method]) {
-    var param = sketches[sketchId][method](getSketchParams(state, sketchId))
-    if (param) {
-      var keys = Object.keys(param)
-      for (var i = 0; i < keys.length; i++) {
-        var id = getSketchParamId(state, sketchId, keys[i])
+    const params = sketches[sketchId][method](getSketchParams(state, sketchId))
+    if (params) {
+      const keys = Object.keys(params)
+      for (let i = 0; i < keys.length; i++) {
+        const id = getSketchParamId(state, sketchId, keys[i])
         if (id != null) {
-          store.dispatch(nodeValueUpdate(id, param[keys[i]], null))
+          store.dispatch(nodeValueUpdate(id, params[keys[i]], null))
         }
       }
     }
