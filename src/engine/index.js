@@ -120,8 +120,11 @@ export const initiateScenes = () => {
       addSketchToScene(stateScene.id, sketchId, moduleId)
     })
 
-    const { scene, camera } = scenes[stateScene.id]
-    renderer.renderer.compile(scene, camera)
+    // Initial render of each scene to precompile shaders
+    setTimeout(() => {
+      const { scene, camera } = scenes[stateScene.id]
+      renderer.renderer.render(scene, camera)
+    }, 1)
   })
 }
 
