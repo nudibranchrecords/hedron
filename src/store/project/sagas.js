@@ -91,8 +91,8 @@ export function* handleProjectError (action) {
   const p = action.payload
   yield put(projectErrorAdd(p.message))
 
-  if (p.meta && p.meta.popup && p.meta.type) {
-    yield put(projectErrorPopupOpen(p.message, p.meta.type))
+  if (p.meta && p.meta.popup) {
+    yield put(projectErrorPopupOpen(p.message, p.meta.code))
   }
 }
 

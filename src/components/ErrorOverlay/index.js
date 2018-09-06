@@ -14,15 +14,14 @@ const Wrapper = styled.div`
   margin-bottom: 1rem;
 `
 
-const ErrorOverlay = ({ isVisible, onCancelClick, type, message, onChooseSketchFolderClick }) => {
+const ErrorOverlay = ({ isVisible, onCancelClick, code, message, onChooseSketchFolderClick }) => {
   let inner = <p>Whoops!</p>
 
-  switch (type) {
-    case 'badSketchFolder':
+  switch (code) {
+    case 'NO_SKETCH_FOLDER':
       inner = (
         <Wrapper>
-          <p>The sketch folder for this project could not be located. Please find the folder
-      on your computer.</p>
+          <p>The sketches folder for this project could not be located, please find the folder on your computer.</p>
           <Button size='large' onClick={onChooseSketchFolderClick}>Locate Sketch Folder</Button>
         </Wrapper>)
       break
@@ -45,7 +44,7 @@ const ErrorOverlay = ({ isVisible, onCancelClick, type, message, onChooseSketchF
 ErrorOverlay.propTypes = {
   isVisible: PropTypes.bool,
   onCancelClick: PropTypes.func,
-  type: PropTypes.string,
+  code: PropTypes.string,
   message: PropTypes.string,
   onChooseSketchFolderClick: PropTypes.func.isRequired
 }

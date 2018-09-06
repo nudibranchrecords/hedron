@@ -32,7 +32,7 @@ const projectReducer = (state = defaultState, action) => {
         ...state,
         errorPopup: {
           message: p.message,
-          type: p.type
+          code: p.code
         }
       }
     }
