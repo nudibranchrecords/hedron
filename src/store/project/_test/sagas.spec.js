@@ -179,7 +179,7 @@ test('(Saga) handleProjectError (popup error)', (t) => {
   const errorMessage = 'foo error!'
   const meta = {
     popup: true,
-    type: 'foo'
+    code: 'FOO'
   }
   const generator = handleProjectError(
     projectError(errorMessage, meta)
@@ -193,7 +193,7 @@ test('(Saga) handleProjectError (popup error)', (t) => {
 
   t.deepEqual(
     generator.next().value,
-    put(projectErrorPopupOpen(errorMessage, meta.type)),
+    put(projectErrorPopupOpen(errorMessage, meta.code)),
     '2. Dispatch projectErrorPopup'
   )
 

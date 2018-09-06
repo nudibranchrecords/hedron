@@ -39,7 +39,7 @@ export const loadSketchModules = (url) => {
     console.error(error)
     store.dispatch(projectError(`Sketches failed to load: ${error.message}`, {
       popup: 'true',
-      type: 'badSketchFolder'
+      code: error.code
     }))
   }
 }

@@ -41,6 +41,7 @@
     "create-react-class": "^15.5.2",
     "electron-debug": "^1.4.0",
     "electron-log": "^2.2.14",
+    "err-code": "^1.1.2",
     "eventemitter3": "^3.0.1",
     "glslify": "^6.1.1",
     "glslify-import": "^3.1.0",
