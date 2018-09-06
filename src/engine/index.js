@@ -113,12 +113,15 @@ export const initiateScenes = () => {
   sketches = {}
 
   // Add new ones
-  stateScenes.forEach((scene) => {
-    addScene(scene.id)
-    scene.sketchIds.forEach(sketchId => {
+  stateScenes.forEach((stateScene) => {
+    addScene(stateScene.id)
+    stateScene.sketchIds.forEach(sketchId => {
       const moduleId = getSketch(state, sketchId).moduleId
-      addSketchToScene(scene.id, sketchId, moduleId)
+      addSketchToScene(stateScene.id, sketchId, moduleId)
     })
+
+    const { scene, camera } = scenes[stateScene.id]
+    renderer.renderer.compile(scene, camera)
   })
 }
 
