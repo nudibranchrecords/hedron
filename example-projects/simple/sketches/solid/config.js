@@ -32,7 +32,7 @@ module.exports = {
     {
       key: 'meshIndex',
       title: 'Mesh Index',
-      defaultValue: -1
+      defaultValue: 0
     }
   ],
   // Shots are single functions that can fire, as opposed to values that change

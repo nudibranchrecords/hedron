@@ -20,7 +20,8 @@ class Solid {
     using scene.renderer
 
     meta - This is an object with meta data that might be useful. It has the following properties:
-      sketchesFolder - The path to the sketches folder on your computer. Useful if you need to link to a resource such as an image.
+      sketchesFolder - The path to the sketches folder on your computer.
+      Useful if you need to link to a resource such as an image.
 
     params - The sketch params when the sketch first initialises
   **/
@@ -46,7 +47,7 @@ class Solid {
     const mat = new THREE.MeshBasicMaterial(
       { wireframe: true, color: 0xffffff }
     )
-    const size = 300
+    const size = 100
 
     // Array geometries (the platonic solids!)
     const geoms = [
