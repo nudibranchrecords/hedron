@@ -20,7 +20,8 @@ class Solid {
     using scene.renderer
 
     meta - This is an object with meta data that might be useful. It has the following properties:
-      sketchesFolder - The path to the sketches folder on your computer. Useful if you need to link to a resource such as an image.
+      sketchesFolder - The path to the sketches folder on your computer.
+      Useful if you need to link to a resource such as an image.
 
     params - The sketch params when the sketch first initialises
   **/
