@@ -1,13 +1,14 @@
 import OneDimensionalNoise from '../oneDimensionalNoise'
 const Noise = new OneDimensionalNoise()
+const PI2 = Math.PI * 2
 
-export default (delta, shape, rate) => {
-  let x = delta * rate
+export default (delta, shape, rate, phase) => {
+  const x = delta * rate + phase
   let y
 
   switch (shape) {
     case 'sine':
-      y = Math.cos(x * 6.28318530718) * 0.5 + 0.5
+      y = Math.sin(x * PI2) * 0.5 + 0.5
       break
     case 'sawtooth':
       y = x % 1
