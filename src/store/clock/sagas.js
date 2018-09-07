@@ -15,6 +15,7 @@ export const clockReset = () => {
   delta = 0
   beats = 0
   totalBeats = 0
+  seqStepCount = 0
   lastBar = now()
 }
 export const clockSnap = () => {
