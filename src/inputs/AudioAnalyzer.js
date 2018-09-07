@@ -42,12 +42,12 @@ class AudioInput {
         sum += this.freqs[ (i * this.levelBins) + j ]
       }
 
-      var band = (sum / this.levelBins) / 256
+      let band = (sum / this.levelBins) / 256
       band = Math.max(band, Math.max(0, this.cleanLevelsData[ i ] - this.levelsFalloff))
       this.cleanLevelsData[ i ] = band
       this.maxLevelsData[ i ] = Math.max(this.maxLevelsData[ i ] * this.maxLevelFalloffMultiplier, this.maxLevelMinimum)
       this.maxLevelsData[ i ] = Math.max(this.maxLevelsData[ i ], band)
-      var normalized = band / this.maxLevelsData[ i ]
+      const normalized = band / this.maxLevelsData[ i ]
       this.levelsData[ i ] = (1 - this.normalizeLevels) * band + this.normalizeLevels * normalized
     }
 
