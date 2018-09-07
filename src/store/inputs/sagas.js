@@ -41,7 +41,7 @@ export function* handleInput (action) {
 
           if (p.inputId === 'lfo') {
             let o = yield select(getNodesValues, links[i].lfoOptionIds)
-            value = yield call(lfoProcess, value, o.shape, o.rate)
+            value = yield call(lfoProcess, value, o.shape, o.rate, o.phase)
           }
 
           if (links[i].modifierIds && links[i].modifierIds.length) {

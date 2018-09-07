@@ -332,12 +332,13 @@ test('(Saga) handleInput (lfo)', (t) => {
 
   const optionValues = {
     shape: 'sine',
-    rate: 2
+    rate: 2,
+    phase: 0.25
   }
 
   t.deepEqual(
     generator.next(optionValues).value,
-    call(lfoProcess, 0.555, 'sine', 2),
+    call(lfoProcess, 0.555, 'sine', 2, 0.25),
     '3. get value after going through first modifier'
   )
 
