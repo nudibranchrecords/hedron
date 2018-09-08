@@ -91,6 +91,14 @@ export default () => {
           label: '1/32'
         }
       ]
+    },
+    {
+      title: 'Phase',
+      id: uid(),
+      key: 'phase',
+      value: 0,
+      inputLinkIds: [],
+      subNode: true
     }
   ]
 }
