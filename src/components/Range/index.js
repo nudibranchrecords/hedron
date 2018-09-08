@@ -35,25 +35,24 @@ class Range extends React.Component {
   onKeyPress = (e) => {
     if (e.key === 'Enter') { this.props.handleSubmit() }
   }
-
-  onClick = (e) => {
+  onBlur = (e) => {
     this.props.handleSubmit()
   }
+
   render () {
     const { min, max } = this.props.initialValues
 
     return (
       <Wrapper>
         <Row>
-          <Col width='45%'>
+          <Col>
             <label>Range: min {min}</label>
-            <Field component='input' name='min' type='number' onKeyPress={this.onKeyPress} />
+            <Field component='input' name='min' type='number' onKeyPress={this.onKeyPress} onBlur={this.onBlur} />
           </Col>
-          <Col width='45%'>
+          <Col>
             <label> max {max}</label>
-            <Field component='input' name='max' type='number' onKeyPress={this.onKeyPress} />
+            <Field component='input' name='max' type='number' onKeyPress={this.onKeyPress} onBlur={this.onBlur} />
           </Col>
-          <Button type='submit' onClick={this.onClick}>Set</Button>
         </Row>
       </Wrapper>
     )
