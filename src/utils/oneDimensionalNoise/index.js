@@ -13,7 +13,7 @@ class OneDimensionalNoise {
     this.buffer = []
     this.call = 0
 
-    for (var i = 0; i < MAX_VERTICES; ++i) {
+    for (let i = 0; i < MAX_VERTICES; ++i) {
       this.buffer.push(Math.random())
     }
   }

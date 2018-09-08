@@ -1,3 +1,81 @@
+# Creating Sketches for Hedron
+
+## Starting a project
+It is best practice to create a project folder outside of Hedron. This is advantageous, because:
+
+1. The project can exist as it's own repository
+2. You can install dependencies from NPM without polluting Hedron's own dependencies
+
+Inside the project folder, you'll want to have a "sketches" folder, this is what you'll point Hedron to.
+
+## Sketch
+Sketches together in the sketches directory. A sketch is itself directory with two required files:
+
+- config.js
+- index.js
+
+## config.js
+
+This is where the params and shots are defined.
+
+```javascript
+module.exports = {
+  // Default title when sketch is loaded in (can be changed by user)
+  defaultTitle: 'Solid',
+  // Params are values between 0 and 1 that can be manipulated by the user
+  // these values are sent to the sketch every frame
+  // e.g. Speed, scale, colour
+  params: [
+    {
+      key: 'rotSpeedX', // needs to be unique
+      title: 'Rotation Speed X', // should be human
+      defaultValue: 0 // must be between 0 and 1
+    },
+  ],
+  // Shots are single functions that can fire, as opposed to values that change
+  // e.g. Explosions, Pre-defined animations
+  shots: [
+    {
+      method: 'shapeShift', // needs to be unique
+      title: 'Shape Shift' // should be human
+    }
+  ]
+}
+```
+
+## index.js
+
+This is where the actual sketch is held. You can `require` other modules from here, so don't feel restricted to a single file.
+
+### Very basic example
+This is the minimum you need to do in order to use Hedron.
+
+```javascript
+const THREE = require('three')
+
+class MyFirstSketch {
+  constructor () {
+    // Create a cube, add it to the root of the scene
+    const mat = new THREE.MeshNormalMaterial()
+    const geom = new THREE.BoxGeometry(300, 300, 300)
+    this.cube = new THREE.Mesh(geom, mat)
+    this.root.add(this.cube)
+  }
+
+  update (params) {
+    // params.rotSpeedX is a value that is controlled by the user,
+    // in order to change the rotation speed of the cube
+    this.cube.rotation.x += params.rotSpeedX
+  }
+}
+
+module.exports = MyFirstSketch
+```
+
+### Advanced example
+This example shows many more features of Hedron, with lots more comments
+
+```javascript
 /** HEDRON TIP **
 This is a nice and simple sketch to get you going!
 A polyhedron that can spin on all axes. The user can change the speed of the rotation.
@@ -20,8 +98,7 @@ class Solid {
     using scene.renderer
 
     meta - This is an object with meta data that might be useful. It has the following properties:
-      sketchesFolder - The path to the sketches folder on your computer.
-      Useful if you need to link to a resource such as an image.
+      sketchesFolder - The path to the sketches folder on your computer. Useful if you need to link to a resource such as an image.
 
     params - The sketch params when the sketch first initialises
   **/
@@ -156,3 +233,23 @@ class Solid {
   Class must be exported as a default.
 **/
 module.exports = Solid
+```
+
+## Hedron dev config
+
+You can get extra functionality by adding `dev.config.js` to `/config` (from the root directory of the Hedron repo).
+
+```javascript
+// config/dev.config.js
+module.exports = {
+  defaultProject: false
+}
+```
+
+Setting `defaultProject` to the path of a saved project (e.g. `/Users/alex/Desktop/foo.json`) can help improve your workflow when developing:
+* The project will load automatically on load/restart
+* The project sketches folder will be watched for changes, triggering a restart
+
+## Reimporting
+
+If you've already got a project going with some sketches and then make edits to a sketch, Hedron automatically loads in the new content. However, if you've made changes to `config.js`, you'll need to "reimport" to see the new params and shots. Do this by clicking the button at the bottom of the view for that sketch.
