@@ -5,7 +5,6 @@ import { Field } from 'redux-form'
 import Row from '../Row'
 import Col from '../Col'
 import theme from '../../utils/theme'
-import Button from '../Button'
 
 const Wrapper = styled.div`
   display: flex;
