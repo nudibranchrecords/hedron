@@ -1,9 +1,10 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
+import now from 'performance-now'
 import uiEventEmitter from '../../utils/uiEventEmitter'
 import theme from '../../utils/theme'
-import now from 'performance-now'
+import ParamValueForm from '../../containers/ParamValueForm'
 
 const pixelDensity = 2
 
@@ -24,6 +25,21 @@ const Wrapper = styled.div`
     height: 100%;
     width: 0;
     border-left: 1px solid ${theme.actionColor1};
+  }
+`
+
+const ValueForm = styled.div`
+  position: absolute;
+  width: 2.5rem;
+  height: 0.5rem;
+  top: 0;
+  right: 0;
+  z-index: 1;
+
+  & input {
+    font-size: 0.7rem !important;
+    padding: 0.15rem !important;
+    text-align: right;
   }
 `
 
@@ -68,7 +84,8 @@ class ValueBar extends React.Component {
   shouldComponentUpdate (nextProps) {
     return (
       nextProps.markerIsVisible !== this.props.markerIsVisible ||
-      nextProps.hideBar !== this.props.hideBar
+      nextProps.hideBar !== this.props.hideBar ||
+      nextProps.formIsVisible !== this.props.formIsVisible
     )
   }
 
@@ -177,11 +194,16 @@ class ValueBar extends React.Component {
   render () {
     const { markerIsVisible } = this.props
     return (
-      <Wrapper markerIsVisible={markerIsVisible}>
+      <Wrapper markerIsVisible={markerIsVisible} onDoubleClick={this.props.onDoubleClick}>
         <Bar
           innerRef={node => { this.canvas = node }}
           onMouseDown={this.props.onMouseDown || this.handleMouseDown}
         />
+        {this.props.formIsVisible &&
+          <ValueForm>
+            <ParamValueForm id={this.props.nodeId} />
+          </ValueForm>
+        }
       </Wrapper>
     )
   }
@@ -190,9 +212,11 @@ class ValueBar extends React.Component {
 ValueBar.propTypes = {
   nodeId: PropTypes.string.isRequired,
   onChange: PropTypes.func.isRequired,
+  onDoubleClick: PropTypes.func.isRequired,
   onMouseDown: PropTypes.func,
   type: PropTypes.string,
   hideBar: PropTypes.bool,
+  formIsVisible: PropTypes.bool,
   markerIsVisible: PropTypes.bool
 }
 
