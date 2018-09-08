@@ -141,6 +141,7 @@ export const run = (injectedStore, stats) => {
       stateScene.sketchIds.forEach(sketchId => {
         sketch = sketches[sketchId]
         const params = getSketchParams(state, sketchId)
+        allParams = getSketchParams(state, null, sceneId)
         sketch.update(params, tick, elapsedFrames, allParams)
       })
     }
@@ -151,7 +152,6 @@ export const run = (injectedStore, stats) => {
     if (isRunning) {
       state = store.getState()
       spf = 1000 / state.settings.throttledFPS
-      allParams = getSketchParams(state)
 
       newTime = now()
       delta = newTime - oldTimeModified
