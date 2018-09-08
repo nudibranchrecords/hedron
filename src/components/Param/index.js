@@ -178,7 +178,8 @@ class Param extends React.Component {
                   <ParamBar
                     nodeId={nodeId}
                     onMouseDown={onParamBarClick}
-                    />
+                    type={type}
+                  />
                 </BarCol>
 
                 <Info onClick={onOpenClick}>
