@@ -7,7 +7,7 @@ const mapStateToProps = (state, ownProps) => {
   return {
     isVisible: errorPopup && errorPopup.message ? true : undefined,
     message: errorPopup && errorPopup.message || undefined,
-    type: errorPopup && errorPopup.type || undefined
+    code: errorPopup && errorPopup.code || undefined
   }
 }
 
