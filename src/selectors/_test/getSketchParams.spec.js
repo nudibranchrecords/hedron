@@ -26,6 +26,11 @@ test('(engine) getSketchParams', function (t) {
         title: 'Speed Y',
         key: 'speedY',
         value: 0.4
+      },
+      '05': {
+        title: 'Speed Z',
+        key: 'speedZ',
+        value: 0.5
       }
     },
     sketches: {
@@ -40,6 +45,19 @@ test('(engine) getSketchParams', function (t) {
         module: 'test',
         title: 'Ipsum Sketch',
         paramIds: ['03', '04']
+      },
+      'zzz': {
+        moduleId: 'sketch_3',
+        module: 'test',
+        title: 'Dollor Sketch',
+        paramIds: ['05']
+      }
+    },
+    scenes: {
+      items: {
+        'aaa': {
+          sketchIds: ['xxx', 'yyy']
+        }
       }
     }
   }
@@ -71,6 +89,9 @@ test('(engine) getSketchParams', function (t) {
     sketch_2: {
       speedX: 0.3,
       speedY: 0.4
+    },
+    sketch_3: {
+      speedZ: 0.5
     }
   }
 
@@ -78,5 +99,21 @@ test('(engine) getSketchParams', function (t) {
 
   t.deepEqual(actual, expected,
       'Returns key:value params for all sketches if no id given')
+
+  expected = {
+    sketch_1: {
+      rotX: 0.1,
+      rotY: 0.2
+    },
+    sketch_2: {
+      speedX: 0.3,
+      speedY: 0.4
+    }
+  }
+
+  actual = getSketchParams(state, null, 'aaa')
+
+  t.deepEqual(actual, expected,
+          'Returns key:value params for all sketches if scene ID given')
   t.end()
 })
