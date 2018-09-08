@@ -10,20 +10,28 @@ const Wrapper = styled.div`
   font-size: 0.7rem;
   padding: 0px;
   padding-bottom: .2rem;
-.collapsibleClosed {
-    background: ${theme.bgColorDark1};
+  .collapsibleOpen {
+    border-style:solid;
+    border-width: 1px;
+    border-color: ${theme.lineColor2}
   }
-.collapsibleOpen {
+  .Collapsible__contentInner {
+    padding: 5px;
     background: ${theme.bgColorDark2};
   }
-.collapsibleInner {
-    padding: 5px;
+  .Collapsible__trigger{
+    display: block;
+    background: ${theme.bgColorDark1};
+    transition-duration:.3s;
+  }
+  .Collapsible__trigger:hover{
+    background: ${theme.actionColor1};
   }
 `
 
 class Collapsible extends React.Component {
   componentWillMount () {
-    this.state = { text: '► ' + this.props.title }
+    this.setState({ text: '► ' + this.props.title })
   }
   onOpen () {
     this.setState({ text: '▼ ' + this.props.title })
@@ -40,8 +48,7 @@ class Collapsible extends React.Component {
         onOpen:() => { this.onOpen() },
         onClose:() => { this.onClose() },
         className:'collapsibleClosed',
-        openedClassName:'collapsibleOpen',
-        contentInnerClassName: 'collapsibleInner'
+        openedClassName:'collapsibleOpen'
       }}>
         {this.props.children}
       </ReactCollapsible>
