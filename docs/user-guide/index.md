@@ -16,7 +16,7 @@ To remove a sketch, click the delete button at the bottom of the view for that s
 You can switch between different sketches that are already added to Hedron using the right sidebar.
 
 ## Params
-Params are the variables of a sketch. They are always a value between 0 and 1 (although more types of param are [planned](https://github.com/nudibranchrecords/hedron/issues/13)). The simplest way to control a param is to click and drag the value bar.
+Params are the variables of a sketch. They default to a value between 0 and 1 (although more types of param are [planned](https://github.com/nudibranchrecords/hedron/issues/13)). The simplest way to control a param is to click and drag the value bar.
 
 ### Adding an input to a param
 The real power of Hedron is the ability to link different inputs to a param. This can be audio, LFO or MIDI.
@@ -35,6 +35,15 @@ Some things to note:
 
  - Adding a MIDI input will involve a "MIDI learn" step
  - MIDI inputs are always active, they do not have an active/disabled state
+ 
+### Editing the range of a param
+Params can have their range extended or decreased, this can be useful if you want to change the range for a particular instance of a sketch, but not affect all other instances of the sketch, or change the default range of the script
+
+To edit the range of a param:
+
+ 1. Open the param by clicking on the area below the value bar
+ 2. Open the advanced options by clicking "Advanced"
+ 3. Edit the minimum/maximum fields, the fields update when you press Enter or the field loses focus
 
 ## Shots
 Shots are functions that the sketch has exposed for the user to have fun with. These could be things such as explosions, pre scripted animations, etc. The simplest way to control a shot is to click on the hit area for that shot.
