@@ -1,13 +1,13 @@
 import { connect } from 'react-redux'
 import { reduxForm } from 'redux-form'
 import RangeComponent from '../../components/Range'
-import { nodeRangeUpdate } from '../../store/nodes/actions'
+import { nodeUpdate } from '../../store/nodes/actions'
 import getNode from '../../selectors/getNode'
 
 const mapStateToProps = (state, ownProps) => {
   const node = getNode(state, ownProps.nodeId)
   return {
-    initialValues:{
+    initialValues: {
       min: node.min,
       max: node.max
     },
@@ -17,8 +17,8 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
-    onSubmit: (value) => {
-      dispatch(nodeRangeUpdate(ownProps.nodeId, value))
+    onSubmit: (obj) => {
+      dispatch(nodeUpdate(ownProps.nodeId, obj))
     }
   }
 }
