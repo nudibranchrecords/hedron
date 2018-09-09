@@ -1,6 +1,6 @@
 import { connect } from 'react-redux'
 import { reduxForm } from 'redux-form'
-import RangeComponent from '../../components/Range'
+import RangeComponent from '../../components/ParamRange'
 import { nodeUpdate } from '../../store/nodes/actions'
 import getNode from '../../selectors/getNode'
 
@@ -23,11 +23,11 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   }
 }
 
-const Range = reduxForm({
+const ParamRange = reduxForm({
   enableReinitialize: true
 })(RangeComponent)
 
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(Range)
+)(ParamRange)

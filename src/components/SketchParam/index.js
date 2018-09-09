@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import PropTypes from 'prop-types'
 import Revealer from '../../components/Revealer'
 import Param from '../../containers/Param'
-import Range from '../../containers/Range'
+import ParamRange from '../../containers/ParamRange'
 import InputLinkUI from '../../containers/InputLinkUI'
 import theme from '../../utils/theme'
 
@@ -19,7 +19,7 @@ const SketchParam = ({ nodeId, sketchId }) => (
       <InputLinkUI nodeId={nodeId} />
     </Top>
     <Revealer title='Advanced' isOpen>
-      <Range nodeId={nodeId} />
+      <ParamRange nodeId={nodeId} />
     </Revealer>
   </Param>
 )
