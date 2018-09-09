@@ -6184,10 +6184,6 @@ react-addons-perf@^15.4.2:
     fbjs "^0.8.4"
     object-assign "^4.1.0"
 
-react-collapsible@^2.3.1:
-  version "2.3.1"
-  resolved "https://registry.yarnpkg.com/react-collapsible/-/react-collapsible-2.3.1.tgz#4f26244a0ecd4331ad1f6c7b7f6dc7dad7b631ad"
-
 react-create-class@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/react-create-class/-/react-create-class-1.0.0.tgz#fdf5c58b640406fdc9e4f09330ab15d30b919e09"
