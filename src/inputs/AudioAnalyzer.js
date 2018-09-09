@@ -94,22 +94,17 @@ class AudioInput {
       for (let j = 0; j < this.levelBins; j++) {
         sum += this.freqs[(i * this.levelBins) + j]
       }
-
-      var band = (sum / this.levelBins) / 256
-      band = Math.max(band, Math.max(0, this.cleanLevelsData[i] - this.levelsFalloff))
-      this.cleanLevelsData[i] = band
-      this.maxLevelsData[i] = Math.max(
-        this.maxLevelsData[i] * this.maxLevelFalloffMultiplier,
-        this.maxLevelMinimum)
-      this.minLevelsData[i] = Math.min(
-        1 - (1 - this.minLevelsData[i]) * this.maxLevelFalloffMultiplier,
-        this.maxLevelsData[i] - this.maxLevelMinimum)
-      this.maxLevelsData[i] = Math.max(this.maxLevelsData[i], band)
-      this.minLevelsData[i] = Math.min(this.minLevelsData[i], band)
-      normalized = (band - this.minLevelsData[i]) / (this.maxLevelsData[i] - this.minLevelsData[i])
+      let band = (sum / this.levelBins) / 256
+      band = Math.max(band, Math.max(0, this.cleanLevelsData[ i ] - this.levelsFalloff))
+      this.cleanLevelsData[ i ] = band
+      this.maxLevelsData[ i ] = Math.max(this.maxLevelsData[ i ] * this.maxLevelFalloffMultiplier, this.maxLevelMinimum)
+      this.maxLevelsData[ i ] = Math.max(this.maxLevelsData[ i ], band)
+      this.minLevelsData[ i ] = Math.min(1 - (1 - this.minLevelsData[ i ]) * this.maxLevelFalloffMultiplier,this.maxLevelsData[ i ] - this.maxLevelMinimum)
+      this.minLevelsData[ i ] = Math.min(this.minLevelsData[ i ], band)
+      const normalized = (band - this.minLevelsData[ i ]) / (this.maxLevelsData[ i ] - this.minLevelsData[ i ])
       band = this.lerp(band, normalized, this.normalizeLevels)
       band = Math.pow(band, this.levelsPower)
-      this.levelsData[i] = this.lerp(band, this.levelsData[i], this.smoothing)
+      this.levelsData[ i ] = this.lerp(band, this.levelsData[ i ], this.smoothing)
     }
     return this.levelsData
   }
