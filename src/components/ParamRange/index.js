@@ -29,7 +29,7 @@ input {
   }
 `
 
-class Range extends React.Component {
+class ParamRange extends React.Component {
 
   onKeyPress = (e) => {
     if (e.key === 'Enter') { this.props.handleSubmit() }
@@ -43,13 +43,14 @@ class Range extends React.Component {
 
     return (
       <Wrapper>
+        <h4>Range</h4>
         <Row>
           <Col>
-            <label>Range: min {min}</label>
+            <label>Min</label>
             <Field component='input' name='min' type='number' onKeyPress={this.onKeyPress} onBlur={this.onBlur} />
           </Col>
           <Col>
-            <label> max {max}</label>
+            <label>Max</label>
             <Field component='input' name='max' type='number' onKeyPress={this.onKeyPress} onBlur={this.onBlur} />
           </Col>
         </Row>
@@ -58,9 +59,9 @@ class Range extends React.Component {
   }
 }
 
-Range.propTypes = {
+ParamRange.propTypes = {
   handleSubmit: PropTypes.func,
   initialValues: PropTypes.object
 }
 
-export default Range
+export default ParamRange
