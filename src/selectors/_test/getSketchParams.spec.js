@@ -115,5 +115,57 @@ test('(engine) getSketchParams', function (t) {
 
   t.deepEqual(actual, expected,
           'Returns key:value params for all sketches if scene ID given')
+
+  t.end()
+})
+
+test('(engine) getSketchParams (min/max)', function (t) {
+  const state = {
+    nodes: {
+      '06': {
+        title: 'Foo',
+        key: 'foo',
+        value: 0.5,
+        min: 0,
+        max: 100
+      },
+      '07': {
+        title: 'Bar',
+        key: 'bar',
+        value: 0.5,
+        min: -100,
+        max: 0
+      },
+      '08': {
+        title: 'Lorem',
+        key: 'lorem',
+        value: 0.9,
+        min: 10,
+        max: 20
+      }
+    },
+    sketches: {
+      '@@@': {
+        moduleId: 'sketch_4',
+        module: 'minmax',
+        title: 'Min Max',
+        paramIds: ['06', '07', '08']
+      }
+    }
+  }
+  deepFreeze(state)
+
+  let expected, actual
+
+  expected = {
+    foo: 50,
+    bar: -50,
+    lorem: 19
+  }
+
+  actual = getSketchParams(state, '@@@')
+
+  t.deepEqual(actual, expected,
+          'Returns correct value based on min/max')
   t.end()
 })
