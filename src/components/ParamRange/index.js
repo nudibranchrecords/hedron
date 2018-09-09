@@ -3,7 +3,6 @@ import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { Field } from 'redux-form'
 import Row from '../Row'
-import Col from '../Col'
 import theme from '../../utils/theme'
 
 const Wrapper = styled.div`
@@ -13,20 +12,24 @@ const Wrapper = styled.div`
   padding: 0px;
   padding-bottom: .2rem;
 
-input {
-    font-size: .7rem;
-    display: block;
-    border: 1px solid #aaa;
-    background: ${theme.bgColorDark2};
-    color: white;
-    padding: 0.1rem;
-    outline: none;
-    width: auto;
+  input {
+      font-size: .7rem;
+      display: block;
+      border: 1px solid #aaa;
+      background: ${theme.bgColorDark2};
+      color: white;
+      padding: 0.1rem;
+      outline: none;
+      max-width: 5rem;
 
-    &:focus {
-      border-color: white;
+      &:focus {
+        border-color: white;
+      }
     }
-  }
+`
+
+const Col = styled.div`
+  margin-right: 1rem;
 `
 
 class ParamRange extends React.Component {
@@ -39,8 +42,6 @@ class ParamRange extends React.Component {
   }
 
   render () {
-    const { min, max } = this.props.initialValues
-
     return (
       <Wrapper>
         <h4>Range</h4>
@@ -60,8 +61,7 @@ class ParamRange extends React.Component {
 }
 
 ParamRange.propTypes = {
-  handleSubmit: PropTypes.func,
-  initialValues: PropTypes.object
+  handleSubmit: PropTypes.func
 }
 
 export default ParamRange
