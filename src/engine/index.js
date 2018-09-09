@@ -3,6 +3,7 @@ import getSketch from '../selectors/getSketch'
 import getScenes from '../selectors/getScenes'
 import getScene from '../selectors/getScene'
 import getSketchParams from '../selectors/getSketchParams'
+import getSketchParamId from '../selectors/getSketchParamId'
 import getChannelSceneId from '../selectors/getChannelSceneId'
 import getSceneCrossfaderValue from '../selectors/getSceneCrossfaderValue'
 import getViewerMode from '../selectors/getViewerMode'
@@ -11,6 +12,7 @@ import { projectError } from '../store/project/actions'
 import now from 'performance-now'
 import * as renderer from './renderer'
 import Scene from './Scene'
+import { nodeValuesBatchUpdate } from '../store/nodes/actions'
 
 export let scenes = {}
 
@@ -37,7 +39,7 @@ export const loadSketchModules = (url) => {
     console.error(error)
     store.dispatch(projectError(`Sketches failed to load: ${error.message}`, {
       popup: 'true',
-      type: 'badSketchFolder'
+      code: error.code
     }))
   }
 }
@@ -58,7 +60,11 @@ export const addSketchToScene = (sceneId, sketchId, moduleId) => {
 
   const scene = scenes[sceneId]
   scene.renderer = renderer.renderer
-  const module = new allModules[moduleId].Module(scene, meta)
+
+  const state = store.getState()
+  const params = getSketchParams(state, sketchId)
+
+  const module = new allModules[moduleId].Module(scene, meta, params)
 
   sketches[sketchId] = module
   module.root && scene.scene.add(module.root)
@@ -67,12 +73,35 @@ export const addSketchToScene = (sceneId, sketchId, moduleId) => {
 export const removeSketchFromScene = (sceneId, sketchId) => {
   const sketch = sketches[sketchId]
   scenes[sceneId].scene.remove(sketch.root)
+  if (sketch.destructor) {
+    sketch.destructor(scenes[sceneId])
+  }
   delete sketches[sketchId]
 }
 
 export const fireShot = (sketchId, method) => {
   const state = store.getState()
-  sketches[sketchId][method](getSketchParams(state, sketchId))
+
+  if (sketches[sketchId][method]) {
+    const params = sketches[sketchId][method](getSketchParams(state, sketchId))
+    const vals = []
+    if (params) {
+      for (const key in params) {
+        const id = getSketchParamId(state, sketchId, key)
+        if (id != null) {
+          vals.push(
+            {
+              id,
+              value: params[key]
+            }
+          )
+        }
+      }
+      if (vals.length) {
+        store.dispatch(nodeValuesBatchUpdate(vals))
+      }
+    }
+  }
 }
 
 export const initiateScenes = () => {
@@ -112,6 +141,7 @@ export const run = (injectedStore, stats) => {
       stateScene.sketchIds.forEach(sketchId => {
         sketch = sketches[sketchId]
         const params = getSketchParams(state, sketchId)
+        allParams = getSketchParams(state, null, sceneId)
         sketch.update(params, tick, elapsedFrames, allParams)
       })
     }
@@ -122,7 +152,6 @@ export const run = (injectedStore, stats) => {
     if (isRunning) {
       state = store.getState()
       spf = 1000 / state.settings.throttledFPS
-      allParams = getSketchParams(state)
 
       newTime = now()
       delta = newTime - oldTimeModified

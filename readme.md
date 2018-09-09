@@ -1,6 +1,3 @@
-
-
-
 # Hedron
 
 Perform live shows with your three.js creations.
@@ -49,11 +46,11 @@ Run `yarn dist` to package up the app for best performance and no dev tools. Onc
 4. 😎
 
 ## User Guide
-Head to the [User Guide](https://github.com/nudibranchrecords/hedron/wiki/Hedron-User-Guide) to learn how to use Hedron.
+Head to the [User Guide](docs/user-guide/index.md) to learn how to use Hedron.
 
 
 ## Creating Sketches
-Head to the [Creating Sketches Guide](https://github.com/nudibranchrecords/hedron/wiki/Creating-Sketches) to learn how to create sketches.
+Head to the [Creating Sketches Guide](docs/dev/index.md) to learn how to create sketches.
 
 ## Get in touch
 Made something awesome in Hedron you'd like to share? Need help or have some cool ideas? Let's talk! Find Alex on Twitter: [@funtriangles](https://twitter.com/funtriangles), or email: [alex@funwithtriangles.net](mailto:https://twitter.com/funtriangles).
@@ -62,15 +59,15 @@ Made something awesome in Hedron you'd like to share? Need help or have some coo
 
 If you are having fun with Hedron, we'd love you to help with development. See the repo [issues](https://github.com/nudibranchrecords/hedron/issues) for what needs doing. We're particularly looking for developers who know about:
 
- - React/Redux
- - three.js/WebGL
- - Javascript performance
- - Spout/Syphon/C++ ([related issue](https://github.com/nudibranchrecords/hedron/issues/21))
- - Audio analysis ([related issue](https://github.com/nudibranchrecords/hedron/issues/8))
+- React/Redux
+- three.js/WebGL
+- Javascript performance
+- Spout/Syphon/C++ ([related issue](https://github.com/nudibranchrecords/hedron/issues/21))
+- Audio analysis ([related issue](https://github.com/nudibranchrecords/hedron/issues/8))
 
 ### How to contribute
 
- - Fork a branch from dev
+- Fork a branch from dev
 - Make changes
 - Ensure tests are passing
 - Make a pull request to dev
