@@ -29,9 +29,9 @@ const Icon = styled(IconComponent)`
   transform: rotate(${props => props.isOpen ? '0deg' : '-90deg'});
 `
 
-const Revealer = ({ children, isOpen, title }) => (
+const Revealer = ({ children, isOpen, title, onHeaderClick }) => (
   <Wrapper>
-    <Header><Icon isOpen={isOpen} glyph={downIcon} /> {title}</Header>
+    <Header onClick={onHeaderClick}><Icon isOpen={isOpen} glyph={downIcon} /> {title}</Header>
     {
       isOpen &&
         <Body>
@@ -44,7 +44,8 @@ const Revealer = ({ children, isOpen, title }) => (
 Revealer.propTypes = {
   children: PropTypes.node.isRequired,
   isOpen: PropTypes.bool,
-  title: PropTypes.string.isRequired
+  title: PropTypes.string.isRequired,
+  onHeaderClick: PropTypes.func.isRequired
 }
 
 export default Revealer
