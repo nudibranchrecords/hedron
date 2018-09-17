@@ -23,7 +23,7 @@ Perform live shows with your three.js creations.
 ## Getting Started
 
 ### Install
-A compiled version is not currently available to download, so you'll need to download the source and compile yourself.
+[Download the current stable version](https://github.com/nudibranchrecords/hedron/releases) or play with the latest features by compiling the source code yourself:
 
 1. Make sure [Node.js](https://nodejs.org/en/) and [Yarn](https://yarnpkg.com/en/docs/install) are installed on your machine.
 2. Open terminal and run the commands below.
@@ -47,7 +47,6 @@ Run `yarn dist` to package up the app for best performance and no dev tools. Onc
 
 ## User Guide
 Head to the [User Guide](docs/user-guide/index.md) to learn how to use Hedron.
-
 
 ## Creating Sketches
 Head to the [Creating Sketches Guide](docs/dev/index.md) to learn how to create sketches.
