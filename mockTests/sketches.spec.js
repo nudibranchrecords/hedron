@@ -166,7 +166,8 @@ test('(mock) Sketches - Add/Delete Sketch', (t) => {
       shotCount: 0,
       connectedMacroIds: [],
       type: 'param',
-      key: 'speed'
+      key: 'speed',
+      hidden: false
     }
   }, 'After creating sketch, node item is created for param')
 
@@ -212,7 +213,8 @@ test('(mock) Sketches - Add/Delete Sketch', (t) => {
       shotCount: 0,
       connectedMacroIds: [],
       type: 'param',
-      key: 'speed'
+      key: 'speed',
+      hidden: false
     },
     id_4: {
       id: 'id_4',
@@ -222,7 +224,8 @@ test('(mock) Sketches - Add/Delete Sketch', (t) => {
       shotCount: 0,
       connectedMacroIds: [],
       type: 'param',
-      key: 'scale'
+      key: 'scale',
+      hidden: false
     },
     id_5: {
       id: 'id_5',
@@ -232,7 +235,8 @@ test('(mock) Sketches - Add/Delete Sketch', (t) => {
       shotCount: 0,
       connectedMacroIds: [],
       type: 'param',
-      key: 'color'
+      key: 'color',
+      hidden: false
     },
     id_6: {
       id: 'id_6',
@@ -282,7 +286,8 @@ test('(mock) Sketches - Add/Delete Sketch', (t) => {
       shotCount: 0,
       connectedMacroIds: [],
       type: 'param',
-      key: 'scale'
+      key: 'scale',
+      hidden: false
     },
     id_5: {
       id: 'id_5',
@@ -292,7 +297,8 @@ test('(mock) Sketches - Add/Delete Sketch', (t) => {
       shotCount: 0,
       connectedMacroIds: [],
       type: 'param',
-      key: 'color'
+      key: 'color',
+      hidden: false
     },
     id_6: {
       id: 'id_6',
