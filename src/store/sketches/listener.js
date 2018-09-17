@@ -39,6 +39,7 @@ const handleSketchCreate = (action, store) => {
         type: 'param',
         key: param.key,
         value: param.defaultValue,
+        hidden: param.hidden === undefined ? false : param.hidden,
         id: uniqueId,
         inputLinkIds
       }))
@@ -146,6 +147,7 @@ const handleSketchReimport = (action, store) => {
         type: 'param',
         key: moduleParam.key,
         value: moduleParam.defaultValue,
+        hidden: moduleParam.hidden === undefined ? false : moduleParam.hidden,
         id: uniqueId,
         inputLinkIds: []
       }))
