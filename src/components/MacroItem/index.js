@@ -66,7 +66,10 @@ const MacroItem = ({
         <Button onClick={onLearningClick}>
           {isLearning ? 'Stop Learning' : 'Start Learning'}
         </Button>
-        <Button onClick={() => { onRenameClick(nodeId) }}>Rename</Button>
+        <Button onClick={e => {
+          e.stopPropagation()
+          onRenameClick(nodeId)
+        }}>Rename</Button>
         <Button onClick={onDeleteClick}>Delete Macro</Button>
       </Row>
     </Param>

@@ -1,20 +1,18 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import CurrentSketch from '../../containers/CurrentSketch'
-import AddSketch from '../../containers/AddSketch'
-import SketchesNav from '../../containers/SketchesNav'
+import CurrentScene from '../CurrentScene'
 import Macros from '../../containers/Macros'
 import Settings from '../../containers/Settings'
 import Overview from '../Overview'
 import { Route } from 'react-router'
 import styled from 'styled-components'
-import NavItem from '../NavItem'
 import PanelDragger from '../PanelDragger'
 import MidiLearn from '../../containers/MidiLearn'
 import EditingOverlay from '../../containers/EditingOverlay'
 import ErrorOverlay from '../../containers/ErrorOverlay'
 import MainViewOuter from '../../containers/MainViewOuter'
 import Home from '../../containers/Home'
+import ScenesNav from '../ScenesNav'
 
 const Wrapper = styled.div`
   display: flex;
@@ -42,8 +40,8 @@ const Bar = styled.div`
   background: #111;
   height: 100%;
 `
-const App = ({ stats, leftWidth, onLeftDrag }) => (
-  <Wrapper>
+const App = ({ stats, leftWidth, onLeftDrag, onWrapperClick }) => (
+  <Wrapper onClick={onWrapperClick}>
     <Left width={leftWidth}>
       <Overview stats={stats} />
       <PanelDragger onHandleDrag={onLeftDrag} position={leftWidth} />
@@ -51,15 +49,13 @@ const App = ({ stats, leftWidth, onLeftDrag }) => (
     <Right>
       <MainViewOuter>
         <Route path='/' exact component={Home} />
-        <Route path='/sketches/view/:sketchId' component={CurrentSketch} />
-        <Route path='/sketches/add' component={AddSketch} />
+        <Route path='/scenes' component={CurrentScene} />
         <Route path='/macros' component={Macros} />
         <Route path='/settings' component={Settings} />
       </MainViewOuter>
     </Right>
     <Bar>
-      <SketchesNav />
-      <NavItem to='/macros'>Macros</NavItem>
+      <Route path='/scenes' component={ScenesNav} />
     </Bar>
     <MidiLearn />
     <EditingOverlay />
@@ -72,5 +68,6 @@ export default App
 App.propTypes = {
   stats: PropTypes.object.isRequired,
   leftWidth: PropTypes.number.isRequired,
-  onLeftDrag: PropTypes.func.isRequired
+  onLeftDrag: PropTypes.func.isRequired,
+  onWrapperClick: PropTypes.func.isRequired
 }

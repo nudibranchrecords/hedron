@@ -1,8 +1,9 @@
 require('babel-register')
 const glob = require('glob')
 const path = require('path')
+const errcode = require('err-code')
 
-const getSketches = globUrl => {
+const loadSketches = globUrl => {
   const all = {}
   try {
     glob.sync(globUrl + '/*').forEach(function (file) {
@@ -26,16 +27,16 @@ const getSketches = globUrl => {
     })
 
     if (Object.keys(all).length === 0) {
-      throw new Error('No sketches found')
+      throw errcode(new Error('No sketches found'), 'NO_SKETCH_FOLDER')
     }
 
     return all
   } catch (error) {
-    console.log(error)
-    throw new Error(`Failed to load sketch folder: ${error.message}`)
+    console.error(`Failed to load sketch folder: ${error.message}`)
+    throw (error)
   }
 }
 
 module.exports = {
-  getSketches
+  loadSketches
 }

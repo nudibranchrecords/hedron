@@ -5,6 +5,7 @@ import { sketchNodeOpenedToggle } from '../../store/sketches/actions'
 import getIsSketchNodeOpened from '../../selectors/getIsSketchNodeOpened'
 import getActiveInputsText from '../../selectors/getActiveInputsText'
 import { nodeShotFired } from '../../store/nodes/actions'
+import { uiNodeToggleOpen } from '../../store/ui/actions'
 
 const mapStateToProps = (state, ownProps) => {
   const node = getNode(state, ownProps.nodeId)
@@ -19,7 +20,7 @@ const mapStateToProps = (state, ownProps) => {
     numInputs: inputLinkIds.length,
     numMacros: node.connectedMacroIds.length,
     title: param.title,
-    isOpen: getIsSketchNodeOpened(state, ownProps.sketchId, ownProps.nodeId, type),
+    isOpen: getIsSketchNodeOpened(state, ownProps.sketchId, ownProps.nodeId, type, ownProps.notInSketch),
     inputLinkTitle
   }
 }
@@ -29,7 +30,11 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 
   return {
     onOpenClick: () => {
-      dispatch(sketchNodeOpenedToggle(ownProps.sketchId, ownProps.nodeId, type))
+      if (ownProps.notInSketch) {
+        dispatch(uiNodeToggleOpen(ownProps.nodeId))
+      } else {
+        dispatch(sketchNodeOpenedToggle(ownProps.sketchId, ownProps.nodeId, type))
+      }
     },
     onParamBarClick: type === 'shot'
     ? () => {

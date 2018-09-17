@@ -87,7 +87,7 @@ const Title = styled.div`
   font-size: 0.6rem;
   z-index: 1;
   position: absolute;
-  top: 0.1rem;
+  top: 0.25rem;
   left: 0.2rem;
   width: 1000px;
   pointer-events: none;
@@ -172,10 +172,16 @@ class Param extends React.Component {
           <Inner isOpen={isOpen} isActive={isActive}>
             <Top>
               <Row>
+
                 <BarCol>
                   <Title>{title}</Title>
-                  <ParamBar nodeId={nodeId} onMouseDown={onParamBarClick} />
+                  <ParamBar
+                    nodeId={nodeId}
+                    onMouseDown={onParamBarClick}
+                    type={type}
+                  />
                 </BarCol>
+
                 <Info onClick={onOpenClick}>
                   {inputLinkTitle && <span><Icon glyph={inputIcon} />{inputLinkTitle}</span>}
                   <IconInfo>
