@@ -2,6 +2,7 @@ import { BrowserWindow, ipcMain } from 'electron'
 const argv = require('minimist')(process.argv)
 const isDistDev = argv.distDev // Prod build with some useful dev things
 const isDevelopment = process.env.NODE_ENV !== 'production'
+const path = require('path')
 
 // Global reference to mainWindow
 // Necessary to prevent win from being garbage collected
@@ -9,6 +10,7 @@ export let mainWindow
 
 export const createMainWindow = () => {
   // Construct new BrowserWindow
+
   const dimensions = isDevelopment || isDistDev
     ? {
       width: 1920,
@@ -25,6 +27,8 @@ export const createMainWindow = () => {
       nativeWindowOpen: true,
       webSecurity: false
     },
+    title: 'Hedron',
+    icon: path.join(__dirname, '../assets/icons/logo/256x256.png'),
     ...dimensions
   })
 
