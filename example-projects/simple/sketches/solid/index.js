@@ -13,8 +13,19 @@ const THREE = require('three')
   Hedron sketches must be a class
 **/
 class Solid {
+  /** HEDRON TIP **
+    The constructor method has three arguments:
 
-  constructor () {
+    scene - This is the THREE object for the scene. You can also access the THREE renderer
+    using scene.renderer
+
+    meta - This is an object with meta data that might be useful. It has the following properties:
+      sketchesFolder - The path to the sketches folder on your computer.
+      Useful if you need to link to a resource such as an image.
+
+    params - The sketch params when the sketch first initialises
+  **/
+  constructor (scene, meta, params) {
     /** HEDRON TIP **
       Must define a "root" property as a THREE.Group or THREE.Object3D
       Hedron looks for this and will add it to the scene.
@@ -57,15 +68,12 @@ class Solid {
       this.group.add(mesh)
     })
 
-    // Index of meshes for shapeshifting
-    this.currentMeshIndex = -1
-
-    // Do one shapeshift to start (hides all but one mesh)
-    this.shapeShift()
+    // Update the shape based on params
+    this._updateShape(params.meshIndex)
   }
 
   /** HEDRON TIP **
-    The update method is called every frame by hedron.
+    The update method is called every frame by Hedron.
     You have the following arguments to make use of...
 
     ownParams: An object containing params defined in config.js.
@@ -101,25 +109,46 @@ class Solid {
   }
 
   /** HEDRON TIP **
-    All methods of the class (except "update") are exposed as "shots".
+    All non-special methods of the class are exposed as "shots".
     These are single functions that can fire rather than paramaters than slowly change.
     See config.js to see how these are defined.
-  **/
-  shapeShift () {
-    // Increase index to shapeshift
-    this.currentMeshIndex ++
-    // If at end of array, loop round
-    if (this.currentMeshIndex > this.meshes.length - 1) this.currentMeshIndex = 0
 
+    Current params are given as an argument
+  **/
+  shapeShift (params) {
+    let meshIndex = params.meshIndex
+
+    // Increase index to shapeshift
+    meshIndex++
+
+    // If at end of array, loop round
+    if (meshIndex > this.meshes.length - 1) meshIndex = 0
+
+    this._updateShape(meshIndex)
+
+    /** HEDRON TIP **
+      If you've updated some params inside the shot, you'll need to return these new values
+    **/
+    return { meshIndex }
+  }
+
+  _updateShape (meshIndex) {
     // Loop through meshes and only show the mesh
     // that matches with current index
     this.meshes.forEach((mesh, index) => {
-      if (this.currentMeshIndex !== index) {
+      if (meshIndex !== index) {
         mesh.visible = false
       } else {
         mesh.visible = true
       }
     })
+  }
+
+  /** HEDRON TIP **
+    Use the destructor method to do anything when the sketch is deleted
+  **/
+  destructor () {
+    console.log('Solid sketch deleted!')
   }
 }
 

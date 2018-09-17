@@ -1,18 +1,17 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import Form from '../Form'
-import { Field } from 'redux-form'
+import Input from '../Input'
 
 class EditingOverlayForm extends React.Component {
   componentDidMount () {
-    document.querySelector('#editing_title').focus()
+    document.querySelector('#editing_title').select()
   }
 
   render () {
     return (
-      <Form onSubmit={this.props.handleSubmit}>
-        <Field name='title' id='editing_title' component='input' type='text' />
-      </Form>
+      <form onSubmit={this.props.handleSubmit}>
+        <Input name='title' id='editing_title' />
+      </form>
     )
   }
 }

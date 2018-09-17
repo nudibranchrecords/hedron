@@ -12,6 +12,6 @@ app.on('ready', () => {
 
     installExtension(REDUX_DEVTOOLS)
         .then((name) => console.log(`Added Extension:  ${name}`))
-        .catch((err) => console.log('An error occurred: ', err))
+        .catch((err) => console.error('An error occurred: ', err))
   }
 })
