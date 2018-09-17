@@ -28,7 +28,7 @@ export const createMainWindow = () => {
       webSecurity: false
     },
     title: 'Hedron',
-    icon: path.join(__dirname, '../assets/icons/logo/16x16.png'),
+    icon: path.join(__dirname, '..','assets','icons','logo','16x16.png'),
     ...dimensions
   })
 
