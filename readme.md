@@ -23,7 +23,7 @@ Perform live shows with your three.js creations.
 ## Getting Started
 
 ### Install
-[Download the current stable version](https://github.com/nudibranchrecords/hedron/releases) or play with the latest features by compiling the source code yourself:
+Compiled versions are not yet available, so you'll need to download and install yourself:
 
 1. Make sure [Node.js](https://nodejs.org/en/) and [Yarn](https://yarnpkg.com/en/docs/install) are installed on your machine.
 2. Open terminal and run the commands below.
@@ -37,6 +37,8 @@ $ yarn start
 `yarn start` opens the app in dev mode, you'll probably want to close the dev tools on the right hand side of the window.
 
 Run `yarn dist` to package up the app for best performance and no dev tools. Once the build is complete, you'll find the app inside `/dist`.
+
+**Note for Windows users:** Hedron doesn't seem to play nice inside of Windows Subsystem for Linux (WSL). So just install Node and Yarn natively and work like that. If you do get it working with WSL, please let us know via the issues!
 
 ### Load trippy example project
 
