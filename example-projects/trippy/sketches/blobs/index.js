@@ -56,16 +56,16 @@ class Blobs {
   }
 
   update (params, time, frameDiff) {
-    this.blobTime += ((params.blobSpeed * 2) - 1) * frameDiff / 7
+    this.blobTime += params.blobSpeed * frameDiff / 7
     const object = this.object
     const numblobs = params.numBlobs * 50
     const rotSpeedZ = params.rotSpeedZ + this.props.spinSpeed
 
     object.reset()
 
-    this.group.rotation.x += ((params.rotSpeedX * 2) - 1) * frameDiff
-    this.group.rotation.y += ((params.rotSpeedY * 2) - 1) * frameDiff
-    this.group.rotation.z += ((rotSpeedZ * 2) - 1) * frameDiff
+    this.group.rotation.x += params.rotSpeedX * frameDiff
+    this.group.rotation.y += params.rotSpeedY * frameDiff
+    this.group.rotation.z += rotSpeedZ * frameDiff
 
     this.group.position.z = params.posZ * -10000
 
