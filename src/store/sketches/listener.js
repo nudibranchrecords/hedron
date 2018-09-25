@@ -39,8 +39,10 @@ const handleSketchCreate = (action, store) => {
         type: 'param',
         key: param.key,
         value: param.defaultValue,
-        min: param.min ? param.min : 0,
-        max: param.max ? param.max : 1,
+        min: param.defaultMin ? param.defaultMin : 0,
+        max: param.defaultMax ? param.defaultMax : 1,
+        defaultMin: param.defaultMin ? param.defaultMin : 0,
+        defaultMax: param.defaultMax ? param.defaultMax : 1,
         id: uniqueId,
         inputLinkIds
       }))
@@ -148,8 +150,10 @@ const handleSketchReimport = (action, store) => {
         type: 'param',
         key: moduleParam.key,
         value: moduleParam.defaultValue,
-        min: moduleParam.min ? moduleParam.min : 0,
-        max: moduleParam.max ? moduleParam.max : 1,
+        defaultMin: moduleParam.defaultMin ? moduleParam.defaultMin : 0,
+        defaultMax: moduleParam.defaultMax ? moduleParam.defaultMax : 1,
+        min: moduleParam.defaultMin ? moduleParam.defaultMin : 0,
+        max: moduleParam.defaultMax ? moduleParam.defaultMax : 1,
         id: uniqueId,
         inputLinkIds: []
       }))
@@ -158,8 +162,8 @@ const handleSketchReimport = (action, store) => {
       const id = sketchParam.id
       store.dispatch(nodeUpdate(id, {
         title: moduleParam.title ? moduleParam.title : moduleParam.key,
-        min: moduleParam.min ? moduleParam.min : 0,
-        max: moduleParam.max ? moduleParam.max : 1
+        defaultMin: moduleParam.defaultMin ? moduleParam.defaultMin : 0,
+        defaultMax: moduleParam.defaultMax ? moduleParam.defaultMax : 1
       }))
     }
   }

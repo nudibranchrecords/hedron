@@ -4,6 +4,7 @@ import styled from 'styled-components'
 import { Field } from 'redux-form'
 import Row from '../Row'
 import theme from '../../utils/theme'
+import Button from '../Button'
 
 const Wrapper = styled.div`
   display: flex;
@@ -54,6 +55,7 @@ class ParamRange extends React.Component {
             <label>Max</label>
             <Field component='input' name='max' type='number' onKeyPress={this.onKeyPress} onBlur={this.onBlur} />
           </Col>
+          <Button onClick={this.props.onResetClick}>Reset Range</Button>
         </Row>
       </Wrapper>
     )
@@ -61,7 +63,8 @@ class ParamRange extends React.Component {
 }
 
 ParamRange.propTypes = {
-  handleSubmit: PropTypes.func
+  handleSubmit: PropTypes.func,
+  onResetClick: PropTypes.func.isRequired
 }
 
 export default ParamRange
