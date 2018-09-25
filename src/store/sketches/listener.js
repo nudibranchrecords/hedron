@@ -150,10 +150,10 @@ const handleSketchReimport = (action, store) => {
         type: 'param',
         key: moduleParam.key,
         value: moduleParam.defaultValue,
-        defaultMin: moduleParam.defaultMin ? moduleParam.defaultMin : 0,
-        defaultMax: moduleParam.defaultMax ? moduleParam.defaultMax : 1,
         min: moduleParam.defaultMin ? moduleParam.defaultMin : 0,
         max: moduleParam.defaultMax ? moduleParam.defaultMax : 1,
+        defaultMin: moduleParam.defaultMin ? moduleParam.defaultMin : 0,
+        defaultMax: moduleParam.defaultMax ? moduleParam.defaultMax : 1,
         id: uniqueId,
         inputLinkIds: []
       }))
