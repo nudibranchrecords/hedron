@@ -64,7 +64,7 @@ export const addSketchToScene = (sceneId, sketchId, moduleId) => {
   const state = store.getState()
   const params = getSketchParams(state, sketchId)
 
-  const module = new allModules[moduleId].Module(scene, meta, params)
+  const module = new allModules[moduleId].Module(scene, params, meta)
 
   sketches[sketchId] = module
   module.root && scene.scene.add(module.root)
