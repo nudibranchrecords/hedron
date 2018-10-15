@@ -28,8 +28,10 @@ module.exports = {
   params: [
     {
       key: 'rotSpeedX', // needs to be unique
-      title: 'Rotation Speed X', // should be human
-      defaultValue: 0 // must be between 0 and 1
+      defaultValue: 0, // must be between 0 and 1
+      title: 'Rotation Speed X', // optional, should be human, if not provided defaults to the key
+      min: 0, //optional, the value passed to the sketch when the param is at it's lowest value, if not provided defaults to 0
+      max: 1 //optional, the value passed to the sketch when the param is at it's highest value, if not provided defaults to 1
     },
   ],
   // Shots are single functions that can fire, as opposed to values that change
@@ -97,12 +99,12 @@ class Solid {
     scene - This is the THREE object for the scene. You can also access the THREE renderer
     using scene.renderer
 
+    params - The sketch params when the sketch first initialises
+
     meta - This is an object with meta data that might be useful. It has the following properties:
       sketchesFolder - The path to the sketches folder on your computer. Useful if you need to link to a resource such as an image.
-
-    params - The sketch params when the sketch first initialises
   **/
-  constructor (scene, meta, params) {
+  constructor (scene, params, meta) {
     /** HEDRON TIP **
       Must define a "root" property as a THREE.Group or THREE.Object3D
       Hedron looks for this and will add it to the scene.
