@@ -5,7 +5,8 @@ const defaultState = {
     left: 50
   },
   isEditing: false,
-  openedNode: false
+  openedNode: false,
+  auxOpen: []
 }
 
 const uiReducer = (state = defaultState, action) => {
@@ -53,6 +54,21 @@ const uiReducer = (state = defaultState, action) => {
       return {
         ...state,
         openedNode: p.id === state.openedNode ? false : p.id
+      }
+    }
+    case 'UI_AUX_TOGGLE_OPEN': {
+      let items = state.auxOpen
+      // If item exists, remove
+      if (items.includes(p.id)) {
+        items = items.filter(item => item !== p.id)
+      } else {
+      // If item doesn't exist, add
+        items = [ ...items, p.id ]
+      }
+
+      return {
+        ...state,
+        auxOpen: items
       }
     }
     default:

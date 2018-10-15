@@ -2,7 +2,7 @@ const THREE = require('three')
 
 class Point {
 
-  constructor (scene, meta, params) {
+  constructor () {
     this.root = new THREE.Group()
     const geom = new THREE.IcosahedronGeometry(100)
     const mat = new THREE.MeshNormalMaterial()

@@ -159,6 +159,16 @@ const nodesReducer = (state = defaultState, action) => {
         }
       }
     }
+    case 'NODE_RESET_RANGE': {
+      return {
+        ...state,
+        [p.nodeId]: {
+          ...state[p.nodeId],
+          min: state[p.nodeId].defaultMin,
+          max: state[p.nodeId].defaultMax
+        }
+      }
+    }
     default:
       return state
   }

@@ -176,3 +176,12 @@ export function nodeUpdate (nodeId, obj) {
     }
   }
 }
+
+export function nodeResetRange (nodeId) {
+  return {
+    type: 'NODE_RESET_RANGE',
+    payload: {
+      nodeId
+    }
+  }
+}
