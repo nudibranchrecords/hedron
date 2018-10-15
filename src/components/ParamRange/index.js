@@ -46,7 +46,7 @@ class ParamRange extends React.Component {
     return (
       <Wrapper>
         <h4>Range</h4>
-        <Row>
+        <Row align='flex-end'>
           <Col>
             <label>Min</label>
             <Field component='input' name='min' type='number' onKeyPress={this.onKeyPress} onBlur={this.onBlur} />
