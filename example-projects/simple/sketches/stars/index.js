@@ -63,7 +63,7 @@ class Stars {
         }
 
         // and the position
-        particle.z += particle.velocity.z * ((p.speed * 2) - 1)
+        particle.z += particle.velocity.z * p.speed
 
         // flag to the particle system
         // that we've changed its vertices.

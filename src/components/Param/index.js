@@ -134,6 +134,7 @@ class Param extends React.Component {
     this.calculateHeights = this.calculateHeights.bind(this)
 
     uiEventEmitter.on('repaint', this.calculateHeights)
+    uiEventEmitter.on('recalc-param-heights', this.calculateHeights)
   }
 
   componentDidMount () {
