@@ -21,7 +21,7 @@ class Stars {
     })
 
     // now create the individual particles
-    for (var p = 0; p < particleCount; p++) {
+    for (let p = 0; p < particleCount; p++) {
       // create a particle with random position
       const pX = randomInRange()
       const pY = randomInRange()

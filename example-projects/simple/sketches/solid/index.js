@@ -25,7 +25,7 @@ class Solid {
 
     params - The sketch params when the sketch first initialises
   **/
-  constructor (scene, meta, params) {
+  constructor (scene, params, meta) {
     /** HEDRON TIP **
       Must define a "root" property as a THREE.Group or THREE.Object3D
       Hedron looks for this and will add it to the scene.

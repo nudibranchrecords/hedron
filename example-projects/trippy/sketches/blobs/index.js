@@ -70,7 +70,7 @@ class Blobs {
     this.group.position.z = params.posZ * -10000
 
     // fill the field with some metaballs
-    var i, ballx, bally, ballz, subtract, strength
+    let i, ballx, bally, ballz, subtract, strength
 
     subtract = 12
     strength = (params.blobStrength * 3) / ((Math.sqrt(numblobs) - 1) / 4 + 1)
