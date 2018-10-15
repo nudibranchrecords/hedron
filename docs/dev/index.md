@@ -28,8 +28,10 @@ module.exports = {
   params: [
     {
       key: 'rotSpeedX', // needs to be unique
-      title: 'Rotation Speed X', // should be human
-      defaultValue: 0 // must be between 0 and 1
+      defaultValue: 0, // must be between 0 and 1
+      title: 'Rotation Speed X', // optional, should be human, if not provided defaults to the key
+      min: 0, //optional, the value passed to the sketch when the param is at it's lowest value, if not provided defaults to 0
+      max: 1 //optional, the value passed to the sketch when the param is at it's highest value, if not provided defaults to 1
     },
   ],
   // Shots are single functions that can fire, as opposed to values that change
