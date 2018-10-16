@@ -25,7 +25,7 @@ class Solid {
 
     params - The sketch params when the sketch first initialises
   **/
-  constructor (scene, meta, params) {
+  constructor (scene, params, meta) {
     /** HEDRON TIP **
       Must define a "root" property as a THREE.Group or THREE.Object3D
       Hedron looks for this and will add it to the scene.
@@ -104,7 +104,7 @@ class Solid {
     this.group.rotation.z += params.rotSpeedZ * baseSpeed * frameDiff
 
     // Change scale using params.scale
-    params.scale = Math.max(params.scale * 4, 0.00001)
+    params.scale = params.scale
     this.group.scale.set(params.scale, params.scale, params.scale)
   }
 
