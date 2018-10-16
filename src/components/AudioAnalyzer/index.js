@@ -103,7 +103,7 @@ class AudioAnalyzer extends React.Component {
 
   render () {
     return (
-      <Wrapper onClick={this.props.onWrapperClick}>
+      <Wrapper onMouseDown={this.props.onWrapperClick}>
         <Container>
           <canvas ref={node => { this.canvas = node }}
             onClick={this.props.onAnalyzerClick} />

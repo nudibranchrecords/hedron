@@ -200,7 +200,7 @@ class ValueBar extends React.Component {
           onMouseDown={this.props.onMouseDown || this.handleMouseDown}
         />
         {this.props.formIsVisible &&
-          <ValueForm>
+          <ValueForm onMouseDown={e => e.stopPropagation()}>
             <ParamValueForm id={this.props.nodeId} />
           </ValueForm>
         }

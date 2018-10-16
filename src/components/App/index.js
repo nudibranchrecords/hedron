@@ -41,7 +41,7 @@ const Bar = styled.div`
   height: 100%;
 `
 const App = ({ stats, leftWidth, onLeftDrag, onWrapperClick }) => (
-  <Wrapper onClick={onWrapperClick}>
+  <Wrapper onMouseDown={onWrapperClick}>
     <Left width={leftWidth}>
       <Overview stats={stats} />
       <PanelDragger onHandleDrag={onLeftDrag} position={leftWidth} />
