@@ -38,10 +38,10 @@ const Clock = ({ beat, bar, phrase, bpm, onResetClick, onTapTempoClick }) => (
     <Col>
       <Top>{beat} - {bar} - {phrase}</Top>
       <Bottom>{bpm}</Bottom>
-      <Button onClick={onResetClick}>Reset</Button>
+      <Button onMouseDown={onResetClick}>Reset</Button>
     </Col>
     <Col>
-      <TapButton onClick={onTapTempoClick}>Tap<br />Tempo</TapButton>
+      <TapButton onMouseDown={onTapTempoClick}>Tap<br />Tempo</TapButton>
     </Col>
   </Wrapper>
 )
