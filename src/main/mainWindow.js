@@ -28,7 +28,9 @@ export const createMainWindow = () => {
       webSecurity: false
     },
     title: 'Hedron',
-    icon: path.join(__dirname, '..', 'assets', 'icons', 'logo', '16x16.png'),
+    // get Hedron icon to appear during dev (only works for win and linux)
+    // for better icons, still need to build the app
+    icon: isDevelopment && path.join(__dirname, '../../build/icon.png'),
     ...dimensions
   })
 
