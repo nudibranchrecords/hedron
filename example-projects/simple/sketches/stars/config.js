@@ -9,7 +9,9 @@ module.exports = {
     {
       title: 'Speed',
       key: 'speed',
-      defaultValue: 0.5
+      defaultValue: 0.5,
+      defaultMin: -1,
+      defaultMax: 1
     }
   ],
   shots: [

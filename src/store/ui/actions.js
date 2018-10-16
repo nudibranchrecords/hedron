@@ -39,3 +39,12 @@ export function uiNodeToggleOpen (id) {
     }
   }
 }
+
+export function uiAuxToggleOpen (id) {
+  return {
+    type: 'UI_AUX_TOGGLE_OPEN',
+    payload: {
+      id
+    }
+  }
+}
