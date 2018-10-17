@@ -27,11 +27,13 @@ Download the latest [release](https://github.com/nudibranchrecords/hedron/releas
 [build from source](#build-from-source).
 
 ### Load trippy example project
-1. Download the latest example projects zip from the [releases](https://github.com/nudibranchrecords/hedron/releases) page.
+1. If you haven't got the source code, download the latest example projects zip from the [releases](https://github.com/nudibranchrecords/hedron/releases) page.
 2. Choose "Load Existing Project". Locate the repo directory. Open `example-projects/trippy/project.json`
 3. An alert will appear. Choose "Locate Sketch Folder" and open `/example-projects/trippy/sketches`
 4. Play it some music, tap BPM, experiment with the controls
 5. 😎
+
+Please note that if you're trying to do this from the source code, you'll want to run `yarn` from inside the `example-projects` directory to install dependencies.
 
 ## User Guide
 Head to the [User Guide](docs/user-guide/index.md) to learn how to use Hedron.
