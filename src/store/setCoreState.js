@@ -47,7 +47,7 @@ export default store => {
   store.dispatch(uNodeCreate('audioLevelsPower', {
     title: 'Levels Power',
     type: 'param',
-    value: 0,
+    value: .25,
     min: 0.5,
     max: 3,
     id: 'audioLevelsPower'
@@ -62,7 +62,7 @@ export default store => {
   store.dispatch(uNodeCreate('audioNormalizeLevels', {
     title: 'Normalize Levels',
     type: 'param',
-    value: 0.5,
+    value: 1,
     id: 'audioNormalizeLevels'
   }))
   store.dispatch(uNodeCreate('audioNormalizeRangeFalloff', {
