@@ -33,7 +33,6 @@
     ]
   },
   "dependencies": {
-    "@tweenjs/tween.js": "^17.2.0",
     "babel-loader": "^6.3.2",
     "babel-plugin-transform-object-rest-spread": "^6.22.0",
     "babel-polyfill": "^6.23.0",
@@ -44,7 +43,6 @@
     "electron-log": "^2.2.14",
     "err-code": "^1.1.2",
     "eventemitter3": "^3.0.1",
-    "glslify": "^6.1.1",
     "glslify-import": "^3.1.0",
     "history": "^4.6.1",
     "jsonfile": "^2.4.0",
@@ -74,7 +72,6 @@
     "tap-diff": "^0.1.1",
     "tap-tempo": "^0.1.1",
     "three": "^0.92.0",
-    "three-addons": "^1.1.0",
     "tinycolor2": "^1.4.1",
     "try-require": "^1.2.1",
     "uid": "^0.0.2"
@@ -102,7 +99,6 @@
     "jsdom": "^11.5.1",
     "jsdom-global": "^3.0.2",
     "minimist": "^1.2.0",
-    "nwjs-builder-phoenix": "^1.14.1",
     "redux-debounced": "^0.4.0",
     "redux-devtools-extension": "^2.13.2",
     "sinon": "^2.1.0",
