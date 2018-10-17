@@ -3,7 +3,6 @@ import ValueBar from '../../components/ValueBar'
 import { nodeValueUpdate } from '../../store/nodes/actions'
 import getNode from '../../selectors/getNode'
 import getInputLink from '../../selectors/getInputLink'
-import getUiIsEditingNode from '../../selectors/getUiIsEditingNode'
 import getIsEditing from '../../selectors/getIsEditing'
 import { uiEditingOpen } from '../../store/ui/actions'
 
