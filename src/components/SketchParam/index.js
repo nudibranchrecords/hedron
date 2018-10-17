@@ -31,7 +31,7 @@ SketchParam.propTypes = {
   sketchId: PropTypes.string.isRequired,
   advancedIsOpen: PropTypes.bool,
   onAdvancedClick: PropTypes.func.isRequired,
-  isHidden: PropTypes.bool
+  isHidden: PropTypes.bool,
 }
 
 export default SketchParam

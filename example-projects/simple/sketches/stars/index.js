@@ -21,7 +21,7 @@ class Stars {
     })
 
     // now create the individual particles
-    for (var p = 0; p < particleCount; p++) {
+    for (let p = 0; p < particleCount; p++) {
       // create a particle with random position
       const pX = randomInRange()
       const pY = randomInRange()
@@ -63,7 +63,7 @@ class Stars {
         }
 
         // and the position
-        particle.z += particle.velocity.z * ((p.speed * 2) - 1)
+        particle.z += particle.velocity.z * p.speed
 
         // flag to the particle system
         // that we've changed its vertices.
