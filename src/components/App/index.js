@@ -10,6 +10,7 @@ import PanelDragger from '../PanelDragger'
 import MidiLearn from '../../containers/MidiLearn'
 import EditingOverlay from '../../containers/EditingOverlay'
 import ErrorOverlay from '../../containers/ErrorOverlay'
+import AboutOverlay from '../../containers/AboutOverlay'
 import MainViewOuter from '../../containers/MainViewOuter'
 import Home from '../../containers/Home'
 import ScenesNav from '../ScenesNav'
@@ -60,6 +61,7 @@ const App = ({ stats, leftWidth, onLeftDrag, onWrapperClick }) => (
     <MidiLearn />
     <EditingOverlay />
     <ErrorOverlay />
+    <AboutOverlay />
   </Wrapper>
 )
 
