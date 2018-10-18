@@ -59,7 +59,7 @@ export function* inputLinkCreate (action) {
                 passToNext: j < config.title.length - 1,
                 inputLinkIds: [],
                 type: config.type,
-                subNode: true
+                subNode: true,
               }
 
               modifierIds.push(modifierId)
@@ -116,7 +116,7 @@ export function* inputLinkCreate (action) {
       title: p.inputId,
       input: {
         id: p.inputId,
-        type: p.inputType
+        type: p.inputType,
       },
       id: linkId,
       nodeId: p.nodeId,
@@ -128,7 +128,7 @@ export function* inputLinkCreate (action) {
       midiOptionIds,
       linkableActions,
       sequencerGridId,
-      linkType
+      linkType,
     }
 
     yield put(rInputLinkCreate(linkId, link))

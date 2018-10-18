@@ -1,5 +1,5 @@
 const defaultState = {
-  list: []
+  list: [],
 }
 
 const displaysReducer = (state = defaultState, action) => {
@@ -9,7 +9,7 @@ const displaysReducer = (state = defaultState, action) => {
     case 'DISPLAYS_LIST_UPDATE': {
       return {
         ...state,
-        list: p.deviceList
+        list: p.deviceList,
       }
     }
     default:

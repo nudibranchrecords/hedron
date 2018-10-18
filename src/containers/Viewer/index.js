@@ -4,7 +4,7 @@ import { setViewerEl } from '../../engine/renderer'
 
 const mapStateToProps = (state, ownProps) => (
   {
-    containerElRef: (el) => setViewerEl(el)
+    containerElRef: (el) => setViewerEl(el),
   }
 )
 
@@ -13,6 +13,6 @@ export default connect(
   null,
   null,
   {
-    areStatesEqual: () => true
+    areStatesEqual: () => true,
   }
 )(Viewer)

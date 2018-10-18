@@ -21,7 +21,7 @@ const mapStateToProps = (state, ownProps) => {
     numMacros: node.connectedMacroIds.length,
     title: param.title,
     isOpen: getIsSketchNodeOpened(state, ownProps.sketchId, ownProps.nodeId, type, ownProps.notInSketch),
-    inputLinkTitle
+    inputLinkTitle,
   }
 }
 
@@ -39,7 +39,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     onParamBarClick: type === 'shot'
     ? () => {
       dispatch(nodeShotFired(ownProps.nodeId, ownProps.sketchId, ownProps.shotMethod))
-    } : undefined
+    } : undefined,
   }
 }
 

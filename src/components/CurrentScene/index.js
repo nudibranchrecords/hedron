@@ -12,7 +12,7 @@ const CurrentScene = ({ match }) => (
 )
 
 CurrentScene.propTypes = {
-  match: PropTypes.object.isRequired
+  match: PropTypes.object.isRequired,
 }
 
 export default CurrentScene

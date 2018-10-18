@@ -4,14 +4,14 @@ import proxyquire from 'proxyquire'
 
 const spies = {
   write: sinon.spy(),
-  read: sinon.spy()
+  read: sinon.spy(),
 }
 
 const file = proxyquire('../', {
   jsonfile: {
     writeFile: spies.write,
-    readFile: spies.read
-  }
+    readFile: spies.read,
+  },
 })
 
 test('(Util) file.save', (t) => {

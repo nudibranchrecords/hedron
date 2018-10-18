@@ -10,8 +10,8 @@ export const returnsPreviousState = (reducer) => {
       'lorem': ['ipsum', 'dollar'],
       'hello': {
         world1: 1,
-        world2: 2
-      }
+        world2: 2,
+      },
     }
 
     deepFreeze(expectedState)

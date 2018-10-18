@@ -32,8 +32,8 @@ class QuadScene {
       uniforms: {
         tDiffuseA: { value: rttA.texture },
         tDiffuseB: { value: rttB.texture },
-        mixRatio: { value: 0 }
-      }
+        mixRatio: { value: 0 },
+      },
     })
 
     this.camera = new THREE.OrthographicCamera(null, null, null, null, -10000, 10000)

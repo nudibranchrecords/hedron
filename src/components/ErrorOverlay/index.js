@@ -46,7 +46,7 @@ ErrorOverlay.propTypes = {
   onCancelClick: PropTypes.func,
   code: PropTypes.string,
   message: PropTypes.string,
-  onChooseSketchFolderClick: PropTypes.func.isRequired
+  onChooseSketchFolderClick: PropTypes.func.isRequired,
 }
 
 export default ErrorOverlay

@@ -91,7 +91,7 @@ export function* handleInput (action) {
           if (!skip) {
             values.push({
               id: links[i].nodeId,
-              value
+              value,
             })
           }
         }

@@ -12,7 +12,7 @@ const Shot = ({ nodeId, sketchId, method }) => (
 Shot.propTypes = {
   nodeId: PropTypes.string.isRequired,
   sketchId: PropTypes.string.isRequired,
-  method: PropTypes.string.isRequired
+  method: PropTypes.string.isRequired,
 }
 
 export default Shot

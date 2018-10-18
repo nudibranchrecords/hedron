@@ -23,7 +23,7 @@ InputSelect.propTypes = {
   onInputChange: PropTypes.func.isRequired,
   options: PropTypes.arrayOf(
     PropTypes.object
-  ).isRequired
+  ).isRequired,
 }
 
 export default InputSelect

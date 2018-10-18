@@ -6,7 +6,7 @@ import getIsAuxOpen from '../../selectors/getIsAuxOpen'
 import uiEventEmitter from '../../utils/uiEventEmitter'
 
 const mapStateToProps = (state, ownProps) => ({
-  advancedIsOpen: getIsAuxOpen(state, ownProps.nodeId)
+  advancedIsOpen: getIsAuxOpen(state, ownProps.nodeId),
 })
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
@@ -15,7 +15,7 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
     setTimeout(() => {
       uiEventEmitter.emit('recalc-param-heights')
     })
-  }
+  },
 })
 
 export default connect(

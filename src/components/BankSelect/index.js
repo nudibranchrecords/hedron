@@ -17,7 +17,7 @@ const BankSelect = ({ deviceId }) => (
 )
 
 BankSelect.propTypes = {
-  deviceId: PropTypes.string.isRequired
+  deviceId: PropTypes.string.isRequired,
 }
 
 export default BankSelect

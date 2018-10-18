@@ -75,8 +75,8 @@ class Overview extends React.Component {
 
 Overview.propTypes = {
   stats: PropTypes.shape({
-    dom: PropTypes.object
-  }).isRequired
+    dom: PropTypes.object,
+  }).isRequired,
 }
 
 export default Overview

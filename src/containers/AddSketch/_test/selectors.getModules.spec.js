@@ -5,23 +5,23 @@ test('(Selector) getModules', (t) => {
   const state = {
     availableModules: {
       foo: {
-        defaultTitle: 'Foo'
+        defaultTitle: 'Foo',
       },
       bar: {
-        defaultTitle: 'Bar'
-      }
-    }
+        defaultTitle: 'Bar',
+      },
+    },
   }
 
   const expected = [
     {
       title: 'Foo',
-      id: 'foo'
+      id: 'foo',
     },
     {
       title: 'Bar',
-      id: 'bar'
-    }
+      id: 'bar',
+    },
   ]
 
   const actual = getModules(state)

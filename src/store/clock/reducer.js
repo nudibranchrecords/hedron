@@ -1,6 +1,6 @@
 const defaultState = {
   beat: 0,
-  bpm: 0
+  bpm: 0,
 }
 
 const clockReducer = (state = defaultState, action) => {

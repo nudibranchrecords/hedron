@@ -24,7 +24,7 @@ const InputLinkTags = ({ ids }) => (
 )
 
 InputLinkTags.propTypes = {
-  ids: PropTypes.arrayOf(PropTypes.string)
+  ids: PropTypes.arrayOf(PropTypes.string),
 }
 
 export default InputLinkTags

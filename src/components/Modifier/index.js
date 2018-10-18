@@ -33,7 +33,7 @@ const Modifier = (
 Modifier.propTypes = {
   title: PropTypes.string.isRequired,
   nodeId: PropTypes.string.isRequired,
-  onAssignClick: PropTypes.func.isRequired
+  onAssignClick: PropTypes.func.isRequired,
 }
 
 export default Modifier

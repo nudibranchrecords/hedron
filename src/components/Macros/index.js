@@ -34,9 +34,9 @@ Macros.propTypes = {
   items: PropTypes.arrayOf(
     PropTypes.shape({
       id: PropTypes.string,
-      title: PropTypes.string
+      title: PropTypes.string,
     })
-  )
+  ),
 }
 
 export default Macros

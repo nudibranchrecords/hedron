@@ -16,5 +16,5 @@ export default MidiLearn
 
 MidiLearn.propTypes = {
   isVisible: PropTypes.bool,
-  onCancelClick: PropTypes.func.isRequired
+  onCancelClick: PropTypes.func.isRequired,
 }

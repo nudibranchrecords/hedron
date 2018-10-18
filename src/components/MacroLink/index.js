@@ -38,7 +38,7 @@ const MacroLink = (
 MacroLink.propTypes = {
   title: PropTypes.string.isRequired,
   nodeId: PropTypes.string.isRequired,
-  onDeleteClick: PropTypes.func.isRequired
+  onDeleteClick: PropTypes.func.isRequired,
 }
 
 export default MacroLink
