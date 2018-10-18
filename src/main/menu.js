@@ -5,6 +5,16 @@ const onClick = (...args) => {
   mainWindow.webContents.send('app-menu-click', ...args)
 }
 
+const hedronMenu = {
+  label: 'Hedron',
+  submenu: [
+    {
+      label: 'About Hedron',
+      click: () => { onClick('hedron-about') },
+    },
+  ],
+}
+
 const projectMenu = {
   label: 'Project',
   submenu: [
@@ -39,9 +49,7 @@ const displayMenu = {
 }
 
 const template = [
-  {
-    label: 'Hedron',
-  },
+  hedronMenu,
   projectMenu,
   displayMenu,
   {
