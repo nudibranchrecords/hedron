@@ -42,7 +42,7 @@ export default store => {
     title: 'Levels Falloff',
     type: 'param',
     value: 1,
-    id: 'audioLevelsFalloff'
+    id: 'audioLevelsFalloff',
   }))
   store.dispatch(uNodeCreate('audioLevelsPower', {
     title: 'Levels Power',
@@ -50,13 +50,13 @@ export default store => {
     value: 0.25,
     min: 0.5,
     max: 3,
-    id: 'audioLevelsPower'
+    id: 'audioLevelsPower',
   }))
   store.dispatch(uNodeCreate('audioLevelsSmoothing', {
     title: 'Levels Smoothing',
     type: 'param',
     value: 0,
-    id: 'audioLevelsSmoothing'
+    id: 'audioLevelsSmoothing',
   }))
 
   store.dispatch(uNodeCreate('audioNormalizeLevels', {
@@ -69,6 +69,6 @@ export default store => {
     title: 'Normalized Range Falloff',
     type: 'param',
     value: 0.01,
-    id: 'audioNormalizeRangeFalloff'
+    id: 'audioNormalizeRangeFalloff',
   }))
 }
