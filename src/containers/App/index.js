@@ -5,7 +5,7 @@ import { uiPanelResize, uiEditingClose } from '../../store/ui/actions'
 import { withRouter } from 'react-router'
 
 const mapStateToProps = (state, ownProps) => ({
-  leftWidth: getPanelWidth(state, 'left')
+  leftWidth: getPanelWidth(state, 'left'),
 })
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
@@ -14,7 +14,7 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
   },
   onWrapperClick: () => {
     dispatch(uiEditingClose())
-  }
+  },
 })
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(App))

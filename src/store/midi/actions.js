@@ -1,13 +1,13 @@
 export function midiStartLearning (nodeId, type) {
   return {
     type: 'MIDI_START_LEARNING',
-    payload: { nodeId, type }
+    payload: { nodeId, type },
   }
 }
 
 export function midiStopLearning () {
   return {
-    type: 'MIDI_STOP_LEARNING'
+    type: 'MIDI_STOP_LEARNING',
   }
 }
 
@@ -15,8 +15,8 @@ export function midiUpdateDevices (devices) {
   return {
     type: 'MIDI_UPDATE_DEVICES',
     payload: {
-      devices
-    }
+      devices,
+    },
   }
 }
 
@@ -25,13 +25,13 @@ export function midiMessage (id, message) {
     type: 'MIDI_MESSAGE',
     payload: {
       id,
-      message
+      message,
     },
     meta: {
       debounce: {
-        time: 100
-      }
-    }
+        time: 100,
+      },
+    },
   }
 }
 
@@ -39,7 +39,7 @@ export function midiDeviceBankChange (id, index) {
   return {
     type: 'MIDI_DEVICE_BANK_CHANGE',
     payload: {
-      id, index
-    }
+      id, index,
+    },
   }
 }

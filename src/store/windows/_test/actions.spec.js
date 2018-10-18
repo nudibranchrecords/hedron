@@ -6,8 +6,8 @@ test('(Action Creator) windowSendOutput', (t) => {
   let expected = {
     type: 'WINDOW_SEND_OUTPUT',
     payload: {
-      index: 1
-    }
+      index: 1,
+    },
   }
   t.deepEqual(actual, expected, 'Creates action to send visual output to external monitor')
   t.end()

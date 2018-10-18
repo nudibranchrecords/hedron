@@ -31,7 +31,7 @@ const BankSelectItem = ({ index, onClick, isActive }) => (
 BankSelectItem.propTypes = {
   index: PropTypes.number.isRequired,
   onClick: PropTypes.func.isRequired,
-  isActive: PropTypes.bool
+  isActive: PropTypes.bool,
 }
 
 export default BankSelectItem

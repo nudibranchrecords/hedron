@@ -121,12 +121,12 @@ class AudioAnalyzer extends React.Component {
 }
 
 AudioAnalyzer.contextTypes = {
-  store: PropTypes.object.isRequired
+  store: PropTypes.object.isRequired,
 }
 AudioAnalyzer.propTypes = {
   isOpen: PropTypes.bool,
   onAnalyzerClick: PropTypes.func.isRequired,
-  onWrapperClick: PropTypes.func.isRequired
+  onWrapperClick: PropTypes.func.isRequired,
 }
 
 export default AudioAnalyzer

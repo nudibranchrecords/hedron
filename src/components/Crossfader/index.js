@@ -66,7 +66,7 @@ Crossfader.propTypes = {
   titleA: PropTypes.string,
   titleB: PropTypes.string,
   onClickA: PropTypes.func.isRequired,
-  onClickB: PropTypes.func.isRequired
+  onClickB: PropTypes.func.isRequired,
 }
 
 export default Crossfader

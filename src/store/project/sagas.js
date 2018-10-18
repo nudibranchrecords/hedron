@@ -4,18 +4,18 @@ import { getProjectData, getProjectFilepath } from './selectors'
 import getCurrentSceneId from '../../selectors/getCurrentSceneId'
 import { projectLoadSuccess, projectRehydrate, projectError, projectSaveAs,
   projectErrorAdd, projectErrorPopupOpen, projectErrorPopupClose,
-  projectSave, projectLoadRequest, projectFilepathUpdate, projectSketchesPathUpdate
+  projectSave, projectLoadRequest, projectFilepathUpdate, projectSketchesPathUpdate,
 } from './actions'
 import { uSceneCreate } from '../scenes/actions'
 import history from '../../history'
 import { remote } from 'electron'
 
 const fileFilters = [
-  { name: 'JSON', extensions: ['json'] }
+  { name: 'JSON', extensions: ['json'] },
 ]
 export function* saveAsProject (dispatch) {
   remote.dialog.showSaveDialog({
-    filters: fileFilters
+    filters: fileFilters,
   },
   filePath => {
     if (filePath) {
@@ -42,7 +42,7 @@ export function* saveProject () {
 
 export function* loadProject (dispatch) {
   remote.dialog.showOpenDialog({
-    filters: fileFilters
+    filters: fileFilters,
   },
   filePath => {
     if (filePath) {
@@ -70,7 +70,7 @@ export function* chooseSketchesFolder (dispatch, action) {
   const p = action.payload
   const sceneId = yield select(getCurrentSceneId)
   remote.dialog.showOpenDialog({
-    properties: ['openDirectory']
+    properties: ['openDirectory'],
   },
   filePath => {
     if (filePath) {

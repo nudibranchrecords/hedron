@@ -45,7 +45,7 @@ Revealer.propTypes = {
   children: PropTypes.node.isRequired,
   isOpen: PropTypes.bool,
   title: PropTypes.string.isRequired,
-  onHeaderClick: PropTypes.func.isRequired
+  onHeaderClick: PropTypes.func.isRequired,
 }
 
 export default Revealer

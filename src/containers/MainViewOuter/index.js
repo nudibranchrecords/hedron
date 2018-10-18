@@ -8,12 +8,12 @@ const mapStateToProps = (state, ownProps) => {
   return {
     notificationText: macro && `Macro Learning: ${macro.title}`,
     notificationButtonText: 'Stop Learning',
-    isActive: macro !== undefined
+    isActive: macro !== undefined,
   }
 }
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
-  onNotificationButtonClick: () => { dispatch(rMacroLearningStop()) }
+  onNotificationButtonClick: () => { dispatch(rMacroLearningStop()) },
 })
 
 export default connect(

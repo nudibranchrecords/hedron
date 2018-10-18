@@ -22,7 +22,7 @@ export default (store) => {
   }
 
   navigator.getUserMedia({
-    audio: true
+    audio: true,
   }, gotStream, err => {
     console.error('The following error occured: ' + err.message)
   })

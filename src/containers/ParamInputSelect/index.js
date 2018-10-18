@@ -4,14 +4,14 @@ import { uInputLinkCreate } from '../../store/inputLinks/actions'
 import getNodeInputOptions from '../../selectors/getNodeInputOptions'
 
 const mapStateToProps = (state, ownProps) => ({
-  options: getNodeInputOptions(state, ownProps.nodeId)
+  options: getNodeInputOptions(state, ownProps.nodeId),
 })
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     onInputChange: (value) => {
       dispatch(uInputLinkCreate(ownProps.nodeId, value.value, value.type))
-    }
+    },
   }
 }
 
@@ -20,6 +20,6 @@ export default connect(
   mapDispatchToProps,
   null,
   {
-    areStatesEqual: () => true
+    areStatesEqual: () => true,
   }
 )(InputSelect)

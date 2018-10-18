@@ -19,9 +19,9 @@ EditingOverlay.propTypes = {
   title: PropTypes.string,
   id: PropTypes.oneOfType([
     PropTypes.string,
-    PropTypes.bool
+    PropTypes.bool,
   ]),
-  type: PropTypes.string
+  type: PropTypes.string,
 }
 
 export default EditingOverlay

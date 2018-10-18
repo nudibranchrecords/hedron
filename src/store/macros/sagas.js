@@ -8,11 +8,11 @@ import getMacroLastId from '../../selectors/getMacroLastId'
 import macroInterpolate from '../../utils/macroInterpolate'
 import isInputTypeHuman from '../../utils/isInputTypeHuman'
 import { rNodeCreate, nodeValueUpdate, uNodeDelete, rNodeConnectedMacroAdd,
-          rNodeConnectedMacroRemove, nodeValuesBatchUpdate
+          rNodeConnectedMacroRemove, nodeValuesBatchUpdate,
 } from '../nodes/actions'
 import { rMacroCreate, rMacroDelete, rMacroTargetParamLinkCreate, rMacroTargetParamLinkDelete,
         rMacroTargetParamLinkUpdateStartValue, uMacroTargetParamLinkAdd, rMacroLearningToggle,
-        rMacroUpdateLastId, rMacroOpenToggle
+        rMacroUpdateLastId, rMacroOpenToggle,
 } from './actions'
 import { uiEditingOpen } from '../ui/actions'
 import { projectError } from '../project/actions'
@@ -27,7 +27,7 @@ export function* macroCreate (action) {
     type: 'macro',
     isOpen: true,
     macroId: macroId,
-    value: 0
+    value: 0,
   }))
   yield put(rMacroCreate(macroId, nodeId))
   yield put(rMacroOpenToggle(macroId))
@@ -54,7 +54,7 @@ export function* macroTargetParamLinkAdd (action) {
   const nodeId = yield call(uid)
   yield put(rNodeCreate(nodeId, {
     title: param.title,
-    type: 'macroTargetParamLink'
+    type: 'macroTargetParamLink',
   }))
   yield put(rMacroTargetParamLinkCreate(p.macroId, p.paramId, nodeId))
   yield put(rNodeConnectedMacroAdd(p.paramId, p.macroId))
@@ -103,7 +103,7 @@ export function* macroProcess (p, node) {
     values.push(
       {
         id: l.paramId,
-        value: val
+        value: val,
       }
     )
   }
@@ -215,8 +215,8 @@ export function* handleNodeValueBatchUpdate (action) {
         payload: {
           meta: p.meta,
           id: node.id,
-          value: node.value
-        }
+          value: node.value,
+        },
       })
     }
 

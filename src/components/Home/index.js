@@ -49,7 +49,7 @@ const Home = ({ onChooseFolderClick, onLoadClick }) =>
 
 Home.propTypes = {
   onChooseFolderClick: PropTypes.func.isRequired,
-  onLoadClick: PropTypes.func.isRequired
+  onLoadClick: PropTypes.func.isRequired,
 }
 
 export default Home

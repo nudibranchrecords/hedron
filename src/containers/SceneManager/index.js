@@ -4,7 +4,7 @@ import getScenes from '../../selectors/getScenes'
 import getCurrentScene from '../../selectors/getCurrentScene'
 import {
   uSceneCreate, uSceneDelete, rSceneSelectChannel,
-  uSceneSelectChannel, sceneClearChannel
+  uSceneSelectChannel, sceneClearChannel,
 }
   from '../../store/scenes/actions'
 import { uiEditingOpen } from '../../store/ui/actions'
@@ -12,7 +12,7 @@ import { uiEditingOpen } from '../../store/ui/actions'
 const mapStateToProps = (state, ownProps) => (
   {
     items: getScenes(state),
-    currentScene: getCurrentScene(state)
+    currentScene: getCurrentScene(state),
   }
 )
 
@@ -38,7 +38,7 @@ const mapDispatchToProps = (dispatch, ownProps) => (
     },
     onChannelClick: (sceneId, channel) => {
       dispatch(rSceneSelectChannel(sceneId, channel))
-    }
+    },
   }
 )
 

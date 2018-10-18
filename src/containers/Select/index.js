@@ -8,7 +8,7 @@ const mapStateToProps = (state, ownProps) => {
   return {
     value: select.value,
     title: select.title,
-    options: select.options
+    options: select.options,
   }
 }
 
@@ -16,12 +16,12 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     onChange: value => {
       dispatch(nodeValueUpdate(ownProps.nodeId, value.value, {
-        dontMutate: true
+        dontMutate: true,
       }))
     },
     onAssignClick: () => {
       dispatch(uInputLinkCreate(ownProps.nodeId, 'midi', 'midi'))
-    }
+    },
   }
 }
 
@@ -30,6 +30,6 @@ export default connect(
   mapDispatchToProps,
   null,
   {
-    areStatesEqual: () => false
+    areStatesEqual: () => false,
   }
 )(Select)

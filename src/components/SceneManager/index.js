@@ -62,7 +62,7 @@ const Item = ({ title, onClick, linkableActionId, color }) =>
 const SceneManager = (
   {
     items, onAddClick, currentScene, onDeleteClick, onRenameClick, onChannelClick,
-    onClearClick, onActiveClick, onOppositeClick
+    onClearClick, onActiveClick, onOppositeClick,
  }
 ) => {
   const la = currentScene && currentScene.linkableActionIds
@@ -139,16 +139,16 @@ SceneManager.propTypes = {
   items: PropTypes.arrayOf(
     PropTypes.shape({
       id: PropTypes.string,
-      title: PropTypes.string
+      title: PropTypes.string,
     })
-  )
+  ),
 }
 
 Item.propTypes = {
   title: PropTypes.string.isRequired,
   onClick: PropTypes.func.isRequired,
   color: PropTypes.string,
-  linkableActionId: PropTypes.string.isRequired
+  linkableActionId: PropTypes.string.isRequired,
 }
 
 export default SceneManager

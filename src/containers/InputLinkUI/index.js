@@ -8,7 +8,7 @@ const mapStateToProps = (state, ownProps) => {
   const inputLinkIds = getInputLinkIdsSeperated(state, ownProps.nodeId)
   return {
     inputLinkIds,
-    currentInputLinkId: node.openedLinkId
+    currentInputLinkId: node.openedLinkId,
   }
 }
 
@@ -19,6 +19,6 @@ export default connect(
   {
     areStatesEqual: (next, prev) =>
       next.nodes === prev.nodes &&
-      next.inputLinks === prev.inputLinks
+      next.inputLinks === prev.inputLinks,
   }
 )(InputLinkUI)
