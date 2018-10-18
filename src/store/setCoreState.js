@@ -10,7 +10,7 @@ export default store => {
       title: 'Scene Crossfader',
       id: 'sceneCrossfader',
       value: 0,
-      type: 'param'
+      type: 'param',
     }
   ))
 
@@ -24,17 +24,17 @@ export default store => {
       options: [
         {
           value: 'mix',
-          label: 'Mix'
+          label: 'Mix',
         },
         {
           value: 'A',
-          label: 'A'
+          label: 'A',
         },
         {
           value: 'B',
-          label: 'B'
-        }
-      ]
+          label: 'B',
+        },
+      ],
     }
   ))
 
@@ -42,13 +42,13 @@ export default store => {
     title: 'Normalize Levels',
     type: 'param',
     value: 0.5,
-    id: 'audioNormalizeLevels'
+    id: 'audioNormalizeLevels',
   }))
 
   store.dispatch(uNodeCreate('audioLevelsFalloff', {
     title: 'Levels Falloff',
     type: 'param',
     value: 1,
-    id: 'audioLevelsFalloff'
+    id: 'audioLevelsFalloff',
   }))
 }

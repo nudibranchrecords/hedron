@@ -19,7 +19,7 @@ const mapStateToProps = (state, ownProps) => {
     isActive: getIsInputLinkActive(state, ownProps.id),
     isActivateVisible: getCanInputLinkDisable(state, ownProps.id),
     toggleActionId: link.linkableActions.toggleActivate,
-    sequencerGridId: link.sequencerGridId
+    sequencerGridId: link.sequencerGridId,
   }
 }
 
@@ -33,7 +33,7 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
   },
   onActivateAssignClick: () => {
     dispatch(uInputLinkCreate(ownProps.id, 'midi', 'inputLinkToggle'))
-  }
+  },
 })
 
 export default connect(
@@ -43,6 +43,6 @@ export default connect(
   {
     areStatesEqual: (next, prev) =>
     next.nodes === prev.nodes &&
-    next.inputLinks === next.inputLinks
+    next.inputLinks === next.inputLinks,
   }
 )(InputLink)

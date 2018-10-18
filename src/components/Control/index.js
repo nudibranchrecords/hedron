@@ -16,7 +16,7 @@ const Control = ({ nodeId, type }) => {
 
 Control.propTypes = {
   nodeId: PropTypes.string.isRequired,
-  type: PropTypes.string.isRequired
+  type: PropTypes.string.isRequired,
 }
 
 export default Control

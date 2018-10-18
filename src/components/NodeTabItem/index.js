@@ -44,7 +44,7 @@ NodeTabItem.propTypes = {
   title: PropTypes.string.isRequired,
   isSelected: PropTypes.bool,
   isActive: PropTypes.bool,
-  onClick: PropTypes.func.isRequired
+  onClick: PropTypes.func.isRequired,
 }
 
 export default NodeTabItem

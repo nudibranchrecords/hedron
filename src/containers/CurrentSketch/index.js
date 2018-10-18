@@ -13,11 +13,11 @@ const mapStateToProps = (state, ownProps) => {
       title: state.sketches[sketchId].title,
       params: state.sketches[sketchId].paramIds,
       sketchId: sketchId,
-      shots: state.sketches[sketchId].shotIds
+      shots: state.sketches[sketchId].shotIds,
     }
   } else {
     return {
-      isSketch: false
+      isSketch: false,
     }
   }
 }
@@ -28,7 +28,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     onRenameClick: sketchId => {
       dispatch(uiEditingOpen('sketchTitle', sketchId))
     },
-    onReimportClick: sketchId => dispatch(uSketchReimport(sketchId))
+    onReimportClick: sketchId => dispatch(uSketchReimport(sketchId)),
   }
 }
 

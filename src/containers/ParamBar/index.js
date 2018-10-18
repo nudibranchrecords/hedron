@@ -17,7 +17,7 @@ const mapStateToProps = (state, ownProps) => {
     type,
     hideBar,
     markerIsVisible: type === 'shot' && !hideBar && inputLink.armed,
-    formIsVisible: getIsEditing(state, ownProps.nodeId, 'paramValue')
+    formIsVisible: getIsEditing(state, ownProps.nodeId, 'paramValue'),
   }
 }
 
@@ -31,7 +31,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     onDoubleClick: () => {
       type === 'param' &&
       dispatch(uiEditingOpen('paramValue', ownProps.nodeId))
-    }
+    },
   }
 }
 

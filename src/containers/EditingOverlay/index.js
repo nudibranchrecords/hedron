@@ -13,14 +13,14 @@ const mapStateToProps = (state, ownProps) => {
     id: isEditing ? isEditing.id : undefined,
     type: isEditing ? isEditing.type : undefined,
     isVisible: isPopup,
-    title: node ? `Editing: ${node.title}` : undefined
+    title: node ? `Editing: ${node.title}` : undefined,
   }
 }
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
   onCancelClick: () => {
     dispatch(uiEditingClose())
-  }
+  },
 })
 
 export default connect(

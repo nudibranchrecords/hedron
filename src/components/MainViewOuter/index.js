@@ -53,5 +53,5 @@ MainViewOuter.propTypes = {
   notificationText: PropTypes.string,
   notificationButtonText: PropTypes.string,
   onNotificationButtonClick: PropTypes.func,
-  isActive: PropTypes.bool
+  isActive: PropTypes.bool,
 }

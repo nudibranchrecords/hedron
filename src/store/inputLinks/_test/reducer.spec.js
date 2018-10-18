@@ -11,25 +11,25 @@ test('(Reducer) inputLinkReducer - Adds link on rInputLinkCreate()', (t) => {
 
   originalState = {
     '01': {
-      foo: 'bar'
+      foo: 'bar',
     },
     '02': {
-      lorem: 'ipsum'
-    }
+      lorem: 'ipsum',
+    },
   }
 
   deepFreeze(originalState)
 
   expectedState = {
     '01': {
-      foo: 'bar'
+      foo: 'bar',
     },
     '02': {
-      lorem: 'ipsum'
+      lorem: 'ipsum',
     },
     '03': {
-      bar: 'foo'
-    }
+      bar: 'foo',
+    },
   }
 
   actualState = inputLinkReducer(originalState, a.rInputLinkCreate('03', { bar: 'foo' }))
@@ -44,25 +44,25 @@ test('(Reducer) inputLinkReducer - Removes link on rInputLinkDelete()', (t) => {
 
   originalState = {
     '01': {
-      foo: 'bar'
+      foo: 'bar',
     },
     '02': {
-      lorem: 'ipsum'
+      lorem: 'ipsum',
     },
     '03': {
-      bar: 'foo'
-    }
+      bar: 'foo',
+    },
   }
 
   deepFreeze(originalState)
 
   expectedState = {
     '01': {
-      foo: 'bar'
+      foo: 'bar',
     },
     '02': {
-      lorem: 'ipsum'
-    }
+      lorem: 'ipsum',
+    },
   }
 
   actualState = inputLinkReducer(originalState, a.rInputLinkDelete('03'))
@@ -77,34 +77,34 @@ test('(Reducer) inputLinkReducer - Replaces all on inputLinksReplaceAll()', (t) 
 
   originalState = {
     '01': {
-      foo: 'bar'
+      foo: 'bar',
     },
     '02': {
-      lorem: 'ipsum'
+      lorem: 'ipsum',
     },
     '03': {
-      bar: 'foo'
-    }
+      bar: 'foo',
+    },
   }
 
   deepFreeze(originalState)
 
   expectedState = {
     'XX': {
-      foo: 'woo'
+      foo: 'woo',
     },
     'YY': {
-      lorem: 'wee'
-    }
+      lorem: 'wee',
+    },
   }
 
   actualState = inputLinkReducer(originalState, a.inputLinksReplaceAll({
     'XX': {
-      foo: 'woo'
+      foo: 'woo',
     },
     'YY': {
-      lorem: 'wee'
-    }
+      lorem: 'wee',
+    },
   }))
 
   t.deepEqual(actualState, expectedState)
@@ -117,12 +117,12 @@ test('(Reducer) inputLinkReducer - handle inputLinkShotArm / inputLinkShotDisarm
 
   originalState = {
     '01': {
-      id: '01'
+      id: '01',
     },
     '02': {
       id: '02',
-      armed: true
-    }
+      armed: true,
+    },
   }
 
   deepFreeze(originalState)
@@ -130,12 +130,12 @@ test('(Reducer) inputLinkReducer - handle inputLinkShotArm / inputLinkShotDisarm
   expectedState = {
     '01': {
       id: '01',
-      armed: true
+      armed: true,
     },
     '02': {
       id: '02',
-      armed: true
-    }
+      armed: true,
+    },
   }
 
   actualState = inputLinkReducer(originalState, a.inputLinkShotArm('01'))
@@ -145,12 +145,12 @@ test('(Reducer) inputLinkReducer - handle inputLinkShotArm / inputLinkShotDisarm
   expectedState = {
     '01': {
       id: '01',
-      armed: true
+      armed: true,
     },
     '02': {
       id: '02',
-      armed: false
-    }
+      armed: false,
+    },
   }
 
   actualState = inputLinkReducer(actualState, a.inputLinkShotDisarm('02'))
@@ -160,12 +160,12 @@ test('(Reducer) inputLinkReducer - handle inputLinkShotArm / inputLinkShotDisarm
   expectedState = {
     '01': {
       id: '01',
-      armed: true
+      armed: true,
     },
     '02': {
       id: '02',
-      armed: true
-    }
+      armed: true,
+    },
   }
 
   actualState = inputLinkReducer(actualState, a.inputLinkShotArm('02'))

@@ -33,7 +33,7 @@ const ViewHeader = ({ children, onButtonClick, buttonText }) => (
 ViewHeader.propTypes = {
   children: PropTypes.string.isRequired,
   onButtonClick: PropTypes.func,
-  buttonText: PropTypes.string
+  buttonText: PropTypes.string,
 }
 
 export default ViewHeader

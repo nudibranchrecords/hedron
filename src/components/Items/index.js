@@ -15,7 +15,7 @@ const Items = ({ children, direction }) => (
 
 Items.propTypes = {
   children: PropTypes.node,
-  direction: PropTypes.string
+  direction: PropTypes.string,
 }
 
 export default Items

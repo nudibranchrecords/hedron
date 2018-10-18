@@ -69,10 +69,10 @@ InputLinkUI.propTypes = {
     ).isRequired,
     toggledActive: PropTypes.arrayOf(
       PropTypes.string
-    ).isRequired
+    ).isRequired,
   }).isRequired,
   nodeId: PropTypes.string.isRequired,
-  currentInputLinkId: PropTypes.string
+  currentInputLinkId: PropTypes.string,
 }
 
 export default InputLinkUI

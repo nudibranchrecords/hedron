@@ -29,7 +29,7 @@ const mapStateToProps = (state, ownProps) => {
     paramLinksAreVisible: paramLinks.length > 0,
     isLearning: state.macros.learningId === ownProps.id,
     numInputs: inputLinkIds.length,
-    inputLinkTitle: activeInputLink && activeInputLink.title
+    inputLinkTitle: activeInputLink && activeInputLink.title,
   }
 }
 
@@ -37,7 +37,7 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
   onLearningClick: () => { dispatch(rMacroLearningToggle(ownProps.id)) },
   onDeleteClick: () => { dispatch(uMacroDelete(ownProps.id)) },
   onOpenClick: () => { dispatch(rMacroOpenToggle(ownProps.id)) },
-  onRenameClick: (nodeId) => { dispatch(uiEditingOpen('nodeTitle', nodeId)) }
+  onRenameClick: (nodeId) => { dispatch(uiEditingOpen('nodeTitle', nodeId)) },
 })
 
 export default connect(
@@ -48,6 +48,6 @@ export default connect(
     areStatesEqual: (next, prev) =>
       next.nodes === prev.nodes &&
       next.macros.learningId === prev.macros.learningId &&
-      next.macros.openedId === prev.macros.openedId
+      next.macros.openedId === prev.macros.openedId,
   }
 )(MacroItem)

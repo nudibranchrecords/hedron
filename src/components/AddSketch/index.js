@@ -39,9 +39,9 @@ AddSketch.propTypes = {
   items: PropTypes.arrayOf(
     PropTypes.shape({
       title: PropTypes.string,
-      id: PropTypes.string
+      id: PropTypes.string,
     })
-  ).isRequired
+  ).isRequired,
 }
 
 export default AddSketch

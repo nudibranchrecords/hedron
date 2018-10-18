@@ -3,16 +3,16 @@ require('babel-register')
 const all = {
   gain: {
     func: require('../coreModifiers/gain'),
-    config: require('../coreModifiers/gain/config')
+    config: require('../coreModifiers/gain/config'),
   },
   range: {
     func: require('../coreModifiers/range'),
-    config: require('../coreModifiers/range/config')
+    config: require('../coreModifiers/range/config'),
   },
   threshold: {
     func: require('../coreModifiers/threshold'),
-    config: require('../coreModifiers/threshold/config')
-  }
+    config: require('../coreModifiers/threshold/config'),
+  },
 }
 
 const getAll = () =>
@@ -23,5 +23,5 @@ const work = (modifierId, control, value) =>
 
 module.exports = {
   getAll,
-  work
+  work,
 }

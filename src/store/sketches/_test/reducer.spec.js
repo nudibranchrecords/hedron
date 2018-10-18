@@ -11,8 +11,8 @@ test('(Reducer) sketchesReducer - Adds new sketch on SKETCH_CREATE', (t) => {
     s01: {
       moduleId: 'cubey',
       title: 'Cubey 1',
-      paramIds: ['p01', 'p02']
-    }
+      paramIds: ['p01', 'p02'],
+    },
   }
 
   deepFreeze(originalState)
@@ -21,13 +21,13 @@ test('(Reducer) sketchesReducer - Adds new sketch on SKETCH_CREATE', (t) => {
     s01: {
       moduleId: 'cubey',
       title: 'Cubey 1',
-      paramIds: ['p01', 'p02']
+      paramIds: ['p01', 'p02'],
     },
     UID0: {
       moduleId: 'swirly',
       title: 'Swirly',
-      paramIds: ['UID1', 'UID2']
-    }
+      paramIds: ['UID1', 'UID2'],
+    },
   }
 
   const actual = sketchesReducer(originalState, {
@@ -37,9 +37,9 @@ test('(Reducer) sketchesReducer - Adds new sketch on SKETCH_CREATE', (t) => {
       sketch: {
         moduleId: 'swirly',
         title: 'Swirly',
-        paramIds: ['UID1', 'UID2']
-      }
-    }
+        paramIds: ['UID1', 'UID2'],
+      },
+    },
   })
 
   t.deepEqual(actual, expectedState, 'Adds new item')
@@ -53,13 +53,13 @@ test('(Reducer) sketchesReducer - Removes sketch on SKETCH_DELETE', (t) => {
     s01: {
       moduleId: 'cubey',
       title: 'Cubey 1',
-      paramIds: ['p01', 'p02']
+      paramIds: ['p01', 'p02'],
     },
     s02: {
       moduleId: 'swirly',
       title: 'Swirly 1',
-      paramIds: ['p03', 'p04']
-    }
+      paramIds: ['p03', 'p04'],
+    },
   }
 
   deepFreeze(originalState)
@@ -68,15 +68,15 @@ test('(Reducer) sketchesReducer - Removes sketch on SKETCH_DELETE', (t) => {
     s01: {
       moduleId: 'cubey',
       title: 'Cubey 1',
-      paramIds: ['p01', 'p02']
-    }
+      paramIds: ['p01', 'p02'],
+    },
   }
 
   actual = sketchesReducer(originalState, {
     type: 'SKETCH_DELETE',
     payload: {
-      id: 's02'
-    }
+      id: 's02',
+    },
   })
 
   t.deepEqual(actual, expectedState, 'Removes item')
@@ -86,8 +86,8 @@ test('(Reducer) sketchesReducer - Removes sketch on SKETCH_DELETE', (t) => {
   actual = sketchesReducer(actual, {
     type: 'SKETCH_DELETE',
     payload: {
-      id: 's01'
-    }
+      id: 's01',
+    },
   })
 
   t.deepEqual(actual, expectedState, 'Removes item')
@@ -102,31 +102,31 @@ test('(Reducer) sketchesReducer - Replaces sketches on SKETCHES_REPLACE_ALL', (t
     sAA: {
       moduleId: 'cubey',
       title: 'Cubey 1',
-      paramIds: ['p11', 'p2']
+      paramIds: ['p11', 'p2'],
     },
     sBB: {
       moduleId: 'swirly',
       title: 'Swirly 1',
-      paramIds: ['p03', 'p04']
+      paramIds: ['p03', 'p04'],
     },
     sCC: {
       moduleId: 'swirly',
       title: 'Swirly 2',
-      paramIds: ['p55', 'p04']
-    }
+      paramIds: ['p55', 'p04'],
+    },
   }
 
   originalState = {
     s01: {
       moduleId: 'cubey',
       title: 'Cubey 1',
-      paramIds: ['p01', 'p02']
+      paramIds: ['p01', 'p02'],
     },
     s02: {
       moduleId: 'swirly',
       title: 'Swirly 1',
-      paramIds: ['p03', 'p04']
-    }
+      paramIds: ['p03', 'p04'],
+    },
   }
 
   deepFreeze(originalState)
@@ -134,8 +134,8 @@ test('(Reducer) sketchesReducer - Replaces sketches on SKETCHES_REPLACE_ALL', (t
   actual = sketchesReducer(originalState, {
     type: 'SKETCHES_REPLACE_ALL',
     payload: {
-      sketches: newSketches
-    }
+      sketches: newSketches,
+    },
   })
 
   t.deepEqual(actual, newSketches, 'Replaces all sketches')
@@ -150,31 +150,31 @@ test('(Reducer) sketchesReducer - Replaces sketches on SKETCHES_REPLACE_ALL', (t
     sAA: {
       moduleId: 'cubey',
       title: 'Cubey 1',
-      paramIds: ['p11', 'p2']
+      paramIds: ['p11', 'p2'],
     },
     sBB: {
       moduleId: 'swirly',
       title: 'Swirly 1',
-      paramIds: ['p03', 'p04']
+      paramIds: ['p03', 'p04'],
     },
     sCC: {
       moduleId: 'swirly',
       title: 'Swirly 2',
-      paramIds: ['p55', 'p04']
-    }
+      paramIds: ['p55', 'p04'],
+    },
   }
 
   originalState = {
     s01: {
       moduleId: 'cubey',
       title: 'Cubey 1',
-      paramIds: ['p01', 'p02']
+      paramIds: ['p01', 'p02'],
     },
     s02: {
       moduleId: 'swirly',
       title: 'Swirly 1',
-      paramIds: ['p03', 'p04']
-    }
+      paramIds: ['p03', 'p04'],
+    },
   }
 
   deepFreeze(originalState)
@@ -182,8 +182,8 @@ test('(Reducer) sketchesReducer - Replaces sketches on SKETCHES_REPLACE_ALL', (t
   actual = sketchesReducer(originalState, {
     type: 'SKETCHES_REPLACE_ALL',
     payload: {
-      sketches: newSketches
-    }
+      sketches: newSketches,
+    },
   })
 
   t.deepEqual(actual, newSketches, 'Replaces all sketches')
@@ -199,16 +199,16 @@ test('(Reducer) sketchesReducer - SKETCH_NODE_OPENED_TOGGLE', (t) => {
       moduleId: 'cubey',
       title: 'Cubey 1',
       paramIds: ['p01', 'p02'],
-      openedNodes: {}
+      openedNodes: {},
     },
     s02: {
       moduleId: 'swirly',
       title: 'Swirly 1',
       paramIds: ['p03', 'p04'],
       openedNodes: {
-        param: 'p03'
-      }
-    }
+        param: 'p03',
+      },
+    },
   }
 
   expected = {
@@ -217,17 +217,17 @@ test('(Reducer) sketchesReducer - SKETCH_NODE_OPENED_TOGGLE', (t) => {
       title: 'Cubey 1',
       paramIds: ['p01', 'p02'],
       openedNodes: {
-        param: 'p01'
-      }
+        param: 'p01',
+      },
     },
     s02: {
       moduleId: 'swirly',
       title: 'Swirly 1',
       paramIds: ['p03', 'p04'],
       openedNodes: {
-        param: 'p03'
-      }
-    }
+        param: 'p03',
+      },
+    },
   }
 
   deepFreeze(original)
@@ -242,17 +242,17 @@ test('(Reducer) sketchesReducer - SKETCH_NODE_OPENED_TOGGLE', (t) => {
       title: 'Cubey 1',
       paramIds: ['p01', 'p02'],
       openedNodes: {
-        param: 'p02'
-      }
+        param: 'p02',
+      },
     },
     s02: {
       moduleId: 'swirly',
       title: 'Swirly 1',
       paramIds: ['p03', 'p04'],
       openedNodes: {
-        param: 'p03'
-      }
-    }
+        param: 'p03',
+      },
+    },
   }
 
   actual = sketchesReducer(actual, sketchNodeOpenedToggle('s01', 'p02', 'param'))
@@ -265,17 +265,17 @@ test('(Reducer) sketchesReducer - SKETCH_NODE_OPENED_TOGGLE', (t) => {
       title: 'Cubey 1',
       paramIds: ['p01', 'p02'],
       openedNodes: {
-        param: 'p02'
-      }
+        param: 'p02',
+      },
     },
     s02: {
       moduleId: 'swirly',
       title: 'Swirly 1',
       paramIds: ['p03', 'p04'],
       openedNodes: {
-        param: undefined
-      }
-    }
+        param: undefined,
+      },
+    },
   }
 
   actual = sketchesReducer(actual, sketchNodeOpenedToggle('s02', 'p03', 'param'))
@@ -289,17 +289,17 @@ test('(Reducer) sketchesReducer - SKETCH_NODE_OPENED_TOGGLE', (t) => {
       paramIds: ['p01', 'p02'],
       openedNodes: {
         param: 'p02',
-        shot: 'sh01'
-      }
+        shot: 'sh01',
+      },
     },
     s02: {
       moduleId: 'swirly',
       title: 'Swirly 1',
       paramIds: ['p03', 'p04'],
       openedNodes: {
-        param: undefined
-      }
-    }
+        param: undefined,
+      },
+    },
   }
 
   actual = sketchesReducer(actual, sketchNodeOpenedToggle('s01', 'sh01', 'shot'))

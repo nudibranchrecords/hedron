@@ -11,7 +11,7 @@ test('(Selector) project - getProjectData', (t) => {
     sketches: '@@sketches',
     params: '@@params',
     displays: '@@displays',
-    clock: '@@clock'
+    clock: '@@clock',
   }
   deepFreeze(state)
 
@@ -19,7 +19,7 @@ test('(Selector) project - getProjectData', (t) => {
     project: '@@project',
     inputs: '@@inputs',
     sketches: '@@sketches',
-    params: '@@params'
+    params: '@@params',
   }
 
   const actual = getProjectData(state)
@@ -31,8 +31,8 @@ test('(Selector) project - getProjectData', (t) => {
 test('(Selector) project - getProjectFilepath', (t) => {
   const state = {
     project: {
-      filePath: 'some/path'
-    }
+      filePath: 'some/path',
+    },
   }
   deepFreeze(state)
 

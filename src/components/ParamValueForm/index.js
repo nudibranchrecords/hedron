@@ -34,7 +34,7 @@ class ParamvalueForm extends React.Component {
 
 ParamvalueForm.propTypes = {
   handleSubmit: PropTypes.func.isRequired,
-  onBlur: PropTypes.func.isRequired
+  onBlur: PropTypes.func.isRequired,
 }
 
 export default ParamvalueForm

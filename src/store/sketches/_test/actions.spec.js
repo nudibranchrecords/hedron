@@ -7,8 +7,8 @@ test('(Action Creator) sketchCreate', (t) => {
     type: 'SKETCH_CREATE',
     payload: {
       id: 'XXX',
-      sketch: { foo: 'bar' }
-    }
+      sketch: { foo: 'bar' },
+    },
   }
   t.deepEqual(actual, expected, 'Creates action to add a sketch')
   t.end()
@@ -19,8 +19,8 @@ test('(Action Creator) sketchDelete', (t) => {
   let expected = {
     type: 'SKETCH_DELETE',
     payload: {
-      id: 'XXX'
-    }
+      id: 'XXX',
+    },
   }
   t.deepEqual(actual, expected, 'Creates action to remove a sketch')
   t.end()
@@ -32,8 +32,8 @@ test('(Action Creator) sketchesReplaceAll', (t) => {
   let expected = {
     type: 'SKETCHES_REPLACE_ALL',
     payload: {
-      sketches
-    }
+      sketches,
+    },
   }
   t.deepEqual(actual, expected, 'Creates action to replace all sketches')
   t.end()

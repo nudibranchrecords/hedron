@@ -129,7 +129,7 @@ class Param extends React.Component {
   constructor () {
     super()
     this.state = {
-      bottomHeight: 0
+      bottomHeight: 0,
     }
     this.calculateHeights = this.calculateHeights.bind(this)
 
@@ -158,7 +158,7 @@ class Param extends React.Component {
   calculateHeights () {
     if (this.bottomEl) {
       this.setState({
-        bottomHeight: this.bottomEl.offsetHeight
+        bottomHeight: this.bottomEl.offsetHeight,
       })
     }
   }
@@ -219,7 +219,7 @@ Param.propTypes = {
   numInputs: PropTypes.number,
   numMacros: PropTypes.number,
   inputLinkTitle: PropTypes.string,
-  type: PropTypes.string
+  type: PropTypes.string,
 }
 
 export default Param

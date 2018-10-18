@@ -7,13 +7,13 @@ import { Link as RouterLink } from 'react-router-dom'
 
 const sizes = {
   large: '1.5rem',
-  small: '0.7rem'
+  small: '0.7rem',
 }
 
 const colors = {
   channelA: theme.channelAColor,
   channelB: theme.channelBColor,
-  danger: theme.dangerColor
+  danger: theme.dangerColor,
 }
 
 const Inner = styled.span`
@@ -81,7 +81,7 @@ const Button = ({ onClick, ...props }) =>
 Button.propTypes = {
   to: PropTypes.string,
   children: PropTypes.node.isRequired,
-  onClick: PropTypes.func
+  onClick: PropTypes.func,
 }
 
 export default Button
