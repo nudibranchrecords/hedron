@@ -1,4 +1,4 @@
 module.exports = {
   title: ['Lower Range', 'Upper Range'],
-  defaultValue: [0, 1]
+  defaultValue: [0, 1],
 }

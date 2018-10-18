@@ -4,14 +4,14 @@ import getMacros from '../../selectors/getMacros'
 import { uMacroCreate } from '../../store/macros/actions'
 
 const mapStateToProps = (state, ownProps) => ({
-  items: getMacros(state)
+  items: getMacros(state),
 })
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
   onAddClick: e => {
     e.stopPropagation()
     dispatch(uMacroCreate())
-  }
+  },
 })
 
 export default connect(
@@ -20,6 +20,6 @@ export default connect(
   null,
   {
     areStatesEqual: (next, prev) =>
-    Object.keys(next.macros.items).length === Object.keys(prev.macros.items).length
+    Object.keys(next.macros.items).length === Object.keys(prev.macros.items).length,
   }
 )(Macros)

@@ -9,14 +9,14 @@ test('(Action Creator) availableModulesReplaceAll', (t) => {
         {
           key: 'rotX',
           title: 'Rotation X',
-          defaultValue: 0.5
+          defaultValue: 0.5,
         },
         {
           key: 'rotY',
           title: 'Rotation Y',
-          defaultValue: 0.5
-        }
-      ]
+          defaultValue: 0.5,
+        },
+      ],
     },
     swirly: {
       defaultTitle: 'Swirly',
@@ -24,22 +24,22 @@ test('(Action Creator) availableModulesReplaceAll', (t) => {
         {
           key: 'swirlRate',
           title: 'Swirl Rate',
-          defaultValue: 0.1
+          defaultValue: 0.1,
         },
         {
           key: 'scale',
           title: 'Scale',
-          defaultValue: 0.1
-        }
-      ]
-    }
+          defaultValue: 0.1,
+        },
+      ],
+    },
   }
   let actual = a.availableModulesReplaceAll(modules)
   let expected = {
     type: 'AVAILABLE_MODULES_REPLACE_ALL',
     payload: {
-      modules
-    }
+      modules,
+    },
   }
   t.deepEqual(actual, expected, 'Creates action to update available modules')
   t.end()

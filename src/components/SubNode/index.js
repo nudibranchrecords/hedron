@@ -40,7 +40,7 @@ SubNode.propTypes = {
   title: PropTypes.string.isRequired,
   nodeId: PropTypes.string.isRequired,
   children: PropTypes.node.isRequired,
-  noInfo: PropTypes.bool
+  noInfo: PropTypes.bool,
 }
 
 export default SubNode

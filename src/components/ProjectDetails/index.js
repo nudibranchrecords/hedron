@@ -16,7 +16,7 @@ const Error = styled.div`
 `
 
 const Menu = ({
-  filePath, errorMessage
+  filePath, errorMessage,
 }) => {
   return (
     <div>
@@ -28,7 +28,7 @@ const Menu = ({
 
 Menu.propTypes = {
   filePath: PropTypes.string,
-  errorMessage: PropTypes.string
+  errorMessage: PropTypes.string,
 }
 
 export default Menu

@@ -24,7 +24,7 @@ class Viewer extends React.Component {
 }
 
 Viewer.propTypes = {
-  containerElRef: PropTypes.func
+  containerElRef: PropTypes.func,
 }
 
 export default Viewer

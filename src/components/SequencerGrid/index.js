@@ -32,7 +32,7 @@ class SequencerGrid extends React.Component {
   constructor () {
     super()
     this.state = {
-      mouseDown: false
+      mouseDown: false,
     }
   }
   render () {
@@ -63,7 +63,7 @@ SequencerGrid.propTypes = {
   items: PropTypes.arrayOf(
     PropTypes.number
   ).isRequired,
-  onStepClick: PropTypes.func.isRequired
+  onStepClick: PropTypes.func.isRequired,
 }
 
 export default SequencerGrid

@@ -70,5 +70,5 @@ export default PanelDragger
 
 PanelDragger.propTypes = {
   onHandleDrag: PropTypes.func.isRequired,
-  position: PropTypes.number.isRequired
+  position: PropTypes.number.isRequired,
 }

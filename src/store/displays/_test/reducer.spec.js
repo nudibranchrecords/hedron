@@ -10,22 +10,22 @@ test('(Reducer) displaysReducer - Updates deviceList on displaysListUpdate', (t)
   let actual, expectedState
 
   const originalState = {
-    list: []
+    list: [],
   }
 
   deepFreeze(originalState)
 
   const newList = [
     {
-      foo: 'bar'
+      foo: 'bar',
     },
     {
-      lorem: 'ipsum'
-    }
+      lorem: 'ipsum',
+    },
   ]
 
   expectedState = {
-    list: newList
+    list: newList,
   }
 
   actual = displaysReducer(originalState, a.displaysListUpdate(newList))

@@ -13,7 +13,7 @@ export default (store) => {
     if (m.type !== 'timingClock' && m.type !== 'noteOff') {
       store.dispatch(midiMessage(rawMessage.target.name, {
         data: rawMessage.data,
-        timeStamp: rawMessage.timeStamp
+        timeStamp: rawMessage.timeStamp,
       }))
 
       const learning = state.midi.learning
@@ -37,7 +37,7 @@ export default (store) => {
       } else {
         store.dispatch(inputFired(m.id, m.value, {
           noteOn: m.type === 'noteOn',
-          type: 'midi'
+          type: 'midi',
         }))
       }
     // If no note data, treat as clock
@@ -57,7 +57,7 @@ export default (store) => {
         title: entry.name,
         id: entry.name,
         manufacturer: entry.manufacturer,
-        bankIndex: 0
+        bankIndex: 0,
       }
       entry.onmidimessage = onMessage
     })

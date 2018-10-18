@@ -7,7 +7,7 @@ export default state => {
     return sketchIds.map((id) => (
       {
         ...state.sketches[id],
-        id
+        id,
       }
     ))
   } else {

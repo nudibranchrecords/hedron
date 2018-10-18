@@ -58,7 +58,7 @@ const SceneThumb = (props) => {
 SceneThumb.propTypes = {
   to: PropTypes.string,
   children: PropTypes.string.isRequired,
-  channel: PropTypes.string
+  channel: PropTypes.string,
 }
 
 export default SceneThumb
