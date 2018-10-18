@@ -1,33 +1,30 @@
 {
   "parser": "babel-eslint",
-  "extends": ["standard", "standard-react"],
-  "plugins": ["babel", "react", "promise"],
+  "extends": [
+    "standard",
+    "standard-react"
+  ],
+  "plugins": [
+    "babel",
+    "react",
+    "promise"
+  ],
   "env": {
-    "browser": true
+    "browser" : true
   },
   "globals": {
-    "__DEV__": false,
-    "__TEST__": false,
-    "__PROD__": false,
-    "__COVERAGE__": false,
-    "__DEFAULT_PROJECT__": false,
-    "nw": false
+    "__DEV__"               : false,
+    "__TEST__"              : false,
+    "__PROD__"              : false,
+    "__COVERAGE__"          : false,
+    "__DEFAULT_PROJECT__"   : false,
+    "nw"                    : false
   },
   "rules": {
-    "key-spacing": 0,
-    "jsx-quotes": [2, "prefer-single"],
-    "max-len": [2, 120, 2],
-    "object-curly-spacing": [2, "always"],
-    "no-var": 2,
-    "comma-dangle": [
-      "error",
-      {
-        "arrays": "never",
-        "objects": "always",
-        "imports": "never",
-        "exports": "never",
-        "functions": "ignore"
-      }
-    ]
+    "key-spacing"          : 0,
+    "jsx-quotes"           : [2, "prefer-single"],
+    "max-len"              : [2, 120, 2],
+    "object-curly-spacing" : [2, "always"],
+    "no-var"               : 2
   }
 }
