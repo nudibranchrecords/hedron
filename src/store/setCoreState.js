@@ -47,7 +47,7 @@ export default store => {
   store.dispatch(uNodeCreate('audioLevelsPower', {
     title: 'Levels Power',
     type: 'param',
-    value: .25,
+    value: 0.25,
     min: 0.5,
     max: 3,
     id: 'audioLevelsPower'
