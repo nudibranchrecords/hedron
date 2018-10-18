@@ -5,7 +5,7 @@ import getNode from '../../selectors/getNode'
 const mapStateToProps = (state, ownProps) => {
   const node = getNode(state, ownProps.nodeId)
   return {
-    type: node.type || 'slider'
+    type: node.type || 'slider',
   }
 }
 
@@ -15,6 +15,6 @@ export default connect(
   null,
   {
     areStatesEqual: (next, prev) =>
-      next.nodes === prev.nodes
+      next.nodes === prev.nodes,
   }
 )(Control)

@@ -69,5 +69,5 @@ App.propTypes = {
   stats: PropTypes.object.isRequired,
   leftWidth: PropTypes.number.isRequired,
   onLeftDrag: PropTypes.func.isRequired,
-  onWrapperClick: PropTypes.func.isRequired
+  onWrapperClick: PropTypes.func.isRequired,
 }

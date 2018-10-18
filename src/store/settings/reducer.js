@@ -4,7 +4,7 @@ const defaultState = {
   aspectW: 16,
   aspectH: 9,
   antialias: false,
-  throttledFPS: 60
+  throttledFPS: 60,
 }
 
 const settingsReducer = (state = defaultState, action) => {
@@ -14,7 +14,7 @@ const settingsReducer = (state = defaultState, action) => {
     case 'SETTINGS_UPDATE': {
       return {
         ...state,
-        ...p.items
+        ...p.items,
       }
     }
     default:

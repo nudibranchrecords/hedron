@@ -19,7 +19,7 @@ const InputLinkMidiControl = ({ onAssignClick, inputLinkIds }) => (
 
 InputLinkMidiControl.propTypes = {
   onAssignClick: PropTypes.func.isRequired,
-  inputLinkIds: PropTypes.array.isRequired
+  inputLinkIds: PropTypes.array.isRequired,
 }
 
 export default InputLinkMidiControl

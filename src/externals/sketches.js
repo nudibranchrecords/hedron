@@ -38,5 +38,5 @@ const loadSketches = globUrl => {
 }
 
 module.exports = {
-  loadSketches
+  loadSketches,
 }

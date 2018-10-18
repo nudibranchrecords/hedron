@@ -7,20 +7,20 @@ test('(Selector) getInputLinkModifierIds (input type "audio")', (t) => {
       xxx: {
         input: {
           id: 'BAR',
-          type: 'audio'
+          type: 'audio',
         },
-        modifierIds: ['mod1', 'mod2']
-      }
+        modifierIds: ['mod1', 'mod2'],
+      },
     },
     nodes: {
       mod1: {
         type: 'audio',
-        id: 'mod1'
+        id: 'mod1',
       },
       mod2: {
-        id: 'mod2'
-      }
-    }
+        id: 'mod2',
+      },
+    },
   }
 
   const actual = getInputLinkModifierIds(state, 'xxx')
@@ -35,20 +35,20 @@ test('(Selector) getInputLinkModifierIds (input type "foo")', (t) => {
       xxx: {
         input: {
           id: 'BAR',
-          type: 'foo'
+          type: 'foo',
         },
-        modifierIds: ['mod1', 'mod2']
-      }
+        modifierIds: ['mod1', 'mod2'],
+      },
     },
     nodes: {
       mod1: {
         type: 'audio',
-        id: 'mod1'
+        id: 'mod1',
       },
       mod2: {
-        id: 'mod2'
-      }
-    }
+        id: 'mod2',
+      },
+    },
   }
 
   const actual = getInputLinkModifierIds(state, 'xxx')
@@ -61,18 +61,18 @@ test('(Selector) getNodeModifierIds (no input)', (t) => {
   const state = {
     inputLinks: {
       xxx: {
-        modifierIds: ['mod1', 'mod2']
-      }
+        modifierIds: ['mod1', 'mod2'],
+      },
     },
     nodes: {
       mod1: {
         type: 'audio',
-        id: 'mod1'
+        id: 'mod1',
       },
       mod2: {
-        id: 'mod2'
-      }
-    }
+        id: 'mod2',
+      },
+    },
   }
 
   const actual = getInputLinkModifierIds(state, 'xxx')
@@ -88,25 +88,25 @@ test('(Selector) getInputLinkModifierIds (node type "shot" input type audio)', (
         nodeType: 'shot',
         input: {
           id: 'BAR',
-          type: 'audio'
+          type: 'audio',
         },
-        modifierIds: ['mod1', 'mod2', 'mod3']
-      }
+        modifierIds: ['mod1', 'mod2', 'mod3'],
+      },
     },
     nodes: {
       mod1: {
         key: 'foo',
-        id: 'mod1'
+        id: 'mod1',
       },
       mod2: {
         key: 'threshold',
-        id: 'mod2'
+        id: 'mod2',
       },
       mod3: {
         key: 'bar',
-        id: 'mod3'
-      }
-    }
+        id: 'mod3',
+      },
+    },
   }
 
   const actual = getInputLinkModifierIds(state, 'xxx')
@@ -122,25 +122,25 @@ test('(Selector) getInputLinkModifierIds (node type "shot" input type not audio)
         nodeType: 'shot',
         input: {
           id: 'BAR',
-          type: 'foo'
+          type: 'foo',
         },
-        modifierIds: ['mod1', 'mod2', 'mod3']
-      }
+        modifierIds: ['mod1', 'mod2', 'mod3'],
+      },
     },
     nodes: {
       mod1: {
         key: 'gain',
-        id: 'mod1'
+        id: 'mod1',
       },
       mod2: {
         key: 'foo',
-        id: 'mod2'
+        id: 'mod2',
       },
       mod3: {
         key: 'bar',
-        id: 'mod3'
-      }
-    }
+        id: 'mod3',
+      },
+    },
   }
 
   const actual = getInputLinkModifierIds(state, 'xxx')

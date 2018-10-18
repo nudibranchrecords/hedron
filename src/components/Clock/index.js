@@ -52,7 +52,7 @@ Clock.propTypes = {
   phrase: PropTypes.number.isRequired,
   bpm: PropTypes.number,
   onResetClick: PropTypes.func.isRequired,
-  onTapTempoClick: PropTypes.func.isRequired
+  onTapTempoClick: PropTypes.func.isRequired,
 }
 
 export default Clock

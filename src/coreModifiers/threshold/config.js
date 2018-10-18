@@ -1,4 +1,4 @@
 module.exports = {
   title: ['Threshold'],
-  defaultValue: [0]
+  defaultValue: [0],
 }

@@ -17,7 +17,7 @@ class EditingOverlayForm extends React.Component {
 }
 
 EditingOverlayForm.propTypes = {
-  handleSubmit: PropTypes.func.isRequired
+  handleSubmit: PropTypes.func.isRequired,
 }
 
 export default EditingOverlayForm

@@ -6,8 +6,8 @@ export function uInputLinkCreate (nodeId, inputId, inputType, deviceId, controlT
       inputId,
       inputType,
       deviceId,
-      controlType
-    }
+      controlType,
+    },
   }
 }
 
@@ -16,8 +16,8 @@ export function rInputLinkCreate (id, link) {
     type: 'R_INPUT_LINK_CREATE',
     payload: {
       id,
-      link
-    }
+      link,
+    },
   }
 }
 
@@ -25,8 +25,8 @@ export function uInputLinkDelete (id) {
   return {
     type: 'U_INPUT_LINK_DELETE',
     payload: {
-      id
-    }
+      id,
+    },
   }
 }
 
@@ -34,8 +34,8 @@ export function rInputLinkDelete (id) {
   return {
     type: 'R_INPUT_LINK_DELETE',
     payload: {
-      id
-    }
+      id,
+    },
   }
 }
 
@@ -45,8 +45,8 @@ export function uInputLinkUpdate (linkId, inputId, inputType) {
     payload: {
       linkId,
       inputId,
-      inputType
-    }
+      inputType,
+    },
   }
 }
 
@@ -54,8 +54,8 @@ export function inputLinksReplaceAll (links) {
   return {
     type: 'INPUT_LINKS_REPLACE_ALL',
     payload: {
-      links
-    }
+      links,
+    },
   }
 }
 
@@ -64,8 +64,8 @@ export function rInputLinkUpdate (linkId, input) {
     type: 'R_INPUT_LINK_UPDATE',
     payload: {
       linkId,
-      input
-    }
+      input,
+    },
   }
 }
 
@@ -73,8 +73,8 @@ export function inputLinkShotArm (id) {
   return {
     type: 'INPUT_LINK_SHOT_ARM',
     payload: {
-      id
-    }
+      id,
+    },
   }
 }
 
@@ -82,7 +82,7 @@ export function inputLinkShotDisarm (id) {
   return {
     type: 'INPUT_LINK_SHOT_DISARM',
     payload: {
-      id
-    }
+      id,
+    },
   }
 }

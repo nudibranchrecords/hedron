@@ -12,7 +12,7 @@ const allRels = [1, 63, 65, 127]
 const relVals = [
   [1, 127], // rel1
   [65, 63], // rel2
-  [1, 65] // rel3
+  [1, 65], // rel3
 ]
 
 let storedVals = []

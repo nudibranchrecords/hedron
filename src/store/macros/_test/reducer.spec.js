@@ -14,9 +14,9 @@ test('(Reducer) macroReducer - Adds macro on rMacroCreate()', (t) => {
       '01': {
         id: '01',
         nodeId: 'xxx',
-        targetParamLinks: []
-      }
-    }
+        targetParamLinks: [],
+      },
+    },
   }
 
   deepFreeze(originalState)
@@ -26,14 +26,14 @@ test('(Reducer) macroReducer - Adds macro on rMacroCreate()', (t) => {
       '01': {
         id: '01',
         nodeId: 'xxx',
-        targetParamLinks: []
+        targetParamLinks: [],
       },
       '02': {
         id: '02',
         nodeId: 'yyy',
-        targetParamLinks: []
-      }
-    }
+        targetParamLinks: [],
+      },
+    },
   }
 
   actualState = macroReducer(originalState, a.rMacroCreate('02', 'yyy'))

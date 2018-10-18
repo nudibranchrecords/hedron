@@ -17,7 +17,7 @@ const MidiButton = ({ onClick }) => (
 )
 
 MidiButton.propTypes = {
-  onClick: PropTypes.func.isRequired
+  onClick: PropTypes.func.isRequired,
 }
 
 export default MidiButton

@@ -6,7 +6,7 @@ import { watchProject, saveProject, loadProjectRequest,
 import { getProjectData, getProjectFilepath } from '../selectors'
 import { save, load } from '../../../utils/file'
 import { projectLoadSuccess, projectRehydrate, projectError, projectSaveAs,
-  projectErrorAdd, projectErrorPopupOpen, projectFilepathUpdate
+  projectErrorAdd, projectErrorPopupOpen, projectFilepathUpdate,
 } from '../actions'
 import history from '../../../history'
 
@@ -117,7 +117,7 @@ test('(Saga) loadProject', (t) => {
 
   const projectData = {
     project: {
-      sketchesPath: 'sketches_path'
+      sketchesPath: 'sketches_path',
     },
     inputs: '@@inputs',
     sketches: '@@sketches',
@@ -126,9 +126,9 @@ test('(Saga) loadProject', (t) => {
     inputLinks: '@@inputLinks',
     router: {
       location: {
-        pathname: '/foo/bar'
-      }
-    }
+        pathname: '/foo/bar',
+      },
+    },
   }
 
   t.deepEqual(
@@ -179,7 +179,7 @@ test('(Saga) handleProjectError (popup error)', (t) => {
   const errorMessage = 'foo error!'
   const meta = {
     popup: true,
-    code: 'FOO'
+    code: 'FOO',
   }
   const generator = handleProjectError(
     projectError(errorMessage, meta)

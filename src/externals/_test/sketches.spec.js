@@ -15,7 +15,7 @@ syncStub.withArgs('wee/bar/*').returns(['wee/bar/dog'])
 const { loadSketches } = proxyquire('../sketches', {
   glob: {
     // Mocked up sketch files
-    sync: syncStub
+    sync: syncStub,
   },
   // Mocked up modules and meta (just returning strings for test)
   [path.resolve('foo/bar/dog/index.js')]: 'dogModule',
@@ -31,7 +31,7 @@ const { loadSketches } = proxyquire('../sketches', {
   [path.resolve('bar/bar/dog/config.js')]: 'dogMeta',
 
   // does not have index file
-  [path.resolve('wee/bar/dog/config.js')]: 'dogMeta'
+  [path.resolve('wee/bar/dog/config.js')]: 'dogMeta',
 
 })
 
@@ -39,16 +39,16 @@ test('(External) sketches - loadSketches()', (t) => {
   const expected = {
     dog: {
       Module: 'dogModule',
-      config: 'dogMeta'
+      config: 'dogMeta',
     },
     cat: {
       Module: 'catModule',
-      config: 'catMeta'
+      config: 'catMeta',
     },
     frog: {
       Module: 'frogModule',
-      config: 'frogMeta'
-    }
+      config: 'frogMeta',
+    },
   }
   const actual = loadSketches('foo/bar')
   t.deepEqual(actual, expected, 'Returns modules from files')

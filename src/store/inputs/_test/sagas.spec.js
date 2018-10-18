@@ -22,13 +22,13 @@ import debounceInput from '../../../utils/debounceInput'
 proxyquire.noCallThru()
 
 const modifiers = {
-  work: sinon.stub()
+  work: sinon.stub(),
 }
 
 const { watchInputs, handleInput } = proxyquire('../sagas', {
   '../../externals/modifiers': {
-    work: modifiers.work
-  }
+    work: modifiers.work,
+  },
 })
 
 test('(Saga) watchInputs', (t) => {
@@ -43,11 +43,11 @@ test('(Saga) watchInputs', (t) => {
 test('(Saga) handleInput (no modifiers)', (t) => {
   const payload = {
     value: 0.2,
-    inputId: 'audio_0'
+    inputId: 'audio_0',
   }
 
   const generator = handleInput({
-    payload
+    payload,
   })
 
   t.deepEqual(
@@ -66,11 +66,11 @@ test('(Saga) handleInput (no modifiers)', (t) => {
 
   const links = [
     {
-      nodeId: 'XX'
+      nodeId: 'XX',
     },
     {
-      nodeId: 'YY'
-    }
+      nodeId: 'YY',
+    },
   ]
 
   t.deepEqual(
@@ -78,12 +78,12 @@ test('(Saga) handleInput (no modifiers)', (t) => {
     put(nodeValuesBatchUpdate([
       {
         id: 'XX',
-        value: 0.2
+        value: 0.2,
       },
       {
         id: 'YY',
-        value: 0.2
-      }
+        value: 0.2,
+      },
     ], undefined)),
     '2. Dispatches batch node update action'
   )
@@ -101,17 +101,17 @@ test('(Saga) handleInput (modifiers)', (t) => {
   let modifiedValue, modifierNodes
 
   const meta = {
-    type: 'audio'
+    type: 'audio',
   }
 
   const payload = {
     value: 0.2,
     inputId: 'audio_0',
-    meta
+    meta,
   }
 
   const generator = handleInput({
-    payload
+    payload,
   })
 
   t.deepEqual(
@@ -131,8 +131,8 @@ test('(Saga) handleInput (modifiers)', (t) => {
   const nodes = [
     {
       nodeId: 'XX',
-      modifierIds: ['yyy', 'zzz', 'aa1', 'aa2']
-    }
+      modifierIds: ['yyy', 'zzz', 'aa1', 'aa2'],
+    },
   ]
 
   t.deepEqual(
@@ -147,26 +147,26 @@ test('(Saga) handleInput (modifiers)', (t) => {
       key: 'foo',
       value: 0.5,
       passToNext: false,
-      type: 'audio'
+      type: 'audio',
     },
     {
       id: 'zzz',
       key: 'bar',
       passToNext: false,
-      value: 0.7
+      value: 0.7,
     },
     {
       id: 'zzz',
       key: 'bar',
       passToNext: true,
-      value: 0.2
+      value: 0.2,
     },
     {
       id: 'zzz',
       key: 'bar',
       passToNext: false,
-      value: 0.3
-    }
+      value: 0.3,
+    },
   ]
 
   t.deepEqual(
@@ -198,8 +198,8 @@ test('(Saga) handleInput (modifiers)', (t) => {
     put(nodeValuesBatchUpdate([
       {
         id: 'XX',
-        value: 0.9
-      }
+        value: 0.9,
+      },
     ], meta)),
     '2. Dispatches batch node update action'
   )
@@ -217,11 +217,11 @@ test('(Saga) handleInput (ignore audio type modifiers)', (t) => {
   let modifiedValue, modifierNodes
   const payload = {
     value: 0.2,
-    inputId: 'midi_xxx'
+    inputId: 'midi_xxx',
   }
 
   const generator = handleInput({
-    payload
+    payload,
   })
 
   t.deepEqual(
@@ -241,8 +241,8 @@ test('(Saga) handleInput (ignore audio type modifiers)', (t) => {
   const links = [
     {
       nodeId: 'XX',
-      modifierIds: ['yyy', 'zzz']
-    }
+      modifierIds: ['yyy', 'zzz'],
+    },
   ]
 
   t.deepEqual(
@@ -256,13 +256,13 @@ test('(Saga) handleInput (ignore audio type modifiers)', (t) => {
       id: 'yyy',
       key: 'foo',
       value: 0.5,
-      type: 'audio'
+      type: 'audio',
     },
     {
       id: 'zzz',
       key: 'bar',
-      value: 0.7
-    }
+      value: 0.7,
+    },
   ]
 
   t.deepEqual(
@@ -278,8 +278,8 @@ test('(Saga) handleInput (ignore audio type modifiers)', (t) => {
     put(nodeValuesBatchUpdate([
       {
         id: 'XX',
-        value: 0.9
-      }
+        value: 0.9,
+      },
     ], undefined)),
     '2. Dispatches batch node update action'
   )
@@ -296,11 +296,11 @@ test('(Saga) handleInput (ignore audio type modifiers)', (t) => {
 test('(Saga) handleInput (lfo)', (t) => {
   const payload = {
     value: 0.555,
-    inputId: 'lfo'
+    inputId: 'lfo',
   }
 
   const generator = handleInput({
-    payload
+    payload,
   })
 
   t.deepEqual(
@@ -320,8 +320,8 @@ test('(Saga) handleInput (lfo)', (t) => {
   const links = [
     {
       nodeId: 'XX',
-      lfoOptionIds: ['yyy', 'zzz']
-    }
+      lfoOptionIds: ['yyy', 'zzz'],
+    },
   ]
 
   t.deepEqual(
@@ -333,7 +333,7 @@ test('(Saga) handleInput (lfo)', (t) => {
   const optionValues = {
     shape: 'sine',
     rate: 2,
-    phase: 0.25
+    phase: 0.25,
   }
 
   t.deepEqual(
@@ -349,8 +349,8 @@ test('(Saga) handleInput (lfo)', (t) => {
     put(nodeValuesBatchUpdate([
       {
         id: 'XX',
-        value: 0.9
-      }
+        value: 0.9,
+      },
     ], undefined)),
     '4. Dispatches batch node update action'
   )
@@ -368,10 +368,10 @@ test('(Saga) handleInput (shot - noteOn)', (t) => {
   const payload = {
     value: 0.5,
     inputId: 'midi_xxx',
-    meta
+    meta,
   }
   const generator = handleInput({
-    payload
+    payload,
   })
 
   t.deepEqual(
@@ -391,8 +391,8 @@ test('(Saga) handleInput (shot - noteOn)', (t) => {
   const links = [
     {
       nodeId: 'XX',
-      nodeType: 'shot'
-    }
+      nodeType: 'shot',
+    },
   ]
 
   t.deepEqual(
@@ -403,7 +403,7 @@ test('(Saga) handleInput (shot - noteOn)', (t) => {
 
   const node = {
     sketchId: 'fooSketch',
-    method: 'barMethod'
+    method: 'barMethod',
   }
 
   t.deepEqual(
@@ -417,8 +417,8 @@ test('(Saga) handleInput (shot - noteOn)', (t) => {
     put(nodeValuesBatchUpdate([
       {
         id: 'XX',
-        value: 0.5
-      }
+        value: 0.5,
+      },
     ], meta)),
     '5. Dispatches batch node update action'
   )
@@ -433,11 +433,11 @@ test('(Saga) handleInput (macro - noteOn)', (t) => {
   const payload = {
     value: 0.5,
     inputId: 'midi_xxx',
-    meta
+    meta,
   }
 
   const generator = handleInput({
-    payload
+    payload,
   })
 
   t.deepEqual(
@@ -457,8 +457,8 @@ test('(Saga) handleInput (macro - noteOn)', (t) => {
   const links = [
     {
       nodeId: 'XX',
-      nodeType: 'macro'
-    }
+      nodeType: 'macro',
+    },
   ]
 
   t.deepEqual(
@@ -466,8 +466,8 @@ test('(Saga) handleInput (macro - noteOn)', (t) => {
     put(nodeValuesBatchUpdate([
       {
         id: 'XX',
-        value: 1
-      }
+        value: 1,
+      },
     ], meta)),
     '5. Dispatches batch node update action with value of 1'
   )
@@ -480,10 +480,10 @@ test('(Saga) handleInput (macro - noteOn)', (t) => {
 test('(Saga) handleInput (shot - seq-step sequencer - not in sequence)', (t) => {
   const payload = {
     value: 12,
-    inputId: 'seq-step'
+    inputId: 'seq-step',
   }
   const generator = handleInput({
-    payload
+    payload,
   })
 
   t.deepEqual(
@@ -504,8 +504,8 @@ test('(Saga) handleInput (shot - seq-step sequencer - not in sequence)', (t) => 
     {
       nodeId: 'XX',
       nodeType: 'shot',
-      sequencerGridId: 'SEQ01'
-    }
+      sequencerGridId: 'SEQ01',
+    },
   ]
 
   t.deepEqual(
@@ -516,7 +516,7 @@ test('(Saga) handleInput (shot - seq-step sequencer - not in sequence)', (t) => 
 
   const node = {
     sketchId: 'fooSketch',
-    method: 'barMethod'
+    method: 'barMethod',
   }
 
   t.deepEqual(
@@ -527,8 +527,8 @@ test('(Saga) handleInput (shot - seq-step sequencer - not in sequence)', (t) => 
 
   const seqNode = {
     value: [
-      1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 1, 0, 1, 1 // index 12 is "0"
-    ]
+      1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 1, 0, 1, 1, // index 12 is "0"
+    ],
   }
 
   t.equal(generator.next(seqNode).done, true, 'generator ends (doesnt update node)')
@@ -539,10 +539,10 @@ test('(Saga) handleInput (shot - seq-step sequencer - not in sequence)', (t) => 
 test('(Saga) handleInput (shot - seq-step sequencer - in sequence)', (t) => {
   const payload = {
     value: 5,
-    inputId: 'seq-step'
+    inputId: 'seq-step',
   }
   const generator = handleInput({
-    payload
+    payload,
   })
 
   t.deepEqual(
@@ -563,8 +563,8 @@ test('(Saga) handleInput (shot - seq-step sequencer - in sequence)', (t) => {
     {
       nodeId: 'XX',
       nodeType: 'shot',
-      sequencerGridId: 'SEQ01'
-    }
+      sequencerGridId: 'SEQ01',
+    },
   ]
 
   t.deepEqual(
@@ -575,7 +575,7 @@ test('(Saga) handleInput (shot - seq-step sequencer - in sequence)', (t) => {
 
   const node = {
     sketchId: 'fooSketch',
-    method: 'barMethod'
+    method: 'barMethod',
   }
 
   t.deepEqual(
@@ -586,8 +586,8 @@ test('(Saga) handleInput (shot - seq-step sequencer - in sequence)', (t) => {
 
   const seqNode = {
     value: [
-      1, 0, 1, 0, 1, 1, 1, 0, 1, 0, 1, 1, 0, 1, 1 // index 5 is "1"
-    ]
+      1, 0, 1, 0, 1, 1, 1, 0, 1, 0, 1, 1, 0, 1, 1, // index 5 is "1"
+    ],
   }
 
   t.deepEqual(
@@ -606,11 +606,11 @@ test('(Saga) handleInput (midi)', (t) => {
   const payload = {
     value: 0.5,
     inputId: 'midi_xxx',
-    meta
+    meta,
   }
 
   const generator = handleInput({
-    payload
+    payload,
   })
 
   t.deepEqual(
@@ -631,8 +631,8 @@ test('(Saga) handleInput (midi)', (t) => {
     {
       nodeId: 'YY',
       deviceId: 'D2',
-      midiOptionIds: ['MIDI1']
-    }
+      midiOptionIds: ['MIDI1'],
+    },
   ]
 
   t.deepEqual(
@@ -642,7 +642,7 @@ test('(Saga) handleInput (midi)', (t) => {
   )
 
   const node = {
-    value: 0.7
+    value: 0.7,
   }
 
   t.deepEqual(
@@ -653,7 +653,7 @@ test('(Saga) handleInput (midi)', (t) => {
 
   const midiOptionNodes = {
     foo: 0.11,
-    bar: 0.33
+    bar: 0.33,
   }
 
   t.deepEqual(
@@ -669,8 +669,8 @@ test('(Saga) handleInput (midi)', (t) => {
     put(nodeValuesBatchUpdate([
       {
         id: 'YY',
-        value: val
-      }
+        value: val,
+      },
     ], meta)),
     'Dispatches batch node update action with newly generated value'
   )
@@ -685,11 +685,11 @@ test('(Saga) handleInput (shot - audio val is over 0.333, armed)', (t) => {
   const payload = {
     value: 1,
     inputId: 'audio_1',
-    meta
+    meta,
   }
 
   const generator = handleInput({
-    payload
+    payload,
   })
 
   t.deepEqual(
@@ -711,8 +711,8 @@ test('(Saga) handleInput (shot - audio val is over 0.333, armed)', (t) => {
       id: 'LINK1',
       nodeId: 'XX',
       nodeType: 'shot',
-      armed: true
-    }
+      armed: true,
+    },
   ]
 
   t.deepEqual(
@@ -723,7 +723,7 @@ test('(Saga) handleInput (shot - audio val is over 0.333, armed)', (t) => {
 
   const node = {
     sketchId: 'fooSketch',
-    method: 'barMethod'
+    method: 'barMethod',
   }
 
   t.deepEqual(
@@ -743,8 +743,8 @@ test('(Saga) handleInput (shot - audio val is over 0.333, armed)', (t) => {
     put(nodeValuesBatchUpdate([
       {
         id: 'XX',
-        value: 1
-      }
+        value: 1,
+      },
     ], meta)),
     '6. Dispatches batch node update action'
   )
@@ -759,10 +759,10 @@ test('(Saga) handleInput (shot - audio val is over 0.333, disarmed)', (t) => {
   const payload = {
     value: 1,
     inputId: 'audio_1',
-    meta
+    meta,
   }
   const generator = handleInput({
-    payload
+    payload,
   })
 
   t.deepEqual(
@@ -784,8 +784,8 @@ test('(Saga) handleInput (shot - audio val is over 0.333, disarmed)', (t) => {
       id: 'LINK1',
       nodeId: 'XX',
       nodeType: 'shot',
-      armed: false
-    }
+      armed: false,
+    },
   ]
 
   t.deepEqual(
@@ -796,7 +796,7 @@ test('(Saga) handleInput (shot - audio val is over 0.333, disarmed)', (t) => {
 
   const node = {
     sketchId: 'fooSketch',
-    method: 'barMethod'
+    method: 'barMethod',
   }
 
   t.deepEqual(
@@ -804,8 +804,8 @@ test('(Saga) handleInput (shot - audio val is over 0.333, disarmed)', (t) => {
     put(nodeValuesBatchUpdate([
       {
         id: 'XX',
-        value: 1
-      }
+        value: 1,
+      },
     ], meta)),
     '6. Dispatches batch node update action'
   )
@@ -820,10 +820,10 @@ test('(Saga) handleInput (shot - audio val is under 0.333, armed)', (t) => {
   const payload = {
     value: 0.2,
     inputId: 'audio_1',
-    meta
+    meta,
   }
   const generator = handleInput({
-    payload
+    payload,
   })
 
   t.deepEqual(
@@ -845,8 +845,8 @@ test('(Saga) handleInput (shot - audio val is under 0.333, armed)', (t) => {
       id: 'LINK1',
       nodeId: 'XX',
       nodeType: 'shot',
-      armed: true
-    }
+      armed: true,
+    },
   ]
 
   t.deepEqual(
@@ -857,7 +857,7 @@ test('(Saga) handleInput (shot - audio val is under 0.333, armed)', (t) => {
 
   const node = {
     sketchId: 'fooSketch',
-    method: 'barMethod'
+    method: 'barMethod',
   }
 
   t.deepEqual(
@@ -871,8 +871,8 @@ test('(Saga) handleInput (shot - audio val is under 0.333, armed)', (t) => {
     put(nodeValuesBatchUpdate([
       {
         id: 'XX',
-        value: 0.2
-      }
+        value: 0.2,
+      },
     ], meta)),
     '6. Dispatches batch node update action'
   )
@@ -887,10 +887,10 @@ test('(Saga) handleInput (shot - audio val is under 0.333, disarmed)', (t) => {
   const payload = {
     value: 0.2,
     inputId: 'audio_1',
-    meta
+    meta,
   }
   const generator = handleInput({
-    payload
+    payload,
   })
 
   t.deepEqual(
@@ -912,8 +912,8 @@ test('(Saga) handleInput (shot - audio val is under 0.333, disarmed)', (t) => {
       id: 'LINK1',
       nodeId: 'XX',
       nodeType: 'shot',
-      armed: false
-    }
+      armed: false,
+    },
   ]
 
   t.deepEqual(
@@ -924,7 +924,7 @@ test('(Saga) handleInput (shot - audio val is under 0.333, disarmed)', (t) => {
 
   const node = {
     sketchId: 'fooSketch',
-    method: 'barMethod'
+    method: 'barMethod',
   }
 
   t.deepEqual(
@@ -938,8 +938,8 @@ test('(Saga) handleInput (shot - audio val is under 0.333, disarmed)', (t) => {
     put(nodeValuesBatchUpdate([
       {
         id: 'XX',
-        value: 0.2
-      }
+        value: 0.2,
+      },
     ], meta)),
     '6. Dispatches node update action'
   )
@@ -954,10 +954,10 @@ test('(Saga) handleInput - linkType is "linkableAction"', (t) => {
   const payload = {
     value: 0.4,
     inputId: 'midi_xxx',
-    meta
+    meta,
   }
   const generator = handleInput({
-    payload
+    payload,
   })
 
   t.deepEqual(
@@ -978,8 +978,8 @@ test('(Saga) handleInput - linkType is "linkableAction"', (t) => {
     {
       id: 'LINK1',
       nodeId: 'NN',
-      linkType: 'linkableAction'
-    }
+      linkType: 'linkableAction',
+    },
   ]
 
   t.deepEqual(
@@ -989,7 +989,7 @@ test('(Saga) handleInput - linkType is "linkableAction"', (t) => {
   )
 
   const linkableAction = {
-    action: { foo: 'bar' }
+    action: { foo: 'bar' },
   }
 
   t.deepEqual(

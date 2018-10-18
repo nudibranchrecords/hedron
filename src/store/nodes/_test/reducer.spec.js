@@ -13,34 +13,34 @@ test('(Reducer) nodesReducer - Updates correct node value on NODE_VALUE_UPDATE',
     '01': {
       title: 'Rotation X',
       key: 'rotX',
-      value: 0.1
+      value: 0.1,
     },
     '02': {
       title: 'Rotation Y',
       key: 'rotY',
-      value: 0.2
-    }
+      value: 0.2,
+    },
   }
 
   expectedState = {
     '01': {
       title: 'Rotation X',
       key: 'rotX',
-      value: 1
+      value: 1,
     },
     '02': {
       title: 'Rotation Y',
       key: 'rotY',
-      value: 0.2
-    }
+      value: 0.2,
+    },
   }
 
   actualState = nodesReducer(originalState, {
     type: 'NODE_VALUE_UPDATE',
     payload: {
       id: '01',
-      value: 1
-    }
+      value: 1,
+    },
   })
 
   t.deepEqual(actualState, expectedState)
@@ -49,21 +49,21 @@ test('(Reducer) nodesReducer - Updates correct node value on NODE_VALUE_UPDATE',
     '01': {
       title: 'Rotation X',
       key: 'rotX',
-      value: 1
+      value: 1,
     },
     '02': {
       title: 'Rotation Y',
       key: 'rotY',
-      value: 2
-    }
+      value: 2,
+    },
   }
 
   actualState = nodesReducer(actualState, {
     type: 'NODE_VALUE_UPDATE',
     payload: {
       id: '02',
-      value: 2
-    }
+      value: 2,
+    },
   })
 
   t.deepEqual(actualState, expectedState)
@@ -78,13 +78,13 @@ test('(Reducer) nodesReducer - does not mutate value on NODE_VALUE_UPDATE when m
     '01': {
       title: 'Rotation X',
       key: 'rotX',
-      value: 0.1
+      value: 0.1,
     },
     '02': {
       title: 'Rotation Y',
       key: 'rotY',
-      value: 0.2
-    }
+      value: 0.2,
+    },
   }
 
   deepFreeze(originalState)
@@ -93,13 +93,13 @@ test('(Reducer) nodesReducer - does not mutate value on NODE_VALUE_UPDATE when m
     '01': {
       title: 'Rotation X',
       key: 'rotX',
-      value: 1
+      value: 1,
     },
     '02': {
       title: 'Rotation Y',
       key: 'rotY',
-      value: 0.2
-    }
+      value: 0.2,
+    },
   }
 
   actualState = nodesReducer(originalState, {
@@ -108,9 +108,9 @@ test('(Reducer) nodesReducer - does not mutate value on NODE_VALUE_UPDATE when m
       id: '01',
       value: 1,
       meta: {
-        dontMutate: true
-      }
-    }
+        dontMutate: true,
+      },
+    },
   })
 
   t.deepEqual(actualState, expectedState)
@@ -119,13 +119,13 @@ test('(Reducer) nodesReducer - does not mutate value on NODE_VALUE_UPDATE when m
     '01': {
       title: 'Rotation X',
       key: 'rotX',
-      value: 1
+      value: 1,
     },
     '02': {
       title: 'Rotation Y',
       key: 'rotY',
-      value: 2
-    }
+      value: 2,
+    },
   }
 
   actualState = nodesReducer(actualState, {
@@ -134,9 +134,9 @@ test('(Reducer) nodesReducer - does not mutate value on NODE_VALUE_UPDATE when m
       id: '02',
       value: 2,
       meta: {
-        dontMutate: true
-      }
-    }
+        dontMutate: true,
+      },
+    },
   })
 
   t.deepEqual(actualState, expectedState)
@@ -151,65 +151,65 @@ test('(Reducer) nodesReducer - Updates multiple node values on nodeValuesBatchUp
     '01': {
       title: 'Rotation X',
       key: 'rotX',
-      value: 0.1
+      value: 0.1,
     },
     '02': {
       title: 'Rotation Y',
       key: 'rotY',
-      value: 0.2
+      value: 0.2,
     },
     '03': {
       title: 'Rotation Z',
       key: 'rotZ',
-      value: 0.3
+      value: 0.3,
     },
     '04': {
       title: 'Scale',
       key: 'scale',
-      value: 0.4
-    }
+      value: 0.4,
+    },
   }
 
   expectedState = {
     '01': {
       title: 'Rotation X',
       key: 'rotX',
-      value: 0.11
+      value: 0.11,
     },
     '02': {
       title: 'Rotation Y',
       key: 'rotY',
-      value: 0.22
+      value: 0.22,
     },
     '03': {
       title: 'Rotation Z',
       key: 'rotZ',
-      value: 0.33
+      value: 0.33,
     },
     '04': {
       title: 'Scale',
       key: 'scale',
-      value: 0.44
-    }
+      value: 0.44,
+    },
   }
 
   actualState = nodesReducer(originalState, a.nodeValuesBatchUpdate([
     {
       id: '01',
-      value: 0.11
+      value: 0.11,
     },
     {
       id: '02',
-      value: 0.22
+      value: 0.22,
     },
     {
       id: '03',
-      value: 0.33
+      value: 0.33,
     },
     {
       id: '04',
-      value: 0.44
-    }
+      value: 0.44,
+    },
   ]))
 
   t.deepEqual(actualState, expectedState)
@@ -218,34 +218,34 @@ test('(Reducer) nodesReducer - Updates multiple node values on nodeValuesBatchUp
     '01': {
       title: 'Rotation X',
       key: 'rotX',
-      value: 0.11
+      value: 0.11,
     },
     '02': {
       title: 'Rotation Y',
       key: 'rotY',
-      value: 0.5
+      value: 0.5,
     },
     '03': {
       title: 'Rotation Z',
       key: 'rotZ',
-      value: 0.6
+      value: 0.6,
     },
     '04': {
       title: 'Scale',
       key: 'scale',
-      value: 0.44
-    }
+      value: 0.44,
+    },
   }
 
   actualState = nodesReducer(actualState, a.nodeValuesBatchUpdate([
     {
       id: '02',
-      value: 0.5
+      value: 0.5,
     },
     {
       id: '03',
-      value: 0.6
-    }
+      value: 0.6,
+    },
   ]))
 
   t.deepEqual(actualState, expectedState)
@@ -254,30 +254,30 @@ test('(Reducer) nodesReducer - Updates multiple node values on nodeValuesBatchUp
     '01': {
       title: 'Rotation X',
       key: 'rotX',
-      value: 0.11
+      value: 0.11,
     },
     '02': {
       title: 'Rotation Y',
       key: 'rotY',
-      value: 0.7
+      value: 0.7,
     },
     '03': {
       title: 'Rotation Z',
       key: 'rotZ',
-      value: 0.6
+      value: 0.6,
     },
     '04': {
       title: 'Scale',
       key: 'scale',
-      value: 0.44
-    }
+      value: 0.44,
+    },
   }
 
   actualState = nodesReducer(actualState, a.nodeValuesBatchUpdate([
     {
       id: '02',
-      value: 0.7
-    }
+      value: 0.7,
+    },
   ]))
 
   t.deepEqual(actualState, expectedState)
@@ -293,14 +293,14 @@ test('(Reducer) nodesReducer - Adds input link id on rNodeInputLinkAdd()', (t) =
       title: 'Rotation X',
       key: 'rotX',
       value: 0.1,
-      inputLinkIds: []
+      inputLinkIds: [],
     },
     '02': {
       title: 'Rotation Y',
       key: 'rotY',
       value: 0.2,
-      inputLinkIds: []
-    }
+      inputLinkIds: [],
+    },
   }
 
   deepFreeze(originalState)
@@ -331,7 +331,7 @@ test('(Reducer) nodesReducer - Adds node on R_NODE_CREATE, adds extra properties
       id: '01',
       inputLinkIds: [],
       connectedMacroIds: [],
-      shotCount: 0
+      shotCount: 0,
     },
     '02': {
       title: 'Rotation Y',
@@ -340,8 +340,8 @@ test('(Reducer) nodesReducer - Adds node on R_NODE_CREATE, adds extra properties
       id: '02',
       inputLinkIds: [],
       connectedMacroIds: [],
-      shotCount: 0
-    }
+      shotCount: 0,
+    },
   }
 
   expectedState = {
@@ -352,7 +352,7 @@ test('(Reducer) nodesReducer - Adds node on R_NODE_CREATE, adds extra properties
       id: '01',
       inputLinkIds: [],
       connectedMacroIds: [],
-      shotCount: 0
+      shotCount: 0,
     },
     '02': {
       title: 'Rotation Y',
@@ -361,7 +361,7 @@ test('(Reducer) nodesReducer - Adds node on R_NODE_CREATE, adds extra properties
       id: '02',
       inputLinkIds: [],
       connectedMacroIds: [],
-      shotCount: 0
+      shotCount: 0,
     },
     '03': {
       title: 'Rotation X',
@@ -370,8 +370,8 @@ test('(Reducer) nodesReducer - Adds node on R_NODE_CREATE, adds extra properties
       id: '03',
       inputLinkIds: [],
       connectedMacroIds: [],
-      shotCount: 0
-    }
+      shotCount: 0,
+    },
   }
 
   actualState = nodesReducer(originalState, {
@@ -382,9 +382,9 @@ test('(Reducer) nodesReducer - Adds node on R_NODE_CREATE, adds extra properties
         title: 'Rotation X',
         key: 'rotX',
         value: 0.2,
-        id: '03'
-      }
-    }
+        id: '03',
+      },
+    },
   })
 
   t.deepEqual(actualState, expectedState)
@@ -397,7 +397,7 @@ test('(Reducer) nodesReducer - Adds node on R_NODE_CREATE, adds extra properties
       id: '01',
       inputLinkIds: [],
       connectedMacroIds: [],
-      shotCount: 0
+      shotCount: 0,
     },
     '02': {
       title: 'Rotation Y',
@@ -406,7 +406,7 @@ test('(Reducer) nodesReducer - Adds node on R_NODE_CREATE, adds extra properties
       id: '02',
       inputLinkIds: [],
       connectedMacroIds: [],
-      shotCount: 0
+      shotCount: 0,
     },
     '03': {
       title: 'Rotation X',
@@ -415,7 +415,7 @@ test('(Reducer) nodesReducer - Adds node on R_NODE_CREATE, adds extra properties
       id: '03',
       inputLinkIds: [],
       connectedMacroIds: [],
-      shotCount: 0
+      shotCount: 0,
     },
     '04': {
       title: 'Scale',
@@ -424,8 +424,8 @@ test('(Reducer) nodesReducer - Adds node on R_NODE_CREATE, adds extra properties
       id: '04',
       inputLinkIds: [],
       connectedMacroIds: [],
-      shotCount: 0
-    }
+      shotCount: 0,
+    },
   }
 
   actualState = nodesReducer(actualState, {
@@ -434,9 +434,9 @@ test('(Reducer) nodesReducer - Adds node on R_NODE_CREATE, adds extra properties
       id: '04',
       node: {
         title: 'Scale',
-        key: 'scale'
-      }
-    }
+        key: 'scale',
+      },
+    },
   })
 
   t.deepEqual(actualState, expectedState)
@@ -452,14 +452,14 @@ test('(Reducer) nodesReducer - Removes node on R_NODE_DELETE', (t) => {
       title: 'Rotation X',
       key: 'rotX',
       value: 0.1,
-      id: '01'
+      id: '01',
     },
     '02': {
       title: 'Rotation Y',
       key: 'rotY',
       value: 0.2,
-      id: '02'
-    }
+      id: '02',
+    },
   }
 
   expectedState = {
@@ -467,15 +467,15 @@ test('(Reducer) nodesReducer - Removes node on R_NODE_DELETE', (t) => {
       title: 'Rotation X',
       key: 'rotX',
       value: 0.1,
-      id: '01'
-    }
+      id: '01',
+    },
   }
 
   actualState = nodesReducer(originalState, {
     type: 'R_NODE_DELETE',
     payload: {
-      id: '02'
-    }
+      id: '02',
+    },
   })
 
   t.deepEqual(actualState, expectedState)
@@ -485,8 +485,8 @@ test('(Reducer) nodesReducer - Removes node on R_NODE_DELETE', (t) => {
   actualState = nodesReducer(actualState, {
     type: 'R_NODE_DELETE',
     payload: {
-      id: '01'
-    }
+      id: '01',
+    },
   })
 
   t.deepEqual(actualState, expectedState)
@@ -501,26 +501,26 @@ test('(Reducer) nodesReducer - Replaces nodes on NODES_REPLACE_ALL', (t) => {
     sAA: {
       moduleId: 'dog',
       title: 'Dog 1',
-      nodeIds: ['p22', 'p02']
+      nodeIds: ['p22', 'p02'],
     },
     sBB: {
       moduleId: 'cat',
       title: 'Cat 1',
-      nodeIds: ['p55', 'p04']
-    }
+      nodeIds: ['p55', 'p04'],
+    },
   }
 
   originalState = {
     s01: {
       moduleId: 'cubey',
       title: 'Cubey 1',
-      nodeIds: ['p01', 'p02']
+      nodeIds: ['p01', 'p02'],
     },
     s02: {
       moduleId: 'swirly',
       title: 'Swirly 1',
-      nodeIds: ['p03', 'p04']
-    }
+      nodeIds: ['p03', 'p04'],
+    },
   }
 
   deepFreeze(originalState)
@@ -528,8 +528,8 @@ test('(Reducer) nodesReducer - Replaces nodes on NODES_REPLACE_ALL', (t) => {
   actual = nodesReducer(originalState, {
     type: 'NODES_REPLACE_ALL',
     payload: {
-      nodes: newNodes
-    }
+      nodes: newNodes,
+    },
   })
 
   t.deepEqual(actual, newNodes, 'Replaces all nodes')
@@ -546,15 +546,15 @@ test('(Reducer) nodesReducer - Updates correct node value on R_NODE_INPUT_UPDATE
       key: 'rotX',
       value: 0.1,
       input: {
-        id: 'audio_0'
-      }
+        id: 'audio_0',
+      },
     },
     '02': {
       title: 'Rotation Y',
       key: 'rotY',
       value: 0.2,
-      input: undefined
-    }
+      input: undefined,
+    },
   }
 
   deepFreeze(originalState)
@@ -565,17 +565,17 @@ test('(Reducer) nodesReducer - Updates correct node value on R_NODE_INPUT_UPDATE
       key: 'rotX',
       value: 0.1,
       input: {
-        id: 'audio_0'
-      }
+        id: 'audio_0',
+      },
     },
     '02': {
       title: 'Rotation Y',
       key: 'rotY',
       value: 0.2,
       input: {
-        id: 'audio_1'
-      }
-    }
+        id: 'audio_1',
+      },
+    },
   }
 
   actualState = nodesReducer(originalState, {
@@ -583,9 +583,9 @@ test('(Reducer) nodesReducer - Updates correct node value on R_NODE_INPUT_UPDATE
     payload: {
       nodeId: '02',
       input: {
-        id: 'audio_1'
-      }
-    }
+        id: 'audio_1',
+      },
+    },
   })
 
   t.deepEqual(actualState, expectedState)
@@ -596,17 +596,17 @@ test('(Reducer) nodesReducer - Updates correct node value on R_NODE_INPUT_UPDATE
       key: 'rotX',
       value: 0.1,
       input: {
-        id: 'audio_3'
-      }
+        id: 'audio_3',
+      },
     },
     '02': {
       title: 'Rotation Y',
       key: 'rotY',
       value: 0.2,
       input: {
-        id: 'audio_1'
-      }
-    }
+        id: 'audio_1',
+      },
+    },
   }
 
   actualState = nodesReducer(actualState, {
@@ -614,9 +614,9 @@ test('(Reducer) nodesReducer - Updates correct node value on R_NODE_INPUT_UPDATE
     payload: {
       nodeId: '01',
       input: {
-        id: 'audio_3'
-      }
-    }
+        id: 'audio_3',
+      },
+    },
   })
 
   t.deepEqual(actualState, expectedState)
@@ -634,15 +634,15 @@ test('(Reducer) nodesReducer - opens/closes node on NODE_OPEN_TOGGLE', (t) => {
       value: 0.1,
       isOpen: true,
       input: {
-        id: 'audio_0'
-      }
+        id: 'audio_0',
+      },
     },
     '02': {
       title: 'Rotation Y',
       key: 'rotY',
       isOpen: false,
-      input: undefined
-    }
+      input: undefined,
+    },
   }
 
   deepFreeze(originalState)
@@ -654,22 +654,22 @@ test('(Reducer) nodesReducer - opens/closes node on NODE_OPEN_TOGGLE', (t) => {
       value: 0.1,
       isOpen: true,
       input: {
-        id: 'audio_0'
-      }
+        id: 'audio_0',
+      },
     },
     '02': {
       title: 'Rotation Y',
       key: 'rotY',
       isOpen: true,
-      input: undefined
-    }
+      input: undefined,
+    },
   }
 
   actualState = nodesReducer(originalState, {
     type: 'NODE_OPEN_TOGGLE',
     payload: {
-      id: '02'
-    }
+      id: '02',
+    },
   })
 
   t.deepEqual(actualState, expectedState)
@@ -681,22 +681,22 @@ test('(Reducer) nodesReducer - opens/closes node on NODE_OPEN_TOGGLE', (t) => {
       value: 0.1,
       isOpen: false,
       input: {
-        id: 'audio_0'
-      }
+        id: 'audio_0',
+      },
     },
     '02': {
       title: 'Rotation Y',
       key: 'rotY',
       isOpen: true,
-      input: undefined
-    }
+      input: undefined,
+    },
   }
 
   actualState = nodesReducer(actualState, {
     type: 'NODE_OPEN_TOGGLE',
     payload: {
-      id: '01'
-    }
+      id: '01',
+    },
   })
 
   t.deepEqual(actualState, expectedState)
@@ -714,17 +714,17 @@ test('(Reducer) nodesReducer - changes openedLinkId on NODE_OPEN_TAB', (t) => {
       value: 0.1,
       isOpen: true,
       input: {
-        id: 'audio_0'
+        id: 'audio_0',
       },
-      openedLinkId: undefined
+      openedLinkId: undefined,
     },
     '02': {
       title: 'Rotation Y',
       key: 'rotY',
       isOpen: false,
       input: undefined,
-      openedLinkId: 1
-    }
+      openedLinkId: 1,
+    },
   }
 
   deepFreeze(originalState)
@@ -736,17 +736,17 @@ test('(Reducer) nodesReducer - changes openedLinkId on NODE_OPEN_TAB', (t) => {
       value: 0.1,
       isOpen: true,
       input: {
-        id: 'audio_0'
+        id: 'audio_0',
       },
-      openedLinkId: 2
+      openedLinkId: 2,
     },
     '02': {
       title: 'Rotation Y',
       key: 'rotY',
       isOpen: false,
       input: undefined,
-      openedLinkId: 1
-    }
+      openedLinkId: 1,
+    },
   }
 
   actualState = nodesReducer(originalState, a.nodeTabOpen('01', 2))
@@ -760,17 +760,17 @@ test('(Reducer) nodesReducer - changes openedLinkId on NODE_OPEN_TAB', (t) => {
       value: 0.1,
       isOpen: true,
       input: {
-        id: 'audio_0'
+        id: 'audio_0',
       },
-      openedLinkId: 2
+      openedLinkId: 2,
     },
     '02': {
       title: 'Rotation Y',
       key: 'rotY',
       isOpen: false,
       input: undefined,
-      openedLinkId: 5
-    }
+      openedLinkId: 5,
+    },
   }
 
   actualState = nodesReducer(actualState, a.nodeTabOpen('02', 5))
@@ -788,14 +788,14 @@ test('(Reducer) nodesReducer - changes activeInputLinkId on nodeActiveInputLinkT
       title: 'Rotation X',
       key: 'rotX',
       value: 0.1,
-      isOpen: true
+      isOpen: true,
     },
     '02': {
       title: 'Rotation Y',
       key: 'rotY',
       isOpen: false,
-      input: undefined
-    }
+      input: undefined,
+    },
   }
 
   deepFreeze(originalState)
@@ -806,14 +806,14 @@ test('(Reducer) nodesReducer - changes activeInputLinkId on nodeActiveInputLinkT
       key: 'rotX',
       value: 0.1,
       isOpen: true,
-      activeInputLinkId: 'XX'
+      activeInputLinkId: 'XX',
     },
     '02': {
       title: 'Rotation Y',
       key: 'rotY',
       isOpen: false,
-      input: undefined
-    }
+      input: undefined,
+    },
   }
 
   actualState = nodesReducer(originalState, a.nodeActiveInputLinkToggle('01', 'XX'))
@@ -826,14 +826,14 @@ test('(Reducer) nodesReducer - changes activeInputLinkId on nodeActiveInputLinkT
       key: 'rotX',
       value: 0.1,
       isOpen: true,
-      activeInputLinkId: 'YY'
+      activeInputLinkId: 'YY',
     },
     '02': {
       title: 'Rotation Y',
       key: 'rotY',
       isOpen: false,
-      input: undefined
-    }
+      input: undefined,
+    },
   }
 
   actualState = nodesReducer(actualState, a.nodeActiveInputLinkToggle('01', 'YY'))
@@ -846,14 +846,14 @@ test('(Reducer) nodesReducer - changes activeInputLinkId on nodeActiveInputLinkT
       key: 'rotX',
       value: 0.1,
       isOpen: true,
-      activeInputLinkId: undefined
+      activeInputLinkId: undefined,
     },
     '02': {
       title: 'Rotation Y',
       key: 'rotY',
       isOpen: false,
-      input: undefined
-    }
+      input: undefined,
+    },
   }
 
   actualState = nodesReducer(actualState, a.nodeActiveInputLinkToggle('01', 'YY'))
