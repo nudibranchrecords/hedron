@@ -2,6 +2,7 @@ import { BrowserWindow, ipcMain } from 'electron'
 const argv = require('minimist')(process.argv)
 const isDistDev = argv.distDev // Prod build with some useful dev things
 const isDevelopment = process.env.NODE_ENV !== 'production'
+const path = require('path')
 
 // Global reference to mainWindow
 // Necessary to prevent win from being garbage collected
@@ -9,23 +10,28 @@ export let mainWindow
 
 export const createMainWindow = () => {
   // Construct new BrowserWindow
+
   const dimensions = isDevelopment || isDistDev
     ? {
       width: 1920,
-      height: 1080
+      height: 1080,
     } // Smaller dimensions for prod for easier moving of window
     : {
       width: 800,
-      height: 500
+      height: 500,
     }
 
   mainWindow = new BrowserWindow({
     fullscreenable: true,
     webPreferences: {
       nativeWindowOpen: true,
-      webSecurity: false
+      webSecurity: false,
     },
-    ...dimensions
+    title: 'Hedron',
+    // get Hedron icon to appear during dev (only works for win and linux)
+    // for better icons, still need to build the app
+    icon: isDevelopment && path.join(__dirname, '../../build/icon.png'),
+    ...dimensions,
   })
 
   mainWindow.webContents.on('new-window', (event, url, frameName, disposition, options, additionalFeatures) => {

@@ -4,40 +4,40 @@ export default (state, nodeId) => {
     {
       value: false,
       label: 'Choose',
-      disabled: true
+      disabled: true,
     },
     {
       value: 'audio_0',
       type: 'audio',
-      label: 'Low'
+      label: 'Low',
     },
     {
       value: 'audio_1',
       type: 'audio',
-      label: 'Low-Mid'
+      label: 'Low-Mid',
     },
     {
       value: 'audio_2',
       type: 'audio',
-      label: 'Mid'
+      label: 'Mid',
     },
     {
       value: 'audio_3',
       type: 'audio',
-      label: 'High'
+      label: 'High',
     },
     {
       value: 'midi',
       type: 'midi',
-      label: 'MIDI'
-    }
+      label: 'MIDI',
+    },
   ]
 
   if (node.type !== 'shot') {
     options.push(
       {
         value: 'lfo',
-        label: 'LFO'
+        label: 'LFO',
       }
     )
   }
@@ -46,7 +46,7 @@ export default (state, nodeId) => {
     options.push(
       {
         value: 'seq-step',
-        label: 'Sequencer'
+        label: 'Sequencer',
       }
     )
   }

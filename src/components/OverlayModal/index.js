@@ -66,5 +66,5 @@ OverlayModal.propTypes = {
   title: PropTypes.string,
   isVisible: PropTypes.bool,
   onCancelClick: PropTypes.func.isRequired,
-  children: PropTypes.node.isRequired
+  children: PropTypes.node.isRequired,
 }

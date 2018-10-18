@@ -12,7 +12,7 @@ const Item = ({ children }) => (
 )
 
 Item.propTypes = {
-  children: PropTypes.node
+  children: PropTypes.node,
 }
 
 export default Item

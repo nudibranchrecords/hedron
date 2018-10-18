@@ -6,7 +6,7 @@ const mapStateToProps = (state, ownProps) => {
   return {
     title: state.nodes[ownProps.nodeId].title,
     sketchId: state.nodes[ownProps.nodeId].sketchId,
-    method: state.nodes[ownProps.nodeId].method
+    method: state.nodes[ownProps.nodeId].method,
   }
 }
 

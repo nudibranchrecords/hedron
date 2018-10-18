@@ -12,7 +12,7 @@ const CurrentSketch = (props) =>
     </div>
 
 CurrentSketch.propTypes = {
-  isSketch: PropTypes.bool
+  isSketch: PropTypes.bool,
 }
 
 export default CurrentSketch

@@ -9,11 +9,11 @@ test('(Reducer) clockReducer -  - Increases beat on CLOCK_BEAT_INC', (t) => {
   let originalState, expectedState, actualState
 
   originalState = {
-    beat: 1
+    beat: 1,
   }
 
   expectedState = {
-    beat: 2
+    beat: 2,
   }
 
   actualState = paramsReducer(originalState, a.clockBeatInc())
@@ -21,7 +21,7 @@ test('(Reducer) clockReducer -  - Increases beat on CLOCK_BEAT_INC', (t) => {
   t.deepEqual(actualState, expectedState)
 
   expectedState = {
-    beat: 3
+    beat: 3,
   }
 
   actualState = paramsReducer(actualState, a.clockBeatInc())
@@ -35,11 +35,11 @@ test('(Reducer) clockReducer - resets beat on CLOCK_RESET', (t) => {
   let originalState, expectedState, actualState
 
   originalState = {
-    beat: 100
+    beat: 100,
   }
 
   expectedState = {
-    beat: 0
+    beat: 0,
   }
 
   actualState = paramsReducer(originalState, a.clockReset())
@@ -53,11 +53,11 @@ test('(Reducer) clockReducer - loops back to 0 after 64 beats', (t) => {
   let originalState, expectedState, actualState
 
   originalState = {
-    beat: 62
+    beat: 62,
   }
 
   expectedState = {
-    beat: 63
+    beat: 63,
   }
 
   actualState = paramsReducer(originalState, a.clockBeatInc())
@@ -65,7 +65,7 @@ test('(Reducer) clockReducer - loops back to 0 after 64 beats', (t) => {
   t.deepEqual(actualState, expectedState)
 
   expectedState = {
-    beat: 0
+    beat: 0,
   }
 
   actualState = paramsReducer(actualState, a.clockBeatInc())
@@ -79,11 +79,11 @@ test('(Reducer) clockReducer - updates BPM on CLOCK_BPM_UPDATE', (t) => {
   let originalState, expectedState, actualState
 
   originalState = {
-    bpm: undefined
+    bpm: undefined,
   }
 
   expectedState = {
-    bpm: 120
+    bpm: 120,
   }
 
   actualState = paramsReducer(originalState, a.clockBpmUpdate(120))
@@ -91,7 +91,7 @@ test('(Reducer) clockReducer - updates BPM on CLOCK_BPM_UPDATE', (t) => {
   t.deepEqual(actualState, expectedState)
 
   expectedState = {
-    bpm: 110
+    bpm: 110,
   }
 
   actualState = paramsReducer(actualState, a.clockBpmUpdate(110))

@@ -14,14 +14,14 @@ test('(Reducer) availableModulesReducer - Updates modules on AVAILABLE_MODULES_R
         {
           key: 'rotX',
           title: 'Rotation X',
-          defaultValue: 0.5
+          defaultValue: 0.5,
         },
         {
           key: 'rotY',
           title: 'Rotation Y',
-          defaultValue: 0.5
-        }
-      ]
+          defaultValue: 0.5,
+        },
+      ],
     },
     swirly: {
       defaultTitle: 'Swirly',
@@ -29,22 +29,22 @@ test('(Reducer) availableModulesReducer - Updates modules on AVAILABLE_MODULES_R
         {
           key: 'swirlRate',
           title: 'Swirl Rate',
-          defaultValue: 0.1
+          defaultValue: 0.1,
         },
         {
           key: 'scale',
           title: 'Scale',
-          defaultValue: 0.1
-        }
-      ]
-    }
+          defaultValue: 0.1,
+        },
+      ],
+    },
   }
 
   const actual = availableModulesReducer(originalState, {
     type: 'AVAILABLE_MODULES_REPLACE_ALL',
     payload: {
-      modules
-    }
+      modules,
+    },
   })
 
   t.deepEqual(actual, modules)

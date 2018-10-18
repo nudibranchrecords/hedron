@@ -10,37 +10,37 @@ const projectMenu = {
   submenu: [
     {
       label: 'New',
-      role: 'forcereload'
+      role: 'forcereload',
     },
     {
       label: 'Save',
       click: () => { onClick('project-save') },
-      accelerator: 'CommandOrControl+S'
+      accelerator: 'CommandOrControl+S',
     },
     {
       label: 'Save As...',
       click: () => { onClick('project-save-as') },
-      accelerator: 'CommandOrControl+Shift+S'
+      accelerator: 'CommandOrControl+Shift+S',
     },
     {
       label: 'Load',
-      click: () => { onClick('project-load') }
+      click: () => { onClick('project-load') },
     },
     {
       label: 'Settings',
-      click: () => { onClick('project-settings') }
-    }
-  ]
+      click: () => { onClick('project-settings') },
+    },
+  ],
 }
 
 const displayMenu = {
   label: 'Displays',
-  submenu: []
+  submenu: [],
 }
 
 const template = [
   {
-    label: 'Hedron'
+    label: 'Hedron',
   },
   projectMenu,
   displayMenu,
@@ -55,9 +55,9 @@ const template = [
       { role: 'zoomin' },
       { role: 'zoomout' },
       { type: 'separator' },
-      { role: 'togglefullscreen' }
-    ]
-  }
+      { role: 'togglefullscreen' },
+    ],
+  },
 ]
 
 ipcMain.on('update-displays', (e, displays) => {
@@ -69,7 +69,7 @@ ipcMain.on('update-displays', (e, displays) => {
       label: `Send to ${w}x${h}`,
       click: () => {
         mainWindow.webContents.send('send-output', index)
-      }
+      },
     }
   })
 

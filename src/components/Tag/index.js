@@ -35,7 +35,7 @@ const Tag = ({ title, onCloseClick }) => (
 
 Tag.propTypes = {
   title: PropTypes.string.isRequired,
-  onCloseClick: PropTypes.func.isRequired
+  onCloseClick: PropTypes.func.isRequired,
 }
 
 export default Tag

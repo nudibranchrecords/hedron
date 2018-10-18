@@ -11,66 +11,66 @@ test('(Reducer) inputsReducer - Updates value on INPUT_FIRED', (t) => {
 
   const originalState = {
     audio_0: {
-      value: 0
+      value: 0,
     },
     audio_1: {
-      value: 0
-    }
+      value: 0,
+    },
   }
 
   expectedState = {
     audio_0: {
-      value: 0.9
+      value: 0.9,
     },
     audio_1: {
-      value: 0
-    }
+      value: 0,
+    },
   }
 
   actual = inputsReducer(originalState, {
     type: 'INPUT_FIRED',
     payload: {
       inputId: 'audio_0',
-      value: 0.9
-    }
+      value: 0.9,
+    },
   })
 
   t.deepEqual(actual, expectedState)
 
   expectedState = {
     audio_0: {
-      value: 0.9
+      value: 0.9,
     },
     audio_1: {
-      value: 0.4
-    }
+      value: 0.4,
+    },
   }
 
   actual = inputsReducer(actual, {
     type: 'INPUT_FIRED',
     payload: {
       inputId: 'audio_1',
-      value: 0.4
-    }
+      value: 0.4,
+    },
   })
 
   t.deepEqual(actual, expectedState)
 
   expectedState = {
     audio_0: {
-      value: 0.9
+      value: 0.9,
     },
     audio_1: {
-      value: 0.4
-    }
+      value: 0.4,
+    },
   }
 
   actual = inputsReducer(actual, {
     type: 'INPUT_FIRED',
     payload: {
       inputId: 'audio_XXXX',
-      value: 0.9
-    }
+      value: 0.9,
+    },
   })
 
   t.deepEqual(actual, expectedState, 'does nothing if input doesnt exist in state')
@@ -83,29 +83,29 @@ test('(Reducer) inputsReducer - Replaces all on INPUTS_REPLACE_ALL', (t) => {
 
   const originalState = {
     audio_0: {
-      value: 0
+      value: 0,
     },
     audio_1: {
-      value: 0
-    }
+      value: 0,
+    },
   }
 
   deepFreeze(originalState)
 
   expectedState = {
     audio_X: {
-      value: 0.9
+      value: 0.9,
     },
     audio_T: {
-      value: 0.5
-    }
+      value: 0.5,
+    },
   }
 
   actual = inputsReducer(originalState, {
     type: 'INPUTS_REPLACE_ALL',
     payload: {
-      inputs: expectedState
-    }
+      inputs: expectedState,
+    },
   })
 
   t.deepEqual(actual, expectedState)
@@ -118,11 +118,11 @@ test('(Reducer) inputsReducer - Adds node and device on inputAssignedLinkCreate'
 
   const originalState = {
     audio_0: {
-      assignedLinkIds: []
+      assignedLinkIds: [],
     },
     audio_1: {
-      assignedLinkIds: []
-    }
+      assignedLinkIds: [],
+    },
   }
 
   deepFreeze(originalState)
@@ -130,11 +130,11 @@ test('(Reducer) inputsReducer - Adds node and device on inputAssignedLinkCreate'
   expectedState = {
     audio_0: {
       assignedLinkIds: ['XX'],
-      deviceId: 'AAA'
+      deviceId: 'AAA',
     },
     audio_1: {
-      assignedLinkIds: []
-    }
+      assignedLinkIds: [],
+    },
   }
 
   actual = inputsReducer(originalState, a.inputAssignedLinkCreate('audio_0', 'XX', 'AAA'))
@@ -144,12 +144,12 @@ test('(Reducer) inputsReducer - Adds node and device on inputAssignedLinkCreate'
   expectedState = {
     audio_0: {
       assignedLinkIds: ['XX'],
-      deviceId: 'AAA'
+      deviceId: 'AAA',
     },
     audio_1: {
       assignedLinkIds: ['YY'],
-      deviceId: 'BBB'
-    }
+      deviceId: 'BBB',
+    },
   }
 
   actual = inputsReducer(actual, a.inputAssignedLinkCreate('audio_1', 'YY', 'BBB'))
@@ -159,12 +159,12 @@ test('(Reducer) inputsReducer - Adds node and device on inputAssignedLinkCreate'
   expectedState = {
     audio_0: {
       assignedLinkIds: ['XX'],
-      deviceId: 'AAA'
+      deviceId: 'AAA',
     },
     audio_1: {
       assignedLinkIds: ['YY', 'ZZ'],
-      deviceId: 'BBB'
-    }
+      deviceId: 'BBB',
+    },
   }
 
   actual = inputsReducer(actual, a.inputAssignedLinkCreate('audio_1', 'ZZ', 'BBB'))
@@ -174,16 +174,16 @@ test('(Reducer) inputsReducer - Adds node and device on inputAssignedLinkCreate'
   expectedState = {
     audio_0: {
       assignedLinkIds: ['XX'],
-      deviceId: 'AAA'
+      deviceId: 'AAA',
     },
     audio_1: {
       assignedLinkIds: ['YY', 'ZZ'],
-      deviceId: 'BBB'
+      deviceId: 'BBB',
     },
     midi_XXX: {
       assignedLinkIds: ['AA'],
-      deviceId: 'CCC'
-    }
+      deviceId: 'CCC',
+    },
   }
 
   actual = inputsReducer(actual, a.inputAssignedLinkCreate('midi_XXX', 'AA', 'CCC'))
@@ -198,22 +198,22 @@ test('(Reducer) inputsReducer - Deletes link on INPUT_ASSIGNED_LINK_DELETE', (t)
 
   const originalState = {
     audio_0: {
-      assignedLinkIds: ['XX']
+      assignedLinkIds: ['XX'],
     },
     audio_1: {
-      assignedLinkIds: ['YY', 'ZZ']
-    }
+      assignedLinkIds: ['YY', 'ZZ'],
+    },
   }
 
   deepFreeze(originalState)
 
   expectedState = {
     audio_0: {
-      assignedLinkIds: ['XX']
+      assignedLinkIds: ['XX'],
     },
     audio_1: {
-      assignedLinkIds: ['ZZ']
-    }
+      assignedLinkIds: ['ZZ'],
+    },
   }
 
   actual = inputsReducer(originalState, a.inputAssignedLinkDelete('audio_1', 'YY'))
@@ -222,11 +222,11 @@ test('(Reducer) inputsReducer - Deletes link on INPUT_ASSIGNED_LINK_DELETE', (t)
 
   expectedState = {
     audio_0: {
-      assignedLinkIds: []
+      assignedLinkIds: [],
     },
     audio_1: {
-      assignedLinkIds: ['ZZ']
-    }
+      assignedLinkIds: ['ZZ'],
+    },
   }
 
   actual = inputsReducer(actual, a.inputAssignedLinkDelete('audio_0', 'XX'))

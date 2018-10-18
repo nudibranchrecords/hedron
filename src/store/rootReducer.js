@@ -23,7 +23,7 @@ import settingsReducer from './settings/reducer'
 const ignoreList = [
   'CLOCK_PULSE', 'CLOCK_BEAT_INC',
   'CLOCK_BPM_UPDATE', 'INPUT_FIRED',
-  'NODE_VALUE_UPDATE', 'NODE_RANGE_UPDATE', 'NODE_VALUES_BATCH_UPDATE'
+  'NODE_VALUE_UPDATE', 'NODE_RANGE_UPDATE', 'NODE_VALUES_BATCH_UPDATE',
 ]
 
 const reducers = combineReducers({
@@ -43,13 +43,13 @@ const reducers = combineReducers({
   ui: ignoreActions(uiReducer, ignoreList),
   router: ignoreActions(routerReducer, ignoreList),
   settings: ignoreActions(settingsReducer, ignoreList),
-  form: ignoreActions(formReducer, ignoreList)
+  form: ignoreActions(formReducer, ignoreList),
 })
 
 const rootReducer = (state = {}, action) => action.type === 'PROJECT_REHYDRATE'
 ? {
   ...state,
-  ...action.payload.data
+  ...action.payload.data,
 }
 : reducers(state, action)
 

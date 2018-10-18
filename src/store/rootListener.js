@@ -11,5 +11,5 @@ export default {
     sketchesListener(action, store)
     linkableActionsListener(action, store)
     engineListener(action, store)
-  }
+  },
 }

@@ -39,7 +39,7 @@ export const loadSketchModules = (url) => {
     console.error(error)
     store.dispatch(projectError(`Sketches failed to load: ${error.message}`, {
       popup: 'true',
-      code: error.code
+      code: error.code,
     }))
   }
 }
@@ -55,7 +55,7 @@ export const removeScene = (sceneId) => {
 
 export const addSketchToScene = (sceneId, sketchId, moduleId) => {
   const meta = {
-    sketchesFolder: `file://${sketchesFolder}`
+    sketchesFolder: `file://${sketchesFolder}`,
   }
 
   const scene = scenes[sceneId]
@@ -92,7 +92,7 @@ export const fireShot = (sketchId, method) => {
           vals.push(
             {
               id,
-              value: params[key]
+              value: params[key],
             }
           )
         }
