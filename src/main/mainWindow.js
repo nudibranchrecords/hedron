@@ -1,4 +1,4 @@
-import { BrowserWindow, ipcMain } from 'electron'
+import { BrowserWindow, ipcMain, shell } from 'electron'
 const argv = require('minimist')(process.argv)
 const isDistDev = argv.distDev // Prod build with some useful dev things
 const isDevelopment = process.env.NODE_ENV !== 'production'
@@ -95,6 +95,11 @@ export const createMainWindow = () => {
     setImmediate(() => {
       mainWindow.focus()
     })
+  })
+
+  mainWindow.webContents.on('will-navigate', (event, url) => {
+    event.preventDefault()
+    shell.openExternal(url)
   })
 
   setTimeout(() => {
