@@ -1,10 +1,13 @@
 import { select, put, call, takeEvery } from 'redux-saga/effects'
 import getNode from '../../selectors/getNode'
 import getMacro from '../../selectors/getMacro'
+import getSketch from '../../selectors/getSketch'
 import { shouldItLearn } from './utils'
 import getMacroLearningId from '../../selectors/getMacroLearningId'
 import getMacroTargetParamLink from '../../selectors/getMacroTargetParamLink'
 import getMacroLastId from '../../selectors/getMacroLastId'
+import getSelectedSketchId from '../../selectors/getSelectedSketchId'
+import getCurrentScene from '../../selectors/getCurrentScene'
 import macroInterpolate from '../../utils/macroInterpolate'
 import isInputTypeHuman from '../../utils/isInputTypeHuman'
 import { rNodeCreate, nodeValueUpdate, uNodeDelete, rNodeConnectedMacroAdd,
@@ -227,11 +230,42 @@ export function* handleNodeValueBatchUpdate (action) {
   }
 }
 
+export function* macroAddAllForSketch (macroId, sketchId) {
+  const sketch = yield select(getSketch, sketchId)
+
+  for (const paramId of sketch.paramIds) {
+    const param = yield select(getNode, paramId)
+    const p = {
+      id: param.id,
+      value: param.value,
+    }
+    yield call(macroLearnFromParam, p, macroId)
+  }
+}
+
+export function* handleMacroAddAllForSketch () {
+  const macroId = yield select(getMacroLearningId)
+  const sketchId = yield select(getSelectedSketchId)
+
+  yield call(macroAddAllForSketch, macroId, sketchId)
+}
+
+export function* handleMacroAddAllForScene () {
+  const macroId = yield select(getMacroLearningId)
+  const scene = yield select(getCurrentScene)
+
+  for (const sketchId of scene.sketchIds) {
+    yield call(macroAddAllForSketch, macroId, sketchId)
+  }
+}
+
 export function* watchMacros () {
   yield takeEvery('U_MACRO_CREATE', macroCreate)
   yield takeEvery('U_MACRO_DELETE', macroDelete)
   yield takeEvery('U_MACRO_TARGET_PARAM_LINK_ADD', macroTargetParamLinkAdd)
   yield takeEvery('U_MACRO_TARGET_PARAM_LINK_DELETE', macroTargetParamLinkDelete)
+  yield takeEvery('U_MACRO_ADD_ALL_FOR_SKETCH', handleMacroAddAllForSketch)
+  yield takeEvery('U_MACRO_ADD_ALL_FOR_SCENE', handleMacroAddAllForScene)
   yield takeEvery('NODE_VALUE_UPDATE', handleNodeValueUpdate)
   yield takeEvery('NODE_VALUES_BATCH_UPDATE', handleNodeValueBatchUpdate)
 }
