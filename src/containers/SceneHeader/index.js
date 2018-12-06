@@ -5,7 +5,7 @@ import getCurrentScene from '../../selectors/getCurrentScene'
 const mapStateToProps = (state, ownProps) => {
   const scene = getCurrentScene(state)
   return {
-    children: `${scene.title}: ${ownProps.children}`
+    children: `${scene.title}: ${ownProps.children}`,
   }
 }
 

@@ -11,16 +11,16 @@ import isInputTypeHuman from '../../../utils/isInputTypeHuman'
 import { select, put, call } from 'redux-saga/effects'
 import {
   rNodeCreate, nodeValueUpdate, rNodeConnectedMacroAdd,
-  nodeValuesBatchUpdate
+  nodeValuesBatchUpdate,
 } from '../../nodes/actions'
 import {
   rMacroTargetParamLinkUpdateStartValue, rMacroUpdateLastId, rMacroOpenToggle,
-  uMacroCreate, rMacroCreate, uMacroTargetParamLinkAdd, rMacroTargetParamLinkCreate
+  uMacroCreate, rMacroCreate, uMacroTargetParamLinkAdd, rMacroTargetParamLinkCreate,
 } from '../actions'
 import { uiEditingOpen } from '../../ui/actions'
 import {
   macroCreate, macroTargetParamLinkAdd, macroProcess, handleNodeValueUpdate,
-  macroLearnFromParam, handleNodeValueBatchUpdate
+  macroLearnFromParam, handleNodeValueBatchUpdate,
 } from '../sagas'
 import uid from 'uid'
 
@@ -54,7 +54,7 @@ test('(Saga) macroLearnFromParam (link doesnt exist)', (t) => {
 
   link = {
     id: 'LINKID',
-    nodeId: 'NODEID'
+    nodeId: 'NODEID',
   }
 
   t.deepEqual(
@@ -83,7 +83,7 @@ test('(Saga) macroLearnFromParam (link does exist)', (t) => {
 
   const link = {
     id: 'LINKID',
-    nodeId: 'NODEID'
+    nodeId: 'NODEID',
   }
 
   t.deepEqual(
@@ -109,7 +109,7 @@ test(`(Saga) handleNodeValueUpdate (does nothing if node type isn't macro and se
   )
 
   const node = {
-    type: '@@@'
+    type: '@@@',
   }
 
   t.deepEqual(
@@ -140,7 +140,7 @@ test(`(Saga) handleNodeValueUpdate
 
   const node = {
     type: 'foo',
-    connectedMacroIds: []
+    connectedMacroIds: [],
   }
 
   t.deepEqual(
@@ -184,7 +184,7 @@ test(`(Saga) handleNodeValueUpdate (does nothing if input is from a macro and no
   )
 
   const node = {
-    type: 'macro'
+    type: 'macro',
   }
 
   t.equal(generator.next(node).done, true, 'Generator ends')
@@ -204,7 +204,7 @@ test('(Saga) handleNodeValueUpdate (call macroProcess if node is macro)', (t) =>
   )
 
   const node = {
-    type: 'macro'
+    type: 'macro',
   }
 
   t.deepEqual(
@@ -232,7 +232,7 @@ test(`(Saga) handleNodeValueUpdate
 
   const node = {
     type: 'foo',
-    connectedMacroIds: ['macro01', 'macro02']
+    connectedMacroIds: ['macro01', 'macro02'],
   }
 
   t.deepEqual(
@@ -269,12 +269,12 @@ test(`(Saga) handleNodeValueUpdate
     nodeId: 'n1',
     targetParamLinks: {
       foo: {
-        startValue: 0.5
+        startValue: 0.5,
       },
       bar: {
-        startValue: 0.1
-      }
-    }
+        startValue: 0.1,
+      },
+    },
   }
 
   t.deepEqual(
@@ -284,7 +284,7 @@ test(`(Saga) handleNodeValueUpdate
   )
 
   const macroNode = {
-    value: 0.5
+    value: 0.5,
   }
 
   t.deepEqual(
@@ -315,9 +315,9 @@ test(`(Saga) handleNodeValueUpdate
     nodeId: 'n2',
     targetParamLinks: {
       lorem: {
-        startValue: 0.1
-      }
-    }
+        startValue: 0.1,
+      },
+    },
   }
 
   t.deepEqual(
@@ -327,7 +327,7 @@ test(`(Saga) handleNodeValueUpdate
     )
 
   const macroNode2 = {
-    value: 0.2
+    value: 0.2,
   }
 
   t.deepEqual(
@@ -364,7 +364,7 @@ except for the macro being called)`, (t) => {
 
   const node = {
     type: 'foo',
-    connectedMacroIds: ['macro01', 'macro02']
+    connectedMacroIds: ['macro01', 'macro02'],
   }
 
   t.deepEqual(
@@ -401,9 +401,9 @@ except for the macro being called)`, (t) => {
     nodeId: 'n2',
     targetParamLinks: {
       lorem: {
-        startValue: 0.5
-      }
-    }
+        startValue: 0.5,
+      },
+    },
   }
 
   t.deepEqual(
@@ -413,7 +413,7 @@ except for the macro being called)`, (t) => {
     )
 
   const macroNode2 = {
-    value: 0.2
+    value: 0.2,
   }
 
   t.deepEqual(
@@ -448,7 +448,7 @@ is already set to false, as this signifies it has already been reset)`, (t) => {
 
   const node = {
     type: 'foo',
-    connectedMacroIds: ['macro05']
+    connectedMacroIds: ['macro05'],
   }
 
   t.deepEqual(
@@ -485,9 +485,9 @@ is already set to false, as this signifies it has already been reset)`, (t) => {
     nodeId: 'n2',
     targetParamLinks: {
       lorem: {
-        startValue: 0.5
-      }
-    }
+        startValue: 0.5,
+      },
+    },
   }
 
   t.deepEqual(
@@ -497,7 +497,7 @@ is already set to false, as this signifies it has already been reset)`, (t) => {
     )
 
   const macroNode2 = {
-    value: false
+    value: false,
   }
 
   t.equal(generator.next(macroNode2).done, true, 'Generator ends (dont reset macro)')
@@ -517,7 +517,7 @@ test('(Saga) handleNodeValueUpdate (call macroLearnFromParam if learning ID and 
   )
 
   const node = {
-    type: 'foo'
+    type: 'foo',
   }
 
   t.deepEqual(
@@ -560,7 +560,7 @@ test('(Saga) macroProcess (update linked params with correct val, start vals exi
 
   const node = {
     type: 'macro',
-    macroId: 'YYY'
+    macroId: 'YYY',
   }
 
   const generator = macroProcess(nodeValueUpdate(nodeId, newVal).payload, node)
@@ -576,14 +576,14 @@ test('(Saga) macroProcess (update linked params with correct val, start vals exi
       p1: {
         nodeId: 'n1',
         paramId: 'p1',
-        startValue: 0.2
+        startValue: 0.2,
       },
       p2: {
         nodeId: 'n2',
         paramId: 'p2',
-        startValue: 0.5
-      }
-    }
+        startValue: 0.5,
+      },
+    },
   }
 
   t.deepEqual(
@@ -593,7 +593,7 @@ test('(Saga) macroProcess (update linked params with correct val, start vals exi
   )
 
   const node1 = {
-    value: 0.3
+    value: 0.3,
   }
 
   t.deepEqual(
@@ -612,7 +612,7 @@ test('(Saga) macroProcess (update linked params with correct val, start vals exi
   )
 
   const node2 = {
-    value: 0.6
+    value: 0.6,
   }
 
   t.deepEqual(
@@ -629,12 +629,12 @@ test('(Saga) macroProcess (update linked params with correct val, start vals exi
     put(nodeValuesBatchUpdate([
       {
         id: 'p1',
-        value: val1
+        value: val1,
       },
       {
         id: 'p2',
-        value: val2
-      }
+        value: val2,
+      },
     ], { type: 'macro', macroId: 'YYY' })),
     '4 Update values in one action'
   )
@@ -649,7 +649,7 @@ test('(Saga) macroProcess (update linked params with correct val, start vals don
   const newVal = 0.5
   const node = {
     type: 'macro',
-    macroId
+    macroId,
   }
 
   const generator = macroProcess(nodeValueUpdate(nodeId, newVal).payload, node)
@@ -666,9 +666,9 @@ test('(Saga) macroProcess (update linked params with correct val, start vals don
         id: 'l1',
         nodeId: 'n1',
         paramId: 'p1',
-        startValue: false
-      }
-    }
+        startValue: false,
+      },
+    },
   }
 
   t.deepEqual(
@@ -678,7 +678,7 @@ test('(Saga) macroProcess (update linked params with correct val, start vals don
   )
 
   const param = {
-    value: 0.8
+    value: 0.8,
   }
 
   t.deepEqual(
@@ -694,7 +694,7 @@ test('(Saga) macroProcess (update linked params with correct val, start vals don
   )
 
   const node1 = {
-    value: 0.3
+    value: 0.3,
   }
 
   t.deepEqual(
@@ -711,8 +711,8 @@ test('(Saga) macroProcess (update linked params with correct val, start vals don
     put(nodeValuesBatchUpdate([
       {
         id: 'p1',
-        value: val
-      }
+        value: val,
+      },
     ], { type: 'macro', macroId: 'YYY' })),
     '4 Update values in one action'
   )
@@ -747,7 +747,7 @@ test('(Saga) macroCreate', (t) => {
       type: 'macro',
       macroId: UID1,
       value: 0,
-      isOpen: true
+      isOpen: true,
     })),
     '2. Create node item in state'
   )
@@ -786,7 +786,7 @@ test('(Saga) macroTargetParamLinkAdd', (t) => {
   )
 
   const param = {
-    title: 'Foo Param'
+    title: 'Foo Param',
   }
 
   t.deepEqual(
@@ -801,7 +801,7 @@ test('(Saga) macroTargetParamLinkAdd', (t) => {
     generator.next(nodeId).value,
     put(rNodeCreate(nodeId, {
       title: 'Foo Param',
-      type: 'macroTargetParamLink'
+      type: 'macroTargetParamLink',
     })),
     '2. Create node item in state'
   )
@@ -828,12 +828,12 @@ test('(Saga) handleNodeValueBatchUpdate - Any type apart from macro, loop throug
     nodeValuesBatchUpdate([
       {
         id: 'xx',
-        value: 0.1
+        value: 0.1,
       },
       {
         id: 'yy',
-        value: 0.2
-      }
+        value: 0.2,
+      },
     ], meta)
   )
 
@@ -843,8 +843,8 @@ test('(Saga) handleNodeValueBatchUpdate - Any type apart from macro, loop throug
       payload: {
         meta,
         id: 'xx',
-        value: 0.1
-      }
+        value: 0.1,
+      },
     }),
     '3.1 Call node update handle saga'
   )
@@ -855,8 +855,8 @@ test('(Saga) handleNodeValueBatchUpdate - Any type apart from macro, loop throug
       payload: {
         meta,
         id: 'yy',
-        value: 0.2
-      }
+        value: 0.2,
+      },
     }),
     '3.2 Call node update handle saga'
   )
@@ -871,12 +871,12 @@ AND lastId matches`, (t) => {
     nodeValuesBatchUpdate([
       {
         id: 'xx',
-        value: 0.1
+        value: 0.1,
       },
       {
         id: 'yy',
-        value: 0.2
-      }
+        value: 0.2,
+      },
     ], { type: 'macro', macroId: 'fooMacro' })
   )
 
@@ -887,7 +887,7 @@ AND lastId matches`, (t) => {
   )
 
   const macro = {
-    nodeId: 'node1'
+    nodeId: 'node1',
   }
 
   t.deepEqual(
@@ -897,7 +897,7 @@ AND lastId matches`, (t) => {
   )
 
   const node = {
-    value: 0.5
+    value: 0.5,
   }
 
   t.deepEqual(
@@ -918,12 +918,12 @@ test('(Saga) handleNodeValueBatchUpdate - loop through param values if macro val
     nodeValuesBatchUpdate([
       {
         id: 'xx',
-        value: 0.1
+        value: 0.1,
       },
       {
         id: 'yy',
-        value: 0.2
-      }
+        value: 0.2,
+      },
     ], meta)
   )
 
@@ -934,7 +934,7 @@ test('(Saga) handleNodeValueBatchUpdate - loop through param values if macro val
   )
 
   const macro = {
-    nodeId: 'node1'
+    nodeId: 'node1',
   }
 
   t.deepEqual(
@@ -944,7 +944,7 @@ test('(Saga) handleNodeValueBatchUpdate - loop through param values if macro val
   )
 
   const node = {
-    value: false
+    value: false,
   }
 
   t.deepEqual(
@@ -953,8 +953,8 @@ test('(Saga) handleNodeValueBatchUpdate - loop through param values if macro val
       payload: {
         meta,
         id: 'xx',
-        value: 0.1
-      }
+        value: 0.1,
+      },
     }),
     '3.1 Call node update handle saga'
   )
@@ -965,8 +965,8 @@ test('(Saga) handleNodeValueBatchUpdate - loop through param values if macro val
       payload: {
         meta,
         id: 'yy',
-        value: 0.2
-      }
+        value: 0.2,
+      },
     }),
     '3.2 Call node update handle saga'
   )
@@ -988,12 +988,12 @@ BUT lastId doesnt match`, (t) => {
     nodeValuesBatchUpdate([
       {
         id: 'xx',
-        value: 0.1
+        value: 0.1,
       },
       {
         id: 'yy',
-        value: 0.2
-      }
+        value: 0.2,
+      },
     ], meta)
   )
 
@@ -1004,7 +1004,7 @@ BUT lastId doesnt match`, (t) => {
   )
 
   const macro = {
-    nodeId: 'node1'
+    nodeId: 'node1',
   }
 
   t.deepEqual(
@@ -1014,7 +1014,7 @@ BUT lastId doesnt match`, (t) => {
   )
 
   const node = {
-    value: 0.2
+    value: 0.2,
   }
 
   t.deepEqual(
@@ -1031,8 +1031,8 @@ BUT lastId doesnt match`, (t) => {
       payload: {
         meta,
         id: 'xx',
-        value: 0.1
-      }
+        value: 0.1,
+      },
     }),
     '3.1 Call node update handle saga'
   )
@@ -1043,8 +1043,8 @@ BUT lastId doesnt match`, (t) => {
       payload: {
         meta,
         id: 'yy',
-        value: 0.2
-      }
+        value: 0.2,
+      },
     }),
     '3.2 Call node update handle saga'
   )

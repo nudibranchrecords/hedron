@@ -17,7 +17,7 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
     setTimeout(() => {
       uiEventEmitter.emit('recalc-param-heights')
     })
-  }
+  },
 })
 
 export default connect(

@@ -31,7 +31,7 @@ const handleSceneCreate = (action, store) => {
     title: 'New Scene',
     selectedSketchId: false,
     sketchIds: [],
-    linkableActionIds
+    linkableActionIds,
   }
 
   store.dispatch(rSceneCreate(id, scene))

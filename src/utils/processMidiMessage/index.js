@@ -30,6 +30,6 @@ export default message => {
   }
 
   return {
-    value, id, type
+    value, id, type,
   }
 }

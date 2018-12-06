@@ -4,7 +4,7 @@ const defaultState = {
   learningId: false,
   openedId: undefined,
   lastId: undefined,
-  items: {}
+  items: {},
 }
 
 const macroReducer = (state = defaultState, action) => {
@@ -19,27 +19,27 @@ const macroReducer = (state = defaultState, action) => {
           [p.id]: {
             id: p.id,
             nodeId: p.nodeId,
-            targetParamLinks: {}
-          }
-        }
+            targetParamLinks: {},
+          },
+        },
       }
     }
     case 'R_MACRO_DELETE': {
       return {
         ...state,
-        items: omit(state.items, [p.id])
+        items: omit(state.items, [p.id]),
       }
     }
     case 'R_MACRO_LEARNING_TOGGLE': {
       return {
         ...state,
-        learningId: state.learningId !== false ? false : p.id
+        learningId: state.learningId !== false ? false : p.id,
       }
     }
     case 'R_MACRO_LEARNING_STOP': {
       return {
         ...state,
-        learningId: false
+        learningId: false,
       }
     }
     case 'R_MACRO_TARGET_PARAM_LINK_CREATE': {
@@ -54,11 +54,11 @@ const macroReducer = (state = defaultState, action) => {
               [p.paramId]: {
                 nodeId: p.nodeId,
                 paramId: p.paramId,
-                startValue: false
-              }
-            }
-          }
-        }
+                startValue: false,
+              },
+            },
+          },
+        },
       }
     }
     case 'R_MACRO_TARGET_PARAM_LINK_DELETE': {
@@ -68,9 +68,9 @@ const macroReducer = (state = defaultState, action) => {
           ...state.items,
           [p.macroId]: {
             ...state.items[p.macroId],
-            targetParamLinks: omit(state.items[p.macroId].targetParamLinks, [p.paramId])
-          }
-        }
+            targetParamLinks: omit(state.items[p.macroId].targetParamLinks, [p.paramId]),
+          },
+        },
       }
     }
     case 'R_MACRO_TARGET_PARAM_LINK_UPDATE_START_VALUE': {
@@ -84,23 +84,23 @@ const macroReducer = (state = defaultState, action) => {
               ...state.items[p.macroId].targetParamLinks,
               [p.paramId]: {
                 ...state.items[p.macroId].targetParamLinks[p.paramId],
-                startValue: p.value
-              }
-            }
-          }
-        }
+                startValue: p.value,
+              },
+            },
+          },
+        },
       }
     }
     case 'R_MACRO_OPEN_TOGGLE': {
       return {
         ...state,
-        openedId: p.id !== state.openedId ? p.id : undefined
+        openedId: p.id !== state.openedId ? p.id : undefined,
       }
     }
     case 'R_MACRO_UPDATE_LAST_ID': {
       return {
         ...state,
-        lastId: p.id
+        lastId: p.id,
       }
     }
     case 'MACROS_REPLACE_ALL': {

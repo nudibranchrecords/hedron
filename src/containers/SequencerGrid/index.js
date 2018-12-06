@@ -4,7 +4,7 @@ import getNode from '../../selectors/getNode'
 import { nodeValueUpdate } from '../../store/nodes/actions'
 
 const mapStateToProps = (state, ownProps) => ({
-  items: getNode(state, ownProps.nodeId).value
+  items: getNode(state, ownProps.nodeId).value,
 })
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
@@ -13,9 +13,9 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
     steps = steps.slice(0)
     steps[index] = steps[index] === 1 ? 0 : 1
     dispatch(nodeValueUpdate(ownProps.nodeId, steps, {
-      dontMutate: true
+      dontMutate: true,
     }))
-  }
+  },
 })
 
 export default connect(
@@ -24,6 +24,6 @@ export default connect(
   null,
   {
     areStatesEqual: (next, prev) =>
-      next.nodes === prev.nodes
+      next.nodes === prev.nodes,
   }
 )(SequencerGrid)

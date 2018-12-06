@@ -55,8 +55,8 @@ Devices.propTypes = {
   items: PropTypes.arrayOf(PropTypes.shape({
     title: PropTypes.string.isRequired,
     id: PropTypes.string.isRequired,
-    manufacturer:  PropTypes.string.isRequired
-  }))
+    manufacturer:  PropTypes.string.isRequired,
+  })),
 }
 
 export default Devices

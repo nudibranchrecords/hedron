@@ -6,10 +6,10 @@ test('(Selector) getInputLinkLfoOptionIds (input is not "lfo")', (t) => {
     inputLinks: {
       xxx: {
         input: {
-          id: 'BAR'
-        }
-      }
-    }
+          id: 'BAR',
+        },
+      },
+    },
   }
 
   const actual = getInputLinkLfoOptionIds(state, 'xxx')
@@ -23,11 +23,11 @@ test('(Selector) getInputLinkLfoOptionIds (input is "lfo")', (t) => {
     inputLinks: {
       xxx: {
         input: {
-          id: 'lfo'
+          id: 'lfo',
         },
-        lfoOptionIds: ['yyy', 'zzz']
-      }
-    }
+        lfoOptionIds: ['yyy', 'zzz'],
+      },
+    },
   }
 
   const actual = getInputLinkLfoOptionIds(state, 'xxx')
@@ -42,19 +42,19 @@ test('(Selector) getInputLinkLfoOptionIds (input is "lfo", link type "shot")', (
       xxx: {
         nodeType: 'shot',
         input: {
-          id: 'lfo'
+          id: 'lfo',
         },
-        lfoOptionIds: ['yyy', 'zzz']
-      }
+        lfoOptionIds: ['yyy', 'zzz'],
+      },
     },
     nodes: {
       yyy: {
-        key: 'rate'
+        key: 'rate',
       },
       zzz: {
-        key: 'shape'
-      }
-    }
+        key: 'shape',
+      },
+    },
   }
 
   const actual = getInputLinkLfoOptionIds(state, 'xxx')

@@ -8,7 +8,7 @@ export default () => {
       id: uid(),
       value: 0.5,
       inputLinkIds: [],
-      subNode: true
+      subNode: true,
     },
     {
       title: 'Control Type',
@@ -21,21 +21,21 @@ export default () => {
       options: [
         {
           value: 'abs',
-          label: 'Absolute'
+          label: 'Absolute',
         },
         {
           value: 'rel1',
-          label: 'Relative 1'
+          label: 'Relative 1',
         },
         {
           value: 'rel2',
-          label: 'Relative 2'
+          label: 'Relative 2',
         },
         {
           value: 'rel3',
-          label: 'Relative 3'
-        }
-      ]
-    }
+          label: 'Relative 3',
+        },
+      ],
+    },
   ]
 }

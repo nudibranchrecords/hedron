@@ -1,24 +1,24 @@
 const defaultState = {
   audio_0: {
     value: 0,
-    assignedLinkIds: []
+    assignedLinkIds: [],
   },
   audio_1: {
     value: 0,
-    assignedLinkIds: []
+    assignedLinkIds: [],
   },
   audio_2: {
     value: 0,
-    assignedLinkIds: []
+    assignedLinkIds: [],
   },
   audio_3: {
     value: 0,
-    assignedLinkIds: []
+    assignedLinkIds: [],
   },
   lfo: {
     value: 0,
-    assignedLinkIds: []
-  }
+    assignedLinkIds: [],
+  },
 }
 
 const inputsReducer = (state = defaultState, action) => {
@@ -42,16 +42,16 @@ const inputsReducer = (state = defaultState, action) => {
           [p.inputId]: {
             ...state[p.inputId],
             assignedLinkIds: [...state[p.inputId].assignedLinkIds, p.linkId],
-            deviceId: p.deviceId
-          }
+            deviceId: p.deviceId,
+          },
         }
       } else {
         return {
           ...state,
           [p.inputId]: {
             assignedLinkIds: [p.linkId],
-            deviceId: p.deviceId
-          }
+            deviceId: p.deviceId,
+          },
         }
       }
     }
@@ -61,8 +61,8 @@ const inputsReducer = (state = defaultState, action) => {
         [p.inputId]: {
           ...state[p.inputId],
           assignedLinkIds: state[p.inputId].assignedLinkIds
-            .filter((id) => id !== p.linkId)
-        }
+            .filter((id) => id !== p.linkId),
+        },
       }
     }
     default:

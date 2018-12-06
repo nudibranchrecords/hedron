@@ -1,6 +1,6 @@
 const defaultState = {
   learning: false,
-  devices: {}
+  devices: {},
 }
 
 const midiReducer = (state = defaultState, action) => {
@@ -12,20 +12,20 @@ const midiReducer = (state = defaultState, action) => {
         ...state,
         learning: {
           id: p.nodeId,
-          type: p.type
-        }
+          type: p.type,
+        },
       }
     }
     case 'MIDI_STOP_LEARNING': {
       return {
         ...state,
-        learning: false
+        learning: false,
       }
     }
     case 'MIDI_UPDATE_DEVICES': {
       return {
         ...state,
-        devices: p.devices
+        devices: p.devices,
       }
     }
     case 'MIDI_DEVICE_BANK_CHANGE': {
@@ -35,9 +35,9 @@ const midiReducer = (state = defaultState, action) => {
           ...state.devices,
           [p.id]: {
             ...state.devices[p.id],
-            bankIndex: p.index
-          }
-        }
+            bankIndex: p.index,
+          },
+        },
       }
     }
     case 'MIDI_MESSAGE': {
@@ -47,9 +47,9 @@ const midiReducer = (state = defaultState, action) => {
           ...state.devices,
           [p.id]: {
             ...state.devices[p.id],
-            lastMessage: p.message
-          }
-        }
+            lastMessage: p.message,
+          },
+        },
       }
     }
     default:

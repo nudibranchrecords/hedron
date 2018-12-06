@@ -31,7 +31,7 @@ Select.propTypes = {
   value: PropTypes.oneOfType([
     PropTypes.string,
     PropTypes.bool,
-    PropTypes.number
+    PropTypes.number,
   ]),
   options: PropTypes.arrayOf(
     PropTypes.object
@@ -39,7 +39,7 @@ Select.propTypes = {
   onChange: PropTypes.func.isRequired,
   onAssignClick: PropTypes.func.isRequired,
   title: PropTypes.string.isRequired,
-  nodeId: PropTypes.string.isRequired
+  nodeId: PropTypes.string.isRequired,
 }
 
 export default Select

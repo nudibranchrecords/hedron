@@ -17,7 +17,7 @@ const Icon = (props) => {
   )
 }
 Icon.propTypes = {
-  glyph: PropTypes.string.isRequired
+  glyph: PropTypes.string.isRequired,
 }
 
 export default Icon

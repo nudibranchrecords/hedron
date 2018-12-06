@@ -49,7 +49,7 @@ export const newPulse = () => {
     pulses,
     beats,
     delta,
-    seqStepCount
+    seqStepCount,
   }
 }
 
@@ -63,7 +63,7 @@ export const calcBpm = () => {
 export function* clockUpdate () {
   const info = yield call(newPulse)
   yield put(inputFired('lfo', info.delta, {
-    type: 'lfo'
+    type: 'lfo',
   }))
 
   if (info.seqStepCount % ppSeqStep === 0) {

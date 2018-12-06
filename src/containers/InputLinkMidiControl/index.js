@@ -6,12 +6,12 @@ import getLinkableAction from '../../selectors/getLinkableAction'
 const mapStateToProps = (state, ownProps) => {
   const linkableAction = getLinkableAction(state, ownProps.linkableActionId)
   return {
-    inputLinkIds: linkableAction.inputLinkIds
+    inputLinkIds: linkableAction.inputLinkIds,
   }
 }
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
-  onAssignClick: () => { dispatch(uInputLinkCreate(ownProps.linkableActionId, 'midi', 'linkableAction')) }
+  onAssignClick: () => { dispatch(uInputLinkCreate(ownProps.linkableActionId, 'midi', 'linkableAction')) },
 })
 
 export default connect(

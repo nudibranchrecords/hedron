@@ -5,7 +5,7 @@ const $ = n => Math.round(n / 127 * 1000) / 1000
 const downs = {
   rel1: $(127),
   rel2: $(63),
-  rel3: $(65)
+  rel3: $(65),
 }
 
 const isInc = (controlType, midiValue) =>

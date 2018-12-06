@@ -43,7 +43,7 @@ const Middle = styled.div`
 
 const Crossfader = ({ titleA, titleB, onClickA, onClickB }) => (
   <Wrapper>
-    <ChannelButton onClick={onClickA}>
+    <ChannelButton onMouseDown={onClickA}>
       <ChannelTag>A</ChannelTag>
       <ChannelTitle>{titleA}</ChannelTitle>
     </ChannelButton>
@@ -55,7 +55,7 @@ const Crossfader = ({ titleA, titleB, onClickA, onClickB }) => (
         <InputLinkUI nodeId='sceneCrossfader' />
       </Param>
     </Middle>
-    <ChannelButton onClick={onClickB}>
+    <ChannelButton onMouseDown={onClickB}>
       <ChannelTag>B</ChannelTag>
       <ChannelTitle>{titleB}</ChannelTitle>
     </ChannelButton>
@@ -66,7 +66,7 @@ Crossfader.propTypes = {
   titleA: PropTypes.string,
   titleB: PropTypes.string,
   onClickA: PropTypes.func.isRequired,
-  onClickB: PropTypes.func.isRequired
+  onClickB: PropTypes.func.isRequired,
 }
 
 export default Crossfader

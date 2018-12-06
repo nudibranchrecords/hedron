@@ -11,8 +11,8 @@ const linkableActionsReducer = (state = defaultState, action) => {
         [p.id]: {
           id: p.id,
           action: p.action,
-          inputLinkIds: []
-        }
+          inputLinkIds: [],
+        },
       }
     }
     case 'R_LINKABLE_ACTION_DELETE': {
@@ -23,8 +23,8 @@ const linkableActionsReducer = (state = defaultState, action) => {
         ...state,
         [p.id]: {
           ...state[p.id],
-          inputLinkIds: [...state[p.id].inputLinkIds, p.linkId]
-        }
+          inputLinkIds: [...state[p.id].inputLinkIds, p.linkId],
+        },
       }
     }
     case 'LINKABLE_ACTION_INPUT_LINK_REMOVE': {
@@ -33,8 +33,8 @@ const linkableActionsReducer = (state = defaultState, action) => {
         [p.id]: {
           ...state[p.id],
           inputLinkIds: state[p.id].inputLinkIds
-            .filter((id) => id !== p.linkId)
-        }
+            .filter((id) => id !== p.linkId),
+        },
       }
     }
     default:

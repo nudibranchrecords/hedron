@@ -10,6 +10,7 @@ import PanelDragger from '../PanelDragger'
 import MidiLearn from '../../containers/MidiLearn'
 import EditingOverlay from '../../containers/EditingOverlay'
 import ErrorOverlay from '../../containers/ErrorOverlay'
+import AboutOverlay from '../../containers/AboutOverlay'
 import MainViewOuter from '../../containers/MainViewOuter'
 import Home from '../../containers/Home'
 import ScenesNav from '../ScenesNav'
@@ -41,7 +42,7 @@ const Bar = styled.div`
   height: 100%;
 `
 const App = ({ stats, leftWidth, onLeftDrag, onWrapperClick }) => (
-  <Wrapper onClick={onWrapperClick}>
+  <Wrapper onMouseDown={onWrapperClick}>
     <Left width={leftWidth}>
       <Overview stats={stats} />
       <PanelDragger onHandleDrag={onLeftDrag} position={leftWidth} />
@@ -60,6 +61,7 @@ const App = ({ stats, leftWidth, onLeftDrag, onWrapperClick }) => (
     <MidiLearn />
     <EditingOverlay />
     <ErrorOverlay />
+    <AboutOverlay />
   </Wrapper>
 )
 
@@ -69,5 +71,5 @@ App.propTypes = {
   stats: PropTypes.object.isRequired,
   leftWidth: PropTypes.number.isRequired,
   onLeftDrag: PropTypes.func.isRequired,
-  onWrapperClick: PropTypes.func.isRequired
+  onWrapperClick: PropTypes.func.isRequired,
 }

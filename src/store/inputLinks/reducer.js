@@ -8,7 +8,7 @@ const inputLinkReducer = (state = defaultState, action) => {
     case 'R_INPUT_LINK_CREATE': {
       return {
         ...state,
-        [p.id]: p.link
+        [p.id]: p.link,
       }
     }
     case 'R_INPUT_LINK_DELETE': {
@@ -22,8 +22,8 @@ const inputLinkReducer = (state = defaultState, action) => {
         ...state,
         [p.id] : {
           ...state[p.id],
-          armed: true
-        }
+          armed: true,
+        },
       }
     }
     case 'INPUT_LINK_SHOT_DISARM': {
@@ -31,8 +31,8 @@ const inputLinkReducer = (state = defaultState, action) => {
         ...state,
         [p.id] : {
           ...state[p.id],
-          armed: false
-        }
+          armed: false,
+        },
       }
     }
     default:

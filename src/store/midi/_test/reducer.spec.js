@@ -11,7 +11,7 @@ test('(Reducer) midiReducer', (t) => {
 
   originalState = {
     learning: false,
-    devices: {}
+    devices: {},
   }
 
   deepFreeze(originalState)
@@ -19,9 +19,9 @@ test('(Reducer) midiReducer', (t) => {
   expectedState = {
     learning: {
       id: 'XXX',
-      type: 'foo'
+      type: 'foo',
     },
-    devices: {}
+    devices: {},
   }
 
   actualState = midiReducer(originalState, a.midiStartLearning('XXX', 'foo'))
@@ -30,7 +30,7 @@ test('(Reducer) midiReducer', (t) => {
 
   expectedState = {
     learning: false,
-    devices: {}
+    devices: {},
   }
 
   actualState = midiReducer(originalState, a.midiStopLearning())
@@ -40,17 +40,17 @@ test('(Reducer) midiReducer', (t) => {
   const devices = {
     xxx: {
       title: 'Foo',
-      bankIndex: 0
+      bankIndex: 0,
     },
     yyy: {
       title: 'Bar',
-      bankIndex: 0
-    }
+      bankIndex: 0,
+    },
   }
 
   expectedState = {
     learning: false,
-    devices
+    devices,
   }
 
   actualState = midiReducer(actualState, a.midiUpdateDevices(devices))
@@ -59,7 +59,7 @@ test('(Reducer) midiReducer', (t) => {
 
   const lastMessage = {
     data: [0, 1, 2],
-    timeStamp: 100
+    timeStamp: 100,
   }
 
   expectedState = {
@@ -68,13 +68,13 @@ test('(Reducer) midiReducer', (t) => {
       xxx: {
         title: 'Foo',
         lastMessage,
-        bankIndex: 0
+        bankIndex: 0,
       },
       yyy: {
         title: 'Bar',
-        bankIndex: 0
-      }
-    }
+        bankIndex: 0,
+      },
+    },
   }
 
   actualState = midiReducer(actualState, a.midiMessage('xxx', lastMessage))
@@ -87,13 +87,13 @@ test('(Reducer) midiReducer', (t) => {
       xxx: {
         title: 'Foo',
         lastMessage,
-        bankIndex: 3
+        bankIndex: 3,
       },
       yyy: {
         title: 'Bar',
-        bankIndex: 1
-      }
-    }
+        bankIndex: 1,
+      },
+    },
   }
 
   actualState = midiReducer(actualState, a.midiDeviceBankChange('yyy', 1))

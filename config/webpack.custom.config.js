@@ -5,10 +5,10 @@ const config = {
     rules: [
       {
         test: /\.icon\.txt$/,
-        use: 'svg-inline-loader?classPrefix'
-      }
-    ]
-  }
+        use: 'svg-inline-loader?classPrefix',
+      },
+    ],
+  },
 }
 
 if (process.env.NODE_ENV === 'development') {
@@ -22,7 +22,7 @@ if (process.env.NODE_ENV === 'development') {
     if (sketchesPath) {
       devServerOptions = {
         contentBase: sketchesPath,
-        watchContentBase: true
+        watchContentBase: true,
       }
     }
   }

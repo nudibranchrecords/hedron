@@ -6,7 +6,7 @@ import { reduxForm } from 'redux-form'
 
 const mapStateToProps = (state, ownProps) => ({
   initialValues: state.settings,
-  enableReinitialize: true
+  enableReinitialize: true,
 })
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
@@ -14,11 +14,11 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
     dispatch(settingsUpdate(values))
     uiEventEmitter.emit('reset-renderer')
     uiEventEmitter.emit('repaint')
-  }
+  },
 })
 
 const Settings = reduxForm({
-  form: 'settings'
+  form: 'settings',
 })(SettingsComponent)
 
 export default connect(

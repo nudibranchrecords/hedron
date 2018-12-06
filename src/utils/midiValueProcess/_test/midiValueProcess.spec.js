@@ -8,7 +8,7 @@ test('(Util) midiValueProcess - getValue() - absolute', (t) => {
   midiValue = 0.1
   midiOptions = {
     controlType: 'abs',
-    sensitivity: 0.5
+    sensitivity: 0.5,
   }
   messageCount = 1
 
@@ -21,7 +21,7 @@ test('(Util) midiValueProcess - getValue() - absolute', (t) => {
   midiValue = 0.5
   midiOptions = {
     controlType: 'abs',
-    sensitivity: 0.2
+    sensitivity: 0.2,
   }
   messageCount = 4
 
@@ -39,7 +39,7 @@ test('(Util) midiValueProcess - getValue() - rel1', (t) => {
   midiValue = 1 // 127 is DOWN (rel1)
   midiOptions = {
     controlType: 'rel1',
-    sensitivity: 0.5
+    sensitivity: 0.5,
   }
   messageCount = 1
 
@@ -52,7 +52,7 @@ test('(Util) midiValueProcess - getValue() - rel1', (t) => {
   midiValue = 1 // 1 is DOWN (rel1)
   midiOptions = {
     controlType: 'rel1',
-    sensitivity: 0.1
+    sensitivity: 0.1,
   }
   messageCount = 3
 
@@ -65,7 +65,7 @@ test('(Util) midiValueProcess - getValue() - rel1', (t) => {
   midiValue = 1 // 1 is DOWN (rel1)
   midiOptions = {
     controlType: 'rel1',
-    sensitivity: 0.8
+    sensitivity: 0.8,
   }
   messageCount = 3
 
@@ -78,7 +78,7 @@ test('(Util) midiValueProcess - getValue() - rel1', (t) => {
   midiValue = 0.1 // 1 is DOWN (rel1) - so this is UP
   midiOptions = {
     controlType: 'rel1',
-    sensitivity: 0.6
+    sensitivity: 0.6,
   }
   messageCount = 2
 
@@ -91,7 +91,7 @@ test('(Util) midiValueProcess - getValue() - rel1', (t) => {
   midiValue = 0.1 // 1 is DOWN (rel1) - so this is UP
   midiOptions = {
     controlType: 'rel1',
-    sensitivity: 0.8
+    sensitivity: 0.8,
   }
   messageCount = 5
 
@@ -110,7 +110,7 @@ test('(Util) midiValueProcess - getValue() - rel2', (t) => {
   midiValue = 0.4960629921 // DOWN (rel2)
   midiOptions = {
     controlType: 'rel2',
-    sensitivity: 0.5
+    sensitivity: 0.5,
   }
   messageCount = 1
 
@@ -126,12 +126,12 @@ test('(Util) midiValueProcess - type is not select', (t) => {
 
   node = {
     value: 0.5,
-    type: 'foo'
+    type: 'foo',
   }
   midiValue = 0.4960629921 // DOWN (rel2)
   midiOptions = {
     controlType: 'rel2',
-    sensitivity: 0.5
+    sensitivity: 0.5,
   }
   messageCount = 1
 
@@ -150,42 +150,42 @@ test('(Util) midiValueProcess - type is select, controlType abs', (t) => {
     type: 'select',
     options: [
       {
-        value: 'one'
+        value: 'one',
       },
       {
-        value: 'two'
+        value: 'two',
       },
       {
-        value: 'three'
+        value: 'three',
       },
       {
-        value: 'four'
+        value: 'four',
       },
       {
-        value: 'five'
+        value: 'five',
       },
       {
-        value: 'six'
+        value: 'six',
       },
       {
-        value: 'seven'
+        value: 'seven',
       },
       {
-        value: 'eight'
+        value: 'eight',
       },
       {
-        value: 'nine'
+        value: 'nine',
       },
       {
-        value: 'ten'
-      }
-    ]
+        value: 'ten',
+      },
+    ],
   }
 
   midiValue = 0.05
   midiOptions = {
     controlType: 'abs',
-    sensitivity: 0.5
+    sensitivity: 0.5,
   }
   messageCount = 5
 
@@ -197,7 +197,7 @@ test('(Util) midiValueProcess - type is select, controlType abs', (t) => {
   midiValue = 0.65
   midiOptions = {
     controlType: 'abs',
-    sensitivity: 0.5
+    sensitivity: 0.5,
   }
   messageCount = 2
 
@@ -216,42 +216,42 @@ test('(Util) midiValueProcess - type is select, controlType rel1', (t) => {
     type: 'select',
     options: [
       {
-        value: 'one'
+        value: 'one',
       },
       {
-        value: 'two'
+        value: 'two',
       },
       {
-        value: 'three'
+        value: 'three',
       },
       {
-        value: 'four'
+        value: 'four',
       },
       {
-        value: 'five'
+        value: 'five',
       },
       {
-        value: 'six'
+        value: 'six',
       },
       {
-        value: 'seven'
+        value: 'seven',
       },
       {
-        value: 'eight'
+        value: 'eight',
       },
       {
-        value: 'nine'
+        value: 'nine',
       },
       {
-        value: 'ten'
-      }
-    ]
+        value: 'ten',
+      },
+    ],
   }
 
   midiValue = 1 // DOWN
   midiOptions = {
     controlType: 'rel1',
-    sensitivity: 0.5
+    sensitivity: 0.5,
   }
   messageCount = 1
 
@@ -263,7 +263,7 @@ test('(Util) midiValueProcess - type is select, controlType rel1', (t) => {
   midiValue = 0.5 // UP
   midiOptions = {
     controlType: 'rel1',
-    sensitivity: 0.5
+    sensitivity: 0.5,
   }
   messageCount = 1
 
@@ -278,7 +278,7 @@ test('(Util) midiValueProcess - type is select, controlType rel1', (t) => {
   midiValue = 1 // DOWN
   midiOptions = {
     controlType: 'rel1',
-    sensitivity: 0.5
+    sensitivity: 0.5,
   }
   messageCount = 1
 
@@ -293,7 +293,7 @@ test('(Util) midiValueProcess - type is select, controlType rel1', (t) => {
   midiValue = 0.5 // UP
   midiOptions = {
     controlType: 'rel1',
-    sensitivity: 0.5
+    sensitivity: 0.5,
   }
   messageCount = 1
 

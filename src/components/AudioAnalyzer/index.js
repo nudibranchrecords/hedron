@@ -103,14 +103,17 @@ class AudioAnalyzer extends React.Component {
 
   render () {
     return (
-      <Wrapper onClick={this.props.onWrapperClick}>
+      <Wrapper onMouseDown={this.props.onWrapperClick}>
         <Container>
           <canvas ref={node => { this.canvas = node }}
             onClick={this.props.onAnalyzerClick} />
         </Container>
         <SettingsBox isVisible={this.props.isOpen}>
-          <Control nodeId='audioNormalizeLevels' />
           <Control nodeId='audioLevelsFalloff' />
+          <Control nodeId='audioLevelsSmoothing' />
+          <Control nodeId='audioLevelsPower' />
+          <Control nodeId='audioNormalizeLevels' />
+          <Control nodeId='audioNormalizeRangeFalloff' />
         </SettingsBox>
       </Wrapper>
     )
@@ -118,12 +121,12 @@ class AudioAnalyzer extends React.Component {
 }
 
 AudioAnalyzer.contextTypes = {
-  store: PropTypes.object.isRequired
+  store: PropTypes.object.isRequired,
 }
 AudioAnalyzer.propTypes = {
   isOpen: PropTypes.bool,
   onAnalyzerClick: PropTypes.func.isRequired,
-  onWrapperClick: PropTypes.func.isRequired
+  onWrapperClick: PropTypes.func.isRequired,
 }
 
 export default AudioAnalyzer

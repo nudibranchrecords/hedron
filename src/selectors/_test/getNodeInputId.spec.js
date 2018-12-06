@@ -6,10 +6,10 @@ test('(Selector) getNodeInputId (normal)', (t) => {
     nodes: {
       xxx: {
         input: {
-          id: 'YYY'
-        }
-      }
-    }
+          id: 'YYY',
+        },
+      },
+    },
   }
 
   const actual = getNodeInputId(state, 'xxx')
@@ -22,9 +22,9 @@ test('(Selector) getNodeInputId (false)', (t) => {
   const state = {
     nodes: {
       xxx: {
-        input: false
-      }
-    }
+        input: false,
+      },
+    },
   }
 
   const actual = getNodeInputId(state, 'xxx')
@@ -39,10 +39,10 @@ test('(Selector) getNodeInputId (midi)', (t) => {
       xxx: {
         input: {
           id: 'something',
-          type: 'midi'
-        }
-      }
-    }
+          type: 'midi',
+        },
+      },
+    },
   }
 
   const actual = getNodeInputId(state, 'xxx')
