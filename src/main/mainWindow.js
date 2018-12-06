@@ -97,7 +97,12 @@ export const createMainWindow = () => {
     })
   })
 
+  // Open anchor tag links in new browser window
   mainWindow.webContents.on('will-navigate', (event, url) => {
+    // Don't do anything if "localhost" as this is most likely
+    // dev auto refresh rather than an anchor tag href
+    if (url.includes('http://localhost:')) { return }
+
     event.preventDefault()
     shell.openExternal(url)
   })
