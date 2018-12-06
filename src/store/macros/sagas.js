@@ -254,8 +254,6 @@ export function* handleMacroAddAllForScene () {
   const macroId = yield select(getMacroLearningId)
   const scene = yield select(getCurrentScene)
 
-  console.log(scene)
-
   for (const sketchId of scene.sketchIds) {
     yield call(macroAddAllForSketch, macroId, sketchId)
   }
