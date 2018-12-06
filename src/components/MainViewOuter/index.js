@@ -27,17 +27,29 @@ const Notification = styled.div`
   justify-content: space-between;
 `
 
+const Buttons = styled.div`
+  display: flex;
+  flex-direction: row-reverse;
+
+  > * {
+    margin-left: 0.5rem;
+  }
+`
+
 const MainViewOuter = (
-  { children, notificationText, notificationButtonText, isActive,
-    onNotificationButtonClick }
+  { children, notificationText, isActive, buttons }
 ) => (
   <Wrapper isActive={isActive}>
     {notificationText &&
       <Notification>
         {notificationText}
-        <Button onClick={onNotificationButtonClick} reversed>
-          {notificationButtonText}
-        </Button>
+        <Buttons>
+          {buttons.map(({ text, onClick }) =>
+            <Button onClick={onClick} reversed>
+              {text}
+            </Button>
+          )}
+        </Buttons>
       </Notification>
     }
     <Inner>
@@ -51,7 +63,11 @@ export default MainViewOuter
 MainViewOuter.propTypes = {
   children: PropTypes.node.isRequired,
   notificationText: PropTypes.string,
-  notificationButtonText: PropTypes.string,
-  onNotificationButtonClick: PropTypes.func,
+  buttons: PropTypes.arrayOf(
+    PropTypes.shape({
+      text: PropTypes.string.isRequired,
+      onClick: PropTypes.func.isRequired,
+    })
+  ),
   isActive: PropTypes.bool,
 }
