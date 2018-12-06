@@ -55,7 +55,7 @@ class Solid {
       new THREE.BoxGeometry(size, size, size),
       new THREE.OctahedronGeometry(size),
       new THREE.TetrahedronGeometry(size),
-      new THREE.DodecahedronGeometry(size)
+      new THREE.DodecahedronGeometry(size),
     ]
 
     // Loop through meshes
