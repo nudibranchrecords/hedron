@@ -1,7 +1,9 @@
 import { connect } from 'react-redux'
 import MainViewOuter from '../../components/MainViewOuter'
 import getMacroNodeLearning from '../../selectors/getMacroNodeLearning'
-import { rMacroLearningStop } from '../../store/macros/actions'
+import {
+  rMacroLearningStop, uMacroAddAllForSketch, uMacroAddAllForScene,
+} from '../../store/macros/actions'
 
 const mapStateToProps = (state, ownProps) => {
   const macro = getMacroNodeLearning(state)
@@ -24,8 +26,8 @@ const mapStateToProps = (state, ownProps) => {
 const mapDispatchToProps = (dispatch, ownProps) => ({
   buttonsOnClick: [
     () => { dispatch(rMacroLearningStop()) },
-    () => { },
-    () => { },
+    () => { dispatch(uMacroAddAllForScene()) },
+    () => { dispatch(uMacroAddAllForSketch()) },
   ],
 })
 
