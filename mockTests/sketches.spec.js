@@ -18,7 +18,7 @@ const rootReducer = combineReducers(
     nodes: nodesReducer,
     availableModules: availableModulesReducer,
     sketches: sketchesReducer,
-    scenes: scenesReducer
+    scenes: scenesReducer,
   }
 )
 
@@ -29,11 +29,11 @@ const uid = () => {
 }
 
 const sketchesListener = proxyquire('../src/store/sketches/listener', {
-  'uid': uid
+  'uid': uid,
 }).default
 
 const scenesListener = proxyquire('../src/store/scenes/listener', {
-  'uid': uid
+  'uid': uid,
 }).default
 
 const rootListener = {
@@ -42,12 +42,12 @@ const rootListener = {
   handleAction (action, dispatched, store) {
     sketchesListener(action, store)
     scenesListener(action, store)
-  }
+  },
 }
 
 function* rootSaga (dispatch) {
   yield [
-    fork(watchNodes)
+    fork(watchNodes),
   ]
 }
 
@@ -62,9 +62,9 @@ test('(mock) Sketches - Add/Delete Sketch', (t) => {
       scenes: scenesReducer,
       router: () => ({
         location: {
-          pathname: 'scenes/addSketch/scene_02'
-        }
-      })
+          pathname: 'scenes/addSketch/scene_02',
+        },
+      }),
     }
   )
 
@@ -78,10 +78,10 @@ test('(mock) Sketches - Add/Delete Sketch', (t) => {
             title: 'Speed',
             defaultValue: 0.5,
             defaultMin: -1,
-            defaultMax: 1
-          }
+            defaultMax: 1,
+          },
         ],
-        shots: []
+        shots: [],
       },
       bar: {
         defaultTitle: 'Bar',
@@ -89,24 +89,24 @@ test('(mock) Sketches - Add/Delete Sketch', (t) => {
           {
             key: 'scale',
             title: 'Scale',
-            defaultValue: 0.2
+            defaultValue: 0.2,
           },
           {
             key: 'color',
             title: 'Color',
-            defaultValue: 0.1
-          }
+            defaultValue: 0.1,
+          },
         ],
         shots: [
           {
             method: 'explode',
-            title: 'Explode'
-          }
-        ]
+            title: 'Explode',
+          },
+        ],
       },
       boring: {
-        defaultTitle: 'Boring'
-      }
+        defaultTitle: 'Boring',
+      },
     },
     nodes: {},
     sketches: {},
@@ -116,15 +116,15 @@ test('(mock) Sketches - Add/Delete Sketch', (t) => {
         scene_01: {
           id: 'scene_01',
           selectedSketchId: false,
-          sketchIds: []
+          sketchIds: [],
         },
         scene_02: {
           id: 'scene_02',
           selectedSketchId: false,
-          sketchIds: []
-        }
-      }
-    }
+          sketchIds: [],
+        },
+      },
+    },
   }, applyMiddleware(sagaMiddleware, listen(rootListener)))
   sagaMiddleware.run(rootSaga, store.dispatch)
 
@@ -140,13 +140,13 @@ test('(mock) Sketches - Add/Delete Sketch', (t) => {
     scene_01: {
       id: 'scene_01',
       selectedSketchId: 'id_1',
-      sketchIds: ['id_1']
+      sketchIds: ['id_1'],
     },
     scene_02: {
       id: 'scene_02',
       selectedSketchId: false,
-      sketchIds: []
-    }
+      sketchIds: [],
+    },
   }, 'After creating sketch, sketch id is added to scene, selectedSketchId is set')
 
   t.deepEqual(state.sketches, {
@@ -155,8 +155,8 @@ test('(mock) Sketches - Add/Delete Sketch', (t) => {
       moduleId: 'foo',
       paramIds: ['id_2'],
       shotIds: [],
-      openedNodes: {}
-    }
+      openedNodes: {},
+    },
   }, 'After creating sketch, sketch item is created')
 
   t.deepEqual(state.nodes, {
@@ -173,8 +173,8 @@ test('(mock) Sketches - Add/Delete Sketch', (t) => {
       min: -1,
       max: 1,
       defaultMin: -1,
-      defaultMax: 1
-    }
+      defaultMax: 1,
+    },
   }, 'After creating sketch, node item is created for param')
 
   store.dispatch(uSketchCreate('bar', 'scene_01'))
@@ -184,13 +184,13 @@ test('(mock) Sketches - Add/Delete Sketch', (t) => {
     scene_01: {
       id: 'scene_01',
       sketchIds: ['id_1', 'id_3'],
-      selectedSketchId: 'id_3'
+      selectedSketchId: 'id_3',
     },
     scene_02: {
       id: 'scene_02',
       selectedSketchId: false,
-      sketchIds: []
-    }
+      sketchIds: [],
+    },
   }, 'After creating sketch, sketch id is added to scene')
 
   t.deepEqual(state.sketches, {
@@ -199,15 +199,15 @@ test('(mock) Sketches - Add/Delete Sketch', (t) => {
       moduleId: 'foo',
       paramIds: ['id_2'],
       shotIds: [],
-      openedNodes: {}
+      openedNodes: {},
     },
     id_3: {
       title: 'Bar',
       moduleId: 'bar',
       paramIds: ['id_4', 'id_5'],
       shotIds: ['id_6'],
-      openedNodes: {}
-    }
+      openedNodes: {},
+    },
   }, 'After creating sketch, sketch item is created')
 
   t.deepEqual(state.nodes, {
@@ -224,7 +224,7 @@ test('(mock) Sketches - Add/Delete Sketch', (t) => {
       min: -1,
       max: 1,
       defaultMin: -1,
-      defaultMax: 1
+      defaultMax: 1,
     },
     id_4: {
       id: 'id_4',
@@ -239,7 +239,7 @@ test('(mock) Sketches - Add/Delete Sketch', (t) => {
       min: 0,
       max: 1,
       defaultMin: 0,
-      defaultMax: 1
+      defaultMax: 1,
     },
     id_5: {
       id: 'id_5',
@@ -254,7 +254,7 @@ test('(mock) Sketches - Add/Delete Sketch', (t) => {
       min: 0,
       max: 1,
       defaultMin: 0,
-      defaultMax: 1
+      defaultMax: 1,
     },
     id_6: {
       id: 'id_6',
@@ -265,8 +265,8 @@ test('(mock) Sketches - Add/Delete Sketch', (t) => {
       connectedMacroIds: [],
       type: 'shot',
       method: 'explode',
-      sketchId: 'id_3'
-    }
+      sketchId: 'id_3',
+    },
   }, 'After creating sketch, node items are created for params and shot')
 
   store.dispatch(uSketchDelete('id_1', 'scene_01'))
@@ -276,13 +276,13 @@ test('(mock) Sketches - Add/Delete Sketch', (t) => {
     scene_01: {
       id: 'scene_01',
       sketchIds: ['id_3'],
-      selectedSketchId: 'id_3'
+      selectedSketchId: 'id_3',
     },
     scene_02: {
       id: 'scene_02',
       sketchIds: [],
-      selectedSketchId: false
-    }
+      selectedSketchId: false,
+    },
   }, 'After deleting sketch, sketch id is removed from scene, selectedSketchId becomes last in list')
 
   t.deepEqual(state.sketches, {
@@ -291,8 +291,8 @@ test('(mock) Sketches - Add/Delete Sketch', (t) => {
       moduleId: 'bar',
       paramIds: ['id_4', 'id_5'],
       shotIds: ['id_6'],
-      openedNodes: {}
-    }
+      openedNodes: {},
+    },
   }, 'After deleting sketch, sketch item is removed')
 
   t.deepEqual(state.nodes, {
@@ -309,7 +309,7 @@ test('(mock) Sketches - Add/Delete Sketch', (t) => {
       min: 0,
       max: 1,
       defaultMin: 0,
-      defaultMax: 1
+      defaultMax: 1,
     },
     id_5: {
       id: 'id_5',
@@ -324,7 +324,7 @@ test('(mock) Sketches - Add/Delete Sketch', (t) => {
       min: 0,
       max: 1,
       defaultMin: 0,
-      defaultMax: 1
+      defaultMax: 1,
     },
     id_6: {
       id: 'id_6',
@@ -335,8 +335,8 @@ test('(mock) Sketches - Add/Delete Sketch', (t) => {
       connectedMacroIds: [],
       type: 'shot',
       method: 'explode',
-      sketchId: 'id_3'
-    }
+      sketchId: 'id_3',
+    },
   }, 'After deleting sketch, node items are removed')
 
   store.dispatch(uSketchDelete('id_3', 'scene_01'))
@@ -346,13 +346,13 @@ test('(mock) Sketches - Add/Delete Sketch', (t) => {
     scene_01: {
       id: 'scene_01',
       sketchIds: [],
-      selectedSketchId: false
+      selectedSketchId: false,
     },
     scene_02: {
       id: 'scene_02',
       sketchIds: [],
-      selectedSketchId: false
-    }
+      selectedSketchId: false,
+    },
   }, 'After deleting sketch, sketch id is removed from scene, selected sketchId becomes false (none left)')
 
   t.deepEqual(state.sketches, {}, 'After deleting sketch, sketch item is removed')
@@ -365,13 +365,13 @@ test('(mock) Sketches - Add/Delete Sketch', (t) => {
     scene_01: {
       id: 'scene_01',
       sketchIds: [],
-      selectedSketchId: false
+      selectedSketchId: false,
     },
     scene_02: {
       id: 'scene_02',
       sketchIds: ['id_7'],
-      selectedSketchId: 'id_7'
-    }
+      selectedSketchId: 'id_7',
+    },
   }, 'After creating sketch with no specified scene id, sketch id is added to scene using currentSceneId')
 
   t.deepEqual(state.sketches, {
@@ -380,8 +380,8 @@ test('(mock) Sketches - Add/Delete Sketch', (t) => {
       moduleId: 'boring',
       paramIds: [],
       shotIds: [],
-      openedNodes: {}
-    }
+      openedNodes: {},
+    },
   }, 'After creating sketch, sketch item is created')
 
   t.deepEqual(state.nodes, {}, 'After creating sketch, no nodes created (because sketch has no params/shots)')
@@ -393,13 +393,13 @@ test('(mock) Sketches - Add/Delete Sketch', (t) => {
     scene_01: {
       id: 'scene_01',
       sketchIds: [],
-      selectedSketchId: false
+      selectedSketchId: false,
     },
     scene_02: {
       id: 'scene_02',
       sketchIds: [],
-      selectedSketchId: false
-    }
+      selectedSketchId: false,
+    },
   }, 'After deleting sketch with no specified scene id, uses currentSceneId to determine which scene')
 
   t.deepEqual(state.sketches, {}, 'After deleting sketch, sketch item is removed')
@@ -421,12 +421,12 @@ test('(mock) Sketches - Reimport Sketch (Unedited sketch)', (t) => {
         connectedMacroIds: [],
         type: 'param',
         key: 'speed',
-      hidden: false,
+        hidden: false,
         min: 0,
         max: 1,
         defaultMin: 0,
-        defaultMax: 1
-      }
+        defaultMax: 1,
+      },
     },
     availableModules: {
       foo: {
@@ -435,11 +435,11 @@ test('(mock) Sketches - Reimport Sketch (Unedited sketch)', (t) => {
           {
             key: 'speed',
             title: 'Speed',
-            defaultValue: 0.5
-          }
+            defaultValue: 0.5,
+          },
         ],
-        shots: []
-      }
+        shots: [],
+      },
     },
     sketches: {
       id_1: {
@@ -447,12 +447,12 @@ test('(mock) Sketches - Reimport Sketch (Unedited sketch)', (t) => {
         moduleId: 'foo',
         paramIds: ['id_2'],
         shotIds: [],
-        openedNodes: {}
-      }
+        openedNodes: {},
+      },
     },
     scenes: {
-      items: {}
-    }
+      items: {},
+    },
   }
 
   const store = createStore(rootReducer, defaultState,
@@ -484,16 +484,16 @@ test('(mock) Sketches - Reimport Sketch (simple)', (t) => {
           {
             key: 'speed',
             title: 'Speed',
-            defaultValue: 0.5
+            defaultValue: 0.5,
           },
           {
             key: 'scale',
             title: 'Scale',
-            defaultValue: 0.2
-          }
+            defaultValue: 0.2,
+          },
         ],
-        shots: []
-      }
+        shots: [],
+      },
     },
     nodes: {
       id_2: {
@@ -507,8 +507,8 @@ test('(mock) Sketches - Reimport Sketch (simple)', (t) => {
         key: 'speed',
         hidden: false,
         min: 0,
-        max: 1
-      }
+        max: 1,
+      },
     },
     sketches: {
       id_1: {
@@ -516,9 +516,9 @@ test('(mock) Sketches - Reimport Sketch (simple)', (t) => {
         moduleId: 'foo',
         paramIds: ['id_2'],
         shotIds: [],
-        openedNodes: {}
-      }
-    }
+        openedNodes: {},
+      },
+    },
   }, applyMiddleware(sagaMiddleware, listen(rootListener)))
   sagaMiddleware.run(rootSaga, store.dispatch)
 
@@ -549,7 +549,7 @@ test('(mock) Sketches - Reimport Sketch (simple)', (t) => {
         min: 0,
         max: 1,
         defaultMin: 0,
-        defaultMax: 1
+        defaultMax: 1,
       },
       id_3: {
         id: 'id_3',
@@ -564,8 +564,8 @@ test('(mock) Sketches - Reimport Sketch (simple)', (t) => {
         min: 0,
         max: 1,
         defaultMin: 0,
-        defaultMax: 1
-      }
+        defaultMax: 1,
+      },
     },
    'After reimporting, new node exists'
   )
@@ -584,25 +584,25 @@ test('(mock) Sketches - Reimport Sketch (params and shots)', (t) => {
           {
             key: 'speed',
             title: 'Speed',
-            defaultValue: 0.5
+            defaultValue: 0.5,
           },
           {
             key: 'scale',
             title: 'Scale',
-            defaultValue: 0.2
-          }
+            defaultValue: 0.2,
+          },
         ],
         shots: [
           {
             method: 'explode',
-            title: 'Explode'
+            title: 'Explode',
           },
           {
             method: 'spin',
-            title: 'Spin'
-          }
-        ]
-      }
+            title: 'Spin',
+          },
+        ],
+      },
     },
     nodes: {
       id_2: {
@@ -616,7 +616,7 @@ test('(mock) Sketches - Reimport Sketch (params and shots)', (t) => {
         key: 'speed',
         hidden: false,
         min: 0,
-        max: 1
+        max: 1,
       },
       id_3: {
         id: 'id_3',
@@ -627,8 +627,8 @@ test('(mock) Sketches - Reimport Sketch (params and shots)', (t) => {
         connectedMacroIds: [],
         type: 'shot',
         method: 'explode',
-        sketchId: 'id_1'
-      }
+        sketchId: 'id_1',
+      },
     },
     sketches: {
       id_1: {
@@ -636,9 +636,9 @@ test('(mock) Sketches - Reimport Sketch (params and shots)', (t) => {
         moduleId: 'foo',
         paramIds: ['id_2'],
         shotIds: ['id_3'],
-        openedNodes: {}
-      }
-    }
+        openedNodes: {},
+      },
+    },
   }, applyMiddleware(sagaMiddleware, listen(rootListener)))
   sagaMiddleware.run(rootSaga, store.dispatch)
 
@@ -674,7 +674,7 @@ test('(mock) Sketches - Reimport Sketch (params and shots)', (t) => {
         min: 0,
         max: 1,
         defaultMin: 0,
-        defaultMax: 1
+        defaultMax: 1,
       },
       id_3: {
         id: 'id_3',
@@ -685,7 +685,7 @@ test('(mock) Sketches - Reimport Sketch (params and shots)', (t) => {
         connectedMacroIds: [],
         type: 'shot',
         method: 'explode',
-        sketchId: 'id_1'
+        sketchId: 'id_1',
       },
       id_4: {
         id: 'id_4',
@@ -700,7 +700,7 @@ test('(mock) Sketches - Reimport Sketch (params and shots)', (t) => {
         min: 0,
         max: 1,
         defaultMin: 0,
-        defaultMax: 1
+        defaultMax: 1,
       },
       id_5: {
         id: 'id_5',
@@ -711,8 +711,8 @@ test('(mock) Sketches - Reimport Sketch (params and shots)', (t) => {
         connectedMacroIds: [],
         type: 'shot',
         method: 'spin',
-        sketchId: 'id_1'
-      }
+        sketchId: 'id_1',
+      },
     },
    'After reimporting, new nodes exist'
   )
@@ -731,21 +731,21 @@ test('(mock) Sketches - Reimport Sketch (with shot and param title changes)', (t
           {
             key: 'speed',
             title: 'Speed New',
-            defaultValue: 0.5
+            defaultValue: 0.5,
           },
           {
             key: 'scale',
             title: 'Scale',
-            defaultValue: 0.2
-          }
+            defaultValue: 0.2,
+          },
         ],
         shots: [
           {
             method: 'explode',
-            title: 'Explode New'
-          }
-        ]
-      }
+            title: 'Explode New',
+          },
+        ],
+      },
     },
     nodes: {
       id_2: {
@@ -759,7 +759,7 @@ test('(mock) Sketches - Reimport Sketch (with shot and param title changes)', (t
         min: 0,
         max: 1,
         type: 'param',
-        key: 'speed'
+        key: 'speed',
       },
       id_3: {
         id: 'id_3',
@@ -770,8 +770,8 @@ test('(mock) Sketches - Reimport Sketch (with shot and param title changes)', (t
         connectedMacroIds: [],
         type: 'shot',
         method: 'explode',
-        sketchId: 'id_1'
-      }
+        sketchId: 'id_1',
+      },
     },
     sketches: {
       id_1: {
@@ -779,9 +779,9 @@ test('(mock) Sketches - Reimport Sketch (with shot and param title changes)', (t
         moduleId: 'foo',
         paramIds: ['id_2'],
         shotIds: ['id_3'],
-        openedNodes: {}
-      }
-    }
+        openedNodes: {},
+      },
+    },
   }, applyMiddleware(sagaMiddleware, listen(rootListener)))
   sagaMiddleware.run(rootSaga, store.dispatch)
 
@@ -812,7 +812,7 @@ test('(mock) Sketches - Reimport Sketch (with shot and param title changes)', (t
         min: 0,
         max: 1,
         defaultMin: 0,
-        defaultMax: 1
+        defaultMax: 1,
       },
       id_3: {
         id: 'id_3',
@@ -823,7 +823,7 @@ test('(mock) Sketches - Reimport Sketch (with shot and param title changes)', (t
         connectedMacroIds: [],
         type: 'shot',
         method: 'explode',
-        sketchId: 'id_1'
+        sketchId: 'id_1',
       },
       id_4: {
         id: 'id_4',
@@ -838,8 +838,8 @@ test('(mock) Sketches - Reimport Sketch (with shot and param title changes)', (t
         min: 0,
         max: 1,
         defaultMin: 0,
-        defaultMax: 1
-      }
+        defaultMax: 1,
+      },
     },
    'After reimporting, new node exists, old nodes titles have changed'
   )
@@ -858,21 +858,21 @@ test('(mock) Sketches - Reimport Sketch (Different order)', (t) => {
           {
             key: 'speed',
             title: 'Speed',
-            defaultValue: 0.5
+            defaultValue: 0.5,
           },
           {
             key: 'bar',
             title: 'Bar',
-            defaultValue: 0.5
+            defaultValue: 0.5,
           },
           {
             key: 'scale',
             title: 'Scale',
-            defaultValue: 0.2
-          }
+            defaultValue: 0.2,
+          },
         ],
-        shots: []
-      }
+        shots: [],
+      },
     },
     nodes: {
       id_2: {
@@ -886,7 +886,7 @@ test('(mock) Sketches - Reimport Sketch (Different order)', (t) => {
         key: 'speed',
         hidden: false,
         min: 0,
-        max: 1
+        max: 1,
       },
       id_3: {
         id: 'id_3',
@@ -899,8 +899,8 @@ test('(mock) Sketches - Reimport Sketch (Different order)', (t) => {
         key: 'scale',
         hidden: false,
         min: 0,
-        max: 1
-      }
+        max: 1,
+      },
     },
     sketches: {
       id_1: {
@@ -908,9 +908,9 @@ test('(mock) Sketches - Reimport Sketch (Different order)', (t) => {
         moduleId: 'foo',
         paramIds: ['id_2', 'id_3'],
         shotIds: [],
-        openedNodes: {}
-      }
-    }
+        openedNodes: {},
+      },
+    },
   }, applyMiddleware(sagaMiddleware, listen(rootListener)))
   sagaMiddleware.run(rootSaga, store.dispatch)
 
@@ -941,7 +941,7 @@ test('(mock) Sketches - Reimport Sketch (Different order)', (t) => {
         min: 0,
         max: 1,
         defaultMin: 0,
-        defaultMax: 1
+        defaultMax: 1,
       },
       id_3: {
         id: 'id_3',
@@ -956,7 +956,7 @@ test('(mock) Sketches - Reimport Sketch (Different order)', (t) => {
         min: 0,
         max: 1,
         defaultMin: 0,
-        defaultMax: 1
+        defaultMax: 1,
       },
       id_4: {
         id: 'id_4',
@@ -971,8 +971,8 @@ test('(mock) Sketches - Reimport Sketch (Different order)', (t) => {
         min: 0,
         max: 1,
         defaultMin: 0,
-        defaultMax: 1
-      }
+        defaultMax: 1,
+      },
     },
    'After reimporting, new node exists'
   )

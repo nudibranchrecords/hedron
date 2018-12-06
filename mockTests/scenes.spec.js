@@ -20,7 +20,7 @@ const rootReducer = combineReducers(
     nodes: nodesReducer,
     sketches: sketchesReducer,
     scenes: scenesReducer,
-    linkableActions: linkableActionsReducer
+    linkableActions: linkableActionsReducer,
   }
 )
 
@@ -34,27 +34,27 @@ const sceneUtils = {
   generateSceneLinkableActionIds: id => ({
     foo: {
       id: 'f01',
-      action: { type: 'FOO', payload: { id } }
+      action: { type: 'FOO', payload: { id } },
     },
     bar: {
       id: 'b01',
-      action: { type: 'BAR', payload: { id } }
-    }
-  })
+      action: { type: 'BAR', payload: { id } },
+    },
+  }),
 }
 
 const sketchesListener = proxyquire('../src/store/sketches/listener', {
-  'uid': uid
+  'uid': uid,
 }).default
 
 const scenesListener = proxyquire('../src/store/scenes/listener', {
   'uid': uid,
-  './utils': sceneUtils
+  './utils': sceneUtils,
 }).default
 
 function* rootSaga (dispatch) {
   yield [
-    fork(watchNodes)
+    fork(watchNodes),
   ]
 }
 
@@ -65,7 +65,7 @@ const rootListener = {
     scenesListener(action, store)
     sketchesListener(action, store)
     linkableActionsListener(action, store)
-  }
+  },
 }
 
 test('(mock) Scenes - Add Scene', (t) => {
@@ -77,13 +77,13 @@ test('(mock) Scenes - Add Scene', (t) => {
       sketches: sketchesReducer,
       scenes: scenesReducer,
       ui: uiReducer,
-      linkableActions: linkableActionsReducer
+      linkableActions: linkableActionsReducer,
     }
   )
 
   const store = createStore(rootReducer, {
     nodes: {},
-    sketches: {}
+    sketches: {},
   }, applyMiddleware(sagaMiddleware, listen(rootListener)))
   sagaMiddleware.run(rootSaga, store.dispatch)
 
@@ -104,9 +104,9 @@ test('(mock) Scenes - Add Scene', (t) => {
         sketchIds: [],
         linkableActionIds: {
           foo: 'f01',
-          bar: 'b01'
-        }
-      }
+          bar: 'b01',
+        },
+      },
     },
   'scene is added to items list when sceneCreate is dispatched')
 
@@ -116,7 +116,7 @@ test('(mock) Scenes - Add Scene', (t) => {
 
   t.deepEqual(state.scenes.channels, {
     A: 'id_1',
-    B: false
+    B: false,
   },
     'because is first scene, id_1 added to channel A'
   )
@@ -125,13 +125,13 @@ test('(mock) Scenes - Add Scene', (t) => {
     f01: {
       id: 'f01',
       action: { type: 'FOO', payload: { 'id': 'id_1' } },
-      inputLinkIds: []
+      inputLinkIds: [],
     },
     b01: {
       id: 'b01',
       action: { type: 'BAR', payload: { 'id': 'id_1' } },
-      inputLinkIds: []
-    }
+      inputLinkIds: [],
+    },
   },
     'linkable actions created'
   )
@@ -139,7 +139,7 @@ test('(mock) Scenes - Add Scene', (t) => {
   t.deepEqual(state.ui.isEditing,
     {
       id: 'id_1',
-      type: 'sceneTitle'
+      type: 'sceneTitle',
     }
   , 'UI opens to editing scene')
 
@@ -154,8 +154,8 @@ test('(mock) Scenes - Add Scene', (t) => {
         sketchIds: [],
         linkableActionIds: {
           foo: 'f01',
-          bar: 'b01'
-        }
+          bar: 'b01',
+        },
       },
       id_2: {
         id: 'id_2',
@@ -164,9 +164,9 @@ test('(mock) Scenes - Add Scene', (t) => {
         sketchIds: [],
         linkableActionIds: {
           foo: 'f01',
-          bar: 'b01'
-        }
-      }
+          bar: 'b01',
+        },
+      },
     },
   'scene is added to items list when sceneCreate is dispatched')
   t.equal(state.scenes.currentSceneId, 'id_2',
@@ -175,7 +175,7 @@ test('(mock) Scenes - Add Scene', (t) => {
 
   t.deepEqual(state.scenes.channels, {
     A: 'id_1',
-    B: false
+    B: false,
   },
     'because is NOT first scene, channels remain untouched'
   )
@@ -183,7 +183,7 @@ test('(mock) Scenes - Add Scene', (t) => {
   t.deepEqual(state.ui.isEditing,
     {
       id: 'id_2',
-      type: 'sceneTitle'
+      type: 'sceneTitle',
     }
   , 'UI opens to editing scene')
 
@@ -195,7 +195,7 @@ test('(mock) Scenes - Delete Scene', (t) => {
     nodes: {
       node_01: {},
       node_02: {},
-      node_03: {}
+      node_03: {},
     },
     sketches: {
       sketch_01: {
@@ -203,48 +203,48 @@ test('(mock) Scenes - Delete Scene', (t) => {
         moduleId: 'foo',
         paramIds: [],
         shotIds: [],
-        openedNodes: {}
+        openedNodes: {},
       },
       sketch_02: {
         title: 'Bar',
         moduleId: 'bar',
         paramIds: ['node_01', 'node_02'],
         shotIds: ['node_03'],
-        openedNodes: {}
-      }
+        openedNodes: {},
+      },
     },
     scenes: {
       currentSceneId: 'id_1',
       channels: {
         A: 'id_1',
-        B: 'id_2'
+        B: 'id_2',
       },
       items: {
         id_1: {
           id: 'id_1',
           sketchIds: [],
-          linkableActionIds: {}
+          linkableActionIds: {},
         },
         id_2: {
           id: 'id_2',
           sketchIds: ['sketch_01', 'sketch_02'],
           linkableActionIds: {
             foo: 'f01',
-            bar: 'b01'
-          }
-        }
-      }
+            bar: 'b01',
+          },
+        },
+      },
     },
     linkableActions: {
       f01: {
         id: 'f01',
-        inputLinkIds: []
+        inputLinkIds: [],
       },
       b01: {
         id: 'b01',
-        inputLinkIds: ['i01']
-      }
-    }
+        inputLinkIds: ['i01'],
+      },
+    },
   }, applyMiddleware(sagaMiddleware, listen(rootListener)))
   sagaMiddleware.run(rootSaga, store.dispatch)
 
@@ -259,9 +259,9 @@ test('(mock) Scenes - Delete Scene', (t) => {
         sketchIds: ['sketch_01', 'sketch_02'],
         linkableActionIds: {
           foo: 'f01',
-          bar: 'b01'
-        }
-      }
+          bar: 'b01',
+        },
+      },
     },
   'Scene deleted with no sketches just removes that scene')
   t.equal(state.scenes.currentSceneId, 'id_2',
@@ -270,7 +270,7 @@ test('(mock) Scenes - Delete Scene', (t) => {
 
   t.deepEqual(state.scenes.channels, {
     A: false,
-    B: 'id_2'
+    B: 'id_2',
   },
     'Scene id is removed from channel'
   )
@@ -289,7 +289,7 @@ test('(mock) Scenes - Delete Scene', (t) => {
   t.equal(Object.keys(state.linkableActions).length, 0, 'Last scene deleted, linkableActions are now 0')
   t.deepEqual(state.scenes.channels, {
     A: false,
-    B: false
+    B: false,
   },
     'Scene id is removed from channel'
   )
@@ -308,15 +308,15 @@ test('(mock) Scenes - Select Sketch', (t) => {
         id_1: {
           id: 'id_1',
           selectedSketchId: false,
-          sketchIds: ['sketch_03']
+          sketchIds: ['sketch_03'],
         },
         id_2: {
           id: 'id_2',
           selectedSketchId: 'sketch_01',
-          sketchIds: ['sketch_01', 'sketch_02']
-        }
-      }
-    }
+          sketchIds: ['sketch_01', 'sketch_02'],
+        },
+      },
+    },
   }, applyMiddleware(sagaMiddleware, listen(rootListener)))
   sagaMiddleware.run(rootSaga, store.dispatch)
 
@@ -330,14 +330,14 @@ test('(mock) Scenes - Select Sketch', (t) => {
         id_1: {
           id: 'id_1',
           selectedSketchId: 'sketch_03',
-          sketchIds: ['sketch_03']
+          sketchIds: ['sketch_03'],
         },
         id_2: {
           id: 'id_2',
           selectedSketchId: 'sketch_01',
-          sketchIds: ['sketch_01', 'sketch_02']
-        }
-      }
+          sketchIds: ['sketch_01', 'sketch_02'],
+        },
+      },
     },
   'Sketch id updated when sketch selected')
 
@@ -349,14 +349,14 @@ test('(mock) Scenes - Select Sketch', (t) => {
         id_1: {
           id: 'id_1',
           selectedSketchId: 'sketch_03',
-          sketchIds: ['sketch_03']
+          sketchIds: ['sketch_03'],
         },
         id_2: {
           id: 'id_2',
           selectedSketchId: 'sketch_01',
-          sketchIds: ['sketch_01', 'sketch_02']
-        }
-      }
+          sketchIds: ['sketch_01', 'sketch_02'],
+        },
+      },
     },
   'Sketch id updated when sketch selected')
 
@@ -373,14 +373,14 @@ test('(mock) Scenes - Rename', (t) => {
       items: {
         id_1: {
           title: 'Foo Title',
-          id: 'id_1'
+          id: 'id_1',
         },
         id_2: {
           title: 'Bar Title',
-          id: 'id_2'
-        }
-      }
-    }
+          id: 'id_2',
+        },
+      },
+    },
   }, applyMiddleware(sagaMiddleware, listen(rootListener)))
   sagaMiddleware.run(rootSaga, store.dispatch)
 
@@ -393,13 +393,13 @@ test('(mock) Scenes - Rename', (t) => {
       items: {
         id_1: {
           title: 'Lorem Ipsum',
-          id: 'id_1'
+          id: 'id_1',
         },
         id_2: {
           title: 'Bar Title',
-          id: 'id_2'
-        }
-      }
+          id: 'id_2',
+        },
+      },
     },
   'Scene title updated')
 
@@ -410,13 +410,13 @@ test('(mock) Scenes - Rename', (t) => {
       items: {
         id_1: {
           title: 'Lorem Ipsum',
-          id: 'id_1'
+          id: 'id_1',
         },
         id_2: {
           title: 'Ipsum Dollor',
-          id: 'id_2'
-        }
-      }
+          id: 'id_2',
+        },
+      },
     },
   'Scene title updated')
 

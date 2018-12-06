@@ -100,3 +100,21 @@ export function rMacroTargetParamLinkUpdateStartValue (macroId, paramId, value) 
     payload: { macroId, paramId, value },
   }
 }
+
+export function uMacroAddAllForSketch (id) {
+  return {
+    type: 'U_MACRO_ADD_ALL_FOR_SKETCH',
+    payload: {
+      id,
+    },
+  }
+}
+
+export function uMacroAddAllForScene (id) {
+  return {
+    type: 'U_MACRO_ADD_ALL_FOR_SCENE',
+    payload: {
+      id,
+    },
+  }
+}
