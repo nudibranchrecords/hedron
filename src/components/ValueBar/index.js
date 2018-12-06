@@ -77,7 +77,7 @@ class ValueBar extends React.Component {
     const node = this.context.store.getState().nodes[this.props.nodeId]
     return {
       value: node.value,
-      shotCount: node.shotCount
+      shotCount: node.shotCount,
     }
   }
 
@@ -200,7 +200,7 @@ class ValueBar extends React.Component {
           onMouseDown={this.props.onMouseDown || this.handleMouseDown}
         />
         {this.props.formIsVisible &&
-          <ValueForm>
+          <ValueForm onMouseDown={e => e.stopPropagation()}>
             <ParamValueForm id={this.props.nodeId} />
           </ValueForm>
         }
@@ -217,11 +217,11 @@ ValueBar.propTypes = {
   type: PropTypes.string,
   hideBar: PropTypes.bool,
   formIsVisible: PropTypes.bool,
-  markerIsVisible: PropTypes.bool
+  markerIsVisible: PropTypes.bool,
 }
 
 ValueBar.contextTypes = {
-  store: PropTypes.object.isRequired
+  store: PropTypes.object.isRequired,
 }
 
 export default ValueBar

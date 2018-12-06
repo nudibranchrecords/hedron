@@ -4,22 +4,22 @@ import { rSceneSelectChannel, uSceneSelectChannel, sceneClearChannel } from './a
 export const generateSceneLinkableActionIds = id => ({
   addToA: {
     action: rSceneSelectChannel(id, 'A'),
-    id: uid()
+    id: uid(),
   },
   addToB: {
     action: rSceneSelectChannel(id, 'B'),
-    id: uid()
+    id: uid(),
   },
   addToActive: {
     action: uSceneSelectChannel(id, 'active'),
-    id: uid()
+    id: uid(),
   },
   addToOpposite: {
     action: uSceneSelectChannel(id, 'opposite'),
-    id: uid()
+    id: uid(),
   },
   clear: {
     action: sceneClearChannel(id),
-    id: uid()
-  }
+    id: uid(),
+  },
 })

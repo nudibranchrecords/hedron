@@ -12,7 +12,7 @@ const mapStateToProps = (state, ownProps) => {
 
   return {
     titleA: sceneA && sceneA.title,
-    titleB: sceneB && sceneB.title
+    titleB: sceneB && sceneB.title,
   }
 }
 
@@ -22,7 +22,7 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
   },
   onClickB: () => {
     dispatch(nodeValueUpdate('sceneCrossfader', 1))
-  }
+  },
 })
 
 export default connect(

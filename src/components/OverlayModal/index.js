@@ -49,8 +49,8 @@ const Close = styled.div`
 const OverlayModal = ({ isVisible, title, onCancelClick, children }) => (
   <div>
     {isVisible &&
-      <Wrapper onClick={e => { e.stopPropagation(); onCancelClick() }}>
-        <Inner onClick={e => e.stopPropagation()}>
+      <Wrapper onMouseDown={e => { e.stopPropagation(); onCancelClick() }}>
+        <Inner onMouseDown={e => e.stopPropagation()}>
           {title && <h2>{title}</h2>}
           {children}
           {onCancelClick && <Close onClick={onCancelClick}>&times;</Close>}
@@ -66,5 +66,5 @@ OverlayModal.propTypes = {
   title: PropTypes.string,
   isVisible: PropTypes.bool,
   onCancelClick: PropTypes.func.isRequired,
-  children: PropTypes.node.isRequired
+  children: PropTypes.node.isRequired,
 }

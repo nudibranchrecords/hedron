@@ -6,32 +6,32 @@ test('(Selector) inputs - getAssignedLinks', (t) => {
   const state = {
     inputs: {
       audio_0: {
-        assignedLinkIds: ['XX', 'YY', 'ZZ']
-      }
+        assignedLinkIds: ['XX', 'YY', 'ZZ'],
+      },
     },
     nodes: {
       nx: {
-        activeInputLinkId: 'XX'
+        activeInputLinkId: 'XX',
       },
       ny: {
-        activeInputLinkId: 'YY'
+        activeInputLinkId: 'YY',
       },
       nz: {
-        activeInputLinkId: 'ZZ'
-      }
+        activeInputLinkId: 'ZZ',
+      },
     },
     inputLinks: {
       XX: { nodeId: 'nx' },
       YY: { nodeId: 'ny' },
-      ZZ: { nodeId: 'nz' }
-    }
+      ZZ: { nodeId: 'nz' },
+    },
   }
   deepFreeze(state)
 
   const expected = [
     { nodeId: 'nx' },
     { nodeId: 'ny' },
-    { nodeId: 'nz' }
+    { nodeId: 'nz' },
   ]
 
   const actual = getAssignedLinks(state, 'audio_0')
@@ -44,25 +44,25 @@ test('(Selector) inputs - getAssignedLinks - input doesnt exist', (t) => {
   const state = {
     inputs: {
       foo_input: {
-        assignedLinkIds: ['XX', 'YY', 'ZZ']
-      }
+        assignedLinkIds: ['XX', 'YY', 'ZZ'],
+      },
     },
     nodes: {
       nx: {
-        activeInputLinkId: 'XX'
+        activeInputLinkId: 'XX',
       },
       ny: {
-        activeInputLinkId: 'YY'
+        activeInputLinkId: 'YY',
       },
       nz: {
-        activeInputLinkId: 'ZZ'
-      }
+        activeInputLinkId: 'ZZ',
+      },
     },
     inputLinks: {
       XX: { nodeId: 'nx' },
       YY: { nodeId: 'ny' },
-      ZZ: { nodeId: 'nz' }
-    }
+      ZZ: { nodeId: 'nz' },
+    },
   }
   deepFreeze(state)
 
@@ -78,31 +78,31 @@ test('(Selector) inputs - getAssignedLinks - one input link isnt active', (t) =>
   const state = {
     inputs: {
       foo_input: {
-        assignedLinkIds: ['XX', 'YY', 'ZZ']
-      }
+        assignedLinkIds: ['XX', 'YY', 'ZZ'],
+      },
     },
     nodes: {
       nx: {
-        activeInputLinkId: 'XX'
+        activeInputLinkId: 'XX',
       },
       ny: {
-        activeInputLinkId: 'YY'
+        activeInputLinkId: 'YY',
       },
       nz: {
-        activeInputLinkId: '@@'
-      }
+        activeInputLinkId: '@@',
+      },
     },
     inputLinks: {
       XX: { nodeId: 'nx' },
       YY: { nodeId: 'ny' },
-      ZZ: { nodeId: 'nz' }
-    }
+      ZZ: { nodeId: 'nz' },
+    },
   }
   deepFreeze(state)
 
   const expected = [
     { nodeId: 'nx' },
-    { nodeId: 'ny' }
+    { nodeId: 'ny' },
   ]
 
   const actual = getAssignedLinks(state, 'foo_input')
@@ -115,26 +115,26 @@ test('(Selector) inputs - getAssignedLinks - link type midi', (t) => {
   const state = {
     inputs: {
       foo_input: {
-        assignedLinkIds: ['XX', 'YY']
-      }
+        assignedLinkIds: ['XX', 'YY'],
+      },
     },
     nodes: {
       nx: {
-        activeInputLinkId: undefined
+        activeInputLinkId: undefined,
       },
       ny: {
-        activeInputLinkId: undefined
-      }
+        activeInputLinkId: undefined,
+      },
     },
     inputLinks: {
       XX: {
         nodeId: 'nx',
         input: {
-          type: 'midi'
-        }
+          type: 'midi',
+        },
       },
-      YY: { nodeId: 'ny' }
-    }
+      YY: { nodeId: 'ny' },
+    },
   }
   deepFreeze(state)
 
@@ -142,9 +142,9 @@ test('(Selector) inputs - getAssignedLinks - link type midi', (t) => {
     {
       nodeId: 'nx',
       input: {
-        type: 'midi'
-      }
-    }
+        type: 'midi',
+      },
+    },
   ]
 
   const actual = getAssignedLinks(state, 'foo_input')
@@ -157,32 +157,32 @@ test('(Selector) inputs - getAssignedLinks - link type midi', (t) => {
   const state = {
     inputs: {
       foo_input: {
-        assignedLinkIds: ['XX', 'YY']
-      }
+        assignedLinkIds: ['XX', 'YY'],
+      },
     },
     nodes: {
       nx: {
-        activeInputLinkId: undefined
+        activeInputLinkId: undefined,
       },
       ny: {
-        activeInputLinkId: undefined
-      }
+        activeInputLinkId: undefined,
+      },
     },
     inputLinks: {
       XX: { nodeId: 'nx' },
       YY: {
         nodeId: '@@',
-        linkType: 'linkableAction'
-      }
-    }
+        linkType: 'linkableAction',
+      },
+    },
   }
   deepFreeze(state)
 
   const expected = [
     {
       nodeId: '@@',
-      linkType: 'linkableAction'
-    }
+      linkType: 'linkableAction',
+    },
   ]
 
   const actual = getAssignedLinks(state, 'foo_input')
@@ -196,39 +196,39 @@ test('(Selector) inputs - getAssignedLinks - link has device Id and bank index (
     inputs: {
       foo_input: {
         assignedLinkIds: ['XX', 'YY'],
-        deviceId: 'DEVICE_1'
-      }
+        deviceId: 'DEVICE_1',
+      },
     },
     midi: {
       devices: {
         DEVICE_1: {
-          bankIndex: 1
-        }
-      }
+          bankIndex: 1,
+        },
+      },
     },
     nodes: {
       nx: {
-        activeInputLinkId: 'XX'
+        activeInputLinkId: 'XX',
       },
       ny: {
-        activeInputLinkId: 'YY'
-      }
+        activeInputLinkId: 'YY',
+      },
     },
     inputLinks: {
       XX: {
         nodeId: 'nx',
         deviceId: 'DEVICE_1',
-        bankIndex: 2
+        bankIndex: 2,
       },
-      YY: { nodeId: 'ny' }
-    }
+      YY: { nodeId: 'ny' },
+    },
   }
   deepFreeze(state)
 
   const expected = [
     {
-      nodeId: 'ny'
-    }
+      nodeId: 'ny',
+    },
   ]
 
   const actual = getAssignedLinks(state, 'foo_input')
@@ -242,32 +242,32 @@ test('(Selector) inputs - getAssignedLinks - link has device Id and bank index (
     inputs: {
       foo_input: {
         assignedLinkIds: ['XX', 'YY'],
-        deviceId: 'DEVICE_1'
-      }
+        deviceId: 'DEVICE_1',
+      },
     },
     midi: {
       devices: {
         DEVICE_1: {
-          bankIndex: 1
-        }
-      }
+          bankIndex: 1,
+        },
+      },
     },
     nodes: {
       nx: {
-        activeInputLinkId: 'XX'
+        activeInputLinkId: 'XX',
       },
       ny: {
-        activeInputLinkId: 'YY'
-      }
+        activeInputLinkId: 'YY',
+      },
     },
     inputLinks: {
       XX: {
         nodeId: 'nx',
         deviceId: 'DEVICE_1',
-        bankIndex: 1
+        bankIndex: 1,
       },
-      YY: { nodeId: 'ny' }
-    }
+      YY: { nodeId: 'ny' },
+    },
   }
   deepFreeze(state)
 
@@ -275,11 +275,11 @@ test('(Selector) inputs - getAssignedLinks - link has device Id and bank index (
     {
       nodeId: 'nx',
       deviceId: 'DEVICE_1',
-      bankIndex: 1
+      bankIndex: 1,
     },
     {
-      nodeId: 'ny'
-    }
+      nodeId: 'ny',
+    },
   ]
 
   const actual = getAssignedLinks(state, 'foo_input')
@@ -292,10 +292,10 @@ test('(Selector) inputs - getAssignedLinks - inputLinks dont exist', (t) => {
   const state = {
     inputs: {
       audio_0: {
-        assignedLinkIds: ['XX', 'YY', 'ZZ']
-      }
+        assignedLinkIds: ['XX', 'YY', 'ZZ'],
+      },
     },
-    inputLinks: {}
+    inputLinks: {},
   }
 
   t.throws(getAssignedLinks.bind(null, state, 'audio_0'), Error, 'Throws an error')

@@ -107,7 +107,7 @@ InputLink.propTypes = {
   id: PropTypes.string.isRequired,
   sequencerGridId: PropTypes.string,
   toggleActionId: PropTypes.string.isRequired,
-  isActivateVisible: PropTypes.bool
+  isActivateVisible: PropTypes.bool,
 }
 
 export default InputLink

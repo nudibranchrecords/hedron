@@ -5,8 +5,8 @@ const defaultState = {
   currentSceneId: false,
   channels: {
     A: false,
-    B: false
-  }
+    B: false,
+  },
 }
 
 const scenesReducer = (state = defaultState, action) => {
@@ -21,14 +21,14 @@ const scenesReducer = (state = defaultState, action) => {
         channels: {
           ...state.channels,
           [p.channel]: p.id,
-          [otherChannel]: otherChannelId === p.id ? false : otherChannelId
-        }
+          [otherChannel]: otherChannelId === p.id ? false : otherChannelId,
+        },
       }
     }
     case 'R_SCENE_SELECT_CURRENT': {
       return {
         ...state,
-        currentSceneId: p.id
+        currentSceneId: p.id,
       }
     }
     case 'R_SCENE_CREATE': {
@@ -36,14 +36,14 @@ const scenesReducer = (state = defaultState, action) => {
         ...state,
         items: {
           ...state.items,
-          [p.id]: p.scene
-        }
+          [p.id]: p.scene,
+        },
       }
     }
     case 'R_SCENE_DELETE': {
       return {
         ...state,
-        items: _.omit(state.items, [p.id])
+        items: _.omit(state.items, [p.id]),
       }
     }
     case 'R_SCENE_SKETCH_ADD': {
@@ -53,9 +53,9 @@ const scenesReducer = (state = defaultState, action) => {
           ...state.items,
           [p.id]: {
             ...state.items[p.id],
-            sketchIds: _.union(state.items[p.id].sketchIds, [p.sketchId])
-          }
-        }
+            sketchIds: _.union(state.items[p.id].sketchIds, [p.sketchId]),
+          },
+        },
       }
     }
     case 'R_SCENE_SKETCH_REMOVE': {
@@ -65,9 +65,9 @@ const scenesReducer = (state = defaultState, action) => {
           ...state.items,
           [p.id]: {
             ...state.items[p.id],
-            sketchIds: state.items[p.id].sketchIds.filter(item => item !== p.sketchId)
-          }
-        }
+            sketchIds: state.items[p.id].sketchIds.filter(item => item !== p.sketchId),
+          },
+        },
       }
     }
     case 'SCENE_RENAME': {
@@ -77,9 +77,9 @@ const scenesReducer = (state = defaultState, action) => {
           ...state.items,
           [p.id]: {
             ...state.items[p.id],
-            title: p.title
-          }
-        }
+            title: p.title,
+          },
+        },
       }
     }
     case 'SCENE_SKETCH_SELECT': {
@@ -89,9 +89,9 @@ const scenesReducer = (state = defaultState, action) => {
           ...state.items,
           [p.id]: {
             ...state.items[p.id],
-            selectedSketchId: p.sketchId
-          }
-        }
+            selectedSketchId: p.sketchId,
+          },
+        },
       }
     }
     default:

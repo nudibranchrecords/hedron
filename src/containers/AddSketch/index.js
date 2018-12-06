@@ -8,14 +8,14 @@ import { projectChooseSketchesFolder } from '../../store/project/actions'
 const mapStateToProps = (state, ownProps) => (
   {
     items: getModules(state),
-    sketchesPath: getSketchesPath(state)
+    sketchesPath: getSketchesPath(state),
   }
 )
 
 const mapDispatchToProps = (dispatch, ownProps) => (
   {
     onAddClick: (id) => { dispatch(uSketchCreate(id)) },
-    onChooseFolderClick: () => { dispatch(projectChooseSketchesFolder()) }
+    onChooseFolderClick: () => { dispatch(projectChooseSketchesFolder()) },
   }
 )
 

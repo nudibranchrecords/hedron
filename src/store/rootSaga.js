@@ -15,6 +15,6 @@ export default function* rootSaga (dispatch) {
     fork(watchNodes),
     fork(watchClock),
     fork(watchWindows),
-    fork(watchMacros)
+    fork(watchMacros),
   ]
 }

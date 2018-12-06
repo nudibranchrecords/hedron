@@ -85,7 +85,7 @@ Sketch.propTypes = {
   ).isRequired,
   onDeleteClick: PropTypes.func.isRequired,
   onRenameClick: PropTypes.func.isRequired,
-  onReimportClick: PropTypes.func.isRequired
+  onReimportClick: PropTypes.func.isRequired,
 }
 
 export default Sketch

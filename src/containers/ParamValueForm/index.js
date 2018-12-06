@@ -10,10 +10,10 @@ const mapStateToProps = (state, ownProps) => {
 
   return {
     initialValues: {
-      paramValue: Math.round(node.value * 1000) / 1000
+      paramValue: Math.round(node.value * 1000) / 1000,
     },
     label: node.title,
-    enableReinitialize: true
+    enableReinitialize: true,
   }
 }
 
@@ -25,11 +25,11 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
   },
   onBlur: () => {
     dispatch(uiEditingClose())
-  }
+  },
 })
 
 const ParamValueForm = reduxForm({
-  form: 'paramValue'
+  form: 'paramValue',
 })(ParamValueFormComponent)
 
 export default connect(

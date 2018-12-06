@@ -12,7 +12,7 @@ proxyquire.noCallThru()
 
 const getAll = sinon.stub()
 const { nodeCreate, nodeDelete } = proxyquire('../sagas', {
-  'modifiers': { getAll }
+  'modifiers': { getAll },
 })
 
 test('(Saga) nodeCreate - param node', (t) => {
@@ -20,7 +20,7 @@ test('(Saga) nodeCreate - param node', (t) => {
   const node = { foo: 'bar' }
 
   const generator = nodeCreate({
-    payload: { id: nodeId, node }
+    payload: { id: nodeId, node },
   })
 
   t.deepEqual(
@@ -37,7 +37,7 @@ test('(Saga) nodeDelete (no inputLinks)', (t) => {
   const nodeId = 'XXX'
 
   const generator = nodeDelete({
-    payload: { nodeId }
+    payload: { nodeId },
   })
 
   t.deepEqual(
@@ -48,7 +48,7 @@ test('(Saga) nodeDelete (no inputLinks)', (t) => {
 
   const node = {
     id: 'XXX',
-    inputLinksIds: []
+    inputLinksIds: [],
   }
 
   t.deepEqual(
@@ -65,7 +65,7 @@ test('(Saga) nodeDelete (has inputlinks)', (t) => {
   const nodeId = 'XXX'
 
   const generator = nodeDelete({
-    payload: { nodeId }
+    payload: { nodeId },
   })
 
   t.deepEqual(
@@ -76,7 +76,7 @@ test('(Saga) nodeDelete (has inputlinks)', (t) => {
 
   const node = {
     id: 'XXX',
-    inputLinkIds: ['l1', 'l2']
+    inputLinkIds: ['l1', 'l2'],
   }
 
   t.deepEqual(

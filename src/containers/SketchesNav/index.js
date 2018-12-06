@@ -10,14 +10,14 @@ const mapStateToProps = (state, ownProps) => {
   return {
     sceneId: getCurrentSceneId(state),
     items: getCurrentSketches(state),
-    currentSketchId: page === 'addSketch' ? false : getSelectedSketchId(state)
+    currentSketchId: page === 'addSketch' ? false : getSelectedSketchId(state),
   }
 }
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
   onNavItemClick: (sceneId, itemId) => {
     dispatch(sceneSketchSelect(sceneId, itemId))
-  }
+  },
 })
 
 export default connect(
@@ -28,6 +28,6 @@ export default connect(
     areStatesEqual: (next, prev) =>
       next.sketches === prev.sketches &&
       next.scenes === prev.scenes &&
-      next.router === prev.router
+      next.router === prev.router,
   }
 )(SketchesNav)

@@ -9,7 +9,7 @@ const sketchesReducer = (state = defaultState, action) => {
     case 'SKETCH_CREATE': {
       return {
         ...state,
-        [p.id]: p.sketch
+        [p.id]: p.sketch,
       }
     }
     case 'SKETCH_DELETE': {
@@ -25,9 +25,9 @@ const sketchesReducer = (state = defaultState, action) => {
           ...state[p.sketchId],
           openedNodes: {
             ...state[p.sketchId].openedNodes,
-            [p.nodeType]: p.nodeId !== state[p.sketchId].openedNodes[p.nodeType] ? p.nodeId : undefined
-          }
-        }
+            [p.nodeType]: p.nodeId !== state[p.sketchId].openedNodes[p.nodeType] ? p.nodeId : undefined,
+          },
+        },
       }
     }
     case 'SKETCH_UPDATE': {
@@ -35,8 +35,8 @@ const sketchesReducer = (state = defaultState, action) => {
         ...state,
         [p.sketchId]: {
           ...state[p.sketchId],
-          ...p.obj
-        }
+          ...p.obj,
+        },
       }
     }
     default:

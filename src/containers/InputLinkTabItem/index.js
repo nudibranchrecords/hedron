@@ -9,12 +9,12 @@ const mapStateToProps = (state, ownProps) => {
   return {
     title: state.inputLinks[ownProps.id].title,
     isSelected: ownProps.id === node.openedLinkId,
-    isActive: getIsInputLinkActive(state, ownProps.id)
+    isActive: getIsInputLinkActive(state, ownProps.id),
   }
 }
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
-  onClick: () => { dispatch(nodeTabOpen(ownProps.nodeId, ownProps.id)) }
+  onClick: () => { dispatch(nodeTabOpen(ownProps.nodeId, ownProps.id)) },
 })
 
 export default connect(
