@@ -13,6 +13,7 @@ import now from 'performance-now'
 import * as renderer from './renderer'
 import Scene from './Scene'
 import { nodeValuesBatchUpdate } from '../store/nodes/actions'
+import TWEEN from '@tweenjs/tween.js'
 
 export let scenes = {}
 
@@ -154,6 +155,10 @@ export const run = (injectedStore, stats) => {
       spf = 1000 / state.settings.throttledFPS
 
       newTime = now()
+
+      // Tween JS used for animated param values (anims)
+      TWEEN.update(newTime)
+
       delta = newTime - oldTimeModified
       // Elapsed frames are from the perspective of a 60FPS target
       // regardless of throttling (so that throttled animations dont slow down)

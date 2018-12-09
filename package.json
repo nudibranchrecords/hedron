@@ -33,6 +33,7 @@
     ]
   },
   "dependencies": {
+    "@tweenjs/tween.js": "^17.2.0",
     "babel-loader": "^6.3.2",
     "babel-plugin-transform-object-rest-spread": "^6.22.0",
     "babel-polyfill": "^6.23.0",
