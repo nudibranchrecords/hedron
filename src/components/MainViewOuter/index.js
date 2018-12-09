@@ -44,8 +44,8 @@ const MainViewOuter = (
       <Notification>
         {notificationText}
         <Buttons>
-          {buttons.map(({ text, onClick }) =>
-            <Button onClick={onClick} reversed>
+          {buttons.map(({ text, onClick }, index) =>
+            <Button onClick={onClick} reversed key={index}>
               {text}
             </Button>
           )}
