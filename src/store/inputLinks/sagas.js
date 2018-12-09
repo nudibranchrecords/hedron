@@ -3,8 +3,9 @@ import { getDefaultModifierIds } from './selectors'
 import getInputLink from '../../selectors/getInputLink'
 import getNode from '../../selectors/getNode'
 import { rInputLinkCreate, rInputLinkDelete } from './actions'
+import { uAnimStart } from '../anims/actions'
 import { rNodeCreate, uNodeCreate, uNodeDelete, uNodeInputLinkAdd,
-  nodeInputLinkRemove, nodeActiveInputLinkToggle, nodeTriggerAnim } from '../nodes/actions'
+  nodeInputLinkRemove, nodeActiveInputLinkToggle } from '../nodes/actions'
 import { inputAssignedLinkCreate, inputAssignedLinkDelete } from '../inputs/actions'
 import { linkableActionCreate, linkableActionInputLinkAdd,
   linkableActionInputLinkRemove, linkableActionDelete } from '../linkableActions/actions'
@@ -107,9 +108,9 @@ export function* inputLinkCreate (action) {
     }
 
     if (p.inputType === 'anim') {
-      const animTriggerActionId = yield call(uid)
-      yield put(linkableActionCreate(animTriggerActionId, nodeTriggerAnim(p.nodeId, linkId)))
-      linkableActions.animTrigger = animTriggerActionId
+      const animStartActionId = yield call(uid)
+      yield put(linkableActionCreate(animStartActionId, uAnimStart(linkId)))
+      linkableActions.animStart = animStartActionId
     }
 
     if (linkType === 'node') {

@@ -51,7 +51,7 @@ class InputLink extends React.Component {
 
   render () {
     const { modifierIds, lfoOptionIds, size, midiOptionIds, title, toggleActionId,
-      onAnimTriggerClick, animTriggerActionId,
+      onAnimStartClick, animStartActionId,
       sequencerGridId, onDeleteClick, onActivateToggle, isActive, isActivateVisible } = this.props
     return (
       <div>
@@ -74,8 +74,8 @@ class InputLink extends React.Component {
           {sequencerGridId &&
             <SequencerGrid nodeId={sequencerGridId} />
           }
-          {animTriggerActionId &&
-            <Button onClick={onAnimTriggerClick}>Trigger Anim</Button>
+          {animStartActionId &&
+            <Button onClick={onAnimStartClick}>Start Anim</Button>
           }
         </Wrapper>
         <Row justify='space-between'>
@@ -112,8 +112,8 @@ InputLink.propTypes = {
   sequencerGridId: PropTypes.string,
   toggleActionId: PropTypes.string.isRequired,
   isActivateVisible: PropTypes.bool,
-  animTriggerActionId: PropTypes.string,
-  onAnimTriggerClick: PropTypes.func.isRequired,
+  animStartActionId: PropTypes.string,
+  onAnimStartClick: PropTypes.func.isRequired,
 }
 
 export default InputLink
