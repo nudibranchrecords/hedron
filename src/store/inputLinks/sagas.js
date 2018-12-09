@@ -4,7 +4,7 @@ import getInputLink from '../../selectors/getInputLink'
 import getNode from '../../selectors/getNode'
 import { rInputLinkCreate, rInputLinkDelete } from './actions'
 import { rNodeCreate, uNodeCreate, uNodeDelete, uNodeInputLinkAdd,
-  nodeInputLinkRemove, nodeActiveInputLinkToggle } from '../nodes/actions'
+  nodeInputLinkRemove, nodeActiveInputLinkToggle, nodeTriggerAnim } from '../nodes/actions'
 import { inputAssignedLinkCreate, inputAssignedLinkDelete } from '../inputs/actions'
 import { linkableActionCreate, linkableActionInputLinkAdd,
   linkableActionInputLinkRemove, linkableActionDelete } from '../linkableActions/actions'
@@ -40,7 +40,7 @@ export function* inputLinkCreate (action) {
       linkType = 'node'
       node = yield select(getNode, p.nodeId)
       nodeType = node.type
-      if (p.inputType !== 'midi' && p.inputId !== 'seq-step') {
+      if (p.inputType !== 'midi' && p.inputId !== 'seq-step' && p.inputId !== 'anim') {
         const modifiers = yield call(getAll)
         const defaultModifierIds = yield select(getDefaultModifierIds)
 
@@ -104,6 +104,12 @@ export function* inputLinkCreate (action) {
           yield put(uNodeCreate(item.id, item))
         }
       }
+    }
+
+    if (p.inputType === 'anim') {
+      const animTriggerActionId = yield call(uid)
+      yield put(linkableActionCreate(animTriggerActionId, nodeTriggerAnim(p.nodeId, linkId)))
+      linkableActions.animTrigger = animTriggerActionId
     }
 
     if (linkType === 'node') {

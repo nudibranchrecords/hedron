@@ -7,7 +7,7 @@ import getInputLink from '../../selectors/getInputLink'
 import getIsInputLinkActive from '../../selectors/getIsInputLinkActive'
 import getCanInputLinkDisable from '../../selectors/getCanInputLinkDisable'
 import { uInputLinkDelete, uInputLinkCreate } from '../../store/inputLinks/actions'
-import { nodeTabOpen, nodeActiveInputLinkToggle } from '../../store/nodes/actions'
+import { nodeTabOpen, nodeActiveInputLinkToggle, nodeTriggerAnim } from '../../store/nodes/actions'
 
 const mapStateToProps = (state, ownProps) => {
   const link = getInputLink(state, ownProps.id)
@@ -20,6 +20,7 @@ const mapStateToProps = (state, ownProps) => {
     isActivateVisible: getCanInputLinkDisable(state, ownProps.id),
     toggleActionId: link.linkableActions.toggleActivate,
     sequencerGridId: link.sequencerGridId,
+    animTriggerActionId: link.linkableActions.animTrigger,
   }
 }
 
@@ -33,6 +34,9 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
   },
   onActivateAssignClick: () => {
     dispatch(uInputLinkCreate(ownProps.id, 'midi', 'inputLinkToggle'))
+  },
+  onAnimTriggerClick: () => {
+    dispatch(nodeTriggerAnim(ownProps.nodeId, ownProps.id))
   },
 })
 

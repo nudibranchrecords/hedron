@@ -158,6 +158,15 @@ export function nodeActiveInputLinkToggle (nodeId, linkId) {
   }
 }
 
+export function nodeTriggerAnim (nodeId, linkId) {
+  return {
+    type: 'NODE_TRIGGER_ANIM',
+    payload: {
+      nodeId, linkId,
+    },
+  }
+}
+
 export function nodeShotFired (nodeId, sketchId, method) {
   return {
     type: 'NODE_SHOT_FIRED',
