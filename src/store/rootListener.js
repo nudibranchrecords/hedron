@@ -1,6 +1,7 @@
 import scenesListener from './scenes/listener'
 import sketchesListener from './sketches/listener'
 import linkableActionsListener from './linkableActions/listener'
+import animListener from './anims/listener'
 import engineListener from '../engine/listener'
 
 export default {
@@ -11,5 +12,6 @@ export default {
     sketchesListener(action, store)
     linkableActionsListener(action, store)
     engineListener(action, store)
+    animListener(action, store)
   },
 }

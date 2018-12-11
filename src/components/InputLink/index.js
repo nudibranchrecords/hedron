@@ -4,18 +4,14 @@ import Control from '../../containers/Control'
 import styled from 'styled-components'
 import uiEventEmitter from '../../utils/uiEventEmitter'
 import Button from '../../components/Button'
+import ButtonWithMidiLink from '../ButtonWithMidiLink'
 import Row from '../../components/Row'
-import InputLinkMidiControl from '../../containers/InputLinkMidiControl'
 import SequencerGrid from '../../containers/SequencerGrid'
 
 const Wrapper = styled.div`
   display: flex;
   flex-wrap: wrap;
   margin-bottom: 0.5rem;
-`
-
-const ActivateButton = styled(Button)`
-  margin-right: 0.25rem;
 `
 
 const DeleteButton = styled(Button)`
@@ -51,6 +47,7 @@ class InputLink extends React.Component {
 
   render () {
     const { modifierIds, lfoOptionIds, size, midiOptionIds, title, toggleActionId,
+      onAnimStartClick, animStartActionId, animOptionIds,
       sequencerGridId, onDeleteClick, onActivateToggle, isActive, isActivateVisible } = this.props
     return (
       <div>
@@ -73,13 +70,30 @@ class InputLink extends React.Component {
           {sequencerGridId &&
             <SequencerGrid nodeId={sequencerGridId} />
           }
+          {animStartActionId &&
+            animOptionIds.map((id) => (
+              <Item key={id} size={size}>
+                <Control nodeId={id} />
+              </Item>
+            ))
+          }
         </Wrapper>
         <Row justify='space-between'>
           {isActivateVisible &&
-            <Row>
-              <ActivateButton onClick={onActivateToggle}>{isActive ? 'Disable' : 'Activate'}</ActivateButton>
-              <InputLinkMidiControl linkableActionId={toggleActionId} />
-            </Row>
+            <ButtonWithMidiLink
+              onClick={onActivateToggle}
+              linkableActionId={toggleActionId}
+            >
+              {isActive ? 'Disable' : 'Activate'}
+            </ButtonWithMidiLink>
+          }
+          {animStartActionId &&
+            <ButtonWithMidiLink
+              onClick={onAnimStartClick}
+              linkableActionId={animStartActionId}
+            >
+              Start Anim
+            </ButtonWithMidiLink>
           }
 
           <DeleteButton onClick={onDeleteClick}>Delete "{title}"</DeleteButton>
@@ -103,11 +117,16 @@ InputLink.propTypes = {
   midiOptionIds: PropTypes.arrayOf(
     PropTypes.string
   ),
+  animOptionIds: PropTypes.arrayOf(
+    PropTypes.string
+  ),
   size: PropTypes.string,
   id: PropTypes.string.isRequired,
   sequencerGridId: PropTypes.string,
   toggleActionId: PropTypes.string.isRequired,
   isActivateVisible: PropTypes.bool,
+  animStartActionId: PropTypes.string,
+  onAnimStartClick: PropTypes.func.isRequired,
 }
 
 export default InputLink

@@ -38,7 +38,12 @@ export default (state, nodeId) => {
       {
         value: 'lfo',
         label: 'LFO',
-      }
+      },
+      {
+        value: 'anim',
+        type: 'anim',
+        label: 'Anim',
+      },
     )
   }
 

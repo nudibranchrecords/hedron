@@ -3,6 +3,7 @@ import { getDefaultModifierIds } from './selectors'
 import getInputLink from '../../selectors/getInputLink'
 import getNode from '../../selectors/getNode'
 import { rInputLinkCreate, rInputLinkDelete } from './actions'
+import { uAnimStart } from '../anims/actions'
 import { rNodeCreate, uNodeCreate, uNodeDelete, uNodeInputLinkAdd,
   nodeInputLinkRemove, nodeActiveInputLinkToggle } from '../nodes/actions'
 import { inputAssignedLinkCreate, inputAssignedLinkDelete } from '../inputs/actions'
@@ -11,6 +12,7 @@ import { linkableActionCreate, linkableActionInputLinkAdd,
 import lfoGenerateOptions from '../../utils/lfoGenerateOptions'
 import midiGenerateOptions from '../../utils/midiGenerateOptions'
 import sequencerGenerateOptions from '../../utils/sequencerGenerateOptions'
+import animGenerateOptions from '../../utils/animGenerateOptions'
 import { midiStartLearning } from '../midi/actions'
 import getCurrentBankIndex from '../../selectors/getCurrentBankIndex'
 import { getAll } from '../../externals/modifiers'
@@ -27,6 +29,7 @@ export function* inputLinkCreate (action) {
   const modifierIds = []
   const lfoOptionIds = []
   const midiOptionIds = []
+  const animOptionIds = []
   let linkableActions = {}
   let bankIndex, node, nodeType, linkType, sequencerGridId
 
@@ -40,7 +43,7 @@ export function* inputLinkCreate (action) {
       linkType = 'node'
       node = yield select(getNode, p.nodeId)
       nodeType = node.type
-      if (p.inputType !== 'midi' && p.inputId !== 'seq-step') {
+      if (p.inputType !== 'midi' && p.inputId !== 'seq-step' && p.inputId !== 'anim') {
         const modifiers = yield call(getAll)
         const defaultModifierIds = yield select(getDefaultModifierIds)
 
@@ -106,6 +109,21 @@ export function* inputLinkCreate (action) {
       }
     }
 
+    if (p.inputType === 'anim') {
+      const animStartActionId = yield call(uid)
+      yield put(linkableActionCreate(animStartActionId, uAnimStart(linkId)))
+      linkableActions.animStart = animStartActionId
+
+      const animOpts = yield call(animGenerateOptions)
+
+      for (let key in animOpts) {
+        const item = animOpts[key]
+        animOptionIds.push(item.id)
+
+        yield put(uNodeCreate(item.id, item))
+      }
+    }
+
     if (linkType === 'node') {
       const toggleActionId = yield call(uid)
       yield put(linkableActionCreate(toggleActionId, nodeActiveInputLinkToggle(p.nodeId, linkId)))
@@ -129,6 +147,7 @@ export function* inputLinkCreate (action) {
       linkableActions,
       sequencerGridId,
       linkType,
+      animOptionIds,
     }
 
     yield put(rInputLinkCreate(linkId, link))
