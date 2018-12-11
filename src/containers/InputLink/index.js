@@ -3,11 +3,13 @@ import InputLink from '../../components/InputLink'
 import getInputLinkLfoOptionIds from '../../selectors/getInputLinkLfoOptionIds'
 import getInputLinkModifierIds from '../../selectors/getInputLinkModifierIds'
 import getInputLinkMidiOptionIds from '../../selectors/getInputLinkMidiOptionIds'
+import getInputLinkAnimOptionIds from '../../selectors/getInputLinkAnimOptionIds'
 import getInputLink from '../../selectors/getInputLink'
 import getIsInputLinkActive from '../../selectors/getIsInputLinkActive'
 import getCanInputLinkDisable from '../../selectors/getCanInputLinkDisable'
 import { uInputLinkDelete, uInputLinkCreate } from '../../store/inputLinks/actions'
 import { nodeTabOpen, nodeActiveInputLinkToggle } from '../../store/nodes/actions'
+import { uAnimStart } from '../../store/anims/actions'
 
 const mapStateToProps = (state, ownProps) => {
   const link = getInputLink(state, ownProps.id)
@@ -16,10 +18,12 @@ const mapStateToProps = (state, ownProps) => {
     modifierIds: getInputLinkModifierIds(state, ownProps.id),
     lfoOptionIds: getInputLinkLfoOptionIds(state, ownProps.id),
     midiOptionIds: getInputLinkMidiOptionIds(state, ownProps.id),
+    animOptionIds: getInputLinkAnimOptionIds(state, ownProps.id),
     isActive: getIsInputLinkActive(state, ownProps.id),
     isActivateVisible: getCanInputLinkDisable(state, ownProps.id),
     toggleActionId: link.linkableActions.toggleActivate,
     sequencerGridId: link.sequencerGridId,
+    animStartActionId: link.linkableActions.animStart,
   }
 }
 
@@ -33,6 +37,9 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
   },
   onActivateAssignClick: () => {
     dispatch(uInputLinkCreate(ownProps.id, 'midi', 'inputLinkToggle'))
+  },
+  onAnimStartClick: () => {
+    dispatch(uAnimStart(ownProps.id))
   },
 })
 
