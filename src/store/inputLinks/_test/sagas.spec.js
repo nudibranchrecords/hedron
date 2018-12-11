@@ -1,3 +1,7 @@
+/*
+DISABLING BECAUSE THIS WONT BE SAGA FOR MUCH LONGER
+ALSO WILL BE CHANGING TEST LIB
+
 import 'babel-polyfill'
 import test from 'tape'
 import { select, put, call } from 'redux-saga/effects'
@@ -728,3 +732,5 @@ test('(Saga) inputLinkCreate (linkableAction)', (t) => {
   t.equal(generator.next().done, true, 'Generator ends')
   t.end()
 })
+
+*/
