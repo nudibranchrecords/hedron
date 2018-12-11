@@ -4,27 +4,14 @@ import Control from '../../containers/Control'
 import styled from 'styled-components'
 import uiEventEmitter from '../../utils/uiEventEmitter'
 import Button from '../../components/Button'
+import ButtonWithMidiLink from '../ButtonWithMidiLink'
 import Row from '../../components/Row'
-import InputLinkMidiControl from '../../containers/InputLinkMidiControl'
 import SequencerGrid from '../../containers/SequencerGrid'
 
 const Wrapper = styled.div`
   display: flex;
   flex-wrap: wrap;
   margin-bottom: 0.5rem;
-`
-
-const List = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-`
-
-const Container = styled.div`
-  width: 100%;
-`
-
-const ActivateButton = styled(Button)`
-  margin-right: 0.25rem;
 `
 
 const DeleteButton = styled(Button)`
@@ -84,24 +71,29 @@ class InputLink extends React.Component {
             <SequencerGrid nodeId={sequencerGridId} />
           }
           {animStartActionId &&
-            <Container>
-              <List>
-                {animOptionIds.map((id) => (
-                  <Item key={id} size={size}>
-                    <Control nodeId={id} />
-                  </Item>
-                ))}
-              </List>
-              <Button onClick={onAnimStartClick}>Start Anim</Button>
-            </Container>
+            animOptionIds.map((id) => (
+              <Item key={id} size={size}>
+                <Control nodeId={id} />
+              </Item>
+            ))
           }
         </Wrapper>
         <Row justify='space-between'>
           {isActivateVisible &&
-            <Row>
-              <ActivateButton onClick={onActivateToggle}>{isActive ? 'Disable' : 'Activate'}</ActivateButton>
-              <InputLinkMidiControl linkableActionId={toggleActionId} />
-            </Row>
+            <ButtonWithMidiLink
+              onClick={onActivateToggle}
+              linkableActionId={toggleActionId}
+            >
+              {isActive ? 'Disable' : 'Activate'}
+            </ButtonWithMidiLink>
+          }
+          {animStartActionId &&
+            <ButtonWithMidiLink
+              onClick={onAnimStartClick}
+              linkableActionId={animStartActionId}
+            >
+              Start Anim
+            </ButtonWithMidiLink>
           }
 
           <DeleteButton onClick={onDeleteClick}>Delete "{title}"</DeleteButton>
