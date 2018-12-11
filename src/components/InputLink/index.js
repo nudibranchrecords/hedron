@@ -14,6 +14,15 @@ const Wrapper = styled.div`
   margin-bottom: 0.5rem;
 `
 
+const List = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+`
+
+const Container = styled.div`
+  width: 100%;
+`
+
 const ActivateButton = styled(Button)`
   margin-right: 0.25rem;
 `
@@ -51,7 +60,7 @@ class InputLink extends React.Component {
 
   render () {
     const { modifierIds, lfoOptionIds, size, midiOptionIds, title, toggleActionId,
-      onAnimStartClick, animStartActionId,
+      onAnimStartClick, animStartActionId, animOptionIds,
       sequencerGridId, onDeleteClick, onActivateToggle, isActive, isActivateVisible } = this.props
     return (
       <div>
@@ -75,7 +84,16 @@ class InputLink extends React.Component {
             <SequencerGrid nodeId={sequencerGridId} />
           }
           {animStartActionId &&
-            <Button onClick={onAnimStartClick}>Start Anim</Button>
+            <Container>
+              <List>
+                {animOptionIds.map((id) => (
+                  <Item key={id} size={size}>
+                    <Control nodeId={id} />
+                  </Item>
+                ))}
+              </List>
+              <Button onClick={onAnimStartClick}>Start Anim</Button>
+            </Container>
           }
         </Wrapper>
         <Row justify='space-between'>
@@ -105,6 +123,9 @@ InputLink.propTypes = {
     PropTypes.string
   ),
   midiOptionIds: PropTypes.arrayOf(
+    PropTypes.string
+  ),
+  animOptionIds: PropTypes.arrayOf(
     PropTypes.string
   ),
   size: PropTypes.string,

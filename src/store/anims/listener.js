@@ -12,7 +12,7 @@ const handleAnimStart = (action, store) => {
   }
 
   new TWEEN.Tween(props)
-    .to({ nodeValue: 0.9 }, 1000)
+    .to({ nodeValue: 0.9 }, 10000)
     .easing(TWEEN.Easing.Quadratic.Out)
     .onUpdate(() => {
       store.dispatch(nodeValueUpdate(inputLink.nodeId, props.nodeValue))
