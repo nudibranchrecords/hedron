@@ -12,6 +12,7 @@ import { linkableActionCreate, linkableActionInputLinkAdd,
 import lfoGenerateOptions from '../../utils/lfoGenerateOptions'
 import midiGenerateOptions from '../../utils/midiGenerateOptions'
 import sequencerGenerateOptions from '../../utils/sequencerGenerateOptions'
+import animGenerateOptions from '../../utils/animGenerateOptions'
 import { midiStartLearning } from '../midi/actions'
 import getCurrentBankIndex from '../../selectors/getCurrentBankIndex'
 import { getAll } from '../../externals/modifiers'
@@ -28,6 +29,7 @@ export function* inputLinkCreate (action) {
   const modifierIds = []
   const lfoOptionIds = []
   const midiOptionIds = []
+  const animOptionIds = []
   let linkableActions = {}
   let bankIndex, node, nodeType, linkType, sequencerGridId
 
@@ -111,6 +113,15 @@ export function* inputLinkCreate (action) {
       const animStartActionId = yield call(uid)
       yield put(linkableActionCreate(animStartActionId, uAnimStart(linkId)))
       linkableActions.animStart = animStartActionId
+
+      const animOpts = yield call(animGenerateOptions)
+
+      for (let key in animOpts) {
+        const item = animOpts[key]
+        animOptionIds.push(item.id)
+
+        yield put(uNodeCreate(item.id, item))
+      }
     }
 
     if (linkType === 'node') {
@@ -136,6 +147,7 @@ export function* inputLinkCreate (action) {
       linkableActions,
       sequencerGridId,
       linkType,
+      animOptionIds,
     }
 
     yield put(rInputLinkCreate(linkId, link))
