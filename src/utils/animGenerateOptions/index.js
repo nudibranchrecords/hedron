@@ -1,8 +1,7 @@
 import uid from 'uid'
 
 // Generate all tween.js options for easing funcs
-const curves = [
-  'Linear',
+const easeCurves = [
   'Quadratic',
   'Cubic',
   'Quartic',
@@ -17,9 +16,14 @@ const curves = [
 
 const modes = [ 'In', 'Out', 'InOut' ]
 
-const curveOptions = []
+const curveOptions = [
+  {
+    value: 'Linear.None',
+    label: 'Linear',
+  },
+]
 
-curves.forEach(curve => {
+easeCurves.forEach(curve => {
   modes.forEach(mode => {
     const val = `${curve}.${mode}`
     curveOptions.push({
@@ -43,7 +47,7 @@ export default () => {
       title: 'Curve',
       id: uid(),
       key: 'curve',
-      value: 'sine',
+      value: 'Linear.None',
       type: 'select',
       inputLinkIds: [],
       subNode: true,
