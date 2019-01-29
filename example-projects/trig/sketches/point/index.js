@@ -4,7 +4,7 @@ class Point {
 
   constructor () {
     this.root = new THREE.Group()
-    const geom = new THREE.IcosahedronGeometry(100)
+    const geom = new THREE.IcosahedronGeometry(0.5)
     const mat = new THREE.MeshNormalMaterial()
     this.mesh = new THREE.Mesh(geom, mat)
 
@@ -12,7 +12,7 @@ class Point {
   }
 
   update (params, time, frameDiff, allParams) {
-    const rad = 1500
+    const rad = 5
 
     this.mesh.position.x = (rad * params.posX) - rad / 2
     this.mesh.position.y = (rad * params.posY) - rad / 2
