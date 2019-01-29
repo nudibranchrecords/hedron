@@ -13,8 +13,6 @@ const handleAnimStart = (action, store) => {
   const duration = opts.duration * 10000
   const easing = get(TWEEN.Easing, opts.curve)
 
-  console.log(opts)
-
   const props = {
     nodeValue: node.value,
   }
