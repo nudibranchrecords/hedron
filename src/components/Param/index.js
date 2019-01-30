@@ -195,7 +195,7 @@ class Param extends React.Component {
           </Inner>
           {isOpen &&
           <div>
-            <Bottom isActive={isActive} innerRef={node => { this.bottomEl = node }}>
+            <Bottom isActive={isActive} ref={node => { this.bottomEl = node }}>
               {children}
             </Bottom>
             <Padder isActive={isActive} height={this.state.bottomHeight} />
