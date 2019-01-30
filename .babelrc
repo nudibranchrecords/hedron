@@ -7,6 +7,7 @@
         "react"
       ],
       "plugins": [
+        "styled-components",
         "react-hot-loader/babel",
         "transform-object-rest-spread"
       ]
@@ -18,6 +19,7 @@
         "react"
       ],
       "plugins": [
+        "styled-components",
         "transform-object-rest-spread"
       ]
     },
@@ -28,6 +30,7 @@
         "react"
       ],
       "plugins": [
+        "styled-components",
         "react-hot-loader/babel",
         "transform-object-rest-spread"
       ]

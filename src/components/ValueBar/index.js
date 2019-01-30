@@ -196,7 +196,7 @@ class ValueBar extends React.Component {
     return (
       <Wrapper markerIsVisible={markerIsVisible} onDoubleClick={this.props.onDoubleClick}>
         <Bar
-          innerRef={node => { this.canvas = node }}
+          ref={node => { this.canvas = node }}
           onMouseDown={this.props.onMouseDown || this.handleMouseDown}
         />
         {this.props.formIsVisible &&

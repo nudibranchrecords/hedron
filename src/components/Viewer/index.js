@@ -18,7 +18,7 @@ const Wrapper = styled.div`
 class Viewer extends React.Component {
   render () {
     return (
-      <Wrapper innerRef={this.props.containerElRef} id='viewer' />
+      <Wrapper ref={this.props.containerElRef} id='viewer' />
     )
   }
 }
