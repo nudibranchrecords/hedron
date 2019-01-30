@@ -22,7 +22,6 @@ const Button = styled(ButtonComponent)`
 const Thumbs = styled.div`
   display: flex;
   flex-wrap: wrap;
-  margin: 0 -0.25rem 0.5rem;
 `
 
 const Panel = styled.div`
