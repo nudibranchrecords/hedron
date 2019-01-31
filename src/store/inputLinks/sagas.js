@@ -13,6 +13,7 @@ import lfoGenerateOptions from '../../utils/lfoGenerateOptions'
 import midiGenerateOptions from '../../utils/midiGenerateOptions'
 import sequencerGenerateOptions from '../../utils/sequencerGenerateOptions'
 import animGenerateOptions from '../../utils/animGenerateOptions'
+import audioGenerateOptions from '../../utils/audioGenerateOptions'
 import { midiStartLearning } from '../midi/actions'
 import getCurrentBankIndex from '../../selectors/getCurrentBankIndex'
 import { getAll } from '../../externals/modifiers'
@@ -30,6 +31,7 @@ export function* inputLinkCreate (action) {
   const lfoOptionIds = []
   const midiOptionIds = []
   const animOptionIds = []
+  const audioOptionIds = []
   let linkableActions = {}
   let bankIndex, node, nodeType, linkType, sequencerGridId
 
@@ -70,6 +72,17 @@ export function* inputLinkCreate (action) {
             }
           }
         }
+      }
+    }
+
+    if (p.inputId === 'audio') {
+      const audioOpts = yield call(audioGenerateOptions)
+
+      for (let key in audioOpts) {
+        const item = audioOpts[key]
+        audioOptionIds.push(item.id)
+
+        yield put(uNodeCreate(item.id, item))
       }
     }
 
@@ -144,6 +157,7 @@ export function* inputLinkCreate (action) {
       modifierIds,
       lfoOptionIds,
       midiOptionIds,
+      audioOptionIds,
       linkableActions,
       sequencerGridId,
       linkType,

@@ -40,8 +40,13 @@ export function* handleInput (action) {
           }
 
           if (p.inputId === 'lfo') {
-            let o = yield select(getNodesValues, links[i].lfoOptionIds)
+            const o = yield select(getNodesValues, links[i].lfoOptionIds)
             value = yield call(lfoProcess, value, o.shape, o.rate, o.phase)
+          }
+
+          if (p.inputId === 'audio') {
+            const o = yield select(getNodesValues, links[i].audioOptionIds)
+            value = p.value[o.audioBand]
           }
 
           if (links[i].modifierIds && links[i].modifierIds.length) {
