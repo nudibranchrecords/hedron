@@ -1,10 +1,13 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
+import theme from '../../utils/theme'
 
 const Wrapper = styled.div`
   width: 100%;
   position: relative;
+  background: ${theme.bgColorDark2};
+  overflow: hidden;
 
   > canvas {
     position: absolute;
