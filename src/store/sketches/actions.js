@@ -42,10 +42,10 @@ export function sketchesReplaceAll (sketches) {
   }
 }
 
-export function sketchNodeOpenedToggle (sketchId, nodeId, nodeType) {
+export function sketchNodeOpenedToggle (sketchId, nodeId) {
   return {
     type: 'SKETCH_NODE_OPENED_TOGGLE',
-    payload: { sketchId, nodeId, nodeType },
+    payload: { sketchId, nodeId },
   }
 }
 
