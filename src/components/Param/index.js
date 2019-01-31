@@ -193,14 +193,6 @@ class Param extends React.Component {
               </Row>
             </Top>
           </Inner>
-          {isOpen &&
-          <div>
-            <Bottom isActive={isActive} ref={node => { this.bottomEl = node }}>
-              {children}
-            </Bottom>
-            <Padder isActive={isActive} height={this.state.bottomHeight} />
-          </div>
-          }
         </Wrapper>
       </ThemeProvider>
     )

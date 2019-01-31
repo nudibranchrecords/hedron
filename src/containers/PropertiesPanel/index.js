@@ -1,18 +1,17 @@
 import { connect } from 'react-redux'
-import MenuPanel from '../../components/MenuPanel'
-import VisibleSwitch from '../../components/VisibleSwitch'
+import PropertiesPanel from '../../components/PropertiesPanel'
 import getOpenedSketchNode from '../../selectors/getOpenedSketchNode'
 
 const mapStateToProps = (state) => {
   const node = getOpenedSketchNode(state)
   return {
-    component: MenuPanel,
-    isVisible: node !== undefined,
+    isOpen: node !== undefined,
     title: node && node.title,
+    nodeId: node && node.id,
   }
 }
 
 export default connect(
   mapStateToProps,
   null
-)(VisibleSwitch)
+)(PropertiesPanel)
