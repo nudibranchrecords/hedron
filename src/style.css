@@ -12,6 +12,7 @@ html {
 body {
   margin: 0;
   font-size: 0.8rem;
+  overflow: hidden;
 }
 
 p a {
@@ -78,4 +79,19 @@ h1, h2, h3, h4, h5, h6 {
 .Select-option.is-selected {
   background: white;
   color: black;
+}
+
+::-webkit-scrollbar-track
+{
+    background-color: #333;
+}
+
+::-webkit-scrollbar
+{
+    width: 5px;
+}
+
+::-webkit-scrollbar-thumb
+{
+    background-color: #DA5782;
 }
