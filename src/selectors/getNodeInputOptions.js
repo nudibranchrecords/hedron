@@ -7,24 +7,8 @@ export default (state, nodeId) => {
       disabled: true,
     },
     {
-      value: 'audio_0',
-      type: 'audio',
-      label: 'Low',
-    },
-    {
-      value: 'audio_1',
-      type: 'audio',
-      label: 'Low-Mid',
-    },
-    {
-      value: 'audio_2',
-      type: 'audio',
-      label: 'Mid',
-    },
-    {
-      value: 'audio_3',
-      type: 'audio',
-      label: 'High',
+      value: 'audio',
+      label: 'Audio',
     },
     {
       value: 'midi',

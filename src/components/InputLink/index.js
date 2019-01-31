@@ -47,7 +47,7 @@ class InputLink extends React.Component {
 
   render () {
     const { modifierIds, lfoOptionIds, size, midiOptionIds, title, toggleActionId,
-      onAnimStartClick, animStartActionId, animOptionIds,
+      onAnimStartClick, animStartActionId, animOptionIds, audioOptionIds,
       sequencerGridId, onDeleteClick, onActivateToggle, isActive, isActivateVisible } = this.props
     return (
       <div>
@@ -63,6 +63,11 @@ class InputLink extends React.Component {
             </Item>
           ))}
           {midiOptionIds && midiOptionIds.map((id) => (
+            <Item key={id} size={size}>
+              <Control nodeId={id} />
+            </Item>
+          ))}
+          {audioOptionIds && audioOptionIds.map((id) => (
             <Item key={id} size={size}>
               <Control nodeId={id} />
             </Item>
@@ -118,6 +123,9 @@ InputLink.propTypes = {
     PropTypes.string
   ),
   animOptionIds: PropTypes.arrayOf(
+    PropTypes.string
+  ),
+  audioOptionIds: PropTypes.arrayOf(
     PropTypes.string
   ),
   size: PropTypes.string,
