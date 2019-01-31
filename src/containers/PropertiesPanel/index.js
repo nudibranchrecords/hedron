@@ -1,9 +1,8 @@
 import { connect } from 'react-redux'
 import PropertiesPanel from '../../components/PropertiesPanel'
-import getOpenedSketchNode from '../../selectors/getOpenedSketchNode'
 
-const mapStateToProps = (state) => {
-  const node = getOpenedSketchNode(state)
+const mapStateToProps = (state, ownProps) => {
+  const node = ownProps.node
   return {
     isOpen: node !== undefined,
     title: node && node.title,
