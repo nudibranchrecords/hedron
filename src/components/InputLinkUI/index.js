@@ -8,6 +8,9 @@ import { onlyUpdateForKeys } from 'recompose'
 
 const enhance = onlyUpdateForKeys(['currentInputLinkId'])
 
+const Wrapper = styled.div`
+  min-height: 9rem;
+`
 const AddNew = styled.div`
   display: flex;
   font-size: 0.7rem;
@@ -36,7 +39,7 @@ const TabItem = styled.a`
 `
 
 const InputLinkUI = enhance(({ inputLinkIds, nodeId, currentInputLinkId }) => (
-  <div>
+  <Wrapper>
     <Top>
       <Tabs>
         {inputLinkIds.alwaysActive.map((id, index) => (
@@ -59,7 +62,7 @@ const InputLinkUI = enhance(({ inputLinkIds, nodeId, currentInputLinkId }) => (
     </Top>
 
     {currentInputLinkId && <InputLink id={currentInputLinkId} nodeId={nodeId} />}
-  </div>
+  </Wrapper>
 ))
 
 InputLinkUI.propTypes = {
