@@ -13,7 +13,6 @@ const Header = styled.h4`
   padding: 0.5rem;
   background: ${theme.bgColorDark3};
   color: ${theme.textColorLight1};
-  cursor: pointer;
 `
 
 const Body = styled.div`
