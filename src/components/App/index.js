@@ -12,6 +12,7 @@ import EditingOverlay from '../../containers/EditingOverlay'
 import ErrorOverlay from '../../containers/ErrorOverlay'
 import AboutOverlay from '../../containers/AboutOverlay'
 import MainViewOuter from '../../containers/MainViewOuter'
+import PropertiesPanel from '../../containers/PropertiesPanel'
 import Home from '../../containers/Home'
 import ScenesNav from '../ScenesNav'
 
@@ -32,6 +33,8 @@ const Left = styled.div`
 
 const Right = styled.div`
   flex: 1;
+  display: flex;
+  flex-direction: column;
 `
 
 const Bar = styled.div`
@@ -54,6 +57,7 @@ const App = ({ stats, leftWidth, onLeftDrag, onWrapperClick }) => (
         <Route path='/macros' component={Macros} />
         <Route path='/settings' component={Settings} />
       </MainViewOuter>
+      <PropertiesPanel />
     </Right>
     <Bar>
       <Route path='/scenes' component={ScenesNav} />
