@@ -12,7 +12,8 @@ import EditingOverlay from '../../containers/EditingOverlay'
 import ErrorOverlay from '../../containers/ErrorOverlay'
 import AboutOverlay from '../../containers/AboutOverlay'
 import MainViewOuter from '../../containers/MainViewOuter'
-import PropertiesPanel from '../../containers/PropertiesPanel'
+import ParamPropertiesPanel from '../../containers/ParamPropertiesPanel'
+import MacroPropertiesPanel from '../../containers/MacroPropertiesPanel'
 import Home from '../../containers/Home'
 import ScenesNav from '../ScenesNav'
 
@@ -57,7 +58,9 @@ const App = ({ stats, leftWidth, onLeftDrag, onWrapperClick }) => (
         <Route path='/macros' component={Macros} />
         <Route path='/settings' component={Settings} />
       </MainViewOuter>
-      <PropertiesPanel />
+
+      <Route path='/scenes' component={ParamPropertiesPanel} />
+      <Route path='/macros' component={MacroPropertiesPanel} />
     </Right>
     <Bar>
       <Route path='/scenes' component={ScenesNav} />
