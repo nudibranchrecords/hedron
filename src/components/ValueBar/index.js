@@ -51,6 +51,7 @@ class ValueBar extends React.Component {
     this.handleMouseDown = this.handleMouseDown.bind(this)
     this.handleMouseMove = this.handleMouseMove.bind(this)
     this.setSize = this.setSize.bind(this)
+    this.clearSize = this.clearSize.bind(this)
     this.draw = this.draw.bind(this)
     this.flashFading = false
   }
@@ -66,6 +67,7 @@ class ValueBar extends React.Component {
 
     uiEventEmitter.on('repaint', this.setSize)
     uiEventEmitter.on('slow-tick', this.draw)
+    uiEventEmitter.on('panel-resize-start', this.clearSize)
 
     this.shotCount = this.getData().shotCount
   }
@@ -93,13 +95,11 @@ class ValueBar extends React.Component {
     clearInterval(this.sizer)
     uiEventEmitter.removeListener('repaint', this.setSize)
     uiEventEmitter.removeListener('slow-tick', this.draw)
+    uiEventEmitter.removeListener('panel-resize-start', this.clearSize)
   }
 
   setSize () {
-    this.canvas.width = 0
-    this.canvas.style.display = 'none'
-    this.containerEl.style.display = 'none'
-    this.containerEl.style.display = 'block'
+    this.clearSize()
 
     this.sizer = setTimeout(() => {
       this.width = this.containerEl.offsetWidth * pixelDensity
@@ -109,6 +109,13 @@ class ValueBar extends React.Component {
       this.canvas.style.height = this.height / pixelDensity + 'px'
       this.draw(true)
     })
+  }
+
+  clearSize () {
+    this.canvas.width = 0
+    this.canvas.style.display = 'none'
+    this.containerEl.style.display = 'none'
+    this.containerEl.style.display = 'block'
   }
 
   handleMouseDown (e) {
@@ -196,7 +203,7 @@ class ValueBar extends React.Component {
     return (
       <Wrapper markerIsVisible={markerIsVisible} onDoubleClick={this.props.onDoubleClick}>
         <Bar
-          innerRef={node => { this.canvas = node }}
+          ref={node => { this.canvas = node }}
           onMouseDown={this.props.onMouseDown || this.handleMouseDown}
         />
         {this.props.formIsVisible &&

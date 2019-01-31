@@ -11,6 +11,7 @@ app.on('ready', () => {
     const { default: installExtension, REDUX_DEVTOOLS } = require('electron-devtools-installer')
 
     installExtension(REDUX_DEVTOOLS)
+        // eslint-disable-next-line no-console
         .then((name) => console.log(`Added Extension:  ${name}`))
         .catch((err) => console.error('An error occurred: ', err))
   }
