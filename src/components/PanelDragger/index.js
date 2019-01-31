@@ -52,12 +52,15 @@ class PanelDragger extends React.Component {
   }
 
   handleMouseMove (e) {
+    uiEventEmitter.emit('panel-resize-start')
+
     const diff = (e.screenX - this.pos) / window.innerWidth * 100
     const newVal = Math.max(0, Math.min(100, this.currentPos + diff))
     this.props.onHandleDrag(newVal)
-    setTimeout(() => {
+    clearTimeout(this.dragDebounce)
+    this.dragDebounce = setTimeout(() => {
       uiEventEmitter.emit('repaint')
-    })
+    }, 500)
   }
 
   render () {
