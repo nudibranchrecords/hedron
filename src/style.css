@@ -80,3 +80,18 @@ h1, h2, h3, h4, h5, h6 {
   background: white;
   color: black;
 }
+
+::-webkit-scrollbar-track
+{
+    background-color: #333;
+}
+
+::-webkit-scrollbar
+{
+    width: 5px;
+}
+
+::-webkit-scrollbar-thumb
+{
+    background-color: #DA5782;
+}
