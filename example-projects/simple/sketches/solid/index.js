@@ -47,7 +47,7 @@ class Solid {
     const mat = new THREE.MeshBasicMaterial(
       { wireframe: true, color: 0xffffff }
     )
-    const size = 300
+    const size = 1
 
     // Array geometries (the platonic solids!)
     const geoms = [

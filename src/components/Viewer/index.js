@@ -1,10 +1,13 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
+import theme from '../../utils/theme'
 
 const Wrapper = styled.div`
   width: 100%;
   position: relative;
+  background: ${theme.bgColorDark2};
+  overflow: hidden;
 
   > canvas {
     position: absolute;
@@ -18,7 +21,7 @@ const Wrapper = styled.div`
 class Viewer extends React.Component {
   render () {
     return (
-      <Wrapper innerRef={this.props.containerElRef} id='viewer' />
+      <Wrapper ref={this.props.containerElRef} id='viewer' />
     )
   }
 }
