@@ -4,8 +4,8 @@ export const getModules = (state) => {
       title: state.availableModules[id].defaultTitle,
       category: state.availableModules[id].category,
       author: state.availableModules[id].author,
-      label: state.availableModules[id].label,
       description: state.availableModules[id].description,
+      filePath: state.availableModules[id].filePath,
       id,
     }
   ))
