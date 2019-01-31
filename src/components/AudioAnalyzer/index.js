@@ -5,7 +5,7 @@ import Control from '../../containers/Control'
 import styled, { css } from 'styled-components'
 import theme from '../../utils/theme'
 
-let height, val, offset, hue, i, inputs, bands
+let height, val, offset, hue, i, inputs
 
 const triH = 8
 
@@ -79,8 +79,7 @@ class AudioAnalyzer extends React.Component {
 
   draw () {
     inputs = this.context.store.getState().inputs
-    bands = [inputs.audio_0.value, inputs.audio_1.value, inputs.audio_2.value, inputs.audio_3.value]
-    this.drawGraph(bands)
+    this.drawGraph(inputs.audio.value)
   }
 
   drawGraph (data) {

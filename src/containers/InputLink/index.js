@@ -4,6 +4,7 @@ import getInputLinkLfoOptionIds from '../../selectors/getInputLinkLfoOptionIds'
 import getInputLinkModifierIds from '../../selectors/getInputLinkModifierIds'
 import getInputLinkMidiOptionIds from '../../selectors/getInputLinkMidiOptionIds'
 import getInputLinkAnimOptionIds from '../../selectors/getInputLinkAnimOptionIds'
+import getInputLinkAudioOptionIds from '../../selectors/getInputLinkAudioOptionIds'
 import getInputLink from '../../selectors/getInputLink'
 import getIsInputLinkActive from '../../selectors/getIsInputLinkActive'
 import getCanInputLinkDisable from '../../selectors/getCanInputLinkDisable'
@@ -19,6 +20,7 @@ const mapStateToProps = (state, ownProps) => {
     lfoOptionIds: getInputLinkLfoOptionIds(state, ownProps.id),
     midiOptionIds: getInputLinkMidiOptionIds(state, ownProps.id),
     animOptionIds: getInputLinkAnimOptionIds(state, ownProps.id),
+    audioOptionIds: getInputLinkAudioOptionIds(state, ownProps.id),
     isActive: getIsInputLinkActive(state, ownProps.id),
     isActivateVisible: getCanInputLinkDisable(state, ownProps.id),
     toggleActionId: link.linkableActions.toggleActivate,
