@@ -17,7 +17,6 @@ const mapDispatchToProps = (dispatch, ownProps) => (
     onAddClick: (id) => { dispatch(uSketchCreate(id)) },
     onChooseFolderClick: () => { dispatch(projectChooseSketchesFolder()) },
     onExpandField: (category) => {
-      console.log(category)
       // TODO save the (un)expanded state with more permanance
     },
   }

@@ -24,63 +24,44 @@ const Items = styled.ul`
 `
 
 class AddSketch extends React.Component {// =
-  constructor () {
-    super()
-    this.state = {
-      open:{},
+  constructor (props) {
+    super(props)
+    const sections = {}
+    for (let item of props.items) {
+      if (sections[item.category] === undefined) {
+        sections[item.category] = { open: false, children:[] }
+      }
+      sections[item.category].children.push(<li key={item.id}>
+        <Button size='large' onClick={() => props.onAddClick(item.id)}>{item.title}</Button>
+      </li>)
     }
+    this.state = { sections:sections }
   }
 
   OnExpand (key) {
-    let open = this.state.open
-    open[key] = !open[key]
+    let sections = this.state.sections
+    sections[key].open = !sections[key].open
     this.setState({
-      open:open,
+      sections:sections,
     })
     this.props.onExpandField(key)
   }
 
   render () {
-    const { items, onAddClick, onChooseFolderClick, sketchesPath } = this.props
-    let sections = {}
-    let open = this.state.open
+    const { items, onChooseFolderClick, sketchesPath } = this.props
 
-    // step through all items, define the buttons and create a section if it doesn't currently exist
-    for (let item of items) {
-      const button = (<li key={item.id}>
-        <Button size='large' onClick={() => onAddClick(item.id)}>{item.title}</Button>
-      </li>)
-
-      // this could change to multiple things down the line (category, author, year, path, etc)
-      const key = item.category
-      if (!sections[key]) {
-        sections[key] = { children:[], key:key }
-        // need to move this out of the render function, needs to have more perminance
-        if (open[key] === undefined) { open[key] = false }
-      }
-      sections[key].children.push(button)
-    }
-
-    // create the section elements after all their children have been organized
-    const sectionsFragment = []
-    for (let key in sections) {
-      sectionsFragment.push(<Category tag={'h2'} title={key} isOpen={this.state.open[key]} onHeaderClick={() => {
+    const sectionElements = []
+    for (let key in this.state.sections) {
+      sectionElements.push(<Category tag={'h2'} title={key} isOpen={this.state.sections[key].open} onHeaderClick={() => {
         this.OnExpand(key)
-      }}><Items> {sections[key].children} </Items></Category>)
-    }
-
-    // saving the state
-    if (open !== this.state.open) {
-      this.setState({
-        open:open,
-      })
+      }}><Items> { this.state.sections[key].children} </Items></Category>)
     }
 
     return (
       <React.Fragment>
         <SceneHeader>Add Sketch</SceneHeader>
         <CategoryHeader>Categories</CategoryHeader>
-        {sectionsFragment}
+        {sectionElements}
         {items.length === 0 && <p>You haven't chosen the sketch folder for the project yet.</p>}
         <Button onClick={onChooseFolderClick}>Choose Sketch Folder</Button>
         <br />
