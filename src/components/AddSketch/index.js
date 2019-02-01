@@ -29,7 +29,7 @@ class AddSketch extends React.Component {// =
     const sections = {}
     for (let item of props.items) {
       if (sections[item.category] === undefined) {
-        sections[item.category] = { open: false, children:[] }
+        sections[item.category] = { children:[] }
       }
       sections[item.category].children.push(<li key={item.id}>
         <Button size='large' onClick={() => props.onAddClick(item.id)}>{item.title}</Button>
@@ -38,17 +38,8 @@ class AddSketch extends React.Component {// =
     this.state = { sections:sections }
   }
 
-  OnExpand (key) {
-    let sections = this.state.sections
-    sections[key].open = !sections[key].open
-    this.setState({
-      sections:sections,
-    })
-    this.props.onExpandField(key)
-  }
-
   render () {
-    const { items, onChooseFolderClick, sketchesPath } = this.props
+    const { items, open, onExpandField, onChooseFolderClick, sketchesPath } = this.props
     const sectionElements = []
     for (let key in this.state.sections) {
       sectionElements.push(
@@ -56,9 +47,9 @@ class AddSketch extends React.Component {// =
           tag={'h2'}
           title={key}
           key={key}
-          isOpen={this.state.sections[key].open}
+          isOpen={open[key] !== undefined}
           onHeaderClick={() => {
-            this.OnExpand(key)
+            onExpandField(key)
           }}>
           <Items> { this.state.sections[key].children} </Items></Category>
       )
@@ -79,6 +70,7 @@ class AddSketch extends React.Component {// =
 
 AddSketch.propTypes = {
   sketchesPath: PropTypes.string,
+  open:PropTypes.object.isRequired,
   onAddClick: PropTypes.func.isRequired,
   onChooseFolderClick: PropTypes.func.isRequired,
   onExpandField: PropTypes.func.isRequired,
