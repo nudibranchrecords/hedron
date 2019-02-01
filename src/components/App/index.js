@@ -45,7 +45,7 @@ const Bar = styled.div`
   background: #111;
   height: 100%;
 `
-const App = ({ stats, leftWidth, onLeftDrag, onWrapperClick }) => (
+const App = ({ stats, leftWidth, onLeftDrag, onWrapperClick, sketchId, macroId }) => (
   <Wrapper onMouseDown={onWrapperClick}>
     <Left width={leftWidth}>
       <Overview stats={stats} />
@@ -59,7 +59,7 @@ const App = ({ stats, leftWidth, onLeftDrag, onWrapperClick }) => (
         <Route path='/settings' component={Settings} />
       </MainViewOuter>
 
-      <Route path='/scenes' component={ParamPropertiesPanel} />
+      <Route path='/scenes' render={() => <ParamPropertiesPanel sketchId={sketchId} />} />
       <Route path='/macros' component={MacroPropertiesPanel} />
     </Right>
     <Bar>
@@ -79,4 +79,6 @@ App.propTypes = {
   leftWidth: PropTypes.number.isRequired,
   onLeftDrag: PropTypes.func.isRequired,
   onWrapperClick: PropTypes.func.isRequired,
+  sketchId: PropTypes.string,
+  macroId: PropTypes.string,
 }

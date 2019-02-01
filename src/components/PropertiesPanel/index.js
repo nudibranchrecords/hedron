@@ -2,10 +2,10 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import MenuPanel from '../../components/MenuPanel'
 
-const PropertiesPanel = ({ title, isOpen, nodeId, Component }) => (
+const PropertiesPanel = ({ title, isOpen, nodeId, Component, onCloseClick }) => (
   <div>
     {isOpen &&
-      <MenuPanel title={title}>
+      <MenuPanel title={title} onCloseClick={onCloseClick}>
         <Component nodeId={nodeId} />
       </MenuPanel>
     }
@@ -17,6 +17,7 @@ PropertiesPanel.propTypes = {
   nodeId: PropTypes.string,
   isOpen: PropTypes.bool,
   Component: PropTypes.func,
+  onCloseClick: PropTypes.func,
 }
 
 export default PropertiesPanel
