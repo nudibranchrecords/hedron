@@ -49,6 +49,13 @@ export function sketchNodeOpenedToggle (sketchId, nodeId) {
   }
 }
 
+export function sketchNodeOpenedClose (sketchId) {
+  return {
+    type: 'SKETCH_NODE_OPENED_CLOSE',
+    payload: { sketchId },
+  }
+}
+
 export function sketchUpdate (sketchId, obj) {
   return {
     type: 'SKETCH_UPDATE',

@@ -12,9 +12,11 @@ const Wrapper = styled.div`
 `
 
 const Header = styled.h4`
-  display: block;
+  display: flex;
   margin: 0;
-  padding: 0.5rem;
+  padding-left: 0.5rem;
+  height: 2rem;
+  align-items: center;
   background: ${theme.bgColorDark3};
   color: ${theme.textColorLight1};
 `
@@ -28,9 +30,23 @@ const Body = styled.div`
   overflow: auto;
 `
 
-const MenuPanel = ({ title, children }) => (
+const Icon = styled.span`
+  display: block;
+  padding: 0.5rem;
+  margin-left: auto;
+  cursor: pointer;
+
+  &:hover {
+    color: ${theme.actionColor1};
+  }
+`
+
+const MenuPanel = ({ title, children, onCloseClick }) => (
   <Wrapper>
-    <Header>{title}</Header>
+    <Header>
+      {title}
+      { onCloseClick && <Icon onClick={onCloseClick}>{'×'}</Icon> }
+    </Header>
     <Body>
       {children}
     </Body>
@@ -40,6 +56,7 @@ const MenuPanel = ({ title, children }) => (
 MenuPanel.propTypes = {
   children: PropTypes.node.isRequired,
   title: PropTypes.string.isRequired,
+  onCloseClick: PropTypes.func,
 }
 
 export default MenuPanel

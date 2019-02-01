@@ -27,6 +27,15 @@ const sketchesReducer = (state = defaultState, action) => {
         },
       }
     }
+    case 'SKETCH_NODE_OPENED_CLOSE': {
+      return {
+        ...state,
+        [p.sketchId]: {
+          ...state[p.sketchId],
+          openedNodeId: undefined,
+        },
+      }
+    }
     case 'SKETCH_UPDATE': {
       return {
         ...state,
