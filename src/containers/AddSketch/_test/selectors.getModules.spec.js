@@ -9,6 +9,9 @@ test('(Selector) getModules', (t) => {
       },
       bar: {
         defaultTitle: 'Bar',
+        category:'test',
+        author:'tape',
+        description:"this isn't a real module, just a test one",
       },
     },
   }
@@ -16,10 +19,18 @@ test('(Selector) getModules', (t) => {
   const expected = [
     {
       title: 'Foo',
+      category: undefined,
+      author: undefined,
+      description: undefined,
+      filePath: undefined,
       id: 'foo',
     },
     {
       title: 'Bar',
+      category: 'test',
+      author: 'tape',
+      description: "this isn't a real module, just a test one",
+      filePath: undefined,
       id: 'bar',
     },
   ]
