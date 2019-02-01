@@ -40,6 +40,12 @@ export function uiNodeToggleOpen (id) {
   }
 }
 
+export function uiNodeClose () {
+  return {
+    type: 'UI_NODE_CLOSE',
+  }
+}
+
 export function uiAuxToggleOpen (id) {
   return {
     type: 'UI_AUX_TOGGLE_OPEN',

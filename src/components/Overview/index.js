@@ -9,6 +9,7 @@ import Clock from '../../containers/Clock'
 import SceneManager from '../../containers/SceneManager'
 import Devices from '../../containers/Devices'
 import Control from '../../containers/Control'
+import OverviewPropertiesPanel from '../../containers/OverviewPropertiesPanel'
 import theme from '../../utils/theme'
 
 const Wrapper = styled.div`
@@ -22,6 +23,7 @@ const Top = styled.div`
 
 const Bottom = styled.div`
   margin-top: auto;
+  margin-bottom: 0.5rem;
 `
 
 const Tools = styled.div`
@@ -41,6 +43,10 @@ const Scroller = styled.div`
   flex-direction: column;
   flex: 1;
   overflow: auto;
+`
+
+const PanelWrapper = styled.div`
+  margin: 0 -0.5rem -0.5rem -0.5rem;
 `
 
 class Overview extends React.Component {
@@ -67,6 +73,9 @@ class Overview extends React.Component {
             <ProjectDetails />
           </Bottom>
         </Scroller>
+        <PanelWrapper>
+          <OverviewPropertiesPanel />
+        </PanelWrapper>
       </Wrapper>
 
     )
