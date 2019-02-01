@@ -9,7 +9,6 @@ import { onlyUpdateForKeys } from 'recompose'
 const enhance = onlyUpdateForKeys(['currentInputLinkId'])
 
 const Wrapper = styled.div`
-  min-height: 9rem;
 `
 const AddNew = styled.div`
   display: flex;
