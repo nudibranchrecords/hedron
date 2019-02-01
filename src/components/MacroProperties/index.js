@@ -6,6 +6,12 @@ import ParamProperties from '../../containers/ParamProperties'
 import Row from '../Row'
 import styled from 'styled-components'
 
+const Wrapper = styled.div`
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+`
+
 const Links = styled.div`
   display: flex;
   flex-wrap: wrap;
@@ -13,7 +19,8 @@ const Links = styled.div`
 `
 
 const Bottom = styled.div`
-  margin-top: 1rem;
+  margin-top: auto;
+  padding-top: 1rem;
 `
 
 const Button = styled(ButtonComponent)`
@@ -27,7 +34,7 @@ const Button = styled(ButtonComponent)`
 
 const MacroProperties = ({ nodeId, onLearningClick, onDeleteClick, paramLinks,
   isLearning, macroId, paramLinksAreVisible, onRenameClick }) => (
-    <div>
+    <Wrapper>
       <ParamProperties nodeId={nodeId} />
 
       <Bottom>
@@ -57,9 +64,9 @@ const MacroProperties = ({ nodeId, onLearningClick, onDeleteClick, paramLinks,
           e.stopPropagation()
           onRenameClick(nodeId)
         }}>Rename</Button>
-        <Button onClick={() => { onDeleteClick(macroId) }}>Delete Macro</Button>
+        <Button color='danger' onClick={() => { onDeleteClick(macroId) }}>Delete Macro</Button>
       </Row>
-    </div>
+    </Wrapper>
 )
 
 MacroProperties.propTypes = {
