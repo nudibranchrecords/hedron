@@ -2,10 +2,9 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import Control from '../../containers/Control'
 import styled from 'styled-components'
-import uiEventEmitter from '../../utils/uiEventEmitter'
 import Button from '../../components/Button'
 import ButtonWithMidiLink from '../ButtonWithMidiLink'
-import Row from '../../components/Row'
+import RowComponent from '../../components/Row'
 import SequencerGrid from '../../containers/SequencerGrid'
 
 const Wrapper = styled.div`
@@ -24,19 +23,11 @@ const Item = styled.div`
   font-size: 0.8rem;
 `
 
+const Row = styled(RowComponent)`
+  fill: white;
+`
+
 class InputLink extends React.Component {
-  componentDidMount () {
-    uiEventEmitter.emit('repaint')
-  }
-
-  componentDidUpdate (prevProps) {
-    if (this.props.id !== prevProps.id) {
-      setTimeout(() => {
-        uiEventEmitter.emit('repaint')
-      }, 1)
-    }
-  }
-
   shouldComponentUpdate (prevProps) {
     return (
       this.props.isActive !== prevProps.isActive ||
@@ -101,7 +92,7 @@ class InputLink extends React.Component {
             </ButtonWithMidiLink>
           }
 
-          <DeleteButton onClick={onDeleteClick}>Delete "{title}"</DeleteButton>
+          <DeleteButton color='danger' onClick={onDeleteClick}>Delete "{title}"</DeleteButton>
         </Row>
       </div>
     )

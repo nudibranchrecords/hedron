@@ -23,10 +23,16 @@ const sketchesReducer = (state = defaultState, action) => {
         ...state,
         [p.sketchId]: {
           ...state[p.sketchId],
-          openedNodes: {
-            ...state[p.sketchId].openedNodes,
-            [p.nodeType]: p.nodeId !== state[p.sketchId].openedNodes[p.nodeType] ? p.nodeId : undefined,
-          },
+          openedNodeId: p.nodeId !== state[p.sketchId].openedNodeId ? p.nodeId : undefined,
+        },
+      }
+    }
+    case 'SKETCH_NODE_OPENED_CLOSE': {
+      return {
+        ...state,
+        [p.sketchId]: {
+          ...state[p.sketchId],
+          openedNodeId: undefined,
         },
       }
     }

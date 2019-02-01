@@ -44,13 +44,6 @@ class PanelDragger extends React.Component {
     document.addEventListener('mouseup', onMouseUp)
   }
 
-  componentDidMount () {
-    // Force repaint after mounting to fix up components
-    setTimeout(() => {
-      uiEventEmitter.emit('repaint')
-    }, 1000)
-  }
-
   handleMouseMove (e) {
     uiEventEmitter.emit('panel-resize-start')
 
@@ -60,7 +53,7 @@ class PanelDragger extends React.Component {
     clearTimeout(this.dragDebounce)
     this.dragDebounce = setTimeout(() => {
       uiEventEmitter.emit('repaint')
-    }, 500)
+    }, 50)
   }
 
   render () {

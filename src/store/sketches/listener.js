@@ -72,7 +72,6 @@ const handleSketchCreate = (action, store) => {
     moduleId: moduleId,
     paramIds,
     shotIds,
-    openedNodes: {},
   }))
 
   store.dispatch(sceneSketchSelect(sceneId, uniqueSketchId))

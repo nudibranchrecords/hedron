@@ -199,15 +199,13 @@ test('(Reducer) sketchesReducer - SKETCH_NODE_OPENED_TOGGLE', (t) => {
       moduleId: 'cubey',
       title: 'Cubey 1',
       paramIds: ['p01', 'p02'],
-      openedNodes: {},
+      openedNodeId: undefined,
     },
     s02: {
       moduleId: 'swirly',
       title: 'Swirly 1',
       paramIds: ['p03', 'p04'],
-      openedNodes: {
-        param: 'p03',
-      },
+      openedNodeId: 'p03',
     },
   }
 
@@ -216,23 +214,19 @@ test('(Reducer) sketchesReducer - SKETCH_NODE_OPENED_TOGGLE', (t) => {
       moduleId: 'cubey',
       title: 'Cubey 1',
       paramIds: ['p01', 'p02'],
-      openedNodes: {
-        param: 'p01',
-      },
+      openedNodeId: 'p01',
     },
     s02: {
       moduleId: 'swirly',
       title: 'Swirly 1',
       paramIds: ['p03', 'p04'],
-      openedNodes: {
-        param: 'p03',
-      },
+      openedNodeId: 'p03',
     },
   }
 
   deepFreeze(original)
 
-  actual = sketchesReducer(original, sketchNodeOpenedToggle('s01', 'p01', 'param'))
+  actual = sketchesReducer(original, sketchNodeOpenedToggle('s01', 'p01'))
 
   t.deepEqual(actual, expected, 'Adds param id when undefined')
 
@@ -241,21 +235,17 @@ test('(Reducer) sketchesReducer - SKETCH_NODE_OPENED_TOGGLE', (t) => {
       moduleId: 'cubey',
       title: 'Cubey 1',
       paramIds: ['p01', 'p02'],
-      openedNodes: {
-        param: 'p02',
-      },
+      openedNodeId: 'p02',
     },
     s02: {
       moduleId: 'swirly',
       title: 'Swirly 1',
       paramIds: ['p03', 'p04'],
-      openedNodes: {
-        param: 'p03',
-      },
+      openedNodeId: 'p03',
     },
   }
 
-  actual = sketchesReducer(actual, sketchNodeOpenedToggle('s01', 'p02', 'param'))
+  actual = sketchesReducer(actual, sketchNodeOpenedToggle('s01', 'p02'))
 
   t.deepEqual(actual, expected, 'Changes param id when different')
 
@@ -264,47 +254,19 @@ test('(Reducer) sketchesReducer - SKETCH_NODE_OPENED_TOGGLE', (t) => {
       moduleId: 'cubey',
       title: 'Cubey 1',
       paramIds: ['p01', 'p02'],
-      openedNodes: {
-        param: 'p02',
-      },
+      openedNodeId: 'p02',
     },
     s02: {
       moduleId: 'swirly',
       title: 'Swirly 1',
       paramIds: ['p03', 'p04'],
-      openedNodes: {
-        param: undefined,
-      },
+      openedNodeId: undefined,
     },
   }
 
-  actual = sketchesReducer(actual, sketchNodeOpenedToggle('s02', 'p03', 'param'))
+  actual = sketchesReducer(actual, sketchNodeOpenedToggle('s02', 'p03'))
 
   t.deepEqual(actual, expected, 'Switches param id to undefined if receives the same id')
-
-  expected = {
-    s01: {
-      moduleId: 'cubey',
-      title: 'Cubey 1',
-      paramIds: ['p01', 'p02'],
-      openedNodes: {
-        param: 'p02',
-        shot: 'sh01',
-      },
-    },
-    s02: {
-      moduleId: 'swirly',
-      title: 'Swirly 1',
-      paramIds: ['p03', 'p04'],
-      openedNodes: {
-        param: undefined,
-      },
-    },
-  }
-
-  actual = sketchesReducer(actual, sketchNodeOpenedToggle('s01', 'sh01', 'shot'))
-
-  t.deepEqual(actual, expected, 'Handles adding shot id')
 
   t.end()
 })

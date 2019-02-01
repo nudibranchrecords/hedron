@@ -155,7 +155,6 @@ test('(mock) Sketches - Add/Delete Sketch', (t) => {
       moduleId: 'foo',
       paramIds: ['id_2'],
       shotIds: [],
-      openedNodes: {},
     },
   }, 'After creating sketch, sketch item is created')
 
@@ -199,14 +198,12 @@ test('(mock) Sketches - Add/Delete Sketch', (t) => {
       moduleId: 'foo',
       paramIds: ['id_2'],
       shotIds: [],
-      openedNodes: {},
     },
     id_3: {
       title: 'Bar',
       moduleId: 'bar',
       paramIds: ['id_4', 'id_5'],
       shotIds: ['id_6'],
-      openedNodes: {},
     },
   }, 'After creating sketch, sketch item is created')
 
@@ -291,7 +288,6 @@ test('(mock) Sketches - Add/Delete Sketch', (t) => {
       moduleId: 'bar',
       paramIds: ['id_4', 'id_5'],
       shotIds: ['id_6'],
-      openedNodes: {},
     },
   }, 'After deleting sketch, sketch item is removed')
 
@@ -380,7 +376,6 @@ test('(mock) Sketches - Add/Delete Sketch', (t) => {
       moduleId: 'boring',
       paramIds: [],
       shotIds: [],
-      openedNodes: {},
     },
   }, 'After creating sketch, sketch item is created')
 
@@ -447,7 +442,6 @@ test('(mock) Sketches - Reimport Sketch (Unedited sketch)', (t) => {
         moduleId: 'foo',
         paramIds: ['id_2'],
         shotIds: [],
-        openedNodes: {},
       },
     },
     scenes: {
@@ -516,7 +510,6 @@ test('(mock) Sketches - Reimport Sketch (simple)', (t) => {
         moduleId: 'foo',
         paramIds: ['id_2'],
         shotIds: [],
-        openedNodes: {},
       },
     },
   }, applyMiddleware(sagaMiddleware, listen(rootListener)))
@@ -636,7 +629,6 @@ test('(mock) Sketches - Reimport Sketch (params and shots)', (t) => {
         moduleId: 'foo',
         paramIds: ['id_2'],
         shotIds: ['id_3'],
-        openedNodes: {},
       },
     },
   }, applyMiddleware(sagaMiddleware, listen(rootListener)))
@@ -779,7 +771,6 @@ test('(mock) Sketches - Reimport Sketch (with shot and param title changes)', (t
         moduleId: 'foo',
         paramIds: ['id_2'],
         shotIds: ['id_3'],
-        openedNodes: {},
       },
     },
   }, applyMiddleware(sagaMiddleware, listen(rootListener)))
@@ -908,7 +899,6 @@ test('(mock) Sketches - Reimport Sketch (Different order)', (t) => {
         moduleId: 'foo',
         paramIds: ['id_2', 'id_3'],
         shotIds: [],
-        openedNodes: {},
       },
     },
   }, applyMiddleware(sagaMiddleware, listen(rootListener)))
