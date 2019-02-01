@@ -103,7 +103,7 @@
     "jsdom-global": "^3.0.2",
     "minimist": "^1.2.0",
     "redux-debounced": "^0.4.0",
-    "redux-devtools-extension": "^2.13.2",
+    "redux-devtools-extension": "^2.13.7",
     "sinon": "^2.1.0",
     "style-loader": "^0.16.1",
     "stylelint": "^7.9.0",
