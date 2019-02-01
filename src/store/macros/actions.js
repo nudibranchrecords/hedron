@@ -60,6 +60,12 @@ export function rMacroOpenToggle (id) {
   }
 }
 
+export function rMacroClose () {
+  return {
+    type: 'R_MACRO_CLOSE',
+  }
+}
+
 export function rMacroLearningToggle (id) {
   return {
     type: 'R_MACRO_LEARNING_TOGGLE',
