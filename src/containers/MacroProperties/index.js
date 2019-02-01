@@ -6,7 +6,7 @@ import getNode from '../../selectors/getNode'
 import getNodeInputLinkIds from '../../selectors/getNodeInputLinkIds'
 import getInputLink from '../../selectors/getInputLink'
 import { uiEditingOpen } from '../../store/ui/actions'
-import { rMacroLearningToggle, uMacroDelete, rMacroOpenToggle } from '../../store/macros/actions'
+import { rMacroLearningToggle, uMacroDelete } from '../../store/macros/actions'
 import { values } from 'lodash'
 
 const mapStateToProps = (state, ownProps) => {
