@@ -49,14 +49,12 @@ class AddSketch extends React.Component {// =
 
   render () {
     const { items, onChooseFolderClick, sketchesPath } = this.props
-
     const sectionElements = []
     for (let key in this.state.sections) {
-      sectionElements.push(<Category tag={'h2'} title={key} isOpen={this.state.sections[key].open} onHeaderClick={() => {
+      sectionElements.push(<Category tag={'h2'} title={key} key={key} isOpen={this.state.sections[key].open} onHeaderClick={() => {
         this.OnExpand(key)
       }}><Items> { this.state.sections[key].children} </Items></Category>)
     }
-
     return (
       <React.Fragment>
         <SceneHeader>Add Sketch</SceneHeader>
