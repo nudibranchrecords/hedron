@@ -97,6 +97,12 @@ const macroReducer = (state = defaultState, action) => {
         openedId: p.id !== state.openedId ? p.id : undefined,
       }
     }
+    case 'R_MACRO_CLOSE': {
+      return {
+        ...state,
+        openedId: undefined,
+      }
+    }
     case 'R_MACRO_UPDATE_LAST_ID': {
       return {
         ...state,

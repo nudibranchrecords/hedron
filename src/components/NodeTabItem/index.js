@@ -8,7 +8,7 @@ const Wrapper = styled.div`
   font-size: 0.7rem;
   padding: 0.25rem 0.5rem;
   text-transform: uppercase;
-  border: 1px solid ${theme.lineColor2};
+  border: 1px solid ${theme.lineColor1};
   color: ${props => props.isSelected ? 'white' : '#ddd'};
 
   background-color: ${props => {
@@ -18,7 +18,7 @@ const Wrapper = styled.div`
   }};
 
   border-color: ${props => {
-    let color = props.isActive ? theme.actionColor1 : theme.lineColor1
+    let color = props.isActive ? theme.actionColor1 : theme.lineColor2
     color = props.isSelected ? 'white' : color
     return color
   }};

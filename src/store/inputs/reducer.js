@@ -1,18 +1,6 @@
 const defaultState = {
-  audio_0: {
-    value: 0,
-    assignedLinkIds: [],
-  },
-  audio_1: {
-    value: 0,
-    assignedLinkIds: [],
-  },
-  audio_2: {
-    value: 0,
-    assignedLinkIds: [],
-  },
-  audio_3: {
-    value: 0,
+  audio: {
+    value: [0, 0, 0, 0],
     assignedLinkIds: [],
   },
   lfo: {

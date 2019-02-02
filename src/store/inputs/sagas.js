@@ -44,6 +44,11 @@ export function* handleInput (action) {
             value = yield call(lfoProcess, value, o.shape, o.rate, o.phase, links[i].id)
           }
 
+          if (p.inputId === 'audio') {
+            const o = yield select(getNodesValues, links[i].audioOptionIds)
+            value = p.value[o.audioBand]
+          }
+
           if (links[i].modifierIds && links[i].modifierIds.length) {
             modifiers = yield select(getNodes, links[i].modifierIds)
             let vals = []

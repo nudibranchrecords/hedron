@@ -9,7 +9,6 @@ import MacroItem from '../../containers/MacroItem'
 
 const Wrapper = styled.div`
   display: flex;
-  height: 100%;
   flex-direction: column;
 `
 
