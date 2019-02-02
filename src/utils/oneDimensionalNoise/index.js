@@ -25,11 +25,14 @@ class OneDimensionalNoise {
     const xFloor = Math.floor(x)
     const t = x - xFloor
     const tRemapSmoothstep = t * t * (3 - 2 * t)
-    const bufferId = id.charCodeAt(0) & BUFFERS_COUNT
+    const isSeed = typeof(id) === 'number'
+    const bufferId = (isSeed ? id : id.charCodeAt(0)) & BUFFERS_COUNT
 
     let offset = 0
-    for (let i = 1; i < id.length; i++) {
-      offset += id.charCodeAt(i)
+    if (!isSeed) {
+      for (let i = 1; i < id.length; i++) {
+        offset += id.charCodeAt(i)
+      }
     }
 
     // Modulo using &

@@ -41,7 +41,8 @@ export function* handleInput (action) {
 
           if (p.inputId === 'lfo') {
             let o = yield select(getNodesValues, links[i].lfoOptionIds)
-            value = yield call(lfoProcess, value, o.shape, o.rate, o.phase, links[i].id)
+            const seed = o.seed === -1 ? links[i].id : o.seed
+            value = yield call(lfoProcess, value, o.shape, o.rate, o.phase, seed)
           }
 
           if (p.inputId === 'audio') {
