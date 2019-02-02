@@ -4,10 +4,9 @@ import InputLink from '../../containers/InputLink'
 import ParamInputSelect from '../../containers/ParamInputSelect'
 import InputLinkTabItem from '../../containers/InputLinkTabItem'
 import styled from 'styled-components'
-import { onlyUpdateForKeys } from 'recompose'
 
-const enhance = onlyUpdateForKeys(['currentInputLinkId'])
-
+const Wrapper = styled.div`
+`
 const AddNew = styled.div`
   display: flex;
   font-size: 0.7rem;
@@ -35,8 +34,8 @@ const TabItem = styled.a`
   margin-right: 0.25rem;
 `
 
-const InputLinkUI = enhance(({ inputLinkIds, nodeId, currentInputLinkId }) => (
-  <div>
+const InputLinkUI = ({ inputLinkIds, nodeId, currentInputLinkId }) => (
+  <Wrapper>
     <Top>
       <Tabs>
         {inputLinkIds.alwaysActive.map((id, index) => (
@@ -59,8 +58,8 @@ const InputLinkUI = enhance(({ inputLinkIds, nodeId, currentInputLinkId }) => (
     </Top>
 
     {currentInputLinkId && <InputLink id={currentInputLinkId} nodeId={nodeId} />}
-  </div>
-))
+  </Wrapper>
+)
 
 InputLinkUI.propTypes = {
   inputLinkIds: PropTypes.shape({

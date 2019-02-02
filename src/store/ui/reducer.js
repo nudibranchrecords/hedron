@@ -56,6 +56,12 @@ const uiReducer = (state = defaultState, action) => {
         openedNode: p.id === state.openedNode ? false : p.id,
       }
     }
+    case 'UI_NODE_CLOSE': {
+      return {
+        ...state,
+        openedNode: false,
+      }
+    }
     case 'UI_AUX_TOGGLE_OPEN': {
       let items = state.auxOpen
       // If item exists, remove

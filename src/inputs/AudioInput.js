@@ -4,9 +4,8 @@ import { inputFired } from '../store/inputs/actions'
 export default (store) => {
   const gotStream = (stream) => {
     const input = new AudioAnalyzer(stream)
-    const bandIds = ['audio_0', 'audio_1', 'audio_2', 'audio_3']
 
-    let bands, i
+    let bands
     window.setInterval(() => {
       let state = store.getState()
       input.normalizeLevels = state.nodes['audioNormalizeLevels'].value
@@ -15,9 +14,7 @@ export default (store) => {
       input.smoothing = state.nodes['audioLevelsSmoothing'].value * 0.99
       input.levelsPower = state.nodes['audioLevelsPower'].value * 3 + 0.5
       bands = input.update()
-      for (i = 0; i < bands.length; i++) {
-        store.dispatch(inputFired(bandIds[i], bands[i], { type: 'audio' }))
-      }
+      store.dispatch(inputFired('audio', bands, { type: 'audio' }))
     }, 30)
   }
 
