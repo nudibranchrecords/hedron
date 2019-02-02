@@ -27,7 +27,7 @@ class OneDimensionalNoise {
     const tRemapSmoothstep = t * t * (3 - 2 * t)
     const bufferId = id.charCodeAt(0) & BUFFERS_COUNT
 
-    let offset = 0;
+    let offset = 0
     for (let i = 1; i < id.length; i++) {
       offset += id.charCodeAt(i)
     }
