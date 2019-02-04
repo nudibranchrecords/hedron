@@ -72,21 +72,6 @@ const uiReducer = (state = defaultState, action) => {
         auxOpen: items,
       }
     }
-    case 'UI_ADD_SKETCH_TOGGLE_OPEN': {
-      let items = state.addSketchOpen
-      // If item exists, flip
-      if (items[p.id] !== undefined) {
-        items[p.id] = !items[p.id]
-      } else {
-      // If item doesn't exist, add
-        items[p.id] = true
-      }
-
-      return {
-        ...state,
-        addSketchOpen: items,
-      }
-    }
     default:
       return state
   }

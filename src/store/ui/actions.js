@@ -48,11 +48,3 @@ export function uiAuxToggleOpen (id) {
     },
   }
 }
-export function uiAddSketchToggleOpen (id) {
-  return {
-    type: 'UI_ADD_SKETCH_TOGGLE_OPEN',
-    payload: {
-      id,
-    },
-  }
-}

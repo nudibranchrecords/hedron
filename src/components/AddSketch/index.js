@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import Button from '../Button'
 import SceneHeader from '../../containers/SceneHeader'
 import styled from 'styled-components'
-import Revealer from '../../components/Revealer'
+import Revealer from '../../containers/AuxRevealer'
 
 const CategoryHeader = styled.p`
   font-size:1.7em;
@@ -23,63 +23,61 @@ const Items = styled.ul`
   }
 `
 
-class AddSketch extends React.Component {// =
-  constructor (props) {
-    super(props)
-    const sections = {}
-    for (let item of props.items) {
-      if (sections[item.category] === undefined) {
-        sections[item.category] = { children:[] }
-      }
-      sections[item.category].children.push(<li key={item.id}>
-        <Button size='large' onClick={() => props.onAddClick(item.id)}>{item.title}</Button>
-      </li>)
-    }
-    this.state = { sections:sections }
-  }
+const SketchItems = ({ items, onAddClick }) => (
+  <Items>
+    {items.map(item =>
+      <li key={item.id}>
+        <Button size='large' onClick={() => onAddClick(item.id)}>{item.title}</Button>
+      </li>
+    )}
+  </Items>
+)
 
-  render () {
-    const { items, open, onExpandField, onChooseFolderClick, sketchesPath } = this.props
-    const sectionElements = []
-    for (let key in this.state.sections) {
-      sectionElements.push(
-        <Category
-          tag={'h2'}
-          title={key}
-          key={key}
-          isOpen={open[key] !== undefined}
-          onHeaderClick={() => {
-            onExpandField(key)
-          }}>
-          <Items> { this.state.sections[key].children} </Items></Category>
-      )
-    }
-    return (
-      <React.Fragment>
-        <SceneHeader>Add Sketch</SceneHeader>
-        <CategoryHeader>Categories</CategoryHeader>
-        {sectionElements}
-        {items.length === 0 && <p>You haven't chosen the sketch folder for the project yet.</p>}
-        <Button onClick={onChooseFolderClick}>Choose Sketch Folder</Button>
-        <br />
-        {sketchesPath}
-      </React.Fragment>
-    )
-  }
-}
+const AddSketch = ({ items, hasSketches, onAddClick, onChooseFolderClick, sketchesPath }) => (
+  <React.Fragment>
+    <SceneHeader>Add Sketch</SceneHeader>
+    <CategoryHeader>Categories</CategoryHeader>
+    <SketchItems items={items.looseItems} onAddClick={onAddClick} />
+    {items.categorizedItems.map(catItem => (
+      <Category
+        title={catItem.title}
+        key={catItem.id}
+        auxId={`sketchcat_${catItem.id}`}
+      >
+        <SketchItems items={catItem.items} onAddClick={onAddClick} />
+      </Category>
+    ))}
+
+    {!hasSketches && <p>You haven't chosen the sketch folder for the project yet.</p>}
+    <Button onClick={onChooseFolderClick}>Choose Sketch Folder</Button>
+    <br />
+    {sketchesPath}
+  </React.Fragment>
+)
+
+const itemsType = PropTypes.arrayOf(PropTypes.shape({
+  title: PropTypes.string,
+  id: PropTypes.string,
+}))
 
 AddSketch.propTypes = {
   sketchesPath: PropTypes.string,
-  open:PropTypes.object.isRequired,
   onAddClick: PropTypes.func.isRequired,
   onChooseFolderClick: PropTypes.func.isRequired,
-  onExpandField: PropTypes.func.isRequired,
-  items: PropTypes.arrayOf(
-    PropTypes.shape({
+  items: PropTypes.shape({
+    looseItems: itemsType,
+    categorizedItems: PropTypes.arrayOf(PropTypes.shape({
       title: PropTypes.string,
       id: PropTypes.string,
-    })
-  ).isRequired,
+      items: itemsType,
+    })),
+  }),
+  hasSketches: PropTypes.bool,
+}
+
+SketchItems.propTypes = {
+  items: itemsType,
+  onAddClick: PropTypes.func.isRequired,
 }
 
 export default AddSketch
