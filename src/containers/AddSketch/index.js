@@ -4,7 +4,6 @@ import getCategorizedModules from '../../selectors/getCategorizedModules'
 import getSketchesPath from '../../selectors/getSketchesPath'
 import { uSketchCreate } from '../../store/sketches/actions'
 import { projectChooseSketchesFolder } from '../../store/project/actions'
-import { uiAddSketchToggleOpen } from '../../store/ui/actions'
 
 const mapStateToProps = (state, ownProps) => {
   const items = getCategorizedModules(state)
@@ -20,7 +19,6 @@ const mapDispatchToProps = (dispatch, ownProps) => (
   {
     onAddClick: (id) => { dispatch(uSketchCreate(id)) },
     onChooseFolderClick: () => { dispatch(projectChooseSketchesFolder()) },
-    onExpandField: (category) => { dispatch(uiAddSketchToggleOpen(category)) },
   }
 )
 
