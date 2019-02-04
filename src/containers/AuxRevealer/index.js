@@ -1,6 +1,5 @@
 import { connect } from 'react-redux'
 import Revealer from '../../components/Revealer'
-import withDeferRender from '../../utils/withDeferRender'
 import { uiAuxToggleOpen } from '../../store/ui/actions'
 import getIsAuxOpen from '../../selectors/getIsAuxOpen'
 
@@ -17,4 +16,4 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(withDeferRender(Revealer))
+)(Revealer)
