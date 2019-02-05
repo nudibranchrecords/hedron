@@ -2,37 +2,33 @@
   "env": {
     "development": {
       "presets": [
-        [ "es2015", { "modules": false } ],
-        "stage-2",
-        "react"
+        "@babel/preset-react"
       ],
       "plugins": [
         "styled-components",
         "react-hot-loader/babel",
-        "transform-object-rest-spread"
+        "@babel/plugin-proposal-object-rest-spread"
       ]
     },
     "production": {
       "presets": [
         [ "es2015"],
-        "stage-2",
-        "react"
+        "@babel/preset-react"
       ],
       "plugins": [
         "styled-components",
-        "transform-object-rest-spread"
+        "@babel/plugin-proposal-object-rest-spread"
       ]
     },
     "test": {
       "presets": [
         "es2015",
-        "stage-2",
-        "react"
+        "@babel/preset-react"
       ],
       "plugins": [
         "styled-components",
         "react-hot-loader/babel",
-        "transform-object-rest-spread"
+        "@babel/plugin-proposal-object-rest-spread"
       ]
     }
   }
