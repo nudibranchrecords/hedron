@@ -5,9 +5,13 @@ const delay = 70
 
 const withDeferRender = Presentational => {
   class DeferRender extends Component {
-    state = {
-      shouldRender: false,
-    };
+    constructor () {
+      super()
+
+      this.state = {
+        shouldRender: false,
+      }
+    }
 
     componentDidMount () {
       this.t = setTimeout(() => {

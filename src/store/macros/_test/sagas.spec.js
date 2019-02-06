@@ -1,4 +1,4 @@
-import 'babel-polyfill'
+import '@babel/polyfill'
 import test from 'tape'
 import getNode from '../../../selectors/getNode'
 import getMacro from '../../../selectors/getMacro'

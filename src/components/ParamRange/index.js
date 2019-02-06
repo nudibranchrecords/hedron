@@ -35,10 +35,18 @@ const Col = styled.div`
 
 class ParamRange extends React.Component {
 
-  onKeyPress = (e) => {
+  constructor (props) {
+    super(props)
+
+    this.handleKeyPress = this.handleKeyPress.bind(this)
+    this.handleBlur = this.handleBlur.bind(this)
+  }
+
+  handleKeyPress (e) {
     if (e.key === 'Enter') { this.props.handleSubmit() }
   }
-  onBlur = (e) => {
+
+  handleBlur () {
     this.props.handleSubmit()
   }
 
@@ -49,11 +57,17 @@ class ParamRange extends React.Component {
         <Row align='flex-end'>
           <Col>
             <label>Min</label>
-            <Field component='input' name='min' type='number' onKeyPress={this.onKeyPress} onBlur={this.onBlur} />
+            <Field
+              component='input' name='min' type='number'
+              onKeyPress={this.handleKeyPress} onBlur={this.handleBlur}
+            />
           </Col>
           <Col>
             <label>Max</label>
-            <Field component='input' name='max' type='number' onKeyPress={this.onKeyPress} onBlur={this.onBlur} />
+            <Field
+              component='input' name='max' type='number'
+              onKeyPress={this.handleKeyPress} onBlur={this.handleBlur}
+            />
           </Col>
           <Button onClick={this.props.onResetClick}>Reset Range</Button>
         </Row>
