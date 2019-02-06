@@ -17,7 +17,7 @@ class Stars {
     this.material = new THREE.PointsMaterial({
       color: 0xFFFFFF,
       size: 10,
-      transparent: true
+      transparent: true,
     })
 
     // now create the individual particles

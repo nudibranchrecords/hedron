@@ -1,4 +1,4 @@
-import 'babel-polyfill'
+import '@babel/polyfill'
 import test from 'tape'
 import { call, select, takeEvery, put } from 'redux-saga/effects'
 import { watchProject, saveProject, loadProjectRequest,

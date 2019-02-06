@@ -2,6 +2,7 @@
   "env": {
     "development": {
       "presets": [
+        "@babel/preset-env",
         "@babel/preset-react"
       ],
       "plugins": [
@@ -12,7 +13,7 @@
     },
     "production": {
       "presets": [
-        [ "es2015"],
+        "@babel/preset-env",
         "@babel/preset-react"
       ],
       "plugins": [
@@ -22,7 +23,7 @@
     },
     "test": {
       "presets": [
-        "es2015",
+        "@babel/preset-env",
         "@babel/preset-react"
       ],
       "plugins": [
