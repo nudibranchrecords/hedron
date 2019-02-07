@@ -1,3 +1,6 @@
+import uid from 'uid'
+import path from 'path'
+
 import { sketchCreate, sketchDelete, sketchUpdate } from './actions'
 import { rSceneSketchAdd, rSceneSketchRemove, sceneSketchSelect } from '../scenes/actions'
 import { uNodeCreate, uNodeDelete, nodeUpdate } from '../nodes/actions'
@@ -10,7 +13,9 @@ import getSketchParamIds from '../../selectors/getSketchParamIds'
 import getSketchShotIds from '../../selectors/getSketchShotIds'
 import getCurrentSceneId from '../../selectors/getCurrentSceneId'
 import history from '../../history'
-import uid from 'uid'
+import getSketchesPath from '../../selectors/getSketchesPath'
+import getModuleSketchIds from '../../selectors/getModuleSketchIds'
+import { reloadSingleSketchModule, removeSketchFromScene, addSketchToScene } from '../../engine'
 
 const handleSketchCreate = (action, store) => {
   let uniqueId
@@ -199,6 +204,31 @@ const handleSketchReimport = (action, store) => {
   store.dispatch(sketchUpdate(id, { paramIds, shotIds }))
 }
 
+const moduleReloadFile = (moduleId, state) => {
+  const sketchesPath = getSketchesPath(state)
+  const moduleFilePathArray = getModule(state, moduleId).filePathArray
+  const moduleSketchIds = getModuleSketchIds(state, moduleId)
+
+  const modulePath = path.join(sketchesPath, moduleFilePathArray.join('/'), moduleId)
+
+  // Reload updated module into app
+  reloadSingleSketchModule(modulePath, moduleId, moduleFilePathArray)
+
+  // Loop all sketches that are of this module, remove them and add them again
+  moduleSketchIds.forEach(obj => {
+    // These funcs only affect the scene, not the application state, so won't destroy params etc
+    removeSketchFromScene(obj.sceneId, obj.sketchId)
+    addSketchToScene(obj.sceneId, obj.sketchId, moduleId)
+  })
+}
+
+const handleSketchReloadFile = (action, store) => {
+  const state = store.getState()
+  const moduleId = getSketch(state, action.payload.id).moduleId
+
+  moduleReloadFile(moduleId, state)
+}
+
 export default (action, store) => {
   switch (action.type) {
     case 'U_SKETCH_CREATE':
@@ -209,6 +239,9 @@ export default (action, store) => {
       break
     case 'U_SKETCH_REIMPORT':
       handleSketchReimport(action, store)
+      break
+    case 'U_SKETCH_RELOAD_FILE':
+      handleSketchReloadFile(action, store)
       break
   }
 }

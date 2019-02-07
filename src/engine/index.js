@@ -1,4 +1,4 @@
-import { loadSketches } from '../externals/sketches'
+import { loadSketches, loadSketch } from '../externals/sketches'
 import getSketch from '../selectors/getSketch'
 import getScenes from '../selectors/getScenes'
 import getScene from '../selectors/getScene'
@@ -30,8 +30,7 @@ export const loadSketchModules = (url) => {
     moduleFiles = loadSketches(url)
 
     Object.keys(moduleFiles).forEach((key) => {
-      const config = moduleFiles[key].config
-      moduleConfigs[key] = config
+      moduleConfigs[key] = moduleFiles[key].config
     })
 
     isRunning = true
@@ -39,6 +38,21 @@ export const loadSketchModules = (url) => {
     isRunning = false
     console.error(error)
     store.dispatch(projectError(`Sketches failed to load: ${error.message}`, {
+      popup: 'true',
+      code: error.code,
+    }))
+  }
+}
+
+export const reloadSingleSketchModule = (url, moduleId, pathArray) => {
+  try {
+    moduleFiles[moduleId] = loadSketch(url)
+    moduleConfigs[moduleId] = moduleFiles[moduleId].config
+    moduleConfigs[moduleId].filePathArray = pathArray
+  } catch (error) {
+    isRunning = false
+    console.error(error)
+    store.dispatch(projectError(`Sketch ${moduleId} failed to load: ${error.message}`, {
       popup: 'true',
       code: error.code,
     }))
