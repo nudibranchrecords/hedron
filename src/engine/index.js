@@ -18,20 +18,20 @@ import TWEEN from '@tweenjs/tween.js'
 export let scenes = {}
 
 let sketches = {}
-let modules = {}
+let moduleConfigs = {}
 let isRunning = false
-let allModules = {}
+let moduleFiles = {}
 let sketchesFolder
 let store
 
 export const loadSketchModules = (url) => {
   try {
     sketchesFolder = url
-    allModules = loadSketches(url)
+    moduleFiles = loadSketches(url)
 
-    Object.keys(allModules).forEach((key) => {
-      const config = allModules[key].config
-      modules[key] = config
+    Object.keys(moduleFiles).forEach((key) => {
+      const config = moduleFiles[key].config
+      moduleConfigs[key] = config
     })
 
     isRunning = true
@@ -65,7 +65,7 @@ export const addSketchToScene = (sceneId, sketchId, moduleId) => {
   const state = store.getState()
   const params = getSketchParams(state, sketchId)
 
-  const module = new allModules[moduleId].Module(scene, params, meta)
+  const module = new moduleFiles[moduleId].Module(scene, params, meta)
 
   sketches[sketchId] = module
   module.root && scene.scene.add(module.root)
@@ -134,7 +134,7 @@ export const run = (injectedStore, stats) => {
   isRunning = true
   renderer.initiate(injectedStore, scenes)
   // Give store module params
-  store.dispatch(availableModulesReplaceAll(modules))
+  store.dispatch(availableModulesReplaceAll(moduleConfigs))
 
   const updateSceneSketches = (sceneId) => {
     stateScene = getScene(state, sceneId)
