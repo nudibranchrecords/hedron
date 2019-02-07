@@ -19,6 +19,13 @@ export function uSketchReimport (id) {
   }
 }
 
+export function uSketchReloadFile (id) {
+  return {
+    type: 'U_SKETCH_RELOAD_FILE',
+    payload: { id },
+  }
+}
+
 export function sketchCreate (id, sketch) {
   return {
     type: 'SKETCH_CREATE',

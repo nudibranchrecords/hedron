@@ -28,50 +28,60 @@ const Bottom = styled.div`
   }
 `
 
-const Sketch = ({ title, params, shots, onDeleteClick, sketchId, onRenameClick, onReimportClick }) => (
-  <Wrapper>
-    <SceneHeader
-      onButtonClick={e => {
-        e.stopPropagation()
-        onRenameClick(sketchId)
-      }}
-      buttonText='Rename'>
-      {title}
-    </SceneHeader>
+const ActionButton = styled(Button)`
+  margin-left: 0.5rem;
+`
 
-    {params.length > 0 &&
-      <div>
-        <ViewSubheader>Params</ViewSubheader>
-        <Items>
-          {params.map((id, index) => (
-            <Item key={id}>
-              <SketchParam nodeId={id} index={index} sketchId={sketchId} />
-            </Item>
-          ))}
-        </Items>
-      </div>
-    }
+const DeleteButton = styled(Button)`
+  margin-right: auto;
+`
 
-    {shots.length > 0 &&
-      <div>
-        <ViewSubheader>Shots</ViewSubheader>
-        <Items>
-          {shots.map((id, index) => (
-            <Item key={id}>
-              <Shot nodeId={id} index={index} />
-            </Item>
-          ))}
-        </Items>
-      </div>
-    }
+const Sketch = ({ title, params, shots, onDeleteClick, sketchId,
+  onRenameClick, onReimportClick, onReloadFileClick }) => (
+    <Wrapper>
+      <SceneHeader
+        onButtonClick={e => {
+          e.stopPropagation()
+          onRenameClick(sketchId)
+        }}
+        buttonText='Rename'>
+        {title}
+      </SceneHeader>
 
-    <Bottom>
-      <div>
-        <Button onClick={() => { onDeleteClick(sketchId) }}>Delete Sketch</Button>
-        <Button onClick={() => { onReimportClick(sketchId) }}>Reimport</Button>
-      </div>
-    </Bottom>
-  </Wrapper>
+      {params.length > 0 &&
+        <div>
+          <ViewSubheader>Params</ViewSubheader>
+          <Items>
+            {params.map((id, index) => (
+              <Item key={id}>
+                <SketchParam nodeId={id} index={index} sketchId={sketchId} />
+              </Item>
+            ))}
+          </Items>
+        </div>
+      }
+
+      {shots.length > 0 &&
+        <div>
+          <ViewSubheader>Shots</ViewSubheader>
+          <Items>
+            {shots.map((id, index) => (
+              <Item key={id}>
+                <Shot nodeId={id} index={index} />
+              </Item>
+            ))}
+          </Items>
+        </div>
+      }
+
+      <Bottom>
+        <div>
+          <DeleteButton color='danger' onClick={() => { onDeleteClick(sketchId) }}>Delete Sketch</DeleteButton>
+          <ActionButton onClick={() => { onReimportClick(sketchId) }}>Re-import Params</ActionButton>
+          <ActionButton onClick={() => { onReloadFileClick(sketchId) }}>Reload File</ActionButton>
+        </div>
+      </Bottom>
+    </Wrapper>
 )
 
 Sketch.propTypes = {
@@ -86,6 +96,7 @@ Sketch.propTypes = {
   onDeleteClick: PropTypes.func.isRequired,
   onRenameClick: PropTypes.func.isRequired,
   onReimportClick: PropTypes.func.isRequired,
+  onReloadFileClick: PropTypes.func.isRequired,
 }
 
 export default Sketch
