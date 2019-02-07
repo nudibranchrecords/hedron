@@ -9,7 +9,7 @@ const ignoredFolders = ['node_modules']
 const findSketches = (file, all, pathArray) => {
   if (fs.statSync(file).isDirectory) {
     const name = path.parse(file).name
-    if (ignoredFolders.indexOf(name) !== -1) {
+    if (ignoredFolders.includes(name)) {
       return
     }
     const url = path.resolve(file)
