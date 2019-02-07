@@ -1,6 +1,6 @@
 import { connect } from 'react-redux'
 import CurrentSketchComponent from '../../components/CurrentSketch'
-import { uSketchDelete, uSketchReimport } from '../../store/sketches/actions'
+import { uSketchDelete, uSketchReimport, uSketchReloadFile } from '../../store/sketches/actions'
 import getSelectedSketchId from '../../selectors/getSelectedSketchId'
 import { uiEditingOpen } from '../../store/ui/actions'
 
@@ -29,6 +29,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       dispatch(uiEditingOpen('sketchTitle', sketchId))
     },
     onReimportClick: sketchId => dispatch(uSketchReimport(sketchId)),
+    onReloadFileClick: sketchId => dispatch(uSketchReloadFile(sketchId)),
   }
 }
 
