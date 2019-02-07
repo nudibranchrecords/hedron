@@ -1,5 +1,6 @@
 module.exports = {
   defaultTitle: 'Env',
+  category:'simple',
   params: [
     {
       key: 'colorH',

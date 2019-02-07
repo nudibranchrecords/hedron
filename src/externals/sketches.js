@@ -2,14 +2,20 @@ require('@babel/register')
 const glob = require('glob')
 const path = require('path')
 const errcode = require('err-code')
+const fs = require('fs')
 
-const loadSketches = globUrl => {
-  const all = {}
-  try {
-    glob.sync(globUrl + '/*').forEach(function (file) {
-      const name = path.parse(file).name
-      const url = path.resolve(file)
-      let indexUrl = path.format({ dir: url, base: 'index.js' })
+const ignoredFolders = ['node_modules']
+
+const findSketches = (file, all, pathArray) => {
+  if (fs.statSync(file).isDirectory) {
+    const name = path.parse(file).name
+    if (ignoredFolders.includes(name)) {
+      return
+    }
+    const url = path.resolve(file)
+    let indexUrl = path.format({ dir: url, base: 'index.js' })
+
+    if (fs.existsSync(indexUrl)) {
       let configUrl = path.format({ dir: url, base: 'config.js' })
 
       if (indexUrl.indexOf('\\')) {
@@ -24,6 +30,20 @@ const loadSketches = globUrl => {
         config: eval('require("' + configUrl + '")')
         /*eslint-enable */
       }
+      all[name].config.filePathArray = pathArray
+    } else {
+      glob.sync(file + '/*').forEach(function (childFile) {
+        findSketches(childFile, all, [...pathArray, name])
+      })
+    }
+  }
+}
+
+const loadSketches = globUrl => {
+  const all = {}
+  try {
+    glob.sync(globUrl + '/*').forEach(function (file) {
+      findSketches(file, all, [])
     })
 
     if (Object.keys(all).length === 0) {

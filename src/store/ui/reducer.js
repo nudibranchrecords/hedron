@@ -7,6 +7,7 @@ const defaultState = {
   isEditing: false,
   openedNode: false,
   auxOpen: [],
+  addSketchOpen: {},
 }
 
 const uiReducer = (state = defaultState, action) => {

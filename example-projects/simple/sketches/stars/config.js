@@ -1,5 +1,6 @@
 module.exports = {
   defaultTitle: 'Stars',
+  category:'simple',
   params: [
     {
       title: 'Opacity',
