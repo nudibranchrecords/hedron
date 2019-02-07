@@ -8,8 +8,11 @@ It is best practice to create a project folder outside of Hedron. This is advant
 
 Inside the project folder, you'll want to have a "sketches" folder, this is what you'll point Hedron to.
 
+## Sketches Directory
+This directory contains sketch folders. Sketch folders can be grouped into directories to keep things neat, with as many levels of organisation as you need. However, you can't have a sketch folder inside another sketch folder.
+
 ## Sketch
-Sketches together in the sketches directory. A sketch is itself directory with two required files:
+Sketches live in the sketches directory. A sketch is itself a directory with two required files:
 
 - config.js
 - index.js
@@ -22,6 +25,8 @@ This is where the params and shots are defined.
 module.exports = {
   // Default title when sketch is loaded in (can be changed by user)
   defaultTitle: 'Solid',
+  // If two or more sketches have the same category they will appear in a collapsible group. Not required.
+  category: 'Simple', 
   // Params are values between 0 and 1 that can be manipulated by the user
   // these values are sent to the sketch every frame
   // e.g. Speed, scale, colour
