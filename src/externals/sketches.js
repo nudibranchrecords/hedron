@@ -4,10 +4,15 @@ const path = require('path')
 const errcode = require('err-code')
 const fs = require('fs')
 
+const ignoredFolders = ['node_modules']
+
 const findSketches = (file, all, pathArray) => {
   if (fs.statSync(file).isDirectory) {
-    const url = path.resolve(file)
     const name = path.parse(file).name
+    if (ignoredFolders.indexOf(name) !== -1) {
+      return
+    }
+    const url = path.resolve(file)
     let indexUrl = path.format({ dir: url, base: 'index.js' })
 
     if (fs.existsSync(indexUrl)) {
