@@ -24,8 +24,8 @@ const loadSketch = (file) => {
     /*eslint-disable */
     // need to invalidate require cache for any hot changes to be picked up
     // this must be inside an eval() so it is in the correct context as the scripts eval'd below
-    eval(`delete require.cache[require.resolve('${indexUrl}')]`)
-    eval(`delete require.cache[require.resolve('${configUrl}')]`)
+    eval(`delete require.cache['${indexUrl}']`)
+    eval(`delete require.cache['${configUrl}']`)
 
     sketch = {
       Module: eval(`require('${indexUrl}')`),
