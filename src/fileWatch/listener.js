@@ -1,7 +1,7 @@
 import chokidar from 'chokidar'
 import getSketchesPath from '../selectors/getSketchesPath'
 import getAvailableModulesPaths from '../selectors/getAvailableModulesPaths'
-import { fileSketchModuleChanged } from './actions'
+import { fileSketchModuleChanged, fileSketchConfigChanged } from './actions'
 import getProjectSettings from '../selectors/getProjectSettings'
 import path from 'path'
 
@@ -11,6 +11,9 @@ let sketchWatcher
 // Wont work for things like "foo/../bar"
 // should work for this purpose as all paths are absolute
 const isChildPath = (child, parent) => child.includes(`${parent}${path.sep}`)
+
+// Check if the file that changed was the top level config for that sketch
+const isConfig = (child, parent) => child === `${parent}${path.sep}config.js`
 
 // Called on new project or new sketch dir
 export const handleWatchSketches = (action, store) => {
@@ -32,6 +35,11 @@ export const handleWatchSketches = (action, store) => {
       // Get the correct module by comparing path of changed file against list of module root paths
       const changedModule = modulePaths.find(module => isChildPath(changedPath, module.filePath))
       if (changedModule) {
+        // If its a config file that has changed, reload the params/sketches too
+        if (isConfig(changedPath, changedModule.filePath)) {
+          store.dispatch(fileSketchConfigChanged(changedModule.moduleId))
+        }
+
         store.dispatch(fileSketchModuleChanged(changedModule.moduleId))
       } else {
         console.warn(`File changed: Could not find related sketch module. Path: ${changedPath}`)
