@@ -214,7 +214,7 @@ const moduleReloadFile = (moduleId, state) => {
   // Reload updated module into app
   reloadSingleSketchModule(modulePath, moduleId, moduleFilePathArray)
 
-  // Loop all sketches that are of this module, remove them and add them again
+  // Loop all sketches that are of this module, remove them from webGL scene and add them again
   moduleSketchIds.forEach(obj => {
     // These funcs only affect the scene, not the application state, so won't destroy params etc
     removeSketchFromScene(obj.sceneId, obj.sketchId)
