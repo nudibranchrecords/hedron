@@ -40,6 +40,11 @@ const startSketchesWatcher = (store) => {
       // Get the correct module by comparing path of changed file against list of module root paths
       const changedModule = modulePaths.find(module => isChildPath(changedPath, module.filePath))
       if (changedModule) {
+        console.warn(
+          `%cHEDRON: Sketch file changed!\n%cModule: ${changedModule.moduleId}\nPath: ${changedPath}`,
+          `font-weight: bold`,
+          `font-weight: normal`,
+        )
         // If its a config file that has changed, reload the params/sketches too
         if (isConfig(changedPath, changedModule.filePath)) {
           store.dispatch(fileSketchConfigChanged(changedModule.moduleId))
@@ -47,7 +52,7 @@ const startSketchesWatcher = (store) => {
 
         store.dispatch(fileSketchModuleChanged(changedModule.moduleId))
       } else {
-        console.warn(`File changed: Could not find related sketch module. Path: ${changedPath}`)
+        console.error(`File changed: Could not find related sketch module. Path: ${changedPath}`)
       }
     }
   })
