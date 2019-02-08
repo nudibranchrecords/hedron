@@ -3,3 +3,8 @@ export const fileSketchModuleChanged = (moduleId) => ({
   payload: { moduleId },
 })
 
+export const fileSketchConfigChanged = (moduleId) => ({
+  type: 'FILE_SKETCH_CONFIG_CHANGED',
+  payload: { moduleId },
+})
+

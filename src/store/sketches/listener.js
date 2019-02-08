@@ -234,6 +234,20 @@ const handleSketchReloadFile = (action, store) => {
   moduleReloadFile(moduleId, state)
 }
 
+const handleConfigReloadFile = (action, store) => {
+  const state = store.getState()
+  const moduleSketchIds = getModuleSketchIds(state, action.payload.moduleId)
+
+  moduleSketchIds.forEach(obj => {
+    const action = {
+      payload: {
+        id: obj.sketchId,
+      },
+    }
+    handleSketchReimport(action, store)
+  })
+}
+
 export default (action, store) => {
   switch (action.type) {
     case 'U_SKETCH_CREATE':
@@ -250,6 +264,9 @@ export default (action, store) => {
       break
     case 'FILE_SKETCH_MODULE_CHANGED':
       handleModuleReloadFile(action, store)
+      break
+    case 'FILE_SKETCH_CONFIG_CHANGED':
+      handleConfigReloadFile(action, store)
       break
   }
 }
