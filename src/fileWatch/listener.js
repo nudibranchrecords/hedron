@@ -15,13 +15,17 @@ export const handleWatchSketches = (action, store) => {
     sketchWatcher.close()
   }
 
-  sketchWatcher = chokidar.watch(path, { ignored: 'node_modules' }).on('all', (event, path) => {
+  sketchWatcher = chokidar.watch(path, { ignored: ['**/node_modules/**'] }).on('all', (event, path) => {
     const state = store.getState()
     const shouldWatch = getProjectSettings(state).watchSketchesDir
 
     if (event === 'change' && shouldWatch) {
       const changedModule = modulePaths.find(module => path.includes(module.filePath))
-      store.dispatch(fileSketchModuleChanged(changedModule.moduleId))
+      if (changedModule) {
+        store.dispatch(fileSketchModuleChanged(changedModule.moduleId))
+      } else {
+        console.warn(`File changed: Could not find related sketch module. Path: ${path}`)
+      }
     }
   })
 }
