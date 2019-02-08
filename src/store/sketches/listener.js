@@ -222,6 +222,11 @@ const moduleReloadFile = (moduleId, state) => {
   })
 }
 
+const handleModuleReloadFile = (action, store) => {
+  const state = store.getState()
+  moduleReloadFile(action.payload.moduleId, state)
+}
+
 const handleSketchReloadFile = (action, store) => {
   const state = store.getState()
   const moduleId = getSketch(state, action.payload.id).moduleId
@@ -242,6 +247,9 @@ export default (action, store) => {
       break
     case 'U_SKETCH_RELOAD_FILE':
       handleSketchReloadFile(action, store)
+      break
+    case 'FILE_SKETCH_MODULE_CHANGED':
+      handleModuleReloadFile(action, store)
       break
   }
 }
