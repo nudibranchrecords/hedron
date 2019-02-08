@@ -15,6 +15,12 @@ const Settings = () => (
   <Wrapper>
     <ViewHeader>Settings</ViewHeader>
     <form onSubmit={e => e.preventDefault()}>
+      <h2>Sketches</h2>
+      <Row>
+        <Col>
+          <Input name='watchSketchesDir' label='Watch Sketches' type='checkbox' />
+        </Col>
+      </Row>
       <h2>Clock</h2>
       <Row>
         <Col width='6rem'>
