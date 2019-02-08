@@ -3,28 +3,38 @@ import getSketchesPath from '../selectors/getSketchesPath'
 import getAvailableModulesPaths from '../selectors/getAvailableModulesPaths'
 import { fileSketchModuleChanged } from './actions'
 import getProjectSettings from '../selectors/getProjectSettings'
+import path from 'path'
 
 let sketchWatcher
 
+// Hacky way to check if one path is a child of another.
+// Wont work for things like "foo/../bar"
+// should work for this purpose as all paths are absolute
+const isChildPath = (child, parent) => child.includes(`${parent}${path.sep}`)
+
+// Called on new project or new sketch dir
 export const handleWatchSketches = (action, store) => {
   const state = store.getState()
-  const path = getSketchesPath(state)
+  const sketchesPath = getSketchesPath(state)
   const modulePaths = getAvailableModulesPaths(state)
 
+  // Kill old sketch watcher if it existed before
   if (sketchWatcher !== undefined) {
     sketchWatcher.close()
   }
 
-  sketchWatcher = chokidar.watch(path, { ignored: ['**/node_modules/**'] }).on('all', (event, path) => {
+  // Watch for changes in the sketches path
+  sketchWatcher = chokidar.watch(sketchesPath, { ignored: ['**/node_modules/**'] }).on('all', (event, changedPath) => {
     const state = store.getState()
     const shouldWatch = getProjectSettings(state).watchSketchesDir
 
     if (event === 'change' && shouldWatch) {
-      const changedModule = modulePaths.find(module => path.includes(module.filePath))
+      // Get the correct module by comparing path of changed file against list of module root paths
+      const changedModule = modulePaths.find(module => isChildPath(changedPath, module.filePath))
       if (changedModule) {
         store.dispatch(fileSketchModuleChanged(changedModule.moduleId))
       } else {
-        console.warn(`File changed: Could not find related sketch module. Path: ${path}`)
+        console.warn(`File changed: Could not find related sketch module. Path: ${changedPath}`)
       }
     }
   })
