@@ -2,6 +2,7 @@ import chokidar from 'chokidar'
 import getSketchesPath from '../selectors/getSketchesPath'
 import getAvailableModulesPaths from '../selectors/getAvailableModulesPaths'
 import { fileSketchModuleChanged } from './actions'
+import getProjectSettings from '../selectors/getProjectSettings'
 
 let sketchWatcher
 
@@ -15,7 +16,10 @@ export const handleWatchSketches = (action, store) => {
   }
 
   sketchWatcher = chokidar.watch(path, { ignored: 'node_modules' }).on('all', (event, path) => {
-    if (event === 'change') {
+    const state = store.getState()
+    const shouldWatch = getProjectSettings(state).watchSketchesDir
+
+    if (event === 'change' && shouldWatch) {
       const changedModule = modulePaths.find(module => path.includes(module.filePath))
       store.dispatch(fileSketchModuleChanged(changedModule.moduleId))
     }
