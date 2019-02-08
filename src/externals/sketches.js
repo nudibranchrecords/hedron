@@ -48,6 +48,7 @@ const findSketches = (file, all, pathArray) => {
 
     if (sketch !== false) {
       sketch.config.filePathArray = pathArray
+      sketch.config.filePath = file
       all[name] = sketch
     } else {
       glob.sync(file + '/*').forEach(function (childFile) {
