@@ -49,6 +49,7 @@ export const reloadSingleSketchModule = (url, moduleId, pathArray) => {
     moduleFiles[moduleId] = loadSketch(url)
     moduleConfigs[moduleId] = moduleFiles[moduleId].config
     moduleConfigs[moduleId].filePathArray = pathArray
+    moduleConfigs[moduleId].filePath = url
   } catch (error) {
     isRunning = false
     console.error(error)

@@ -15,8 +15,16 @@ const isChildPath = (child, parent) => child.includes(`${parent}${path.sep}`)
 // Check if the file that changed was the top level config for that sketch
 const isConfig = (child, parent) => child === `${parent}${path.sep}config.js`
 
-// Called on new project or new sketch dir
-export const handleWatchSketches = (action, store) => {
+const stopSketchesWatcher = () => {
+  if (sketchWatcher !== undefined) {
+    sketchWatcher.close()
+  }
+}
+
+const startSketchesWatcher = (store) => {
+  // Kill old sketch watcher if it existed before
+  stopSketchesWatcher()
+
   const state = store.getState()
   const sketchesPath = getSketchesPath(state)
   const modulePaths = getAvailableModulesPaths(state)
@@ -28,10 +36,7 @@ export const handleWatchSketches = (action, store) => {
 
   // Watch for changes in the sketches path
   sketchWatcher = chokidar.watch(sketchesPath, { ignored: ['**/node_modules/**'] }).on('all', (event, changedPath) => {
-    const state = store.getState()
-    const shouldWatch = getProjectSettings(state).watchSketchesDir
-
-    if (event === 'change' && shouldWatch) {
+    if (event === 'change') {
       // Get the correct module by comparing path of changed file against list of module root paths
       const changedModule = modulePaths.find(module => isChildPath(changedPath, module.filePath))
       if (changedModule) {
@@ -48,10 +53,39 @@ export const handleWatchSketches = (action, store) => {
   })
 }
 
+// start/stop watcher depending on newly loaded project / change of sketches folder
+export const handleWatchSketches = (action, store) => {
+  const state = store.getState()
+  const shouldWatch = getProjectSettings(state).watchSketchesDir
+
+  if (shouldWatch) {
+    startSketchesWatcher(store)
+  } else {
+    stopSketchesWatcher()
+  }
+}
+
+// start/stop watcher depending on settings
+export const handleSettingsChange = (action, store) => {
+  const shouldWatchSketches = action.payload.items.watchSketchesDir
+
+  if (shouldWatchSketches) {
+    startSketchesWatcher(store)
+  } else {
+    stopSketchesWatcher()
+  }
+}
+
 export default (action, store) => {
   switch (action.type) {
     case 'PROJECT_LOAD_SUCCESS':
       handleWatchSketches(action, store)
+      break
+  }
+
+  switch (action.type) {
+    case 'SETTINGS_UPDATE':
+      handleSettingsChange(action, store)
       break
   }
 }
