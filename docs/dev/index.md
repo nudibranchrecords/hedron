@@ -249,10 +249,4 @@ module.exports = {
 }
 ```
 
-Setting `defaultProject` to the path of a saved project (e.g. `/Users/alex/Desktop/foo.json`) can help improve your workflow when developing:
-* The project will load automatically on load/restart
-* The project sketches folder will be watched for changes, triggering a restart
-
-## Reimporting
-
-If you've already got a project going with some sketches and then make edits to a sketch, Hedron automatically loads in the new content. However, if you've made changes to `config.js`, you'll need to "reimport" to see the new params and shots. Do this by clicking the button at the bottom of the view for that sketch.
+Setting `defaultProject` to the path of a saved project (e.g. `/Users/alex/Desktop/foo.json`) can help improve your workflow when developing by  automatically loading that project when the app compiles. This is particularly useful when developing Hedron itself, so that you can test changes made to the app immediately, without having to manually load in a project each time.

@@ -5,7 +5,6 @@ Here is a quick overview of how to use Hedron.
 ## Sketches
 Sketches are created with [three.js](https://github.com/mrdoob/three.js/). They are a Javascript module that exports a single [THREE.Group](https://threejs.org/docs/#api/objects/Group), to be placed in the main scene. The different aspects of a sketch can be controlled using "params" and "shots".
 
-### Adding and removing sketches
 Many sketches can be added to the same Hedron scene. These can be multiple instances of the same sketch, or different types of sketches.
 
 In order to add sketches, click on the "+" in the right sidebar. If you're starting from scratch, you'll need to tell Hedron where your sketch folder is.
@@ -55,8 +54,10 @@ Shots have a very similar system to adding inputs as params, so please refer to 
  - MIDI should be a "note on" type control
  - Instead of LFO, shots have a "sequencer". The rows of the sequencer are **one beat** (quarter note) split into 8. Click on each step for when you want the shot to fire.
 
-## Reimporting shots and params
-If you've already got a project going with some sketches and then make edits to a sketch, Hedron automatically loads in the new content. However, if you've made changes to config.js, you'll need to "reimport" to see the new params and shots. Do this by clicking the button at the bottom of the view for that sketch.
+## Reloading sketches
+If you have the "Watch sketches" setting enabled, Hedron will automatically refresh your sketches. However, if you don't have this enabled or something went wrong with the file watch (e.g. your sketch imports a file outside of its own folder) you'll need to click "Reload File" to see changes made to sketch files.
+
+This refresh will remove the sketch from the scene, import any new params or shots, remove and old params and shots, and then add the new sketch back into the scene.
 
 ## Macros
 Macros make it possible to control many params at once. To start using macros, click on "Macros" on the right sidebar.
