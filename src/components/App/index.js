@@ -79,6 +79,8 @@ App.propTypes = {
   leftWidth: PropTypes.number.isRequired,
   onLeftDrag: PropTypes.func.isRequired,
   onWrapperClick: PropTypes.func.isRequired,
-  sketchId: PropTypes.string,
+  sketchId: PropTypes.oneOfType([
+    PropTypes.string, PropTypes.bool,
+  ]).isRequired,
   macroId: PropTypes.string,
 }
