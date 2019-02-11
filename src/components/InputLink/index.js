@@ -32,7 +32,8 @@ class InputLink extends React.Component {
     return (
       this.props.isActive !== prevProps.isActive ||
       this.props.id !== prevProps.id ||
-      this.props.midiOptionIds.length !== prevProps.midiOptionIds.length
+      this.props.midiOptionIds.length !== prevProps.midiOptionIds.length ||
+      this.props.lfoOptionIds.length !== prevProps.lfoOptionIds.length
     )
   }
 

@@ -100,5 +100,24 @@ export default () => {
       inputLinkIds: [],
       subNode: true,
     },
+    {
+      title: 'Seed',
+      id: uid(),
+      key: 'seed',
+      value: -1,
+      type: 'select',
+      inputLinkIds: [],
+      subNode: true,
+      options: (() => {
+        let options = []
+        for (let i = -1; i < 25; i++) {
+          options.push({
+            value: i,
+            label: i === -1 ? 'auto' : i.toString(),
+          })
+        }
+        return options
+      })(),
+    },
   ]
 }

@@ -334,12 +334,85 @@ test('(Saga) handleInput (lfo)', (t) => {
     shape: 'sine',
     rate: 2,
     phase: 0.25,
+    seed: 1,
   }
 
   t.deepEqual(
     generator.next(optionValues).value,
-    call(lfoProcess, 0.555, 'sine', 2, 0.25),
+    call(lfoProcess, 0.555, 'sine', 2, 0.25, 1),
     '3. get value after going through first modifier'
+  )
+
+  const lfoValue = 0.9
+
+  t.deepEqual(
+    generator.next(lfoValue).value,
+    put(nodeValuesBatchUpdate([
+      {
+        id: 'XX',
+        value: 0.9,
+      },
+    ], undefined)),
+    '4. Dispatches batch node update action'
+  )
+  t.deepEqual(
+    generator.throw({ message: 'Error!' }).value,
+    put(projectError('Error!')),
+    'Dispatches project error if some error'
+  )
+
+  t.end()
+})
+
+test('(Saga) handleInput (lfo - noise seed is -1)', (t) => {
+  const payload = {
+    value: 0.555,
+    inputId: 'lfo',
+  }
+
+  const generator = handleInput({
+    payload,
+  })
+
+  t.deepEqual(
+    generator.next().value,
+    call(debounceInput, payload),
+    '0. Call debounceInput'
+  )
+
+  const messageCount = 1
+
+  t.deepEqual(
+    generator.next(messageCount).value,
+    select(getAssignedLinks, 'lfo'),
+    '1. Gets assigned links'
+  )
+
+  const links = [
+    {
+      id: 'LINK_ID',
+      nodeId: 'XX',
+      lfoOptionIds: ['yyy', 'zzz'],
+    },
+  ]
+
+  t.deepEqual(
+    generator.next(links).value,
+    select(getNodesValues, ['yyy', 'zzz']),
+    '2 Get Options values (nodes)'
+  )
+
+  const optionValues = {
+    shape: 'noise',
+    rate: 2,
+    phase: 0.25,
+    seed: -1,
+  }
+
+  t.deepEqual(
+    generator.next(optionValues).value,
+    call(lfoProcess, 0.555, 'noise', 2, 0.25, 'LINK_ID'),
+    '3. get value after going through first modifier, noise seed should match ID of link'
   )
 
   const lfoValue = 0.9
