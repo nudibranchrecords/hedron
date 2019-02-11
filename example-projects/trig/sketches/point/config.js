@@ -12,19 +12,19 @@ module.exports = {
     {
       key: 'posX', // needs to be unique
       title: 'Pos X', // should be human
-      defaultValue: 0.5 // must be between 0 and 1
+      defaultValue: 0.5, // must be between 0 and 1
     },
     {
       key: 'posY',
       title: 'Pos Y',
-      defaultValue: 0.5
+      defaultValue: 0.5,
     },
     {
       key: 'posZ',
       title: 'Pos Z',
-      defaultValue: 0.5
-    }
+      defaultValue: 0.5,
+    },
   ],
   shots: [
-  ]
+  ],
 }

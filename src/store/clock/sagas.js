@@ -1,4 +1,4 @@
-import 'babel-polyfill'
+import '@babel/polyfill'
 import now from 'performance-now'
 import { takeEvery, put, call } from 'redux-saga/effects'
 import { inputFired } from '../inputs/actions'
