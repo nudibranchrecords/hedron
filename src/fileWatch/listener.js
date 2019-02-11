@@ -34,30 +34,33 @@ const startSketchesWatcher = (store) => {
     sketchWatcher.close()
   }
 
+  const watchOptions = {
+    ignored: ['**/node_modules/**', '**/.DS_Store'],
+    ignoreInitial: true,
+  }
+
   // Watch for changes in the sketches path
-  sketchWatcher = chokidar.watch(sketchesPath, { ignored: ['**/node_modules/**'] }).on('all', (event, changedPath) => {
-    if (event === 'change') {
-      // Get the correct module by comparing path of changed file against list of module root paths
-      const changedModule = modulePaths.find(module => isChildPath(changedPath, module.filePath))
-      if (changedModule) {
-        const isFileConfig = isConfig(changedPath, changedModule.filePath)
-        const configMessage = isFileConfig ? '\n%cFile is config, reimporting params and shots' : ''
-        // eslint-disable-next-line no-console
-        console.log(
-          `%cHEDRON: Sketch file changed!\n%cModule: ${changedModule.moduleId}\nPath: ${changedPath}${configMessage}`,
-          `font-weight: bold`,
-          `font-weight: normal`,
-          `font-style: italic`,
-        )
-        // If its a config file that has changed, reload the params/sketches too
-        if (isFileConfig) {
-          store.dispatch(fileSketchConfigChanged(changedModule.moduleId))
-        } else {
-          store.dispatch(fileSketchModuleChanged(changedModule.moduleId))
-        }
+  sketchWatcher = chokidar.watch(sketchesPath, watchOptions).on('change', (changedPath) => {
+    // Get the correct module by comparing path of changed file against list of module root paths
+    const changedModule = modulePaths.find(module => isChildPath(changedPath, module.filePath))
+    if (changedModule) {
+      const isFileConfig = isConfig(changedPath, changedModule.filePath)
+      const configMessage = isFileConfig ? '\n%cFile is config, reimporting params and shots' : ''
+      // eslint-disable-next-line no-console
+      console.log(
+        `%cHEDRON: Sketch file changed!\n%cModule: ${changedModule.moduleId}\nPath: ${changedPath}${configMessage}`,
+        `font-weight: bold`,
+        `font-weight: normal`,
+        `font-style: italic`,
+      )
+      // If its a config file that has changed, reload the params/sketches too
+      if (isFileConfig) {
+        store.dispatch(fileSketchConfigChanged(changedModule.moduleId))
       } else {
-        console.error(`File changed: Could not find related sketch module. Path: ${changedPath}`)
+        store.dispatch(fileSketchModuleChanged(changedModule.moduleId))
       }
+    } else {
+      console.error(`File changed: Could not find related sketch module. Path: ${changedPath}`)
     }
   })
 }
