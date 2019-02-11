@@ -15,7 +15,8 @@ import getCurrentSceneId from '../../selectors/getCurrentSceneId'
 import history from '../../history'
 import getSketchesPath from '../../selectors/getSketchesPath'
 import getModuleSketchIds from '../../selectors/getModuleSketchIds'
-import { reloadSingleSketchModule, removeSketchFromScene, addSketchToScene } from '../../engine'
+import { reloadSingleSketchModule, removeSketchFromScene,
+  addSketchToScene, reloadSingleSketchConfig } from '../../engine'
 
 const handleSketchCreate = (action, store) => {
   let uniqueId
@@ -116,28 +117,36 @@ const handleSketchDelete = (action, store) => {
   history.push('/scenes/view/' + sceneId)
 }
 
-const handleSketchReimport = (action, store) => {
+const sketchReimport = (sketchId, store) => {
   const state = store.getState()
-  const id = action.payload.id
-  const sketch = getSketch(state, id)
-  const module = getModule(state, sketch.moduleId)
+  const sketch = getSketch(state, sketchId)
+  const sketchModule = getModule(state, sketch.moduleId)
   let paramIds = sketch.paramIds
   let shotIds = sketch.shotIds
   const sketchParams = {}
   const sketchShots = {}
 
-  for (let i = 0; i < paramIds.length; i++) {
+  const moduleParams = sketchModule.params
+  const moduleShots = sketchModule.shots
+
+  // loop through current params (backwards because we might delete some!)
+  for (let i = paramIds.length - 1; i > -1; i--) {
     const param = getNode(state, paramIds[i])
-    sketchParams[param.key] = param
+    const found = moduleParams.find(moduleParam => moduleParam.key === param.key)
+
+    if (found) {
+      sketchParams[param.key] = param
+    } else {
+      // if param doesnt match with new params, remove the node
+      paramIds = paramIds.filter(id => param.id !== id)
+      store.dispatch(uNodeDelete(param.id))
+    }
   }
 
   for (let i = 0; i < shotIds.length; i++) {
     const shot = getNode(state, shotIds[i])
     sketchShots[shot.method] = shot
   }
-
-  const moduleParams = module.params
-  const moduleShots = module.shots
 
   // Look through the loaded module's params for new ones
   for (let i = 0; i < moduleParams.length; i++) {
@@ -191,7 +200,7 @@ const handleSketchReimport = (action, store) => {
         type: 'shot',
         title: moduleShot.title,
         method: moduleShot.method,
-        sketchId: id,
+        sketchId: sketchId,
         inputLinkIds: [],
       }))
     } else {
@@ -201,9 +210,10 @@ const handleSketchReimport = (action, store) => {
     }
   }
 
-  store.dispatch(sketchUpdate(id, { paramIds, shotIds }))
+  store.dispatch(sketchUpdate(sketchId, { paramIds, shotIds }))
 }
 
+// Reload the index file for a sketch module but not the config
 const moduleReloadFile = (moduleId, state) => {
   const sketchesPath = getSketchesPath(state)
   const moduleFilePathArray = getModule(state, moduleId).filePathArray
@@ -234,18 +244,37 @@ const handleSketchReloadFile = (action, store) => {
   moduleReloadFile(moduleId, state)
 }
 
+// Reload config file and update params for all sketches using that module
 const handleConfigReloadFile = (action, store) => {
   const state = store.getState()
-  const moduleSketchIds = getModuleSketchIds(state, action.payload.moduleId)
+  const moduleId = action.payload.moduleId
+  const sketchesPath = getSketchesPath(state)
+  const moduleSketchIds = getModuleSketchIds(state, moduleId)
+  const moduleFilePathArray = getModule(state, moduleId).filePathArray
+  const modulePath = path.join(sketchesPath, moduleFilePathArray.join('/'), moduleId)
 
   moduleSketchIds.forEach(obj => {
-    const action = {
-      payload: {
-        id: obj.sketchId,
-      },
-    }
-    handleSketchReimport(action, store)
+    reloadSingleSketchConfig(modulePath, moduleId, moduleFilePathArray)
+    sketchReimport(obj.sketchId, store)
   })
+
+  moduleReloadFile(moduleId, state)
+}
+
+// Reload config file and update params for just one sketch using that module
+const handleSketchReimport = (action, store) => {
+  const state = store.getState()
+  const sketchId = action.payload.id
+  const sketch = getSketch(state, sketchId)
+  const moduleId = sketch.moduleId
+
+  const sketchesPath = getSketchesPath(state)
+  const moduleFilePathArray = getModule(state, moduleId).filePathArray
+  const modulePath = path.join(sketchesPath, moduleFilePathArray.join('/'), moduleId)
+
+  reloadSingleSketchConfig(modulePath, moduleId, moduleFilePathArray)
+  sketchReimport(sketchId, store)
+  moduleReloadFile(moduleId, state)
 }
 
 export default (action, store) => {
