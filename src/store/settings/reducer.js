@@ -5,6 +5,7 @@ const defaultState = {
   aspectH: 9,
   antialias: false,
   throttledFPS: 60,
+  watchSketchesDir: true,
 }
 
 const settingsReducer = (state = defaultState, action) => {

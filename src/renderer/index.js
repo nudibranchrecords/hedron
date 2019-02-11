@@ -96,6 +96,7 @@ initiateAudio(store)
 initiateMidi(store)
 initiateGeneratedClock(store)
 initiateScreens(store)
+
 engine.run(store, stats)
 
 if (isDevelopment) {

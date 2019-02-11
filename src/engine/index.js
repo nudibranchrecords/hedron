@@ -1,4 +1,4 @@
-import { loadSketches } from '../externals/sketches'
+import { loadSketches, loadSketch, loadConfig } from '../externals/sketches'
 import getSketch from '../selectors/getSketch'
 import getScenes from '../selectors/getScenes'
 import getScene from '../selectors/getScene'
@@ -18,20 +18,19 @@ import TWEEN from '@tweenjs/tween.js'
 export let scenes = {}
 
 let sketches = {}
-let modules = {}
+let moduleConfigs = {}
 let isRunning = false
-let allModules = {}
+let moduleFiles = {}
 let sketchesFolder
 let store
 
 export const loadSketchModules = (url) => {
   try {
     sketchesFolder = url
-    allModules = loadSketches(url)
+    moduleFiles = loadSketches(url)
 
-    Object.keys(allModules).forEach((key) => {
-      const config = allModules[key].config
-      modules[key] = config
+    Object.keys(moduleFiles).forEach((key) => {
+      moduleConfigs[key] = moduleFiles[key].config
     })
 
     isRunning = true
@@ -39,6 +38,37 @@ export const loadSketchModules = (url) => {
     isRunning = false
     console.error(error)
     store.dispatch(projectError(`Sketches failed to load: ${error.message}`, {
+      popup: 'true',
+      code: error.code,
+    }))
+  }
+}
+
+export const reloadSingleSketchModule = (url, moduleId, pathArray) => {
+  try {
+    moduleFiles[moduleId] = loadSketch(url)
+    moduleConfigs[moduleId] = moduleFiles[moduleId].config
+    moduleConfigs[moduleId].filePathArray = pathArray
+    moduleConfigs[moduleId].filePath = url
+  } catch (error) {
+    isRunning = false
+    console.error(error)
+    store.dispatch(projectError(`Sketch ${moduleId} failed to load: ${error.message}`, {
+      popup: 'true',
+      code: error.code,
+    }))
+  }
+}
+
+export const reloadSingleSketchConfig = (url, moduleId, pathArray) => {
+  try {
+    moduleConfigs[moduleId] = loadConfig(url)
+    moduleConfigs[moduleId].filePathArray = pathArray
+    moduleConfigs[moduleId].filePath = url
+  } catch (error) {
+    isRunning = false
+    console.error(error)
+    store.dispatch(projectError(`Sketch config ${moduleId} failed to load: ${error.message}`, {
       popup: 'true',
       code: error.code,
     }))
@@ -65,7 +95,7 @@ export const addSketchToScene = (sceneId, sketchId, moduleId) => {
   const state = store.getState()
   const params = getSketchParams(state, sketchId)
 
-  const module = new allModules[moduleId].Module(scene, params, meta)
+  const module = new moduleFiles[moduleId].Module(scene, params, meta)
 
   sketches[sketchId] = module
   module.root && scene.scene.add(module.root)
@@ -134,7 +164,7 @@ export const run = (injectedStore, stats) => {
   isRunning = true
   renderer.initiate(injectedStore, scenes)
   // Give store module params
-  store.dispatch(availableModulesReplaceAll(modules))
+  store.dispatch(availableModulesReplaceAll(moduleConfigs))
 
   const updateSceneSketches = (sceneId) => {
     stateScene = getScene(state, sceneId)

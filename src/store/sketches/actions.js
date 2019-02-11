@@ -12,9 +12,9 @@ export function uSketchDelete (id, sceneId) {
   }
 }
 
-export function uSketchReimport (id) {
+export function uSketchReloadFile (id) {
   return {
-    type: 'U_SKETCH_REIMPORT',
+    type: 'U_SKETCH_RELOAD_FILE',
     payload: { id },
   }
 }
