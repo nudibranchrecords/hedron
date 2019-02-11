@@ -143,9 +143,18 @@ const sketchReimport = (sketchId, store) => {
     }
   }
 
-  for (let i = 0; i < shotIds.length; i++) {
+  // loop through current shots (backwards because we might delete some!)
+  for (let i = shotIds.length - 1; i > -1; i--) {
     const shot = getNode(state, shotIds[i])
-    sketchShots[shot.method] = shot
+    const found = moduleShots.find(moduleShot => moduleShot.method === shot.method)
+
+    if (found) {
+      sketchShots[shot.method] = shot
+    } else {
+      // if shot doesnt match with new shots, remove the node
+      shotIds = shotIds.filter(id => shot.id !== id)
+      store.dispatch(uNodeDelete(shot.id))
+    }
   }
 
   // Look through the loaded module's params for new ones
