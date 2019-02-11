@@ -238,6 +238,13 @@ class Solid {
 module.exports = Solid
 ```
 
+## Reloading sketches / Auto reload
+If you have the "Watch sketches" setting enabled, Hedron will automatically refresh your sketches. However, if you don't have this enabled or something went wrong with the file watch (e.g. your sketch imports a file outside of its own folder) you'll need to click "Reload File" to see changes made to sketch files.
+
+This refresh will remove the sketch from the scene, import any new params or shots, remove and old params and shots, and then add the new sketch back into the scene.
+
+**Please note: Auto refresh of sketches doesn't seem to work with all text editors. (e.g. Atom on Windows is reported to be inconsistent).**
+
 ## Hedron dev config
 
 You can get extra functionality by adding `dev.config.js` to `/config` (from the root directory of the Hedron repo).

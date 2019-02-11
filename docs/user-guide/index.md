@@ -54,10 +54,12 @@ Shots have a very similar system to adding inputs as params, so please refer to 
  - MIDI should be a "note on" type control
  - Instead of LFO, shots have a "sequencer". The rows of the sequencer are **one beat** (quarter note) split into 8. Click on each step for when you want the shot to fire.
 
-## Reloading sketches
+## Reloading sketches / Auto reload
 If you have the "Watch sketches" setting enabled, Hedron will automatically refresh your sketches. However, if you don't have this enabled or something went wrong with the file watch (e.g. your sketch imports a file outside of its own folder) you'll need to click "Reload File" to see changes made to sketch files.
 
 This refresh will remove the sketch from the scene, import any new params or shots, remove and old params and shots, and then add the new sketch back into the scene.
+
+**Please note: Auto refresh of sketches doesn't seem to work with all text editors. (e.g. Atom on Windows is reported to be inconsistent).**
 
 ## Macros
 Macros make it possible to control many params at once. To start using macros, click on "Macros" on the right sidebar.
