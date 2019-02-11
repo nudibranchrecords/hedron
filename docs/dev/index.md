@@ -243,7 +243,7 @@ If you have the "Watch sketches" setting enabled, Hedron will automatically refr
 
 This refresh will remove the sketch from the scene, import any new params or shots, remove and old params and shots, and then add the new sketch back into the scene.
 
-**Please note: Auto refresh of sketches doesn't seem to work with all text editors. (e.g. Atom on Windows is reported to be inconsistent).**
+**Please note: File change detection may not work with all text editors. (e.g. Atom on OSX is reported to be inconsistent).**
 
 ## Hedron dev config
 
