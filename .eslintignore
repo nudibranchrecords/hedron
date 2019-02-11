@@ -1,4 +1,1 @@
-coverage/**
-node_modules/**
-dist/**
-src/index.html
+node_modules

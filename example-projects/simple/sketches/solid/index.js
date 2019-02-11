@@ -148,6 +148,7 @@ class Solid {
     Use the destructor method to do anything when the sketch is deleted
   **/
   destructor () {
+    // eslint-disable-next-line no-console
     console.log('Solid sketch deleted!')
   }
 }

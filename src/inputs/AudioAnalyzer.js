@@ -1,6 +1,5 @@
 import * as THREE from 'three'
 class AudioInput {
-  static texture = null;
   constructor (stream) {
     const context = new window.AudioContext()
     const source = context.createMediaStreamSource(stream)
@@ -52,8 +51,8 @@ class AudioInput {
     this.levelBins = Math.floor((this.analyser.frequencyBinCount - 500) / this.numBands)
 
     // creating audio texture
-    AudioInput.texture = new THREE.DataTexture(self.data, this.analyser.frequencyBinCount, 1, THREE.LuminanceFormat)
-    AudioInput.texture.magFilter = AudioInput.texture.minFilter = THREE.LinearFilter
+    this.texture = new THREE.DataTexture(self.data, this.analyser.frequencyBinCount, 1, THREE.LuminanceFormat)
+    this.texture.magFilter = this.texture.minFilter = THREE.LinearFilter
   }
 
   lerp (v0, v1, t) {
@@ -83,9 +82,9 @@ class AudioInput {
       this.textureData[i] = Math.floor(this.fullLevelsData[i] * 256)
     }
 
-    AudioInput.texture.image.data = this.textureData
+    this.texture.image.data = this.textureData
 
-    AudioInput.texture.needsUpdate = true
+    this.texture.needsUpdate = true
 
     for (let i = 0; i < this.numBands; i++) {
       let sum = 0

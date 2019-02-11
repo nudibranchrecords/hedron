@@ -14,7 +14,6 @@ const Header = styled.a`
   color: ${theme.textColorLight1};
   fill: ${theme.textColorLight1};
   cursor: pointer;
-
   &:hover {
     color: ${theme.actionColor1};
     fill: ${theme.actionColor1};
@@ -29,8 +28,8 @@ const Icon = styled(IconComponent)`
   transform: rotate(${props => props.isOpen ? '0deg' : '-90deg'});
 `
 
-const Revealer = ({ children, isOpen, title, onHeaderClick }) => (
-  <Wrapper>
+const Revealer = ({ children, isOpen, title, onHeaderClick, className }) => (
+  <Wrapper className={className}>
     <Header onClick={onHeaderClick}><Icon isOpen={isOpen} glyph={downIcon} /> {title}</Header>
     {
       isOpen &&
@@ -46,6 +45,7 @@ Revealer.propTypes = {
   isOpen: PropTypes.bool,
   title: PropTypes.string.isRequired,
   onHeaderClick: PropTypes.func.isRequired,
+  className: PropTypes.string,
 }
 
 export default Revealer

@@ -1,4 +1,4 @@
-import 'babel-polyfill'
+import '@babel/polyfill'
 import test from 'tape'
 import { select, put } from 'redux-saga/effects'
 import getNode from '../../../selectors/getNode'
