@@ -12,13 +12,6 @@ export function uSketchDelete (id, sceneId) {
   }
 }
 
-export function uSketchReimport (id) {
-  return {
-    type: 'U_SKETCH_REIMPORT',
-    payload: { id },
-  }
-}
-
 export function uSketchReloadFile (id) {
   return {
     type: 'U_SKETCH_RELOAD_FILE',

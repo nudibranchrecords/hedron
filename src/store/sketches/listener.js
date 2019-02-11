@@ -246,14 +246,8 @@ const handleModuleReloadFile = (action, store) => {
   moduleReloadFile(action.payload.moduleId, state)
 }
 
-const handleSketchReloadFile = (action, store) => {
-  const state = store.getState()
-  const moduleId = getSketch(state, action.payload.id).moduleId
-
-  moduleReloadFile(moduleId, state)
-}
-
 // Reload config file and update params for all sketches using that module
+// Also reloads module
 const handleConfigReloadFile = (action, store) => {
   const state = store.getState()
   const moduleId = action.payload.moduleId
@@ -271,6 +265,7 @@ const handleConfigReloadFile = (action, store) => {
 }
 
 // Reload config file and update params for just one sketch using that module
+// Also reloads module
 const handleSketchReimport = (action, store) => {
   const state = store.getState()
   const sketchId = action.payload.id
@@ -294,11 +289,8 @@ export default (action, store) => {
     case 'U_SKETCH_DELETE':
       handleSketchDelete(action, store)
       break
-    case 'U_SKETCH_REIMPORT':
-      handleSketchReimport(action, store)
-      break
     case 'U_SKETCH_RELOAD_FILE':
-      handleSketchReloadFile(action, store)
+      handleSketchReimport(action, store)
       break
     case 'FILE_SKETCH_MODULE_CHANGED':
       handleModuleReloadFile(action, store)
