@@ -23,6 +23,7 @@ fsStub.statSync.returns({ isDirectory: true })
 
 fsStub.existsSync.returns(true)
 fsStub.existsSync.withArgs(path.resolve('foo/bar/amphibians/index.js')).returns(false)
+fsStub.existsSync.withArgs(path.resolve('foo/bar/amphibians/config.js')).returns(false)
 
 const { loadSketches } = proxyquire('../sketches', {
   glob: globStub,

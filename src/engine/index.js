@@ -1,4 +1,4 @@
-import { loadSketches, loadSketch } from '../externals/sketches'
+import { loadSketches, loadSketch, loadConfig } from '../externals/sketches'
 import getSketch from '../selectors/getSketch'
 import getScenes from '../selectors/getScenes'
 import getScene from '../selectors/getScene'
@@ -54,6 +54,21 @@ export const reloadSingleSketchModule = (url, moduleId, pathArray) => {
     isRunning = false
     console.error(error)
     store.dispatch(projectError(`Sketch ${moduleId} failed to load: ${error.message}`, {
+      popup: 'true',
+      code: error.code,
+    }))
+  }
+}
+
+export const reloadSingleSketchConfig = (url, moduleId, pathArray) => {
+  try {
+    moduleConfigs[moduleId] = loadConfig(url)
+    moduleConfigs[moduleId].filePathArray = pathArray
+    moduleConfigs[moduleId].filePath = url
+  } catch (error) {
+    isRunning = false
+    console.error(error)
+    store.dispatch(projectError(`Sketch config ${moduleId} failed to load: ${error.message}`, {
       popup: 'true',
       code: error.code,
     }))

@@ -7,34 +7,43 @@ const fs = require('fs')
 
 const ignoredFolders = ['node_modules']
 
-const loadSketch = (file) => {
-  const url = path.resolve(file)
-  let indexUrl = path.format({ dir: url, base: 'index.js' })
-  let sketch = false
+const loadFile = resolvedPath => {
+  let file = false
 
-  if (fs.existsSync(indexUrl)) {
-    let configUrl = path.format({ dir: url, base: 'config.js' })
-
-    if (indexUrl.indexOf('\\')) {
+  if (fs.existsSync(resolvedPath)) {
+    if (resolvedPath.includes('\\')) {
       // For paths in Windows the next require function requires the path to have \\ as a separator instead of only \
-      indexUrl = indexUrl.replace(/\\/g, '\\\\')
-      configUrl = configUrl.replace(/\\/g, '\\\\')
+      resolvedPath = resolvedPath.replace(/\\/g, '\\\\')
     }
 
     /*eslint-disable */
     // need to invalidate require cache for any hot changes to be picked up
     // this must be inside an eval() so it is in the correct context as the scripts eval'd below
-    eval(`delete require.cache['${indexUrl}']`)
-    eval(`delete require.cache['${configUrl}']`)
+    eval(`delete require.cache['${resolvedPath}']`)
 
-    sketch = {
-      Module: eval(`require('${indexUrl}')`),
-      config: eval(`require('${configUrl}')`)
-    }
+    file = eval(`require('${resolvedPath}')`)
     /*eslint-enable */
   }
 
-  return sketch
+  return file
+}
+
+const loadSketch = (file) => {
+  const url = path.resolve(file)
+  let indexUrl = path.format({ dir: url, base: 'index.js' })
+  let configUrl = path.format({ dir: url, base: 'config.js' })
+
+  return {
+    Module: loadFile(indexUrl),
+    config: loadFile(configUrl),
+  }
+}
+
+const loadConfig = (file) => {
+  const url = path.resolve(file)
+  let configUrl = path.format({ dir: url, base: 'config.js' })
+
+  return loadFile(configUrl)
 }
 
 const findSketches = (file, all, pathArray) => {
@@ -46,7 +55,7 @@ const findSketches = (file, all, pathArray) => {
 
     const sketch = loadSketch(file)
 
-    if (sketch !== false) {
+    if (sketch.Module !== false) {
       sketch.config.filePathArray = pathArray
       sketch.config.filePath = file
       all[name] = sketch
@@ -79,4 +88,5 @@ const loadSketches = globUrl => {
 module.exports = {
   loadSketches,
   loadSketch,
+  loadConfig,
 }

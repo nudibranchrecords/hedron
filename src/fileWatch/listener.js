@@ -40,17 +40,21 @@ const startSketchesWatcher = (store) => {
       // Get the correct module by comparing path of changed file against list of module root paths
       const changedModule = modulePaths.find(module => isChildPath(changedPath, module.filePath))
       if (changedModule) {
-        console.warn(
-          `%cHEDRON: Sketch file changed!\n%cModule: ${changedModule.moduleId}\nPath: ${changedPath}`,
+        const isFileConfig = isConfig(changedPath, changedModule.filePath)
+        const configMessage = isFileConfig ? '\n%cFile is config, reimporting params and shots' : ''
+        // eslint-disable-next-line no-console
+        console.log(
+          `%cHEDRON: Sketch file changed!\n%cModule: ${changedModule.moduleId}\nPath: ${changedPath}${configMessage}`,
           `font-weight: bold`,
           `font-weight: normal`,
+          `font-style: italic`,
         )
         // If its a config file that has changed, reload the params/sketches too
-        if (isConfig(changedPath, changedModule.filePath)) {
+        if (isFileConfig) {
           store.dispatch(fileSketchConfigChanged(changedModule.moduleId))
+        } else {
+          store.dispatch(fileSketchModuleChanged(changedModule.moduleId))
         }
-
-        store.dispatch(fileSketchModuleChanged(changedModule.moduleId))
       } else {
         console.error(`File changed: Could not find related sketch module. Path: ${changedPath}`)
       }
