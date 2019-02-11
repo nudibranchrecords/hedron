@@ -110,10 +110,10 @@ export default () => {
       subNode: true,
       options: (() => {
         let options = []
-        for (let i = -1; i < 25; i++)  {
+        for (let i = -1; i < 25; i++) {
           options.push({
             value: i,
-            label: i === -1 ? 'auto' : i.toString()
+            label: i === -1 ? 'auto' : i.toString(),
           })
         }
         return options
