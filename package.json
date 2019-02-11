@@ -43,6 +43,7 @@
     "@babel/register": "^7.0.0",
     "@tweenjs/tween.js": "^17.2.0",
     "babel-loader": "^8.0.5",
+    "chokidar": "^2.1.0",
     "create-react-class": "^15.5.2",
     "electron-debug": "^1.4.0",
     "electron-log": "^2.2.14",

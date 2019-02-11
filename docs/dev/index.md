@@ -243,6 +243,13 @@ class Solid {
 module.exports = Solid
 ```
 
+## Reloading sketches / Auto reload
+If you have the "Watch sketches" setting enabled, Hedron will automatically refresh your sketches. However, if you don't have this enabled or something went wrong with the file watch (e.g. your sketch imports a file outside of its own folder) you'll need to click "Reload File" to see changes made to sketch files.
+
+This refresh will remove the sketch from the scene, import any new params or shots, remove and old params and shots, and then add the new sketch back into the scene.
+
+**Please note: File change detection may not work with all text editors. (e.g. Atom on OSX is reported to be inconsistent).**
+
 ## Hedron dev config
 
 You can get extra functionality by adding `dev.config.js` to `/config` (from the root directory of the Hedron repo).
@@ -254,10 +261,4 @@ module.exports = {
 }
 ```
 
-Setting `defaultProject` to the path of a saved project (e.g. `/Users/alex/Desktop/foo.json`) can help improve your workflow when developing:
-* The project will load automatically on load/restart
-* The project sketches folder will be watched for changes, triggering a restart
-
-## Reimporting
-
-If you've already got a project going with some sketches and then make edits to a sketch, Hedron automatically loads in the new content. However, if you've made changes to `config.js`, you'll need to "reimport" to see the new params and shots. Do this by clicking the button at the bottom of the view for that sketch.
+Setting `defaultProject` to the path of a saved project (e.g. `/Users/alex/Desktop/foo.json`) can help improve your workflow when developing by  automatically loading that project when the app compiles. This is particularly useful when developing Hedron itself, so that you can test changes made to the app immediately, without having to manually load in a project each time.
