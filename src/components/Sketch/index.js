@@ -37,7 +37,7 @@ const DeleteButton = styled(Button)`
 `
 
 const Sketch = ({ title, params, shots, onDeleteClick, sketchId,
-  onRenameClick, onReimportClick, onReloadFileClick }) => (
+  onRenameClick, onReloadFileClick }) => (
     <Wrapper>
       <SceneHeader
         onButtonClick={e => {
@@ -77,7 +77,6 @@ const Sketch = ({ title, params, shots, onDeleteClick, sketchId,
       <Bottom>
         <div>
           <DeleteButton color='danger' onClick={() => { onDeleteClick(sketchId) }}>Delete Sketch</DeleteButton>
-          <ActionButton onClick={() => { onReimportClick(sketchId) }}>Re-import Params</ActionButton>
           <ActionButton onClick={() => { onReloadFileClick(sketchId) }}>Reload File</ActionButton>
         </div>
       </Bottom>
@@ -95,7 +94,6 @@ Sketch.propTypes = {
   ).isRequired,
   onDeleteClick: PropTypes.func.isRequired,
   onRenameClick: PropTypes.func.isRequired,
-  onReimportClick: PropTypes.func.isRequired,
   onReloadFileClick: PropTypes.func.isRequired,
 }
 
