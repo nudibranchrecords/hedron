@@ -45,10 +45,10 @@ const startSketchesWatcher = (store) => {
     const changedModule = modulePaths.find(module => isChildPath(changedPath, module.filePath))
     if (changedModule) {
       const isFileConfig = isConfig(changedPath, changedModule.filePath)
-      const configMessage = isFileConfig ? '\n%cFile is config, reimporting params and shots' : ''
+      const configMessage = isFileConfig ? '\nFile is config, reimporting params and shots' : ''
       // eslint-disable-next-line no-console
       console.log(
-        `%cHEDRON: Sketch file changed!\n%cModule: ${changedModule.moduleId}\nPath: ${changedPath}${configMessage}`,
+        `%cHEDRON: Sketch file changed! %c\nModule: ${changedModule.moduleId}\nPath: ${changedPath} %c${configMessage}`,
         `font-weight: bold`,
         `font-weight: normal`,
         `font-style: italic`,
