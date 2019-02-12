@@ -17,20 +17,16 @@
       "connectedMacroIds": [],
       "title": "Viewer Mode",
       "type": "select",
-      "options": [
-        {
-          "value": "mix",
-          "label": "Mix"
-        },
-        {
-          "value": "A",
-          "label": "A"
-        },
-        {
-          "value": "B",
-          "label": "B"
-        }
-      ]
+      "options": [{
+        "value": "mix",
+        "label": "Mix"
+      }, {
+        "value": "A",
+        "label": "A"
+      }, {
+        "value": "B",
+        "label": "B"
+      }]
     },
     "audioLevelsFalloff": {
       "id": "audioLevelsFalloff",
@@ -79,143 +75,8 @@
       "title": "Normalized Range Falloff",
       "type": "param"
     },
-    "qoi2yxh": {
-      "id": "qoi2yxh",
-      "value": 0.45714285714285713,
-      "inputLinkIds": [],
-      "shotCount": 0,
-      "connectedMacroIds": [],
-      "title": "BG Color H",
-      "type": "param",
-      "key": "colorH",
-      "hidden": false,
-      "min": 0,
-      "max": 1,
-      "defaultMin": 0,
-      "defaultMax": 1
-    },
-    "90fnde3": {
-      "id": "90fnde3",
-      "value": 0.4142857142857143,
-      "inputLinkIds": [],
-      "shotCount": 0,
-      "connectedMacroIds": [],
-      "title": "BG Color S",
-      "type": "param",
-      "key": "colorS",
-      "hidden": false,
-      "min": 0,
-      "max": 1,
-      "defaultMin": 0,
-      "defaultMax": 1
-    },
-    "42m4xvr": {
-      "id": "42m4xvr",
-      "value": 0.3761904761904762,
-      "inputLinkIds": [],
-      "shotCount": 0,
-      "connectedMacroIds": [],
-      "title": "BG Color L",
-      "type": "param",
-      "key": "colorL",
-      "hidden": false,
-      "min": 0,
-      "max": 1,
-      "defaultMin": 0,
-      "defaultMax": 1
-    },
-    "2dvgwog": {
-      "id": "2dvgwog",
-      "value": 0.5857142857142857,
-      "inputLinkIds": [],
-      "shotCount": 0,
-      "connectedMacroIds": [],
-      "title": "Rotation Speed X",
-      "type": "param",
-      "key": "rotSpeedX",
-      "hidden": false,
-      "min": -1,
-      "max": 1,
-      "defaultMin": -1,
-      "defaultMax": 1
-    },
-    "bacxfa0": {
-      "id": "bacxfa0",
-      "value": 0.5,
-      "inputLinkIds": [],
-      "shotCount": 0,
-      "connectedMacroIds": [],
-      "title": "Rotation Speed Y",
-      "type": "param",
-      "key": "rotSpeedY",
-      "hidden": false,
-      "min": -1,
-      "max": 1,
-      "defaultMin": -1,
-      "defaultMax": 1
-    },
-    "eq1ro5v": {
-      "id": "eq1ro5v",
-      "value": 0.5,
-      "inputLinkIds": [],
-      "shotCount": 0,
-      "connectedMacroIds": [],
-      "title": "Rotation Speed Z",
-      "type": "param",
-      "key": "rotSpeedZ",
-      "hidden": false,
-      "min": -1,
-      "max": 1,
-      "defaultMin": -1,
-      "defaultMax": 1
-    },
-    "ii6cp1n": {
-      "id": "ii6cp1n",
-      "value": 0.3825223546305656,
-      "inputLinkIds": [
-        "fm44dt4"
-      ],
-      "shotCount": 0,
-      "connectedMacroIds": [],
-      "title": "Scale",
-      "type": "param",
-      "key": "scale",
-      "hidden": false,
-      "min": 0.00001,
-      "max": 4,
-      "defaultMin": 0.00001,
-      "defaultMax": 4,
-      "openedLinkId": "fm44dt4",
-      "activeInputLinkId": "fm44dt4"
-    },
-    "5qpfe22": {
-      "id": "5qpfe22",
-      "value": 0,
-      "inputLinkIds": [],
-      "shotCount": 0,
-      "connectedMacroIds": [],
-      "title": "Mesh Index",
-      "type": "param",
-      "key": "meshIndex",
-      "hidden": true,
-      "min": 0,
-      "max": 1,
-      "defaultMin": 0,
-      "defaultMax": 1
-    },
-    "modienu": {
-      "id": "modienu",
-      "value": 0,
-      "inputLinkIds": [],
-      "shotCount": 0,
-      "connectedMacroIds": [],
-      "type": "shot",
-      "title": "Shape Shift",
-      "method": "shapeShift",
-      "sketchId": "k4qtqx0"
-    },
-    "mamo6q3": {
-      "id": "mamo6q3",
+    "i1rpp5x": {
+      "id": "i1rpp5x",
       "value": 0.5,
       "inputLinkIds": [],
       "shotCount": 0,
@@ -229,9 +90,9 @@
       "defaultMin": -1,
       "defaultMax": 1
     },
-    "h39xj19": {
-      "id": "h39xj19",
-      "value": 0.5952380952380952,
+    "rdan22s": {
+      "id": "rdan22s",
+      "value": 0.5476190476190477,
       "inputLinkIds": [],
       "shotCount": 0,
       "connectedMacroIds": [],
@@ -244,8 +105,8 @@
       "defaultMin": -1,
       "defaultMax": 1
     },
-    "vbvb01i": {
-      "id": "vbvb01i",
+    "dni6tmg": {
+      "id": "dni6tmg",
       "value": 0.5,
       "inputLinkIds": [],
       "shotCount": 0,
@@ -259,9 +120,9 @@
       "defaultMin": -1,
       "defaultMax": 1
     },
-    "qnf06t3": {
-      "id": "qnf06t3",
-      "value": 0.861904761904762,
+    "r429b5a": {
+      "id": "r429b5a",
+      "value": 0.5,
       "inputLinkIds": [],
       "shotCount": 0,
       "connectedMacroIds": [],
@@ -274,9 +135,9 @@
       "defaultMin": 0.00001,
       "defaultMax": 4
     },
-    "elsutb2": {
-      "id": "elsutb2",
-      "value": 2,
+    "2wvqst8": {
+      "id": "2wvqst8",
+      "value": 0,
       "inputLinkIds": [],
       "shotCount": 0,
       "connectedMacroIds": [],
@@ -289,249 +150,116 @@
       "defaultMin": 0,
       "defaultMax": 1
     },
-    "2816ych": {
-      "id": "2816ych",
+    "ab2twcx": {
+      "id": "ab2twcx",
       "value": 0,
       "inputLinkIds": [],
-      "shotCount": 2,
+      "shotCount": 0,
       "connectedMacroIds": [],
       "type": "shot",
       "title": "Shape Shift",
       "method": "shapeShift",
-      "sketchId": "61auvdx"
-    },
-    "stjeoih": {
-      "id": "stjeoih",
-      "value": 0,
-      "inputLinkIds": [],
-      "shotCount": 0,
-      "connectedMacroIds": [],
-      "key": "threshold",
-      "title": "Threshold",
-      "passToNext": false,
-      "subNode": true
-    },
-    "oosp4d0": {
-      "id": "oosp4d0",
-      "value": 0.333,
-      "inputLinkIds": [],
-      "shotCount": 0,
-      "connectedMacroIds": [],
-      "key": "gain",
-      "title": "Gain",
-      "passToNext": false,
-      "type": "audio",
-      "subNode": true
-    },
-    "d7t5p4n": {
-      "id": "d7t5p4n",
-      "value": 0.11403508771929824,
-      "inputLinkIds": [],
-      "shotCount": 0,
-      "connectedMacroIds": [],
-      "key": "range",
-      "title": "Lower Range",
-      "passToNext": true,
-      "subNode": true
-    },
-    "tnx0cgj": {
-      "id": "tnx0cgj",
-      "value": 1,
-      "inputLinkIds": [],
-      "shotCount": 0,
-      "connectedMacroIds": [],
-      "key": "range",
-      "title": "Upper Range",
-      "passToNext": false,
-      "subNode": true
+      "sketchId": "g3012hq"
     }
   },
   "scenes": {
     "items": {
-      "dl3hx2u": {
-        "id": "dl3hx2u",
-        "title": "Geoms",
-        "selectedSketchId": "k4qtqx0",
-        "sketchIds": [
-          "drju4c9",
-          "k4qtqx0",
-          "61auvdx"
-        ],
+      "vs74uyt": {
+        "id": "vs74uyt",
+        "title": "New Scene",
+        "selectedSketchId": "g3012hq",
+        "sketchIds": ["g3012hq"],
         "linkableActionIds": {
-          "addToA": "nfufv4x",
-          "addToB": "wxyget5",
-          "addToActive": "a8kln3q",
-          "addToOpposite": "fl782gk",
-          "clear": "a382tyx"
+          "addToA": "loyi6j3",
+          "addToB": "2l3anlv",
+          "addToActive": "nwotmkd",
+          "addToOpposite": "99vqixu",
+          "clear": "rdd2tqe"
         }
       }
     },
-    "currentSceneId": "dl3hx2u",
+    "currentSceneId": "vs74uyt",
     "channels": {
-      "A": "dl3hx2u",
+      "A": "vs74uyt",
       "B": false
     }
   },
   "sketches": {
-    "drju4c9": {
-      "title": "Env",
-      "moduleId": "env",
-      "paramIds": [
-        "qoi2yxh",
-        "90fnde3",
-        "42m4xvr"
-      ],
-      "shotIds": [],
-      "openedNodes": {}
-    },
-    "k4qtqx0": {
-      "title": "Inner",
+    "g3012hq": {
+      "title": "Solid",
       "moduleId": "solid",
-      "paramIds": [
-        "2dvgwog",
-        "bacxfa0",
-        "eq1ro5v",
-        "ii6cp1n",
-        "5qpfe22"
-      ],
-      "shotIds": [
-        "modienu"
-      ],
-      "openedNodes": {
-        "param": "ii6cp1n"
-      }
-    },
-    "61auvdx": {
-      "title": "Outer",
-      "moduleId": "solid",
-      "paramIds": [
-        "mamo6q3",
-        "h39xj19",
-        "vbvb01i",
-        "qnf06t3",
-        "elsutb2"
-      ],
-      "shotIds": [
-        "2816ych"
-      ],
-      "openedNodes": {}
+      "paramIds": ["i1rpp5x", "rdan22s", "dni6tmg", "r429b5a", "2wvqst8"],
+      "shotIds": ["ab2twcx"]
     }
   },
   "project": {
+    "filePath": "",
+    "sketchesPath": "",
     "errors": [],
     "errorPopup": false
   },
   "inputs": {
-    "audio_0": {
-      "value": 0.20140983401451773,
-      "assignedLinkIds": []
-    },
-    "audio_1": {
-      "value": 0.09886581984260946,
-      "assignedLinkIds": []
-    },
-    "audio_2": {
-      "value": 0.3033483823217721,
-      "assignedLinkIds": [
-        "fm44dt4"
-      ]
-    },
-    "audio_3": {
-      "value": 0.2462979352380808,
+    "audio": {
+      "value": [0.2971811778313622, 0.1314191640376369, 0.08298722365715014, 0.08031854767430391],
       "assignedLinkIds": []
     },
     "lfo": {
-      "value": 318.5833333333333,
+      "value": 17.833333333333332,
       "assignedLinkIds": []
     }
   },
-  "inputLinks": {
-    "fm44dt4": {
-      "title": "audio_2",
-      "input": {
-        "id": "audio_2",
-        "type": "audio"
-      },
-      "id": "fm44dt4",
-      "nodeId": "ii6cp1n",
-      "nodeType": "param",
-      "modifierIds": [
-        "stjeoih",
-        "oosp4d0",
-        "d7t5p4n",
-        "tnx0cgj"
-      ],
-      "lfoOptionIds": [],
-      "midiOptionIds": [],
-      "linkableActions": {
-        "toggleActivate": "fxbdanh"
-      },
-      "linkType": "node",
-      "animOptionIds": []
-    }
-  },
+  "inputLinks": {},
   "linkableActions": {
-    "nfufv4x": {
-      "id": "nfufv4x",
+    "loyi6j3": {
+      "id": "loyi6j3",
       "action": {
         "type": "R_SCENE_SELECT_CHANNEL",
         "payload": {
-          "id": "dl3hx2u",
+          "id": "vs74uyt",
           "channel": "A"
         }
       },
       "inputLinkIds": []
     },
-    "wxyget5": {
-      "id": "wxyget5",
+    "2l3anlv": {
+      "id": "2l3anlv",
       "action": {
         "type": "R_SCENE_SELECT_CHANNEL",
         "payload": {
-          "id": "dl3hx2u",
+          "id": "vs74uyt",
           "channel": "B"
         }
       },
       "inputLinkIds": []
     },
-    "a8kln3q": {
-      "id": "a8kln3q",
+    "nwotmkd": {
+      "id": "nwotmkd",
       "action": {
         "type": "U_SCENE_SELECT_CHANNEL",
         "payload": {
-          "id": "dl3hx2u",
+          "id": "vs74uyt",
           "type": "active"
         }
       },
       "inputLinkIds": []
     },
-    "fl782gk": {
-      "id": "fl782gk",
+    "99vqixu": {
+      "id": "99vqixu",
       "action": {
         "type": "U_SCENE_SELECT_CHANNEL",
         "payload": {
-          "id": "dl3hx2u",
+          "id": "vs74uyt",
           "type": "opposite"
         }
       },
       "inputLinkIds": []
     },
-    "a382tyx": {
-      "id": "a382tyx",
+    "rdd2tqe": {
+      "id": "rdd2tqe",
       "action": {
         "type": "SCENE_CLEAR_CHANNEL",
         "payload": {
-          "id": "dl3hx2u"
-        }
-      },
-      "inputLinkIds": []
-    },
-    "fxbdanh": {
-      "id": "fxbdanh",
-      "action": {
-        "type": "NODE_ACTIVE_INPUT_LINK_TOGGLE",
-        "payload": {
-          "nodeId": "ii6cp1n",
-          "linkId": "fm44dt4"
+          "id": "vs74uyt"
         }
       },
       "inputLinkIds": []
@@ -547,14 +275,15 @@
     },
     "isEditing": false,
     "openedNode": false,
-    "auxOpen": []
+    "auxOpen": ["sketchcat_simple"],
+    "addSketchOpen": {}
   },
   "router": {
     "location": {
-      "pathname": "/scenes/view",
+      "pathname": "/scenes/view/vs74uyt",
       "search": "",
       "hash": "",
-      "key": "ao1qzb"
+      "key": "984ko4"
     }
   },
   "settings": {
@@ -563,7 +292,8 @@
     "aspectW": 16,
     "aspectH": 9,
     "antialias": false,
-    "throttledFPS": 60
+    "throttledFPS": 60,
+    "watchSketchesDir": true
   },
   "form": {}
 }
