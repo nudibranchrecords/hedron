@@ -68,12 +68,12 @@ const Link = styled(RouterLink)`
   text-decoration: none;
 `
 
-const Button = ({ onMouseDown, onClick, ...props }) =>
-  <Wrapper {...props} onClick={onClick} onMouseDown={onMouseDown}>
-    <Inner {...props}>
+const Button = ({ color, size, disabled, reversed, children, ...props }) =>
+  <Wrapper {...props}>
+    <Inner color={color} size={size} disabled={disabled} reversed={reversed}>
       {props.to
-        ? <Link to='/' {...props} />
-        : <a>{props.children}</a>
+        ? <Link to='/'>{children}</Link>
+        : <a>{children}</a>
       }
     </Inner>
   </Wrapper>
@@ -81,8 +81,10 @@ const Button = ({ onMouseDown, onClick, ...props }) =>
 Button.propTypes = {
   to: PropTypes.string,
   children: PropTypes.node.isRequired,
-  onClick: PropTypes.func,
-  onMouseDown: PropTypes.func,
+  color: PropTypes.string,
+  size: PropTypes.string,
+  disabled: PropTypes.bool,
+  reversed: PropTypes.bool,
 }
 
 export default Button
