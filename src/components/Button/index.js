@@ -68,11 +68,13 @@ const Link = styled(RouterLink)`
   text-decoration: none;
 `
 
-const Button = ({ color, size, disabled, reversed, children, ...props }) =>
-  <Wrapper {...props}>
+// Anything in ...props could be a function like onClick, onMouseDown, etc
+// so we only want that to be given to one element to prevent things firing twice
+const Button = ({ color, size, disabled, reversed, children, to, ...props }) =>
+  <Wrapper {...props} color={color} size={size} disabled={disabled} reversed={reversed}>
     <Inner color={color} size={size} disabled={disabled} reversed={reversed}>
       {props.to
-        ? <Link to='/'>{children}</Link>
+        ? <Link to={to}>{children}</Link>
         : <a>{children}</a>
       }
     </Inner>
