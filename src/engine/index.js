@@ -1,3 +1,4 @@
+import path from 'path'
 import { loadSketches, loadSketch, loadConfig } from '../externals/sketches'
 import getSketch from '../selectors/getSketch'
 import getScenes from '../selectors/getScenes'
@@ -8,12 +9,13 @@ import getChannelSceneId from '../selectors/getChannelSceneId'
 import getSceneCrossfaderValue from '../selectors/getSceneCrossfaderValue'
 import getViewerMode from '../selectors/getViewerMode'
 import { availableModulesReplaceAll } from '../store/availableModules/actions'
-import { projectError } from '../store/project/actions'
+import { projectError, projectSketchesPathUpdate } from '../store/project/actions'
 import now from 'performance-now'
 import * as renderer from './renderer'
 import Scene from './Scene'
 import { nodeValuesBatchUpdate } from '../store/nodes/actions'
 import TWEEN from '@tweenjs/tween.js'
+import { getProjectFilepath } from '../store/project/selectors'
 
 export let scenes = {}
 
@@ -24,24 +26,53 @@ let moduleFiles = {}
 let sketchesFolder
 let store
 
+// Load sketches from sketches folder
 export const loadSketchModules = (url) => {
-  try {
-    sketchesFolder = url
-    moduleFiles = loadSketches(url)
+  let hasCheckedForSiblingDir = false
 
-    Object.keys(moduleFiles).forEach((key) => {
-      moduleConfigs[key] = moduleFiles[key].config
-    })
+  const load = url => {
+    try {
+      sketchesFolder = url
+      moduleFiles = loadSketches(url)
 
-    isRunning = true
-  } catch (error) {
-    isRunning = false
-    console.error(error)
-    store.dispatch(projectError(`Sketches failed to load: ${error.message}`, {
-      popup: 'true',
-      code: error.code,
-    }))
+      Object.keys(moduleFiles).forEach((key) => {
+        moduleConfigs[key] = moduleFiles[key].config
+      })
+
+      isRunning = true
+
+      // If second check inside sibling sketches folder was successful, save the absolute path
+      if (hasCheckedForSiblingDir) {
+        store.dispatch(projectSketchesPathUpdate(url))
+      }
+    } catch (error) {
+      if (!hasCheckedForSiblingDir) {
+        // If can't find sketches folder, try looking for "sketches" folder next to project.json first
+        hasCheckedForSiblingDir = true
+        // eslint-disable-next-line no-console
+        console.log(
+          `%cHEDRON: Can't find sketches folder for project. %c\nChecking for sibling folder named "sketches"`,
+          `font-weight: bold`,
+          `font-weight: normal`,
+        )
+        // Generate file path for sibling folder and try again
+        const state = store.getState()
+        const filePath = getProjectFilepath(state)
+        const sketchesPath = path.resolve(path.dirname(filePath), 'sketches/')
+        load(sketchesPath)
+      } else {
+        // If all else fails, throw error
+        isRunning = false
+        console.error(error)
+        store.dispatch(projectError(`Sketches failed to load: ${error.message}`, {
+          popup: 'true',
+          code: error.code,
+        }))
+      }
+    }
   }
+
+  load(url)
 }
 
 export const reloadSingleSketchModule = (url, moduleId, pathArray) => {
