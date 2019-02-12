@@ -68,8 +68,8 @@ const Link = styled(RouterLink)`
   text-decoration: none;
 `
 
-const Button = ({ onClick, ...props }) =>
-  <Wrapper {...props} onClick={onClick}>
+const Button = ({ onMouseDown, onClick, ...props }) =>
+  <Wrapper {...props} onClick={onClick} onMouseDown={onMouseDown}>
     <Inner {...props}>
       {props.to
         ? <Link to='/' {...props} />
@@ -82,6 +82,7 @@ Button.propTypes = {
   to: PropTypes.string,
   children: PropTypes.node.isRequired,
   onClick: PropTypes.func,
+  onMouseDown: PropTypes.func,
 }
 
 export default Button
