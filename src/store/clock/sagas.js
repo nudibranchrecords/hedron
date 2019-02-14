@@ -5,28 +5,38 @@ import { inputFired } from '../inputs/actions'
 import * as a from './actions'
 
 const ppqn = 24
-let pulses, delta, beats, lastBar, totalBeats
+let pulses, beats, lastBar, totalBeats
 let seqStepCount = 0 // Sequencer step count
 const ppSeqStep = ppqn / 8 // Pulses per 8th beat
 const seqStepPerBar = ppSeqStep * 8 * 4
 
 export const clockReset = () => {
   pulses = 0
-  delta = 0
   beats = 0
   totalBeats = 0
   seqStepCount = 0
   lastBar = now()
 }
-export const clockSnap = () => {
+
+export function* clockSnap () {
+  // Get how many sequence pulses since last sequence step
+  const seqMod = seqStepCount % ppqn
+
   if (pulses > ppqn * 0.5) {
+    // Increase the beat
     beats++
     totalBeats++
+    // Increase sequence pulses so it snaps to next beat
+    seqStepCount += ppqn - seqMod - 1
+    seqStepCount %= seqStepPerBar
+    // Pulse will be 0 on next pulse, triggering clock beat behaviour
     pulses = -1
   } else {
+    // Decrease sequence pulses so it snaps to current beat
+    seqStepCount -= seqMod
+    // Beat won't change on next pulse
     pulses = 0
   }
-  delta = totalBeats
 }
 
 export const newPulse = () => {
@@ -44,12 +54,11 @@ export const newPulse = () => {
       beats = 0
     }
   }
-  delta = pulses / ppqn + totalBeats
   return {
     pulses,
     beats,
-    delta,
     seqStepCount,
+    delta: pulses / ppqn + totalBeats,
   }
 }
 
