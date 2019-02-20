@@ -39,6 +39,7 @@ const projectMenu = {
     {
       label: 'Settings',
       click: () => { onClick('project-settings') },
+      accelerator: 'CommandOrControl+,',
     },
   ],
 }
