@@ -3,12 +3,12 @@ import { midiStopLearning, midiUpdateDevices, midiMessage } from '../store/midi/
 import { uInputLinkCreate } from '../store/inputLinks/actions'
 import { clockPulse } from '../store/clock/actions'
 import { newData as teachMidi } from '../utils/getMidiMode'
-import { processMidiMessage } from '../utils/midiMessage'
+import { processMidiData } from '../utils/midiMessage'
 
 export default (store) => {
   const onMessage = (rawMessage) => {
     const state = store.getState()
-    const m = processMidiMessage(rawMessage)
+    const m = processMidiData(rawMessage.data)
 
     if (m.type !== 'timingClock' && m.type !== 'noteOff') {
       store.dispatch(midiMessage(rawMessage.target.name, {

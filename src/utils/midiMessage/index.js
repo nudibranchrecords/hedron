@@ -1,3 +1,15 @@
+const noteLetters = [
+  'C', 'C# / Db', 'D', 'D# / Eb', 'E', 'F', 'F# / Gb', 'G', 'G# / Ab', 'A', 'A# / Bb', 'B',
+]
+
+export const midiNotes = new Array(128)
+
+for (let i = 0; i < 128; i++) {
+  const letter = noteLetters[i % noteLetters.length]
+  const octave = Math.floor(i / noteLetters.length) - 1
+  midiNotes[i] = `${i} - ${letter} (${octave})`
+}
+
 export const messageTypes = {
   // These represent ranges of 16
   '80': 'noteOff',
@@ -6,12 +18,14 @@ export const messageTypes = {
   'c0': 'programChange',
 }
 
-export const processMidiMessage = message => {
+export const processMidiData = data => {
   let value, type, id
 
-  const d0 = message.data[0]
-  const d1 = message.data[1]
-  const d2 = message.data[2]
+  const d0 = data[0]
+  const d1 = data[1]
+  const d2 = data[2]
+
+  const channel = d0 & 0x0f
 
   // If the midi message is less than 240, it involves channels
   if (d0 < 0xf0) {
@@ -36,9 +50,16 @@ export const processMidiMessage = message => {
   }
 
   return {
-    value, id, type,
+    value, id, type, channel,
   }
 }
 
 export const constructMidiId = (type, note, channel) =>
   `midi_${parseInt(type, 16) + channel}_${note}`
+
+export const processMidiId = id => {
+  const parts = id.split('_')
+  const data = [parts[1], parts[2], 1]
+
+  return processMidiData(data)
+}
