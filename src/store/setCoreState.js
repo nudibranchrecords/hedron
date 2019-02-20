@@ -38,6 +38,27 @@ export default store => {
     }
   ))
 
+  store.dispatch(uNodeCreate('sketchOrganization', {
+    title: 'Sketch Organization',
+    type: 'select',
+    value: 'category',
+    id: 'sketchOrganization',
+    options:[
+      {
+        value: 'folder',
+        label: 'Folder',
+      },
+      {
+        value: 'category',
+        label: 'Category',
+      },
+      {
+        value: 'author',
+        label: 'Author',
+      },
+    ],
+  }))
+
   store.dispatch(uNodeCreate('audioLevelsFalloff', {
     title: 'Levels Falloff',
     type: 'param',
