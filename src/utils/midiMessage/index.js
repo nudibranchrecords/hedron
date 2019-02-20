@@ -1,3 +1,11 @@
+export const messageTypes = {
+  // These represent ranges of 16
+  '80': 'noteOff',
+  '90': 'noteOn',
+  'b0': 'controlChange',
+  'c0': 'programChange',
+}
+
 export const processMidiMessage = message => {
   let value, type, id
 
@@ -5,28 +13,18 @@ export const processMidiMessage = message => {
   const d1 = message.data[1]
   const d2 = message.data[2]
 
-  // Erase the first bit as this relates to channel
-  const code = d0 & 0xf0
+  // If the midi message is less than 240, it involves channels
+  if (d0 < 0xf0) {
+    // Erase the first bit as this relates to channel
+    const code = d0 & 0xf0
+    type = messageTypes[code.toString(16)]
 
-  switch (code) {
-    case 0x80:
+    // If it's a noteOn but value is 0, make it a noteOff
+    if (type === 'noteOn' && d2 === 0) {
       type = 'noteOff'
-      break
-    case 0x90:
-      type = d2 === 0 ? 'noteOff' : 'noteOn'
-      break
-    case 0xA0:
-      type = 'polyPressure'
-      break
-    case 0xB0:
-      type = 'controlChange'
-      break
-    case 0xC0:
-      type = 'programChange'
-      break
-    default:
-      if (d0 === 248) type = 'timingClock'
-      break
+    }
+  } else if (d0 === 248) {
+    type = 'timingClock'
   }
 
   if (d2 !== undefined) {
@@ -41,3 +39,6 @@ export const processMidiMessage = message => {
     value, id, type,
   }
 }
+
+export const constructMidiId = (type, note, channel) =>
+  `midi_${parseInt(type, 16) + channel}_${note}`
