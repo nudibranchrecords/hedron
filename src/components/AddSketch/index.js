@@ -4,13 +4,10 @@ import Button from '../Button'
 import SceneHeader from '../../containers/SceneHeader'
 import styled from 'styled-components'
 import Revealer from '../../containers/AuxRevealer'
+import Control from '../Control'
 
-const CategoryHeader = styled.p`
-  font-size:1.7em;
-  margin-bottom: .5rem;
-`
 const Category = styled(Revealer)`
-  font-size:1.5em;
+  font-size:1rem;
   margin-bottom: .5rem;
 `
 const Items = styled.ul`
@@ -22,31 +19,45 @@ const Items = styled.ul`
     margin-bottom: 1rem;
   }
 `
+const SketchFragment = styled.div`
+  margin-left 1rem;
+`
 
-const SketchItems = ({ items, onAddClick }) => (
-  <Items>
-    {items.map(item =>
-      <li key={item.id}>
-        <Button size='large' onClick={() => onAddClick(item.id)}>{item.title}</Button>
-      </li>
+const SketchItems = ({ subcategories, items, onAddClick }) => (
+  <SketchFragment>
+    {(subcategories !== undefined) && subcategories.map(category =>
+      <Category
+        title={category.title}
+        key={category.id}
+        auxId={`sketchcat_${category.id}`}
+      >
+        <SketchItems subcategories={category.categories} items={category.items} onAddClick={onAddClick} />
+      </Category>
     )}
-  </Items>
+    <Items>
+      {items.map(item =>
+        <li key={item.id}>
+          <Button size='large' onClick={() => onAddClick(item.id)}>{item.title}</Button>
+        </li>
+      )}
+    </Items>
+  </SketchFragment>
 )
 
 const AddSketch = ({ items, hasSketches, onAddClick, onChooseFolderClick, sketchesPath }) => (
   <React.Fragment>
     <SceneHeader>Add Sketch</SceneHeader>
-    <CategoryHeader>Categories</CategoryHeader>
+    <Control nodeId='sketchOrganization' type='select' />
     <SketchItems items={items.looseItems} onAddClick={onAddClick} />
-    {items.categorizedItems.map(catItem => (
+    {items.categorizedItems[0].categories.map((catItem) =>
       <Category
         title={catItem.title}
         key={catItem.id}
         auxId={`sketchcat_${catItem.id}`}
       >
-        <SketchItems items={catItem.items} onAddClick={onAddClick} />
+        <SketchItems subcategories={catItem.categories} items={catItem.items} onAddClick={onAddClick} />
       </Category>
-    ))}
+    )}
 
     {!hasSketches && <p>You haven't chosen the sketch folder for the project yet.</p>}
     <Button onClick={onChooseFolderClick}>Choose Sketch Folder</Button>
@@ -70,12 +81,14 @@ AddSketch.propTypes = {
       title: PropTypes.string,
       id: PropTypes.string,
       items: itemsType,
+      categories: PropTypes.array,
     })),
   }),
   hasSketches: PropTypes.bool,
 }
 
 SketchItems.propTypes = {
+  subcategories: PropTypes.array,
   items: itemsType,
   onAddClick: PropTypes.func.isRequired,
 }

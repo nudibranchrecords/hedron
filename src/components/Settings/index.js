@@ -4,6 +4,7 @@ import ViewHeader from '../ViewHeader'
 import Input from '../Input'
 import Row from '../Row'
 import Col from '../Col'
+import Control from '../../containers/Control'
 
 const Wrapper = styled.div`
   display: flex;
@@ -17,6 +18,9 @@ const Settings = () => (
     <form onSubmit={e => e.preventDefault()}>
       <h2>Sketches</h2>
       <Row>
+        <Col>
+          <Control nodeId='sketchOrganization' />
+        </Col>
         <Col>
           <Input name='watchSketchesDir' label='Watch Sketches' type='checkbox' />
         </Col>
