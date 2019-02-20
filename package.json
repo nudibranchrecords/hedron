@@ -10,8 +10,9 @@
     "lint": "eslint src config example-projects mockTests",
     "lint:css": "stylelint \"src/components/**/*.js\"",
     "lint:fix": "yarn lint -- --fix",
-    "test": "yarn lint && cross-env NODE_ENV=test tape-watch --once -r @babel/register src/**/*.spec.js mockTests/**/*.spec.js -p tap-diff",
+    "test": "yarn lint && yarn jest && cross-env NODE_ENV=test tape-watch --once -r @babel/register src/**/*.spec.js mockTests/**/*.spec.js -p tap-diff",
     "test:dev": "cross-env NODE_ENV=test tape-watch -r @babel/register src/**/*.spec.js mockTests/**/*.spec.js -p tap-diff",
+    "test-jest": "yarn jest --watch",
     "compile": "electron-webpack",
     "dist": "yarn compile && electron-builder",
     "dist:dev": "yarn dist -- --dir -c.compression=store -c.mac.identity=null && open dist/mac/hedron.app/ --args --distDev",
@@ -33,6 +34,11 @@
   "glslify": {
     "transform": [
       "glslify-import"
+    ]
+  },
+  "jest": {
+    "testMatch": [
+      "**/?(*.)+(test).[jt]s?(x)"
     ]
   },
   "dependencies": {
@@ -110,9 +116,11 @@
     "eslint-config-standard": "^6.2.1",
     "eslint-config-standard-react": "^4.2.0",
     "eslint-plugin-babel": "^4.0.1",
+    "eslint-plugin-jest": "^22.3.0",
     "eslint-plugin-promise": "^3.4.1",
     "eslint-plugin-react": "^6.10.0",
     "eslint-plugin-standard": "^2.0.1",
+    "jest": "^24.1.0",
     "jsdom": "^11.5.1",
     "jsdom-global": "^3.0.2",
     "minimist": "^1.2.0",

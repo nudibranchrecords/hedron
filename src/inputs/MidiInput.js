@@ -3,7 +3,7 @@ import { midiStopLearning, midiUpdateDevices, midiMessage } from '../store/midi/
 import { uInputLinkCreate } from '../store/inputLinks/actions'
 import { clockPulse } from '../store/clock/actions'
 import { newData as teachMidi } from '../utils/getMidiMode'
-import processMidiMessage from '../utils/processMidiMessage'
+import { processMidiMessage } from '../utils/midiMessage'
 
 export default (store) => {
   const onMessage = (rawMessage) => {
