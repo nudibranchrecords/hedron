@@ -73,7 +73,7 @@ export default linkId => {
       subNode: true,
       options: Array(16).fill(0).map((value, index) => (
         {
-          value: index + 1,
+          value: index,
           label: index + 1,
         }
       )),
