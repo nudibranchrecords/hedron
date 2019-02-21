@@ -12,10 +12,10 @@ for (let i = 0; i < 128; i++) {
 
 export const messageTypes = {
   // These represent ranges of 16
-  '80': 'noteOff',
-  '90': 'noteOn',
-  'b0': 'controlChange',
-  'c0': 'programChange',
+  '80': { key: 'noteOff', title: 'Note Off' },
+  '90': { key: 'noteOn', title: 'Note On' },
+  'b0': { key: 'controlChange', title: 'Control Change' },
+  'c0': { key: 'programChange', title: 'Program Change' },
 }
 
 export const processMidiData = data => {
@@ -31,7 +31,7 @@ export const processMidiData = data => {
   if (d0 < 0xf0) {
     // Erase the first bit as this relates to channel
     const code = d0 & 0xf0
-    messageType = messageTypes[code.toString(16)]
+    messageType = messageTypes[code.toString(16)].key
 
     // If it's a noteOn but value is 0, make it a noteOff
     if (messageType === 'noteOn' && d2 === 0) {
