@@ -27,6 +27,7 @@ import uid from 'uid'
 */
 export function* inputLinkCreate (action) {
   const p = action.payload
+  const m = p.meta
   const modifierIds = []
   const lfoOptionIds = []
   const midiOptionIds = []
@@ -104,18 +105,19 @@ export function* inputLinkCreate (action) {
     }
 
     if (p.inputType === 'midi' || linkType === 'linkableAction') {
-      bankIndex = yield select(getCurrentBankIndex, p.deviceId)
+      bankIndex = yield select(getCurrentBankIndex, m.deviceId)
 
       if (linkType === 'node') {
-        const midiOpts = yield call(midiGenerateOptions)
+        const midiOpts = yield call(midiGenerateOptions, linkId)
 
         for (let key in midiOpts) {
           const item = midiOpts[key]
           midiOptionIds.push(item.id)
 
-          if (item.key === 'controlType' && p.controlType) {
-            item.value = p.controlType
-          }
+          if (item.key === 'controlType' && m.controlType) item.value = m.controlType
+          if (item.key === 'channel' && m.channel) item.value = m.channel
+          if (item.key === 'noteNum' && m.noteNum) item.value = m.noteNum
+          if (item.key === 'messageType' && m.messageType) item.value = m.messageType
 
           yield put(uNodeCreate(item.id, item))
         }
@@ -152,7 +154,7 @@ export function* inputLinkCreate (action) {
       id: linkId,
       nodeId: p.nodeId,
       nodeType,
-      deviceId: p.deviceId,
+      deviceId: m.deviceId,
       bankIndex,
       modifierIds,
       lfoOptionIds,
@@ -170,7 +172,7 @@ export function* inputLinkCreate (action) {
     } else if (linkType === 'linkableAction') {
       yield put(linkableActionInputLinkAdd(p.nodeId, linkId))
     }
-    yield put(inputAssignedLinkCreate(p.inputId, linkId, p.deviceId))
+    yield put(inputAssignedLinkCreate(p.inputId, linkId, m.deviceId))
   }
 }
 

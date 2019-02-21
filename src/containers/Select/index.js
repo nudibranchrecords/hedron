@@ -18,6 +18,10 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       dispatch(nodeValueUpdate(ownProps.nodeId, value.value, {
         dontMutate: true,
       }))
+
+      if (ownProps.onChangeAction) {
+        dispatch(ownProps.onChangeAction)
+      }
     },
     onAssignClick: () => {
       dispatch(uInputLinkCreate(ownProps.nodeId, 'midi', 'midi'))
