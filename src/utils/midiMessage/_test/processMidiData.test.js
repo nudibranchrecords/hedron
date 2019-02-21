@@ -24,47 +24,47 @@ test('Returns correct type', () => {
   data = [176, 0, 0]
 
   expected = 'controlChange'
-  actual = processMidiData(data).type
+  actual = processMidiData(data).messageType
 
   expect(actual).toBe(expected)
 
   data = [180, 0, 0]
 
   expected = 'controlChange'
-  actual = processMidiData(data).type
+  actual = processMidiData(data).messageType
 
   expect(actual).toBe(expected)
 
   data = [144, 0, 1]
 
   expected = 'noteOn'
-  actual = processMidiData(data).type
+  actual = processMidiData(data).messageType
 
   data = [147, 0, 1]
 
   expected = 'noteOn'
-  actual = processMidiData(data).type
+  actual = processMidiData(data).messageType
 
   expect(actual).toBe(expected)
 
   data = [144, 0, 0] // If last value is 0, it becomes a noteOf
 
   expected = 'noteOff'
-  actual = processMidiData(data).type
+  actual = processMidiData(data).messageType
 
   expect(actual).toBe(expected)
 
   data = [128, 0, 1]
 
   expected = 'noteOff'
-  actual = processMidiData(data).type
+  actual = processMidiData(data).messageType
 
   expect(actual).toBe(expected)
 
   data = [248, 0, 1]
 
   expected = 'timingClock'
-  actual = processMidiData(data).type
+  actual = processMidiData(data).messageType
 
   expect(actual).toBe(expected)
 })

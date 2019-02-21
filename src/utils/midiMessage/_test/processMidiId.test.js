@@ -1,6 +1,6 @@
 const { processMidiId, processMidiData } = require('../')
 
-test('Returns same as processMidiData, split by _, last val always being 1', () => {
+test('Returns same as processMidiData. Params entered are split by _, last val always being 1', () => {
   let id, expected, actual
 
   id = 'midi_1_0'
