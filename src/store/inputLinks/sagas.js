@@ -108,7 +108,7 @@ export function* inputLinkCreate (action) {
       bankIndex = yield select(getCurrentBankIndex, m.deviceId)
 
       if (linkType === 'node') {
-        const midiOpts = yield call(midiGenerateOptions)
+        const midiOpts = yield call(midiGenerateOptions, linkId)
 
         for (let key in midiOpts) {
           const item = midiOpts[key]

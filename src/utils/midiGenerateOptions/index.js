@@ -1,7 +1,8 @@
 import uid from 'uid'
 import { midiNotes, messageTypes } from '../midiMessage'
+import { uInputLinkUpdateMidiInput } from '../../store/inputLinks/actions'
 
-export default () => {
+export default linkId => {
   return [
     {
       title: 'MIDI Sensitivity',
@@ -46,6 +47,7 @@ export default () => {
       inputLinkIds: [],
       subNode: true,
       options: midiNotes.map((label, value) => ({ value, label })),
+      onChangeAction: uInputLinkUpdateMidiInput(linkId),
     },
     {
       title: 'Message Type',
@@ -60,6 +62,7 @@ export default () => {
           label: messageTypes[key].title,
         }
       )),
+      onChangeAction: uInputLinkUpdateMidiInput(linkId),
     },
     {
       title: 'Channel',
@@ -74,6 +77,7 @@ export default () => {
           label: index + 1,
         }
       )),
+      onChangeAction: uInputLinkUpdateMidiInput(linkId),
     },
   ]
 }

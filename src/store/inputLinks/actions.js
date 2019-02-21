@@ -49,6 +49,15 @@ export function uInputLinkUpdate (linkId, inputId, inputType) {
   }
 }
 
+export function uInputLinkUpdateMidiInput (linkId) {
+  return {
+    type: 'U_INPUT_LINK_UPDATE_MIDI_INPUT',
+    payload: {
+      linkId,
+    },
+  }
+}
+
 export function inputLinksReplaceAll (links) {
   return {
     type: 'INPUT_LINKS_REPLACE_ALL',
