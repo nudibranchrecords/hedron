@@ -17,6 +17,7 @@ import getSketchesPath from '../../selectors/getSketchesPath'
 import getModuleSketchIds from '../../selectors/getModuleSketchIds'
 import { reloadSingleSketchModule, removeSketchFromScene,
   addSketchToScene, reloadSingleSketchConfig } from '../../engine'
+import { uMacroTargetParamLinkDelete } from '../macros/actions'
 
 const handleSketchCreate = (action, store) => {
   let uniqueId
@@ -97,6 +98,10 @@ const handleSketchDelete = (action, store) => {
   store.dispatch(rSceneSketchRemove(sceneId, id))
 
   for (let i = 0; i < paramIds.length; i++) {
+    const param = getNode(state, paramIds[i])
+    param.connectedMacroIds.forEach(macroId => {
+      store.dispatch(uMacroTargetParamLinkDelete(macroId, param.id))
+    })
     store.dispatch(uNodeDelete(paramIds[i]))
   }
 
