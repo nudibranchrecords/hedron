@@ -38,13 +38,12 @@ export function rInputLinkDelete (id) {
   }
 }
 
-export function uInputLinkUpdate (linkId, inputId, inputType) {
+export function rInputLinkUpdate (id, newProperties) {
   return {
-    type: 'U_INPUT_LINK_UPDATE',
+    type: 'R_INPUT_LINK_UPDATE',
     payload: {
-      linkId,
-      inputId,
-      inputType,
+      id,
+      newProperties,
     },
   }
 }
@@ -63,16 +62,6 @@ export function inputLinksReplaceAll (links) {
     type: 'INPUT_LINKS_REPLACE_ALL',
     payload: {
       links,
-    },
-  }
-}
-
-export function rInputLinkUpdate (linkId, input) {
-  return {
-    type: 'R_INPUT_LINK_UPDATE',
-    payload: {
-      linkId,
-      input,
     },
   }
 }

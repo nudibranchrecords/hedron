@@ -35,6 +35,15 @@ const inputLinkReducer = (state = defaultState, action) => {
         },
       }
     }
+    case 'R_INPUT_LINK_UPDATE': {
+      return {
+        ...state,
+        [p.id] : {
+          ...state[p.id],
+          ...p.newProperties,
+        },
+      }
+    }
     default:
       return state
   }

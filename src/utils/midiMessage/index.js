@@ -31,11 +31,14 @@ export const processMidiData = data => {
   if (d0 < 0xf0) {
     // Erase the first bit as this relates to channel
     const code = d0 & 0xf0
-    messageType = messageTypes[code.toString(16)].key
+    const messageTypeObj = messageTypes[code.toString(16)]
+    if (messageTypeObj !== undefined) {
+      messageType = messageTypeObj.key
 
-    // If it's a noteOn but value is 0, make it a noteOff
-    if (messageType === 'noteOn' && d2 === 0) {
-      messageType = 'noteOff'
+      // If it's a noteOn but value is 0, make it a noteOff
+      if (messageType === 'noteOn' && d2 === 0) {
+        messageType = 'noteOff'
+      }
     }
   } else if (d0 === 248) {
     messageType = 'timingClock'
@@ -54,12 +57,14 @@ export const processMidiData = data => {
   }
 }
 
-export const constructMidiId = (type, note, channel) =>
-  `midi_${parseInt(type, 16) + channel}_${note}`
+export const constructMidiId = (messageType, noteNum, channel) => {
+  const typeHex = Object.keys(messageTypes).find(hex => messageTypes[hex].key === messageType)
+  return `midi_${parseInt(typeHex, 16) + channel}_${noteNum}`
+}
 
 export const processMidiId = id => {
   const parts = id.split('_')
-  const data = [parts[1], parts[2], 1]
+  const data = [parseInt(parts[1]), parseInt(parts[2]), 1]
 
   return processMidiData(data)
 }
