@@ -48,7 +48,7 @@ export default () => {
       options: midiNotes.map((label, value) => ({ value, label })),
     },
     {
-      title: 'Type',
+      title: 'Message Type',
       key: 'messageType',
       type: 'select',
       id: uid(),
@@ -56,8 +56,8 @@ export default () => {
       subNode: true,
       options: Object.keys(messageTypes).map(key => (
         {
-          value: messageTypes[key],
-          label: messageTypes[key],
+          value: messageTypes[key].key,
+          label: messageTypes[key].title,
         }
       )),
     },
