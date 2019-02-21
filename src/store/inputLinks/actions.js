@@ -1,12 +1,11 @@
-export function uInputLinkCreate (nodeId, inputId, inputType, deviceId, controlType) {
+export function uInputLinkCreate (nodeId, inputId, inputType, meta) {
   return {
     type: 'U_INPUT_LINK_CREATE',
     payload: {
       nodeId,
       inputId,
       inputType,
-      deviceId,
-      controlType,
+      meta,
     },
   }
 }

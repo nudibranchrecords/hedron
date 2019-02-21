@@ -8,13 +8,14 @@ test('(Selector) getInputLinkLfoOptionIds (input is not "lfo")', (t) => {
         input: {
           id: 'BAR',
         },
+        lfoOptionIds: [],
       },
     },
   }
 
   const actual = getInputLinkLfoOptionIds(state, 'aaa')
 
-  t.equal(actual, undefined, 'Returns undefined')
+  t.deepEqual(actual, [], 'Returns empty array')
   t.end()
 })
 
