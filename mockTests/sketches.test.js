@@ -2,10 +2,11 @@ import listen from 'redux-action-listeners'
 import { createStore, applyMiddleware, combineReducers } from 'redux'
 import createSagaMiddleware from 'redux-saga'
 const sagaMiddleware = createSagaMiddleware()
-import { uSketchCreate, uSketchDelete, uSketchReloadFile } from '../src/store/sketches/actions'
+import { uSketchCreate, uSketchDelete } from '../src/store/sketches/actions'
 
 import { fork } from 'redux-saga/effects'
 import { watchNodes } from '../src/store/nodes/sagas'
+import { watchMacros } from '../src/store/macros/sagas'
 import sketchesReducer from '../src/store/sketches/reducer'
 import availableModulesReducer from '../src/store/availableModules/reducer'
 import nodesReducer from '../src/store/nodes/reducer'
@@ -34,6 +35,7 @@ const rootListener = {
 function* rootSaga (dispatch) {
   yield [
     fork(watchNodes),
+    fork(watchMacros),
   ]
 }
 
@@ -421,7 +423,8 @@ test('(mock) Sketches - Delete sketch with macro associated to params', () => {
   const store = createStore(rootReducer, {
     nodes: {
       param_a: {
-
+        id: 'param_a',
+        connectedMacroIds: ['macro_a'],
       },
       macro_node_a: {
 
@@ -447,12 +450,14 @@ test('(mock) Sketches - Delete sketch with macro associated to params', () => {
       },
     },
     macros: {
-      macro_a: {
-        nodeId: 'macro_node_a',
-        targetParamLinks: {
-          param_a: {
-            paramId: 'param_a',
-            nodeId: 'macro_link_a',
+      items: {
+        macro_a: {
+          nodeId: 'macro_node_a',
+          targetParamLinks: {
+            param_a: {
+              paramId: 'param_a',
+              nodeId: 'macro_link_a',
+            },
           },
         },
       },
@@ -464,9 +469,12 @@ test('(mock) Sketches - Delete sketch with macro associated to params', () => {
 
   let state = store.getState()
 
-  expect(state.nodes.param_a).toBe(undefined)
-  expect(state.nodes.macro_link_a).toBe(undefined)
-  expect(state.macros.macro_a.targetParamLinks.param_a).toBe(undefined)
+  const nodes = state.nodes
+  const macros = state.macros.items
+
+  expect(nodes.param_a).toBe(undefined)
+  expect(nodes.macro_link_a).toBe(undefined)
+  expect(macros.macro_a.targetParamLinks.param_a).toBe(undefined)
 })
 
 // Below tests disabled because since changes made to reimporting sketches, this is now harder to mock
