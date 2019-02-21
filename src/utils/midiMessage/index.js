@@ -19,11 +19,11 @@ export const messageTypes = {
 }
 
 export const processMidiData = data => {
-  let value, type, id
+  let value, messageType, id
 
-  const d0 = data[0]
-  const d1 = data[1]
-  const d2 = data[2]
+  const d0 = data[0] // messageType + channel
+  const d1 = data[1] // Note number
+  const d2 = data[2] // Velocity
 
   const channel = d0 & 0x0f
 
@@ -31,14 +31,14 @@ export const processMidiData = data => {
   if (d0 < 0xf0) {
     // Erase the first bit as this relates to channel
     const code = d0 & 0xf0
-    type = messageTypes[code.toString(16)]
+    messageType = messageTypes[code.toString(16)]
 
     // If it's a noteOn but value is 0, make it a noteOff
-    if (type === 'noteOn' && d2 === 0) {
-      type = 'noteOff'
+    if (messageType === 'noteOn' && d2 === 0) {
+      messageType = 'noteOff'
     }
   } else if (d0 === 248) {
-    type = 'timingClock'
+    messageType = 'timingClock'
   }
 
   if (d2 !== undefined) {
@@ -50,7 +50,7 @@ export const processMidiData = data => {
   }
 
   return {
-    value, id, type, channel,
+    value, id, messageType, channel, noteNum: d1,
   }
 }
 

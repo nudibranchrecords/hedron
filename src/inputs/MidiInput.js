@@ -10,7 +10,7 @@ export default (store) => {
     const state = store.getState()
     const m = processMidiData(rawMessage.data)
 
-    if (m.type !== 'timingClock' && m.type !== 'noteOff') {
+    if (m.messageType !== 'timingClock' && m.messageType !== 'noteOff') {
       store.dispatch(midiMessage(rawMessage.target.name, {
         data: rawMessage.data,
         timeStamp: rawMessage.timeStamp,
@@ -20,7 +20,7 @@ export default (store) => {
 
       if (learning) {
         let controlType
-        const mode = teachMidi(rawMessage.data, m.type)
+        const mode = teachMidi(rawMessage.data, m.messageType)
 
         if (mode !== 'learning') {
           if (mode === 'ignore') {
@@ -30,18 +30,27 @@ export default (store) => {
             controlType = mode
           }
           store.dispatch(uInputLinkCreate(
-            learning.id, m.id, learning.type, rawMessage.target.name, controlType
+            learning.id,
+            m.id,
+            learning.type,
+            {
+              deviceId: rawMessage.target.name,
+              controlType,
+              channel: m.channel,
+              messageType: m.messageType,
+              noteNum: m.noteNum,
+            }
           ))
           store.dispatch(midiStopLearning())
         }
       } else {
         store.dispatch(inputFired(m.id, m.value, {
-          noteOn: m.type === 'noteOn',
+          noteOn: m.messageType === 'noteOn',
           type: 'midi',
         }))
       }
     // If no note data, treat as clock
-    } else if (m.type === 'timingClock') {
+    } else if (m.messageType === 'timingClock') {
       // Only dispatch clock pulse if no generated clock
       if (!state.clock.isGenerated) {
         store.dispatch(clockPulse())
