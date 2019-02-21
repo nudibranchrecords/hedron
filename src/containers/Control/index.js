@@ -6,6 +6,7 @@ const mapStateToProps = (state, ownProps) => {
   const node = getNode(state, ownProps.nodeId)
   return {
     type: node.type || 'slider',
+    onChangeAction: node.onChangeAction,
   }
 }
 

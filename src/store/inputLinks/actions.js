@@ -1,12 +1,11 @@
-export function uInputLinkCreate (nodeId, inputId, inputType, deviceId, controlType) {
+export function uInputLinkCreate (nodeId, inputId, inputType, meta) {
   return {
     type: 'U_INPUT_LINK_CREATE',
     payload: {
       nodeId,
       inputId,
       inputType,
-      deviceId,
-      controlType,
+      meta,
     },
   }
 }
@@ -39,13 +38,21 @@ export function rInputLinkDelete (id) {
   }
 }
 
-export function uInputLinkUpdate (linkId, inputId, inputType) {
+export function rInputLinkUpdate (id, newProperties) {
   return {
-    type: 'U_INPUT_LINK_UPDATE',
+    type: 'R_INPUT_LINK_UPDATE',
+    payload: {
+      id,
+      newProperties,
+    },
+  }
+}
+
+export function uInputLinkUpdateMidiInput (linkId) {
+  return {
+    type: 'U_INPUT_LINK_UPDATE_MIDI_INPUT',
     payload: {
       linkId,
-      inputId,
-      inputType,
     },
   }
 }
@@ -55,16 +62,6 @@ export function inputLinksReplaceAll (links) {
     type: 'INPUT_LINKS_REPLACE_ALL',
     payload: {
       links,
-    },
-  }
-}
-
-export function rInputLinkUpdate (linkId, input) {
-  return {
-    type: 'R_INPUT_LINK_UPDATE',
-    payload: {
-      linkId,
-      input,
     },
   }
 }
