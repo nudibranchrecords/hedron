@@ -19,6 +19,15 @@ import { reloadSingleSketchModule, removeSketchFromScene,
   addSketchToScene, reloadSingleSketchConfig } from '../../engine'
 import { uMacroTargetParamLinkDelete } from '../macros/actions'
 
+const paramDelete = (paramId, store) => {
+  const state = store.getState()
+  const param = getNode(state, paramId)
+  param.connectedMacroIds.forEach(macroId => {
+    store.dispatch(uMacroTargetParamLinkDelete(macroId, param.id))
+  })
+  store.dispatch(uNodeDelete(paramId))
+}
+
 const handleSketchCreate = (action, store) => {
   let uniqueId
   const state = store.getState()
@@ -98,11 +107,7 @@ const handleSketchDelete = (action, store) => {
   store.dispatch(rSceneSketchRemove(sceneId, id))
 
   for (let i = 0; i < paramIds.length; i++) {
-    const param = getNode(state, paramIds[i])
-    param.connectedMacroIds.forEach(macroId => {
-      store.dispatch(uMacroTargetParamLinkDelete(macroId, param.id))
-    })
-    store.dispatch(uNodeDelete(paramIds[i]))
+    paramDelete(paramIds[i], store)
   }
 
   const shotIds = getSketchShotIds(state, id)
@@ -144,7 +149,7 @@ const sketchReimport = (sketchId, store) => {
     } else {
       // if param doesnt match with new params, remove the node
       paramIds = paramIds.filter(id => param.id !== id)
-      store.dispatch(uNodeDelete(param.id))
+      paramDelete(param.id, store)
     }
   }
 
