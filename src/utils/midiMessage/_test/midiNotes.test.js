@@ -8,7 +8,7 @@ test('Returns text for midi note', () => {
 
   expect(actual).toBe(expected)
 
-  expected = '27 - D# / Eb (1)'
+  expected = '27 - D# (1)'
   actual = midiNotes[27]
 
   expect(actual).toBe(expected)
