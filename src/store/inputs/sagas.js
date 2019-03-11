@@ -22,20 +22,18 @@ export function* handleInput (action) {
 
       for (let i = 0; i < links.length; i++) {
         let skip
+        const linkNode = yield select(getNode, links[i].nodeId)
 
-        if (links[i].linkType === 'linkableAction') {
-          const linkableAction = yield select(getNode, links[i].nodeId)
-          yield put(linkableAction.action)
+        if (linkNode.type === 'linkableAction') {
+          yield put(linkNode.action)
         } else {
           let value = p.value
           let modifiers
           if (inputType === 'midi') {
-            const currNode = yield select(getNode, links[i].nodeId)
-
             let midiValue = value
-            value = currNode.value
+            value = linkNode.value
             const options = yield select(getNodesValues, links[i].midiOptionIds)
-            value = yield call(midiValueProcess, currNode, midiValue, options, messageCount)
+            value = yield call(midiValueProcess, linkNode, midiValue, options, messageCount)
           }
 
           if (p.inputId === 'lfo') {
@@ -67,19 +65,16 @@ export function* handleInput (action) {
 
           switch (links[i].nodeType) {
             case 'shot': {
-              const nodeId = links[i].nodeId
-              const node = yield select(getNode, nodeId)
-
               if (p.meta && p.meta.noteOn) {
-                yield put(nodeShotFired(nodeId, node.sketchId, node.method))
+                yield put(nodeShotFired(links[i].nodeId, linkNode.sketchId, linkNode.method))
               } else if (p.inputId === 'seq-step') {
                 const seqNode = yield select(getNode, links[i].sequencerGridId)
                 if (seqNode.value[value] === 1) {
-                  yield put(nodeShotFired(nodeId, node.sketchId, node.method))
+                  yield put(nodeShotFired(links[i].nodeId, linkNode.sketchId, linkNode.method))
                 }
                 skip = true
               } else if (value > 0.333 && links[i].armed) {
-                yield put(nodeShotFired(nodeId, node.sketchId, node.method))
+                yield put(nodeShotFired(links[i].nodeId, linkNode.sketchId, linkNode.method))
                 yield put(inputLinkShotDisarm(links[i].id))
               } else if (value < 0.333) {
                 yield put(inputLinkShotArm(links[i].id))
