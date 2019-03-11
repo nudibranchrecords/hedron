@@ -17,7 +17,6 @@ import availableModulesReducer from './availableModules/reducer'
 import displaysReducer from './displays/reducer'
 import macroReducer from './macros/reducer'
 import uiReducer from './ui/reducer'
-import linkableActionsReducer from './linkableActions/reducer'
 import settingsReducer from './settings/reducer'
 
 const ignoreList = [
@@ -35,7 +34,6 @@ const reducers = combineReducers({
   project: ignoreActions(projectReducer, ignoreList),
   inputs: ignoreActions(inputsReducer, difference(ignoreList, ['INPUT_FIRED'])),
   inputLinks: ignoreActions(inputLinkReducer, ignoreList),
-  linkableActions: ignoreActions(linkableActionsReducer, ignoreList),
   clock: ignoreActions(clockReducer, difference(ignoreList, ['CLOCK_PULSE', 'CLOCK_BEAT_INC', 'CLOCK_BPM_UPDATE'])),
   midi: ignoreActions(midiReducer, ignoreList),
   displays: ignoreActions(displaysReducer, ignoreList),
