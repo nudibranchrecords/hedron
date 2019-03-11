@@ -5,7 +5,6 @@ import { inputLinkShotDisarm, inputLinkShotArm } from '../inputLinks/actions'
 import { projectError } from '../project/actions'
 import getNodes from '../../selectors/getNodes'
 import getNode from '../../selectors/getNode'
-import getLinkableAction from '../../selectors/getLinkableAction'
 import getNodesValues from '../../selectors/getNodesValues'
 import lfoProcess from '../../utils/lfoProcess'
 import midiValueProcess from '../../utils/midiValueProcess'
@@ -25,7 +24,7 @@ export function* handleInput (action) {
         let skip
 
         if (links[i].linkType === 'linkableAction') {
-          const linkableAction = yield select(getLinkableAction, links[i].nodeId)
+          const linkableAction = yield select(getNode, links[i].nodeId)
           yield put(linkableAction.action)
         } else {
           let value = p.value

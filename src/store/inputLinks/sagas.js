@@ -7,8 +7,6 @@ import { uAnimStart } from '../anims/actions'
 import { rNodeCreate, uNodeCreate, uNodeDelete, uNodeInputLinkAdd,
   nodeInputLinkRemove, nodeActiveInputLinkToggle } from '../nodes/actions'
 import { inputAssignedLinkCreate, inputAssignedLinkDelete } from '../inputs/actions'
-import { linkableActionCreate, linkableActionInputLinkAdd,
-  linkableActionInputLinkRemove, linkableActionDelete } from '../linkableActions/actions'
 import lfoGenerateOptions from '../../utils/lfoGenerateOptions'
 import midiGenerateOptions from '../../utils/midiGenerateOptions'
 import sequencerGenerateOptions from '../../utils/sequencerGenerateOptions'
@@ -126,7 +124,11 @@ export function* inputLinkCreate (action) {
 
     if (p.inputType === 'anim') {
       const animStartActionId = yield call(uid)
-      yield put(linkableActionCreate(animStartActionId, uAnimStart(linkId)))
+      const node = {
+        type: 'linkableAction',
+        action: uAnimStart(linkId),
+      }
+      yield put(uNodeCreate(animStartActionId, node))
       linkableActions.animStart = animStartActionId
 
       const animOpts = yield call(animGenerateOptions)
@@ -141,7 +143,11 @@ export function* inputLinkCreate (action) {
 
     if (linkType === 'node') {
       const toggleActionId = yield call(uid)
-      yield put(linkableActionCreate(toggleActionId, nodeActiveInputLinkToggle(p.nodeId, linkId)))
+      const node = {
+        type: 'linkableAction',
+        action: nodeActiveInputLinkToggle(p.nodeId, linkId),
+      }
+      yield put(uNodeCreate(toggleActionId, node))
       linkableActions.toggleActivate = toggleActionId
     }
 
@@ -167,11 +173,7 @@ export function* inputLinkCreate (action) {
     }
 
     yield put(rInputLinkCreate(linkId, link))
-    if (linkType === 'node') {
-      yield put(uNodeInputLinkAdd(p.nodeId, linkId))
-    } else if (linkType === 'linkableAction') {
-      yield put(linkableActionInputLinkAdd(p.nodeId, linkId))
-    }
+    yield put(uNodeInputLinkAdd(p.nodeId, linkId))
     yield put(inputAssignedLinkCreate(p.inputId, linkId, m.deviceId))
   }
 }
@@ -191,14 +193,10 @@ export function* inputLinkDelete (action) {
     }
   }
 
-  if (link.linkType === 'linkableAction') {
-    yield put(linkableActionInputLinkRemove(nodeId, p.id))
-  } else {
-    yield put(nodeInputLinkRemove(nodeId, p.id))
-  }
+  yield put(nodeInputLinkRemove(nodeId, p.id))
 
   for (const key in link.linkableActions) {
-    yield put(linkableActionDelete(link.linkableActions[key]))
+    yield put(uNodeDelete(link.linkableActions[key]))
   }
 
   yield put(rInputLinkDelete(p.id))
