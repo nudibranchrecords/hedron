@@ -1,7 +1,7 @@
 import getNode from './getNode'
 
-export default (state, nodeId, showIn) => {
-  switch (showIn) {
+export default (state, nodeId, panelId) => {
+  switch (panelId) {
     case 'overview':
       return state.ui.openedNode === nodeId
     case 'sketch':

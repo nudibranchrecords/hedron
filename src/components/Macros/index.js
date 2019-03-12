@@ -18,7 +18,7 @@ const Macros = ({ items, onAddClick }) => (
     <Items>
       {items.map(({ id }) => (
         <Item key={id}>
-          <Node nodeId={id} showIn='macros' />
+          <Node nodeId={id} panelId='macros' />
         </Item>
       ))}
     </Items>

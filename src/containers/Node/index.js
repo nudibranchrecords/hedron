@@ -21,7 +21,7 @@ const mapStateToProps = (state, ownProps) => {
     numInputs: inputLinkIds.length,
     numMacros: node.connectedMacroIds.length,
     title: param.title,
-    // isOpen: getIsSketchNodeOpened(state, ownProps.nodeId, ownProps.showIn),
+    // isOpen: getIsSketchNodeOpened(state, ownProps.nodeId, ownProps.panelId),
     inputLinkTitle,
   }
 }
@@ -31,7 +31,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 
   return {
     onOpenClick: () => {
-      switch (ownProps.showIn) {
+      switch (ownProps.panelId) {
         case 'overview':
           dispatch(uiNodeToggleOpen(ownProps.nodeId))
           break
