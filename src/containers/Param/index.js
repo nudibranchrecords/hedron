@@ -1,5 +1,5 @@
 import { connect } from 'react-redux'
-import Param from '../../components/Param'
+import Node from '../../components/Node'
 import getNode from '../../selectors/getNode'
 import { sketchNodeOpenedToggle } from '../../store/sketches/actions'
 import getIsSketchNodeOpened from '../../selectors/getIsSketchNodeOpened'
@@ -49,6 +49,6 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 const ParamContainer = connect(
   mapStateToProps,
   mapDispatchToProps
-)(Param)
+)(Node)
 
 export default ParamContainer
