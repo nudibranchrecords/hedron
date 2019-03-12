@@ -20,7 +20,7 @@ const mapStateToProps = (state, ownProps) => {
     numInputs: inputLinkIds.length,
     numMacros: node.connectedMacroIds.length,
     title: param.title,
-    isOpen: getIsSketchNodeOpened(state, ownProps.sketchId, ownProps.nodeId, ownProps.notInSketch),
+    isOpen: getIsSketchNodeOpened(state, ownProps.sketchId, ownProps.nodeId, ownProps.showIn),
     inputLinkTitle,
   }
 }
@@ -30,10 +30,13 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 
   return {
     onOpenClick: () => {
-      if (ownProps.notInSketch) {
-        dispatch(uiNodeToggleOpen(ownProps.nodeId))
-      } else {
-        dispatch(sketchNodeOpenedToggle(ownProps.sketchId, ownProps.nodeId))
+      switch (ownProps.showIn) {
+        case 'overview':
+          dispatch(uiNodeToggleOpen(ownProps.nodeId))
+          break
+        case 'sketch':
+        default:
+          dispatch(sketchNodeOpenedToggle(ownProps.sketchId, ownProps.nodeId))
       }
     },
     onParamBarClick: type === 'shot'
