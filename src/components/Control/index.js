@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import Modifier from '../../containers/Modifier'
+import Node from '../../containers/Node'
 import Select from '../../containers/Select'
 
 const Control = ({ nodeId, type, onChangeAction }) => {
@@ -8,9 +8,9 @@ const Control = ({ nodeId, type, onChangeAction }) => {
     case 'select':
       return <Select nodeId={nodeId} onChangeAction={onChangeAction} />
     case 'slider':
-      return <Modifier nodeId={nodeId} />
+      return <Node nodeId={nodeId} />
     default:
-      return <Modifier nodeId={nodeId} />
+      return <Node nodeId={nodeId} />
   }
 }
 

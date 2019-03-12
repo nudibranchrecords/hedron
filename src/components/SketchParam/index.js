@@ -2,7 +2,7 @@ import React from 'react'
 import styled from 'styled-components'
 import PropTypes from 'prop-types'
 import Revealer from '../../containers/AuxRevealer'
-import Param from '../../containers/Param'
+import Node from '../../containers/Node'
 import ParamRange from '../../containers/ParamRange'
 import InputLinkUI from '../../containers/InputLinkUI'
 import theme from '../../utils/theme'
@@ -15,14 +15,14 @@ const Top = styled.div`
 
 const SketchParam = ({ nodeId, isHidden, auxRevealerId }) => (
   (!isHidden &&
-  <Param nodeId={nodeId}>
+  <Node nodeId={nodeId}>
     <Top>
       <InputLinkUI nodeId={nodeId} />
     </Top>
     <Revealer title='Advanced' auxId={auxRevealerId}>
       <ParamRange nodeId={nodeId} />
     </Revealer>
-  </Param>
+  </Node>
   )
 )
 

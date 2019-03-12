@@ -32,7 +32,9 @@ export function* inputLinkCreate (action) {
   const animOptionIds = []
   const audioOptionIds = []
   let linkableActions = {}
-  let bankIndex, node, nodeType, linkType, sequencerGridId
+  let bankIndex, nodeType, linkType, sequencerGridId
+  const node = yield select(getNode, p.nodeId)
+  const sketchId = node.sketchId
 
   if (p.inputId === 'midi') {
     yield put(midiStartLearning(p.nodeId, p.inputType))
@@ -42,7 +44,6 @@ export function* inputLinkCreate (action) {
       linkType = 'linkableAction'
     } else {
       linkType = 'node'
-      node = yield select(getNode, p.nodeId)
       nodeType = node.type
       if (p.inputType !== 'midi' && p.inputId !== 'seq-step' && p.inputId !== 'anim') {
         const modifiers = yield call(getAll)
@@ -57,6 +58,7 @@ export function* inputLinkCreate (action) {
               const modifierId = yield call(uid)
               const modifier = {
                 id: modifierId,
+                sketchId,
                 key: id,
                 title: config.title[j],
                 value: config.defaultValue[j],
@@ -79,6 +81,7 @@ export function* inputLinkCreate (action) {
 
       for (let key in audioOpts) {
         const item = audioOpts[key]
+        item.sketchId = sketchId
         audioOptionIds.push(item.id)
 
         yield put(uNodeCreate(item.id, item))
@@ -90,6 +93,7 @@ export function* inputLinkCreate (action) {
 
       for (let key in lfoOpts) {
         const item = lfoOpts[key]
+        item.sketchId = sketchId
         lfoOptionIds.push(item.id)
 
         yield put(uNodeCreate(item.id, item))
@@ -110,6 +114,7 @@ export function* inputLinkCreate (action) {
 
         for (let key in midiOpts) {
           const item = midiOpts[key]
+          item.sketchId = sketchId
           midiOptionIds.push(item.id)
 
           if (item.key === 'controlType' && m.controlType) item.value = m.controlType
@@ -127,6 +132,7 @@ export function* inputLinkCreate (action) {
       const node = {
         type: 'linkableAction',
         action: uAnimStart(linkId),
+        sketchId,
       }
       yield put(uNodeCreate(animStartActionId, node))
       linkableActions.animStart = animStartActionId
@@ -136,6 +142,7 @@ export function* inputLinkCreate (action) {
       for (let key in animOpts) {
         const item = animOpts[key]
         animOptionIds.push(item.id)
+        item.sketchId = sketchId
 
         yield put(uNodeCreate(item.id, item))
       }
@@ -146,6 +153,7 @@ export function* inputLinkCreate (action) {
       const node = {
         type: 'linkableAction',
         action: nodeActiveInputLinkToggle(p.nodeId, linkId),
+        sketchId,
       }
       yield put(uNodeCreate(toggleActionId, node))
       linkableActions.toggleActivate = toggleActionId

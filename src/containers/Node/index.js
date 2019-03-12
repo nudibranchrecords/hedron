@@ -20,7 +20,7 @@ const mapStateToProps = (state, ownProps) => {
     numInputs: inputLinkIds.length,
     numMacros: node.connectedMacroIds.length,
     title: param.title,
-    isOpen: getIsSketchNodeOpened(state, ownProps.nodeId, ownProps.showIn),
+    // isOpen: getIsSketchNodeOpened(state, ownProps.nodeId, ownProps.showIn),
     inputLinkTitle,
   }
 }
