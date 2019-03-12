@@ -50,7 +50,7 @@ const Crossfader = ({ titleA, titleB, onClickA, onClickB }) => (
     <Middle>
       <Param
         nodeId='sceneCrossfader'
-        notInSketch
+        showIn='overview'
         >
         <InputLinkUI nodeId='sceneCrossfader' />
       </Param>
