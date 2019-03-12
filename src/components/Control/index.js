@@ -3,14 +3,13 @@ import PropTypes from 'prop-types'
 import Node from '../../containers/Node'
 import Select from '../../containers/Select'
 
-const Control = ({ nodeId, type, onChangeAction }) => {
+const Control = ({ type, ...props }) => {
   switch (type) {
     case 'select':
-      return <Select nodeId={nodeId} onChangeAction={onChangeAction} />
+      return <Select {...props} />
     case 'slider':
-      return <Node nodeId={nodeId} />
     default:
-      return <Node nodeId={nodeId} />
+      return <Node {...props} />
   }
 }
 

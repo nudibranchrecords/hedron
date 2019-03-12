@@ -108,11 +108,11 @@ class AudioAnalyzer extends React.Component {
             onClick={this.props.onAnalyzerClick} />
         </Container>
         <SettingsBox isVisible={this.props.isOpen}>
-          <Control nodeId='audioLevelsFalloff' />
-          <Control nodeId='audioLevelsSmoothing' />
-          <Control nodeId='audioLevelsPower' />
-          <Control nodeId='audioNormalizeLevels' />
-          <Control nodeId='audioNormalizeRangeFalloff' />
+          <Control nodeId='audioLevelsFalloff' showIn='overview' />
+          <Control nodeId='audioLevelsSmoothing' showIn='overview' />
+          <Control nodeId='audioLevelsPower' showIn='overview' />
+          <Control nodeId='audioNormalizeLevels' showIn='overview' />
+          <Control nodeId='audioNormalizeRangeFalloff' showIn='overview' />
         </SettingsBox>
       </Wrapper>
     )
