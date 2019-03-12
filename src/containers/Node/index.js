@@ -30,8 +30,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   const type = ownProps.type || 'param'
 
   return {
-    onOpenClick: () => {
-      switch (ownProps.panelId) {
+    onOpenClick: (panelId = ownProps.panelId) => {
+      switch (panelId) {
         case 'overview':
           dispatch(uiNodeToggleOpen(ownProps.nodeId))
           break

@@ -6,6 +6,7 @@ import inputIcon from '../../assets/icons/input.icon.txt'
 import macroIcon from '../../assets/icons/macro.icon.txt'
 import IconComponent from '../Icon'
 import theme from '../../utils/theme'
+import { PanelContext } from '../../context'
 
 const Wrapper = styled.div`
   border: 1px solid ${theme.lineColor1};
@@ -75,24 +76,29 @@ const IconInfo = styled.div`
 
 const Param = ({ title, nodeId, isOpen, onOpenClick, onParamBarClick, numInputs,
   numMacros, inputLinkTitle, type }) => (
-    <Wrapper isOpen={isOpen}>
-      <BarCol>
-        <Title>{title}</Title>
-        <ParamBar
-          nodeId={nodeId}
-          onMouseDown={onParamBarClick}
-          type={type}
-                  />
-      </BarCol>
+    <PanelContext.Consumer>
+      {panelId =>
+        <Wrapper isOpen={isOpen}>
+          <BarCol>
+            <Title>{title}</Title>
+            <ParamBar
+              nodeId={nodeId}
+              onMouseDown={onParamBarClick}
+              type={type}
+                />
+          </BarCol>
 
-      <Info onClick={onOpenClick}>
-        {inputLinkTitle && <span><Icon glyph={inputIcon} />{inputLinkTitle}</span>}
-        <IconInfo>
-          {numInputs !== undefined && (<span><Icon glyph={inputIcon} />{numInputs}</span>)}
-          {numMacros !== undefined && (<span><Icon glyph={macroIcon} />{numMacros}</span>)}
-        </IconInfo>
-      </Info>
-    </Wrapper>
+          <Info onClick={() => { onOpenClick(panelId) }}>
+            {inputLinkTitle && <span><Icon glyph={inputIcon} />{inputLinkTitle}</span>}
+            <IconInfo>
+              {numInputs !== undefined && (<span><Icon glyph={inputIcon} />{numInputs}</span>)}
+              {numMacros !== undefined && (<span><Icon glyph={macroIcon} />{numMacros}</span>)}
+            </IconInfo>
+          </Info>
+        </Wrapper>
+      }
+    </PanelContext.Consumer>
+
   )
 
 Param.propTypes = {
