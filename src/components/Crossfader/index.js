@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
-import Param from '../../containers/Param'
+import Node from '../../containers/Node'
 import InputLinkUI from '../../containers/InputLinkUI'
 import theme from '../../utils/theme'
 
@@ -48,12 +48,12 @@ const Crossfader = ({ titleA, titleB, onClickA, onClickB }) => (
       <ChannelTitle>{titleA}</ChannelTitle>
     </ChannelButton>
     <Middle>
-      <Param
+      <Node
         nodeId='sceneCrossfader'
         showIn='overview'
         >
         <InputLinkUI nodeId='sceneCrossfader' />
-      </Param>
+      </Node>
     </Middle>
     <ChannelButton onMouseDown={onClickB}>
       <ChannelTag>B</ChannelTag>
