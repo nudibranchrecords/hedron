@@ -1,9 +1,12 @@
-export default (state, sketchId, nodeId, showIn) => {
+import getNode from './getNode'
+
+export default (state, nodeId, showIn) => {
   switch (showIn) {
     case 'overview':
       return state.ui.openedNode === nodeId
     case 'sketch':
     default:
-      return state.sketches[sketchId].openedNodeId === nodeId
+      const node = getNode(state, nodeId)
+      return state.sketches[node.sketchId].openedNodeId === nodeId
   }
 }

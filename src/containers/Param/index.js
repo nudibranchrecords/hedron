@@ -1,7 +1,7 @@
 import { connect } from 'react-redux'
 import Node from '../../components/Node'
 import getNode from '../../selectors/getNode'
-import { sketchNodeOpenedToggle } from '../../store/sketches/actions'
+import { uSketchNodeOpenedToggle } from '../../store/sketches/actions'
 import getIsSketchNodeOpened from '../../selectors/getIsSketchNodeOpened'
 import getActiveInputsText from '../../selectors/getActiveInputsText'
 import { nodeShotFired } from '../../store/nodes/actions'
@@ -20,7 +20,7 @@ const mapStateToProps = (state, ownProps) => {
     numInputs: inputLinkIds.length,
     numMacros: node.connectedMacroIds.length,
     title: param.title,
-    isOpen: getIsSketchNodeOpened(state, ownProps.sketchId, ownProps.nodeId, ownProps.showIn),
+    isOpen: getIsSketchNodeOpened(state, ownProps.nodeId, ownProps.showIn),
     inputLinkTitle,
   }
 }
@@ -36,7 +36,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
           break
         case 'sketch':
         default:
-          dispatch(sketchNodeOpenedToggle(ownProps.sketchId, ownProps.nodeId))
+          dispatch(uSketchNodeOpenedToggle(ownProps.nodeId))
       }
     },
     onParamBarClick: type === 'shot'
