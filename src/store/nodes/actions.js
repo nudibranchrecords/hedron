@@ -188,23 +188,23 @@ export function nodeResetRange (nodeId) {
 
 /* Macros */
 
-export function rNodeMacroTargetParamLinkCreate (nodeId, paramId, paramLinkId) {
+export function rNodeMacroTargetParamLinkCreate (macroId, paramId, paramLinkId) {
   return {
     type: 'R_NODE_MACRO_TARGET_PARAM_LINK_CREATE',
-    payload: { nodeId, paramId, paramLinkId },
+    payload: { macroId, paramId, paramLinkId },
   }
 }
 
-export function rNodeMacroTargetParamLinkDelete (nodeId, paramId) {
+export function rNodeMacroTargetParamLinkDelete (macroId, paramId) {
   return {
     type: 'R_NODE_MACRO_TARGET_PARAM_LINK_DELETE',
-    payload: { nodeId, paramId },
+    payload: { macroId, paramId },
   }
 }
 
-export function rNodeMacroTargetParamLinkUpdateStartValue (nodeId, paramId, value) {
+export function rNodeMacroTargetParamLinkUpdateStartValue (macroId, paramId, value) {
   return {
     type: 'R_NODE_MACRO_TARGET_PARAM_LINK_UPDATE_START_VALUE',
-    payload: { nodeId, paramId, value },
+    payload: { macroId, paramId, value },
   }
 }

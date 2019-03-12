@@ -1,4 +1,4 @@
-import { union, omit } from 'lodash'
+import { union } from 'lodash'
 
 const defaultState = {
   learningId: false,
@@ -20,7 +20,7 @@ const macroReducer = (state = defaultState, action) => {
     case 'R_MACRO_DELETE': {
       return {
         ...state,
-        items: omit(state.items, [p.id]),
+        nodeIds: state.nodeIds.filter(item => item !== p.nodeId),
       }
     }
     case 'R_MACRO_LEARNING_TOGGLE': {
