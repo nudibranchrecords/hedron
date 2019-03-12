@@ -79,13 +79,6 @@ export function uMacroTargetParamLinkDelete (macroId, paramId) {
   }
 }
 
-export function rMacroTargetParamLinkUpdateStartValue (macroId, paramId, value) {
-  return {
-    type: 'R_MACRO_TARGET_PARAM_LINK_UPDATE_START_VALUE',
-    payload: { macroId, paramId, value },
-  }
-}
-
 export function uMacroAddAllForSketch (id) {
   return {
     type: 'U_MACRO_ADD_ALL_FOR_SKETCH',

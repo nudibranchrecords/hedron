@@ -20,6 +20,6 @@ export default connect(
   null,
   {
     areStatesEqual: (next, prev) =>
-    Object.keys(next.macros.items).length === Object.keys(prev.macros.items).length,
+    Object.keys(next.macros.nodeIds).length === Object.keys(prev.macros.nodeIds).length,
   }
 )(Macros)

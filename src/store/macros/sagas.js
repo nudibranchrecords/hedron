@@ -13,8 +13,7 @@ import { rNodeCreate, nodeValueUpdate, uNodeDelete, rNodeConnectedMacroAdd,
           rNodeConnectedMacroRemove, nodeValuesBatchUpdate, rNodeMacroTargetParamLinkCreate,
           rNodeMacroTargetParamLinkDelete, rNodeMacroTargetParamLinkUpdateStartValue,
 } from '../nodes/actions'
-import { rMacroAdd, rMacroDelete,
-        rMacroTargetParamLinkUpdateStartValue, uMacroTargetParamLinkAdd, rMacroLearningToggle,
+import { rMacroAdd, rMacroDelete, uMacroTargetParamLinkAdd, rMacroLearningToggle,
         rMacroUpdateLastId,
 } from './actions'
 import { uiEditingOpen } from '../ui/actions'
@@ -86,8 +85,7 @@ it is a macro type node:
 - the param value is updated with new interpolated value
 */
 export function* macroProcess (p, node) {
-  const m = yield select(getMacro, node.macroId)
-  const links = m.targetParamLinks
+  const links = node.targetParamLinks
   const keys = Object.keys(links)
   const values = []
 
@@ -97,7 +95,7 @@ export function* macroProcess (p, node) {
     if (startValue === false) {
       const p = yield select(getNode, l.paramId)
       startValue = p.value
-      yield put(rNodeMacroTargetParamLinkUpdateStartValue(node.macroId, l.paramId, startValue))
+      yield put(rNodeMacroTargetParamLinkUpdateStartValue(node.id, l.paramId, startValue))
     }
     const n = yield select(getNode, l.nodeId)
     const val = yield call(macroInterpolate, startValue, n.value, p.value)
@@ -109,7 +107,7 @@ export function* macroProcess (p, node) {
     )
   }
 
-  yield put(nodeValuesBatchUpdate(values, { type: 'macro', macroId: node.macroId }))
+  yield put(nodeValuesBatchUpdate(values, { type: 'macro', macroId: node.id }))
 }
 
 export function* macroLearnFromParam (p, macroId) {
@@ -140,14 +138,14 @@ export function* handleNodeValueUpdate (action) {
     const node = yield select(getNode, p.id)
 
     if (node.type === 'macro' && senderType !== 'macro') {
-    // Normal behaviour, simple process of macro using value of node
+      // Normal behaviour, simple process of macro using value of node
       yield call(macroProcess, p, node)
     } else if (node.type !== 'macro') {
       const isHuman = yield call(isInputTypeHuman, senderType)
 
       if (isHuman) {
         const learningId = yield select(getMacroLearningId)
-      // Learning logic here
+        // Learning logic here
         const learn = yield call(shouldItLearn, learningId, node, p)
         if (learn) {
           yield call(macroLearnFromParam, p, learningId)
@@ -165,7 +163,7 @@ export function* handleNodeValueUpdate (action) {
 
               if (node.value !== false) {
                 for (const key in node.targetParamLinks) {
-                  yield put(rMacroTargetParamLinkUpdateStartValue(macroId, key, false))
+                  yield put(rNodeMacroTargetParamLinkUpdateStartValue(macroId, key, false))
                 }
 
                 yield put(nodeValueUpdate(macroId, false, { type: 'macro' }))
@@ -192,8 +190,7 @@ export function* handleNodeValueBatchUpdate (action) {
   // Macro stuff doesnt necessarily have to go through the loop
   // if already has done, so we check to see
   if (!doLoop) {
-    const macro = yield select(getMacro, p.meta.macroId)
-    const node = yield select(getNode, macro.nodeId)
+    const node = yield select(getNode, p.meta.macroId)
 
     // Do loop if macro value is false
     if (node.value === false) {
