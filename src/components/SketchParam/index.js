@@ -13,9 +13,9 @@ const Top = styled.div`
   border-bottom: ${theme.lineColor1} 1px dashed;
 `
 
-const SketchParam = ({ nodeId, sketchId, isHidden, auxRevealerId }) => (
+const SketchParam = ({ nodeId, isHidden, auxRevealerId }) => (
   (!isHidden &&
-  <Param nodeId={nodeId} sketchId={sketchId}>
+  <Param nodeId={nodeId}>
     <Top>
       <InputLinkUI nodeId={nodeId} />
     </Top>
@@ -28,7 +28,6 @@ const SketchParam = ({ nodeId, sketchId, isHidden, auxRevealerId }) => (
 
 SketchParam.propTypes = {
   nodeId: PropTypes.string.isRequired,
-  sketchId: PropTypes.string.isRequired,
   isHidden: PropTypes.bool,
 }
 

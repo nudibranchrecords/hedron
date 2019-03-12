@@ -42,9 +42,16 @@ export function sketchesReplaceAll (sketches) {
   }
 }
 
-export function sketchNodeOpenedToggle (sketchId, nodeId) {
+export function uSketchNodeOpenedToggle (nodeId) {
   return {
-    type: 'SKETCH_NODE_OPENED_TOGGLE',
+    type: 'U_SKETCH_NODE_OPENED_TOGGLE',
+    payload: { nodeId },
+  }
+}
+
+export function rSketchNodeOpenedToggle (sketchId, nodeId) {
+  return {
+    type: 'R_SKETCH_NODE_OPENED_TOGGLE',
     payload: { sketchId, nodeId },
   }
 }
