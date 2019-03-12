@@ -169,6 +169,49 @@ const nodesReducer = (state = defaultState, action) => {
         },
       }
     }
+
+    /* Macros */
+    case 'R_NODE_MACRO_TARGET_PARAM_LINK_CREATE': {
+      return {
+        ...state,
+        [p.nodeId]: {
+          ...state.items[p.nodeId],
+          targetParamLinks: {
+            ...state[p.nodeId].targetParamLinks,
+            [p.paramId]: {
+              nodeId: p.paramLinkId,
+              paramId: p.paramId,
+              startValue: false,
+            },
+          },
+        },
+      }
+    }
+    case 'R_NODE_MACRO_TARGET_PARAM_LINK_DELETE': {
+      return {
+        ...state,
+        [p.nodeId]: {
+          ...state[p.nodeId],
+          targetParamLinks: _.omit(state[p.nodeId].targetParamLinks, [p.paramId]),
+        },
+      }
+    }
+    case 'R_NODE_MACRO_TARGET_PARAM_LINK_UPDATE_START_VALUE': {
+      return {
+        ...state,
+        [p.nodeId]: {
+          ...state[p.nodeId],
+          targetParamLinks: {
+            ...state[p.nodeId].targetParamLinks,
+            [p.paramId]: {
+              ...state[p.nodeId].targetParamLinks[p.paramId],
+              startValue: p.value,
+            },
+          },
+        },
+      }
+    }
+
     default:
       return state
   }

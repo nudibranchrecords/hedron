@@ -185,3 +185,26 @@ export function nodeResetRange (nodeId) {
     },
   }
 }
+
+/* Macros */
+
+export function rNodeMacroTargetParamLinkCreate (nodeId, paramId, paramLinkId) {
+  return {
+    type: 'R_NODE_MACRO_TARGET_PARAM_LINK_CREATE',
+    payload: { nodeId, paramId, paramLinkId },
+  }
+}
+
+export function rNodeMacroTargetParamLinkDelete (nodeId, paramId) {
+  return {
+    type: 'R_NODE_MACRO_TARGET_PARAM_LINK_DELETE',
+    payload: { nodeId, paramId },
+  }
+}
+
+export function rNodeMacroTargetParamLinkUpdateStartValue (nodeId, paramId, value) {
+  return {
+    type: 'R_NODE_MACRO_TARGET_PARAM_LINK_UPDATE_START_VALUE',
+    payload: { nodeId, paramId, value },
+  }
+}
