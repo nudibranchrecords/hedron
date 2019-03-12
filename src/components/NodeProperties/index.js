@@ -29,7 +29,7 @@ NodeProperties.propTypes = {
   nodeId: PropTypes.string.isRequired,
   advancedIsOpen: PropTypes.bool,
   onAdvancedClick: PropTypes.func.isRequired,
-  type: PropTypes.string.isRequired,
+  type: PropTypes.string,
 }
 
 export default NodeProperties

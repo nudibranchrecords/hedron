@@ -9,6 +9,7 @@ const mapStateToProps = (state) => {
   return {
     Component: NodeProperties,
     node: node,
+    panelId: 'macros',
   }
 }
 
