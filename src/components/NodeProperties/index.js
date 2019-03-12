@@ -18,10 +18,13 @@ const NodeProperties = ({ nodeId, type, advancedIsOpen, onAdvancedClick }) => (
     <Top>
       <InputLinkUI nodeId={nodeId} />
     </Top>
-    <Revealer title='Advanced' isOpen={advancedIsOpen} onHeaderClick={onAdvancedClick}>
-      <ParamRange nodeId={nodeId} />
-    </Revealer>
-    { type === 'macro' && <MacroProperties macroId={nodeId} /> }
+    {
+      type === 'macro'
+      ? <MacroProperties macroId={nodeId} />
+      : <Revealer title='Advanced' isOpen={advancedIsOpen} onHeaderClick={onAdvancedClick}>
+        <ParamRange nodeId={nodeId} />
+      </Revealer>
+    }
   </div>
 )
 
