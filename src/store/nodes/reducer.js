@@ -175,7 +175,7 @@ const nodesReducer = (state = defaultState, action) => {
       return {
         ...state,
         [p.nodeId]: {
-          ...state.items[p.nodeId],
+          ...state[p.nodeId],
           targetParamLinks: {
             ...state[p.nodeId].targetParamLinks,
             [p.paramId]: {
