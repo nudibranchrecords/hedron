@@ -11,10 +11,10 @@ export function uMacroCreate () {
   }
 }
 
-export function uMacroDelete (id) {
+export function uMacroDelete (nodeId) {
   return {
     type: 'U_MACRO_DELETE',
-    payload: { id },
+    payload: { nodeId },
   }
 }
 
@@ -25,10 +25,10 @@ export function rMacroAdd (nodeId) {
   }
 }
 
-export function rMacroDelete (id) {
+export function rMacroDelete (nodeId) {
   return {
     type: 'R_MACRO_DELETE',
-    payload: { id },
+    payload: { nodeId },
   }
 }
 

@@ -174,10 +174,10 @@ const nodesReducer = (state = defaultState, action) => {
     case 'R_NODE_MACRO_TARGET_PARAM_LINK_CREATE': {
       return {
         ...state,
-        [p.nodeId]: {
-          ...state[p.nodeId],
+        [p.macroId]: {
+          ...state[p.macroId],
           targetParamLinks: {
-            ...state[p.nodeId].targetParamLinks,
+            ...state[p.macroId].targetParamLinks,
             [p.paramId]: {
               nodeId: p.paramLinkId,
               paramId: p.paramId,
@@ -190,21 +190,21 @@ const nodesReducer = (state = defaultState, action) => {
     case 'R_NODE_MACRO_TARGET_PARAM_LINK_DELETE': {
       return {
         ...state,
-        [p.nodeId]: {
-          ...state[p.nodeId],
-          targetParamLinks: _.omit(state[p.nodeId].targetParamLinks, [p.paramId]),
+        [p.macroId]: {
+          ...state[p.macroId],
+          targetParamLinks: _.omit(state[p.macroId].targetParamLinks, [p.paramId]),
         },
       }
     }
     case 'R_NODE_MACRO_TARGET_PARAM_LINK_UPDATE_START_VALUE': {
       return {
         ...state,
-        [p.nodeId]: {
-          ...state[p.nodeId],
+        [p.macroId]: {
+          ...state[p.macroId],
           targetParamLinks: {
-            ...state[p.nodeId].targetParamLinks,
+            ...state[p.macroId].targetParamLinks,
             [p.paramId]: {
-              ...state[p.nodeId].targetParamLinks[p.paramId],
+              ...state[p.macroId].targetParamLinks[p.paramId],
               startValue: p.value,
             },
           },

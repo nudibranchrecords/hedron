@@ -31,7 +31,7 @@ const Button = styled(ButtonComponent)`
   }
 `
 
-const MacroProperties = ({ nodeId, onLearningClick, onDeleteClick, paramLinks,
+const MacroProperties = ({ macroId, onLearningClick, onDeleteClick, paramLinks,
   isLearning, paramLinksAreVisible, onRenameClick }) => (
     <Wrapper>
       <Bottom>
@@ -42,6 +42,7 @@ const MacroProperties = ({ nodeId, onLearningClick, onDeleteClick, paramLinks,
             <Links>
               {paramLinks.map(item => (
                 <MacroLink
+                  macroId={macroId}
                   nodeId={item.nodeId}
                   paramId={item.paramId}
                   key={item.nodeId}
@@ -65,7 +66,7 @@ const MacroProperties = ({ nodeId, onLearningClick, onDeleteClick, paramLinks,
 MacroProperties.propTypes = {
   isLearning: PropTypes.bool,
   paramLinks: PropTypes.array.isRequired,
-  nodeId: PropTypes.string.isRequired,
+  macroId: PropTypes.string.isRequired,
   onLearningClick: PropTypes.func.isRequired,
   onDeleteClick: PropTypes.func.isRequired,
   paramLinksAreVisible: PropTypes.bool,

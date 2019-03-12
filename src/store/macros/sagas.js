@@ -35,17 +35,17 @@ export function* macroCreate (action) {
 }
 
 export function* macroDelete (action) {
-  // const macroId = action.payload.id
-  // const macro = yield select(getMacro, macroId)
-  // yield put(rMacroLearningToggle(false))
-  // yield put(rMacroDelete(macroId))
-  // yield put(uNodeDelete(macro.nodeId))
+  const nodeId = action.payload.nodeId
+  const node = yield select(getNode, nodeId)
+  yield put(rMacroLearningToggle(false))
+  yield put(rMacroDelete(nodeId))
+  yield put(uNodeDelete(nodeId))
 
-  // for (const linkId in macro.targetParamLinks) {
-  //   const link = macro.targetParamLinks[linkId]
-  //   yield put(uNodeDelete(link.nodeId))
-  //   yield put(rNodeConnectedMacroRemove(link.paramId, macroId))
-  // }
+  for (const linkId in node.targetParamLinks) {
+    const link = node.targetParamLinks[linkId]
+    yield put(uNodeDelete(link.nodeId))
+    yield put(rNodeConnectedMacroRemove(link.paramId, nodeId))
+  }
 }
 
 export function* macroTargetParamLinkAdd (action) {
@@ -61,11 +61,11 @@ export function* macroTargetParamLinkAdd (action) {
 }
 
 export function* macroTargetParamLinkDelete (action) {
-  // const p = action.payload
-  // const link = yield select(getMacroTargetParamLink, p.macroId, p.paramId)
-  // yield put(rNodeMacroTargetParamLinkDelete(p.macroId, p.paramId))
-  // yield put(uNodeDelete(link.nodeId))
-  // yield put(rNodeConnectedMacroRemove(p.paramId, p.macroId))
+  const p = action.payload
+  const link = yield select(getMacroTargetParamLink, p.macroId, p.paramId)
+  yield put(rNodeMacroTargetParamLinkDelete(p.macroId, p.paramId))
+  yield put(uNodeDelete(link.nodeId))
+  yield put(rNodeConnectedMacroRemove(p.paramId, p.macroId))
 }
 
 /*
