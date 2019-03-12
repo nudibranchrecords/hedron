@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import ButtonComponent from '../Button'
-import Param from '../../components/Param'
+import Node from '../../components/Node'
 import MacroLink from '../../containers/MacroLink'
 import InputLinkUI from '../../containers/InputLinkUI'
 import Row from '../Row'
@@ -32,7 +32,7 @@ const MacroItem = ({
   inputLinkTitle, onRenameClick,
 }) => (
   <div>
-    <Param
+    <Node
       isOpen={isOpen}
       isActive={isLearning}
       title={title}
@@ -72,7 +72,7 @@ const MacroItem = ({
         }}>Rename</Button>
         <Button onClick={onDeleteClick}>Delete Macro</Button>
       </Row>
-    </Param>
+    </Node>
 
   </div>
 )
