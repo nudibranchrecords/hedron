@@ -1,6 +1,6 @@
 import { connect } from 'react-redux'
 import PropertiesPanel from '../../containers/PropertiesPanel'
-import ParamProperties from '../ParamProperties'
+import NodeProperties from '../NodeProperties'
 import getUiOpenedNodeId from '../../selectors/getUiOpenedNodeId'
 import getNode from '../../selectors/getNode'
 import { uiNodeClose } from '../../store/ui/actions'
@@ -9,7 +9,7 @@ const mapStateToProps = (state) => {
   const nodeId = getUiOpenedNodeId(state)
   const node = getNode(state, nodeId)
   return {
-    Component: ParamProperties,
+    Component: NodeProperties,
     node: node,
   }
 }

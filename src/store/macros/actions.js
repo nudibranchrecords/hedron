@@ -18,6 +18,13 @@ export function uMacroDelete (id) {
   }
 }
 
+export function rMacroAdd (nodeId) {
+  return {
+    type: 'R_MACRO_ADD',
+    payload: { nodeId },
+  }
+}
+
 export function rMacroDelete (id) {
   return {
     type: 'R_MACRO_DELETE',

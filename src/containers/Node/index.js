@@ -6,6 +6,7 @@ import getIsSketchNodeOpened from '../../selectors/getIsSketchNodeOpened'
 import getActiveInputsText from '../../selectors/getActiveInputsText'
 import { nodeShotFired } from '../../store/nodes/actions'
 import { uiNodeToggleOpen } from '../../store/ui/actions'
+import { rMacroOpenToggle } from '../../store/macros/actions'
 
 const mapStateToProps = (state, ownProps) => {
   const node = getNode(state, ownProps.nodeId)
@@ -33,6 +34,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       switch (ownProps.showIn) {
         case 'overview':
           dispatch(uiNodeToggleOpen(ownProps.nodeId))
+          break
+        case 'macros':
+          dispatch(rMacroOpenToggle(ownProps.nodeId))
           break
         case 'sketch':
         default:

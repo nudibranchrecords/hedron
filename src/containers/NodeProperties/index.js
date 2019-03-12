@@ -1,11 +1,16 @@
 import { connect } from 'react-redux'
-import ParamProperties from '../../components/ParamProperties'
+import NodeProperties from '../../components/NodeProperties'
 import { uiAuxToggleOpen } from '../../store/ui/actions'
 import getIsAuxOpen from '../../selectors/getIsAuxOpen'
+import getNode from '../../selectors/getNode'
 
-const mapStateToProps = (state, ownProps) => ({
-  advancedIsOpen: getIsAuxOpen(state, ownProps.nodeId),
-})
+const mapStateToProps = (state, ownProps) => {
+  const node = getNode(state, ownProps.nodeId)
+  return {
+    type: node.type,
+    advancedIsOpen: getIsAuxOpen(state, ownProps.nodeId),
+  }
+}
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
   onAdvancedClick: () => {
@@ -16,4 +21,4 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(ParamProperties)
+)(NodeProperties)

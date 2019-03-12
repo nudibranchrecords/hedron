@@ -1,13 +1,13 @@
 import { connect } from 'react-redux'
 import PropertiesPanel from '../../containers/PropertiesPanel'
-import ParamProperties from '../ParamProperties'
+import NodeProperties from '../NodeProperties'
 import getOpenedSketchNode from '../../selectors/getOpenedSketchNode'
 import { sketchNodeOpenedClose } from '../../store/sketches/actions'
 
 const mapStateToProps = (state) => {
   const node = getOpenedSketchNode(state)
   return {
-    Component: ParamProperties,
+    Component: NodeProperties,
     node: node,
   }
 }

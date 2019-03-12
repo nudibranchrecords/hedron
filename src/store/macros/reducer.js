@@ -1,27 +1,20 @@
-import { omit } from 'lodash'
+import { union, omit } from 'lodash'
 
 const defaultState = {
   learningId: false,
   openedId: undefined,
   lastId: undefined,
-  items: {},
+  nodeIds: [],
 }
 
 const macroReducer = (state = defaultState, action) => {
   const p = action.payload
 
   switch (action.type) {
-    case 'R_MACRO_CREATE': {
+    case 'R_MACRO_ADD': {
       return {
         ...state,
-        items: {
-          ...state.items,
-          [p.id]: {
-            id: p.id,
-            nodeId: p.nodeId,
-            targetParamLinks: {},
-          },
-        },
+        nodeIds: union(state.nodeIds, [p.nodeId]),
       }
     }
     case 'R_MACRO_DELETE': {
@@ -40,55 +33,6 @@ const macroReducer = (state = defaultState, action) => {
       return {
         ...state,
         learningId: false,
-      }
-    }
-    case 'R_MACRO_TARGET_PARAM_LINK_CREATE': {
-      return {
-        ...state,
-        items: {
-          ...state.items,
-          [p.macroId]: {
-            ...state.items[p.macroId],
-            targetParamLinks: {
-              ...state.items[p.macroId].targetParamLinks,
-              [p.paramId]: {
-                nodeId: p.nodeId,
-                paramId: p.paramId,
-                startValue: false,
-              },
-            },
-          },
-        },
-      }
-    }
-    case 'R_MACRO_TARGET_PARAM_LINK_DELETE': {
-      return {
-        ...state,
-        items: {
-          ...state.items,
-          [p.macroId]: {
-            ...state.items[p.macroId],
-            targetParamLinks: omit(state.items[p.macroId].targetParamLinks, [p.paramId]),
-          },
-        },
-      }
-    }
-    case 'R_MACRO_TARGET_PARAM_LINK_UPDATE_START_VALUE': {
-      return {
-        ...state,
-        items: {
-          ...state.items,
-          [p.macroId]: {
-            ...state.items[p.macroId],
-            targetParamLinks: {
-              ...state.items[p.macroId].targetParamLinks,
-              [p.paramId]: {
-                ...state.items[p.macroId].targetParamLinks[p.paramId],
-                startValue: p.value,
-              },
-            },
-          },
-        },
       }
     }
     case 'R_MACRO_OPEN_TOGGLE': {

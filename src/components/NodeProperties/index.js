@@ -5,6 +5,7 @@ import Revealer from '../../components/Revealer'
 import ParamRange from '../../containers/ParamRange'
 import InputLinkUI from '../../containers/InputLinkUI'
 import theme from '../../utils/theme'
+import MacroProperties from '../../containers/MacroProperties'
 
 const Top = styled.div`
   margin-bottom: 0.5rem;
@@ -12,7 +13,7 @@ const Top = styled.div`
   border-bottom: ${theme.lineColor1} 1px dashed;
 `
 
-const ParamProperties = ({ nodeId, advancedIsOpen, onAdvancedClick }) => (
+const NodeProperties = ({ nodeId, type, advancedIsOpen, onAdvancedClick }) => (
   <div>
     <Top>
       <InputLinkUI nodeId={nodeId} />
@@ -20,13 +21,15 @@ const ParamProperties = ({ nodeId, advancedIsOpen, onAdvancedClick }) => (
     <Revealer title='Advanced' isOpen={advancedIsOpen} onHeaderClick={onAdvancedClick}>
       <ParamRange nodeId={nodeId} />
     </Revealer>
+    { type === 'macro' && <MacroProperties nodeId={nodeId} /> }
   </div>
 )
 
-ParamProperties.propTypes = {
+NodeProperties.propTypes = {
   nodeId: PropTypes.string.isRequired,
   advancedIsOpen: PropTypes.bool,
   onAdvancedClick: PropTypes.func.isRequired,
+  type: PropTypes.string.isRequired,
 }
 
-export default ParamProperties
+export default NodeProperties
