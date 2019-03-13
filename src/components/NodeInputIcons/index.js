@@ -22,7 +22,10 @@ const Wrapper = styled.div`
 
   &:hover {
     color: ${theme.actionColor1};
-    fill: ${theme.actionColor1};
+
+    svg {
+      fill: ${theme.actionColor1};
+    }
   }
 `
 
@@ -40,6 +43,14 @@ const IconInfo = styled.div`
   > span {
     display: flex;
     margin-left: ${props => props.size === 'compact' ? '0' : '0.3rem'};
+  }
+
+  svg {
+    fill: #fff;
+
+    &:hover {
+      opacity: 1;
+    }
   }
 `
 
