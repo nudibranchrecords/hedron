@@ -52,9 +52,10 @@ const Select = styled(NodeSelect)`
   flex: 1;
 `
 
-const Node = ({ title, nodeId, isOpen, onParamBarClick, type }) => (
+const Node = ({ title, nodeId, isOpen, onParamBarClick, type, panelId }) => (
   <PanelContext.Consumer>
-    {panelId => {
+    {panelIdCtx => {
+      panelId = panelId || panelIdCtx
       const theme = panelId !== undefined ? 'panel' : 'sketch'
       let inner
 
@@ -97,6 +98,7 @@ Node.propTypes = {
   isOpen: PropTypes.bool,
   onParamBarClick: PropTypes.func,
   type: PropTypes.string,
+  panelId: PropTypes.string,
 }
 
 export default Node

@@ -51,9 +51,7 @@ const Crossfader = ({ titleA, titleB, onClickA, onClickB }) => (
       <Node
         nodeId='sceneCrossfader'
         panelId='overview'
-        >
-        <InputLinkUI nodeId='sceneCrossfader' />
-      </Node>
+      />
     </Middle>
     <ChannelButton onMouseDown={onClickB}>
       <ChannelTag>B</ChannelTag>
