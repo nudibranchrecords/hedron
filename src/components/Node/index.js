@@ -6,19 +6,22 @@ import inputIcon from '../../assets/icons/input.icon.txt'
 import macroIcon from '../../assets/icons/macro.icon.txt'
 import IconComponent from '../Icon'
 import theme from '../../utils/theme'
-import { PanelContext } from '../../context'
 
 const Wrapper = styled.div`
   border: 1px solid ${theme.lineColor1};
   border-radius: 3px;
   color: ${theme.textColorLight1};
   fill: ${theme.textColorLight1};
-  padding: 0.5rem;
+  padding: 0.25rem;
   display: flex;
   flex-direction: column;
 
+  ${props => props.theme === 'panel' && `
+    border-color: ${theme.bgColorDark3};
+  `}
+
   ${props => props.isOpen && `
-    border: 1px solid white;
+    border-color: white;
   `}
 `
 
@@ -33,7 +36,7 @@ const Title = styled.div`
   color: ${theme.textColorLight1};
   text-transform: uppercase;
   height: 1rem;
-  font-size: 0.6rem;
+  font-size: 0.55rem;
   z-index: 1;
   position: absolute;
   top: 0.25rem;
@@ -43,14 +46,14 @@ const Title = styled.div`
 `
 
 const Icon = styled(IconComponent)`
-  width: 0.6rem;
-  height: 0.6rem;
+  width: 0.5rem;
+  height: 0.5rem;
   margin-right: 0.1rem;
 `
 const Info = styled.div`
   display: flex;
   justify-content: space-between;
-  font-size: 0.6rem;
+  font-size: 0.5rem;
   cursor: pointer;
   text-transform: uppercase;
 
@@ -75,30 +78,26 @@ const IconInfo = styled.div`
 `
 
 const Param = ({ title, nodeId, isOpen, onOpenClick, onParamBarClick, numInputs,
-  numMacros, inputLinkTitle, type }) => (
-    <PanelContext.Consumer>
-      {panelId =>
-        <Wrapper isOpen={isOpen}>
-          <BarCol>
-            <Title>{title}</Title>
-            <ParamBar
-              nodeId={nodeId}
-              onMouseDown={onParamBarClick}
-              type={type}
-                />
-          </BarCol>
+  numMacros, inputLinkTitle, type, theme }) => (
+    <Wrapper isOpen={isOpen} theme={theme}>
+      <BarCol>
+        <Title>{title}</Title>
+        <ParamBar
+          nodeId={nodeId}
+          onMouseDown={onParamBarClick}
+          type={type}
+          theme={theme}
+        />
+      </BarCol>
 
-          <Info onClick={() => { onOpenClick(panelId) }}>
-            {inputLinkTitle && <span><Icon glyph={inputIcon} />{inputLinkTitle}</span>}
-            <IconInfo>
-              {numInputs !== undefined && (<span><Icon glyph={inputIcon} />{numInputs}</span>)}
-              {numMacros !== undefined && (<span><Icon glyph={macroIcon} />{numMacros}</span>)}
-            </IconInfo>
-          </Info>
-        </Wrapper>
-      }
-    </PanelContext.Consumer>
-
+      <Info onClick={onOpenClick}>
+        {inputLinkTitle && <span><Icon glyph={inputIcon} />{inputLinkTitle}</span>}
+        <IconInfo>
+          {numInputs !== undefined && (<span><Icon glyph={inputIcon} />{numInputs}</span>)}
+          {numMacros !== undefined && (<span><Icon glyph={macroIcon} />{numMacros}</span>)}
+        </IconInfo>
+      </Info>
+    </Wrapper>
   )
 
 Param.propTypes = {
@@ -111,6 +110,7 @@ Param.propTypes = {
   numMacros: PropTypes.number,
   inputLinkTitle: PropTypes.string,
   type: PropTypes.string,
+  theme: PropTypes.string,
 }
 
 export default Param
