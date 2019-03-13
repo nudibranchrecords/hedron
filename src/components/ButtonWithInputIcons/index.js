@@ -9,10 +9,10 @@ const MainButton = styled(Button)`
   margin-right: 0.25rem;
 `
 
-const ButtonWithInputIcons = ({ onClick, children, linkableActionId }) => (
+const ButtonWithInputIcons = ({ onClick, children, linkableActionId, color, panelId }) => (
   <Row>
-    <MainButton onClick={onClick}>{children}</MainButton>
-    <NodeInputIcons nodeId={linkableActionId} size='compact' />
+    <MainButton onClick={onClick} color={color}>{children}</MainButton>
+    <NodeInputIcons nodeId={linkableActionId} size='compact' panelId={panelId} />
   </Row>
 )
 
@@ -20,6 +20,8 @@ ButtonWithInputIcons.propTypes = {
   linkableActionId: PropTypes.string,
   children: PropTypes.node.isRequired,
   onClick: PropTypes.func,
+  color: PropTypes.string,
+  panelId: PropTypes.string,
 }
 
 export default ButtonWithInputIcons
