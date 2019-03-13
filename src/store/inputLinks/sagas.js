@@ -131,6 +131,7 @@ export function* inputLinkCreate (action) {
       const animStartActionId = yield call(uid)
       const node = {
         type: 'linkableAction',
+        title: 'Start Anim',
         action: uAnimStart(linkId),
         sketchId,
       }
@@ -152,6 +153,7 @@ export function* inputLinkCreate (action) {
       const toggleActionId = yield call(uid)
       const node = {
         type: 'linkableAction',
+        title: 'Toggle Activate',
         action: nodeActiveInputLinkToggle(p.nodeId, linkId),
         sketchId,
       }

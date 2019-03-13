@@ -25,6 +25,7 @@ const handleSceneCreate = (action, store) => {
     const node = {
       type: 'linkableAction',
       action: la[key].action,
+      title: la[key].title,
     }
     store.dispatch(rNodeCreate(la[key].id, node))
     linkableActionIds[key] = la[key].id
