@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import uiEventEmitter from '../../utils/uiEventEmitter'
-import Control from '../../containers/Control'
+import Node from '../../containers/Node'
 import styled, { css } from 'styled-components'
 import theme from '../../utils/theme'
 
@@ -34,14 +34,14 @@ const triangle = css`
 const SettingsBox = styled.div`
   visibility: ${props => props.isVisible ? 'visible' : 'hidden'};
   left: 50%;
-  width: 9rem;
-  margin-left: -4.5rem;
+  width: 12rem;
+  margin-left: -6rem;
   margin-top: 0.25rem;
   border: 1px solid white;
   background: ${theme.bgColorDark1};
   position: absolute;
   z-index: 10;
-  padding: 0.5rem 0.25rem 0.25rem 0.5rem;
+  padding: 0.5rem 0.25rem;
 
   &:after {
     ${triangle}
@@ -55,6 +55,14 @@ const SettingsBox = styled.div`
     margin-top: -2px;
   }
 `
+
+const Block = styled.div`
+  margin-bottom: 0.25rem;
+`
+
+const Item = (props) => (
+  <Block><Node {...props} /></Block>
+)
 
 class AudioAnalyzer extends React.Component {
 
@@ -108,11 +116,11 @@ class AudioAnalyzer extends React.Component {
             onClick={this.props.onAnalyzerClick} />
         </Container>
         <SettingsBox isVisible={this.props.isOpen}>
-          <Control nodeId='audioLevelsFalloff' panelId='overview' />
-          <Control nodeId='audioLevelsSmoothing' panelId='overview' />
-          <Control nodeId='audioLevelsPower' panelId='overview' />
-          <Control nodeId='audioNormalizeLevels' panelId='overview' />
-          <Control nodeId='audioNormalizeRangeFalloff' panelId='overview' />
+          <Item nodeId='audioLevelsFalloff' panelId='overview' />
+          <Item nodeId='audioLevelsSmoothing' panelId='overview' />
+          <Item nodeId='audioLevelsPower' panelId='overview' />
+          <Item nodeId='audioNormalizeLevels' panelId='overview' />
+          <Item nodeId='audioNormalizeRangeFalloff' panelId='overview' />
         </SettingsBox>
       </Wrapper>
     )

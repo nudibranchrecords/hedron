@@ -16,9 +16,15 @@ const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
 
-  ${props => props.theme === 'panel' && `
-    border-color: ${theme.bgColorDark3};
-  `}
+  ${props => {
+    switch (props.theme) {
+      case 'panel':
+        return `border-color: ${theme.bgColorDark3};`
+      case 'light':
+        return `border-color: ${theme.lineColor2};`
+    }
+  }}
+  
 
   ${props => props.isOpen && `
     border-color: white;
@@ -46,16 +52,23 @@ const Title = styled.div`
   margin-bottom: 0.25rem;
   font-size: 0.5rem;
   z-index: 1;
+
+  ${props => {
+    switch (props.theme) {
+      case 'light':
+        return `border-color: ${theme.lineColor2};`
+    }
+  }}
 `
 
 const Select = styled(NodeSelect)`
   flex: 1;
 `
 
-const Node = ({ title, nodeId, isOpen, onParamBarClick, type, panelId }) => (
+const Node = ({ title, nodeId, isOpen, onParamBarClick, type, panelId, theme }) => (
   <PanelContext.Consumer>
     {panelIdCtx => {
-      const theme = panelIdCtx !== undefined ? 'panel' : 'sketch'
+      const computedTheme = theme || (panelIdCtx !== undefined ? 'panel' : 'sketch')
       panelId = panelId || panelIdCtx
 
       let inner
@@ -73,15 +86,15 @@ const Node = ({ title, nodeId, isOpen, onParamBarClick, type, panelId }) => (
               nodeId={nodeId}
               onMouseDown={onParamBarClick}
               type={type}
-              theme={theme}
+              theme={computedTheme}
             />
           )
       }
 
       return (
-        <Wrapper isOpen={isOpen} theme={theme}>
+        <Wrapper isOpen={isOpen} theme={computedTheme}>
           <Main>
-            <Title>{title}</Title>
+            <Title theme={theme}>{title}</Title>
             <Inner>
               {inner}
             </Inner>
@@ -100,6 +113,7 @@ Node.propTypes = {
   onParamBarClick: PropTypes.func,
   type: PropTypes.string,
   panelId: PropTypes.string,
+  theme: PropTypes.string,
 }
 
 export default Node
