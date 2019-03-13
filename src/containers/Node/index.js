@@ -1,3 +1,7 @@
+import { PanelContext } from '../../context'
+import React from 'react'
+import PropTypes from 'prop-types'
+
 import { connect } from 'react-redux'
 import Node from '../../components/Node'
 import getNode from '../../selectors/getNode'
@@ -35,4 +39,18 @@ const NodeContainer = connect(
   mapDispatchToProps
 )(Node)
 
-export default NodeContainer
+const NodeWithContext = (props) => (
+  <PanelContext.Consumer>
+    {panelId => {
+      const computedTheme = props.theme || (panelId !== undefined ? 'panel' : 'sketch')
+
+      return <NodeContainer panelId={panelId} theme={computedTheme} {...props} />
+    }}
+  </PanelContext.Consumer>
+)
+
+NodeWithContext.propTypes = {
+  theme: PropTypes.string,
+}
+
+export default NodeWithContext
