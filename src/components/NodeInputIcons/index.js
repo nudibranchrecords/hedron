@@ -33,19 +33,20 @@ const Icon = styled(IconComponent)`
 const IconInfo = styled.div`
   display: flex;
   margin-left: auto;
+  flex-direction: ${props => props.size === 'compact' ? 'column' : 'row'};
 
   > span {
     display: flex;
-    margin-left: 0.3rem;
+    margin-left: ${props => props.size === 'compact' ? '0' : '0.3rem'};
   }
 `
 
 const NodeInputIcons = ({
-  onClick, inputLinkTitle, numInputs, numMacros,
+  onClick, inputLinkTitle, numInputs, numMacros, size,
 }) => (
   <Wrapper onClick={onClick}>
-    {inputLinkTitle && <span><Icon glyph={inputIcon} />{inputLinkTitle}</span>}
-    <IconInfo>
+    {inputLinkTitle && size !== 'compact' && <span><Icon glyph={inputIcon} />{inputLinkTitle}</span>}
+    <IconInfo size={size}>
       {numInputs !== undefined && (<span><Icon glyph={inputIcon} />{numInputs}</span>)}
       {numMacros !== undefined && (<span><Icon glyph={macroIcon} />{numMacros}</span>)}
     </IconInfo>
@@ -57,6 +58,7 @@ NodeInputIcons.propTypes = {
   numInputs: PropTypes.number,
   numMacros: PropTypes.number,
   inputLinkTitle: PropTypes.string,
+  size: PropTypes.string,
 }
 
 export default NodeInputIcons
