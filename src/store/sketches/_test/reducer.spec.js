@@ -1,7 +1,7 @@
 import test from 'tape'
 import deepFreeze from 'deep-freeze'
 import sketchesReducer from '../reducer'
-import { sketchNodeOpenedToggle } from '../actions'
+import { rSketchNodeOpenedToggle } from '../actions'
 import { returnsPreviousState } from '../../../testUtils'
 
 returnsPreviousState(sketchesReducer)
@@ -226,7 +226,7 @@ test('(Reducer) sketchesReducer - SKETCH_NODE_OPENED_TOGGLE', (t) => {
 
   deepFreeze(original)
 
-  actual = sketchesReducer(original, sketchNodeOpenedToggle('s01', 'p01'))
+  actual = sketchesReducer(original, rSketchNodeOpenedToggle('s01', 'p01'))
 
   t.deepEqual(actual, expected, 'Adds param id when undefined')
 
@@ -245,7 +245,7 @@ test('(Reducer) sketchesReducer - SKETCH_NODE_OPENED_TOGGLE', (t) => {
     },
   }
 
-  actual = sketchesReducer(actual, sketchNodeOpenedToggle('s01', 'p02'))
+  actual = sketchesReducer(actual, rSketchNodeOpenedToggle('s01', 'p02'))
 
   t.deepEqual(actual, expected, 'Changes param id when different')
 
@@ -264,7 +264,7 @@ test('(Reducer) sketchesReducer - SKETCH_NODE_OPENED_TOGGLE', (t) => {
     },
   }
 
-  actual = sketchesReducer(actual, sketchNodeOpenedToggle('s02', 'p03'))
+  actual = sketchesReducer(actual, rSketchNodeOpenedToggle('s02', 'p03'))
 
   t.deepEqual(actual, expected, 'Switches param id to undefined if receives the same id')
 
