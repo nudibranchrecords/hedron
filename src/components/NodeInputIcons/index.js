@@ -7,6 +7,8 @@ import inputIcon from '../../assets/icons/input.icon.txt'
 import macroIcon from '../../assets/icons/macro.icon.txt'
 import IconComponent from '../Icon'
 
+import { PanelContext } from '../../context'
+
 const Wrapper = styled.div`
   display: flex;
   justify-content: space-between;
@@ -44,13 +46,17 @@ const IconInfo = styled.div`
 const NodeInputIcons = ({
   onClick, inputLinkTitle, numInputs, numMacros, size,
 }) => (
-  <Wrapper onClick={onClick}>
-    {inputLinkTitle && size !== 'compact' && <span><Icon glyph={inputIcon} />{inputLinkTitle}</span>}
-    <IconInfo size={size}>
-      {numInputs !== undefined && (<span><Icon glyph={inputIcon} />{numInputs}</span>)}
-      {numMacros !== undefined && (<span><Icon glyph={macroIcon} />{numMacros}</span>)}
-    </IconInfo>
-  </Wrapper>
+  <PanelContext.Consumer>
+    {panelId =>
+      <Wrapper onClick={() => { onClick(panelId) }}>
+        {inputLinkTitle && size !== 'compact' && <span><Icon glyph={inputIcon} />{inputLinkTitle}</span>}
+        <IconInfo size={size}>
+          {numInputs !== undefined && (<span><Icon glyph={inputIcon} />{numInputs}</span>)}
+          {numMacros !== undefined && (<span><Icon glyph={macroIcon} />{numMacros}</span>)}
+        </IconInfo>
+      </Wrapper>
+    }
+  </PanelContext.Consumer>
 )
 
 NodeInputIcons.propTypes = {
