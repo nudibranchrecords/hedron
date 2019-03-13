@@ -1,6 +1,5 @@
 import { connect } from 'react-redux'
 import InputLinkMidiControl from '../../components/InputLinkMidiControl'
-import { uInputLinkCreate } from '../../store/inputLinks/actions'
 import { uiNodeToggleOpen } from '../../store/ui/actions'
 import getNode from '../../selectors/getNode'
 
