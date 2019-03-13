@@ -65,46 +65,39 @@ const Select = styled(NodeSelect)`
   flex: 1;
 `
 
-const Node = ({ title, nodeId, isOpen, onParamBarClick, type, panelId, theme }) => (
-  <PanelContext.Consumer>
-    {panelIdCtx => {
-      const computedTheme = theme || (panelIdCtx !== undefined ? 'panel' : 'sketch')
-      panelId = panelId || panelIdCtx
+const Node = ({ title, nodeId, isOpen, onParamBarClick, type, panelId, theme }) => {
+  let inner
 
-      let inner
-
-      switch (type) {
-        case 'select':
-          inner = (
-            <Select nodeId={nodeId} />
+  switch (type) {
+    case 'select':
+      inner = (
+        <Select nodeId={nodeId} />
           )
-          break
-        case 'slider':
-        default:
-          inner = (
-            <ParamBar
-              nodeId={nodeId}
-              onMouseDown={onParamBarClick}
-              type={type}
-              theme={computedTheme}
+      break
+    case 'slider':
+    default:
+      inner = (
+        <ParamBar
+          nodeId={nodeId}
+          onMouseDown={onParamBarClick}
+          type={type}
+          theme={theme}
             />
           )
-      }
+  }
 
-      return (
-        <Wrapper isOpen={isOpen} theme={computedTheme}>
-          <Main>
-            <Title theme={theme}>{title}</Title>
-            <Inner>
-              {inner}
-            </Inner>
-          </Main>
-          <NodeInputIcons nodeId={nodeId} panelId={panelId} />
-        </Wrapper>
-      )
-    }}
-  </PanelContext.Consumer>
-)
+  return (
+    <Wrapper isOpen={isOpen} theme={theme}>
+      <Main>
+        <Title theme={theme}>{title}</Title>
+        <Inner>
+          {inner}
+        </Inner>
+      </Main>
+      <NodeInputIcons nodeId={nodeId} panelId={panelId} />
+    </Wrapper>
+  )
+}
 
 Node.propTypes = {
   title: PropTypes.string.isRequired,
