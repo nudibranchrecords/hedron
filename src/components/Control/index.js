@@ -2,16 +2,23 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import Node from '../../containers/Node'
 import Select from '../../containers/Select'
+import { PanelContext } from '../../context'
 
-const Control = ({ type, ...props }) => {
-  switch (type) {
-    case 'select':
-      return <Select {...props} />
-    case 'slider':
-    default:
-      return <Node {...props} />
-  }
-}
+const Control = ({ type, ...props }) => (
+  <PanelContext.Consumer>
+    {panelId => {
+      const theme = panelId !== undefined ? 'panel' : 'sketch'
+      props = { panelId, theme, ...props }
+      switch (type) {
+        case 'select':
+          return <Select {...props} />
+        case 'slider':
+        default:
+          return <Node {...props} />
+      }
+    }}
+  </PanelContext.Consumer>
+)
 
 Control.propTypes = {
   nodeId: PropTypes.string.isRequired,
