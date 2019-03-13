@@ -58,7 +58,7 @@ class ValueBar extends React.Component {
 
   componentDidMount () {
     this.containerEl = this.canvas.parentElement
-    const height = this.props.type === 'shot' ? 6 : 2.2
+    const height = this.props.type === 'shot' ? 4 : 2.2
     this.height = 16 * height
     this.canvas.height = this.height
     this.ctx = this.canvas.getContext('2d')

@@ -1,9 +1,10 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import ParamBar from '../../containers/ParamBar'
+import NodeSelect from '../../containers/NodeSelect'
 import NodeInputIcons from '../../containers/NodeInputIcons'
 import styled from 'styled-components'
-
+import { PanelContext } from '../../context'
 import theme from '../../utils/theme'
 
 const Wrapper = styled.div`
@@ -24,39 +25,70 @@ const Wrapper = styled.div`
   `}
 `
 
-const BarCol = styled.div`
-  width: 100%;
-  position: relative;
-  overflow: hidden;
+const Main = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+`
+
+const Inner = styled.div`
   margin-bottom: 0.25rem;
+  width: 50%;
 `
 
 const Title = styled.div`
-  color: ${theme.textColorLight1};
+  width: 50%;
+  border-bottom: 1px dotted ${theme.bgColorDark3};
+  display: flex;
+  align-items: center;
+  height: 16px;
   text-transform: uppercase;
-  height: 1rem;
-  font-size: 0.55rem;
+  margin-bottom: 0.25rem;
+  font-size: 0.5rem;
   z-index: 1;
-  position: absolute;
-  top: 0.25rem;
-  left: 0.2rem;
-  width: 1000px;
-  pointer-events: none;
 `
 
-const Node = ({ title, nodeId, isOpen, onParamBarClick, type, theme, panelId }) => (
-  <Wrapper isOpen={isOpen} theme={theme}>
-    <BarCol>
-      <Title>{title}</Title>
-      <ParamBar
-        nodeId={nodeId}
-        onMouseDown={onParamBarClick}
-        type={type}
-        theme={theme}
-        />
-    </BarCol>
-    <NodeInputIcons nodeId={nodeId} panelId={panelId} />
-  </Wrapper>
+const Select = styled(NodeSelect)`
+  flex: 1;
+`
+
+const Node = ({ title, nodeId, isOpen, onParamBarClick, type }) => (
+  <PanelContext.Consumer>
+    {panelId => {
+      const theme = panelId !== undefined ? 'panel' : 'sketch'
+      let inner
+
+      switch (type) {
+        case 'select':
+          inner = (
+            <Select nodeId={nodeId} />
+          )
+          break
+        case 'slider':
+        default:
+          inner = (
+            <ParamBar
+              nodeId={nodeId}
+              onMouseDown={onParamBarClick}
+              type={type}
+              theme={theme}
+            />
+          )
+      }
+
+      return (
+        <Wrapper isOpen={isOpen} theme={theme}>
+          <Main>
+            <Title>{title}</Title>
+            <Inner>
+              {inner}
+            </Inner>
+          </Main>
+          <NodeInputIcons nodeId={nodeId} panelId={panelId} />
+        </Wrapper>
+      )
+    }}
+  </PanelContext.Consumer>
 )
 
 Node.propTypes = {
@@ -65,8 +97,6 @@ Node.propTypes = {
   isOpen: PropTypes.bool,
   onParamBarClick: PropTypes.func,
   type: PropTypes.string,
-  theme: PropTypes.string,
-  panelId: PropTypes.string,
 }
 
 export default Node

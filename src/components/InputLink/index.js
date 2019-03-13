@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import Control from '../../containers/Control'
+import Node from '../../containers/Node'
 import styled from 'styled-components'
 import Button from '../../components/Button'
 import ButtonWithInputIcons from '../ButtonWithInputIcons'
@@ -10,7 +10,7 @@ import SequencerGrid from '../../containers/SequencerGrid'
 const Wrapper = styled.div`
   display: flex;
   flex-wrap: wrap;
-  margin: 0 -0.125rem 0.5rem 0;
+  margin: 0 -0.125rem 0.5rem -0.125rem;
 `
 
 const DeleteButton = styled(Button)`
@@ -21,7 +21,7 @@ const Item = styled.div`
   flex: ${props => props.size === 'small' ? '1' : '0 0 25%'};
   width: ${props => props.size === 'small' ? '100%' : '25%'};
   font-size: 0.8rem;
-  padding: 0 0.125rem;
+  padding: 0.125rem;
 `
 
 const Row = styled(RowComponent)`
@@ -47,22 +47,22 @@ class InputLink extends React.Component {
         <Wrapper>
           {lfoOptionIds && lfoOptionIds.map((id) => (
             <Item key={id} size={size}>
-              <Control nodeId={id} />
+              <Node nodeId={id} />
             </Item>
           ))}
           {modifierIds && modifierIds.map((id) => (
             <Item key={id} size={size}>
-              <Control nodeId={id} />
+              <Node nodeId={id} />
             </Item>
           ))}
           {midiOptionIds && midiOptionIds.map((id) => (
             <Item key={id} size={size}>
-              <Control nodeId={id} />
+              <Node nodeId={id} />
             </Item>
           ))}
           {audioOptionIds && audioOptionIds.map((id) => (
             <Item key={id} size={size}>
-              <Control nodeId={id} />
+              <Node nodeId={id} />
             </Item>
           ))}
           {sequencerGridId &&
@@ -71,7 +71,7 @@ class InputLink extends React.Component {
           {animStartActionId &&
             animOptionIds.map((id) => (
               <Item key={id} size={size}>
-                <Control nodeId={id} />
+                <Node nodeId={id} />
               </Item>
             ))
           }
