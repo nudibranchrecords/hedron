@@ -9,11 +9,12 @@ const MainButton = styled(Button)`
   margin-right: 0.25rem;
 `
 
-const ButtonWithInputIcons = ({ onClick, children, linkableActionId }) =>
+const ButtonWithInputIcons = ({ onClick, children, linkableActionId }) => (
   <Row>
     <MainButton onClick={onClick}>{children}</MainButton>
     <NodeInputIcons nodeId={linkableActionId} size='compact' />
   </Row>
+)
 
 ButtonWithInputIcons.propTypes = {
   linkableActionId: PropTypes.string,
