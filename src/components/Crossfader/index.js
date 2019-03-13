@@ -2,7 +2,6 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import Node from '../../containers/Node'
-import InputLinkUI from '../../containers/InputLinkUI'
 import theme from '../../utils/theme'
 
 const Wrapper = styled.div`

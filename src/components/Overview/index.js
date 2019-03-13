@@ -8,7 +8,7 @@ import AudioAnalyzer from '../../containers/AudioAnalyzer'
 import Clock from '../../containers/Clock'
 import SceneManager from '../../containers/SceneManager'
 import Devices from '../../containers/Devices'
-import Control from '../../containers/Control'
+import Node from '../../containers/Node'
 import OverviewPropertiesPanel from '../../containers/OverviewPropertiesPanel'
 import theme from '../../utils/theme'
 
@@ -31,8 +31,11 @@ const Tools = styled.div`
   margin-bottom: 1rem;
   background: ${theme.bgColorDark3};
   padding: 0.5rem;
+  align-items: flex-end;
 
   & > div {
+    display: flex;
+    align-items: flex-end;
     height: 48px;
     margin-right: 0.5rem
   }
@@ -59,7 +62,7 @@ class Overview extends React.Component {
           <div><div ref={node => node && node.appendChild(this.props.stats.dom)} /></div>
           <div><AudioAnalyzer /></div>
           <div><Clock /></div>
-          <div><Control nodeId='viewerMode' /></div>
+          <div><Node nodeId='viewerMode' panelId='overview' theme='light' /></div>
         </Tools>
 
         <Crossfader />
