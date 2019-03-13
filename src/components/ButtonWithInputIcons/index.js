@@ -3,22 +3,22 @@ import styled from 'styled-components'
 import PropTypes from 'prop-types'
 import Button from '../../components/Button'
 import Row from '../../components/Row'
-import InputLinkMidiControl from '../../containers/InputLinkMidiControl'
+import NodeInputIcons from '../../containers/NodeInputIcons'
 
 const MainButton = styled(Button)`
   margin-right: 0.25rem;
 `
 
-const ButtonWithMidiLink = ({ onClick, children, linkableActionId }) =>
+const ButtonWithInputIcons = ({ onClick, children, linkableActionId }) =>
   <Row>
     <MainButton onClick={onClick}>{children}</MainButton>
-    <InputLinkMidiControl linkableActionId={linkableActionId} />
+    <NodeInputIcons nodeId={linkableActionId} size='compact' />
   </Row>
 
-ButtonWithMidiLink.propTypes = {
+ButtonWithInputIcons.propTypes = {
   linkableActionId: PropTypes.string,
   children: PropTypes.node.isRequired,
   onClick: PropTypes.func,
 }
 
-export default ButtonWithMidiLink
+export default ButtonWithInputIcons

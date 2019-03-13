@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import Control from '../../containers/Control'
 import styled from 'styled-components'
 import Button from '../../components/Button'
-import ButtonWithMidiLink from '../ButtonWithMidiLink'
+import ButtonWithInputIcons from '../ButtonWithInputIcons'
 import RowComponent from '../../components/Row'
 import SequencerGrid from '../../containers/SequencerGrid'
 
@@ -78,20 +78,20 @@ class InputLink extends React.Component {
         </Wrapper>
         <Row justify='space-between'>
           {isActivateVisible &&
-            <ButtonWithMidiLink
+            <ButtonWithInputIcons
               onClick={onActivateToggle}
               linkableActionId={toggleActionId}
             >
               {isActive ? 'Disable' : 'Activate'}
-            </ButtonWithMidiLink>
+            </ButtonWithInputIcons>
           }
           {animStartActionId &&
-            <ButtonWithMidiLink
+            <ButtonWithInputIcons
               onClick={onAnimStartClick}
               linkableActionId={animStartActionId}
             >
               Start Anim
-            </ButtonWithMidiLink>
+            </ButtonWithInputIcons>
           }
 
           <DeleteButton color='danger' onClick={onDeleteClick}>Delete "{title}"</DeleteButton>
