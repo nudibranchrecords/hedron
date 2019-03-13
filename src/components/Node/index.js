@@ -55,8 +55,9 @@ const Select = styled(NodeSelect)`
 const Node = ({ title, nodeId, isOpen, onParamBarClick, type, panelId }) => (
   <PanelContext.Consumer>
     {panelIdCtx => {
+      const theme = panelIdCtx !== undefined ? 'panel' : 'sketch'
       panelId = panelId || panelIdCtx
-      const theme = panelId !== undefined ? 'panel' : 'sketch'
+
       let inner
 
       switch (type) {
