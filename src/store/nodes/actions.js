@@ -208,3 +208,23 @@ export function rNodeMacroTargetParamLinkUpdateStartValue (macroId, paramId, val
     payload: { macroId, paramId, value },
   }
 }
+
+/* input links */
+
+export function rNodeInputLinkShotArm (linkId) {
+  return {
+    type: 'R_NODE_INPUT_LINK_SHOT_ARM',
+    payload: {
+      linkId,
+    },
+  }
+}
+
+export function rNodeInputLinkShotDisarm (linkId) {
+  return {
+    type: 'R_NODE_INPUT_LINK_SHOT_DISARM',
+    payload: {
+      linkId,
+    },
+  }
+}

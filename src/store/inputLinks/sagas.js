@@ -2,10 +2,10 @@ import { select, put, call, takeEvery } from 'redux-saga/effects'
 import { getDefaultModifierIds } from './selectors'
 import getInputLink from '../../selectors/getInputLink'
 import getNode from '../../selectors/getNode'
-import { rInputLinkCreate, rInputLinkDelete } from './actions'
+import { rInputLinkAdd, rInputLinkDelete } from './actions'
 import { uAnimStart } from '../anims/actions'
 import { rNodeCreate, uNodeCreate, uNodeDelete, uNodeInputLinkAdd,
-  nodeInputLinkRemove, nodeActiveInputLinkToggle } from '../nodes/actions'
+  nodeInputLinkRemove, nodeActiveInputLinkToggle, rNodeDelete } from '../nodes/actions'
 import { inputAssignedLinkCreate, inputAssignedLinkDelete } from '../inputs/actions'
 import lfoGenerateOptions from '../../utils/lfoGenerateOptions'
 import midiGenerateOptions from '../../utils/midiGenerateOptions'
@@ -182,7 +182,8 @@ export function* inputLinkCreate (action) {
       animOptionIds,
     }
 
-    yield put(rInputLinkCreate(linkId, link))
+    yield put(rNodeCreate(linkId, link))
+    yield put(rInputLinkAdd(linkId))
     yield put(uNodeInputLinkAdd(p.nodeId, linkId))
     yield put(inputAssignedLinkCreate(p.inputId, linkId, m.deviceId))
   }
@@ -209,6 +210,7 @@ export function* inputLinkDelete (action) {
     yield put(uNodeDelete(link.linkableActions[key]))
   }
 
+  yield put(rNodeDelete(p.id))
   yield put(rInputLinkDelete(p.id))
 }
 

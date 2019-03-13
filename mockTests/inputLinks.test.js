@@ -66,16 +66,6 @@ test('(mock) Input Links - Update link midi input', () => {
         key: 'foo',
         value: 1,
       },
-    },
-    inputs: {
-      midi_0_0: {
-        deviceId: deviceId,
-        assignedLinkIds: [
-          'link_a',
-        ],
-      },
-    },
-    inputLinks: {
       link_a: {
         id: 'link_a',
         deviceId: deviceId,
@@ -87,6 +77,17 @@ test('(mock) Input Links - Update link midi input', () => {
           type: 'midi',
         },
       },
+    },
+    inputs: {
+      midi_0_0: {
+        deviceId: deviceId,
+        assignedLinkIds: [
+          'link_a',
+        ],
+      },
+    },
+    inputLinks: {
+      nodeIds: ['link_a'],
     },
   }
 
@@ -106,6 +107,6 @@ test('(mock) Input Links - Update link midi input', () => {
   expect(newInput.assignedLinkIds[0]).toBe('link_a')
   expect(newInput.deviceId).toBe(deviceId)
 
-  const link = state.inputLinks.link_a
+  const link = state.nodes.link_a
   expect(link.input.id).toBe(newInputId)
 })

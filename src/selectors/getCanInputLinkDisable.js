@@ -1,3 +1,3 @@
 export default (state, linkId) =>
-  state.inputLinks[linkId].input.type !== 'midi' &&
-  state.inputLinks[linkId].input.type !== 'anim'
+  state.nodes[linkId].input.type !== 'midi' &&
+  state.nodes[linkId].input.type !== 'anim'

@@ -7,7 +7,7 @@ export default (state, nodeId) => {
     let info = ''
 
     for (let i = 0; i < linkIds.length; i++) {
-      info += state.inputLinks[linkIds[i]].title
+      info += state.nodes[linkIds[i]].title
       if (i !== linkIds.length - 1) info += ', '
     }
     return info

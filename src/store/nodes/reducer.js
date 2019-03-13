@@ -212,6 +212,26 @@ const nodesReducer = (state = defaultState, action) => {
       }
     }
 
+    /* input links */
+    case 'R_NODE_INPUT_LINK_SHOT_ARM': {
+      return {
+        ...state,
+        [p.linkId] : {
+          ...state[p.linkId],
+          armed: true,
+        },
+      }
+    }
+    case 'R_NODE_INPUT_LINK_SHOT_DISARM': {
+      return {
+        ...state,
+        [p.linkId] : {
+          ...state[p.linkId],
+          armed: false,
+        },
+      }
+    }
+
     default:
       return state
   }

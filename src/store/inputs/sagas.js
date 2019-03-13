@@ -1,7 +1,6 @@
 import { select, takeEvery, put, call } from 'redux-saga/effects'
 import { getAssignedLinks } from './selectors'
-import { nodeValuesBatchUpdate, nodeShotFired } from '../nodes/actions'
-import { inputLinkShotDisarm, inputLinkShotArm } from '../inputLinks/actions'
+import { nodeValuesBatchUpdate, nodeShotFired, rNodeInputLinkShotDisarm, rNodeInputLinkShotArm } from '../nodes/actions'
 import { projectError } from '../project/actions'
 import getNodes from '../../selectors/getNodes'
 import getNode from '../../selectors/getNode'
@@ -75,9 +74,9 @@ export function* handleInput (action) {
                 skip = true
               } else if (value > 0.333 && links[i].armed) {
                 yield put(nodeShotFired(links[i].nodeId, linkNode.sketchId, linkNode.method))
-                yield put(inputLinkShotDisarm(links[i].id))
+                yield put(rNodeInputLinkShotDisarm(links[i].id))
               } else if (value < 0.333) {
-                yield put(inputLinkShotArm(links[i].id))
+                yield put(rNodeInputLinkShotArm(links[i].id))
               }
               break
             }

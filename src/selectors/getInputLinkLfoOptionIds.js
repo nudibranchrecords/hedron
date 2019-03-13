@@ -1,7 +1,7 @@
 import getNodes from './getNodes'
 
 export default (state, linkId) => {
-  const link = state.inputLinks[linkId]
+  const link = state.nodes[linkId]
   const optionIds = link.lfoOptionIds
 
   if (link.input && link.input.id === 'lfo') {
