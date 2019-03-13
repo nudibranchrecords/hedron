@@ -10,12 +10,11 @@ export function uInputLinkCreate (nodeId, inputId, inputType, meta = {}) {
   }
 }
 
-export function rInputLinkCreate (id, link) {
+export function rInputLinkAdd (id, link) {
   return {
-    type: 'R_INPUT_LINK_CREATE',
+    type: 'R_INPUT_LINK_ADD',
     payload: {
       id,
-      link,
     },
   }
 }
@@ -38,16 +37,6 @@ export function rInputLinkDelete (id) {
   }
 }
 
-export function rInputLinkUpdate (id, newProperties) {
-  return {
-    type: 'R_INPUT_LINK_UPDATE',
-    payload: {
-      id,
-      newProperties,
-    },
-  }
-}
-
 export function uInputLinkUpdateMidiInput (linkId) {
   return {
     type: 'U_INPUT_LINK_UPDATE_MIDI_INPUT',
@@ -62,24 +51,6 @@ export function inputLinksReplaceAll (links) {
     type: 'INPUT_LINKS_REPLACE_ALL',
     payload: {
       links,
-    },
-  }
-}
-
-export function inputLinkShotArm (id) {
-  return {
-    type: 'INPUT_LINK_SHOT_ARM',
-    payload: {
-      id,
-    },
-  }
-}
-
-export function inputLinkShotDisarm (id) {
-  return {
-    type: 'INPUT_LINK_SHOT_DISARM',
-    payload: {
-      id,
     },
   }
 }

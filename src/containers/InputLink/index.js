@@ -15,7 +15,7 @@ import { uAnimStart } from '../../store/anims/actions'
 const mapStateToProps = (state, ownProps) => {
   const link = getInputLink(state, ownProps.id)
   return {
-    title: state.inputLinks[ownProps.id].title,
+    title: link.title,
     modifierIds: getInputLinkModifierIds(state, ownProps.id),
     lfoOptionIds: getInputLinkLfoOptionIds(state, ownProps.id),
     midiOptionIds: getInputLinkMidiOptionIds(state, ownProps.id),
@@ -51,7 +51,6 @@ export default connect(
   null,
   {
     areStatesEqual: (next, prev) =>
-    next.nodes === prev.nodes &&
-    next.inputLinks === next.inputLinks,
+    next.nodes === prev.nodes,
   }
 )(InputLink)
