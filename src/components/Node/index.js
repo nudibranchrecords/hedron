@@ -1,10 +1,9 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import ParamBar from '../../containers/ParamBar'
+import NodeInputIcons from '../../containers/NodeInputIcons'
 import styled from 'styled-components'
-import inputIcon from '../../assets/icons/input.icon.txt'
-import macroIcon from '../../assets/icons/macro.icon.txt'
-import IconComponent from '../Icon'
+
 import theme from '../../utils/theme'
 
 const Wrapper = styled.div`
@@ -45,72 +44,29 @@ const Title = styled.div`
   pointer-events: none;
 `
 
-const Icon = styled(IconComponent)`
-  width: 0.5rem;
-  height: 0.5rem;
-  margin-right: 0.1rem;
-`
-const Info = styled.div`
-  display: flex;
-  justify-content: space-between;
-  font-size: 0.5rem;
-  cursor: pointer;
-  text-transform: uppercase;
-
-  > span {
-    display: flex;
-  }
-
-  &:hover {
-    color: ${theme.actionColor1};
-    fill: ${theme.actionColor1};
-  }
-`
-
-const IconInfo = styled.div`
-  display: flex;
-  margin-left: auto;
-
-  > span {
-    display: flex;
-    margin-left: 0.3rem;
-  }
-`
-
-const Param = ({ title, nodeId, isOpen, onOpenClick, onParamBarClick, numInputs,
-  numMacros, inputLinkTitle, type, theme }) => (
-    <Wrapper isOpen={isOpen} theme={theme}>
-      <BarCol>
-        <Title>{title}</Title>
-        <ParamBar
-          nodeId={nodeId}
-          onMouseDown={onParamBarClick}
-          type={type}
-          theme={theme}
+const Node = ({ title, nodeId, isOpen, onParamBarClick, type, theme, panelId }) => (
+  <Wrapper isOpen={isOpen} theme={theme}>
+    <BarCol>
+      <Title>{title}</Title>
+      <ParamBar
+        nodeId={nodeId}
+        onMouseDown={onParamBarClick}
+        type={type}
+        theme={theme}
         />
-      </BarCol>
+    </BarCol>
+    <NodeInputIcons nodeId={nodeId} panelId={panelId} />
+  </Wrapper>
+)
 
-      <Info onClick={onOpenClick}>
-        {inputLinkTitle && <span><Icon glyph={inputIcon} />{inputLinkTitle}</span>}
-        <IconInfo>
-          {numInputs !== undefined && (<span><Icon glyph={inputIcon} />{numInputs}</span>)}
-          {numMacros !== undefined && (<span><Icon glyph={macroIcon} />{numMacros}</span>)}
-        </IconInfo>
-      </Info>
-    </Wrapper>
-  )
-
-Param.propTypes = {
+Node.propTypes = {
   title: PropTypes.string.isRequired,
   nodeId: PropTypes.string.isRequired,
   isOpen: PropTypes.bool,
-  onOpenClick: PropTypes.func.isRequired,
   onParamBarClick: PropTypes.func,
-  numInputs: PropTypes.number,
-  numMacros: PropTypes.number,
-  inputLinkTitle: PropTypes.string,
   type: PropTypes.string,
   theme: PropTypes.string,
+  panelId: PropTypes.string,
 }
 
-export default Param
+export default Node
