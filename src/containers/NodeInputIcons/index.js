@@ -1,10 +1,7 @@
 import { connect } from 'react-redux'
 import NodeInputIcons from '../../components/NodeInputIcons'
 import getNode from '../../selectors/getNode'
-import { uSketchNodeOpenedToggle } from '../../store/sketches/actions'
 import getActiveInputsText from '../../selectors/getActiveInputsText'
-import { uiNodeToggleOpen } from '../../store/ui/actions'
-import { rMacroOpenToggle } from '../../store/macros/actions'
 import { uNodeOpenInPanel } from '../../store/nodes/actions'
 
 const mapStateToProps = (state, ownProps) => {
