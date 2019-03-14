@@ -58,6 +58,7 @@ export function* inputLinkCreate (action) {
               const modifierId = yield call(uid)
               const modifier = {
                 id: modifierId,
+                parentNodeId: linkId,
                 sketchId,
                 key: id,
                 title: config.title[j],
@@ -82,6 +83,7 @@ export function* inputLinkCreate (action) {
       for (let key in audioOpts) {
         const item = audioOpts[key]
         item.sketchId = sketchId
+        item.parentNodeId = linkId
         audioOptionIds.push(item.id)
 
         yield put(uNodeCreate(item.id, item))
@@ -94,6 +96,7 @@ export function* inputLinkCreate (action) {
       for (let key in lfoOpts) {
         const item = lfoOpts[key]
         item.sketchId = sketchId
+        item.parentNodeId = linkId
         lfoOptionIds.push(item.id)
 
         yield put(uNodeCreate(item.id, item))
@@ -115,6 +118,7 @@ export function* inputLinkCreate (action) {
         for (let key in midiOpts) {
           const item = midiOpts[key]
           item.sketchId = sketchId
+          item.parentNodeId = linkId
           midiOptionIds.push(item.id)
 
           if (item.key === 'controlType' && m.controlType) item.value = m.controlType
@@ -144,6 +148,7 @@ export function* inputLinkCreate (action) {
         const item = animOpts[key]
         animOptionIds.push(item.id)
         item.sketchId = sketchId
+        item.parentNodeId = linkId
 
         yield put(uNodeCreate(item.id, item))
       }
@@ -169,6 +174,8 @@ export function* inputLinkCreate (action) {
       },
       id: linkId,
       nodeId: p.nodeId,
+      sketchId,
+      parentNodeId: p.nodeId,
       nodeType,
       deviceId: m.deviceId,
       bankIndex,
