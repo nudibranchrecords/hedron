@@ -3,32 +3,31 @@ import getInputLinkLfoOptionIds from '../getInputLinkLfoOptionIds'
 
 test('(Selector) getInputLinkLfoOptionIds (input is not "lfo")', (t) => {
   const state = {
-    inputLinks: {
+    nodes: {
       aaa: {
         input: {
           id: 'BAR',
         },
+        lfoOptionIds: [],
       },
     },
   }
 
   const actual = getInputLinkLfoOptionIds(state, 'aaa')
 
-  t.equal(actual, undefined, 'Returns undefined')
+  t.deepEqual(actual, [], 'Returns empty array')
   t.end()
 })
 
 test('(Selector) getInputLinkLfoOptionIds (input is "lfo", shape is NOT "noise")', (t) => {
   const state = {
-    inputLinks: {
+    nodes: {
       aaa: {
         input: {
           id: 'lfo',
         },
         lfoOptionIds: ['xxx', 'yyy', 'zzz'],
       },
-    },
-    nodes: {
       xxx: {
         key: 'seed',
       },
@@ -49,15 +48,13 @@ test('(Selector) getInputLinkLfoOptionIds (input is "lfo", shape is NOT "noise")
 })
 test('(Selector) getInputLinkLfoOptionIds (input is "lfo", shape is "noise")', (t) => {
   const state = {
-    inputLinks: {
+    nodes: {
       aaa: {
         input: {
           id: 'lfo',
         },
         lfoOptionIds: ['xxx', 'yyy', 'zzz'],
       },
-    },
-    nodes: {
       xxx: {
         key: 'seed',
       },
@@ -79,7 +76,7 @@ test('(Selector) getInputLinkLfoOptionIds (input is "lfo", shape is "noise")', (
 
 test('(Selector) getInputLinkLfoOptionIds (input is "lfo", link type "shot", wave shape is NOT "noise")', (t) => {
   const state = {
-    inputLinks: {
+    nodes: {
       aaa: {
         nodeType: 'shot',
         input: {
@@ -87,8 +84,6 @@ test('(Selector) getInputLinkLfoOptionIds (input is "lfo", link type "shot", wav
         },
         lfoOptionIds: ['xxx', 'yyy', 'zzz'],
       },
-    },
-    nodes: {
       xxx: {
         key: 'seed',
       },
@@ -110,7 +105,7 @@ test('(Selector) getInputLinkLfoOptionIds (input is "lfo", link type "shot", wav
 
 test('(Selector) getInputLinkLfoOptionIds (input is "lfo", link type "shot", wave shape is "noise")', (t) => {
   const state = {
-    inputLinks: {
+    nodes: {
       aaa: {
         nodeType: 'shot',
         input: {
@@ -118,8 +113,6 @@ test('(Selector) getInputLinkLfoOptionIds (input is "lfo", link type "shot", wav
         },
         lfoOptionIds: ['xxx', 'yyy', 'zzz'],
       },
-    },
-    nodes: {
       xxx: {
         key: 'seed',
       },

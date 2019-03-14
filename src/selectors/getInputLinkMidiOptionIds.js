@@ -1,7 +1,7 @@
 import getNodesValues from './getNodesValues'
 
 export default (state, linkId) => {
-  const ids = state.inputLinks[linkId].midiOptionIds
+  const ids = state.nodes[linkId].midiOptionIds
   const vals = getNodesValues(state, ids)
 
   if (vals.controlType === 'abs') {

@@ -185,3 +185,55 @@ export function nodeResetRange (nodeId) {
     },
   }
 }
+
+export function uNodeOpenInPanel (nodeId, panelId) {
+  return {
+    type: 'U_NODE_OPEN_IN_PANEL',
+    payload: {
+      nodeId, panelId,
+    },
+  }
+}
+
+/* Macros */
+
+export function rNodeMacroTargetParamLinkCreate (macroId, paramId, paramLinkId) {
+  return {
+    type: 'R_NODE_MACRO_TARGET_PARAM_LINK_CREATE',
+    payload: { macroId, paramId, paramLinkId },
+  }
+}
+
+export function rNodeMacroTargetParamLinkDelete (macroId, paramId) {
+  return {
+    type: 'R_NODE_MACRO_TARGET_PARAM_LINK_DELETE',
+    payload: { macroId, paramId },
+  }
+}
+
+export function rNodeMacroTargetParamLinkUpdateStartValue (macroId, paramId, value) {
+  return {
+    type: 'R_NODE_MACRO_TARGET_PARAM_LINK_UPDATE_START_VALUE',
+    payload: { macroId, paramId, value },
+  }
+}
+
+/* input links */
+
+export function rNodeInputLinkShotArm (linkId) {
+  return {
+    type: 'R_NODE_INPUT_LINK_SHOT_ARM',
+    payload: {
+      linkId,
+    },
+  }
+}
+
+export function rNodeInputLinkShotDisarm (linkId) {
+  return {
+    type: 'R_NODE_INPUT_LINK_SHOT_DISARM',
+    payload: {
+      linkId,
+    },
+  }
+}

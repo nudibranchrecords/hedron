@@ -1,10 +1,10 @@
 import getNodes from './getNodes'
 
 export default (state, linkId) => {
-  const link = state.inputLinks[linkId]
+  const link = state.nodes[linkId]
+  const optionIds = link.lfoOptionIds
 
   if (link.input && link.input.id === 'lfo') {
-    const optionIds = link.lfoOptionIds
     const optionNodes = getNodes(state, optionIds)
     const shapeOpt = optionNodes.find(node => node.key === 'shape')
     const isNoise = shapeOpt.value === 'noise'
@@ -32,5 +32,5 @@ export default (state, linkId) => {
     }
   }
 
-  return undefined
+  return optionIds
 }

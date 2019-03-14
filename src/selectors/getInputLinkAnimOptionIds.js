@@ -1,4 +1,4 @@
 export default (state, linkId) => {
-  const ids = state.inputLinks[linkId].animOptionIds
+  const ids = state.nodes[linkId].animOptionIds
   return ids
 }

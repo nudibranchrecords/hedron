@@ -1,3 +1,1 @@
-import { values } from 'lodash'
-
-export default state => values(state.macros.items)
+export default state => state.macros.nodeIds.map(id => state.nodes[id])

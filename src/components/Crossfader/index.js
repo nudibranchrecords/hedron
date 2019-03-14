@@ -1,8 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
-import Param from '../../containers/Param'
-import InputLinkUI from '../../containers/InputLinkUI'
+import Node from '../../containers/Node'
 import theme from '../../utils/theme'
 
 const Wrapper = styled.div`
@@ -48,12 +47,10 @@ const Crossfader = ({ titleA, titleB, onClickA, onClickB }) => (
       <ChannelTitle>{titleA}</ChannelTitle>
     </ChannelButton>
     <Middle>
-      <Param
+      <Node
         nodeId='sceneCrossfader'
-        notInSketch
-        >
-        <InputLinkUI nodeId='sceneCrossfader' />
-      </Param>
+        panelId='overview'
+      />
     </Middle>
     <ChannelButton onMouseDown={onClickB}>
       <ChannelTag>B</ChannelTag>

@@ -2,7 +2,6 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import ButtonComponent from '../Button'
 import MacroLink from '../../containers/MacroLink'
-import ParamProperties from '../../containers/ParamProperties'
 import Row from '../Row'
 import styled from 'styled-components'
 
@@ -32,11 +31,9 @@ const Button = styled(ButtonComponent)`
   }
 `
 
-const MacroProperties = ({ nodeId, onLearningClick, onDeleteClick, paramLinks,
-  isLearning, macroId, paramLinksAreVisible, onRenameClick }) => (
+const MacroProperties = ({ macroId, onLearningClick, onDeleteClick, paramLinks,
+  isLearning, paramLinksAreVisible, onRenameClick }) => (
     <Wrapper>
-      <ParamProperties nodeId={nodeId} />
-
       <Bottom>
         {
           paramLinksAreVisible &&
@@ -57,14 +54,11 @@ const MacroProperties = ({ nodeId, onLearningClick, onDeleteClick, paramLinks,
       </Bottom>
 
       <Row>
-        <Button onClick={() => { onLearningClick(macroId) }}>
+        <Button onClick={onLearningClick}>
           {isLearning ? 'Stop Learning' : 'Start Learning'}
         </Button>
-        <Button onClick={e => {
-          e.stopPropagation()
-          onRenameClick(nodeId)
-        }}>Rename</Button>
-        <Button color='danger' onClick={() => { onDeleteClick(macroId) }}>Delete Macro</Button>
+        <Button onClick={onRenameClick}>Rename</Button>
+        <Button color='danger' onClick={onDeleteClick}>Delete Macro</Button>
       </Row>
     </Wrapper>
 )
@@ -72,7 +66,6 @@ const MacroProperties = ({ nodeId, onLearningClick, onDeleteClick, paramLinks,
 MacroProperties.propTypes = {
   isLearning: PropTypes.bool,
   paramLinks: PropTypes.array.isRequired,
-  nodeId: PropTypes.string.isRequired,
   macroId: PropTypes.string.isRequired,
   onLearningClick: PropTypes.func.isRequired,
   onDeleteClick: PropTypes.func.isRequired,

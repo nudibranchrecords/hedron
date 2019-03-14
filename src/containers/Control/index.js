@@ -4,17 +4,15 @@ import getNode from '../../selectors/getNode'
 
 const mapStateToProps = (state, ownProps) => {
   const node = getNode(state, ownProps.nodeId)
+  const type = node.type || 'param'
+
   return {
-    type: node.type || 'slider',
+    type,
   }
 }
 
-export default connect(
+const ControlContainer = connect(
   mapStateToProps,
-  null,
-  null,
-  {
-    areStatesEqual: (next, prev) =>
-      next.nodes === prev.nodes,
-  }
 )(Control)
+
+export default ControlContainer
