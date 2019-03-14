@@ -1,7 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import ParamBar from '../../containers/ParamBar'
-import NodeSelect from '../../containers/NodeSelect'
+import Control from '../../containers/Control'
 import NodeInputIcons from '../../containers/NodeInputIcons'
 import styled from 'styled-components'
 import theme from '../../utils/theme'
@@ -60,43 +59,17 @@ const Title = styled.div`
   }}
 `
 
-const Select = styled(NodeSelect)`
-  flex: 1;
-`
-
-const Node = ({ title, nodeId, isOpen, onParamBarClick, type, panelId, theme }) => {
-  let inner
-
-  switch (type) {
-    case 'select':
-      inner = (
-        <Select nodeId={nodeId} />
-          )
-      break
-    case 'slider':
-    default:
-      inner = (
-        <ParamBar
-          nodeId={nodeId}
-          onMouseDown={onParamBarClick}
-          type={type}
-          theme={theme}
-            />
-          )
-  }
-
-  return (
-    <Wrapper isOpen={isOpen} theme={theme}>
-      <Main>
-        <Title theme={theme}>{title}</Title>
-        <Inner>
-          {inner}
-        </Inner>
-      </Main>
-      <NodeInputIcons nodeId={nodeId} panelId={panelId} />
-    </Wrapper>
-  )
-}
+const Node = ({ title, nodeId, isOpen, onParamBarClick, type, panelId, theme }) => (
+  <Wrapper isOpen={isOpen} theme={theme}>
+    <Main>
+      <Title theme={theme}>{title}</Title>
+      <Inner>
+        <Control nodeId={nodeId} onParamBarClick={onParamBarClick} theme={theme} />
+      </Inner>
+    </Main>
+    <NodeInputIcons nodeId={nodeId} panelId={panelId} />
+  </Wrapper>
+)
 
 Node.propTypes = {
   title: PropTypes.string.isRequired,
