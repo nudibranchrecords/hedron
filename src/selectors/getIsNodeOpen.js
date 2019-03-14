@@ -1,14 +1,24 @@
 import getNode from './getNode'
+import getNodeAncestors from './getNodeAncestors'
 
 export default (state, nodeId, panelId) => {
+  let openedNodeId
+
   switch (panelId) {
     case 'overview':
-      return state.ui.openedNode === nodeId
+      openedNodeId = state.ui.openedNode
+      break
     case 'macros':
-      return state.macros.openedId === nodeId
+      openedNodeId = state.macros.openedId
+      break
     case 'sketch':
     default:
       const node = getNode(state, nodeId)
-      return state.sketches[node.sketchId].openedNodeId === nodeId
+      openedNodeId = state.sketches[node.sketchId].openedNodeId
   }
+
+  if (!openedNodeId) return false
+
+  const ancestors = getNodeAncestors(state, openedNodeId)
+  return ancestors.some(node => node.id === nodeId)
 }
