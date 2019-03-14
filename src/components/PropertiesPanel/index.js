@@ -38,13 +38,13 @@ const PropertiesPanel = ({ isOpen, nodeId, Component, onCloseClick, panelId, tit
   const titleContent = <List>
     {titleItems.map((item, index) => {
       const isClickable = item.type !== 'inputLink' && index !== titleItems.length - 1
-      const onClick = isClickable && onTitleItemClick
+      const onClick = isClickable ? function () { onTitleItemClick(item.id) } : undefined
 
       return (
         <Item
           key={item.id}
           isClickable={isClickable}
-          onClick={() => { onClick(item.id) }}
+          onClick={onClick}
         >
           <span>{item.title}</span> <span>{'›'}</span>
         </Item>
