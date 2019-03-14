@@ -11,7 +11,7 @@ const List = styled.nav`
 
 const Item = styled.div`
   margin-right: 0.5rem;
-  cursor: pointer;
+
 
   span:last-child {
     margin-left: 0.5rem;
@@ -23,18 +23,33 @@ const Item = styled.div`
     }
   }
 
-  &:hover {
-    span:first-child {
-      color: ${theme.actionColor1}
-    }
+  ${props => props.isClickable &&
+    `cursor: pointer;
+    &:hover {
+      span:first-child {
+        color: ${theme.actionColor1}
+      }
+    }`
   }
+  
 `
 
-const PropertiesPanel = ({ title, isOpen, nodeId, Component, onCloseClick, panelId, titleItems, onTitleItemClick }) => {
+const PropertiesPanel = ({ isOpen, nodeId, Component, onCloseClick, panelId, titleItems, onTitleItemClick }) => {
   const titleContent = <List>
-    {titleItems.map(item => (
-      <Item key={item.id} onClick={() => onTitleItemClick(item.id)}><span>{item.title}</span> <span>{'›'}</span></Item>
-    ))}
+    {titleItems.map(item => {
+      const isClickable = item.type !== 'inputLink'
+      const onClick = isClickable && onTitleItemClick
+
+      return (
+        <Item
+          key={item.id}
+          isClickable={isClickable}
+          onClick={() => { onClick(item.id) }}
+        >
+          <span>{item.title}</span> <span>{'›'}</span>
+        </Item>
+      )
+    })}
   </List>
 
   return (
@@ -49,7 +64,6 @@ const PropertiesPanel = ({ title, isOpen, nodeId, Component, onCloseClick, panel
 }
 
 PropertiesPanel.propTypes = {
-  title: PropTypes.string,
   nodeId: PropTypes.string,
   isOpen: PropTypes.bool,
   Component: PropTypes.func,

@@ -168,6 +168,7 @@ export function* inputLinkCreate (action) {
 
     const link = {
       title: p.inputId,
+      type: 'inputLink',
       input: {
         id: p.inputId,
         type: p.inputType,
