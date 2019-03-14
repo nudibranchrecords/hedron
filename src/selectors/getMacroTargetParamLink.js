@@ -1,2 +1,2 @@
 export default (state, macroId, paramId) =>
-  state.macros.items[macroId].targetParamLinks[paramId]
+  state.nodes[macroId].targetParamLinks[paramId]

@@ -30,8 +30,6 @@ test('(Selector) getInfoText - MIDI info', (t) => {
       xxx: {
         inputLinkIds: ['aaa', 'bbb'],
       },
-    },
-    inputLinks: {
       aaa: {
         title: 'midi_x',
       },

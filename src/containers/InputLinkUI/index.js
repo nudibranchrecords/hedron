@@ -18,7 +18,6 @@ export default connect(
   null,
   {
     areStatesEqual: (next, prev) =>
-      next.nodes === prev.nodes &&
-      next.inputLinks === prev.inputLinks,
+      next.nodes === prev.nodes,
   }
 )(InputLinkUI)

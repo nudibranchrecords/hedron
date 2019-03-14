@@ -1,12 +1,12 @@
 import { connect } from 'react-redux'
 import MainViewOuter from '../../components/MainViewOuter'
-import getMacroNodeLearning from '../../selectors/getMacroNodeLearning'
+import getLearningMacro from '../../selectors/getLearningMacro'
 import {
   rMacroLearningStop, uMacroAddAllForSketch, uMacroAddAllForScene,
 } from '../../store/macros/actions'
 
 const mapStateToProps = (state, ownProps) => {
-  const macro = getMacroNodeLearning(state)
+  const macro = getLearningMacro(state)
   const page = state.router.location.pathname.split('/')[1]
   const buttonsText = ['Stop Learning']
 

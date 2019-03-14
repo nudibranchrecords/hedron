@@ -1,12 +1,12 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import InputLinkUI from '../../containers/InputLinkUI'
-import Param from '../../containers/Param'
+import Node from '../../containers/Node'
 
 const Shot = ({ nodeId, sketchId, method }) => (
-  <Param nodeId={nodeId} sketchId={sketchId} shotMethod={method} type='shot'>
+  <Node nodeId={nodeId} sketchId={sketchId} shotMethod={method} type='shot'>
     <InputLinkUI nodeId={nodeId} />
-  </Param>
+  </Node>
 )
 
 Shot.propTypes = {

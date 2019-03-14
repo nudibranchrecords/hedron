@@ -9,7 +9,7 @@ import ParamValueForm from '../../containers/ParamValueForm'
 const pixelDensity = 2
 
 const Bar = styled.canvas`
-  background: ${theme.bgColorDark2};
+  background: ${props => props.theme === 'panel' ? theme.bgColorDark3 : theme.bgColorDark2};
   cursor: pointer;
 `
 
@@ -58,7 +58,7 @@ class ValueBar extends React.Component {
 
   componentDidMount () {
     this.containerEl = this.canvas.parentElement
-    const height = this.props.type === 'shot' ? 6 : 2.5
+    const height = this.props.type === 'shot' ? 4 : 2.2
     this.height = 16 * height
     this.canvas.height = this.height
     this.ctx = this.canvas.getContext('2d')
@@ -161,7 +161,7 @@ class ValueBar extends React.Component {
 
       const roundedVal = Math.round(newVal * 1000) / 1000
 
-      this.ctx.font = '24px Arial'
+      this.ctx.font = '20px Arial'
       this.ctx.textAlign = 'right'
 
       if (this.oldVal && flashOpacity < 0 && !this.flashIsPainted) {
@@ -190,7 +190,7 @@ class ValueBar extends React.Component {
       if (!this.props.hideBar) {
         // Draw value as text
         this.ctx.fillStyle = theme.textColorLight1
-        this.ctx.fillText(roundedVal.toFixed(3), innerWidth - 5, this.height - 13)
+        this.ctx.fillText(roundedVal.toFixed(3), innerWidth - 8, this.height - 11)
         // Draw bar at new position
         this.ctx.fillStyle = '#fff'
         this.ctx.fillRect(pos, 0, barWidth, this.height)
@@ -199,11 +199,12 @@ class ValueBar extends React.Component {
   }
 
   render () {
-    const { markerIsVisible } = this.props
+    const { markerIsVisible, theme } = this.props
     return (
       <Wrapper markerIsVisible={markerIsVisible} onDoubleClick={this.props.onDoubleClick}>
         <Bar
           ref={node => { this.canvas = node }}
+          theme={theme}
           onMouseDown={this.props.onMouseDown || this.handleMouseDown}
         />
         {this.props.formIsVisible &&
@@ -225,6 +226,7 @@ ValueBar.propTypes = {
   hideBar: PropTypes.bool,
   formIsVisible: PropTypes.bool,
   markerIsVisible: PropTypes.bool,
+  theme: PropTypes.string,
 }
 
 ValueBar.contextTypes = {

@@ -1,4 +1,4 @@
 export default (state, linkId) => {
-  const ids = state.inputLinks[linkId].audioOptionIds
+  const ids = state.nodes[linkId].audioOptionIds
   return ids
 }

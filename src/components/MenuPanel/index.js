@@ -41,10 +41,10 @@ const Icon = styled.span`
   }
 `
 
-const MenuPanel = ({ title, children, onCloseClick }) => (
+const MenuPanel = ({ titleContent, children, onCloseClick }) => (
   <Wrapper>
     <Header>
-      {title}
+      {titleContent}
       { onCloseClick && <Icon onClick={onCloseClick}>{'×'}</Icon> }
     </Header>
     <Body>
@@ -55,7 +55,7 @@ const MenuPanel = ({ title, children, onCloseClick }) => (
 
 MenuPanel.propTypes = {
   children: PropTypes.node.isRequired,
-  title: PropTypes.string.isRequired,
+  titleContent: PropTypes.node.isRequired,
   onCloseClick: PropTypes.func,
 }
 
