@@ -10,6 +10,9 @@ test('(Selector) inputs - getAssignedLinks', (t) => {
       },
     },
     nodes: {
+      XX: { nodeId: 'nx' },
+      YY: { nodeId: 'ny' },
+      ZZ: { nodeId: 'nz' },
       nx: {
         activeInputLinkId: 'XX',
       },
@@ -19,11 +22,6 @@ test('(Selector) inputs - getAssignedLinks', (t) => {
       nz: {
         activeInputLinkId: 'ZZ',
       },
-    },
-    inputLinks: {
-      XX: { nodeId: 'nx' },
-      YY: { nodeId: 'ny' },
-      ZZ: { nodeId: 'nz' },
     },
   }
   deepFreeze(state)
@@ -57,8 +55,6 @@ test('(Selector) inputs - getAssignedLinks - input doesnt exist', (t) => {
       nz: {
         activeInputLinkId: 'ZZ',
       },
-    },
-    inputLinks: {
       XX: { nodeId: 'nx' },
       YY: { nodeId: 'ny' },
       ZZ: { nodeId: 'nz' },
@@ -91,8 +87,6 @@ test('(Selector) inputs - getAssignedLinks - one input link isnt active', (t) =>
       nz: {
         activeInputLinkId: '@@',
       },
-    },
-    inputLinks: {
       XX: { nodeId: 'nx' },
       YY: { nodeId: 'ny' },
       ZZ: { nodeId: 'nz' },
@@ -125,8 +119,6 @@ test('(Selector) inputs - getAssignedLinks - link type midi', (t) => {
       ny: {
         activeInputLinkId: undefined,
       },
-    },
-    inputLinks: {
       XX: {
         nodeId: 'nx',
         input: {
@@ -167,8 +159,6 @@ test('(Selector) inputs - getAssignedLinks - link type midi', (t) => {
       ny: {
         activeInputLinkId: undefined,
       },
-    },
-    inputLinks: {
       XX: { nodeId: 'nx' },
       YY: {
         nodeId: '@@',
@@ -213,8 +203,6 @@ test('(Selector) inputs - getAssignedLinks - link has device Id and bank index (
       ny: {
         activeInputLinkId: 'YY',
       },
-    },
-    inputLinks: {
       XX: {
         nodeId: 'nx',
         deviceId: 'DEVICE_1',
@@ -259,8 +247,6 @@ test('(Selector) inputs - getAssignedLinks - link has device Id and bank index (
       ny: {
         activeInputLinkId: 'YY',
       },
-    },
-    inputLinks: {
       XX: {
         nodeId: 'nx',
         deviceId: 'DEVICE_1',

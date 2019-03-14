@@ -5,7 +5,7 @@ import Button from '../Button'
 import ViewHeader from '../ViewHeader'
 import Items from '../Items'
 import Item from '../Item'
-import MacroItem from '../../containers/MacroItem'
+import Node from '../../containers/Node'
 
 const Wrapper = styled.div`
   display: flex;
@@ -18,7 +18,7 @@ const Macros = ({ items, onAddClick }) => (
     <Items>
       {items.map(({ id }) => (
         <Item key={id}>
-          <MacroItem id={id} />
+          <Node nodeId={id} panelId='macros' />
         </Item>
       ))}
     </Items>

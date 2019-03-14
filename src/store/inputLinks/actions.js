@@ -1,22 +1,20 @@
-export function uInputLinkCreate (nodeId, inputId, inputType, deviceId, controlType) {
+export function uInputLinkCreate (nodeId, inputId, inputType, meta = {}) {
   return {
     type: 'U_INPUT_LINK_CREATE',
     payload: {
       nodeId,
       inputId,
       inputType,
-      deviceId,
-      controlType,
+      meta,
     },
   }
 }
 
-export function rInputLinkCreate (id, link) {
+export function rInputLinkAdd (id, link) {
   return {
-    type: 'R_INPUT_LINK_CREATE',
+    type: 'R_INPUT_LINK_ADD',
     payload: {
       id,
-      link,
     },
   }
 }
@@ -39,13 +37,11 @@ export function rInputLinkDelete (id) {
   }
 }
 
-export function uInputLinkUpdate (linkId, inputId, inputType) {
+export function uInputLinkUpdateMidiInput (linkId) {
   return {
-    type: 'U_INPUT_LINK_UPDATE',
+    type: 'U_INPUT_LINK_UPDATE_MIDI_INPUT',
     payload: {
       linkId,
-      inputId,
-      inputType,
     },
   }
 }
@@ -55,34 +51,6 @@ export function inputLinksReplaceAll (links) {
     type: 'INPUT_LINKS_REPLACE_ALL',
     payload: {
       links,
-    },
-  }
-}
-
-export function rInputLinkUpdate (linkId, input) {
-  return {
-    type: 'R_INPUT_LINK_UPDATE',
-    payload: {
-      linkId,
-      input,
-    },
-  }
-}
-
-export function inputLinkShotArm (id) {
-  return {
-    type: 'INPUT_LINK_SHOT_ARM',
-    payload: {
-      id,
-    },
-  }
-}
-
-export function inputLinkShotDisarm (id) {
-  return {
-    type: 'INPUT_LINK_SHOT_DISARM',
-    payload: {
-      id,
     },
   }
 }

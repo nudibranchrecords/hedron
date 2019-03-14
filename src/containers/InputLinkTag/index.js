@@ -3,7 +3,7 @@ import Tag from '../../components/Tag'
 import { uInputLinkDelete } from '../../store/inputLinks/actions'
 
 const mapStateToProps = (state, ownProps) => ({
-  title: state.inputLinks[ownProps.id].title,
+  title: state.nodes[ownProps.id].title,
 })
 
 const mapDispatchToProps = (dispatch, ownProps) => ({

@@ -2,13 +2,11 @@ import { select, put, call, takeEvery } from 'redux-saga/effects'
 import { getDefaultModifierIds } from './selectors'
 import getInputLink from '../../selectors/getInputLink'
 import getNode from '../../selectors/getNode'
-import { rInputLinkCreate, rInputLinkDelete } from './actions'
+import { rInputLinkAdd, rInputLinkDelete } from './actions'
 import { uAnimStart } from '../anims/actions'
 import { rNodeCreate, uNodeCreate, uNodeDelete, uNodeInputLinkAdd,
-  nodeInputLinkRemove, nodeActiveInputLinkToggle } from '../nodes/actions'
+  nodeInputLinkRemove, nodeActiveInputLinkToggle, rNodeDelete } from '../nodes/actions'
 import { inputAssignedLinkCreate, inputAssignedLinkDelete } from '../inputs/actions'
-import { linkableActionCreate, linkableActionInputLinkAdd,
-  linkableActionInputLinkRemove, linkableActionDelete } from '../linkableActions/actions'
 import lfoGenerateOptions from '../../utils/lfoGenerateOptions'
 import midiGenerateOptions from '../../utils/midiGenerateOptions'
 import sequencerGenerateOptions from '../../utils/sequencerGenerateOptions'
@@ -27,13 +25,16 @@ import uid from 'uid'
 */
 export function* inputLinkCreate (action) {
   const p = action.payload
+  const m = p.meta
   const modifierIds = []
   const lfoOptionIds = []
   const midiOptionIds = []
   const animOptionIds = []
   const audioOptionIds = []
   let linkableActions = {}
-  let bankIndex, node, nodeType, linkType, sequencerGridId
+  let bankIndex, nodeType, linkType, sequencerGridId
+  const node = yield select(getNode, p.nodeId)
+  const sketchId = node.sketchId
 
   if (p.inputId === 'midi') {
     yield put(midiStartLearning(p.nodeId, p.inputType))
@@ -43,7 +44,6 @@ export function* inputLinkCreate (action) {
       linkType = 'linkableAction'
     } else {
       linkType = 'node'
-      node = yield select(getNode, p.nodeId)
       nodeType = node.type
       if (p.inputType !== 'midi' && p.inputId !== 'seq-step' && p.inputId !== 'anim') {
         const modifiers = yield call(getAll)
@@ -58,6 +58,8 @@ export function* inputLinkCreate (action) {
               const modifierId = yield call(uid)
               const modifier = {
                 id: modifierId,
+                parentNodeId: linkId,
+                sketchId,
                 key: id,
                 title: config.title[j],
                 value: config.defaultValue[j],
@@ -80,6 +82,8 @@ export function* inputLinkCreate (action) {
 
       for (let key in audioOpts) {
         const item = audioOpts[key]
+        item.sketchId = sketchId
+        item.parentNodeId = linkId
         audioOptionIds.push(item.id)
 
         yield put(uNodeCreate(item.id, item))
@@ -91,6 +95,8 @@ export function* inputLinkCreate (action) {
 
       for (let key in lfoOpts) {
         const item = lfoOpts[key]
+        item.sketchId = sketchId
+        item.parentNodeId = linkId
         lfoOptionIds.push(item.id)
 
         yield put(uNodeCreate(item.id, item))
@@ -104,18 +110,21 @@ export function* inputLinkCreate (action) {
     }
 
     if (p.inputType === 'midi' || linkType === 'linkableAction') {
-      bankIndex = yield select(getCurrentBankIndex, p.deviceId)
+      bankIndex = yield select(getCurrentBankIndex, m.deviceId)
 
       if (linkType === 'node') {
-        const midiOpts = yield call(midiGenerateOptions)
+        const midiOpts = yield call(midiGenerateOptions, linkId)
 
         for (let key in midiOpts) {
           const item = midiOpts[key]
+          item.sketchId = sketchId
+          item.parentNodeId = linkId
           midiOptionIds.push(item.id)
 
-          if (item.key === 'controlType' && p.controlType) {
-            item.value = p.controlType
-          }
+          if (item.key === 'controlType' && m.controlType) item.value = m.controlType
+          if (item.key === 'channel' && m.channel) item.value = m.channel
+          if (item.key === 'noteNum' && m.noteNum) item.value = m.noteNum
+          if (item.key === 'messageType' && m.messageType) item.value = m.messageType
 
           yield put(uNodeCreate(item.id, item))
         }
@@ -124,7 +133,14 @@ export function* inputLinkCreate (action) {
 
     if (p.inputType === 'anim') {
       const animStartActionId = yield call(uid)
-      yield put(linkableActionCreate(animStartActionId, uAnimStart(linkId)))
+      const node = {
+        type: 'linkableAction',
+        title: 'Start Anim',
+        action: uAnimStart(linkId),
+        sketchId,
+        parentNodeId: linkId,
+      }
+      yield put(uNodeCreate(animStartActionId, node))
       linkableActions.animStart = animStartActionId
 
       const animOpts = yield call(animGenerateOptions)
@@ -132,6 +148,8 @@ export function* inputLinkCreate (action) {
       for (let key in animOpts) {
         const item = animOpts[key]
         animOptionIds.push(item.id)
+        item.sketchId = sketchId
+        item.parentNodeId = linkId
 
         yield put(uNodeCreate(item.id, item))
       }
@@ -139,20 +157,30 @@ export function* inputLinkCreate (action) {
 
     if (linkType === 'node') {
       const toggleActionId = yield call(uid)
-      yield put(linkableActionCreate(toggleActionId, nodeActiveInputLinkToggle(p.nodeId, linkId)))
+      const node = {
+        type: 'linkableAction',
+        title: 'Toggle Activate',
+        action: nodeActiveInputLinkToggle(p.nodeId, linkId),
+        sketchId,
+        parentNodeId: linkId,
+      }
+      yield put(uNodeCreate(toggleActionId, node))
       linkableActions.toggleActivate = toggleActionId
     }
 
     const link = {
       title: p.inputId,
+      type: 'inputLink',
       input: {
         id: p.inputId,
         type: p.inputType,
       },
       id: linkId,
       nodeId: p.nodeId,
+      sketchId,
+      parentNodeId: p.nodeId,
       nodeType,
-      deviceId: p.deviceId,
+      deviceId: m.deviceId,
       bankIndex,
       modifierIds,
       lfoOptionIds,
@@ -164,13 +192,10 @@ export function* inputLinkCreate (action) {
       animOptionIds,
     }
 
-    yield put(rInputLinkCreate(linkId, link))
-    if (linkType === 'node') {
-      yield put(uNodeInputLinkAdd(p.nodeId, linkId))
-    } else if (linkType === 'linkableAction') {
-      yield put(linkableActionInputLinkAdd(p.nodeId, linkId))
-    }
-    yield put(inputAssignedLinkCreate(p.inputId, linkId, p.deviceId))
+    yield put(rNodeCreate(linkId, link))
+    yield put(rInputLinkAdd(linkId))
+    yield put(uNodeInputLinkAdd(p.nodeId, linkId))
+    yield put(inputAssignedLinkCreate(p.inputId, linkId, m.deviceId))
   }
 }
 
@@ -189,16 +214,13 @@ export function* inputLinkDelete (action) {
     }
   }
 
-  if (link.linkType === 'linkableAction') {
-    yield put(linkableActionInputLinkRemove(nodeId, p.id))
-  } else {
-    yield put(nodeInputLinkRemove(nodeId, p.id))
-  }
+  yield put(nodeInputLinkRemove(nodeId, p.id))
 
   for (const key in link.linkableActions) {
-    yield put(linkableActionDelete(link.linkableActions[key]))
+    yield put(uNodeDelete(link.linkableActions[key]))
   }
 
+  yield put(rNodeDelete(p.id))
   yield put(rInputLinkDelete(p.id))
 }
 

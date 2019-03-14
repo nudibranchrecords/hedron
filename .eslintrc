@@ -5,8 +5,12 @@
     "standard-react"
   ],
   "env": {
-    "browser" : true
+    "browser" : true,
+    "jest/globals": true
   },
+  "plugins": [
+    "jest"
+  ],
   "rules": {
     "key-spacing"          : 0,
     "jsx-quotes"           : [2, "prefer-single"],

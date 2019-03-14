@@ -1,2 +1,2 @@
 export default (state, linkId) =>
-  state.inputLinks[linkId]
+  state.nodes[linkId]

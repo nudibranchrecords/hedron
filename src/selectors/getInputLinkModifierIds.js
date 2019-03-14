@@ -1,5 +1,5 @@
 export default (state, id) => {
-  const link = state.inputLinks[id]
+  const link = state.nodes[id]
 
   if (!link.input) return undefined
 

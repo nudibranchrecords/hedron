@@ -15,7 +15,7 @@ export const getAssignedLinks = (state, inputId) => {
 
   for (let i = 0; i < ids.length; i++) {
     const id = ids[i]
-    const link = state.inputLinks[id]
+    const link = state.nodes[id]
     const node = state.nodes[link.nodeId]
     const matchedBankIndex =
       link.bankIndex === undefined || link.bankIndex === currBankIndex
