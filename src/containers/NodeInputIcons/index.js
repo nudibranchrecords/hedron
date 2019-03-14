@@ -5,6 +5,7 @@ import { uSketchNodeOpenedToggle } from '../../store/sketches/actions'
 import getActiveInputsText from '../../selectors/getActiveInputsText'
 import { uiNodeToggleOpen } from '../../store/ui/actions'
 import { rMacroOpenToggle } from '../../store/macros/actions'
+import { uNodeOpenInPanel } from '../../store/nodes/actions'
 
 const mapStateToProps = (state, ownProps) => {
   const node = getNode(state, ownProps.nodeId)
@@ -21,17 +22,7 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
   onClick: (panelId = ownProps.panelId) => {
-    switch (panelId) {
-      case 'overview':
-        dispatch(uiNodeToggleOpen(ownProps.nodeId))
-        break
-      case 'macros':
-        dispatch(rMacroOpenToggle(ownProps.nodeId))
-        break
-      case 'sketch':
-      default:
-        dispatch(uSketchNodeOpenedToggle(ownProps.nodeId))
-    }
+    dispatch(uNodeOpenInPanel(ownProps.nodeId, panelId))
   },
 })
 

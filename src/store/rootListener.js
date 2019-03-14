@@ -1,3 +1,4 @@
+import nodesListener from './nodes/listener'
 import scenesListener from './scenes/listener'
 import sketchesListener from './sketches/listener'
 import inputLinkListener from './inputLinks/listener'
@@ -9,6 +10,7 @@ export default {
   types: 'all',
 
   handleAction (action, dispatched, store) {
+    nodesListener(action, store)
     scenesListener(action, store)
     sketchesListener(action, store)
     inputLinkListener(action, store)
