@@ -4,7 +4,6 @@ import ParamBar from '../../containers/ParamBar'
 import NodeSelect from '../../containers/NodeSelect'
 import NodeInputIcons from '../../containers/NodeInputIcons'
 import styled from 'styled-components'
-import { PanelContext } from '../../context'
 import theme from '../../utils/theme'
 
 const Wrapper = styled.div`

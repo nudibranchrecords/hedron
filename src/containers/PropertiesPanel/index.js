@@ -19,7 +19,6 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDipatchToProps = (dispatch, ownProps) => ({
   onTitleItemClick: (nodeId) => {
-    console.log(ownProps.panelId)
     switch (ownProps.panelId) {
       case 'overview':
         dispatch(uiNodeToggleOpen(nodeId))
