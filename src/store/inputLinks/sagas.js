@@ -138,6 +138,7 @@ export function* inputLinkCreate (action) {
         title: 'Start Anim',
         action: uAnimStart(linkId),
         sketchId,
+        parentNodeId: linkId,
       }
       yield put(uNodeCreate(animStartActionId, node))
       linkableActions.animStart = animStartActionId
@@ -161,6 +162,7 @@ export function* inputLinkCreate (action) {
         title: 'Toggle Activate',
         action: nodeActiveInputLinkToggle(p.nodeId, linkId),
         sketchId,
+        parentNodeId: linkId,
       }
       yield put(uNodeCreate(toggleActionId, node))
       linkableActions.toggleActivate = toggleActionId
