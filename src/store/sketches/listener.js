@@ -1,7 +1,7 @@
 import uid from 'uid'
 import path from 'path'
 
-import { sketchCreate, sketchDelete, sketchUpdate } from './actions'
+import { sketchCreate, sketchDelete, sketchUpdate, rSketchNodeOpenedToggle } from './actions'
 import { rSceneSketchAdd, rSceneSketchRemove, sceneSketchSelect } from '../scenes/actions'
 import { uNodeCreate, uNodeDelete, nodeUpdate } from '../nodes/actions'
 import { engineSceneSketchAdd, engineSceneSketchDelete } from '../../engine/actions'
@@ -51,6 +51,7 @@ const handleSketchCreate = (action, store) => {
       uniqueId = uid()
       paramIds.push(uniqueId)
       store.dispatch(uNodeCreate(uniqueId, {
+        sketchId: uniqueSketchId,
         title: param.title ? param.title : param.key,
         type: 'param',
         key: param.key,
@@ -125,6 +126,12 @@ const handleSketchDelete = (action, store) => {
   store.dispatch(sceneSketchSelect(sceneId, newSceneSketchId))
   store.dispatch(engineSceneSketchDelete(sceneId, id))
   history.push('/scenes/view/' + sceneId)
+}
+
+const handleSketchNodeOpenedToggle = (action, store) => {
+  const state = store.getState()
+  const node = getNode(state, action.payload.nodeId)
+  store.dispatch(rSketchNodeOpenedToggle(node.sketchId, node.id))
 }
 
 const sketchReimport = (sketchId, store) => {
@@ -298,6 +305,9 @@ export default (action, store) => {
       break
     case 'U_SKETCH_DELETE':
       handleSketchDelete(action, store)
+      break
+    case 'U_SKETCH_NODE_OPENED_TOGGLE':
+      handleSketchNodeOpenedToggle(action, store)
       break
     case 'U_SKETCH_RELOAD_FILE':
       handleSketchReimport(action, store)

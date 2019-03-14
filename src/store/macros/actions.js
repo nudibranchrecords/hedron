@@ -11,17 +11,24 @@ export function uMacroCreate () {
   }
 }
 
-export function uMacroDelete (id) {
+export function uMacroDelete (nodeId) {
   return {
     type: 'U_MACRO_DELETE',
-    payload: { id },
+    payload: { nodeId },
   }
 }
 
-export function rMacroDelete (id) {
+export function rMacroAdd (nodeId) {
+  return {
+    type: 'R_MACRO_ADD',
+    payload: { nodeId },
+  }
+}
+
+export function rMacroDelete (nodeId) {
   return {
     type: 'R_MACRO_DELETE',
-    payload: { id },
+    payload: { nodeId },
   }
 }
 
@@ -36,20 +43,6 @@ export function uMacroTargetParamLinkAdd (macroId, paramId) {
   return {
     type: 'U_MACRO_TARGET_PARAM_LINK_ADD',
     payload: { macroId, paramId },
-  }
-}
-
-export function rMacroTargetParamLinkAdd (macroId, linkId) {
-  return {
-    type: 'R_MACRO_TARGET_PARAM_LINK_ADD',
-    payload: { macroId, linkId },
-  }
-}
-
-export function rMacroCreate (id, nodeId) {
-  return {
-    type: 'R_MACRO_CREATE',
-    payload: { id, nodeId },
   }
 }
 
@@ -79,31 +72,10 @@ export function rMacroLearningStop () {
   }
 }
 
-export function rMacroTargetParamLinkCreate (macroId, paramId, nodeId) {
-  return {
-    type: 'R_MACRO_TARGET_PARAM_LINK_CREATE',
-    payload: { macroId, paramId, nodeId },
-  }
-}
-
 export function uMacroTargetParamLinkDelete (macroId, paramId) {
   return {
     type: 'U_MACRO_TARGET_PARAM_LINK_DELETE',
     payload: { macroId, paramId },
-  }
-}
-
-export function rMacroTargetParamLinkDelete (macroId, paramId) {
-  return {
-    type: 'R_MACRO_TARGET_PARAM_LINK_DELETE',
-    payload: { macroId, paramId },
-  }
-}
-
-export function rMacroTargetParamLinkUpdateStartValue (macroId, paramId, value) {
-  return {
-    type: 'R_MACRO_TARGET_PARAM_LINK_UPDATE_START_VALUE',
-    payload: { macroId, paramId, value },
   }
 }
 

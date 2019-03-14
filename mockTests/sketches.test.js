@@ -156,6 +156,7 @@ test('(mock) Sketches - Add/Delete Sketch', () => {
       value: 0.5,
       inputLinkIds: [],
       shotCount: 0,
+      sketchId: 'id_1',
       connectedMacroIds: [],
       type: 'param',
       key: 'speed',
@@ -208,6 +209,7 @@ test('(mock) Sketches - Add/Delete Sketch', () => {
       value: 0.5,
       inputLinkIds: [],
       shotCount: 0,
+      sketchId: 'id_1',
       connectedMacroIds: [],
       type: 'param',
       key: 'speed',
@@ -223,6 +225,7 @@ test('(mock) Sketches - Add/Delete Sketch', () => {
       value: 0.2,
       inputLinkIds: [],
       shotCount: 0,
+      sketchId: 'id_3',
       connectedMacroIds: [],
       type: 'param',
       key: 'scale',
@@ -238,6 +241,7 @@ test('(mock) Sketches - Add/Delete Sketch', () => {
       value: 0.1,
       inputLinkIds: [],
       shotCount: 0,
+      sketchId: 'id_3',
       connectedMacroIds: [],
       type: 'param',
       key: 'color',
@@ -295,6 +299,7 @@ test('(mock) Sketches - Add/Delete Sketch', () => {
       value: 0.2,
       inputLinkIds: [],
       shotCount: 0,
+      sketchId: 'id_3',
       connectedMacroIds: [],
       type: 'param',
       key: 'scale',
@@ -310,6 +315,7 @@ test('(mock) Sketches - Add/Delete Sketch', () => {
       value: 0.1,
       inputLinkIds: [],
       shotCount: 0,
+      sketchId: 'id_3',
       connectedMacroIds: [],
       type: 'param',
       key: 'color',
@@ -426,8 +432,13 @@ test('(mock) Sketches - Delete sketch with macro associated to params', () => {
         id: 'param_a',
         connectedMacroIds: ['macro_a'],
       },
-      macro_node_a: {
-
+      macro_a: {
+        targetParamLinks: {
+          param_a: {
+            paramId: 'param_a',
+            nodeId: 'macro_link_a',
+          },
+        },
       },
       macro_link_a: {
 
@@ -450,17 +461,7 @@ test('(mock) Sketches - Delete sketch with macro associated to params', () => {
       },
     },
     macros: {
-      items: {
-        macro_a: {
-          nodeId: 'macro_node_a',
-          targetParamLinks: {
-            param_a: {
-              paramId: 'param_a',
-              nodeId: 'macro_link_a',
-            },
-          },
-        },
-      },
+      nodeIds: ['macro_a'],
     },
   }, applyMiddleware(sagaMiddleware, listen(rootListener)))
   sagaMiddleware.run(rootSaga, store.dispatch)
@@ -470,14 +471,15 @@ test('(mock) Sketches - Delete sketch with macro associated to params', () => {
   let state = store.getState()
 
   const nodes = state.nodes
-  const macros = state.macros.items
+  const macros = state.macros
 
   expect(nodes.param_a).toBe(undefined)
   expect(nodes.macro_link_a).toBe(undefined)
-  expect(macros.macro_a.targetParamLinks.param_a).toBe(undefined)
+  expect(nodes.macro_a.targetParamLinks.param_a).toBe(undefined)
+  expect(macros.nodeIds).toHaveLength(1) // Macro not deleted
 })
 
-// Below tests disabled because since changes made to reimporting sketches, this is now harder to mock
+// TODO: Below tests disabled because since changes made to reimporting sketches, this is now harder to mock
 
 // test('(mock) Sketches - Reimport Sketch (Unedited sketch)', (t) => {
 //   mockUniqueId = 2

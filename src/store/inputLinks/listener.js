@@ -2,7 +2,7 @@ import getInputLink from '../../selectors/getInputLink'
 import getNodes from '../../selectors/getNodes'
 import { constructMidiId } from '../../utils/midiMessage'
 import { inputAssignedLinkCreate, inputAssignedLinkDelete } from '../inputs/actions'
-import { rInputLinkUpdate } from '../inputLinks/actions'
+import { nodeUpdate } from '../nodes/actions'
 
 const handleUpdateMidiInput = (action, store) => {
   const state = store.getState()
@@ -21,7 +21,7 @@ const handleUpdateMidiInput = (action, store) => {
 
   store.dispatch(inputAssignedLinkDelete(link.input.id, link.id))
   store.dispatch(inputAssignedLinkCreate(newInputId, link.id, link.deviceId))
-  store.dispatch(rInputLinkUpdate(link.id, { input: { id: newInputId, type: 'midi' } }))
+  store.dispatch(nodeUpdate(link.id, { input: { id: newInputId, type: 'midi' } }))
 }
 
 export default (action, store) => {

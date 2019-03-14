@@ -1,14 +1,15 @@
 import { connect } from 'react-redux'
 import PropertiesPanel from '../../containers/PropertiesPanel'
-import MacroProperties from '../MacroProperties'
+import NodeProperties from '../NodeProperties'
 import getOpenedMacroNode from '../../selectors/getOpenedMacroNode'
 import { rMacroClose } from '../../store/macros/actions'
 
 const mapStateToProps = (state) => {
   const node = getOpenedMacroNode(state)
   return {
-    Component: MacroProperties,
+    Component: NodeProperties,
     node: node,
+    panelId: 'macros',
   }
 }
 

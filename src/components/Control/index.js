@@ -1,26 +1,28 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import Modifier from '../../containers/Modifier'
-import Select from '../../containers/Select'
+import ParamBar from '../../containers/ParamBar'
+import NodeSelect from '../../containers/NodeSelect'
 
-const Control = ({ nodeId, type, onChangeAction }) => {
+const Control = ({ nodeId, onParamBarClick, type, theme }) => {
   switch (type) {
     case 'select':
-      return <Select nodeId={nodeId} onChangeAction={onChangeAction} />
+      return <NodeSelect nodeId={nodeId} />
     case 'slider':
-      return <Modifier nodeId={nodeId} />
     default:
-      return <Modifier nodeId={nodeId} />
+      return <ParamBar
+        nodeId={nodeId}
+        onMouseDown={onParamBarClick}
+        type={type}
+        theme={theme}
+            />
   }
 }
 
 Control.propTypes = {
   nodeId: PropTypes.string.isRequired,
-  type: PropTypes.string.isRequired,
-  onChangeAction: PropTypes.shape({
-    type: PropTypes.string.isRequired,
-    payload: PropTypes.object,
-  }),
+  onParamBarClick: PropTypes.func,
+  type: PropTypes.string,
+  theme: PropTypes.string,
 }
 
 export default Control

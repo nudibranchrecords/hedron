@@ -169,6 +169,69 @@ const nodesReducer = (state = defaultState, action) => {
         },
       }
     }
+
+    /* Macros */
+    case 'R_NODE_MACRO_TARGET_PARAM_LINK_CREATE': {
+      return {
+        ...state,
+        [p.macroId]: {
+          ...state[p.macroId],
+          targetParamLinks: {
+            ...state[p.macroId].targetParamLinks,
+            [p.paramId]: {
+              nodeId: p.paramLinkId,
+              paramId: p.paramId,
+              startValue: false,
+            },
+          },
+        },
+      }
+    }
+    case 'R_NODE_MACRO_TARGET_PARAM_LINK_DELETE': {
+      return {
+        ...state,
+        [p.macroId]: {
+          ...state[p.macroId],
+          targetParamLinks: _.omit(state[p.macroId].targetParamLinks, [p.paramId]),
+        },
+      }
+    }
+    case 'R_NODE_MACRO_TARGET_PARAM_LINK_UPDATE_START_VALUE': {
+      return {
+        ...state,
+        [p.macroId]: {
+          ...state[p.macroId],
+          targetParamLinks: {
+            ...state[p.macroId].targetParamLinks,
+            [p.paramId]: {
+              ...state[p.macroId].targetParamLinks[p.paramId],
+              startValue: p.value,
+            },
+          },
+        },
+      }
+    }
+
+    /* input links */
+    case 'R_NODE_INPUT_LINK_SHOT_ARM': {
+      return {
+        ...state,
+        [p.linkId] : {
+          ...state[p.linkId],
+          armed: true,
+        },
+      }
+    }
+    case 'R_NODE_INPUT_LINK_SHOT_DISARM': {
+      return {
+        ...state,
+        [p.linkId] : {
+          ...state[p.linkId],
+          armed: false,
+        },
+      }
+    }
+
     default:
       return state
   }

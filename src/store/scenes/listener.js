@@ -3,7 +3,6 @@ import { rSceneCreate, rSceneDelete, rSceneSelectCurrent,
   rSceneSelectChannel, sceneClearChannel } from './actions'
 import { generateSceneLinkableActionIds } from './utils'
 import { engineSceneAdd, engineSceneRemove } from '../../engine/actions'
-import { linkableActionCreate, linkableActionDelete } from '../linkableActions/actions'
 import { uSketchDelete } from '../sketches/actions'
 import { uiEditingOpen } from '../ui/actions'
 import getScene from '../../selectors/getScene'
@@ -11,6 +10,7 @@ import getScenes from '../../selectors/getScenes'
 import getChannelSceneId from '../../selectors/getChannelSceneId'
 import getSceneCrossfaderValue from '../../selectors/getSceneCrossfaderValue'
 import history from '../../history'
+import { rNodeCreate, uNodeDelete } from '../nodes/actions'
 
 const handleSceneCreate = (action, store) => {
   const state = store.getState()
@@ -22,7 +22,12 @@ const handleSceneCreate = (action, store) => {
   const linkableActionIds = {}
 
   for (const key in la) {
-    store.dispatch(linkableActionCreate(la[key].id, la[key].action))
+    const node = {
+      type: 'linkableAction',
+      action: la[key].action,
+      title: la[key].title,
+    }
+    store.dispatch(rNodeCreate(la[key].id, node))
     linkableActionIds[key] = la[key].id
   }
 
@@ -60,7 +65,7 @@ const handleSceneDelete = (action, store) => {
   // Delete linkableActions
   for (const key in scene.linkableActionIds) {
     const id = scene.linkableActionIds[key]
-    store.dispatch(linkableActionDelete(id))
+    store.dispatch(uNodeDelete(id))
   }
 
   store.dispatch(sceneClearChannel(p.id))
