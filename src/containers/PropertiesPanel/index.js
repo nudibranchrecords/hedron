@@ -1,10 +1,7 @@
 import { connect } from 'react-redux'
 import PropertiesPanel from '../../components/PropertiesPanel'
 import getNodeAncestors from '../../selectors/getNodeAncestors'
-
-import { uSketchNodeOpenedToggle } from '../../store/sketches/actions'
-import { uiNodeToggleOpen } from '../../store/ui/actions'
-import { rMacroOpenToggle } from '../../store/macros/actions'
+import { uNodeOpenInPanel } from '../../store/nodes/actions'
 
 const mapStateToProps = (state, ownProps) => {
   const node = ownProps.node
@@ -19,17 +16,7 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDipatchToProps = (dispatch, ownProps) => ({
   onTitleItemClick: (nodeId) => {
-    switch (ownProps.panelId) {
-      case 'overview':
-        dispatch(uiNodeToggleOpen(nodeId))
-        break
-      case 'macros':
-        dispatch(rMacroOpenToggle(nodeId))
-        break
-      case 'sketch':
-      default:
-        dispatch(uSketchNodeOpenedToggle(nodeId))
-    }
+    dispatch(uNodeOpenInPanel(nodeId, ownProps.panelId))
   },
 })
 

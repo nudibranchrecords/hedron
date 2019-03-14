@@ -186,6 +186,15 @@ export function nodeResetRange (nodeId) {
   }
 }
 
+export function uNodeOpenInPanel (nodeId, panelId) {
+  return {
+    type: 'U_NODE_OPEN_IN_PANEL',
+    payload: {
+      nodeId, panelId,
+    },
+  }
+}
+
 /* Macros */
 
 export function rNodeMacroTargetParamLinkCreate (macroId, paramId, paramLinkId) {
