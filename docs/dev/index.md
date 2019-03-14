@@ -25,8 +25,9 @@ This is where the params and shots are defined.
 module.exports = {
   // Default title when sketch is loaded in (can be changed by user)
   defaultTitle: 'Solid',
-  // If two or more sketches have the same category they will appear in a collapsible group. Not required.
-  category: 'Simple', 
+  // Category and author can be used as a way to organise sketches based on the user's settings
+  category: 'Simple',
+  author: 'Laurence Ipsum',  
   // Params are values between 0 and 1 that can be manipulated by the user
   // these values are sent to the sketch every frame
   // e.g. Speed, scale, colour
