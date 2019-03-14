@@ -226,6 +226,7 @@ ValueBar.propTypes = {
   hideBar: PropTypes.bool,
   formIsVisible: PropTypes.bool,
   markerIsVisible: PropTypes.bool,
+  theme: PropTypes.string,
 }
 
 ValueBar.contextTypes = {
