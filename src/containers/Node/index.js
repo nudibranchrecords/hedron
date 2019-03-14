@@ -11,12 +11,10 @@ import { nodeShotFired } from '../../store/nodes/actions'
 
 const mapStateToProps = (state, ownProps) => {
   const node = getNode(state, ownProps.nodeId)
-  const type = node.type || 'param'
 
   const inputLinkTitle = getActiveInputsText(state, ownProps.nodeId)
 
   return {
-    type,
     title: node.title,
     isOpen: getIsNodeOpen(state, ownProps.nodeId, ownProps.panelId),
     inputLinkTitle,

@@ -8,6 +8,7 @@ const mapStateToProps = (state, ownProps) => {
   const node = getNode(state, ownProps.nodeId)
   return {
     type: node.type,
+    displayValue: node.parentNodeId !== undefined && node.type !== 'linkableAction',
     advancedIsOpen: getIsAuxOpen(state, ownProps.nodeId),
   }
 }
