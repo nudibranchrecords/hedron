@@ -11,6 +11,8 @@ In order to add sketches, click on the "+" in the right sidebar. If you're start
 
 To remove a sketch, click the delete button at the bottom of the view for that sketch.
 
+Use the dropdown menu on the Add Sketch scene to organise your sketches. If the author of the sketch has provided the correct meta data, you'll be able to organise based on category or author. Otherwise you can organise based on the folder structure of your sketches.
+
 ### Switching between sketches
 You can switch between different sketches that are already added to Hedron using the right sidebar.
 
