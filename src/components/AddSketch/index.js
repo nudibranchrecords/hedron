@@ -4,7 +4,7 @@ import Button from '../Button'
 import SceneHeader from '../../containers/SceneHeader'
 import styled from 'styled-components'
 import Revealer from '../../containers/AuxRevealer'
-import Control from '../Control'
+import Control from '../../containers/Control'
 
 const Category = styled(Revealer)`
   font-size:1rem;
@@ -19,12 +19,13 @@ const Items = styled.ul`
     margin-bottom: 1rem;
   }
 `
-const SketchFragment = styled.div`
-  margin-left 1rem;
+const Main = styled.div`
+  margin-left: 1rem;
+  margin-top: 1rem;
 `
 
 const SketchItems = ({ subcategories, items, onAddClick }) => (
-  <SketchFragment>
+  <Main>
     {(subcategories !== undefined) && subcategories.map(category =>
       <Category
         title={category.title}
@@ -41,13 +42,13 @@ const SketchItems = ({ subcategories, items, onAddClick }) => (
         </li>
       )}
     </Items>
-  </SketchFragment>
+  </Main>
 )
 
 const AddSketch = ({ items, hasSketches, onAddClick, onChooseFolderClick, sketchesPath }) => (
   <React.Fragment>
     <SceneHeader>Add Sketch</SceneHeader>
-    <Control nodeId='sketchOrganization' type='select' />
+    <Control nodeId='sketchOrganization' />
     <SketchItems items={items.looseItems} onAddClick={onAddClick} />
     {items.categorizedItems[0].categories.map((catItem) =>
       <Category
