@@ -19,6 +19,21 @@ import { reloadSingleSketchModule, removeSketchFromScene,
   addSketchToScene, reloadSingleSketchConfig } from '../../engine'
 import { uMacroTargetParamLinkDelete } from '../macros/actions'
 
+const generateParamFromConfig = (paramConfig, id, sketchId) => ({
+  id,
+  sketchId,
+  title: paramConfig.title ? paramConfig.title : paramConfig.key,
+  type: 'param',
+  key: paramConfig.key,
+  value: paramConfig.defaultValue,
+  hidden: paramConfig.hidden === undefined ? false : paramConfig.hidden,
+  min: paramConfig.defaultMin ? paramConfig.defaultMin : 0,
+  max: paramConfig.defaultMax ? paramConfig.defaultMax : 1,
+  defaultMin: paramConfig.defaultMin ? paramConfig.defaultMin : 0,
+  defaultMax: paramConfig.defaultMax ? paramConfig.defaultMax : 1,
+  inputLinkIds: [],
+})
+
 const paramDelete = (paramId, store) => {
   const state = store.getState()
   const param = getNode(state, paramId)
@@ -50,20 +65,12 @@ const handleSketchCreate = (action, store) => {
 
       uniqueId = uid()
       paramIds.push(uniqueId)
-      store.dispatch(uNodeCreate(uniqueId, {
-        sketchId: uniqueSketchId,
-        title: param.title ? param.title : param.key,
-        type: 'param',
-        key: param.key,
-        value: param.defaultValue,
-        hidden: param.hidden === undefined ? false : param.hidden,
-        min: param.defaultMin ? param.defaultMin : 0,
-        max: param.defaultMax ? param.defaultMax : 1,
-        defaultMin: param.defaultMin ? param.defaultMin : 0,
-        defaultMax: param.defaultMax ? param.defaultMax : 1,
-        id: uniqueId,
-        inputLinkIds,
-      }))
+      store.dispatch(
+        uNodeCreate(
+          uniqueId,
+          generateParamFromConfig(param, uniqueId, uniqueSketchId)
+        )
+      )
     }
   }
 
@@ -185,26 +192,20 @@ const sketchReimport = (sketchId, store) => {
       paramIds = [
         ...paramIds.slice(0, i), uniqueId, ...paramIds.slice(i),
       ]
-      store.dispatch(uNodeCreate(uniqueId, {
-        title: moduleParam.title ? moduleParam.title : moduleParam.key,
-        type: 'param',
-        key: moduleParam.key,
-        value: moduleParam.defaultValue,
-        hidden: moduleParam.hidden === undefined ? false : moduleParam.hidden,
-        min: moduleParam.defaultMin ? moduleParam.defaultMin : 0,
-        max: moduleParam.defaultMax ? moduleParam.defaultMax : 1,
-        defaultMin: moduleParam.defaultMin ? moduleParam.defaultMin : 0,
-        defaultMax: moduleParam.defaultMax ? moduleParam.defaultMax : 1,
-        id: uniqueId,
-        inputLinkIds: [],
-      }))
+      store.dispatch(
+        uNodeCreate(
+          uniqueId,
+          generateParamFromConfig(moduleParam, uniqueId, sketchId)
+        )
+      )
     } else {
-      // If param does exist, the title may still change
+      // If param does exist, some properties may have changed (e.g. title, defaultMin, defaultMax, hidden)
       const id = sketchParam.id
       store.dispatch(nodeUpdate(id, {
         title: moduleParam.title ? moduleParam.title : moduleParam.key,
         defaultMin: moduleParam.defaultMin ? moduleParam.defaultMin : 0,
         defaultMax: moduleParam.defaultMax ? moduleParam.defaultMax : 1,
+        hidden: moduleParam.hidden === undefined ? false : moduleParam.hidden,
       }))
     }
   }
