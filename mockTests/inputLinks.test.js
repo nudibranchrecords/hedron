@@ -45,7 +45,6 @@ test('(mock) Input Links - Update link midi input', () => {
   const messageType = 'controlChange'
   const noteNum = 100
   const channel = 13
-  const deviceId = 'Akai Foo'
 
   // State starts assuming some dropdown value have changed
   const startState = {
@@ -68,7 +67,6 @@ test('(mock) Input Links - Update link midi input', () => {
       },
       link_a: {
         id: 'link_a',
-        deviceId: deviceId,
         midiOptionIds: [
           'option_a', 'option_b', 'option_c',
         ],
@@ -80,7 +78,6 @@ test('(mock) Input Links - Update link midi input', () => {
     },
     inputs: {
       midi_0_0: {
-        deviceId: deviceId,
         assignedLinkIds: [
           'link_a',
         ],
@@ -105,7 +102,6 @@ test('(mock) Input Links - Update link midi input', () => {
   const newInputId = constructMidiId(messageType, noteNum, channel)
   const newInput = state.inputs[newInputId]
   expect(newInput.assignedLinkIds[0]).toBe('link_a')
-  expect(newInput.deviceId).toBe(deviceId)
 
   const link = state.nodes.link_a
   expect(link.input.id).toBe(newInputId)

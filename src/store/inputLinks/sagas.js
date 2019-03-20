@@ -13,7 +13,6 @@ import sequencerGenerateOptions from '../../utils/sequencerGenerateOptions'
 import animGenerateOptions from '../../utils/animGenerateOptions'
 import audioGenerateOptions from '../../utils/audioGenerateOptions'
 import { midiStartLearning } from '../midi/actions'
-import getCurrentBankIndex from '../../selectors/getCurrentBankIndex'
 import { getAll } from '../../externals/modifiers'
 import uid from 'uid'
 
@@ -32,7 +31,7 @@ export function* inputLinkCreate (action) {
   const animOptionIds = []
   const audioOptionIds = []
   let linkableActions = {}
-  let bankIndex, nodeType, linkType, sequencerGridId
+  let nodeType, linkType, sequencerGridId
   const node = yield select(getNode, p.nodeId)
   const sketchId = node.sketchId
 
@@ -110,8 +109,6 @@ export function* inputLinkCreate (action) {
     }
 
     if (p.inputType === 'midi' || linkType === 'linkableAction') {
-      bankIndex = yield select(getCurrentBankIndex, m.deviceId)
-
       if (linkType === 'node') {
         const midiOpts = yield call(midiGenerateOptions, linkId)
 
@@ -180,8 +177,6 @@ export function* inputLinkCreate (action) {
       sketchId,
       parentNodeId: p.nodeId,
       nodeType,
-      deviceId: m.deviceId,
-      bankIndex,
       modifierIds,
       lfoOptionIds,
       midiOptionIds,
@@ -195,7 +190,7 @@ export function* inputLinkCreate (action) {
     yield put(rNodeCreate(linkId, link))
     yield put(rInputLinkAdd(linkId))
     yield put(uNodeInputLinkAdd(p.nodeId, linkId))
-    yield put(inputAssignedLinkCreate(p.inputId, linkId, m.deviceId))
+    yield put(inputAssignedLinkCreate(p.inputId, linkId))
   }
 }
 

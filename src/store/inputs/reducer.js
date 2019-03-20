@@ -30,7 +30,6 @@ const inputsReducer = (state = defaultState, action) => {
           [p.inputId]: {
             ...state[p.inputId],
             assignedLinkIds: [...state[p.inputId].assignedLinkIds, p.linkId],
-            deviceId: p.deviceId,
           },
         }
       } else {
@@ -38,7 +37,6 @@ const inputsReducer = (state = defaultState, action) => {
           ...state,
           [p.inputId]: {
             assignedLinkIds: [p.linkId],
-            deviceId: p.deviceId,
           },
         }
       }

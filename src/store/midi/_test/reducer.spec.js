@@ -40,11 +40,9 @@ test('(Reducer) midiReducer', (t) => {
   const devices = {
     xxx: {
       title: 'Foo',
-      bankIndex: 0,
     },
     yyy: {
       title: 'Bar',
-      bankIndex: 0,
     },
   }
 
@@ -68,11 +66,9 @@ test('(Reducer) midiReducer', (t) => {
       xxx: {
         title: 'Foo',
         lastMessage,
-        bankIndex: 0,
       },
       yyy: {
         title: 'Bar',
-        bankIndex: 0,
       },
     },
   }
@@ -80,26 +76,6 @@ test('(Reducer) midiReducer', (t) => {
   actualState = midiReducer(actualState, a.midiMessage('xxx', lastMessage))
 
   t.deepEqual(actualState, expectedState, 'updates message info')
-
-  expectedState = {
-    learning: false,
-    devices: {
-      xxx: {
-        title: 'Foo',
-        lastMessage,
-        bankIndex: 3,
-      },
-      yyy: {
-        title: 'Bar',
-        bankIndex: 1,
-      },
-    },
-  }
-
-  actualState = midiReducer(actualState, a.midiDeviceBankChange('yyy', 1))
-  actualState = midiReducer(actualState, a.midiDeviceBankChange('xxx', 3))
-
-  t.deepEqual(actualState, expectedState, 'changes bank')
 
   t.end()
 })
