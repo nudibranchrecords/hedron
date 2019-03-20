@@ -20,7 +20,7 @@ const handleUpdateMidiInput = (action, store) => {
   const newInputId = constructMidiId(messageType, noteNum, channel)
 
   store.dispatch(inputAssignedLinkDelete(link.input.id, link.id))
-  store.dispatch(inputAssignedLinkCreate(newInputId, link.id, link.deviceId))
+  store.dispatch(inputAssignedLinkCreate(newInputId, link.id))
   store.dispatch(nodeUpdate(link.id, { input: { id: newInputId, type: 'midi' } }))
 }
 

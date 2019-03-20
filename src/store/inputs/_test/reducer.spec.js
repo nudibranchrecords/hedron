@@ -130,63 +130,55 @@ test('(Reducer) inputsReducer - Adds node and device on inputAssignedLinkCreate'
   expectedState = {
     audio_0: {
       assignedLinkIds: ['XX'],
-      deviceId: 'AAA',
     },
     audio_1: {
       assignedLinkIds: [],
     },
   }
 
-  actual = inputsReducer(originalState, a.inputAssignedLinkCreate('audio_0', 'XX', 'AAA'))
+  actual = inputsReducer(originalState, a.inputAssignedLinkCreate('audio_0', 'XX'))
 
   t.deepEqual(actual, expectedState)
 
   expectedState = {
     audio_0: {
       assignedLinkIds: ['XX'],
-      deviceId: 'AAA',
     },
     audio_1: {
       assignedLinkIds: ['YY'],
-      deviceId: 'BBB',
     },
   }
 
-  actual = inputsReducer(actual, a.inputAssignedLinkCreate('audio_1', 'YY', 'BBB'))
+  actual = inputsReducer(actual, a.inputAssignedLinkCreate('audio_1', 'YY'))
 
   t.deepEqual(actual, expectedState)
 
   expectedState = {
     audio_0: {
       assignedLinkIds: ['XX'],
-      deviceId: 'AAA',
     },
     audio_1: {
       assignedLinkIds: ['YY', 'ZZ'],
-      deviceId: 'BBB',
     },
   }
 
-  actual = inputsReducer(actual, a.inputAssignedLinkCreate('audio_1', 'ZZ', 'BBB'))
+  actual = inputsReducer(actual, a.inputAssignedLinkCreate('audio_1', 'ZZ'))
 
   t.deepEqual(actual, expectedState)
 
   expectedState = {
     audio_0: {
       assignedLinkIds: ['XX'],
-      deviceId: 'AAA',
     },
     audio_1: {
       assignedLinkIds: ['YY', 'ZZ'],
-      deviceId: 'BBB',
     },
     midi_XXX: {
       assignedLinkIds: ['AA'],
-      deviceId: 'CCC',
     },
   }
 
-  actual = inputsReducer(actual, a.inputAssignedLinkCreate('midi_XXX', 'AA', 'CCC'))
+  actual = inputsReducer(actual, a.inputAssignedLinkCreate('midi_XXX', 'AA'))
 
   t.deepEqual(actual, expectedState, 'Adds input and assigns node when input doesnt exist')
 
