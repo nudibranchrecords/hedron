@@ -34,7 +34,6 @@ export default (store) => {
             m.id,
             learning.type,
             {
-              deviceId: rawMessage.target.name,
               controlType,
               channel: m.channel,
               messageType: m.messageType,
@@ -66,7 +65,6 @@ export default (store) => {
         title: entry.name,
         id: entry.name,
         manufacturer: entry.manufacturer,
-        bankIndex: 0,
       }
       entry.onmidimessage = onMessage
     })

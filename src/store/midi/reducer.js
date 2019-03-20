@@ -28,18 +28,6 @@ const midiReducer = (state = defaultState, action) => {
         devices: p.devices,
       }
     }
-    case 'MIDI_DEVICE_BANK_CHANGE': {
-      return {
-        ...state,
-        devices: {
-          ...state.devices,
-          [p.id]: {
-            ...state.devices[p.id],
-            bankIndex: p.index,
-          },
-        },
-      }
-    }
     case 'MIDI_MESSAGE': {
       return {
         ...state,
