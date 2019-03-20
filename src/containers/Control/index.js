@@ -8,6 +8,7 @@ const mapStateToProps = (state, ownProps) => {
 
   return {
     type,
+    onChangeAction: node.onChangeAction,
   }
 }
 
