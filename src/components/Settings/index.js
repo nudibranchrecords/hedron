@@ -25,6 +25,14 @@ const Settings = () => (
           <Input name='watchSketchesDir' label='Watch Sketches' type='checkbox' />
         </Col>
       </Row>
+      <Row>
+        <Col>
+          <Input name='computeFullSpectrum' label='Compute Full Spectrum' type='checkbox' />
+        </Col>
+        <Col>
+          <Input name='generateAudioTexture' label='Generate Audio Texture' type='checkbox' />
+        </Col>
+      </Row>
       <h2>Clock</h2>
       <Row>
         <Col width='6rem'>

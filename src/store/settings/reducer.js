@@ -6,6 +6,8 @@ const defaultState = {
   antialias: false,
   throttledFPS: 60,
   watchSketchesDir: true,
+  generateAudioTexture: false,
+  computeFullSpectrum: false,
 }
 
 const settingsReducer = (state = defaultState, action) => {

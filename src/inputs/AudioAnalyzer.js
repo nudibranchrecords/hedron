@@ -1,6 +1,10 @@
 import * as THREE from 'three'
-class AudioInput {
-  constructor (stream) {
+import { settingsUpdate } from '../store/settings/actions'
+
+let generateAudioTexture = false, computeFullSpectrum = false;
+
+export class AudioAnalyzer {
+  constructor(stream) {
     const context = new window.AudioContext()
     const source = context.createMediaStreamSource(stream)
 
@@ -55,12 +59,21 @@ class AudioInput {
     this.texture.magFilter = this.texture.minFilter = THREE.LinearFilter
   }
 
-  lerp (v0, v1, t) {
+  lerp(v0, v1, t) {
     return (1 - t) * v0 + t * v1
   }
 
-  update () {
+  update() {
+    // console.log(generateAudioTexture)
     this.analyser.getByteFrequencyData(this.freqs)
+    this.processBands()
+    if (computeFullSpectrum) {
+      this.processFullSpectrum()
+    }
+    return this.levelsData
+  }
+
+  processFullSpectrum() {
     for (let i = 0; i < this.freqs.length; i++) {
       let freq = this.freqs[i] / 256
       freq = Math.max(freq, Math.max(0, this.fullCleanLevelsData[i] - this.levelsFalloff))
@@ -79,13 +92,18 @@ class AudioInput {
       freq = this.lerp(freq, normalized, this.normalizeLevels)
       freq = Math.pow(freq, this.levelsPower)
       this.fullLevelsData[i] = this.lerp(freq, this.fullLevelsData[i], this.smoothing)
-      this.textureData[i] = Math.floor(this.fullLevelsData[i] * 256)
     }
 
-    this.texture.image.data = this.textureData
+    if (generateAudioTexture) {
+      for (let i = 0; i < this.freqs.length; i++) {
+        this.textureData[i] = Math.floor(this.fullLevelsData[i] * 256)
+      }
+      this.texture.image.data = this.textureData
+      this.texture.needsUpdate = true
+    }
+  }
 
-    this.texture.needsUpdate = true
-
+  processBands() {
     for (let i = 0; i < this.numBands; i++) {
       let sum = 0
 
@@ -93,21 +111,43 @@ class AudioInput {
         sum += this.freqs[(i * this.levelBins) + j]
       }
       let band = (sum / this.levelBins) / 256
-      band = Math.max(band, Math.max(0, this.cleanLevelsData[ i ] - this.levelsFalloff))
-      this.cleanLevelsData[ i ] = band
-      this.maxLevelsData[ i ] = Math.max(this.maxLevelsData[ i ] * this.maxLevelFalloffMultiplier, this.maxLevelMinimum)
-      this.maxLevelsData[ i ] = Math.max(this.maxLevelsData[ i ], band)
-      this.minLevelsData[ i ] = Math.min(
-        1 - (1 - this.minLevelsData[ i ]) * this.maxLevelFalloffMultiplier,
-        this.maxLevelsData[ i ] - this.maxLevelMinimum)
-      this.minLevelsData[ i ] = Math.min(this.minLevelsData[ i ], band)
-      const normalized = (band - this.minLevelsData[ i ]) / (this.maxLevelsData[ i ] - this.minLevelsData[ i ])
+      band = Math.max(band, Math.max(0, this.cleanLevelsData[i] - this.levelsFalloff))
+      this.cleanLevelsData[i] = band
+      this.maxLevelsData[i] = Math.max(this.maxLevelsData[i] * this.maxLevelFalloffMultiplier, this.maxLevelMinimum)
+      this.maxLevelsData[i] = Math.max(this.maxLevelsData[i], band)
+      this.minLevelsData[i] = Math.min(
+        1 - (1 - this.minLevelsData[i]) * this.maxLevelFalloffMultiplier,
+        this.maxLevelsData[i] - this.maxLevelMinimum)
+      this.minLevelsData[i] = Math.min(this.minLevelsData[i], band)
+      const normalized = (band - this.minLevelsData[i]) / (this.maxLevelsData[i] - this.minLevelsData[i])
       band = this.lerp(band, normalized, this.normalizeLevels)
       band = Math.pow(band, this.levelsPower)
-      this.levelsData[ i ] = this.lerp(band, this.levelsData[ i ], this.smoothing)
+      this.levelsData[i] = this.lerp(band, this.levelsData[i], this.smoothing)
     }
-    return this.levelsData
   }
 }
 
-export default AudioInput
+export const listener = (action, store) => {
+  if (action.type == 'SETTINGS_UPDATE') {
+    let items = null
+    const c = action.payload.items.computeFullSpectrum
+    const g = action.payload.items.generateAudioTexture;
+    if (c != undefined && c != computeFullSpectrum) {
+      computeFullSpectrum = c
+      if (generateAudioTexture && !computeFullSpectrum) {
+        items = { generateAudioTexture: false }
+      }
+    }
+
+    if (g != undefined && g != generateAudioTexture) {
+      generateAudioTexture = g
+      if (generateAudioTexture && !computeFullSpectrum) {
+        items = { computeFullSpectrum: true }
+      }
+    }
+
+    if (items) {
+      store.dispatch(settingsUpdate(items))
+    }
+  }
+}

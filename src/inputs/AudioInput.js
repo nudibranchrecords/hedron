@@ -1,4 +1,4 @@
-import AudioAnalyzer from './AudioAnalyzer'
+import { AudioAnalyzer } from './AudioAnalyzer'
 import { inputFired } from '../store/inputs/actions'
 
 export default (store) => {
