@@ -10,7 +10,7 @@ const mapStateToProps = (state, ownProps) => ({
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     onInputChange: (value) => {
-      dispatch(uInputLinkCreate(ownProps.nodeId, value.value, value.type))
+      dispatch(uInputLinkCreate(ownProps.nodeId, value, value.type))
     },
   }
 }

@@ -1,19 +1,20 @@
 import { connect } from 'react-redux'
-import Select from '../../components/Select'
+import Select from '../Select'
 import { nodeValueUpdate } from '../../store/nodes/actions'
 
 const mapStateToProps = (state, ownProps) => {
   const select = state.nodes[ownProps.nodeId]
   return {
-    value: select.value,
+    id: ownProps.nodeId,
+    buttonText: select.options.find(opt => opt.value === select.value).label,
     options: select.options,
   }
 }
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
-    onChange: event => {
-      dispatch(nodeValueUpdate(ownProps.nodeId, event.target.value, {
+    onChange: value => {
+      dispatch(nodeValueUpdate(ownProps.nodeId, value, {
         dontMutate: true,
       }))
 

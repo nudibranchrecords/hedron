@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import Select from '../Select'
+import Select from '../../containers/Select'
 import styled from 'styled-components'
 
 const Wrapper = styled.div`
@@ -10,7 +10,7 @@ const Wrapper = styled.div`
 const InputSelect = ({ onInputChange, options }) => (
   <Wrapper>
     <Select
-      value={false}
+      buttonText='Choose'
       options={options}
       onChange={onInputChange}
     />

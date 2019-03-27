@@ -1,28 +1,55 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import styled from 'styled-components'
 
-const Select = ({ options, onChange, value }) => (
+import { Manager, Reference, Popper } from 'react-popper'
 
-  <select onChange={onChange} value={value}>
-    {options.map(option =>
-      <option key={option.value} value={option.value}>
-        {option.label}
-      </option>
-    )}
-  </select>
+const Option = styled.div`
+  cursor: pointer;
+`
+
+const Dropdown = styled.div`
+  visibility: ${props => props.isVisible ? 'visible' : 'hidden'};
+`
+
+const Select = ({ onOpenClick, isOpen, options, onChange, buttonText }) => (
+
+  <Manager>
+    <Reference>
+      {({ ref }) => (
+        <button type='button' ref={ref} onClick={onOpenClick} onMouseDown={e => e.stopPropagation()}>
+          { buttonText }
+        </button>
+      )}
+    </Reference>
+
+    <Popper placement='bottom'>
+      {({ ref, style, placement, arrowProps }) => (
+        <Dropdown isVisible={isOpen}>
+          <div ref={ref} style={style} data-placement={placement}>
+            <div ref={arrowProps.ref} style={arrowProps.style} />
+            {options.map(option =>
+              <Option key={option.value}
+                onMouseDown={e => onChange(option.value)}>
+                {option.label}
+              </Option>
+            )}
+          </div>
+        </Dropdown>
+        )}
+    </Popper>
+  </Manager>
 
 )
 
 Select.propTypes = {
-  value: PropTypes.oneOfType([
-    PropTypes.string,
-    PropTypes.bool,
-    PropTypes.number,
-  ]),
   options: PropTypes.arrayOf(
     PropTypes.object
   ),
   onChange: PropTypes.func.isRequired,
+  onOpenClick: PropTypes.func.isRequired,
+  isOpen: PropTypes.bool,
+  buttonText: PropTypes.string,
 }
 
 export default Select
