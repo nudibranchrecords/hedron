@@ -1,30 +1,16 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import ReactSelect from 'react-select'
-import styled from 'styled-components'
-import Row from '../Row'
-import MidiButton from '../MidiButton'
-import SubNode from '../SubNode'
 
-const SelectCol = styled.div`
-  flex: 1;
-`
+const Select = ({ options, onChange, value }) => (
 
-const Select = ({ nodeId, options, onChange, title, value, onAssignClick }) => (
-  <SubNode nodeId={nodeId} title={title}>
-    <Row>
-      <SelectCol>
-        <ReactSelect
-          clearable={false}
-          searchable={false}
-          value={value}
-          options={options}
-          onChange={onChange}
-        />
-      </SelectCol>
-      <MidiButton onClick={onAssignClick} />
-    </Row>
-  </SubNode>
+  <select onChange={onChange} value={value}>
+    {options.map(option =>
+      <option key={option.value} value={option.value}>
+        {option.label}
+      </option>
+    )}
+  </select>
+
 )
 
 Select.propTypes = {
@@ -37,9 +23,6 @@ Select.propTypes = {
     PropTypes.object
   ),
   onChange: PropTypes.func.isRequired,
-  onAssignClick: PropTypes.func.isRequired,
-  title: PropTypes.string.isRequired,
-  nodeId: PropTypes.string.isRequired,
 }
 
 export default Select
