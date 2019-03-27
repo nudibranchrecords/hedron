@@ -1,5 +1,5 @@
 import { connect } from 'react-redux'
-import ReactSelect from 'react-select'
+import Select from '../../components/Select'
 import { nodeValueUpdate } from '../../store/nodes/actions'
 
 const mapStateToProps = (state, ownProps) => {
@@ -7,15 +7,13 @@ const mapStateToProps = (state, ownProps) => {
   return {
     value: select.value,
     options: select.options,
-    clearable: false,
-    searchable: false,
   }
 }
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
-    onChange: value => {
-      dispatch(nodeValueUpdate(ownProps.nodeId, value.value, {
+    onChange: event => {
+      dispatch(nodeValueUpdate(ownProps.nodeId, event.target.value, {
         dontMutate: true,
       }))
 
@@ -33,4 +31,4 @@ export default connect(
   {
     areStatesEqual: () => false,
   }
-)(ReactSelect)
+)(Select)
