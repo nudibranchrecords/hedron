@@ -30,7 +30,7 @@ const Select = ({ onOpenClick, isOpen, options, onChange, buttonText }) => (
             <div ref={arrowProps.ref} style={arrowProps.style} />
             {options.map(option =>
               <Option key={option.value}
-                onMouseDown={e => onChange(option.value)}>
+                onMouseDown={e => onChange(option)}>
                 {option.label}
               </Option>
             )}
