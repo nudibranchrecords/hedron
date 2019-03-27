@@ -13,8 +13,8 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
-    onChange: value => {
-      dispatch(nodeValueUpdate(ownProps.nodeId, value, {
+    onChange: option => {
+      dispatch(nodeValueUpdate(ownProps.nodeId, option.value, {
         dontMutate: true,
       }))
 
