@@ -6,7 +6,7 @@ const mapStateToProps = (state, ownProps) => {
   const select = state.nodes[ownProps.nodeId]
   const currentOpt = select.options.find(opt => opt.value === select.value)
   return {
-    id: ownProps.nodeId,
+    id: `node_${ownProps.nodeId}`,
     buttonText: currentOpt.label,
     value: currentOpt.value,
     options: select.options,
