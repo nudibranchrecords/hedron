@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import theme from '../../utils/theme'
 import downIcon from '../../assets/icons/down.icon.txt'
+import uiEventEmitter from '../../utils/uiEventEmitter'
 
 import { Manager, Reference, Popper } from 'react-popper'
 import Icon from '../Icon'
@@ -54,42 +55,69 @@ const Dropdown = styled.div`
   min-width: 5rem;
 `
 
-const Select = ({ onOpenClick, isOpen, options, onChange, buttonText, value }) => (
-  <Manager>
-    <Reference>
-      {({ ref }) => (
-        <Button ref={ref} onClick={onOpenClick} onMouseDown={e => e.stopPropagation()} isOpen={isOpen}>
-          { buttonText }
-          <DownIcon glyph={downIcon} />
-        </Button>
+class Select extends React.Component {
+  constructor (props) {
+    super(props)
+    this.repaint = this.repaint.bind(this)
+  }
+
+  componentDidMount () {
+    uiEventEmitter.on('repaint', this.repaint)
+  }
+
+  componentWillUnmount () {
+    uiEventEmitter.removeListener('repaint', this.repaint)
+  }
+
+  repaint () {
+    if (this.scheduleUpdate) this.scheduleUpdate()
+  }
+
+  render () {
+    const { onOpenClick, isOpen, options, onChange, buttonText, value } = this.props
+
+    return (
+      <Manager>
+        <Reference>
+          {({ ref }) => (
+            <Button ref={ref} onClick={onOpenClick} onMouseDown={e => e.stopPropagation()} isOpen={isOpen}>
+              { buttonText }
+              <DownIcon glyph={downIcon} />
+            </Button>
       )}
-    </Reference>
+        </Reference>
 
-    <Popper
-      modifiers={{
-        preventOverflow: {
-          boundariesElement: 'window',
-        },
-      }}
-    >
-      {({ ref, style, placement }) => (
-        <Dropdown ref={ref} style={style} data-placement={placement} isVisible={isOpen}>
+        <Popper
+          modifiers={{
+            preventOverflow: {
+              boundariesElement: 'window',
+            },
+          }}
+        >
+          {({ ref, style, placement, outOfBoundaries, scheduleUpdate }) => {
+            if (!this.scheduleUpdate) this.scheduleUpdate = scheduleUpdate
 
-          {options.map(option =>
-            <Option
-              key={option.value}
-              isActive={value === option.value}
-              onMouseDown={e => onChange(option)}
-            >
-              {option.label}
-            </Option>
-            )}
+            return (
+              <Dropdown ref={ref} style={style} data-placement={placement} isVisible={isOpen}>
 
-        </Dropdown>
-      )}
-    </Popper>
-  </Manager>
-)
+                {options.map(option =>
+                  <Option
+                    key={option.value}
+                    isActive={value === option.value}
+                    onMouseDown={e => onChange(option)}
+                  >
+                    {option.label}
+                  </Option>
+                )}
+
+              </Dropdown>
+            )
+          }}
+        </Popper>
+      </Manager>
+    )
+  }
+}
 
 Select.propTypes = {
   options: PropTypes.arrayOf(
