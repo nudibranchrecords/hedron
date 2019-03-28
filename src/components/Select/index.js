@@ -2,18 +2,32 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import theme from '../../utils/theme'
+import downIcon from '../../assets/icons/down.icon.txt'
 
 import { Manager, Reference, Popper } from 'react-popper'
+import Icon from '../Icon'
 
 const Button = styled.div`
   height: 18px;
   border: 1px solid ${theme.lineColor2};
-  padding: 0 0.25rem;
+  padding: 0 0.125rem 0 0.25rem;
   font-size: 11px;
   overflow: hidden;
   background-color: ${theme.bgColorDark3};
   display: flex;
   align-items: center;
+  position: relative;
+  border-color: ${props => props.isOpen ? 'white' : theme.lineColor2};
+`
+
+const DownIcon = styled(Icon)`
+  width: 0.8rem;
+  height: 0.8rem;
+  fill: ${theme.lineColor2};
+  position: absolute;
+  right: 0;
+  background: ${theme.bgColorDark3};
+  z-index: 12;
 `
 
 const Option = styled.div`
@@ -33,14 +47,16 @@ const Dropdown = styled.div`
   z-index: 10;
   border: 1px solid ${theme.lineColor2};
   margin: 0.25rem;
+  min-width: 5rem;
 `
 
 const Select = ({ onOpenClick, isOpen, options, onChange, buttonText }) => (
   <Manager>
     <Reference>
       {({ ref }) => (
-        <Button ref={ref} onClick={onOpenClick} onMouseDown={e => e.stopPropagation()}>
+        <Button ref={ref} onClick={onOpenClick} onMouseDown={e => e.stopPropagation()} isOpen={isOpen}>
           { buttonText }
+          <DownIcon glyph={downIcon} />
         </Button>
       )}
     </Reference>
