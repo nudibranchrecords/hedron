@@ -9,11 +9,14 @@ const Option = styled.div`
 `
 
 const Dropdown = styled.div`
-  visibility: ${props => props.isVisible ? 'visible' : 'hidden'};
+ background: black;
+ padding: 0.5rem;
+ visibility: ${props => props.isVisible ? 'visible' : 'hidden'};
+ pointer-events: ${props => props.isVisible ? 'default' : 'none'};
+ z-index: 10;
 `
 
 const Select = ({ onOpenClick, isOpen, options, onChange, buttonText }) => (
-
   <Manager>
     <Reference>
       {({ ref }) => (
@@ -23,23 +26,27 @@ const Select = ({ onOpenClick, isOpen, options, onChange, buttonText }) => (
       )}
     </Reference>
 
-    <Popper placement='bottom'>
-      {({ ref, style, placement, arrowProps }) => (
-        <Dropdown isVisible={isOpen}>
-          <div ref={ref} style={style} data-placement={placement}>
-            <div ref={arrowProps.ref} style={arrowProps.style} />
-            {options.map(option =>
-              <Option key={option.value}
-                onMouseDown={e => onChange(option)}>
-                {option.label}
-              </Option>
+    <Popper
+      modifiers={{
+        preventOverflow: {
+          boundariesElement: 'window',
+        },
+      }}
+    >
+      {({ ref, style, placement }) => (
+        <Dropdown ref={ref} style={style} data-placement={placement} isVisible={isOpen}>
+
+          {options.map(option =>
+            <Option key={option.value}
+              onMouseDown={e => onChange(option)}>
+              {option.label}
+            </Option>
             )}
-          </div>
+
         </Dropdown>
-        )}
+      )}
     </Popper>
   </Manager>
-
 )
 
 Select.propTypes = {
