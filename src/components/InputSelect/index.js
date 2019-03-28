@@ -10,7 +10,7 @@ const Wrapper = styled.div`
 const InputSelect = ({ onInputChange, options, nodeId }) => (
   <Wrapper>
     <Select
-      id={nodeId}
+      id={`select-input_${nodeId}`}
       buttonText='Choose'
       options={options}
       onChange={onInputChange}
@@ -23,6 +23,7 @@ InputSelect.propTypes = {
   options: PropTypes.arrayOf(
     PropTypes.object
   ).isRequired,
+  nodeId: PropTypes.string.isRequired,
 }
 
 export default InputSelect
