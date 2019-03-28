@@ -4,9 +4,11 @@ import { nodeValueUpdate } from '../../store/nodes/actions'
 
 const mapStateToProps = (state, ownProps) => {
   const select = state.nodes[ownProps.nodeId]
+  const currentOpt = select.options.find(opt => opt.value === select.value)
   return {
     id: ownProps.nodeId,
-    buttonText: select.options.find(opt => opt.value === select.value).label,
+    buttonText: currentOpt.label,
+    value: currentOpt.value,
     options: select.options,
   }
 }
