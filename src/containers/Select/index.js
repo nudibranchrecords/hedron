@@ -12,7 +12,7 @@ const mapStateToProps = (state, ownProps) => {
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     onOpenClick: e => {
-      dispatch(uiEditingToggle('selectComponent', ownProps.nodeId))
+      dispatch(uiEditingToggle('selectComponent', ownProps.id))
     },
   }
 }

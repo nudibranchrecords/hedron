@@ -7,9 +7,10 @@ const Wrapper = styled.div`
   min-width: 5rem;
 `
 
-const InputSelect = ({ onInputChange, options }) => (
+const InputSelect = ({ onInputChange, options, nodeId }) => (
   <Wrapper>
     <Select
+      id={nodeId}
       buttonText='Choose'
       options={options}
       onChange={onInputChange}
