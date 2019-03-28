@@ -34,6 +34,7 @@ const DownIcon = styled(Icon)`
 const Option = styled.div`
   cursor: pointer;
   padding: 0.25rem 0.5rem;
+  font-size: 11px;
 
   &:hover {
     color: white;
@@ -45,7 +46,7 @@ const Dropdown = styled.div`
   background: black;
   visibility: ${props => props.isVisible ? 'visible' : 'hidden'};
   pointer-events: ${props => props.isVisible ? 'default' : 'none'};
-  z-index: 10;
+  z-index: 15;
   border: 1px solid ${theme.lineColor2};
   margin: 0.25rem;
   min-width: 5rem;
