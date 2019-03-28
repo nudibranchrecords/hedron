@@ -35,6 +35,8 @@ const Option = styled.div`
   cursor: pointer;
   padding: 0.25rem 0.5rem;
   font-size: 11px;
+  color: ${props => props.isActive ? 'white' : 'inherit'};
+  font-weight: ${props => props.isActive ? 'bold' : 'normal'};
 
   &:hover {
     color: white;
@@ -52,7 +54,7 @@ const Dropdown = styled.div`
   min-width: 5rem;
 `
 
-const Select = ({ onOpenClick, isOpen, options, onChange, buttonText }) => (
+const Select = ({ onOpenClick, isOpen, options, onChange, buttonText, value }) => (
   <Manager>
     <Reference>
       {({ ref }) => (
@@ -74,8 +76,11 @@ const Select = ({ onOpenClick, isOpen, options, onChange, buttonText }) => (
         <Dropdown ref={ref} style={style} data-placement={placement} isVisible={isOpen}>
 
           {options.map(option =>
-            <Option key={option.value}
-              onMouseDown={e => onChange(option)}>
+            <Option
+              key={option.value}
+              isActive={value === option.value}
+              onMouseDown={e => onChange(option)}
+            >
               {option.label}
             </Option>
             )}
@@ -93,7 +98,10 @@ Select.propTypes = {
   onChange: PropTypes.func.isRequired,
   onOpenClick: PropTypes.func.isRequired,
   isOpen: PropTypes.bool,
-  buttonText: PropTypes.string,
+  buttonText: PropTypes.string.isRequired,
+  value: PropTypes.oneOfType([
+    PropTypes.string, PropTypes.number, PropTypes.bool,
+  ]),
 }
 
 export default Select
