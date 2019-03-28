@@ -22,7 +22,6 @@ import Stats from 'stats.js'
 import createDebounce from 'redux-debounced'
 import tryRequire from 'try-require'
 
-import 'react-select/dist/react-select.css'
 import '../style.css'
 
 // inputs

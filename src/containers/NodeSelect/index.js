@@ -1,21 +1,22 @@
 import { connect } from 'react-redux'
-import ReactSelect from 'react-select'
+import Select from '../Select'
 import { nodeValueUpdate } from '../../store/nodes/actions'
 
 const mapStateToProps = (state, ownProps) => {
   const select = state.nodes[ownProps.nodeId]
+  const currentOpt = select.options.find(opt => opt.value === select.value)
   return {
-    value: select.value,
+    id: `node_${ownProps.nodeId}`,
+    buttonText: currentOpt.label,
+    value: currentOpt.value,
     options: select.options,
-    clearable: false,
-    searchable: false,
   }
 }
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
-    onChange: value => {
-      dispatch(nodeValueUpdate(ownProps.nodeId, value.value, {
+    onChange: option => {
+      dispatch(nodeValueUpdate(ownProps.nodeId, option.value, {
         dontMutate: true,
       }))
 
@@ -33,4 +34,4 @@ export default connect(
   {
     areStatesEqual: () => false,
   }
-)(ReactSelect)
+)(Select)
