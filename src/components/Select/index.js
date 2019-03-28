@@ -18,6 +18,7 @@ const Button = styled.div`
   align-items: center;
   position: relative;
   border-color: ${props => props.isOpen ? 'white' : theme.lineColor2};
+  cursor: pointer;
 `
 
 const DownIcon = styled(Icon)`
