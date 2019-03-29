@@ -1,4 +1,5 @@
 import { LOCATION_CHANGE } from 'react-router-redux'
+import _ from 'lodash'
 
 const defaultState = {
   panelWidths: {
@@ -33,14 +34,16 @@ const uiReducer = (state = defaultState, action) => {
       }
     }
     case 'UI_EDITING_TOGGLE': {
+      const newEditing = {
+        id: p.id,
+        type: p.type,
+      }
+
       return {
         ...state,
-        isEditing: state.isEditing
+        isEditing: _.isEqual(state.isEditing, newEditing)
           ? false
-          : {
-            id: p.id,
-            type: p.type,
-          },
+          : newEditing,
       }
     }
     case 'UI_EDITING_CLOSE':

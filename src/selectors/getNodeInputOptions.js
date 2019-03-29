@@ -6,11 +6,6 @@ export default (state, nodeId) => {
   // include: ONLY allow these node types
   const options = [
     {
-      value: false,
-      label: 'Choose',
-      disabled: true,
-    },
-    {
       value: 'audio',
       label: 'Audio',
       exclude: ['linkableAction'],
