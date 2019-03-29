@@ -10,7 +10,7 @@ import midiValueProcess from '../../utils/midiValueProcess'
 import { work } from '../../externals/modifiers'
 import debounceInput from '../../utils/debounceInput'
 
-export function* handleInput (action) {
+export function* handleInput(action) {
   const p = action.payload
   const inputType = p.meta && p.meta.type
   const messageCount = yield call(debounceInput, p)
@@ -21,6 +21,7 @@ export function* handleInput (action) {
 
       for (let i = 0; i < links.length; i++) {
         let skip
+        let postModifiers = [];
         const linkNode = yield select(getNode, links[i].nodeId)
 
         if (linkNode.type === 'linkableAction') {
@@ -44,6 +45,14 @@ export function* handleInput (action) {
           if (p.inputId === 'audio') {
             const o = yield select(getNodesValues, links[i].audioOptionIds)
             value = p.value[o.audioBand]
+            if (o.increment !== 0) {
+              const n = yield select(getNode, links[i].nodeId);
+              if (o.increment === 1) {
+                postModifiers.push((v) => ((n.value + v) % 1))
+              } else {
+                postModifiers.push((v) => ((((n.value - v) % 1) + 1) % 1))
+              }
+            }
           }
 
           if (links[i].modifierIds && links[i].modifierIds.length) {
@@ -60,6 +69,10 @@ export function* handleInput (action) {
                 }
               }
             }
+          }
+
+          for (let i = 0; i < postModifiers.length; i++) {
+            value = postModifiers[i](value)
           }
 
           switch (links[i].nodeType) {
@@ -105,6 +118,6 @@ export function* handleInput (action) {
   }
 }
 
-export function* watchInputs () {
+export function* watchInputs() {
   yield takeEvery('INPUT_FIRED', handleInput)
 }
