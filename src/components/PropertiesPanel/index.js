@@ -55,7 +55,7 @@ const PropertiesPanel = ({ isOpen, nodeId, Component, onCloseClick, panelId, tit
   return (
     <PanelContext.Provider value={panelId}>
       {isOpen &&
-      <MenuPanel titleContent={titleContent} onCloseClick={onCloseClick}>
+      <MenuPanel titleContent={titleContent} onCloseClick={onCloseClick} key={nodeId}>
         <Component nodeId={nodeId} />
       </MenuPanel>
     }

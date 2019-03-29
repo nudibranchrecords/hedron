@@ -9,8 +9,8 @@ const mapStateToProps = (state, ownProps) => ({
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
-    onInputChange: (value) => {
-      dispatch(uInputLinkCreate(ownProps.nodeId, value.value, value.type))
+    onInputChange: (option) => {
+      dispatch(uInputLinkCreate(ownProps.nodeId, option.value, option.type))
     },
   }
 }
@@ -18,8 +18,4 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 export default connect(
   mapStateToProps,
   mapDispatchToProps,
-  null,
-  {
-    areStatesEqual: () => true,
-  }
 )(InputSelect)
