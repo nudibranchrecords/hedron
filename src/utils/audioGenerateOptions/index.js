@@ -29,5 +29,28 @@ export default () => {
         },
       ],
     },
+    {
+      title: 'Increment',
+      key: 'increment',
+      type: 'select',
+      id: uid(),
+      value: 0,
+      inputLinkIds: [],
+      subNode: true,
+      options: [
+        {
+          value: 0,
+          label: 'Off',
+        },
+        {
+          value: 1,
+          label: 'Increment',
+        },
+        {
+          value: 2,
+          label: 'Decrement',
+        },
+      ],
+    },
   ]
 }
