@@ -5,8 +5,11 @@ export default (state, nodeId) => {
 
   const addNode = nodeId => {
     const node = getNode(state, nodeId)
-    arr.push(node)
-    if (node.parentNodeId) addNode(node.parentNodeId)
+
+    if (node !== undefined) {
+      arr.push(node)
+      if (node.parentNodeId) addNode(node.parentNodeId)
+    }
   }
 
   addNode(nodeId)
