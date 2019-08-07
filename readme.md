@@ -1,4 +1,4 @@
-# Hedron
+# <img src='http://nudibranchrecords.github.io/hedron/title.gif' alt='Hedron' />
 
 Perform live shows with your three.js creations.
 
