@@ -11,13 +11,13 @@ app.on('ready', () => {
     const { default: installExtension, REDUX_DEVTOOLS, REACT_DEVELOPER_TOOLS } = require('electron-devtools-installer')
 
     installExtension(REACT_DEVELOPER_TOOLS)
-        // eslint-disable-next-line no-console
-        .then((name) => console.log(`Added Extension:  ${name}`))
-        .catch((err) => console.error('An error occurred: ', err))
+    // eslint-disable-next-line no-console
+      .then((name) => console.log(`Added Extension:  ${name}`))
+      .catch((err) => console.error('An error occurred: ', err))
 
     installExtension(REDUX_DEVTOOLS)
-        // eslint-disable-next-line no-console
-        .then((name) => console.log(`Added Extension:  ${name}`))
-        .catch((err) => console.error('An error occurred: ', err))
+    // eslint-disable-next-line no-console
+      .then((name) => console.log(`Added Extension:  ${name}`))
+      .catch((err) => console.error('An error occurred: ', err))
   }
 })

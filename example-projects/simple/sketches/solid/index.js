@@ -104,7 +104,6 @@ class Solid {
     this.group.rotation.z += params.rotSpeedZ * baseSpeed * frameDiff
 
     // Change scale using params.scale
-    params.scale = params.scale
     this.group.scale.set(params.scale, params.scale, params.scale)
   }
 

@@ -22,7 +22,7 @@ const loadFile = resolvedPath => {
     eval(`delete require.cache['${resolvedPath}']`)
 
     file = eval(`require('${resolvedPath}')`)
-    /*eslint-enable */
+    /* eslint-enable */
   }
 
   return file

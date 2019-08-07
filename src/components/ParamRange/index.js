@@ -34,7 +34,6 @@ const Col = styled.div`
 `
 
 class ParamRange extends React.Component {
-
   constructor (props) {
     super(props)
 

@@ -35,9 +35,9 @@ class Stars {
 
     // create the particle system
     this.particleSystem = new THREE.Points(
-    this.particles,
-    this.material
-  )
+      this.particles,
+      this.material
+    )
 
     // add it to the scene
     this.root.add(this.particleSystem)

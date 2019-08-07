@@ -65,7 +65,6 @@ const Item = (props) => (
 )
 
 class AudioAnalyzer extends React.Component {
-
   constructor (props) {
     super(props)
     this.draw = this.draw.bind(this)
