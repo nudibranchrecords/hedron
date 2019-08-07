@@ -31,36 +31,36 @@ const Button = styled(ButtonComponent)`
   }
 `
 
-const MacroProperties = ({ macroId, onLearningClick, onDeleteClick, paramLinks,
-  isLearning, paramLinksAreVisible, onRenameClick }) => (
-    <Wrapper>
-      <Bottom>
-        {
-          paramLinksAreVisible &&
-          <div>
-            <h5>Connected Params</h5>
-            <Links>
-              {paramLinks.map(item => (
-                <MacroLink
-                  macroId={macroId}
-                  nodeId={item.nodeId}
-                  paramId={item.paramId}
-                  key={item.nodeId}
-                />
-              ))}
-            </Links>
-          </div>
-        }
-      </Bottom>
+const MacroProperties = ({
+  macroId, onLearningClick, onDeleteClick, paramLinks, isLearning, paramLinksAreVisible, onRenameClick,
+}) => (
+  <Wrapper>
+    <Bottom>
+      {paramLinksAreVisible &&
+        <div>
+          <h5>Connected Params</h5>
+          <Links>
+            {paramLinks.map(item => (
+              <MacroLink
+                macroId={macroId}
+                nodeId={item.nodeId}
+                paramId={item.paramId}
+                key={item.nodeId}
+              />
+            ))}
+          </Links>
+        </div>
+      }
+    </Bottom>
 
-      <Row>
-        <Button onClick={onLearningClick}>
-          {isLearning ? 'Stop Learning' : 'Start Learning'}
-        </Button>
-        <Button onClick={onRenameClick}>Rename</Button>
-        <Button color='danger' onClick={onDeleteClick}>Delete Macro</Button>
-      </Row>
-    </Wrapper>
+    <Row>
+      <Button onClick={onLearningClick}>
+        {isLearning ? 'Stop Learning' : 'Start Learning'}
+      </Button>
+      <Button onClick={onRenameClick}>Rename</Button>
+      <Button color='danger' onClick={onDeleteClick}>Delete Macro</Button>
+    </Row>
+  </Wrapper>
 )
 
 MacroProperties.propTypes = {
