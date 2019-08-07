@@ -49,7 +49,7 @@ const SceneManager = (
   {
     items, onAddClick, currentScene, onDeleteClick, onRenameClick, onChannelClick,
     onClearClick, onActiveClick, onOppositeClick,
- }
+  }
 ) => {
   const la = currentScene && currentScene.linkableActionIds
   return (
@@ -59,8 +59,8 @@ const SceneManager = (
           <SceneThumbContainer
             key={item.id}
             id={item.id}
-        />
-      ))}
+          />
+        ))}
         <SceneThumb onClick={onAddClick}>+</SceneThumb>
       </Thumbs>
       {currentScene &&
@@ -123,7 +123,7 @@ const SceneManager = (
           </Col>
         </Row>
       </Panel>
-    }
+      }
     </Wrapper>
   )
 }

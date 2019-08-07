@@ -50,7 +50,7 @@ class SequencerGrid extends React.Component {
             }}
             onMouseDown={() => this.setState({ mouseDown: true })}
             onMouseUp={() => this.setState({ mouseDown: false })}
-            >
+          >
             {index % 8 + 1}
           </Item>
         ))}

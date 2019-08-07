@@ -84,7 +84,7 @@ class Select extends React.Component {
               { buttonText }
               <DownIcon glyph={downIcon} />
             </Button>
-      )}
+          )}
         </Reference>
 
         <Popper

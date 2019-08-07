@@ -44,7 +44,6 @@ const ValueForm = styled.div`
 `
 
 class ValueBar extends React.Component {
-
   constructor (props) {
     super(props)
 

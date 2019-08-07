@@ -26,9 +26,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 
   return {
     onParamBarClick: type === 'shot'
-    ? () => {
-      dispatch(nodeShotFired(ownProps.nodeId, ownProps.sketchId, ownProps.shotMethod))
-    } : undefined,
+      ? () => {
+        dispatch(nodeShotFired(ownProps.nodeId, ownProps.sketchId, ownProps.shotMethod))
+      } : undefined,
   }
 }
 

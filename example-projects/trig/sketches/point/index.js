@@ -1,7 +1,6 @@
 const THREE = require('three')
 
 class Point {
-
   constructor () {
     this.root = new THREE.Group()
     const geom = new THREE.IcosahedronGeometry(0.5)
@@ -18,7 +17,6 @@ class Point {
     this.mesh.position.y = (rad * params.posY) - rad / 2
     this.mesh.position.z = (rad * params.posZ) - rad / 2
   }
-
 }
 
 module.exports = Point

@@ -48,12 +48,12 @@ const uiReducer = (state = defaultState, action) => {
     }
     case 'UI_EDITING_CLOSE':
     case LOCATION_CHANGE:
-      {
-        return {
-          ...state,
-          isEditing: false,
-        }
+    {
+      return {
+        ...state,
+        isEditing: false,
       }
+    }
     case 'UI_NODE_TOGGLE_OPEN': {
       return {
         ...state,

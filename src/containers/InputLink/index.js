@@ -51,6 +51,6 @@ export default connect(
   null,
   {
     areStatesEqual: (next, prev) =>
-    next.nodes === prev.nodes,
+      next.nodes === prev.nodes,
   }
 )(InputLink)
