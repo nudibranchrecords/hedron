@@ -66,8 +66,8 @@ export const createMainWindow = () => {
   })
 
   // Set url for `win`
-    // points to `webpack-dev-server` in development
-    // points to `index.html` in production
+  // points to `webpack-dev-server` in development
+  // points to `index.html` in production
   const url = isDevelopment
     ? `http://localhost:${process.env.ELECTRON_WEBPACK_WDS_PORT}`
     : `file://${__dirname}/index.html`

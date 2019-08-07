@@ -45,10 +45,10 @@ const reducers = combineReducers({
 })
 
 const rootReducer = (state = {}, action) => action.type === 'PROJECT_REHYDRATE'
-? {
-  ...state,
-  ...action.payload.data,
-}
-: reducers(state, action)
+  ? {
+    ...state,
+    ...action.payload.data,
+  }
+  : reducers(state, action)
 
 export default rootReducer

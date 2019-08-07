@@ -98,7 +98,7 @@ test('(engine) getSketchParams', function (t) {
   actual = getSketchParams(state)
 
   t.deepEqual(actual, expected,
-      'Returns key:value params for all sketches if no id given')
+    'Returns key:value params for all sketches if no id given')
 
   expected = {
     sketch_1: {
@@ -114,7 +114,7 @@ test('(engine) getSketchParams', function (t) {
   actual = getSketchParams(state, null, 'aaa')
 
   t.deepEqual(actual, expected,
-          'Returns key:value params for all sketches if scene ID given')
+    'Returns key:value params for all sketches if scene ID given')
 
   t.end()
 })
@@ -166,6 +166,6 @@ test('(engine) getSketchParams (min/max)', function (t) {
   actual = getSketchParams(state, '@@@')
 
   t.deepEqual(actual, expected,
-          'Returns correct value based on min/max')
+    'Returns correct value based on min/max')
   t.end()
 })
