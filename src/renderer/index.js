@@ -1,4 +1,3 @@
-import { ipcRenderer } from 'electron'
 import React from 'react'
 import { render } from 'react-dom'
 import { Provider } from 'react-redux'
@@ -102,13 +101,6 @@ engine.run(store, stats)
 if (isDevelopment) {
   loadDefaultProject()
 }
-
-// Load default project if running the app with '--devDist'
-ipcRenderer.on('args', (event, data) => {
-  if (data.distDev) {
-    loadDefaultProject()
-  }
-})
 
 if (module.hot) {
   module.hot.accept('../containers/App', () => {

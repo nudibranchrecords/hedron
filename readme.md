@@ -88,7 +88,6 @@ Run `yarn dist` to package up the app for best performance and no dev tools. Onc
 |--|--|
 | `yarn start` | Run in dev mode |
 | `yarn dist` | Package the app |
-| `yarn dist:dev` | Run a production build without packaging. Behaves similarly to `yarn start` in that it will look for a default project and open Chrome DevTools automatically. However it will not do any sort of live refreshing. |
 | `yarn dist:example-projects`| Install dependencies for example projects, zip them and move them to the `dist` folder |
 | `yarn lint` | Run linting |
 | `yarn test` | Run pre deployment tests (including linting) |
