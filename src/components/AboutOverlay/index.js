@@ -4,6 +4,13 @@ import OverlayModal from '../OverlayModal'
 import styled from 'styled-components'
 import logo from '../../../build/icon.png'
 
+const { app } = require('electron').remote
+const isDevelopment = process.env.NODE_ENV !== 'production'
+const vNum = app.getVersion()
+
+// Version number comes out wrong in dev mode so we only display for production
+const modalTitle = isDevelopment ? 'Dev Mode' : `v${vNum}`
+
 const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
@@ -32,7 +39,7 @@ const Credits = styled.div`
 const AboutOverlay = ({ isVisible, onCancelClick }) => (
   <OverlayModal
     isVisible={isVisible}
-    title={`v${process.env.npm_package_version}`}
+    title={modalTitle}
     onCancelClick={onCancelClick}
   >
     <Wrapper>
