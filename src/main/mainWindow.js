@@ -1,6 +1,5 @@
 import { BrowserWindow, ipcMain, shell } from 'electron'
 const argv = require('minimist')(process.argv)
-const isDistDev = argv.distDev // Prod build with some useful dev things
 const isDevelopment = process.env.NODE_ENV !== 'production'
 const path = require('path')
 
@@ -11,7 +10,7 @@ export let mainWindow
 export const createMainWindow = () => {
   // Construct new BrowserWindow
 
-  const dimensions = isDevelopment || isDistDev
+  const dimensions = isDevelopment
     ? {
       width: 1920,
       height: 1080,
@@ -72,7 +71,7 @@ export const createMainWindow = () => {
     ? `http://localhost:${process.env.ELECTRON_WEBPACK_WDS_PORT}`
     : `file://${__dirname}/index.html`
 
-  if (isDevelopment || isDistDev) {
+  if (isDevelopment) {
     mainWindow.webContents.openDevTools()
   }
 
