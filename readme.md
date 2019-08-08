@@ -15,9 +15,14 @@ Perform live shows with your three.js creations.
 - 🌇🎚️🌋 Create many scenes and crossfade between them
 - 🔍 Preview and compose scenes before displaying them to the audience
 - 💡 Use MIDI Learn to quickly assign controls
+- 🔥 Hot reload your sketches on code changes, without affecting the rest of the scene
 - ⚙️ Support for multiple MIDI control modes (abs, rel1, rel2, rel3)
 - 📽️ Easily send output picture to external display
 - 💾 Save / load using JSON project files
+
+## Hedron in action
+[![Polyop](http://nudibranchrecords.github.io/hedron/polyop-creator.jpg)](https://vimeo.com/310779808)
+[![Netgrind @ Halifax Pride](http://nudibranchrecords.github.io/hedron/netgrind-halifax-pride.jpg)](https://www.netgrindgames.com/)
 
 ## Getting Started
 
