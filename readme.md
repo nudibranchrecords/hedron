@@ -31,12 +31,10 @@ Download the latest [release](https://github.com/nudibranchrecords/hedron/releas
 [build from source](#build-from-source).
 
 ### Load example project
-1. If you haven't got the source code, download the latest example projects zip from the [releases](https://github.com/nudibranchrecords/hedron/releases) page.
-2. Choose "Load Existing Project". Locate the repo directory, choose a folder and open `project.json`.
+1. Download the latest example projects zip from the [releases](https://github.com/nudibranchrecords/hedron/releases) page. If you've compiled from source, you'll already have the example projects, found in `/example-projects`.
+2. In Hedron, choose "Load Existing Project". Choose a folder from the example projects (`Logo` is a good start!) and open `project.json`.
 4. Play it some music, tap BPM, experiment with the controls
-5. 😎
-
-Please note that if you're trying to do this from the source code, you'll want to run `yarn` from inside the `example-projects` directory to install dependencies.
+5. 👽
 
 ## User Guide
 Head to the [User Guide](docs/user-guide/index.md) to learn how to use Hedron.
