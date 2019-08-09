@@ -15,7 +15,6 @@
     "test-jest": "yarn jest --watch",
     "compile": "electron-webpack",
     "dist": "yarn compile && electron-builder",
-    "dist:example-projects": "yarn --cwd ./example-projects && zip dist/example-projects.zip ./example-projects -r",
     "start": "yarn electron-webpack dev"
   },
   "electronWebpack": {

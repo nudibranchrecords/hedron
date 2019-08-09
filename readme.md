@@ -86,7 +86,6 @@ Run `yarn dist` to package up the app for best performance and no dev tools. Onc
 |--|--|
 | `yarn start` | Run in dev mode |
 | `yarn dist` | Package the app |
-| `yarn dist:example-projects`| Install dependencies for example projects, zip them and move them to the `dist` folder |
 | `yarn lint` | Run linting |
 | `yarn test` | Run pre deployment tests (including linting) |
 | `yarn test:dev` | Run tests on file changes (does not include linting) |
