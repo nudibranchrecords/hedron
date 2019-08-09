@@ -145,14 +145,20 @@ export const stopOutput = () => {
 }
 
 const renderChannels = (sceneA, sceneB) => {
+  renderer.setRenderTarget(rttA)
   if (sceneA) {
-    renderer.setRenderTarget(rttA)
     renderer.render(sceneA.scene, sceneA.camera)
+  } else {
+    renderer.clear()
   }
+
+  renderer.setRenderTarget(rttB)
   if (sceneB) {
-    renderer.setRenderTarget(rttB)
     renderer.render(sceneB.scene, sceneB.camera)
+  } else {
+    renderer.clear()
   }
+
   renderer.setRenderTarget(null)
   renderer.render(quadScene.scene, quadScene.camera)
 }
