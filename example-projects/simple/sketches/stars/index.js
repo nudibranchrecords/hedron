@@ -1,8 +1,6 @@
 /** HEDRON TIP **
   Look in "example-projects/simple/sketches/solid" for info on how to create sketches
 **/
-const THREE = require('three')
-
 const range = 10000
 const particleCount = 1800
 

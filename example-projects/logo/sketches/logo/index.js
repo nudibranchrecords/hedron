@@ -1,6 +1,3 @@
-const THREE = window.THREE = require('three')
-require('three/examples/js/loaders/GLTFLoader')
-
 const loader = new THREE.GLTFLoader()
 
 class Logo {
