@@ -1,5 +1,3 @@
-const THREE = require('three')
-
 class Point {
   constructor () {
     this.root = new THREE.Group()

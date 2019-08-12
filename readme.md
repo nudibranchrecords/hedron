@@ -31,12 +31,10 @@ Download the latest [release](https://github.com/nudibranchrecords/hedron/releas
 [build from source](#build-from-source).
 
 ### Load example project
-1. If you haven't got the source code, download the latest example projects zip from the [releases](https://github.com/nudibranchrecords/hedron/releases) page.
-2. Choose "Load Existing Project". Locate the repo directory, choose a folder and open `project.json`.
+1. Download the latest example projects zip from the [releases](https://github.com/nudibranchrecords/hedron/releases) page. If you've compiled from source, you'll already have the example projects, found in `/example-projects`.
+2. In Hedron, choose "Load Existing Project". Choose a folder from the example projects (`Logo` is a good start!) and open `project.json`.
 4. Play it some music, tap BPM, experiment with the controls
-5. 😎
-
-Please note that if you're trying to do this from the source code, you'll want to run `yarn` from inside the `example-projects` directory to install dependencies.
+5. 👽
 
 ## User Guide
 Head to the [User Guide](docs/user-guide/index.md) to learn how to use Hedron.
@@ -66,7 +64,7 @@ If you are having fun with Hedron, we'd love you to help with development. See t
 Don't worry too much if the tests aren't passing, we can work on that together. :)
 
 ### Build From Source
-If you're making your own sketches, you'll probably want to build Hedron from source. You'll get lots of extra development benefits this way, such as auto refreshing on save.
+Building from source gives you some extra development features such as setting a default project that will always load on start.
 
 1. Make sure [Node.js](https://nodejs.org/en/) and [Yarn](https://yarnpkg.com/en/docs/install) are installed on your machine.
 2. Open terminal and run the commands below.
@@ -88,7 +86,6 @@ Run `yarn dist` to package up the app for best performance and no dev tools. Onc
 |--|--|
 | `yarn start` | Run in dev mode |
 | `yarn dist` | Package the app |
-| `yarn dist:example-projects`| Install dependencies for example projects, zip them and move them to the `dist` folder |
 | `yarn lint` | Run linting |
 | `yarn test` | Run pre deployment tests (including linting) |
 | `yarn test:dev` | Run tests on file changes (does not include linting) |

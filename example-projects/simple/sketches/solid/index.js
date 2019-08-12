@@ -5,11 +5,6 @@ The user can change the scale. The user can also click on "shapeshift" and the g
 **/
 
 /** HEDRON TIP **
-  Hedron uses three.js, so you'll need that :)
-**/
-const THREE = require('three')
-
-/** HEDRON TIP **
   Hedron sketches must be a class
 **/
 class Solid {
@@ -30,7 +25,7 @@ class Solid {
       Must define a "root" property as a THREE.Group or THREE.Object3D
       Hedron looks for this and will add it to the scene.
     **/
-    this.root = new THREE.Group()
+    this.root = new THREE.Group() // THREE is a global var, so no need to import
 
     /** HEDRON TIP **
       It's good practice to not manipulate the root object
