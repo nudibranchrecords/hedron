@@ -64,7 +64,7 @@ If you are having fun with Hedron, we'd love you to help with development. See t
 Don't worry too much if the tests aren't passing, we can work on that together. :)
 
 ### Build From Source
-If you're making your own sketches, you'll probably want to build Hedron from source. You'll get lots of extra development benefits this way, such as auto refreshing on save.
+Building from source gives you some extra development features such as setting a default project that will always load on start.
 
 1. Make sure [Node.js](https://nodejs.org/en/) and [Yarn](https://yarnpkg.com/en/docs/install) are installed on your machine.
 2. Open terminal and run the commands below.
