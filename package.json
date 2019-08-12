@@ -2,7 +2,7 @@
   "name": "Hedron",
   "author": "Nudibranch Records",
   "description": "Perform live shows with your three.js creations",
-  "version": "0.4.1",
+  "version": "0.5.0",
   "homepage": "https://github.com/nudibranchrecords/hedron",
   "repository": {},
   "license": "AGPL-3.0+",
@@ -15,7 +15,6 @@
     "test-jest": "yarn jest --watch",
     "compile": "electron-webpack",
     "dist": "yarn compile && electron-builder",
-    "dist:example-projects": "yarn --cwd ./example-projects && zip dist/example-projects.zip ./example-projects -r",
     "start": "yarn electron-webpack dev"
   },
   "electronWebpack": {
