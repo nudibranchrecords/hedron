@@ -5,43 +5,52 @@ const onClick = (...args) => {
   mainWindow.webContents.send('app-menu-click', ...args)
 }
 
+const hedronMenu = {
+  label: 'Hedron',
+  submenu: [
+    {
+      label: 'About Hedron',
+      click: () => { onClick('hedron-about') },
+    },
+  ],
+}
+
 const projectMenu = {
   label: 'Project',
   submenu: [
     {
       label: 'New',
-      role: 'forcereload'
+      role: 'forcereload',
     },
     {
       label: 'Save',
       click: () => { onClick('project-save') },
-      accelerator: 'CommandOrControl+S'
+      accelerator: 'CommandOrControl+S',
     },
     {
       label: 'Save As...',
       click: () => { onClick('project-save-as') },
-      accelerator: 'CommandOrControl+Shift+S'
+      accelerator: 'CommandOrControl+Shift+S',
     },
     {
       label: 'Load',
-      click: () => { onClick('project-load') }
+      click: () => { onClick('project-load') },
     },
     {
       label: 'Settings',
-      click: () => { onClick('project-settings') }
-    }
-  ]
+      click: () => { onClick('project-settings') },
+      accelerator: 'CommandOrControl+,',
+    },
+  ],
 }
 
 const displayMenu = {
   label: 'Displays',
-  submenu: []
+  submenu: [],
 }
 
 const template = [
-  {
-    label: 'Hedron'
-  },
+  hedronMenu,
   projectMenu,
   displayMenu,
   {
@@ -55,9 +64,9 @@ const template = [
       { role: 'zoomin' },
       { role: 'zoomout' },
       { type: 'separator' },
-      { role: 'togglefullscreen' }
-    ]
-  }
+      { role: 'togglefullscreen' },
+    ],
+  },
 ]
 
 ipcMain.on('update-displays', (e, displays) => {
@@ -69,7 +78,7 @@ ipcMain.on('update-displays', (e, displays) => {
       label: `Send to ${w}x${h}`,
       click: () => {
         mainWindow.webContents.send('send-output', index)
-      }
+      },
     }
   })
 

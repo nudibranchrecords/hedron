@@ -33,7 +33,7 @@ test('(Saga) clockUpdate (off beat)', (t) => {
   const info = {
     pulses: 1,
     beats: 1,
-    delta: 0.1
+    delta: 0.1,
   }
 
   t.deepEqual(
@@ -55,7 +55,7 @@ test('(Saga) clockUpdate (on beat)', (t) => {
   const info = {
     pulses: 0,
     beats: 1,
-    delta: 0.1
+    delta: 0.1,
   }
 
   generator.next(info)
@@ -79,7 +79,7 @@ test('(Saga) clockUpdate (on bar)', (t) => {
   const info = {
     pulses: 0,
     beats: 0,
-    delta: 0.1
+    delta: 0.1,
   }
 
   generator.next(info)

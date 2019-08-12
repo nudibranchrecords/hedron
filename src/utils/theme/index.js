@@ -9,5 +9,5 @@ export default {
   actionColor1: '#DA5782',
   channelAColor: '#E35A59',
   channelBColor: '#24965C',
-  dangerColor: 'red'
+  dangerColor: 'red',
 }

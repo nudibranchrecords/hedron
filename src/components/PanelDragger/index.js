@@ -23,7 +23,6 @@ const Wrapper = styled.div`
   }
 `
 class PanelDragger extends React.Component {
-
   constructor (props) {
     super(props)
 
@@ -44,31 +43,26 @@ class PanelDragger extends React.Component {
     document.addEventListener('mouseup', onMouseUp)
   }
 
-  componentDidMount () {
-    // Force repaint after mounting to fix up components
-    setTimeout(() => {
-      uiEventEmitter.emit('repaint')
-    }, 1000)
-  }
-
   handleMouseMove (e) {
+    uiEventEmitter.emit('panel-resize-start')
+
     const diff = (e.screenX - this.pos) / window.innerWidth * 100
     const newVal = Math.max(0, Math.min(100, this.currentPos + diff))
     this.props.onHandleDrag(newVal)
-    setTimeout(() => {
+    clearTimeout(this.dragDebounce)
+    this.dragDebounce = setTimeout(() => {
       uiEventEmitter.emit('repaint')
-    })
+    }, 50)
   }
 
   render () {
     return (<Wrapper onMouseDown={this.handleMouseDown} />)
   }
-
 }
 
 export default PanelDragger
 
 PanelDragger.propTypes = {
   onHandleDrag: PropTypes.func.isRequired,
-  position: PropTypes.number.isRequired
+  position: PropTypes.number.isRequired,
 }

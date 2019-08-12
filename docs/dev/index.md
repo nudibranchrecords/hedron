@@ -8,8 +8,11 @@ It is best practice to create a project folder outside of Hedron. This is advant
 
 Inside the project folder, you'll want to have a "sketches" folder, this is what you'll point Hedron to.
 
+## Sketches Directory
+This directory contains sketch folders. Sketch folders can be grouped into directories to keep things neat, with as many levels of organisation as you need. However, you can't have a sketch folder inside another sketch folder.
+
 ## Sketch
-Sketches together in the sketches directory. A sketch is itself directory with two required files:
+Sketches live in the sketches directory. A sketch is itself a directory with two required files:
 
 - config.js
 - index.js
@@ -22,14 +25,20 @@ This is where the params and shots are defined.
 module.exports = {
   // Default title when sketch is loaded in (can be changed by user)
   defaultTitle: 'Solid',
+  // Category and author can be used as a way to organise sketches based on the user's settings
+  category: 'Simple',
+  author: 'Laurence Ipsum',  
   // Params are values between 0 and 1 that can be manipulated by the user
   // these values are sent to the sketch every frame
   // e.g. Speed, scale, colour
   params: [
     {
       key: 'rotSpeedX', // needs to be unique
-      title: 'Rotation Speed X', // should be human
-      defaultValue: 0 // must be between 0 and 1
+      defaultValue: 0, // must be between 0 and 1
+      title: 'Rotation Speed X', // optional, should be human, if not provided defaults to the key
+      defaultMin: 0, // optional, the value passed to the sketch when the param is at it's lowest value, if not provided defaults to 0
+      defaultMax: 1, // optional, the value passed to the sketch when the param is at it's highest value, if not provided defaults to 1
+      hidden: false, // optional, some params may want to be hidden in the UI, if they are controlled programatically by the sketch. Defaults to false.
     },
   ],
   // Shots are single functions that can fire, as opposed to values that change
@@ -45,14 +54,14 @@ module.exports = {
 
 ## index.js
 
-This is where the actual sketch is held. You can `require` other modules from here, so don't feel restricted to a single file.
+This is where the actual sketch is held. `THREE` is available as a global variable and it's strongly advised you use this rather than import the library yourself, to prevent unexpected behaviour. For convenience, `THREE.GLTFLoader` and `THREE.OrbitControls` are available too.
+
+You can `require` other modules from here, so don't feel restricted to a single file. 
 
 ### Very basic example
 This is the minimum you need to do in order to use Hedron.
 
 ```javascript
-const THREE = require('three')
-
 class MyFirstSketch {
   constructor () {
     // Create a cube, add it to the root of the scene
@@ -83,11 +92,6 @@ The user can change the scale. The user can also click on "shapeshift" and the g
 **/
 
 /** HEDRON TIP **
-  Hedron uses three.js, so you'll need that :)
-**/
-const THREE = require('three')
-
-/** HEDRON TIP **
   Hedron sketches must be a class
 **/
 class Solid {
@@ -97,17 +101,17 @@ class Solid {
     scene - This is the THREE object for the scene. You can also access the THREE renderer
     using scene.renderer
 
+    params - The sketch params when the sketch first initialises
+
     meta - This is an object with meta data that might be useful. It has the following properties:
       sketchesFolder - The path to the sketches folder on your computer. Useful if you need to link to a resource such as an image.
-
-    params - The sketch params when the sketch first initialises
   **/
-  constructor (scene, meta, params) {
+  constructor (scene, params, meta) {
     /** HEDRON TIP **
       Must define a "root" property as a THREE.Group or THREE.Object3D
       Hedron looks for this and will add it to the scene.
     **/
-    this.root = new THREE.Group()
+    this.root = new THREE.Group() // THREE is a global var so no need to import
 
     /** HEDRON TIP **
       It's good practice to not manipulate the root object
@@ -235,6 +239,13 @@ class Solid {
 module.exports = Solid
 ```
 
+## Reloading sketches / Auto reload
+If you have the "Watch sketches" setting enabled, Hedron will automatically refresh your sketches. However, if you don't have this enabled or something went wrong with the file watch (e.g. your sketch imports a file outside of its own folder) you'll need to click "Reload File" to see changes made to sketch files.
+
+This refresh will remove the sketch from the scene, import any new params or shots, remove and old params and shots, and then add the new sketch back into the scene.
+
+**Please note: File change detection may not work with all text editors. (e.g. Atom on OSX is reported to be inconsistent).**
+
 ## Hedron dev config
 
 You can get extra functionality by adding `dev.config.js` to `/config` (from the root directory of the Hedron repo).
@@ -246,10 +257,4 @@ module.exports = {
 }
 ```
 
-Setting `defaultProject` to the path of a saved project (e.g. `/Users/alex/Desktop/foo.json`) can help improve your workflow when developing:
-* The project will load automatically on load/restart
-* The project sketches folder will be watched for changes, triggering a restart
-
-## Reimporting
-
-If you've already got a project going with some sketches and then make edits to a sketch, Hedron automatically loads in the new content. However, if you've made changes to `config.js`, you'll need to "reimport" to see the new params and shots. Do this by clicking the button at the bottom of the view for that sketch.
+Setting `defaultProject` to the path of a saved project (e.g. `/Users/alex/Desktop/foo.json`) can help improve your workflow when developing by  automatically loading that project when the app compiles. This is particularly useful when developing Hedron itself, so that you can test changes made to the app immediately, without having to manually load in a project each time.

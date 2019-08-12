@@ -4,7 +4,7 @@ const Col = styled.div`
   ${props => props.width
     ? `flex: 0 0 ${props.width};`
     : `flex: 1;`
-  }
+}
 
   padding-right: 1rem;
 

@@ -1,3 +1,7 @@
+/*
+DISABLING BECAUSE THIS WONT BE SAGA FOR MUCH LONGER
+ALSO WILL BE CHANGING TEST LIB
+
 import 'babel-polyfill'
 import test from 'tape'
 import { select, put, call } from 'redux-saga/effects'
@@ -21,7 +25,7 @@ proxyquire.noCallThru()
 
 const getAll = sinon.stub()
 const { inputLinkCreate } = proxyquire('../sagas', {
-  '../../externals/modifiers': { getAll }
+  '../../externals/modifiers': { getAll },
 })
 
 test('(Saga) inputLinkCreate', (t) => {
@@ -49,7 +53,7 @@ test('(Saga) inputLinkCreate', (t) => {
   )
 
   const node = {
-    type: 'FOO'
+    type: 'FOO',
   }
 
   t.deepEqual(
@@ -63,15 +67,15 @@ test('(Saga) inputLinkCreate', (t) => {
       config: {
         title: ['Fooey'],
         defaultValue: [0.2],
-        type: 'audio'
-      }
+        type: 'audio',
+      },
     },
     bar: {
       config: {
         title: ['Barey1', 'Barey2'],
-        defaultValue: [0.5, 0.5]
-      }
-    }
+        defaultValue: [0.5, 0.5],
+      },
+    },
   }
 
   t.deepEqual(
@@ -97,7 +101,7 @@ test('(Saga) inputLinkCreate', (t) => {
     value: 0.2,
     type: 'audio',
     inputLinkIds: [],
-    subNode: true
+    subNode: true,
   }
 
   t.deepEqual(
@@ -121,7 +125,7 @@ test('(Saga) inputLinkCreate', (t) => {
     value: 0.5,
     type: undefined,
     inputLinkIds: [],
-    subNode: true
+    subNode: true,
   }
 
   t.deepEqual(
@@ -145,7 +149,7 @@ test('(Saga) inputLinkCreate', (t) => {
     value: 0.5,
     type: undefined,
     inputLinkIds: [],
-    subNode: true
+    subNode: true,
   }
 
   t.deepEqual(
@@ -173,7 +177,7 @@ test('(Saga) inputLinkCreate', (t) => {
     title: inputId,
     input: {
       id: inputId,
-      type: inputType
+      type: inputType,
     },
     nodeId,
     deviceId,
@@ -183,10 +187,10 @@ test('(Saga) inputLinkCreate', (t) => {
     lfoOptionIds: [],
     midiOptionIds: [],
     linkableActions: {
-      toggleActivate: actionId
+      toggleActivate: actionId,
     },
     linkType: 'node',
-    sequencerGridId: undefined
+    sequencerGridId: undefined,
   }
 
   t.deepEqual(
@@ -236,7 +240,7 @@ test('(Saga) inputLinkCreate - LFO', (t) => {
   )
 
   const node = {
-    type: 'FOO'
+    type: 'FOO',
   }
 
   t.deepEqual(
@@ -250,15 +254,15 @@ test('(Saga) inputLinkCreate - LFO', (t) => {
       config: {
         title: ['Fooey'],
         defaultValue: [0.2],
-        type: 'audio'
-      }
+        type: 'audio',
+      },
     },
     bar: {
       config: {
         title: ['Barey1', 'Barey2'],
-        defaultValue: [0.5, 0.5]
-      }
-    }
+        defaultValue: [0.5, 0.5],
+      },
+    },
   }
 
   t.deepEqual(
@@ -284,7 +288,7 @@ test('(Saga) inputLinkCreate - LFO', (t) => {
     value: 0.5,
     type: undefined,
     inputLinkIds: [],
-    subNode: true
+    subNode: true,
   }
 
   t.deepEqual(
@@ -308,7 +312,7 @@ test('(Saga) inputLinkCreate - LFO', (t) => {
     value: 0.5,
     type: undefined,
     inputLinkIds: [],
-    subNode: true
+    subNode: true,
   }
 
   t.deepEqual(
@@ -327,13 +331,13 @@ test('(Saga) inputLinkCreate - LFO', (t) => {
     {
       id: 'LFO1',
       key: 'shape',
-      value: 'sine'
+      value: 'sine',
     },
     {
       id: 'LFO2',
       key: 'rate',
-      value: 1
-    }
+      value: 1,
+    },
   ]
 
   t.deepEqual(
@@ -341,7 +345,7 @@ test('(Saga) inputLinkCreate - LFO', (t) => {
     put(uNodeCreate('LFO1', {
       key: 'shape',
       id: 'LFO1',
-      value: 'sine'
+      value: 'sine',
     })),
     'Dispatch node create action'
   )
@@ -351,7 +355,7 @@ test('(Saga) inputLinkCreate - LFO', (t) => {
     put(uNodeCreate('LFO2', {
       key: 'rate',
       id: 'LFO2',
-      value: 1
+      value: 1,
     })),
     'Dispatch node create action'
   )
@@ -375,7 +379,7 @@ test('(Saga) inputLinkCreate - LFO', (t) => {
     title: inputId,
     input: {
       id: inputId,
-      type: inputType
+      type: inputType,
     },
     nodeId,
     deviceId,
@@ -385,10 +389,10 @@ test('(Saga) inputLinkCreate - LFO', (t) => {
     lfoOptionIds: ['LFO1', 'LFO2'],
     midiOptionIds: [],
     linkableActions: {
-      toggleActivate: actionId
+      toggleActivate: actionId,
     },
     linkType: 'node',
-    sequencerGridId: undefined
+    sequencerGridId: undefined,
   }
 
   t.deepEqual(
@@ -437,7 +441,7 @@ test('(Saga) inputLinkCreate (type midi)', (t) => {
   )
 
   const node = {
-    type: 'FOO'
+    type: 'FOO',
   }
 
   t.deepEqual(
@@ -457,20 +461,20 @@ test('(Saga) inputLinkCreate (type midi)', (t) => {
   const midiOpts = [
     {
       id: 'MIDI1',
-      key: 'bar'
+      key: 'bar',
     },
     {
       id: 'MIDI2',
       key: 'controlType',
-      value: 'abs'
-    }
+      value: 'abs',
+    },
   ]
 
   t.deepEqual(
     generator.next(midiOpts).value,
     put(uNodeCreate('MIDI1', {
       id: 'MIDI1',
-      key: 'bar'
+      key: 'bar',
     })),
     'Dispatch node create action'
   )
@@ -480,7 +484,7 @@ test('(Saga) inputLinkCreate (type midi)', (t) => {
     put(uNodeCreate('MIDI2', {
       id: 'MIDI2',
       key: 'controlType',
-      value: controlType
+      value: controlType,
     })),
     'Dispatch node create action (with value as passed in controlType)'
   )
@@ -504,7 +508,7 @@ test('(Saga) inputLinkCreate (type midi)', (t) => {
     title: inputId,
     input: {
       id: inputId,
-      type: inputType
+      type: inputType,
     },
     nodeId,
     bankIndex,
@@ -514,10 +518,10 @@ test('(Saga) inputLinkCreate (type midi)', (t) => {
     lfoOptionIds: [],
     midiOptionIds: ['MIDI1', 'MIDI2'],
     linkableActions: {
-      toggleActivate: actionId
+      toggleActivate: actionId,
     },
     linkType: 'node',
-    sequencerGridId: undefined
+    sequencerGridId: undefined,
   }
 
   t.deepEqual(
@@ -565,7 +569,7 @@ test('(Saga) inputLinkCreate (id seq-step)', (t) => {
   )
 
   const node = {
-    type: 'shot'
+    type: 'shot',
   }
 
   t.deepEqual(
@@ -577,15 +581,15 @@ test('(Saga) inputLinkCreate (id seq-step)', (t) => {
   const seqOptions = {
     grid: {
       id: 'SEQ01',
-      grid: [0, 1, 0, 1]
-    }
+      grid: [0, 1, 0, 1],
+    },
   }
 
   t.deepEqual(
     generator.next(seqOptions).value,
     put(uNodeCreate('SEQ01', {
       id: 'SEQ01',
-      grid: [0, 1, 0, 1]
+      grid: [0, 1, 0, 1],
     })),
     'Dispatch node create action'
   )
@@ -609,7 +613,7 @@ test('(Saga) inputLinkCreate (id seq-step)', (t) => {
     title: inputId,
     input: {
       id: inputId,
-      type: inputType
+      type: inputType,
     },
     nodeId,
     deviceId,
@@ -619,10 +623,10 @@ test('(Saga) inputLinkCreate (id seq-step)', (t) => {
     lfoOptionIds: [],
     midiOptionIds: [],
     linkableActions: {
-      toggleActivate: actionId
+      toggleActivate: actionId,
     },
     sequencerGridId: 'SEQ01',
-    linkType: 'node'
+    linkType: 'node',
   }
 
   t.deepEqual(
@@ -693,7 +697,7 @@ test('(Saga) inputLinkCreate (linkableAction)', (t) => {
     title: inputId,
     input: {
       id: inputId,
-      type: inputType
+      type: inputType,
     },
     nodeId,
     nodeType: undefined,
@@ -704,7 +708,7 @@ test('(Saga) inputLinkCreate (linkableAction)', (t) => {
     midiOptionIds: [],
     linkableActions: {},
     linkType: 'linkableAction',
-    sequencerGridId: undefined
+    sequencerGridId: undefined,
   }
 
   t.deepEqual(
@@ -728,3 +732,5 @@ test('(Saga) inputLinkCreate (linkableAction)', (t) => {
   t.equal(generator.next().done, true, 'Generator ends')
   t.end()
 })
+
+*/

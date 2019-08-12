@@ -1,11 +1,11 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import ButtonComponent from '../Button'
+import Button from '../Button'
 import RowComponent from '../Row'
 import styled from 'styled-components'
 import SceneThumb from '../SceneThumb'
 import SceneThumbContainer from '../../containers/SceneThumb'
-import InputLinkMidiControl from '../../containers/InputLinkMidiControl'
+import ButtonWithInputIcons from '../ButtonWithInputIcons'
 import theme from '../../utils/theme'
 
 const Wrapper = styled.nav`
@@ -16,13 +16,9 @@ const Row = styled(RowComponent)`
   flex-wrap: wrap;
 `
 
-const Button = styled(ButtonComponent)`
-`
-
 const Thumbs = styled.div`
   display: flex;
   flex-wrap: wrap;
-  margin: 0 -0.25rem 0.5rem;
 `
 
 const Panel = styled.div`
@@ -34,16 +30,6 @@ const Panel = styled.div`
     font-size: 0.7rem;
     text-transform: uppercase;
   }
-
-  svg {
-    fill: #fff;
-    opacity: 0.8;
-    margin-left: 0.2rem;
-
-    &:hover {
-      opacity: 1;
-    }
-  }
 `
 
 const Col = styled.div`
@@ -53,17 +39,17 @@ const Col = styled.div`
   margin-bottom: 0.5rem;
 `
 
-const Item = ({ title, onClick, linkableActionId, color }) =>
+const ActionButton = (props) => (
   <Col>
-    <Button onClick={onClick} color={color}>{title}</Button>
-    <InputLinkMidiControl linkableActionId={linkableActionId} />
+    <ButtonWithInputIcons {...props} />
   </Col>
+)
 
 const SceneManager = (
   {
     items, onAddClick, currentScene, onDeleteClick, onRenameClick, onChannelClick,
-    onClearClick, onActiveClick, onOppositeClick
- }
+    onClearClick, onActiveClick, onOppositeClick,
+  }
 ) => {
   const la = currentScene && currentScene.linkableActionIds
   return (
@@ -73,8 +59,8 @@ const SceneManager = (
           <SceneThumbContainer
             key={item.id}
             id={item.id}
-        />
-      ))}
+          />
+        ))}
         <SceneThumb onClick={onAddClick}>+</SceneThumb>
       </Thumbs>
       {currentScene &&
@@ -82,33 +68,48 @@ const SceneManager = (
         <h4>Current scene: {currentScene.title}</h4>
 
         <Row>
-          <Item
-            title='Add to A'
+          <ActionButton
             onClick={() => { onChannelClick(currentScene.id, 'A') }}
             color='channelA'
             linkableActionId={la.addToA}
-          />
-          <Item
-            title='Add to B'
+            panelId='overview'
+          >
+            Add to A
+          </ActionButton>
+
+          <ActionButton
             onClick={() => { onChannelClick(currentScene.id, 'B') }}
             color='channelB'
             linkableActionId={la.addToB}
-          />
-          <Item
-            title='Add to Active'
+            panelId='overview'
+          >
+            Add to B
+          </ActionButton>
+
+          <ActionButton
             onClick={() => { onActiveClick(currentScene.id) }}
             linkableActionId={la.addToActive}
-          />
-          <Item
-            title='Add to Opposite'
+            panelId='overview'
+          >
+            Add to Active
+          </ActionButton>
+
+          <ActionButton
             onClick={() => { onOppositeClick(currentScene.id) }}
             linkableActionId={la.addToOpposite}
-          />
-          <Item
-            title='Clear'
+            panelId='overview'
+          >
+            Add to Opposite
+          </ActionButton>
+
+          <ActionButton
             onClick={() => { onClearClick(currentScene.id) }}
             linkableActionId={la.clear}
-          />
+            panelId='overview'
+          >
+            Clear
+          </ActionButton>
+
           <Col>
             <Button
               onClick={e => {
@@ -122,7 +123,7 @@ const SceneManager = (
           </Col>
         </Row>
       </Panel>
-    }
+      }
     </Wrapper>
   )
 }
@@ -139,16 +140,9 @@ SceneManager.propTypes = {
   items: PropTypes.arrayOf(
     PropTypes.shape({
       id: PropTypes.string,
-      title: PropTypes.string
+      title: PropTypes.string,
     })
-  )
-}
-
-Item.propTypes = {
-  title: PropTypes.string.isRequired,
-  onClick: PropTypes.func.isRequired,
-  color: PropTypes.string,
-  linkableActionId: PropTypes.string.isRequired
+  ),
 }
 
 export default SceneManager

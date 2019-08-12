@@ -1,4 +1,4 @@
-# Hedron
+# <img src='http://nudibranchrecords.github.io/hedron/title.gif' alt='Hedron' />
 
 Perform live shows with your three.js creations.
 
@@ -14,11 +14,15 @@ Perform live shows with your three.js creations.
 - ⏲️ Use MIDI clock input or tap tempo to get BPM
 - 🌇🎚️🌋 Create many scenes and crossfade between them
 - 🔍 Preview and compose scenes before displaying them to the audience
-- 🎛️ Use virtual MIDI banks to get the most out of your controllers
 - 💡 Use MIDI Learn to quickly assign controls
+- 🔥 Hot reload your sketches on code changes, without affecting the rest of the scene
 - ⚙️ Support for multiple MIDI control modes (abs, rel1, rel2, rel3)
 - 📽️ Easily send output picture to external display
 - 💾 Save / load using JSON project files
+
+## Hedron in action
+[![Polyop](http://nudibranchrecords.github.io/hedron/polyop-creator.jpg)](https://vimeo.com/310779808)
+[![Netgrind @ Halifax Pride](http://nudibranchrecords.github.io/hedron/netgrind-halifax-pride.jpg)](https://www.netgrindgames.com/)
 
 ## Getting Started
 
@@ -26,14 +30,11 @@ Perform live shows with your three.js creations.
 Download the latest [release](https://github.com/nudibranchrecords/hedron/releases) or
 [build from source](#build-from-source).
 
-### Load trippy example project
-1. If you haven't got the source code, download the latest example projects zip from the [releases](https://github.com/nudibranchrecords/hedron/releases) page.
-2. Choose "Load Existing Project". Locate the repo directory. Open `example-projects/trippy/project.json`
-3. An alert will appear. Choose "Locate Sketch Folder" and open `/example-projects/trippy/sketches`
+### Load example project
+1. Download the latest example projects zip from the [releases](https://github.com/nudibranchrecords/hedron/releases) page. If you've compiled from source, you'll already have the example projects, found in `/example-projects`.
+2. In Hedron, choose "Load Existing Project". Choose a folder from the example projects (`Logo` is a good start!) and open `project.json`.
 4. Play it some music, tap BPM, experiment with the controls
-5. 😎
-
-Please note that if you're trying to do this from the source code, you'll want to run `yarn` from inside the `example-projects` directory to install dependencies.
+5. 👽
 
 ## User Guide
 Head to the [User Guide](docs/user-guide/index.md) to learn how to use Hedron.
@@ -63,7 +64,7 @@ If you are having fun with Hedron, we'd love you to help with development. See t
 Don't worry too much if the tests aren't passing, we can work on that together. :)
 
 ### Build From Source
-If you're making your own sketches, you'll probably want to build Hedron from source. You'll get lots of extra development benefits this way, such as auto refreshing on save.
+Building from source gives you some extra development features such as setting a default project that will always load on start.
 
 1. Make sure [Node.js](https://nodejs.org/en/) and [Yarn](https://yarnpkg.com/en/docs/install) are installed on your machine.
 2. Open terminal and run the commands below.
@@ -85,8 +86,6 @@ Run `yarn dist` to package up the app for best performance and no dev tools. Onc
 |--|--|
 | `yarn start` | Run in dev mode |
 | `yarn dist` | Package the app |
-| `yarn dist:dev` | Run a production build without packaging. Behaves similarly to `yarn start` in that it will look for a default project and open Chrome DevTools automatically. However it will not do any sort of live refreshing. |
-| `yarn dist:example-projects`| Install dependencies for example projects, zip them and move them to the `dist` folder |
 | `yarn lint` | Run linting |
 | `yarn test` | Run pre deployment tests (including linting) |
 | `yarn test:dev` | Run tests on file changes (does not include linting) |

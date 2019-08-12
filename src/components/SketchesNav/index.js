@@ -27,16 +27,16 @@ const SketchesNav = ({ items, sceneId, onNavItemClick, currentSketchId }) => (
 
 SketchesNav.propTypes = {
   currentSketchId: PropTypes.oneOfType([
-    PropTypes.string, PropTypes.bool
+    PropTypes.string, PropTypes.bool,
   ]).isRequired,
   sceneId: PropTypes.string.isRequired,
   onNavItemClick: PropTypes.func.isRequired,
   items: PropTypes.arrayOf(
     PropTypes.shape({
       id: PropTypes.string,
-      title: PropTypes.string
+      title: PropTypes.string,
     })
-  )
+  ),
 }
 
 export default SketchesNav

@@ -1,8 +1,6 @@
 /** HEDRON TIP **
   Look in "example-projects/simple/sketches/solid" for info on how to create sketches
 **/
-const THREE = require('three')
-
 const range = 10000
 const particleCount = 1800
 
@@ -17,11 +15,11 @@ class Stars {
     this.material = new THREE.PointsMaterial({
       color: 0xFFFFFF,
       size: 10,
-      transparent: true
+      transparent: true,
     })
 
     // now create the individual particles
-    for (var p = 0; p < particleCount; p++) {
+    for (let p = 0; p < particleCount; p++) {
       // create a particle with random position
       const pX = randomInRange()
       const pY = randomInRange()
@@ -35,9 +33,9 @@ class Stars {
 
     // create the particle system
     this.particleSystem = new THREE.Points(
-    this.particles,
-    this.material
-  )
+      this.particles,
+      this.material
+    )
 
     // add it to the scene
     this.root.add(this.particleSystem)
@@ -63,7 +61,7 @@ class Stars {
         }
 
         // and the position
-        particle.z += particle.velocity.z * ((p.speed * 2) - 1)
+        particle.z += particle.velocity.z * p.speed
 
         // flag to the particle system
         // that we've changed its vertices.

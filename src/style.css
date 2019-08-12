@@ -12,6 +12,15 @@ html {
 body {
   margin: 0;
   font-size: 0.8rem;
+  overflow: hidden;
+}
+
+p a {
+  color: #DA5782;
+}
+
+p {
+  margin-top: 0;
 }
 
 ul {
@@ -24,50 +33,17 @@ h1, h2, h3, h4, h5, h6 {
   margin: 0 0 0.5rem;
 }
 
-.Select-arrow-zone {
-  padding-right: 0;
+::-webkit-scrollbar-track
+{
+    background-color: #333;
 }
 
-.Select-control {
-  background: #222222 !important;
-  text-transform: uppercase;
-  font-size: 0.5rem;
-  border: 0;
-  border-radius: 0;
-  height: auto;
-  cursor: pointer;
+::-webkit-scrollbar
+{
+    width: 5px;
 }
 
-.Select-input {
-  height: 1rem
-}
-
-.Select-value {
-  line-height: 1rem !important;
-}
-
-.Select-value-label {
-  color: white !important;
-}
-
-.Select-menu-outer {
-  max-height: 300px;
-  background: #222222 !important;
-  color: white;
-  z-index: 5;
-}
-.Select-menu {
-  max-height: 300px;
-  background: #222222 !important;
-}
-.Select-option {
-  background: #222222;
-}
-.Select-option.is-focused {
-  background: #333;
-  color: white;
-}
-.Select-option.is-selected {
-  background: white;
-  color: black;
+::-webkit-scrollbar-thumb
+{
+    background-color: #DA5782;
 }

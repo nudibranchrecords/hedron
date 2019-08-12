@@ -6,8 +6,8 @@ test('(Selector) getIsEditing - not editing', (t) => {
 
   const state = {
     ui: {
-      isEditing: false
-    }
+      isEditing: false,
+    },
   }
 
   actual = getIsEditing(state, 'XXX')
@@ -23,9 +23,9 @@ test('(Selector) getIsEditing - editing type doesnt match', (t) => {
     ui: {
       isEditing: {
         id: 'XXX',
-        type: 'fooType'
-      }
-    }
+        type: 'fooType',
+      },
+    },
   }
 
   actual = getIsEditing(state, 'XXX', 'barType')
@@ -43,9 +43,9 @@ test('(Selector) getIsEditing - editing type does match', (t) => {
     ui: {
       isEditing: {
         id: 'XXX',
-        type: 'fooType'
-      }
-    }
+        type: 'fooType',
+      },
+    },
   }
 
   actual = getIsEditing(state, 'XXX', 'fooType')

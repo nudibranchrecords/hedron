@@ -10,7 +10,10 @@ import PanelDragger from '../PanelDragger'
 import MidiLearn from '../../containers/MidiLearn'
 import EditingOverlay from '../../containers/EditingOverlay'
 import ErrorOverlay from '../../containers/ErrorOverlay'
+import AboutOverlay from '../../containers/AboutOverlay'
 import MainViewOuter from '../../containers/MainViewOuter'
+import ParamPropertiesPanel from '../../containers/ParamPropertiesPanel'
+import MacroPropertiesPanel from '../../containers/MacroPropertiesPanel'
 import Home from '../../containers/Home'
 import ScenesNav from '../ScenesNav'
 
@@ -31,6 +34,8 @@ const Left = styled.div`
 
 const Right = styled.div`
   flex: 1;
+  display: flex;
+  flex-direction: column;
 `
 
 const Bar = styled.div`
@@ -40,8 +45,8 @@ const Bar = styled.div`
   background: #111;
   height: 100%;
 `
-const App = ({ stats, leftWidth, onLeftDrag, onWrapperClick }) => (
-  <Wrapper onClick={onWrapperClick}>
+const App = ({ stats, leftWidth, onLeftDrag, onWrapperClick, sketchId, macroId }) => (
+  <Wrapper onMouseDown={onWrapperClick}>
     <Left width={leftWidth}>
       <Overview stats={stats} />
       <PanelDragger onHandleDrag={onLeftDrag} position={leftWidth} />
@@ -53,6 +58,9 @@ const App = ({ stats, leftWidth, onLeftDrag, onWrapperClick }) => (
         <Route path='/macros' component={Macros} />
         <Route path='/settings' component={Settings} />
       </MainViewOuter>
+
+      <Route path='/scenes' render={() => <ParamPropertiesPanel sketchId={sketchId} />} />
+      <Route path='/macros' component={MacroPropertiesPanel} />
     </Right>
     <Bar>
       <Route path='/scenes' component={ScenesNav} />
@@ -60,6 +68,7 @@ const App = ({ stats, leftWidth, onLeftDrag, onWrapperClick }) => (
     <MidiLearn />
     <EditingOverlay />
     <ErrorOverlay />
+    <AboutOverlay />
   </Wrapper>
 )
 
@@ -69,5 +78,9 @@ App.propTypes = {
   stats: PropTypes.object.isRequired,
   leftWidth: PropTypes.number.isRequired,
   onLeftDrag: PropTypes.func.isRequired,
-  onWrapperClick: PropTypes.func.isRequired
+  onWrapperClick: PropTypes.func.isRequired,
+  sketchId: PropTypes.oneOfType([
+    PropTypes.string, PropTypes.bool,
+  ]).isRequired,
+  macroId: PropTypes.string,
 }

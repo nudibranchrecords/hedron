@@ -5,7 +5,7 @@ import { connect } from 'react-redux'
 const mapDispatchToProps = (dispatch, ownProps) => (
   {
     onChooseFolderClick: () => { dispatch(projectChooseSketchesFolder(true, true)) },
-    onLoadClick: () => { dispatch(projectLoad()) }
+    onLoadClick: () => { dispatch(projectLoad()) },
   }
 )
 

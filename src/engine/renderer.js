@@ -14,7 +14,7 @@ export const setRenderer = () => {
   const settings = store.getState().settings
 
   renderer = new THREE.WebGLRenderer({
-    antialias: settings.antialias
+    antialias: settings.antialias,
   })
 
   domEl = renderer.domElement
@@ -24,7 +24,7 @@ export const setRenderer = () => {
     minFilter: THREE.LinearFilter,
     magFilter: THREE.LinearFilter,
     format: THREE.RGBFormat,
-    stencilBuffer: false
+    stencilBuffer: false,
   }
   rttA = new THREE.WebGLRenderTarget(null, null, renderTargetParameters)
   rttB = new THREE.WebGLRenderTarget(null, null, renderTargetParameters)
@@ -145,8 +145,21 @@ export const stopOutput = () => {
 }
 
 const renderChannels = (sceneA, sceneB) => {
-  sceneA && renderer.render(sceneA.scene, sceneA.camera, rttA, true)
-  sceneB && renderer.render(sceneB.scene, sceneB.camera, rttB, true)
+  renderer.setRenderTarget(rttA)
+  if (sceneA) {
+    renderer.render(sceneA.scene, sceneA.camera)
+  } else {
+    renderer.clear()
+  }
+
+  renderer.setRenderTarget(rttB)
+  if (sceneB) {
+    renderer.render(sceneB.scene, sceneB.camera)
+  } else {
+    renderer.clear()
+  }
+
+  renderer.setRenderTarget(null)
   renderer.render(quadScene.scene, quadScene.camera)
 }
 

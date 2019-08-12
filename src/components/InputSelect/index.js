@@ -1,18 +1,17 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import Select from 'react-select'
+import Select from '../../containers/Select'
 import styled from 'styled-components'
 
 const Wrapper = styled.div`
   min-width: 5rem;
 `
 
-const InputSelect = ({ onInputChange, options }) => (
+const InputSelect = ({ onInputChange, options, nodeId }) => (
   <Wrapper>
     <Select
-      value={false}
-      clearable={false}
-      searchable={false}
+      id={`select-input_${nodeId}`}
+      buttonText='Choose'
       options={options}
       onChange={onInputChange}
     />
@@ -23,7 +22,8 @@ InputSelect.propTypes = {
   onInputChange: PropTypes.func.isRequired,
   options: PropTypes.arrayOf(
     PropTypes.object
-  ).isRequired
+  ).isRequired,
+  nodeId: PropTypes.string.isRequired,
 }
 
 export default InputSelect

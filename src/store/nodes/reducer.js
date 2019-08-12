@@ -16,8 +16,8 @@ const nodesReducer = (state = defaultState, action) => {
           ...state,
           [p.id]: {
             ...state[p.id],
-            value: p.value
-          }
+            value: p.value,
+          },
         }
       } else {
         // Intentionally mutating state as these values are updating
@@ -46,8 +46,8 @@ const nodesReducer = (state = defaultState, action) => {
           inputLinkIds: [],
           shotCount: 0,
           connectedMacroIds: [],
-          ...p.node
-        }
+          ...p.node,
+        },
       }
     }
     case 'R_NODE_INPUT_LINK_ADD': {
@@ -58,8 +58,8 @@ const nodesReducer = (state = defaultState, action) => {
         ...state,
         [p.id]: {
           ...state[p.id],
-          inputLinkIds: [...state[p.id].inputLinkIds, p.linkId]
-        }
+          inputLinkIds: [...state[p.id].inputLinkIds, p.linkId],
+        },
       }
     }
     case 'NODE_INPUT_LINK_REMOVE': {
@@ -71,8 +71,8 @@ const nodesReducer = (state = defaultState, action) => {
         [p.id]: {
           ...state[p.id],
           inputLinkIds: state[p.id].inputLinkIds
-            .filter((id) => id !== p.linkId)
-        }
+            .filter((id) => id !== p.linkId),
+        },
       }
     }
     case 'R_NODE_CONNECTED_MACRO_ADD': {
@@ -84,8 +84,8 @@ const nodesReducer = (state = defaultState, action) => {
         ...state,
         [p.id]: {
           ...state[p.id],
-          connectedMacroIds: [...state[p.id].connectedMacroIds, p.macroId]
-        }
+          connectedMacroIds: [...state[p.id].connectedMacroIds, p.macroId],
+        },
       }
     }
     case 'R_NODE_CONNECTED_MACRO_REMOVE': {
@@ -98,8 +98,8 @@ const nodesReducer = (state = defaultState, action) => {
         [p.id]: {
           ...state[p.id],
           connectedMacroIds: state[p.id].connectedMacroIds
-            .filter((id) => id !== p.macroId)
-        }
+            .filter((id) => id !== p.macroId),
+        },
       }
     }
     case 'NODES_REPLACE_ALL': {
@@ -110,8 +110,8 @@ const nodesReducer = (state = defaultState, action) => {
         ...state,
         [p.nodeId]: {
           ...state[p.nodeId],
-          input: p.input
-        }
+          input: p.input,
+        },
       }
     }
     case 'NODE_OPEN_TOGGLE': {
@@ -119,8 +119,8 @@ const nodesReducer = (state = defaultState, action) => {
         ...state,
         [p.id]: {
           ...state[p.id],
-          isOpen: !state[p.id].isOpen
-        }
+          isOpen: !state[p.id].isOpen,
+        },
       }
     }
     case 'NODE_TAB_OPEN': {
@@ -128,8 +128,8 @@ const nodesReducer = (state = defaultState, action) => {
         ...state,
         [p.nodeId]: {
           ...state[p.nodeId],
-          openedLinkId: p.linkId
-        }
+          openedLinkId: p.linkId,
+        },
       }
     }
     case 'NODE_ACTIVE_INPUT_LINK_TOGGLE': {
@@ -137,8 +137,8 @@ const nodesReducer = (state = defaultState, action) => {
         ...state,
         [p.nodeId]: {
           ...state[p.nodeId],
-          activeInputLinkId: p.linkId !== state[p.nodeId].activeInputLinkId ? p.linkId : undefined
-        }
+          activeInputLinkId: p.linkId !== state[p.nodeId].activeInputLinkId ? p.linkId : undefined,
+        },
       }
     }
     case 'NODE_SHOT_FIRED': {
@@ -146,8 +146,8 @@ const nodesReducer = (state = defaultState, action) => {
         ...state,
         [p.nodeId]: {
           ...state[p.nodeId],
-          shotCount: state[p.nodeId].shotCount + 1
-        }
+          shotCount: state[p.nodeId].shotCount + 1,
+        },
       }
     }
     case 'NODE_UPDATE': {
@@ -155,10 +155,83 @@ const nodesReducer = (state = defaultState, action) => {
         ...state,
         [p.nodeId]: {
           ...state[p.nodeId],
-          ...p.obj
-        }
+          ...p.obj,
+        },
       }
     }
+    case 'NODE_RESET_RANGE': {
+      return {
+        ...state,
+        [p.nodeId]: {
+          ...state[p.nodeId],
+          min: state[p.nodeId].defaultMin,
+          max: state[p.nodeId].defaultMax,
+        },
+      }
+    }
+
+    /* Macros */
+    case 'R_NODE_MACRO_TARGET_PARAM_LINK_CREATE': {
+      return {
+        ...state,
+        [p.macroId]: {
+          ...state[p.macroId],
+          targetParamLinks: {
+            ...state[p.macroId].targetParamLinks,
+            [p.paramId]: {
+              nodeId: p.paramLinkId,
+              paramId: p.paramId,
+              startValue: false,
+            },
+          },
+        },
+      }
+    }
+    case 'R_NODE_MACRO_TARGET_PARAM_LINK_DELETE': {
+      return {
+        ...state,
+        [p.macroId]: {
+          ...state[p.macroId],
+          targetParamLinks: _.omit(state[p.macroId].targetParamLinks, [p.paramId]),
+        },
+      }
+    }
+    case 'R_NODE_MACRO_TARGET_PARAM_LINK_UPDATE_START_VALUE': {
+      return {
+        ...state,
+        [p.macroId]: {
+          ...state[p.macroId],
+          targetParamLinks: {
+            ...state[p.macroId].targetParamLinks,
+            [p.paramId]: {
+              ...state[p.macroId].targetParamLinks[p.paramId],
+              startValue: p.value,
+            },
+          },
+        },
+      }
+    }
+
+    /* input links */
+    case 'R_NODE_INPUT_LINK_SHOT_ARM': {
+      return {
+        ...state,
+        [p.linkId] : {
+          ...state[p.linkId],
+          armed: true,
+        },
+      }
+    }
+    case 'R_NODE_INPUT_LINK_SHOT_DISARM': {
+      return {
+        ...state,
+        [p.linkId] : {
+          ...state[p.linkId],
+          armed: false,
+        },
+      }
+    }
+
     default:
       return state
   }

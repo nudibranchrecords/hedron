@@ -1,6 +1,5 @@
-import SketchParam from '../../components/SketchParam'
+import { connect } from 'react-redux'
+import Node from '../Node'
 import withDeferRender from '../../utils/withDeferRender'
 
-const ParamContainer = withDeferRender(SketchParam)
-
-export default ParamContainer
+export default connect()(withDeferRender(Node))

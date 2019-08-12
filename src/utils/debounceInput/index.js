@@ -3,7 +3,7 @@ const hashTable = {}
 const startTimer = (hash, count) => {
   hashTable[hash] = {
     pass: false,
-    count: 0
+    count: 0,
   }
 
   requestAnimationFrame(() => {
@@ -22,7 +22,7 @@ export default (p) => {
       startTimer(p.inputId)
       return v.count + 1
     } else {
-      hashTable[p.inputId].count ++
+      hashTable[p.inputId].count++
       return false
     }
   }

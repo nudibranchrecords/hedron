@@ -1,7 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
-import BankSelect from '../BankSelect'
 
 const Item = styled.div`
   padding: 0.5rem;
@@ -42,7 +41,6 @@ const Devices = ({ items }) => (
                   </div>
                 }
               </Col>
-              <BankSelect deviceId={item.id} />
             </Item>
           </li>
         )
@@ -55,8 +53,8 @@ Devices.propTypes = {
   items: PropTypes.arrayOf(PropTypes.shape({
     title: PropTypes.string.isRequired,
     id: PropTypes.string.isRequired,
-    manufacturer:  PropTypes.string.isRequired
-  }))
+    manufacturer:  PropTypes.string.isRequired,
+  })),
 }
 
 export default Devices

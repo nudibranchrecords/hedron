@@ -9,7 +9,7 @@ import ParamValueForm from '../../containers/ParamValueForm'
 const pixelDensity = 2
 
 const Bar = styled.canvas`
-  background: ${theme.bgColorDark2};
+  background: ${props => props.theme === 'panel' ? theme.bgColorDark3 : theme.bgColorDark2};
   cursor: pointer;
 `
 
@@ -44,20 +44,20 @@ const ValueForm = styled.div`
 `
 
 class ValueBar extends React.Component {
-
   constructor (props) {
     super(props)
 
     this.handleMouseDown = this.handleMouseDown.bind(this)
     this.handleMouseMove = this.handleMouseMove.bind(this)
     this.setSize = this.setSize.bind(this)
+    this.clearSize = this.clearSize.bind(this)
     this.draw = this.draw.bind(this)
     this.flashFading = false
   }
 
   componentDidMount () {
     this.containerEl = this.canvas.parentElement
-    const height = this.props.type === 'shot' ? 6 : 2.5
+    const height = this.props.type === 'shot' ? 4 : 2.2
     this.height = 16 * height
     this.canvas.height = this.height
     this.ctx = this.canvas.getContext('2d')
@@ -66,6 +66,7 @@ class ValueBar extends React.Component {
 
     uiEventEmitter.on('repaint', this.setSize)
     uiEventEmitter.on('slow-tick', this.draw)
+    uiEventEmitter.on('panel-resize-start', this.clearSize)
 
     this.shotCount = this.getData().shotCount
   }
@@ -77,7 +78,7 @@ class ValueBar extends React.Component {
     const node = this.context.store.getState().nodes[this.props.nodeId]
     return {
       value: node.value,
-      shotCount: node.shotCount
+      shotCount: node.shotCount,
     }
   }
 
@@ -93,13 +94,11 @@ class ValueBar extends React.Component {
     clearInterval(this.sizer)
     uiEventEmitter.removeListener('repaint', this.setSize)
     uiEventEmitter.removeListener('slow-tick', this.draw)
+    uiEventEmitter.removeListener('panel-resize-start', this.clearSize)
   }
 
   setSize () {
-    this.canvas.width = 0
-    this.canvas.style.display = 'none'
-    this.containerEl.style.display = 'none'
-    this.containerEl.style.display = 'block'
+    this.clearSize()
 
     this.sizer = setTimeout(() => {
       this.width = this.containerEl.offsetWidth * pixelDensity
@@ -109,6 +108,13 @@ class ValueBar extends React.Component {
       this.canvas.style.height = this.height / pixelDensity + 'px'
       this.draw(true)
     })
+  }
+
+  clearSize () {
+    this.canvas.width = 0
+    this.canvas.style.display = 'none'
+    this.containerEl.style.display = 'none'
+    this.containerEl.style.display = 'block'
   }
 
   handleMouseDown (e) {
@@ -154,7 +160,7 @@ class ValueBar extends React.Component {
 
       const roundedVal = Math.round(newVal * 1000) / 1000
 
-      this.ctx.font = '24px Arial'
+      this.ctx.font = '20px Arial'
       this.ctx.textAlign = 'right'
 
       if (this.oldVal && flashOpacity < 0 && !this.flashIsPainted) {
@@ -183,7 +189,7 @@ class ValueBar extends React.Component {
       if (!this.props.hideBar) {
         // Draw value as text
         this.ctx.fillStyle = theme.textColorLight1
-        this.ctx.fillText(roundedVal.toFixed(3), innerWidth - 5, this.height - 13)
+        this.ctx.fillText(roundedVal.toFixed(3), innerWidth - 8, this.height - 11)
         // Draw bar at new position
         this.ctx.fillStyle = '#fff'
         this.ctx.fillRect(pos, 0, barWidth, this.height)
@@ -192,15 +198,16 @@ class ValueBar extends React.Component {
   }
 
   render () {
-    const { markerIsVisible } = this.props
+    const { markerIsVisible, theme } = this.props
     return (
       <Wrapper markerIsVisible={markerIsVisible} onDoubleClick={this.props.onDoubleClick}>
         <Bar
-          innerRef={node => { this.canvas = node }}
+          ref={node => { this.canvas = node }}
+          theme={theme}
           onMouseDown={this.props.onMouseDown || this.handleMouseDown}
         />
         {this.props.formIsVisible &&
-          <ValueForm>
+          <ValueForm onMouseDown={e => e.stopPropagation()}>
             <ParamValueForm id={this.props.nodeId} />
           </ValueForm>
         }
@@ -217,11 +224,12 @@ ValueBar.propTypes = {
   type: PropTypes.string,
   hideBar: PropTypes.bool,
   formIsVisible: PropTypes.bool,
-  markerIsVisible: PropTypes.bool
+  markerIsVisible: PropTypes.bool,
+  theme: PropTypes.string,
 }
 
 ValueBar.contextTypes = {
-  store: PropTypes.object.isRequired
+  store: PropTypes.object.isRequired,
 }
 
 export default ValueBar

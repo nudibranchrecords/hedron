@@ -15,12 +15,12 @@ const mapStateToProps = (state, ownProps) => {
     children: scene.title,
     isActive: ownProps.id === currentSceneId,
     channel: isChannelA && 'A' || isChannelB && 'B' || undefined,
-    to: '/scenes/view'
+    to: '/scenes/view',
   }
 }
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
-  onClick: () => { dispatch(rSceneSelectCurrent(ownProps.id)) }
+  onClick: () => { dispatch(rSceneSelectCurrent(ownProps.id)) },
 })
 
 const SceneThumb = connect(

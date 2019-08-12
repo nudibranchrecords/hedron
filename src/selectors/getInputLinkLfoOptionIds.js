@@ -1,15 +1,36 @@
+import getNodes from './getNodes'
+
 export default (state, linkId) => {
-  const link = state.inputLinks[linkId]
+  const link = state.nodes[linkId]
+  const optionIds = link.lfoOptionIds
 
   if (link.input && link.input.id === 'lfo') {
+    const optionNodes = getNodes(state, optionIds)
+    const shapeOpt = optionNodes.find(node => node.key === 'shape')
+    const isNoise = shapeOpt.value === 'noise'
+
+    // Only show "rate" option for shots
     if (link.nodeType === 'shot') {
-      return link.lfoOptionIds.filter(id => {
-        return state.nodes[id].key === 'rate'
+      const typesForShot = ['rate']
+      if (isNoise) {
+        // If its noise, also show the "seed" option
+        typesForShot.push('seed')
+      }
+      return optionIds.filter(id => {
+        return typesForShot.includes(state.nodes[id].key)
       })
     } else {
-      return link.lfoOptionIds
+      // For params, show all options if noise
+      if (isNoise) {
+        return optionIds
+      } else {
+        // If its not noise, omit the "seed" option
+        return optionIds.filter(id => {
+          return state.nodes[id].key !== 'seed'
+        })
+      }
     }
   }
 
-  return undefined
+  return optionIds
 }

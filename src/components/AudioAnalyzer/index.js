@@ -1,11 +1,11 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import uiEventEmitter from '../../utils/uiEventEmitter'
-import Control from '../../containers/Control'
+import Node from '../../containers/Node'
 import styled, { css } from 'styled-components'
 import theme from '../../utils/theme'
 
-let height, val, offset, hue, i, inputs, bands
+let height, val, offset, hue, i, inputs
 
 const triH = 8
 
@@ -34,14 +34,14 @@ const triangle = css`
 const SettingsBox = styled.div`
   visibility: ${props => props.isVisible ? 'visible' : 'hidden'};
   left: 50%;
-  width: 9rem;
-  margin-left: -4.5rem;
+  width: 12rem;
+  margin-left: -6rem;
   margin-top: 0.25rem;
   border: 1px solid white;
   background: ${theme.bgColorDark1};
   position: absolute;
   z-index: 10;
-  padding: 0.5rem 0.25rem 0.25rem 0.5rem;
+  padding: 0.5rem 0.25rem;
 
   &:after {
     ${triangle}
@@ -56,8 +56,15 @@ const SettingsBox = styled.div`
   }
 `
 
-class AudioAnalyzer extends React.Component {
+const Block = styled.div`
+  margin-bottom: 0.25rem;
+`
 
+const Item = (props) => (
+  <Block><Node {...props} /></Block>
+)
+
+class AudioAnalyzer extends React.Component {
   constructor (props) {
     super(props)
     this.draw = this.draw.bind(this)
@@ -79,8 +86,7 @@ class AudioAnalyzer extends React.Component {
 
   draw () {
     inputs = this.context.store.getState().inputs
-    bands = [inputs.audio_0.value, inputs.audio_1.value, inputs.audio_2.value, inputs.audio_3.value]
-    this.drawGraph(bands)
+    this.drawGraph(inputs.audio.value)
   }
 
   drawGraph (data) {
@@ -103,14 +109,17 @@ class AudioAnalyzer extends React.Component {
 
   render () {
     return (
-      <Wrapper onClick={this.props.onWrapperClick}>
+      <Wrapper onMouseDown={this.props.onWrapperClick}>
         <Container>
           <canvas ref={node => { this.canvas = node }}
             onClick={this.props.onAnalyzerClick} />
         </Container>
         <SettingsBox isVisible={this.props.isOpen}>
-          <Control nodeId='audioNormalizeLevels' />
-          <Control nodeId='audioLevelsFalloff' />
+          <Item nodeId='audioLevelsFalloff' panelId='overview' />
+          <Item nodeId='audioLevelsSmoothing' panelId='overview' />
+          <Item nodeId='audioLevelsPower' panelId='overview' />
+          <Item nodeId='audioNormalizeLevels' panelId='overview' />
+          <Item nodeId='audioNormalizeRangeFalloff' panelId='overview' />
         </SettingsBox>
       </Wrapper>
     )
@@ -118,12 +127,12 @@ class AudioAnalyzer extends React.Component {
 }
 
 AudioAnalyzer.contextTypes = {
-  store: PropTypes.object.isRequired
+  store: PropTypes.object.isRequired,
 }
 AudioAnalyzer.propTypes = {
   isOpen: PropTypes.bool,
   onAnalyzerClick: PropTypes.func.isRequired,
-  onWrapperClick: PropTypes.func.isRequired
+  onWrapperClick: PropTypes.func.isRequired,
 }
 
 export default AudioAnalyzer
