@@ -7,10 +7,10 @@ test('(Selector) project - getNodeInputId', (t) => {
     nodes: {
       XXX: {
         input: {
-          id: 'audio_0'
-        }
-      }
-    }
+          id: 'audio_0',
+        },
+      },
+    },
   }
   deepFreeze(state)
 
@@ -24,9 +24,9 @@ test('(Selector) project - getNodeInputId (no input)', (t) => {
   const state = {
     nodes: {
       XXX: {
-        input: false
-      }
-    }
+        input: false,
+      },
+    },
   }
   deepFreeze(state)
 

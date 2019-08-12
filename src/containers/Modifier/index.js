@@ -5,14 +5,14 @@ import { uInputLinkCreate } from '../../store/inputLinks/actions'
 const mapStateToProps = (state, ownProps) => {
   const node = state.nodes[ownProps.nodeId]
   return {
-    title: node.title
+    title: node.title,
   }
 }
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
   onAssignClick: () => {
     dispatch(uInputLinkCreate(ownProps.nodeId, 'midi', 'midi'))
-  }
+  },
 })
 
 export default connect(

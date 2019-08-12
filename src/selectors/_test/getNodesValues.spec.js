@@ -6,18 +6,18 @@ test('(Selector) getNodesValues', (t) => {
     nodes: {
       XX: {
         key: 'shape',
-        value: 'triangle'
+        value: 'triangle',
       },
       YY: {
         key: 'rate',
-        value: 2
-      }
-    }
+        value: 2,
+      },
+    },
   }
 
   const expected = {
     shape: 'triangle',
-    rate: 2
+    rate: 2,
   }
 
   const actual = getNodesValues(state, ['XX', 'YY'])
@@ -31,13 +31,13 @@ test('(Selector) getNodesValues - undefined array', (t) => {
     nodes: {
       XX: {
         key: 'shape',
-        value: 'triangle'
+        value: 'triangle',
       },
       YY: {
         key: 'rate',
-        value: 2
-      }
-    }
+        value: 2,
+      },
+    },
   }
 
   const expected = {}

@@ -5,11 +5,6 @@ The user can change the scale. The user can also click on "shapeshift" and the g
 **/
 
 /** HEDRON TIP **
-  Hedron uses three.js, so you'll need that :)
-**/
-const THREE = require('three')
-
-/** HEDRON TIP **
   Hedron sketches must be a class
 **/
 class Solid {
@@ -25,12 +20,12 @@ class Solid {
 
     params - The sketch params when the sketch first initialises
   **/
-  constructor (scene, meta, params) {
+  constructor (scene, params, meta) {
     /** HEDRON TIP **
       Must define a "root" property as a THREE.Group or THREE.Object3D
       Hedron looks for this and will add it to the scene.
     **/
-    this.root = new THREE.Group()
+    this.root = new THREE.Group() // THREE is a global var, so no need to import
 
     /** HEDRON TIP **
       It's good practice to not manipulate the root object
@@ -47,7 +42,7 @@ class Solid {
     const mat = new THREE.MeshBasicMaterial(
       { wireframe: true, color: 0xffffff }
     )
-    const size = 300
+    const size = 1
 
     // Array geometries (the platonic solids!)
     const geoms = [
@@ -55,7 +50,7 @@ class Solid {
       new THREE.BoxGeometry(size, size, size),
       new THREE.OctahedronGeometry(size),
       new THREE.TetrahedronGeometry(size),
-      new THREE.DodecahedronGeometry(size)
+      new THREE.DodecahedronGeometry(size),
     ]
 
     // Loop through meshes
@@ -104,7 +99,6 @@ class Solid {
     this.group.rotation.z += params.rotSpeedZ * baseSpeed * frameDiff
 
     // Change scale using params.scale
-    params.scale = Math.max(params.scale * 4, 0.00001)
     this.group.scale.set(params.scale, params.scale, params.scale)
   }
 
@@ -148,6 +142,7 @@ class Solid {
     Use the destructor method to do anything when the sketch is deleted
   **/
   destructor () {
+    // eslint-disable-next-line no-console
     console.log('Solid sketch deleted!')
   }
 }

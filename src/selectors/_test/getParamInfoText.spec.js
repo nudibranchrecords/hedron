@@ -7,11 +7,11 @@ test('(Selector) getInfoText - "Learning MIDI"', (t) => {
     nodes: {
       xxx: {
 
-      }
+      },
     },
     midi: {
-      learning: 'xxx'
-    }
+      learning: 'xxx',
+    },
   }
 
   deepFreeze(state)
@@ -24,21 +24,19 @@ test('(Selector) getInfoText - "Learning MIDI"', (t) => {
 test('(Selector) getInfoText - MIDI info', (t) => {
   const state = {
     midi: {
-      learning: false
+      learning: false,
     },
     nodes: {
       xxx: {
-        inputLinkIds: ['aaa', 'bbb']
-      }
-    },
-    inputLinks: {
+        inputLinkIds: ['aaa', 'bbb'],
+      },
       aaa: {
-        title: 'midi_x'
+        title: 'midi_x',
       },
       bbb: {
-        title: 'midi_y'
-      }
-    }
+        title: 'midi_y',
+      },
+    },
   }
 
   deepFreeze(state)

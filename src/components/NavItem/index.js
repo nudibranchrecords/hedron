@@ -51,7 +51,7 @@ const NavItem = (props) => {
 }
 
 NavItem.propTypes = {
-  to: PropTypes.string
+  to: PropTypes.string,
 }
 
 export default NavItem

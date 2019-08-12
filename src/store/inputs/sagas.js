@@ -1,11 +1,9 @@
 import { select, takeEvery, put, call } from 'redux-saga/effects'
 import { getAssignedLinks } from './selectors'
-import { nodeValuesBatchUpdate, nodeShotFired } from '../nodes/actions'
-import { inputLinkShotDisarm, inputLinkShotArm } from '../inputLinks/actions'
+import { nodeValuesBatchUpdate, nodeShotFired, rNodeInputLinkShotDisarm, rNodeInputLinkShotArm } from '../nodes/actions'
 import { projectError } from '../project/actions'
 import getNodes from '../../selectors/getNodes'
 import getNode from '../../selectors/getNode'
-import getLinkableAction from '../../selectors/getLinkableAction'
 import getNodesValues from '../../selectors/getNodesValues'
 import lfoProcess from '../../utils/lfoProcess'
 import midiValueProcess from '../../utils/midiValueProcess'
@@ -23,25 +21,29 @@ export function* handleInput (action) {
 
       for (let i = 0; i < links.length; i++) {
         let skip
+        const linkNode = yield select(getNode, links[i].nodeId)
 
-        if (links[i].linkType === 'linkableAction') {
-          const linkableAction = yield select(getLinkableAction, links[i].nodeId)
-          yield put(linkableAction.action)
+        if (linkNode.type === 'linkableAction') {
+          yield put(linkNode.action)
         } else {
           let value = p.value
           let modifiers
           if (inputType === 'midi') {
-            const currNode = yield select(getNode, links[i].nodeId)
-
             let midiValue = value
-            value = currNode.value
+            value = linkNode.value
             const options = yield select(getNodesValues, links[i].midiOptionIds)
-            value = yield call(midiValueProcess, currNode, midiValue, options, messageCount)
+            value = yield call(midiValueProcess, linkNode, midiValue, options, messageCount)
           }
 
           if (p.inputId === 'lfo') {
             let o = yield select(getNodesValues, links[i].lfoOptionIds)
-            value = yield call(lfoProcess, value, o.shape, o.rate, o.phase)
+            const seed = o.seed === -1 ? links[i].id : o.seed
+            value = yield call(lfoProcess, value, o.shape, o.rate, o.phase, seed)
+          }
+
+          if (p.inputId === 'audio') {
+            const o = yield select(getNodesValues, links[i].audioOptionIds)
+            value = p.value[o.audioBand]
           }
 
           if (links[i].modifierIds && links[i].modifierIds.length) {
@@ -62,22 +64,19 @@ export function* handleInput (action) {
 
           switch (links[i].nodeType) {
             case 'shot': {
-              const nodeId = links[i].nodeId
-              const node = yield select(getNode, nodeId)
-
               if (p.meta && p.meta.noteOn) {
-                yield put(nodeShotFired(nodeId, node.sketchId, node.method))
+                yield put(nodeShotFired(links[i].nodeId, linkNode.sketchId, linkNode.method))
               } else if (p.inputId === 'seq-step') {
                 const seqNode = yield select(getNode, links[i].sequencerGridId)
                 if (seqNode.value[value] === 1) {
-                  yield put(nodeShotFired(nodeId, node.sketchId, node.method))
+                  yield put(nodeShotFired(links[i].nodeId, linkNode.sketchId, linkNode.method))
                 }
                 skip = true
               } else if (value > 0.333 && links[i].armed) {
-                yield put(nodeShotFired(nodeId, node.sketchId, node.method))
-                yield put(inputLinkShotDisarm(links[i].id))
+                yield put(nodeShotFired(links[i].nodeId, linkNode.sketchId, linkNode.method))
+                yield put(rNodeInputLinkShotDisarm(links[i].id))
               } else if (value < 0.333) {
-                yield put(inputLinkShotArm(links[i].id))
+                yield put(rNodeInputLinkShotArm(links[i].id))
               }
               break
             }
@@ -91,7 +90,7 @@ export function* handleInput (action) {
           if (!skip) {
             values.push({
               id: links[i].nodeId,
-              value
+              value,
             })
           }
         }

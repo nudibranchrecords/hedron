@@ -1,4 +1,5 @@
-import { loadSketches } from '../externals/sketches'
+import path from 'path'
+import { loadSketches, loadSketch, loadConfig } from '../externals/sketches'
 import getSketch from '../selectors/getSketch'
 import getScenes from '../selectors/getScenes'
 import getScene from '../selectors/getScene'
@@ -8,38 +9,99 @@ import getChannelSceneId from '../selectors/getChannelSceneId'
 import getSceneCrossfaderValue from '../selectors/getSceneCrossfaderValue'
 import getViewerMode from '../selectors/getViewerMode'
 import { availableModulesReplaceAll } from '../store/availableModules/actions'
-import { projectError } from '../store/project/actions'
+import { projectError, projectSketchesPathUpdate } from '../store/project/actions'
 import now from 'performance-now'
 import * as renderer from './renderer'
 import Scene from './Scene'
 import { nodeValuesBatchUpdate } from '../store/nodes/actions'
+import TWEEN from '@tweenjs/tween.js'
+import { getProjectFilepath } from '../store/project/selectors'
 
 export let scenes = {}
 
 let sketches = {}
-let modules = {}
+let moduleConfigs = {}
 let isRunning = false
-let allModules = {}
+let moduleFiles = {}
 let sketchesFolder
 let store
 
+// Load sketches from sketches folder
 export const loadSketchModules = (url) => {
+  let hasCheckedForSiblingDir = false
+
+  const load = url => {
+    try {
+      sketchesFolder = url
+      moduleFiles = loadSketches(url)
+
+      Object.keys(moduleFiles).forEach((key) => {
+        moduleConfigs[key] = moduleFiles[key].config
+      })
+
+      isRunning = true
+
+      // If second check inside sibling sketches folder was successful, save the absolute path
+      if (hasCheckedForSiblingDir) {
+        store.dispatch(projectSketchesPathUpdate(url))
+      }
+    } catch (error) {
+      if (!hasCheckedForSiblingDir) {
+        // If can't find sketches folder, try looking for "sketches" folder next to project.json first
+        hasCheckedForSiblingDir = true
+        // eslint-disable-next-line no-console
+        console.log(
+          `%cHEDRON: Can't find sketches folder for project. %c\nChecking for sibling folder named "sketches"`,
+          `font-weight: bold`,
+          `font-weight: normal`,
+        )
+        // Generate file path for sibling folder and try again
+        const state = store.getState()
+        const filePath = getProjectFilepath(state)
+        const sketchesPath = path.resolve(path.dirname(filePath), 'sketches/')
+        load(sketchesPath)
+      } else {
+        // If all else fails, throw error
+        isRunning = false
+        console.error(error)
+        store.dispatch(projectError(`Sketches failed to load: ${error.message}`, {
+          popup: 'true',
+          code: error.code,
+        }))
+      }
+    }
+  }
+
+  load(url)
+}
+
+export const reloadSingleSketchModule = (url, moduleId, pathArray) => {
   try {
-    sketchesFolder = url
-    allModules = loadSketches(url)
-
-    Object.keys(allModules).forEach((key) => {
-      const config = allModules[key].config
-      modules[key] = config
-    })
-
-    isRunning = true
+    moduleFiles[moduleId] = loadSketch(url)
+    moduleConfigs[moduleId] = moduleFiles[moduleId].config
+    moduleConfigs[moduleId].filePathArray = pathArray
+    moduleConfigs[moduleId].filePath = url
   } catch (error) {
     isRunning = false
     console.error(error)
-    store.dispatch(projectError(`Sketches failed to load: ${error.message}`, {
+    store.dispatch(projectError(`Sketch ${moduleId} failed to load: ${error.message}`, {
       popup: 'true',
-      code: error.code
+      code: error.code,
+    }))
+  }
+}
+
+export const reloadSingleSketchConfig = (url, moduleId, pathArray) => {
+  try {
+    moduleConfigs[moduleId] = loadConfig(url)
+    moduleConfigs[moduleId].filePathArray = pathArray
+    moduleConfigs[moduleId].filePath = url
+  } catch (error) {
+    isRunning = false
+    console.error(error)
+    store.dispatch(projectError(`Sketch config ${moduleId} failed to load: ${error.message}`, {
+      popup: 'true',
+      code: error.code,
     }))
   }
 }
@@ -55,7 +117,7 @@ export const removeScene = (sceneId) => {
 
 export const addSketchToScene = (sceneId, sketchId, moduleId) => {
   const meta = {
-    sketchesFolder: `file://${sketchesFolder}`
+    sketchesFolder: `file://${sketchesFolder}`,
   }
 
   const scene = scenes[sceneId]
@@ -64,7 +126,7 @@ export const addSketchToScene = (sceneId, sketchId, moduleId) => {
   const state = store.getState()
   const params = getSketchParams(state, sketchId)
 
-  const module = new allModules[moduleId].Module(scene, meta, params)
+  const module = new moduleFiles[moduleId].Module(scene, params, meta)
 
   sketches[sketchId] = module
   module.root && scene.scene.add(module.root)
@@ -92,7 +154,7 @@ export const fireShot = (sketchId, method) => {
           vals.push(
             {
               id,
-              value: params[key]
+              value: params[key],
             }
           )
         }
@@ -133,7 +195,7 @@ export const run = (injectedStore, stats) => {
   isRunning = true
   renderer.initiate(injectedStore, scenes)
   // Give store module params
-  store.dispatch(availableModulesReplaceAll(modules))
+  store.dispatch(availableModulesReplaceAll(moduleConfigs))
 
   const updateSceneSketches = (sceneId) => {
     stateScene = getScene(state, sceneId)
@@ -154,6 +216,10 @@ export const run = (injectedStore, stats) => {
       spf = 1000 / state.settings.throttledFPS
 
       newTime = now()
+
+      // Tween JS used for animated param values (anims)
+      TWEEN.update(newTime)
+
       delta = newTime - oldTimeModified
       // Elapsed frames are from the perspective of a 60FPS target
       // regardless of throttling (so that throttled animations dont slow down)

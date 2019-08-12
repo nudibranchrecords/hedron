@@ -6,10 +6,10 @@ export default (state, nodeId) => {
   const ids = state.nodes[nodeId].inputLinkIds
   const obj = {
     alwaysActive: [],
-    toggledActive: []
+    toggledActive: [],
   }
   for (let i = 0; i < ids.length; i++) {
-    const link = state.inputLinks[ids[i]]
+    const link = state.nodes[ids[i]]
     if (link.input.type === 'midi') {
       obj.alwaysActive.push(link.id)
     } else {

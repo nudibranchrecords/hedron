@@ -1,11 +1,14 @@
 import { LOCATION_CHANGE } from 'react-router-redux'
+import _ from 'lodash'
 
 const defaultState = {
   panelWidths: {
-    left: 50
+    left: 50,
   },
   isEditing: false,
-  openedNode: false
+  openedNode: false,
+  auxOpen: [],
+  addSketchOpen: {},
 }
 
 const uiReducer = (state = defaultState, action) => {
@@ -17,8 +20,8 @@ const uiReducer = (state = defaultState, action) => {
         ...state,
         panelWidths: {
           ...state.panelWidths,
-          left: p.value
-        }
+          left: p.value,
+        },
       }
     }
     case 'UI_EDITING_OPEN': {
@@ -26,33 +29,56 @@ const uiReducer = (state = defaultState, action) => {
         ...state,
         isEditing: {
           id: p.id,
-          type: p.type
-        }
+          type: p.type,
+        },
       }
     }
     case 'UI_EDITING_TOGGLE': {
+      const newEditing = {
+        id: p.id,
+        type: p.type,
+      }
+
       return {
         ...state,
-        isEditing: state.isEditing
+        isEditing: _.isEqual(state.isEditing, newEditing)
           ? false
-          : {
-            id: p.id,
-            type: p.type
-          }
+          : newEditing,
       }
     }
     case 'UI_EDITING_CLOSE':
     case LOCATION_CHANGE:
-      {
-        return {
-          ...state,
-          isEditing: false
-        }
+    {
+      return {
+        ...state,
+        isEditing: false,
       }
+    }
     case 'UI_NODE_TOGGLE_OPEN': {
       return {
         ...state,
-        openedNode: p.id === state.openedNode ? false : p.id
+        openedNode: p.id === state.openedNode ? false : p.id,
+      }
+    }
+    case 'UI_NODE_CLOSE': {
+      return {
+        ...state,
+        openedNode: false,
+      }
+    }
+    case 'UI_AUX_TOGGLE_OPEN': {
+      let items = state.auxOpen
+      // If item exists, remove
+      if (items.includes(p.id)) {
+        items = items.filter(item => item !== p.id)
+      } else {
+      // If item doesn't exist, add
+        items = [ ...items, p.id ]
+      }
+
+      return {
+        ...state,
+        auxOpen: items,
       }
     }
     default:

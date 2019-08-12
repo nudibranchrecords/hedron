@@ -12,9 +12,9 @@ const mapStateToProps = (state, ownProps) => {
 
   return {
     initialValues: {
-      title: node.title
+      title: node.title,
     },
-    enableReinitialize: true
+    enableReinitialize: true,
   }
 }
 
@@ -32,11 +32,11 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
         dispatch(sceneRename(ownProps.id, values.title))
         break
     }
-  }
+  },
 })
 
 const EditingOverlayForm = reduxForm({
-  form: 'editingOverlay'
+  form: 'editingOverlay',
 })(EditingOverlayFormComponent)
 
 export default connect(

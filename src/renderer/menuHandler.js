@@ -1,5 +1,6 @@
 import { ipcRenderer } from 'electron'
 import { projectSave, projectSaveAs, projectLoad } from '../store/project/actions'
+import { uiAuxToggleOpen } from '../store/ui/actions'
 import history from '../history'
 
 let dispatch
@@ -21,6 +22,9 @@ ipcRenderer.on('app-menu-click', (e, id, ...args) => {
       break
     case 'project-settings':
       history.push('/settings')
+      break
+    case 'hedron-about':
+      dispatch(uiAuxToggleOpen('aboutHedron'))
       break
   }
 })

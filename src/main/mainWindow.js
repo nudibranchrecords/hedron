@@ -1,7 +1,7 @@
-import { BrowserWindow, ipcMain } from 'electron'
+import { BrowserWindow, ipcMain, shell } from 'electron'
 const argv = require('minimist')(process.argv)
-const isDistDev = argv.distDev // Prod build with some useful dev things
 const isDevelopment = process.env.NODE_ENV !== 'production'
+const path = require('path')
 
 // Global reference to mainWindow
 // Necessary to prevent win from being garbage collected
@@ -9,23 +9,28 @@ export let mainWindow
 
 export const createMainWindow = () => {
   // Construct new BrowserWindow
-  const dimensions = isDevelopment || isDistDev
+
+  const dimensions = isDevelopment
     ? {
       width: 1920,
-      height: 1080
+      height: 1080,
     } // Smaller dimensions for prod for easier moving of window
     : {
       width: 800,
-      height: 500
+      height: 500,
     }
 
   mainWindow = new BrowserWindow({
     fullscreenable: true,
     webPreferences: {
       nativeWindowOpen: true,
-      webSecurity: false
+      webSecurity: false,
     },
-    ...dimensions
+    title: 'Hedron',
+    // get Hedron icon to appear during dev (only works for win and linux)
+    // for better icons, still need to build the app
+    icon: isDevelopment && path.join(__dirname, '../../build/icon.png'),
+    ...dimensions,
   })
 
   mainWindow.webContents.on('new-window', (event, url, frameName, disposition, options, additionalFeatures) => {
@@ -60,13 +65,13 @@ export const createMainWindow = () => {
   })
 
   // Set url for `win`
-    // points to `webpack-dev-server` in development
-    // points to `index.html` in production
+  // points to `webpack-dev-server` in development
+  // points to `index.html` in production
   const url = isDevelopment
     ? `http://localhost:${process.env.ELECTRON_WEBPACK_WDS_PORT}`
     : `file://${__dirname}/index.html`
 
-  if (isDevelopment || isDistDev) {
+  if (isDevelopment) {
     mainWindow.webContents.openDevTools()
   }
 
@@ -89,6 +94,16 @@ export const createMainWindow = () => {
     setImmediate(() => {
       mainWindow.focus()
     })
+  })
+
+  // Open anchor tag links in new browser window
+  mainWindow.webContents.on('will-navigate', (event, url) => {
+    // Don't do anything if "localhost" as this is most likely
+    // dev auto refresh rather than an anchor tag href
+    if (url.includes('http://localhost:')) { return }
+
+    event.preventDefault()
+    shell.openExternal(url)
   })
 
   setTimeout(() => {

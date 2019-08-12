@@ -2,7 +2,7 @@ import OneDimensionalNoise from '../oneDimensionalNoise'
 const Noise = new OneDimensionalNoise()
 const PI2 = Math.PI * 2
 
-export default (delta, shape, rate, phase) => {
+export default (delta, shape, rate, phase, id) => {
   const x = delta * rate + phase
   let y
 
@@ -23,7 +23,7 @@ export default (delta, shape, rate, phase) => {
       y = Math.abs((x % 1) * 2 - 1)
       break
     case 'noise':
-      y = Noise.getValue(x)
+      y = Noise.getValue(x, id)
       break
   }
 

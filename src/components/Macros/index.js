@@ -5,11 +5,10 @@ import Button from '../Button'
 import ViewHeader from '../ViewHeader'
 import Items from '../Items'
 import Item from '../Item'
-import MacroItem from '../../containers/MacroItem'
+import Node from '../../containers/Node'
 
 const Wrapper = styled.div`
   display: flex;
-  height: 100%;
   flex-direction: column;
 `
 
@@ -19,7 +18,7 @@ const Macros = ({ items, onAddClick }) => (
     <Items>
       {items.map(({ id }) => (
         <Item key={id}>
-          <MacroItem id={id} />
+          <Node nodeId={id} panelId='macros' />
         </Item>
       ))}
     </Items>
@@ -34,9 +33,9 @@ Macros.propTypes = {
   items: PropTypes.arrayOf(
     PropTypes.shape({
       id: PropTypes.string,
-      title: PropTypes.string
+      title: PropTypes.string,
     })
-  )
+  ),
 }
 
 export default Macros

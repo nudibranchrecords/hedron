@@ -7,7 +7,7 @@ const mapStateToProps = (state, ownProps) => {
   return {
     isVisible: errorPopup && errorPopup.message ? true : undefined,
     message: errorPopup && errorPopup.message || undefined,
-    code: errorPopup && errorPopup.code || undefined
+    code: errorPopup && errorPopup.code || undefined,
   }
 }
 
@@ -17,7 +17,7 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
   },
   onChooseSketchFolderClick: () => {
     dispatch(projectChooseSketchesFolder(true))
-  }
+  },
 })
 
 export default connect(

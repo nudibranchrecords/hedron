@@ -1,55 +1,47 @@
 export default (state, nodeId) => {
-  const node = state.nodes[nodeId]
+  const nodeType = state.nodes[nodeId].type
+
+  // List of options
+  // exclude: remove options for those node types
+  // include: ONLY allow these node types
   const options = [
     {
-      value: false,
-      label: 'Choose',
-      disabled: true
-    },
-    {
-      value: 'audio_0',
-      type: 'audio',
-      label: 'Low'
-    },
-    {
-      value: 'audio_1',
-      type: 'audio',
-      label: 'Low-Mid'
-    },
-    {
-      value: 'audio_2',
-      type: 'audio',
-      label: 'Mid'
-    },
-    {
-      value: 'audio_3',
-      type: 'audio',
-      label: 'High'
+      value: 'audio',
+      label: 'Audio',
+      exclude: ['linkableAction'],
     },
     {
       value: 'midi',
       type: 'midi',
-      label: 'MIDI'
-    }
+      label: 'MIDI',
+    },
+    {
+      value: 'lfo',
+      label: 'LFO',
+      exclude: ['shot', 'linkableAction'],
+    },
+    {
+      value: 'anim',
+      type: 'anim',
+      label: 'Anim',
+      exclude: ['linkableAction', 'shot'],
+    },
+    {
+      value: 'seq-step',
+      label: 'Sequencer',
+      include: ['shot'],
+    },
   ]
 
-  if (node.type !== 'shot') {
-    options.push(
-      {
-        value: 'lfo',
-        label: 'LFO'
-      }
-    )
-  }
+  const filteredOptions = options.filter(opt => {
+    if (opt.include) {
+      return opt.include.includes(nodeType)
+    } else if (opt.exclude) {
+      return !opt.exclude.includes(nodeType)
+    } else {
+      return true
+    }
+  })
 
-  if (node.type === 'shot') {
-    options.push(
-      {
-        value: 'seq-step',
-        label: 'Sequencer'
-      }
-    )
-  }
-
-  return options
+  return filteredOptions
 }

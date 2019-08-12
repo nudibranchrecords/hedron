@@ -1,106 +1,56 @@
-import { omit } from 'lodash'
+import { union } from 'lodash'
 
 const defaultState = {
   learningId: false,
   openedId: undefined,
   lastId: undefined,
-  items: {}
+  nodeIds: [],
 }
 
 const macroReducer = (state = defaultState, action) => {
   const p = action.payload
 
   switch (action.type) {
-    case 'R_MACRO_CREATE': {
+    case 'R_MACRO_ADD': {
       return {
         ...state,
-        items: {
-          ...state.items,
-          [p.id]: {
-            id: p.id,
-            nodeId: p.nodeId,
-            targetParamLinks: {}
-          }
-        }
+        nodeIds: union(state.nodeIds, [p.nodeId]),
       }
     }
     case 'R_MACRO_DELETE': {
       return {
         ...state,
-        items: omit(state.items, [p.id])
+        nodeIds: state.nodeIds.filter(item => item !== p.nodeId),
       }
     }
     case 'R_MACRO_LEARNING_TOGGLE': {
       return {
         ...state,
-        learningId: state.learningId !== false ? false : p.id
+        learningId: state.learningId !== false ? false : p.id,
       }
     }
     case 'R_MACRO_LEARNING_STOP': {
       return {
         ...state,
-        learningId: false
-      }
-    }
-    case 'R_MACRO_TARGET_PARAM_LINK_CREATE': {
-      return {
-        ...state,
-        items: {
-          ...state.items,
-          [p.macroId]: {
-            ...state.items[p.macroId],
-            targetParamLinks: {
-              ...state.items[p.macroId].targetParamLinks,
-              [p.paramId]: {
-                nodeId: p.nodeId,
-                paramId: p.paramId,
-                startValue: false
-              }
-            }
-          }
-        }
-      }
-    }
-    case 'R_MACRO_TARGET_PARAM_LINK_DELETE': {
-      return {
-        ...state,
-        items: {
-          ...state.items,
-          [p.macroId]: {
-            ...state.items[p.macroId],
-            targetParamLinks: omit(state.items[p.macroId].targetParamLinks, [p.paramId])
-          }
-        }
-      }
-    }
-    case 'R_MACRO_TARGET_PARAM_LINK_UPDATE_START_VALUE': {
-      return {
-        ...state,
-        items: {
-          ...state.items,
-          [p.macroId]: {
-            ...state.items[p.macroId],
-            targetParamLinks: {
-              ...state.items[p.macroId].targetParamLinks,
-              [p.paramId]: {
-                ...state.items[p.macroId].targetParamLinks[p.paramId],
-                startValue: p.value
-              }
-            }
-          }
-        }
+        learningId: false,
       }
     }
     case 'R_MACRO_OPEN_TOGGLE': {
       return {
         ...state,
-        openedId: p.id !== state.openedId ? p.id : undefined
+        openedId: p.id !== state.openedId ? p.id : undefined,
+      }
+    }
+    case 'R_MACRO_CLOSE': {
+      return {
+        ...state,
+        openedId: undefined,
       }
     }
     case 'R_MACRO_UPDATE_LAST_ID': {
       return {
         ...state,
-        lastId: p.id
+        lastId: p.id,
       }
     }
     case 'MACROS_REPLACE_ALL': {

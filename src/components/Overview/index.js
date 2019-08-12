@@ -8,7 +8,8 @@ import AudioAnalyzer from '../../containers/AudioAnalyzer'
 import Clock from '../../containers/Clock'
 import SceneManager from '../../containers/SceneManager'
 import Devices from '../../containers/Devices'
-import Control from '../../containers/Control'
+import Node from '../../containers/Node'
+import OverviewPropertiesPanel from '../../containers/OverviewPropertiesPanel'
 import theme from '../../utils/theme'
 
 const Wrapper = styled.div`
@@ -22,6 +23,7 @@ const Top = styled.div`
 
 const Bottom = styled.div`
   margin-top: auto;
+  margin-bottom: 0.5rem;
 `
 
 const Tools = styled.div`
@@ -29,8 +31,11 @@ const Tools = styled.div`
   margin-bottom: 1rem;
   background: ${theme.bgColorDark3};
   padding: 0.5rem;
+  align-items: flex-end;
 
   & > div {
+    display: flex;
+    align-items: flex-end;
     height: 48px;
     margin-right: 0.5rem
   }
@@ -43,6 +48,10 @@ const Scroller = styled.div`
   overflow: auto;
 `
 
+const PanelWrapper = styled.div`
+  margin: 0 -0.5rem -0.5rem -0.5rem;
+`
+
 class Overview extends React.Component {
   render () {
     return (
@@ -53,7 +62,7 @@ class Overview extends React.Component {
           <div><div ref={node => node && node.appendChild(this.props.stats.dom)} /></div>
           <div><AudioAnalyzer /></div>
           <div><Clock /></div>
-          <div><Control nodeId='viewerMode' /></div>
+          <div><Node nodeId='viewerMode' panelId='overview' theme='light' /></div>
         </Tools>
 
         <Crossfader />
@@ -67,6 +76,9 @@ class Overview extends React.Component {
             <ProjectDetails />
           </Bottom>
         </Scroller>
+        <PanelWrapper>
+          <OverviewPropertiesPanel />
+        </PanelWrapper>
       </Wrapper>
 
     )
@@ -75,8 +87,8 @@ class Overview extends React.Component {
 
 Overview.propTypes = {
   stats: PropTypes.shape({
-    dom: PropTypes.object
-  }).isRequired
+    dom: PropTypes.object,
+  }).isRequired,
 }
 
 export default Overview

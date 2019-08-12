@@ -28,7 +28,17 @@ const Bottom = styled.div`
   }
 `
 
-const Sketch = ({ title, params, shots, onDeleteClick, sketchId, onRenameClick, onReimportClick }) => (
+const ActionButton = styled(Button)`
+  margin-left: 0.5rem;
+`
+
+const DeleteButton = styled(Button)`
+  margin-right: auto;
+`
+
+const Sketch = ({
+  title, params, shots, onDeleteClick, sketchId, onRenameClick, onReloadFileClick,
+}) => (
   <Wrapper>
     <SceneHeader
       onButtonClick={e => {
@@ -45,7 +55,7 @@ const Sketch = ({ title, params, shots, onDeleteClick, sketchId, onRenameClick, 
         <Items>
           {params.map((id, index) => (
             <Item key={id}>
-              <SketchParam nodeId={id} index={index} sketchId={sketchId} />
+              <SketchParam nodeId={id} index={index} />
             </Item>
           ))}
         </Items>
@@ -67,8 +77,8 @@ const Sketch = ({ title, params, shots, onDeleteClick, sketchId, onRenameClick, 
 
     <Bottom>
       <div>
-        <Button onClick={() => { onDeleteClick(sketchId) }}>Delete Sketch</Button>
-        <Button onClick={() => { onReimportClick(sketchId) }}>Reimport</Button>
+        <DeleteButton color='danger' onClick={() => { onDeleteClick(sketchId) }}>Delete Sketch</DeleteButton>
+        <ActionButton onClick={() => { onReloadFileClick(sketchId) }}>Reload File</ActionButton>
       </div>
     </Bottom>
   </Wrapper>
@@ -85,7 +95,7 @@ Sketch.propTypes = {
   ).isRequired,
   onDeleteClick: PropTypes.func.isRequired,
   onRenameClick: PropTypes.func.isRequired,
-  onReimportClick: PropTypes.func.isRequired
+  onReloadFileClick: PropTypes.func.isRequired,
 }
 
 export default Sketch
