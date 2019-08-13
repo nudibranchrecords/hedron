@@ -1,5 +1,6 @@
 import { call, select, takeEvery, put } from 'redux-saga/effects'
 import { save, load } from '../../utils/file'
+import uiEventEmitter from '../../utils/uiEventEmitter'
 import { getProjectData, getProjectFilepath } from './selectors'
 import getCurrentSceneId from '../../selectors/getCurrentSceneId'
 import { projectLoadSuccess, projectRehydrate, projectError, projectSaveAs,
@@ -60,6 +61,7 @@ export function* loadProjectRequest () {
     yield put(projectFilepathUpdate(filepath))
     yield put(projectLoadSuccess(projectData))
     yield call([history, history.replace], projectData.router.location.pathname)
+    yield call([uiEventEmitter, uiEventEmitter.emit], 'repaint')
   } catch (error) {
     console.error(error)
     yield put(projectError(`Failed to load file: ${error.message}`))
