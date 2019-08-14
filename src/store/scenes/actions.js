@@ -90,3 +90,12 @@ export function rSceneSketchRemove (id, sketchId) {
     },
   }
 }
+
+export function rSceneSketchesReorder (id, oldIndex, newIndex) {
+  return {
+    type: 'R_SCENE_SKETCHES_REORDER',
+    payload: {
+      id, oldIndex, newIndex,
+    },
+  }
+}
