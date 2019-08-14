@@ -35,7 +35,7 @@ const SortableList = SortableContainer(({ items, ...props }) =>
 const SketchesNav = ({ onSortEnd, ...props }) => (
   <Wrapper>
     <SortableList
-      helperClass='item-sorting'
+      helperClass='is-sorting'
       pressDelay={300}
       lockAxis='y'
       onSortEnd={({ oldIndex, newIndex }) => { onSortEnd(props.sceneId, oldIndex, newIndex) }}
