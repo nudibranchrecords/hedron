@@ -1,4 +1,5 @@
 import _ from 'lodash'
+import arrayMove from 'array-move'
 
 const defaultState = {
   items: {},
@@ -66,6 +67,18 @@ const scenesReducer = (state = defaultState, action) => {
           [p.id]: {
             ...state.items[p.id],
             sketchIds: state.items[p.id].sketchIds.filter(item => item !== p.sketchId),
+          },
+        },
+      }
+    }
+    case 'R_SCENE_SKETCHES_REORDER': {
+      return {
+        ...state,
+        items: {
+          ...state.items,
+          [p.id]: {
+            ...state.items[p.id],
+            sketchIds: arrayMove(state.items[p.id].sketchIds, p.oldIndex, p.newIndex),
           },
         },
       }
