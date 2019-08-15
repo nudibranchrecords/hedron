@@ -42,7 +42,6 @@ class DelayedSort extends React.Component {
 }
 
 DelayedSort.propTypes = {
-  onSortEnd: PropTypes.func.isRequired,
   items: PropTypes.arrayOf(
     PropTypes.shape({
       id: PropTypes.string,
