@@ -6,6 +6,7 @@ test('(Selector) getModuleSketchIds', (t) => {
 
   const state = {
     scenes: {
+      sceneIds: ['scene_0', 'scene_1'],
       items: {
         scene_0: {
           id: 'scene_0',
