@@ -5,28 +5,32 @@ import theme from '../../utils/theme'
 import { Link as LinkComponent } from 'react-router-dom'
 
 const BaseLink = css`
-flex: 0 0 12.5%;
-color: white;
-padding: 0 0.25rem 0.5rem;
-text-decoration: none;
-text-transform: uppercase;
-cursor: pointer;
-position: relative;
+  display: block;
+  color: white;
+  padding: 0 0.25rem 0.5rem;
+  text-decoration: none;
+  text-transform: uppercase;
+  cursor: pointer;
+  position: relative;
 
- > div {
-   display: flex;
-   align-items: center;
-   justify-content: center;
-   text-align: center;
-   height: 3rem;
-   background: black;
-   border: 1px solid black;
-   font-size: 0.6rem;
+  > div {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    height: 3rem;
+    background: black;
+    border: 1px solid black;
+    font-size: 0.6rem;
 
-   ${props => props.isActive && `
-     border-color: white;
-   `}
- }
+    ${props => props.isActive && `
+      border-color: white;
+    `}
+
+    .is-sorting & {
+      border: 1px dashed white;
+    }
+  }
 `
 
 const Label = styled.span`
