@@ -10,11 +10,11 @@ import getCurrentScene from '../../selectors/getCurrentScene'
 import macroInterpolate from '../../utils/macroInterpolate'
 import isInputTypeHuman from '../../utils/isInputTypeHuman'
 import { rNodeCreate, nodeValueUpdate, uNodeDelete, rNodeConnectedMacroAdd,
-          rNodeConnectedMacroRemove, nodeValuesBatchUpdate, rNodeMacroTargetParamLinkCreate,
-          rNodeMacroTargetParamLinkDelete, rNodeMacroTargetParamLinkUpdateStartValue,
+  rNodeConnectedMacroRemove, nodeValuesBatchUpdate, rNodeMacroTargetParamLinkCreate,
+  rNodeMacroTargetParamLinkDelete, rNodeMacroTargetParamLinkUpdateStartValue,
 } from '../nodes/actions'
 import { rMacroAdd, rMacroDelete, uMacroTargetParamLinkAdd, rMacroLearningToggle,
-        rMacroUpdateLastId, rMacroOpenToggle,
+  rMacroUpdateLastId, rMacroOpenToggle,
 } from './actions'
 import { uiEditingOpen } from '../ui/actions'
 import { projectError } from '../project/actions'

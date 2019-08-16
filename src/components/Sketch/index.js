@@ -36,51 +36,52 @@ const DeleteButton = styled(Button)`
   margin-right: auto;
 `
 
-const Sketch = ({ title, params, shots, onDeleteClick, sketchId,
-  onRenameClick, onReloadFileClick }) => (
-    <Wrapper>
-      <SceneHeader
-        onButtonClick={e => {
-          e.stopPropagation()
-          onRenameClick(sketchId)
-        }}
-        buttonText='Rename'>
-        {title}
-      </SceneHeader>
+const Sketch = ({
+  title, params, shots, onDeleteClick, sketchId, onRenameClick, onReloadFileClick,
+}) => (
+  <Wrapper>
+    <SceneHeader
+      onButtonClick={e => {
+        e.stopPropagation()
+        onRenameClick(sketchId)
+      }}
+      buttonText='Rename'>
+      {title}
+    </SceneHeader>
 
-      {params.length > 0 &&
-        <div>
-          <ViewSubheader>Params</ViewSubheader>
-          <Items>
-            {params.map((id, index) => (
-              <Item key={id}>
-                <SketchParam nodeId={id} index={index} />
-              </Item>
-            ))}
-          </Items>
-        </div>
-      }
+    {params.length > 0 &&
+      <div>
+        <ViewSubheader>Params</ViewSubheader>
+        <Items>
+          {params.map((id, index) => (
+            <Item key={id}>
+              <SketchParam nodeId={id} index={index} />
+            </Item>
+          ))}
+        </Items>
+      </div>
+    }
 
-      {shots.length > 0 &&
-        <div>
-          <ViewSubheader>Shots</ViewSubheader>
-          <Items>
-            {shots.map((id, index) => (
-              <Item key={id}>
-                <Shot nodeId={id} index={index} />
-              </Item>
-            ))}
-          </Items>
-        </div>
-      }
+    {shots.length > 0 &&
+      <div>
+        <ViewSubheader>Shots</ViewSubheader>
+        <Items>
+          {shots.map((id, index) => (
+            <Item key={id}>
+              <Shot nodeId={id} index={index} />
+            </Item>
+          ))}
+        </Items>
+      </div>
+    }
 
-      <Bottom>
-        <div>
-          <DeleteButton color='danger' onClick={() => { onDeleteClick(sketchId) }}>Delete Sketch</DeleteButton>
-          <ActionButton onClick={() => { onReloadFileClick(sketchId) }}>Reload File</ActionButton>
-        </div>
-      </Bottom>
-    </Wrapper>
+    <Bottom>
+      <div>
+        <DeleteButton color='danger' onClick={() => { onDeleteClick(sketchId) }}>Delete Sketch</DeleteButton>
+        <ActionButton onClick={() => { onReloadFileClick(sketchId) }}>Reload File</ActionButton>
+      </div>
+    </Bottom>
+  </Wrapper>
 )
 
 Sketch.propTypes = {

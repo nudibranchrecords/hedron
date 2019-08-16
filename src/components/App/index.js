@@ -23,7 +23,6 @@ const Wrapper = styled.div`
   height: 100vh;
   background: #333;
   color: white;
-  font-family: sans-serif;
 `
 
 const Left = styled.div`

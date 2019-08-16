@@ -1,5 +1,3 @@
-const THREE = require('three')
-
 class Env {
   constructor (scene) {
     this.scene = scene.scene

@@ -13,6 +13,7 @@ body {
   margin: 0;
   font-size: 0.8rem;
   overflow: hidden;
+  font-family: sans-serif;
 }
 
 p a {
@@ -29,57 +30,12 @@ ul {
   list-style: none;
 }
 
+li {
+  list-style: none;
+}
+
 h1, h2, h3, h4, h5, h6 {
   margin: 0 0 0.5rem;
-}
-
-.Select-arrow-zone {
-  padding-right: 0;
-}
-
-.Select-control {
-  background: #222222 !important;
-  border: 1px solid #555555 !important;
-  text-transform: uppercase;
-  font-size: 0.5rem;
-  border: 0;
-  border-radius: 0;
-  height: auto;
-  cursor: pointer;
-}
-
-.Select-input {
-  height: 16px;
-}
-
-.Select-value {
-  line-height: 1rem !important;
-}
-
-.Select-value-label {
-  color: white !important;
-}
-
-.Select-menu-outer {
-  max-height: 300px;
-  background: #222222 !important;
-  color: white;
-  z-index: 5;
-}
-.Select-menu {
-  max-height: 300px;
-  background: #222222 !important;
-}
-.Select-option {
-  background: #222222;
-}
-.Select-option.is-focused {
-  background: #333;
-  color: white;
-}
-.Select-option.is-selected {
-  background: white;
-  color: black;
 }
 
 ::-webkit-scrollbar-track

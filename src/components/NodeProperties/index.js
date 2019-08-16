@@ -37,10 +37,10 @@ const NodeProperties = ({ nodeId, type, advancedIsOpen, onAdvancedClick, display
     </Top>
     {
       type === 'macro'
-      ? <MacroProperties macroId={nodeId} />
-      : <Revealer title='Advanced' isOpen={advancedIsOpen} onHeaderClick={onAdvancedClick}>
-        <ParamRange nodeId={nodeId} />
-      </Revealer>
+        ? <MacroProperties macroId={nodeId} />
+        : <Revealer title='Advanced' isOpen={advancedIsOpen} onHeaderClick={onAdvancedClick}>
+          <ParamRange nodeId={nodeId} />
+        </Revealer>
     }
   </div>
 )

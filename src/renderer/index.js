@@ -1,10 +1,11 @@
-import { ipcRenderer } from 'electron'
+import './threeImports'
+
 import React from 'react'
 import { render } from 'react-dom'
 import { Provider } from 'react-redux'
 import { createStore, applyMiddleware, compose } from 'redux'
 import { projectFilepathUpdate, projectLoadRequest } from '../store/project/actions'
-import { ConnectedRouter, routerMiddleware } from 'react-router-redux'
+import { ConnectedRouter, routerMiddleware } from 'connected-react-router'
 import listen from 'redux-action-listeners'
 import history from '../history'
 import { composeWithDevTools } from 'redux-devtools-extension'
@@ -22,7 +23,6 @@ import Stats from 'stats.js'
 import createDebounce from 'redux-debounced'
 import tryRequire from 'try-require'
 
-import 'react-select/dist/react-select.css'
 import '../style.css'
 
 // inputs
@@ -103,13 +103,6 @@ engine.run(store, stats)
 if (isDevelopment) {
   loadDefaultProject()
 }
-
-// Load default project if running the app with '--devDist'
-ipcRenderer.on('args', (event, data) => {
-  if (data.distDev) {
-    loadDefaultProject()
-  }
-})
 
 if (module.hot) {
   module.hot.accept('../containers/App', () => {

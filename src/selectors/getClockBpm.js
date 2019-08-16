@@ -3,5 +3,5 @@
 // otherwise return calculated BPM
 export default state =>
   state.settings.clockGenerated
-  ? state.settings.clockBpm
-  : state.clock.bpm
+    ? state.settings.clockBpm
+    : state.clock.bpm
