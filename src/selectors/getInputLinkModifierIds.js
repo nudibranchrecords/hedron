@@ -13,8 +13,5 @@ export default (state, id) => {
     }
   }
 
-  return link.modifierIds.filter(id => {
-    const modType = state.nodes[id].type
-    return !modType || modType === link.input.type
-  })
+  return link.modifierIds
 }
