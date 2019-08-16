@@ -10,8 +10,8 @@ const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   font-size: 0.7rem;
-  padding: 0px;
-  padding-bottom: .2rem;
+  padding: 0;
+  margin-bottom: .5rem;
 
   input {
       font-size: .7rem;
@@ -34,7 +34,6 @@ const Col = styled.div`
 `
 
 class ParamRange extends React.Component {
-
   constructor (props) {
     super(props)
 

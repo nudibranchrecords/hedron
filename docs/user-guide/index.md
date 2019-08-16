@@ -7,11 +7,16 @@ Sketches are created with [three.js](https://github.com/mrdoob/three.js/). They 
 
 Many sketches can be added to the same Hedron scene. These can be multiple instances of the same sketch, or different types of sketches.
 
+### Adding and removing sketches
 In order to add sketches, click on the "+" in the right sidebar. If you're starting from scratch, you'll need to tell Hedron where your sketch folder is.
 
 To remove a sketch, click the delete button at the bottom of the view for that sketch.
 
-Use the dropdown menu on the Add Sketch scene to organise your sketches. If the author of the sketch has provided the correct meta data, you'll be able to organise based on category or author. Otherwise you can organise based on the folder structure of your sketches.
+### Reordering sketches
+Sketches can be reordered in the right sidebar. Click and hold on a sketch in the sidebar and it's appearance will change, allowing you to drag it to a new position.
+
+### Organising available sketches
+Use the dropdown menu on the Add Sketch view to organise your sketches. If the author of the sketch has provided the correct meta data, you'll be able to organise based on category or author. Otherwise you can organise based on the folder structure of your sketches.
 
 ### Switching between sketches
 You can switch between different sketches that are already added to Hedron using the right sidebar.
@@ -20,7 +25,7 @@ You can switch between different sketches that are already added to Hedron using
 Params are the variables of a sketch. They default to a value between 0 and 1 (although more types of param are [planned](https://github.com/nudibranchrecords/hedron/issues/13)). The simplest way to control a param is to click and drag the value bar.
 
 ### Adding an input to a param
-The real power of Hedron is the ability to link different inputs to a param. This can be audio, LFO or MIDI.
+The real power of Hedron is the ability to link different inputs to a param. This can be audio, LFO, MIDI or anim.
 
 To add an input to a param:
 
@@ -98,6 +103,34 @@ By clicking on the audio level bars left of the clock controls you can edit para
 - **Levels Power** - This value controls a power function with an exponent between .5 and 3. When this parameter is low it will cause low audio levels to get boosted higher when this parameter is high, low levels will be passed through even lower, causing only values that were high to begin with to remain high.
 - **Normalize Levels** - This causes each frequency band to be normalized based on it's highest and lowest recorded values, this will help the parameters connected to audio move within their full range, as often the low end tends to be louder while the high end is quieter.
 - **Normalized Range Falloff** - This is how much the recorded high and low of each frequency band decreases/increases respectively each frame.
+
+## Scenes
+You can have many three.js scenes in your show. Scenes act independently of each other and are rendered separately in channels. The scene manager is located bottom left, underneath the preview. 
+
+### Adding a scene
+Add scenes with the "+" button. To see the scene, you'll need to add it to a channel. With the scene selected, cick on "Add to A" or "Add to B" in the "Current Scene" panel. This will add it to the corresponding channel. You'll see an "A" or "B" label over any scene that is assigned to a channel.
+
+### Crossfading 
+You can crossfade between these channels using the scene crossfader. The crossfader acts like a sketch param and can have inputs assigned to it.
+
+### Reordering scenes
+Similarly to sketches, if you click and hold on a scene, its appearance will change and you can drag it into an we position.
+
+### Current Scene Panel
+The "Current Scene" panel gives you various ways to assign a scene to a channel:
+
+- **Add to A** - Add the selected scene to channel A
+- **Add to B** - Add the selected scene to channel B
+- **Add to Active** - Add the selected scene to whatever channel is currently displaying
+- **Add to Opposite** - Add the selected scene to whatever channel is currently not displaying
+- **Clear** - Remove the scene from its channel
+
+These buttons can be assigned to MIDI controls. "Add to Opposite" is particularly useful for queing up a scene on the opposite channel to allow for a crossfade.
+
+You can also rename and delete scenes from the Current Scene Panel.
+
+### Viewer Mode
+During a show, you may want to preview a sceen before displaying it on the output window. The Viewer Mode control (located above the crossfader) allows you to choose between seeing channel A, B or the mix of both channels. This will only display in the preview, the output for the second window will always be a mix.
 
 ## Other features
 

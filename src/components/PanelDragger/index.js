@@ -23,7 +23,6 @@ const Wrapper = styled.div`
   }
 `
 class PanelDragger extends React.Component {
-
   constructor (props) {
     super(props)
 
@@ -59,7 +58,6 @@ class PanelDragger extends React.Component {
   render () {
     return (<Wrapper onMouseDown={this.handleMouseDown} />)
   }
-
 }
 
 export default PanelDragger

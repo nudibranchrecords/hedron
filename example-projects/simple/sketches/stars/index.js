@@ -1,8 +1,6 @@
 /** HEDRON TIP **
   Look in "example-projects/simple/sketches/solid" for info on how to create sketches
 **/
-const THREE = require('three')
-
 const range = 10000
 const particleCount = 1800
 
@@ -35,9 +33,9 @@ class Stars {
 
     // create the particle system
     this.particleSystem = new THREE.Points(
-    this.particles,
-    this.material
-  )
+      this.particles,
+      this.material
+    )
 
     // add it to the scene
     this.root.add(this.particleSystem)

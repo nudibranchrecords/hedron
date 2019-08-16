@@ -30,7 +30,7 @@ const Item = styled.div`
         color: ${theme.actionColor1}
       }
     }`
-  }
+}
   
 `
 
@@ -58,7 +58,7 @@ const PropertiesPanel = ({ isOpen, nodeId, Component, onCloseClick, panelId, tit
       <MenuPanel titleContent={titleContent} onCloseClick={onCloseClick} key={nodeId}>
         <Component nodeId={nodeId} />
       </MenuPanel>
-    }
+      }
     </PanelContext.Provider>
   )
 }
@@ -66,7 +66,7 @@ const PropertiesPanel = ({ isOpen, nodeId, Component, onCloseClick, panelId, tit
 PropertiesPanel.propTypes = {
   nodeId: PropTypes.string,
   isOpen: PropTypes.bool,
-  Component: PropTypes.func,
+  Component: PropTypes.object,
   onCloseClick: PropTypes.func,
   panelId: PropTypes.string,
   titleItems: PropTypes.arrayOf(

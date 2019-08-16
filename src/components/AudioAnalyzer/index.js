@@ -4,6 +4,7 @@ import uiEventEmitter from '../../utils/uiEventEmitter'
 import Node from '../../containers/Node'
 import styled, { css } from 'styled-components'
 import theme from '../../utils/theme'
+import { ReactReduxContext } from 'react-redux'
 
 let height, val, offset, hue, i, inputs
 
@@ -65,6 +66,7 @@ const Item = (props) => (
 )
 
 class AudioAnalyzer extends React.Component {
+  static contextType = ReactReduxContext
 
   constructor (props) {
     super(props)
@@ -127,9 +129,6 @@ class AudioAnalyzer extends React.Component {
   }
 }
 
-AudioAnalyzer.contextTypes = {
-  store: PropTypes.object.isRequired,
-}
 AudioAnalyzer.propTypes = {
   isOpen: PropTypes.bool,
   onAnalyzerClick: PropTypes.func.isRequired,

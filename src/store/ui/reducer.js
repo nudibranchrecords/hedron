@@ -1,4 +1,4 @@
-import { LOCATION_CHANGE } from 'react-router-redux'
+import { LOCATION_CHANGE } from 'connected-react-router'
 import _ from 'lodash'
 
 const defaultState = {
@@ -48,12 +48,12 @@ const uiReducer = (state = defaultState, action) => {
     }
     case 'UI_EDITING_CLOSE':
     case LOCATION_CHANGE:
-      {
-        return {
-          ...state,
-          isEditing: false,
-        }
+    {
+      return {
+        ...state,
+        isEditing: false,
       }
+    }
     case 'UI_NODE_TOGGLE_OPEN': {
       return {
         ...state,
