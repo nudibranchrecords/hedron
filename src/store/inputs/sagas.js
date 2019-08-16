@@ -21,7 +21,6 @@ export function* handleInput (action) {
 
       for (let i = 0; i < links.length; i++) {
         let skip
-        let postModifiers = []
         const linkNode = yield select(getNode, links[i].nodeId)
 
         if (linkNode.type === 'linkableAction') {
@@ -45,34 +44,21 @@ export function* handleInput (action) {
           if (p.inputId === 'audio') {
             const o = yield select(getNodesValues, links[i].audioOptionIds)
             value = p.value[o.audioBand]
-            if (o.increment !== 0) {
-              const n = yield select(getNode, links[i].nodeId)
-              if (o.increment === 1) {
-                postModifiers.push((v) => ((n.value + v) % 1))
-              } else {
-                postModifiers.push((v) => ((((n.value - v) % 1) + 1) % 1))
-              }
-            }
           }
 
           if (links[i].modifierIds && links[i].modifierIds.length) {
+            const n = yield select(getNode, links[i].nodeId)
             modifiers = yield select(getNodes, links[i].modifierIds)
             let vals = []
             for (let j = 0; j < modifiers.length; j++) {
               const m = modifiers[j]
-              if (!m.type || m.type === inputType) {
-                vals.push(m.value)
-                if (!m.passToNext) {
-                  value = yield call(work, m.key, vals, value)
-                  value = Math.max(0, Math.min(1, value))
-                  vals = []
-                }
+              vals.push(m.value)
+              if (!m.passToNext) {
+                value = yield call(work, m.key, vals, value, n.value)
+                value = Math.max(0, Math.min(1, value))
+                vals = []
               }
             }
-          }
-
-          for (let i = 0; i < postModifiers.length; i++) {
-            value = postModifiers[i](value)
           }
 
           switch (links[i].nodeType) {
