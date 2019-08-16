@@ -1,10 +1,7 @@
 import * as THREE from 'three'
-import { settingsUpdate } from '../store/settings/actions'
-
-let generateAudioTexture = false, computeFullSpectrum = false;
 
 export class AudioAnalyzer {
-  constructor(stream) {
+  constructor (stream) {
     const context = new window.AudioContext()
     const source = context.createMediaStreamSource(stream)
 
@@ -59,21 +56,20 @@ export class AudioAnalyzer {
     this.texture.magFilter = this.texture.minFilter = THREE.LinearFilter
   }
 
-  lerp(v0, v1, t) {
+  lerp (v0, v1, t) {
     return (1 - t) * v0 + t * v1
   }
 
-  update() {
-    // console.log(generateAudioTexture)
+  update ({ computeFullSpectrum, generateAudioTexture }) {
     this.analyser.getByteFrequencyData(this.freqs)
     this.processBands()
     if (computeFullSpectrum) {
-      this.processFullSpectrum()
+      this.processFullSpectrum(generateAudioTexture)
     }
     return this.levelsData
   }
 
-  processFullSpectrum() {
+  processFullSpectrum (generateAudioTexture) {
     for (let i = 0; i < this.freqs.length; i++) {
       let freq = this.freqs[i] / 256
       freq = Math.max(freq, Math.max(0, this.fullCleanLevelsData[i] - this.levelsFalloff))
@@ -103,7 +99,7 @@ export class AudioAnalyzer {
     }
   }
 
-  processBands() {
+  processBands () {
     for (let i = 0; i < this.numBands; i++) {
       let sum = 0
 
@@ -123,31 +119,6 @@ export class AudioAnalyzer {
       band = this.lerp(band, normalized, this.normalizeLevels)
       band = Math.pow(band, this.levelsPower)
       this.levelsData[i] = this.lerp(band, this.levelsData[i], this.smoothing)
-    }
-  }
-}
-
-export const listener = (action, store) => {
-  if (action.type == 'SETTINGS_UPDATE') {
-    let items = null
-    const c = action.payload.items.computeFullSpectrum
-    const g = action.payload.items.generateAudioTexture;
-    if (c != undefined && c != computeFullSpectrum) {
-      computeFullSpectrum = c
-      if (generateAudioTexture && !computeFullSpectrum) {
-        items = { generateAudioTexture: false }
-      }
-    }
-
-    if (g != undefined && g != generateAudioTexture) {
-      generateAudioTexture = g
-      if (generateAudioTexture && !computeFullSpectrum) {
-        items = { computeFullSpectrum: true }
-      }
-    }
-
-    if (items) {
-      store.dispatch(settingsUpdate(items))
     }
   }
 }

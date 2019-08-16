@@ -14,7 +14,7 @@ const settingsReducer = (state = defaultState, action) => {
   const p = action.payload
 
   switch (action.type) {
-    case 'SETTINGS_UPDATE': {
+    case 'R_SETTINGS_UPDATE': {
       return {
         ...state,
         ...p.items,
