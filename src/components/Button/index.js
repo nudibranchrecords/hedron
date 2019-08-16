@@ -41,11 +41,11 @@ const Wrapper = styled.span`
   &:hover {
     ${Inner} {
       background: ${
-        props => {
-          const col = colors[props.color] || theme.actionColor1
-          return tinyColor(col).lighten(5).toString()
-        }
-      };
+  props => {
+    const col = colors[props.color] || theme.actionColor1
+    return tinyColor(col).lighten(5).toString()
+  }
+};
 
       ${props => props.reversed && `
         color: white;

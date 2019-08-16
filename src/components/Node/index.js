@@ -48,8 +48,10 @@ const Title = styled.div`
   height: 16px;
   text-transform: uppercase;
   margin-bottom: 0.25rem;
+  margin-right: 0.25rem;
   font-size: 0.5rem;
   z-index: 1;
+  overflow: hidden;
 
   ${props => {
     switch (props.theme) {

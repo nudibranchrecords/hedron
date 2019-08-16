@@ -5,6 +5,7 @@ import now from 'performance-now'
 import uiEventEmitter from '../../utils/uiEventEmitter'
 import theme from '../../utils/theme'
 import ParamValueForm from '../../containers/ParamValueForm'
+import { ReactReduxContext } from 'react-redux'
 
 const pixelDensity = 2
 
@@ -44,6 +45,7 @@ const ValueForm = styled.div`
 `
 
 class ValueBar extends React.Component {
+  static contextType = ReactReduxContext
 
   constructor (props) {
     super(props)
@@ -227,10 +229,6 @@ ValueBar.propTypes = {
   formIsVisible: PropTypes.bool,
   markerIsVisible: PropTypes.bool,
   theme: PropTypes.string,
-}
-
-ValueBar.contextTypes = {
-  store: PropTypes.object.isRequired,
 }
 
 export default ValueBar

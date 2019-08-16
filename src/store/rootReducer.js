@@ -1,7 +1,8 @@
 import { combineReducers } from 'redux'
 import { ignoreActions } from 'redux-ignore'
-import { routerReducer } from 'react-router-redux'
+import { connectRouter } from 'connected-react-router'
 import { reducer as formReducer } from 'redux-form'
+import history from '../history'
 
 import difference from 'lodash/difference'
 
@@ -39,16 +40,16 @@ const reducers = combineReducers({
   displays: ignoreActions(displaysReducer, ignoreList),
   macros: ignoreActions(macroReducer, ignoreList),
   ui: ignoreActions(uiReducer, ignoreList),
-  router: ignoreActions(routerReducer, ignoreList),
+  router: ignoreActions(connectRouter(history), ignoreList),
   settings: ignoreActions(settingsReducer, ignoreList),
   form: ignoreActions(formReducer, ignoreList),
 })
 
 const rootReducer = (state = {}, action) => action.type === 'PROJECT_REHYDRATE'
-? {
-  ...state,
-  ...action.payload.data,
-}
-: reducers(state, action)
+  ? {
+    ...state,
+    ...action.payload.data,
+  }
+  : reducers(state, action)
 
 export default rootReducer

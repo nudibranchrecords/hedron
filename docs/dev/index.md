@@ -54,14 +54,14 @@ module.exports = {
 
 ## index.js
 
-This is where the actual sketch is held. You can `require` other modules from here, so don't feel restricted to a single file.
+This is where the actual sketch is held. `THREE` is available as a global variable and it's strongly advised you use this rather than import the library yourself, to prevent unexpected behaviour. For convenience, `THREE.GLTFLoader` and `THREE.OrbitControls` are available too.
+
+You can `require` other modules from here, so don't feel restricted to a single file. 
 
 ### Very basic example
 This is the minimum you need to do in order to use Hedron.
 
 ```javascript
-const THREE = require('three')
-
 class MyFirstSketch {
   constructor () {
     // Create a cube, add it to the root of the scene
@@ -92,11 +92,6 @@ The user can change the scale. The user can also click on "shapeshift" and the g
 **/
 
 /** HEDRON TIP **
-  Hedron uses three.js, so you'll need that :)
-**/
-const THREE = require('three')
-
-/** HEDRON TIP **
   Hedron sketches must be a class
 **/
 class Solid {
@@ -116,7 +111,7 @@ class Solid {
       Must define a "root" property as a THREE.Group or THREE.Object3D
       Hedron looks for this and will add it to the scene.
     **/
-    this.root = new THREE.Group()
+    this.root = new THREE.Group() // THREE is a global var so no need to import
 
     /** HEDRON TIP **
       It's good practice to not manipulate the root object
