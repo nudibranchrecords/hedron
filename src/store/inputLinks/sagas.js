@@ -53,7 +53,7 @@ export function* inputLinkCreate (action) {
           const config = modifiers[id].config
 
           for (let j = 0; j < config.title.length; j++) {
-            if (!config.type || config.type === p.inputType) {
+            if (!config.targets || config.targets.includes(p.inputId)) {
               const modifierId = yield call(uid)
               const modifier = {
                 id: modifierId,
@@ -64,7 +64,8 @@ export function* inputLinkCreate (action) {
                 value: config.defaultValue[j],
                 passToNext: j < config.title.length - 1,
                 inputLinkIds: [],
-                type: config.type,
+                type: config.controlType && config.controlType[j],
+                options: config.controlOptions && config.controlOptions[j],
                 subNode: true,
               }
 
