@@ -1,2 +1,2 @@
 export const getDefaultModifierIds = state =>
-  ['threshold', 'gain', 'range']
+  ['threshold', 'gain', 'range', 'increment']

@@ -1,7 +1,7 @@
 import test from 'tape'
 import getInputLinkModifierIds from '../getInputLinkModifierIds'
 
-test('(Selector) getInputLinkModifierIds (input type "audio")', (t) => {
+test('(Selector) getInputLinkModifierIds', (t) => {
   const state = {
     nodes: {
       xxx: {
@@ -24,32 +24,6 @@ test('(Selector) getInputLinkModifierIds (input type "audio")', (t) => {
   const actual = getInputLinkModifierIds(state, 'xxx')
 
   t.deepEqual(actual, ['mod1', 'mod2'], 'Returns all modifier Ids')
-  t.end()
-})
-
-test('(Selector) getInputLinkModifierIds (input type "foo")', (t) => {
-  const state = {
-    nodes: {
-      xxx: {
-        input: {
-          id: 'BAR',
-          type: 'foo',
-        },
-        modifierIds: ['mod1', 'mod2'],
-      },
-      mod1: {
-        type: 'audio',
-        id: 'mod1',
-      },
-      mod2: {
-        id: 'mod2',
-      },
-    },
-  }
-
-  const actual = getInputLinkModifierIds(state, 'xxx')
-
-  t.deepEqual(actual, ['mod2'], 'Filters out modifier with audio type')
   t.end()
 })
 
