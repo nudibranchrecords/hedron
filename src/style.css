@@ -13,6 +13,7 @@ body {
   margin: 0;
   font-size: 0.8rem;
   overflow: hidden;
+  font-family: sans-serif;
 }
 
 p a {
@@ -26,6 +27,10 @@ p {
 ul {
   margin: 0;
   padding: 0;
+  list-style: none;
+}
+
+li {
   list-style: none;
 }
 
