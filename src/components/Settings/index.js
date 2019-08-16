@@ -25,6 +25,7 @@ const Settings = () => (
           <Input name='watchSketchesDir' label='Watch Sketches' type='checkbox' />
         </Col>
       </Row>
+      <h2>Audio Analysis</h2>
       <Row>
         <Col>
           <Input name='computeFullSpectrum' label='Compute Full Spectrum' type='checkbox' />
