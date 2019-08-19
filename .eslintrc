@@ -5,7 +5,8 @@
     "standard-react"
   ],
   "globals": {
-    "THREE": "readonly"
+    "THREE": "readonly",
+    "POSTPROCESSING": "readonly"
   },
   "env": {
     "browser" : true,
