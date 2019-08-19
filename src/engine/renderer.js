@@ -156,17 +156,15 @@ export const stopOutput = () => {
 
 const renderChannels = (sceneA, sceneB, mixRatio) => {
   renderer.setRenderTarget(rttA)
+  renderer.clear()
   if (sceneA) {
     renderer.render(sceneA.scene, sceneA.camera)
-  } else {
-    renderer.clear()
   }
 
   renderer.setRenderTarget(rttB)
+  renderer.clear()
   if (sceneB) {
     renderer.render(sceneB.scene, sceneB.camera)
-  } else {
-    renderer.clear()
   }
 
   quadMixUniform.value = mixRatio
@@ -176,6 +174,7 @@ const renderChannels = (sceneA, sceneB, mixRatio) => {
 const renderSingle = (scene, rtt, mixRatio) => {
   if (scene) {
     renderer.setRenderTarget(rtt)
+    renderer.clear()
     renderer.render(scene.scene, scene.camera)
   }
 
