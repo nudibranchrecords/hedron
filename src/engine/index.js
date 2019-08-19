@@ -236,7 +236,7 @@ export const run = (injectedStore, stats) => {
         updateSceneSketches(channelA)
         updateSceneSketches(channelB)
 
-        renderer.render(scenes[channelA], scenes[channelB], mixRatio, viewerMode)
+        renderer.render(scenes[channelA], scenes[channelB], mixRatio, viewerMode, delta)
 
         stats.end()
 
