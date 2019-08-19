@@ -11,7 +11,7 @@ let store, domEl, outputEl, viewerEl, isSendingOutput, rendererWidth, rendererHe
 let quadScene, quadMixUniform, rttA, rttB
 let delta
 
-export let renderer, composer
+export let renderer, composer, mainPass
 
 export const setRenderer = () => {
   const settings = store.getState().settings
@@ -37,7 +37,7 @@ export const setRenderer = () => {
 
   composer = new EffectComposer(renderer)
 
-  const mainPass = new RenderPass(quadScene.scene, quadScene.camera)
+  mainPass = new RenderPass(quadScene.scene, quadScene.camera)
   mainPass.renderToScreen = true
   composer.addPass(mainPass)
 }

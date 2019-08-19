@@ -128,6 +128,11 @@ export const addSketchToScene = (sceneId, sketchId, moduleId) => {
 
   const module = new moduleFiles[moduleId].Module(scene, params, meta)
 
+  // Do any postprocessing related setup for this sketch
+  if (module.initiatePostProcessing) {
+    module.outputPass = module.initiatePostProcessing(renderer.composer)
+  }
+
   sketches[sketchId] = module
   module.root && scene.scene.add(module.root)
 }
@@ -174,14 +179,27 @@ export const initiateScenes = () => {
   scenes = {}
   sketches = {}
 
-  // Add new ones
-  stateScenes.forEach((scene) => {
+  // Output passes for postprocessing related sketches
+  const passes = []
+
+  // Add new scenes and sketches
+  stateScenes.forEach(scene => {
     addScene(scene.id)
-    scene.sketchIds.forEach(sketchId => {
+    scene.sketchIds.forEach((sketchId, index) => {
       const moduleId = getSketch(state, sketchId).moduleId
       addSketchToScene(scene.id, sketchId, moduleId)
+
+      // If sketch has an output pass, add to array
+      const outputPass = sketches[sketchId].outputPass
+      if (outputPass) passes.push(outputPass)
     })
   })
+
+  // Set last item of output passes to render to the screen
+  if (passes.length) {
+    renderer.mainPass.renderToScreen = false
+    passes[passes.length - 1].renderToScreen = true
+  }
 }
 
 export const run = (injectedStore, stats) => {
@@ -204,7 +222,7 @@ export const run = (injectedStore, stats) => {
         sketch = sketches[sketchId]
         const params = getSketchParams(state, sketchId)
         allParams = getSketchParams(state, null, sceneId)
-        sketch.update(params, tick, elapsedFrames, allParams)
+        if (sketch.update) sketch.update(params, tick, elapsedFrames, allParams)
       })
     }
   }
