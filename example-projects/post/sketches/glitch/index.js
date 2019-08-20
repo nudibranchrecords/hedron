@@ -8,8 +8,8 @@ class Glitch {
       chromaticAberrationOffset: this.rgbShiftEffect.offset,
     })
 
-    const glitchPass = new EffectPass(this.camera, this.glitchEffect)
-    const rgbPass = new EffectPass(this.camera, this.rgbShiftEffect)
+    const glitchPass = new EffectPass(null, this.glitchEffect)
+    const rgbPass = new EffectPass(null, this.rgbShiftEffect)
 
     composer.addPass(glitchPass)
     composer.addPass(rgbPass)

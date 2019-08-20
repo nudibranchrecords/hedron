@@ -17,9 +17,15 @@ import { nodeValuesBatchUpdate } from '../store/nodes/actions'
 import TWEEN from '@tweenjs/tween.js'
 import { getProjectFilepath } from '../store/project/selectors'
 
-export let scenes = {}
+const configDefault = {
+  defaultTitle: 'Sketch',
+  params: [],
+  shots: [],
+}
 
-let sketches = {}
+export let scenes = {}
+export let sketches = {}
+
 let moduleConfigs = {}
 let isRunning = false
 let moduleFiles = {}
@@ -93,7 +99,10 @@ export const reloadSingleSketchModule = (url, moduleId, pathArray) => {
 
 export const reloadSingleSketchConfig = (url, moduleId, pathArray) => {
   try {
-    moduleConfigs[moduleId] = loadConfig(url)
+    moduleConfigs[moduleId] = {
+      ...configDefault,
+      ...loadConfig(url),
+    }
     moduleConfigs[moduleId].filePathArray = pathArray
     moduleConfigs[moduleId].filePath = url
   } catch (error) {
@@ -127,11 +136,6 @@ export const addSketchToScene = (sceneId, sketchId, moduleId) => {
   const params = getSketchParams(state, sketchId)
 
   const module = new moduleFiles[moduleId].Module(scene, params, meta)
-
-  // Do any postprocessing related setup for this sketch
-  if (module.initiatePostProcessing) {
-    module.outputPass = module.initiatePostProcessing(renderer.composer)
-  }
 
   sketches[sketchId] = module
   module.root && scene.scene.add(module.root)
@@ -179,27 +183,16 @@ export const initiateScenes = () => {
   scenes = {}
   sketches = {}
 
-  // Output passes for postprocessing related sketches
-  const passes = []
-
   // Add new scenes and sketches
   stateScenes.forEach(scene => {
     addScene(scene.id)
     scene.sketchIds.forEach((sketchId, index) => {
       const moduleId = getSketch(state, sketchId).moduleId
       addSketchToScene(scene.id, sketchId, moduleId)
-
-      // If sketch has an output pass, add to array
-      const outputPass = sketches[sketchId].outputPass
-      if (outputPass) passes.push(outputPass)
     })
   })
 
-  // Set last item of output passes to render to the screen
-  if (passes.length) {
-    renderer.mainPass.renderToScreen = false
-    passes[passes.length - 1].renderToScreen = true
-  }
+  renderer.setPostProcessing()
 }
 
 export const run = (injectedStore, stats) => {
