@@ -29,11 +29,6 @@
       ]
     }
   },
-  "glslify": {
-    "transform": [
-      "glslify-import"
-    ]
-  },
   "jest": {
     "testMatch": [
       "**/?(*.)+(test).[jt]s?(x)"
@@ -53,7 +48,7 @@
     "create-react-class": "^15.5.2",
     "err-code": "^1.1.2",
     "eventemitter3": "^3.0.1",
-    "glslify-import": "^3.1.0",
+    "glslify": "^7.0.0",
     "history": "^4.6.1",
     "jsonfile": "^2.4.0",
     "lodash": "^4.17.15",

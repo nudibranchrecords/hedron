@@ -6,7 +6,8 @@
   ],
   "globals": {
     "THREE": "readonly",
-    "POSTPROCESSING": "readonly"
+    "POSTPROCESSING": "readonly",
+    "GLSLIFY": "readonly"
   },
   "env": {
     "browser" : true,
