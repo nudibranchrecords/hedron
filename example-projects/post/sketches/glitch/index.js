@@ -15,7 +15,7 @@ class Glitch {
     composer.addPass(glitchPass)
     composer.addPass(rgbPass)
 
-    // Return the pass that needs to be rendered to the screen (if it's the last pass)
+    // Return the pass that needs to be rendered to the screen
     return rgbPass
   }
 
