@@ -5,6 +5,8 @@ import uiEventEmitter from '../utils/uiEventEmitter'
 import * as engine from './'
 import QuadScene from './QuadScene'
 
+import getScenes from '../selectors/getScenes'
+
 let store, domEl, outputEl, viewerEl, isSendingOutput, rendererWidth, rendererHeight,
   previewCanvas, previewContext, outputCanvas, outputContext
 
@@ -36,10 +38,36 @@ export const setRenderer = () => {
   quadMixUniform = quadScene.material.uniforms.mixRatio
 
   composer = new EffectComposer(renderer)
+}
+
+export const setPostProcessing = () => {
+  const state = store.getState()
+  const stateScenes = getScenes(state)
+
+  composer.reset()
 
   mainPass = new RenderPass(quadScene.scene, quadScene.camera)
   mainPass.renderToScreen = true
   composer.addPass(mainPass)
+
+  const passes = []
+
+  stateScenes.forEach(scene => {
+    scene.sketchIds.forEach(sketchId => {
+      const module = engine.sketches[sketchId]
+      // Do any postprocessing related setup for this sketch
+      if (module.initiatePostProcessing) {
+        // If sketch has an output pass, add to array
+        passes.push(module.initiatePostProcessing(composer))
+      }
+    })
+  })
+
+  // Set last item of output passes to render to the screen
+  if (passes.length) {
+    mainPass.renderToScreen = false
+    passes[passes.length - 1].renderToScreen = true
+  }
 }
 
 export const setViewerEl = (el) => {
