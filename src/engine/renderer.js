@@ -61,7 +61,7 @@ export const setSize = () => {
     outputCanvas.width = width
     outputCanvas.height = width / ratio
 
-    renderer.setSize(viewerEl.offsetWidth, viewerEl.offsetWidth / ratio)
+    composer.setSize(viewerEl.offsetWidth, viewerEl.offsetWidth / ratio)
   } else {
     // Basic width and ratio if no output
     width = viewerEl.offsetWidth
@@ -71,7 +71,7 @@ export const setSize = () => {
   const perc = 100 / ratio
   const height = width / ratio
 
-  renderer.setSize(width, height)
+  composer.setSize(width, height)
 
   // Set sizes for render targets
   rttA.setSize(width, height)
