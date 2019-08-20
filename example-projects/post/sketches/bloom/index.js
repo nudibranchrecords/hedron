@@ -14,7 +14,7 @@ class Glitch {
     const pass = new EffectPass(null, this.bloomEffect)
     composer.addPass(pass)
 
-    // Return the pass that needs to be rendered to the screen (if it's the last pass)
+    // Return the pass that needs to be rendered to the screen
     return pass
   }
 
