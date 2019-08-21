@@ -126,7 +126,10 @@ export const initiate = (injectedStore) => {
   store = injectedStore
 
   uiEventEmitter.on('reset-renderer', () => {
+    composer.dispose()
+    renderer.dispose()
     setRenderer()
+    setPostProcessing()
   })
   uiEventEmitter.on('repaint', () => {
     setSize()
