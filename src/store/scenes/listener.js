@@ -1,6 +1,6 @@
 import uid from 'uid'
 import { rSceneCreate, rSceneDelete, rSceneSelectCurrent,
-  rSceneSelectChannel, sceneClearChannel } from './actions'
+  rSceneSelectChannel, sceneClearChannel, rScenesReorder, rSceneSketchesReorder } from './actions'
 import { generateSceneLinkableActionIds } from './utils'
 import { engineSceneAdd, engineSceneRemove } from '../../engine/actions'
 import { uSketchDelete } from '../sketches/actions'
@@ -11,6 +11,7 @@ import getChannelSceneId from '../../selectors/getChannelSceneId'
 import getSceneCrossfaderValue from '../../selectors/getSceneCrossfaderValue'
 import history from '../../history'
 import { rNodeCreate, uNodeDelete } from '../nodes/actions'
+import { setPostProcessing } from '../../engine/renderer'
 
 const handleSceneCreate = (action, store) => {
   const state = store.getState()
@@ -114,6 +115,20 @@ const handleSceneClearChannel = (action, store) => {
   })
 }
 
+const handleScenesReorder = (action, store) => {
+  const p = action.payload
+
+  store.dispatch(rScenesReorder(p.oldIndex, p.newIndex))
+  setPostProcessing()
+}
+
+const handleSceneSketchesReorder = (action, store) => {
+  const p = action.payload
+
+  store.dispatch(rSceneSketchesReorder(p.id, p.oldIndex, p.newIndex))
+  setPostProcessing()
+}
+
 export default (action, store) => {
   switch (action.type) {
     case 'U_SCENE_CREATE':
@@ -124,6 +139,12 @@ export default (action, store) => {
       break
     case 'U_SCENE_SELECT_CHANNEL':
       handleSceneSelectChannel(action, store)
+      break
+    case 'U_SCENES_REORDER':
+      handleScenesReorder(action, store)
+      break
+    case 'U_SCENE_SKETCHES_REORDER':
+      handleSceneSketchesReorder(action, store)
       break
     case 'SCENE_SKETCH_SELECT':
       handleSceneSketchSelect(action, store)

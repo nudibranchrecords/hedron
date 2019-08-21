@@ -46,6 +46,8 @@ function* rootSaga (dispatch) {
 }
 
 test('(mock) Sketches - Add/Delete Sketch', () => {
+  let ppCalled = 0
+
   const rootReducer = combineReducers(
     {
       nodes: nodesReducer,
@@ -131,7 +133,9 @@ test('(mock) Sketches - Add/Delete Sketch', () => {
   store.dispatch(uSketchCreate('foo', 'scene_01'))
   state = store.getState()
 
-  expect(renderer.setPostProcessing).toHaveBeenCalledTimes(1)
+  ppCalled++
+  // After creating sketch, postprocessing is reset
+  expect(renderer.setPostProcessing).toHaveBeenCalledTimes(ppCalled)
 
   // 'After creating sketch, sketch id is added to scene, selectedSketchId is set'
   expect(state.scenes.items).toEqual({
@@ -180,7 +184,9 @@ test('(mock) Sketches - Add/Delete Sketch', () => {
   store.dispatch(uSketchCreate('bar', 'scene_01'))
   state = store.getState()
 
-  expect(renderer.setPostProcessing).toHaveBeenCalledTimes(2)
+  ppCalled++
+  // After creating sketch, postprocessing is reset
+  expect(renderer.setPostProcessing).toHaveBeenCalledTimes(ppCalled)
 
   //  'After creating sketch, sketch id is added to scene'
   expect(state.scenes.items).toEqual({
@@ -275,10 +281,14 @@ test('(mock) Sketches - Add/Delete Sketch', () => {
     },
   })
 
+  state = store.getState()
+
   store.dispatch(uSketchDelete('id_1', 'scene_01'))
   state = store.getState()
 
-  expect(renderer.setPostProcessing).toHaveBeenCalledTimes(3)
+  ppCalled++
+  // After sketch deleted, postprocessing is reset
+  expect(renderer.setPostProcessing).toHaveBeenCalledTimes(ppCalled)
 
   // 'After deleting sketch, sketch id is removed from scene, selectedSketchId becomes last in list'
   expect(state.scenes.items).toEqual({
@@ -354,7 +364,9 @@ test('(mock) Sketches - Add/Delete Sketch', () => {
   store.dispatch(uSketchDelete('id_3', 'scene_01'))
   state = store.getState()
 
-  expect(renderer.setPostProcessing).toHaveBeenCalledTimes(4)
+  ppCalled++
+  // After sketch deleted, postprocessing is reset
+  expect(renderer.setPostProcessing).toHaveBeenCalledTimes(ppCalled)
 
   expect(state.scenes.items).toEqual({
     scene_01: {
@@ -377,7 +389,9 @@ test('(mock) Sketches - Add/Delete Sketch', () => {
   store.dispatch(uSketchCreate('boring'))
   state = store.getState()
 
-  expect(renderer.setPostProcessing).toHaveBeenCalledTimes(5)
+  ppCalled++
+  // After sketch added, postprocessing is reset
+  expect(renderer.setPostProcessing).toHaveBeenCalledTimes(ppCalled)
 
   // 'After creating sketch with no specified scene id, sketch id is added to scene using currentSceneId'
   expect(state.scenes.items).toEqual({
@@ -409,7 +423,9 @@ test('(mock) Sketches - Add/Delete Sketch', () => {
   store.dispatch(uSketchDelete('id_7'))
   state = store.getState()
 
-  expect(renderer.setPostProcessing).toHaveBeenCalledTimes(6)
+  ppCalled++
+  // After sketch deleted, postprocessing is reset
+  expect(renderer.setPostProcessing).toHaveBeenCalledTimes(ppCalled)
 
   // 'After deleting sketch with no specified scene id, uses currentSceneId to determine which scene'
   expect(state.scenes.items).toEqual({
