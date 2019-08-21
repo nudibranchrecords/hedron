@@ -1,6 +1,6 @@
 import uid from 'uid'
 import { rSceneCreate, rSceneDelete, rSceneSelectCurrent,
-  rSceneSelectChannel, sceneClearChannel, rScenesReorder, rSceneSketchesReorder } from './actions'
+  rSceneSelectChannel, sceneClearChannel, rScenesReorder, rSceneSketchesReorder, rSceneSettingsUpdate } from './actions'
 import { generateSceneLinkableActionIds } from './utils'
 import { engineSceneAdd, engineSceneRemove } from '../../engine/actions'
 import { uSketchDelete } from '../sketches/actions'
@@ -38,6 +38,7 @@ const handleSceneCreate = (action, store) => {
     selectedSketchId: false,
     sketchIds: [],
     linkableActionIds,
+    settings: {},
   }
 
   store.dispatch(rSceneCreate(id, scene))
@@ -133,6 +134,13 @@ const handleSceneSketchesReorder = (action, store) => {
   setPostProcessing()
 }
 
+const handleSceneSettingsUpdate = (action, store) => {
+  const p = action.payload
+
+  store.dispatch(rSceneSettingsUpdate(p.id, p.settings))
+  setPostProcessing()
+}
+
 export default (action, store) => {
   switch (action.type) {
     case 'U_SCENE_CREATE':
@@ -149,6 +157,9 @@ export default (action, store) => {
       break
     case 'U_SCENE_SKETCHES_REORDER':
       handleSceneSketchesReorder(action, store)
+      break
+    case 'U_SCENE_SETTINGS_UPDATE':
+      handleSceneSettingsUpdate(action, store)
       break
     case 'SCENE_SKETCH_SELECT':
       handleSceneSketchSelect(action, store)

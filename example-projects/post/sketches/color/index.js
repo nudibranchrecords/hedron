@@ -18,7 +18,7 @@ class Color {
     return pass
   }
 
-  update (p) {
+  updatePostProcessing (p) {
     this.brightnessContrastEffect.uniforms.get('brightness').value = p.brightness
     this.brightnessContrastEffect.uniforms.get('contrast').value = p.contrast
     this.brightnessContrastEffect.blendMode.opacity.value = p.brightnessContrastOpacity

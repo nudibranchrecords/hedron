@@ -127,3 +127,20 @@ export function rScenesReorder (oldIndex, newIndex) {
   }
 }
 
+export function uSceneSettingsUpdate (id, settings = {}) {
+  return {
+    type: 'U_SCENE_SETTINGS_UPDATE',
+    payload: {
+      id, settings,
+    },
+  }
+}
+
+export function rSceneSettingsUpdate (id, settings) {
+  return {
+    type: 'R_SCENE_SETTINGS_UPDATE',
+    payload: {
+      id, settings,
+    },
+  }
+}

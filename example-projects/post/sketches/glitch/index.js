@@ -18,7 +18,7 @@ class Glitch {
     return rgbPass
   }
 
-  update (p) {
+  updatePostProcessing (p) {
     this.glitchEffect.delay.x = p.delayMin * 1000
     this.glitchEffect.delay.y = p.delayMax * 1000
 

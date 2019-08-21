@@ -56,9 +56,10 @@ export const setPostProcessing = () => {
     scene.sketchIds.forEach(sketchId => {
       const module = engine.sketches[sketchId]
       // Do any postprocessing related setup for this sketch
-      if (module.initiatePostProcessing) {
+      if (scene.settings.globalPostProcessingEnabled && module.initiatePostProcessing) {
+        const pass = module.initiatePostProcessing(composer)
         // If sketch has an output pass, add to array
-        passes.push(module.initiatePostProcessing(composer))
+        if (pass) passes.push(pass)
       }
     })
   })
