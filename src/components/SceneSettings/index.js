@@ -10,7 +10,7 @@ const SceneSettings = () => (
   <Wrapper onSubmit={e => { e.preventDefault() }}>
     <h4>Scene Settings</h4>
 
-    <Input name='globalPostProcessingEnabled' label='Global Post Processing' type='checkbox' layout='compact' size='small' />
+    <Input name='globalPostProcessingEnabled' label='Global Post Processing' type='checkbox' layout='compact' />
   </Wrapper>
 )
 
