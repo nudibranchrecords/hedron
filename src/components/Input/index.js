@@ -38,13 +38,33 @@ const Wrapper = styled.div`
     width: 1.2rem;
     height: 1.2rem;
   }
+
+  ${props => props.layout === 'compact' && `
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: flex-end;
+    align-items: center;
+    margin-bottom: 0.5rem;
+
+    label {
+      margin-bottom: 0;
+      margin-left: 0.25rem;
+      font-size: 0.8rem;
+    }
+
+    input[type='checkbox'] {
+      width: 1rem;
+      height: 1rem;
+    }
+  `}
+
 `
 
 const Input = (props) => {
   const { name, id, label, type = 'text' } = props
   const fieldId = id || name
   return (
-    <Wrapper>
+    <Wrapper layout={props.layout}>
       {label && <label htmlFor={fieldId}>{label}</label>}
       <Field component='input' id={fieldId} type={type} {...props} />
     </Wrapper>
@@ -57,6 +77,7 @@ Input.propTypes = {
   type: PropTypes.string,
   id: PropTypes.string,
   name: PropTypes.string.isRequired,
+  layout: PropTypes.string,
 }
 
 export default Input

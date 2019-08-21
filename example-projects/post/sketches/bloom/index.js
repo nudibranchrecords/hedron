@@ -18,7 +18,7 @@ class Glitch {
     return pass
   }
 
-  update (p) {
+  updatePostProcessing (p) {
     this.bloomEffect.blurPass.scale = p.scale
     this.bloomEffect.luminanceMaterial.threshold = p.lumThreshold
     this.bloomEffect.luminanceMaterial.smoothing = p.lumSmoothing

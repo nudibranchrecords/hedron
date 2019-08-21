@@ -16,7 +16,9 @@ import sketchesListener from '../src/store/sketches/listener'
 import scenesListener from '../src/store/scenes/listener'
 
 import renderer from '../src/engine/renderer'
-import { uSceneCreate, uScenesReorder, uSceneSketchesReorder, uSceneDelete } from '../src/store/scenes/actions'
+import {
+  uSceneCreate, uScenesReorder, uSceneSketchesReorder, uSceneDelete, uSceneSettingsUpdate,
+} from '../src/store/scenes/actions'
 
 let mockId = 0
 let mockSceneid = 0
@@ -186,5 +188,15 @@ test('(mock) Scenes - Add/Delete/Reorder scenes', () => {
 
   ppCalled++
   // After scene deleted, postprocessing only called once for the scene, not 3 times (per sketch)
+  expect(renderer.setPostProcessing).toHaveBeenCalledTimes(ppCalled)
+
+  store.dispatch(uSceneSettingsUpdate('scene_2', { globalPostProcessingEnabled: true }))
+  state = store.getState()
+
+  // After scene global postprocessing is enabled, property is set
+  expect(state.scenes.items.scene_2.settings.globalPostProcessingEnabled).toBeTruthy
+
+  ppCalled++
+  // After scene global postprocessing reset
   expect(renderer.setPostProcessing).toHaveBeenCalledTimes(ppCalled)
 })

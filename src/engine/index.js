@@ -220,6 +220,21 @@ export const run = (injectedStore, stats) => {
     }
   }
 
+  const updateGlobalPostProcessingSketches = () => {
+    const scenes = getScenes(state)
+
+    scenes.forEach(scene => {
+      if (scene.settings.globalPostProcessingEnabled) {
+        allParams = getSketchParams(state, null, scene.id)
+        scene.sketchIds.forEach(sketchId => {
+          sketch = sketches[sketchId]
+          const params = getSketchParams(state, sketchId)
+          if (sketch.updatePostProcessing) sketch.updatePostProcessing(params, tick, elapsedFrames, allParams)
+        })
+      }
+    })
+  }
+
   const loop = () => {
     requestAnimationFrame(loop)
     if (isRunning) {
@@ -246,6 +261,7 @@ export const run = (injectedStore, stats) => {
         const viewerMode = getViewerMode(state)
         updateSceneSketches(channelA)
         updateSceneSketches(channelB)
+        updateGlobalPostProcessingSketches()
 
         renderer.render(scenes[channelA], scenes[channelB], mixRatio, viewerMode, delta)
 
