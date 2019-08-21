@@ -1,6 +1,8 @@
+// POSTPROCESSING is a global variable available to Hedron sketches
 const { EffectPass, BloomEffect, BlendFunction, KernelSize } = POSTPROCESSING
 
-class Glitch {
+class Bloom {
+  // Here we add our passes to the composer
   initiatePostProcessing (composer) {
     this.bloomEffect = new BloomEffect({
       blendFunction: BlendFunction.SCREEN,
@@ -11,6 +13,8 @@ class Glitch {
       height: 480,
     })
 
+    // Please refer to the postprocessing documentation to understand how these classes work
+    // https://github.com/vanruesc/postprocessing
     const pass = new EffectPass(null, this.bloomEffect)
     composer.addPass(pass)
 
@@ -18,6 +22,7 @@ class Glitch {
     return pass
   }
 
+  // This method will be called every frame, just like the usual update method
   updatePostProcessing (p) {
     this.bloomEffect.blurPass.scale = p.scale
     this.bloomEffect.luminanceMaterial.threshold = p.lumThreshold
@@ -26,5 +31,5 @@ class Glitch {
   }
 }
 
-module.exports = Glitch
+module.exports = Bloom
 
