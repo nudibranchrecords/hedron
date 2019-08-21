@@ -16,12 +16,18 @@ import macrosReducer from '../src/store/macros/reducer'
 import sketchesListener from '../src/store/sketches/listener'
 import scenesListener from '../src/store/scenes/listener'
 
+import renderer from '../src/engine/renderer'
+
 let mockUniqueId = 0
 
 jest.mock('uid', () => () => {
   mockUniqueId++
   return 'id_' + mockUniqueId
 })
+
+jest.mock('../src/engine/renderer', () => ({
+  setPostProcessing: jest.fn(),
+}))
 
 const rootListener = {
   types: 'all',
@@ -98,6 +104,7 @@ test('(mock) Sketches - Add/Delete Sketch', () => {
     sketches: {},
     scenes: {
       currentSceneId: 'scene_02',
+      sceneIds: ['scene_01', 'scene_02'],
       items: {
         scene_01: {
           id: 'scene_01',
@@ -123,6 +130,8 @@ test('(mock) Sketches - Add/Delete Sketch', () => {
 
   store.dispatch(uSketchCreate('foo', 'scene_01'))
   state = store.getState()
+
+  expect(renderer.setPostProcessing).toHaveBeenCalledTimes(1)
 
   // 'After creating sketch, sketch id is added to scene, selectedSketchId is set'
   expect(state.scenes.items).toEqual({
@@ -170,6 +179,8 @@ test('(mock) Sketches - Add/Delete Sketch', () => {
 
   store.dispatch(uSketchCreate('bar', 'scene_01'))
   state = store.getState()
+
+  expect(renderer.setPostProcessing).toHaveBeenCalledTimes(2)
 
   //  'After creating sketch, sketch id is added to scene'
   expect(state.scenes.items).toEqual({
@@ -267,6 +278,8 @@ test('(mock) Sketches - Add/Delete Sketch', () => {
   store.dispatch(uSketchDelete('id_1', 'scene_01'))
   state = store.getState()
 
+  expect(renderer.setPostProcessing).toHaveBeenCalledTimes(3)
+
   // 'After deleting sketch, sketch id is removed from scene, selectedSketchId becomes last in list'
   expect(state.scenes.items).toEqual({
     scene_01: {
@@ -341,6 +354,8 @@ test('(mock) Sketches - Add/Delete Sketch', () => {
   store.dispatch(uSketchDelete('id_3', 'scene_01'))
   state = store.getState()
 
+  expect(renderer.setPostProcessing).toHaveBeenCalledTimes(4)
+
   expect(state.scenes.items).toEqual({
     scene_01: {
       id: 'scene_01',
@@ -361,6 +376,8 @@ test('(mock) Sketches - Add/Delete Sketch', () => {
 
   store.dispatch(uSketchCreate('boring'))
   state = store.getState()
+
+  expect(renderer.setPostProcessing).toHaveBeenCalledTimes(5)
 
   // 'After creating sketch with no specified scene id, sketch id is added to scene using currentSceneId'
   expect(state.scenes.items).toEqual({
@@ -391,6 +408,8 @@ test('(mock) Sketches - Add/Delete Sketch', () => {
 
   store.dispatch(uSketchDelete('id_7'))
   state = store.getState()
+
+  expect(renderer.setPostProcessing).toHaveBeenCalledTimes(6)
 
   // 'After deleting sketch with no specified scene id, uses currentSceneId to determine which scene'
   expect(state.scenes.items).toEqual({
