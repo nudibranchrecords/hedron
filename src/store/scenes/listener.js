@@ -60,7 +60,9 @@ const handleSceneDelete = (action, store) => {
 
   // Delete sketches
   scene.sketchIds.forEach(sketchId => {
-    store.dispatch(uSketchDelete(sketchId, p.id))
+    // We're skipping postprocessing reset to stop it happening multiple times per sketch
+    // Instead it is called once after scene is deleted
+    store.dispatch(uSketchDelete(sketchId, p.id, { skipPostProcessingReset: true }))
   })
 
   // Delete linkableActions
@@ -80,6 +82,8 @@ const handleSceneDelete = (action, store) => {
 
   store.dispatch(rSceneSelectCurrent(lastScene ? lastScene.id : false))
   history.push(url)
+
+  setPostProcessing()
 }
 
 const handleSceneSketchSelect = (action, store) => {

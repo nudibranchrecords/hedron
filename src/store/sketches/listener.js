@@ -109,7 +109,7 @@ const handleSketchCreate = (action, store) => {
 
 const handleSketchDelete = (action, store) => {
   let state = store.getState()
-  let { id, sceneId } = action.payload
+  let { id, sceneId, options } = action.payload
   if (!sceneId) {
     sceneId = getCurrentSceneId(state)
   }
@@ -137,7 +137,7 @@ const handleSketchDelete = (action, store) => {
   store.dispatch(engineSceneSketchDelete(sceneId, id))
   history.push('/scenes/view/' + sceneId)
 
-  setPostProcessing()
+  if (!options.skipPostProcessingReset) setPostProcessing()
 }
 
 const handleSketchNodeOpenedToggle = (action, store) => {

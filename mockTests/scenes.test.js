@@ -16,7 +16,7 @@ import sketchesListener from '../src/store/sketches/listener'
 import scenesListener from '../src/store/scenes/listener'
 
 import renderer from '../src/engine/renderer'
-import { uSceneCreate, uScenesReorder, uSceneSketchesReorder } from '../src/store/scenes/actions'
+import { uSceneCreate, uScenesReorder, uSceneSketchesReorder, uSceneDelete } from '../src/store/scenes/actions'
 
 let mockId = 0
 let mockSceneid = 0
@@ -172,5 +172,19 @@ test('(mock) Scenes - Add/Delete/Reorder scenes', () => {
 
   ppCalled++
   // After sketch reordering, postprocessing is reset
+  expect(renderer.setPostProcessing).toHaveBeenCalledTimes(ppCalled)
+
+  store.dispatch(uSceneDelete('scene_1'))
+  state = store.getState()
+
+  // After scene deleted, scene is removed from lists
+  expect(state.scenes.sceneIds).toEqual(['scene_2', 'scene_3'])
+  expect(state.scenes.items.scene_1).toBeUndefined()
+
+  // After scene deleted, related sketches are removed
+  expect(Object.keys(state.sketches).length).toEqual(0)
+
+  ppCalled++
+  // After scene deleted, postprocessing only called once for the scene, not 3 times (per sketch)
   expect(renderer.setPostProcessing).toHaveBeenCalledTimes(ppCalled)
 })
