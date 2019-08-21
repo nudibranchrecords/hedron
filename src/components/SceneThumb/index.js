@@ -67,8 +67,8 @@ const Link = styled(({ isActive, ...rest }) =>
   <LinkComponent {...rest} />)` ${BaseLink} `
 const Button = styled.a` ${BaseLink} `
 
-const SceneThumb = ({ to, children, channel, hasPost, ...props }) => {
-  const Wrapper = to ? Link : Button
+const SceneThumb = ({ children, channel, hasPost, ...props }) => {
+  const Wrapper = props.to ? Link : Button
 
   return (
     <Wrapper {...props}>
