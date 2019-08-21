@@ -239,6 +239,60 @@ class Solid {
 module.exports = Solid
 ```
 
+## Post Processing
+Custom post processing, such as pixel shaders, are handled inside of sketches. Hedron's post processing system is a thin wrapper around the [postprocessing](https://github.com/vanruesc/postprocessing) library, so it's a good idea to understand how that works. Multiple passes can be added to the rendering composer using `initiatePostProcessing` and things are updated every frame using `updatePostProcessing`.
+
+### Simple example
+Below is a simple example of how to achieve a bloom effect. A config file is also needed, which is exactly the same as a normal sketch config file.
+
+```javascript
+// POSTPROCESSING is a global variable available to Hedron sketches
+const { EffectPass, BloomEffect, BlendFunction, KernelSize } = POSTPROCESSING
+
+class Bloom {
+  // Here we add our passes to the composer
+  initiatePostProcessing (composer) {
+    // Create a bloom effect
+    this.bloomEffect = new BloomEffect({
+      blendFunction: BlendFunction.SCREEN,
+      kernelSize: KernelSize.LARGE,
+      useLuminanceFilter: true,
+      luminanceThreshold: 0.825,
+      luminanceSmoothing: 0.075,
+      height: 480,
+    })
+
+    // Add the bloom effect as a new pass to the composer
+    const pass = new EffectPass(null, this.bloomEffect)
+    composer.addPass(pass)
+
+    // Return the pass that needs to be rendered to the screen
+    return pass
+  }
+
+  // This method will be called every frame, just like the usual update method
+  updatePostProcessing (p) {
+    this.bloomEffect.blurPass.scale = p.scale
+    this.bloomEffect.luminanceMaterial.threshold = p.lumThreshold
+    this.bloomEffect.luminanceMaterial.smoothing = p.lumSmoothing
+    this.bloomEffect.blendMode.opacity.value = p.opacity
+  }
+}
+
+module.exports = Bloom
+```
+
+### Other examples
+There are plenty of other examples that can be found in the [example sketches folder](../../example-projects).
+
+### How to see the output in Hedron
+Currently, post processing only works on the final output of Hedron (there are plans for a per-scene option too). To see the output of your passes, the sketch must be added to a scene. This scene must have "Global Post Processing" enabled under the scene settings for the passes to take effect. An icon will appear on the scene thumbnail if this setting is enabled. The scene does not need to be added to any channel, `updatePostProcessing` will always be running with this setting on.
+
+As a convention, it makes sense to have a post processing scene, with post processing related sketches added to it. This scene does not need to have any 3D objects in it and never needs to be added to a channel.
+
+### Order of passes
+You can reorder sketches by clicking and holding on them in the sidebar. This relates to the order in which passes are added to the composer. If passes are added to sketches across multiple scenes, the order of the scenes is also important.
+
 ## Reloading sketches / Auto reload
 If you have the "Watch sketches" setting enabled, Hedron will automatically refresh your sketches. However, if you don't have this enabled or something went wrong with the file watch (e.g. your sketch imports a file outside of its own folder) you'll need to click "Reload File" to see changes made to sketch files.
 
