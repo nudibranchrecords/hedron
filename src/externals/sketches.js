@@ -16,11 +16,29 @@ const loadFile = resolvedPath => {
       resolvedPath = resolvedPath.replace(/\\/g, '\\\\')
     }
 
+    // Must purge the require cache for hot reloading to work
+    // We must do this inside an eval so it is in the same context as the eval'd sketch below
     /*eslint-disable */
-    // need to invalidate require cache for any hot changes to be picked up
-    // this must be inside an eval() so it is in the correct context as the scripts eval'd below
-    eval(`delete require.cache['${resolvedPath}']`)
+    eval(`
+      // Resolve the module identified by the specified name
+      let mod = require.resolve('${resolvedPath}')
 
+      // Check if the module has been resolved and found within
+      // the cache
+      if (mod && ((mod = require.cache[mod]) !== undefined)) {
+        // Recursively go over the results
+        (function traverse (mod) {
+          // Go over each of the module's children and
+          // traverse them
+          mod.children.forEach(function (child) {
+            traverse(child)
+          })
+          // delete from cache
+          delete require.cache[mod.id]
+        }(mod))
+      }
+    `)
+ 
     file = eval(`require('${resolvedPath}')`)
     /* eslint-enable */
   }
