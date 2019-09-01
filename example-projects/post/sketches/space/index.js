@@ -83,6 +83,11 @@ class Space {
     this.root.rotation.x += 0.001 * f
     this.root.rotation.y += 0.002 * f
   }
+
+  // Orbit controls need to be desposed of if sketch is deleted or reloaded
+  destructor () {
+    this.controls.dispose()
+  }
 }
 
 module.exports = Space
