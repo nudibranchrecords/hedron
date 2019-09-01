@@ -6,6 +6,7 @@ const errcode = require('err-code')
 const fs = require('fs')
 
 const ignoredFolders = ['node_modules']
+const purgeRequireCache = require('./purgeRequireCache')
 
 const loadFile = resolvedPath => {
   let file = false
@@ -17,30 +18,10 @@ const loadFile = resolvedPath => {
     }
 
     // Must purge the require cache for hot reloading to work
-    // We must do this inside an eval so it is in the same context as the eval'd sketch below
-    /*eslint-disable */
-    eval(`
-      // Resolve the module identified by the specified name
-      let mod = require.resolve('${resolvedPath}')
+    purgeRequireCache(resolvedPath)
 
-      // Check if the module has been resolved and found within
-      // the cache
-      if (mod && ((mod = require.cache[mod]) !== undefined)) {
-        // Recursively go over the results
-        (function traverse (mod) {
-          // Go over each of the module's children and
-          // traverse them
-          mod.children.forEach(function (child) {
-            traverse(child)
-          })
-          // delete from cache
-          delete require.cache[mod.id]
-        }(mod))
-      }
-    `)
- 
+    /* eslint-disable-next-line */
     file = eval(`require('${resolvedPath}')`)
-    /* eslint-enable */
   }
 
   return file
