@@ -6,6 +6,7 @@ const errcode = require('err-code')
 const fs = require('fs')
 
 const ignoredFolders = ['node_modules']
+const purgeRequireCache = require('./purgeRequireCache')
 
 const loadFile = resolvedPath => {
   let file = false
@@ -16,13 +17,11 @@ const loadFile = resolvedPath => {
       resolvedPath = resolvedPath.replace(/\\/g, '\\\\')
     }
 
-    /*eslint-disable */
-    // need to invalidate require cache for any hot changes to be picked up
-    // this must be inside an eval() so it is in the correct context as the scripts eval'd below
-    eval(`delete require.cache['${resolvedPath}']`)
+    // Must purge the require cache for hot reloading to work
+    purgeRequireCache(resolvedPath)
 
+    /* eslint-disable-next-line */
     file = eval(`require('${resolvedPath}')`)
-    /* eslint-enable */
   }
 
   return file
@@ -80,7 +79,7 @@ const loadSketches = globUrl => {
 
     return all
   } catch (error) {
-    console.error(`Failed to load sketch folder: ${error.message}`)
+    console.error(`Failed to load sketch folder.`, error)
     throw (error)
   }
 }
