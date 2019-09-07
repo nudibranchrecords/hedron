@@ -13,7 +13,9 @@ const InputSelect = ({ onInputChange, options, nodeId }) => (
       id={`select-input_${nodeId}`}
       buttonText='Choose'
       options={options}
-      onChange={onInputChange}
+      input={{
+        onChange: onInputChange,
+      }}
     />
   </Wrapper>
 )
