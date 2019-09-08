@@ -100,10 +100,40 @@ test('Returns channel', () => {
   expected = 0
   actual = processMidiData(data).channel
 
+  expect(actual).toBe(expected)
+
   data = [186, 100, 0]
 
   expected = 10
   actual = processMidiData(data).channel
 
   expect(actual).toBe(expected)
+})
+
+test('Returns correct channel and id if forcedChannel arg is set', () => {
+  let data, actual
+
+  // incoming: channel 0
+  data = [176, 100, 0]
+
+  actual = processMidiData(data, 10)
+
+  expect(actual.channel).toBe(10)
+  expect(actual.id).toBe('midi_186_100')
+
+  // incoming: channel 10
+  data = [186, 100, 0]
+
+  actual = processMidiData(data, 0)
+
+  expect(actual.channel).toBe(0)
+  expect(actual.id).toBe('midi_176_100')
+
+  // incoming: channel 10
+  data = [186, 100, 0]
+
+  actual = processMidiData(data, false)
+
+  expect(actual.channel).toBe(10)
+  expect(actual.id).toBe('midi_186_100')
 })
