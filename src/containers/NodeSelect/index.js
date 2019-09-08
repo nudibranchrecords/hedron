@@ -46,9 +46,4 @@ export default connect(
       },
     },
   }),
-  {
-    // TODO: This component needs to render always because node values are mutated
-    // Eventually only param values should be mutated
-    areStatesEqual: () => false,
-  }
 )(Select)
