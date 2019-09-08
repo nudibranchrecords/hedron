@@ -4,14 +4,18 @@ import { uInputLinkCreate } from '../store/inputLinks/actions'
 import { clockPulse } from '../store/clock/actions'
 import { newData as teachMidi } from '../utils/getMidiMode'
 import { processMidiData } from '../utils/midiMessage'
+import getConnectedDevice from '../selectors/getConnectedDevice'
 
 export default (store) => {
   const onMessage = (rawMessage) => {
     const state = store.getState()
-    const m = processMidiData(rawMessage.data)
+    const deviceId = rawMessage.target.name
+
+    const device = getConnectedDevice(state, deviceId)
+    const m = processMidiData(rawMessage.data, device.settings.forceChannel.value)
 
     if (m.messageType !== 'timingClock' && m.messageType !== 'noteOff') {
-      store.dispatch(midiMessage(rawMessage.target.name, {
+      store.dispatch(midiMessage(deviceId, {
         data: rawMessage.data,
         timeStamp: rawMessage.timeStamp,
       }))
