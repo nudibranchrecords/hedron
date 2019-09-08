@@ -39,9 +39,11 @@ export default connect(
     ...dispatchProps,
     // This structure is needed so the component is compatible
     // with redux-form (redux-form not actually being used with this component though)
-    input: {
-      value: stateProps.input.value,
-      onChange: dispatchProps.input.onChange,
+    ...{
+      input: {
+        value: stateProps.input.value,
+        onChange: dispatchProps.input.onChange,
+      },
     },
   }),
   {
