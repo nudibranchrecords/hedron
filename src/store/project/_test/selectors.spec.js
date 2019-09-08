@@ -16,6 +16,7 @@ test('(Selector) project - getProjectData', (t) => {
   deepFreeze(state)
 
   const expected = {
+    midi: '@@midi',
     project: '@@project',
     inputs: '@@inputs',
     sketches: '@@sketches',
