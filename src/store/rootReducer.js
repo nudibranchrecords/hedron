@@ -49,11 +49,13 @@ const rootReducer = (state = {}, action) => action.type === 'PROJECT_REHYDRATE'
   ? {
     ...state,
     ...action.payload.data,
-    midi: {
-      ...action.payload.data.midi,
-      // make sure connected midi devices are kept the same as before the project load
-      connectedDeviceIds: [ ...state.midi.connectedDeviceIds ],
-      learning: false,
+    ...{
+      midi: {
+        ...action.payload.data.midi,
+        // make sure connected midi devices are kept the same as before the project load
+        connectedDeviceIds: state.midi.connectedDeviceIds,
+        learning: false,
+      },
     },
   }
   : reducers(state, action)
