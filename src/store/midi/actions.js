@@ -34,3 +34,13 @@ export function midiMessage (id, message) {
     },
   }
 }
+
+export function deviceSettingsUpdate (id, values) {
+  return {
+    type: 'DEVICE_SETTINGS_UPDATE',
+    payload: {
+      id,
+      values,
+    },
+  }
+}

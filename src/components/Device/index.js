@@ -31,7 +31,7 @@ const Info = styled.span`
   opacity: 0.5;
 `
 
-const Device = ({ title, manufacturer, lastMessage }) => {
+const Device = ({ title, manufacturer, lastMessage, id }) => {
   const m = lastMessage
   const channelOptions = Array(16).fill().map((val, index) => ({ value: index, label: index + 1 }))
 
@@ -48,7 +48,8 @@ const Device = ({ title, manufacturer, lastMessage }) => {
       <Aux>
         <form onSubmit={e => e.preventDefault()}>
           <Input
-            name={`forceChannel`}
+            name='forceChannel'
+            id={`forceChannel_${id}`}
             label='Force Channel'
             component={Select}
             layout='compact'
@@ -67,6 +68,7 @@ Device.propTypes = {
   lastMessage: PropTypes.object,
   title: PropTypes.string.isRequired,
   manufacturer:  PropTypes.string.isRequired,
+  id: PropTypes.string.isRequired,
 }
 
 export default Device
