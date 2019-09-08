@@ -44,4 +44,10 @@ export default connect(
       },
     }
   },
+  {
+    // We need to always be updating the select element because node values
+    // dont mutate state and so changes aren't picked up.
+    // TODO: Don't have these update constantly!
+    areStatesEqual: () => false,
+  }
 )(Select)
