@@ -4,15 +4,17 @@ import getIsEditing from '../../selectors/getIsEditing'
 import { uiEditingToggle } from '../../store/ui/actions'
 
 const mapStateToProps = (state, ownProps) => {
+  const id = ownProps.id || ownProps.name
   return {
-    isOpen: getIsEditing(state, ownProps.id, 'selectComponent'),
+    isOpen: getIsEditing(state, id, 'selectComponent'),
   }
 }
 
 const mapDispatchToProps = (dispatch, ownProps) => {
+  const id = ownProps.id || ownProps.name
   return {
     onOpenClick: e => {
-      dispatch(uiEditingToggle('selectComponent', ownProps.id))
+      dispatch(uiEditingToggle('selectComponent', id))
     },
   }
 }
