@@ -1,8 +1,9 @@
 import { connect } from 'react-redux'
-import Devices from '../../components/Devices'
+import ConnectedDevices from '../../components/ConnectedDevices'
+import getConnectedDevices from '../../selectors/getConnectedDevices'
 
 const mapStateToProps = (state, ownProps) => ({
-  items: Object.keys(state.midi.devices).map(key => state.midi.devices[key]),
+  items: getConnectedDevices(state),
 })
 
 export default connect(
@@ -12,4 +13,4 @@ export default connect(
   {
     areStatesEqual: (next, prev) => next.midi === prev.midi,
   }
-)(Devices)
+)(ConnectedDevices)
