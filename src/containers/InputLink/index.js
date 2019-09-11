@@ -8,7 +8,7 @@ import getInputLinkAudioOptionIds from '../../selectors/getInputLinkAudioOptionI
 import getInputLink from '../../selectors/getInputLink'
 import getIsInputLinkActive from '../../selectors/getIsInputLinkActive'
 import getCanInputLinkDisable from '../../selectors/getCanInputLinkDisable'
-import { uInputLinkDelete, uInputLinkCreate } from '../../store/inputLinks/actions'
+import { uInputLinkDelete } from '../../store/inputLinks/actions'
 import { nodeTabOpen, nodeActiveInputLinkToggle } from '../../store/nodes/actions'
 import { uAnimStart } from '../../store/anims/actions'
 
