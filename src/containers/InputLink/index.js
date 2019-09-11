@@ -8,7 +8,7 @@ import getInputLinkAudioOptionIds from '../../selectors/getInputLinkAudioOptionI
 import getInputLink from '../../selectors/getInputLink'
 import getIsInputLinkActive from '../../selectors/getIsInputLinkActive'
 import getCanInputLinkDisable from '../../selectors/getCanInputLinkDisable'
-import { uInputLinkDelete, uInputLinkCreate } from '../../store/inputLinks/actions'
+import { uInputLinkDelete } from '../../store/inputLinks/actions'
 import { nodeTabOpen, nodeActiveInputLinkToggle } from '../../store/nodes/actions'
 import { uAnimStart } from '../../store/anims/actions'
 
@@ -36,9 +36,6 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
   },
   onActivateToggle: () => {
     dispatch(nodeActiveInputLinkToggle(ownProps.nodeId, ownProps.id))
-  },
-  onActivateAssignClick: () => {
-    dispatch(uInputLinkCreate(ownProps.id, 'midi', 'inputLinkToggle'))
   },
   onAnimStartClick: () => {
     dispatch(uAnimStart(ownProps.id))

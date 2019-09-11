@@ -43,6 +43,7 @@ export default linkId => {
       title: 'Note',
       key: 'noteNum',
       type: 'select',
+      value: 12,
       id: uid(),
       inputLinkIds: [],
       subNode: true,
@@ -54,6 +55,7 @@ export default linkId => {
       key: 'messageType',
       type: 'select',
       id: uid(),
+      value: 'controlChange',
       inputLinkIds: [],
       subNode: true,
       options: Object.keys(messageTypes).map(key => (
@@ -69,6 +71,7 @@ export default linkId => {
       key: 'channel',
       type: 'select',
       id: uid(),
+      value: 0,
       inputLinkIds: [],
       subNode: true,
       options: Array(16).fill(0).map((value, index) => (

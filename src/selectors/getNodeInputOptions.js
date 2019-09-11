@@ -11,6 +11,11 @@ export default (state, nodeId) => {
       exclude: ['linkableAction'],
     },
     {
+      value: 'midi-learn',
+      type: 'midi',
+      label: 'MIDI Learn',
+    },
+    {
       value: 'midi',
       type: 'midi',
       label: 'MIDI',
