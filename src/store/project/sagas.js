@@ -10,6 +10,7 @@ import { projectLoadSuccess, projectRehydrate, projectError, projectSaveAs,
 import { uSceneCreate } from '../scenes/actions'
 import history from '../../history'
 import { remote } from 'electron'
+import { processDevices } from '../../inputs/MidiInput'
 
 const fileFilters = [
   { name: 'JSON', extensions: ['json'] },
@@ -58,6 +59,7 @@ export function* loadProjectRequest () {
     const filepath = yield select(getProjectFilepath)
     const projectData = yield call(load, filepath)
     yield put(projectRehydrate(projectData))
+    yield call(processDevices)
     yield put(projectFilepathUpdate(filepath))
     yield put(projectLoadSuccess(projectData))
     yield call([history, history.replace], projectData.router.location.pathname)

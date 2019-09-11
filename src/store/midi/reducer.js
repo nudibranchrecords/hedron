@@ -66,7 +66,10 @@ const midiReducer = (state = defaultState, action) => {
           ...state.devices,
           [p.id]: {
             ...state.devices[p.id],
-            settings: p.values,
+            settings: {
+              ...state.devices[p.id].settings,
+              ...p.values,
+            },
           },
         },
       }
