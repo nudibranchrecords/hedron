@@ -132,9 +132,12 @@ Select.propTypes = {
     PropTypes.string, PropTypes.number,
   ]),
   input: PropTypes.shape({
-    value: PropTypes.oneOfType([
-      PropTypes.string, PropTypes.number, PropTypes.bool, PropTypes.object,
-    ]),
+    value: PropTypes.shape({
+      value: PropTypes.oneOfType([
+        PropTypes.string, PropTypes.number, PropTypes.bool,
+      ]).isRequired,
+      label: PropTypes.string.isRequired,
+    }),
     onChange: PropTypes.func.isRequired,
   }).isRequired,
 }
