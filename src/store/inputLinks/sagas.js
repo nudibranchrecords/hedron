@@ -35,7 +35,7 @@ export function* inputLinkCreate (action) {
   const node = yield select(getNode, p.nodeId)
   const sketchId = node.sketchId
 
-  if (p.inputId === 'midi') {
+  if (p.inputId === 'midi-learn') {
     yield put(midiStartLearning(p.nodeId, p.inputType))
   } else {
     const linkId = yield call(uid)
