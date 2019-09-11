@@ -37,9 +37,6 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
   onActivateToggle: () => {
     dispatch(nodeActiveInputLinkToggle(ownProps.nodeId, ownProps.id))
   },
-  onActivateAssignClick: () => {
-    dispatch(uInputLinkCreate(ownProps.id, 'midi', 'inputLinkToggle'))
-  },
   onAnimStartClick: () => {
     dispatch(uAnimStart(ownProps.id))
   },
