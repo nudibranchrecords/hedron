@@ -4,15 +4,26 @@ import { uSceneSettingsUpdate } from '../../store/scenes/actions'
 import getScene from '../../selectors/getScene'
 import { reduxForm } from 'redux-form'
 
-const mapStateToProps = (state, ownProps) => ({
-  initialValues: getScene(state, ownProps.sceneId).settings,
-  enableReinitialize: true,
-})
+const mapStateToProps = (state, ownProps) => {
+  const initialValues = getScene(state, ownProps.sceneId).settings
+  const gppe = 'globalPostProcessingEnabled'
+
+  return {
+    initialValues,
+    enableReinitialize: true,
+    onChange: (values, dispatch) => {
+      // TODO: Find cleaner way of doing this
+      // On change can fire when the form changes because a different scene has been selected
+      // We need to make sure this only fires when the form actually changes
+      if (initialValues[gppe] !== values[gppe]) {
+        dispatch(uSceneSettingsUpdate(ownProps.sceneId, values))
+      }
+    },
+  }
+}
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
-  onChange: (values) => {
-    dispatch(uSceneSettingsUpdate(ownProps.sceneId, values))
-  },
+
 })
 
 const SceneSettings = reduxForm({
