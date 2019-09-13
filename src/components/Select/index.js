@@ -4,6 +4,7 @@ import styled from 'styled-components'
 import theme from '../../utils/theme'
 import downIcon from '../../assets/icons/down.icon.txt'
 import uiEventEmitter from '../../utils/uiEventEmitter'
+import { get } from 'lodash'
 
 import { Manager, Reference, Popper } from 'react-popper'
 import Icon from '../Icon'
@@ -76,8 +77,12 @@ class Select extends React.Component {
 
   render () {
     const { onOpenClick, isOpen, options, input, buttonText } = this.props
-    const visibleText = buttonText || input.value.label
-    const inputValue = input && input.value && input.value.value
+
+    // TODO: This is should really be handled in a container but must happen
+    // at component level here due to way redux-form works
+    const visibleText = buttonText || get(input, 'value.label')
+    const inputValue = get(input, 'value.value')
+
     return (
       <Manager>
         <Reference>
@@ -125,7 +130,6 @@ Select.propTypes = {
   options: PropTypes.arrayOf(
     PropTypes.object
   ),
-
   onOpenClick: PropTypes.func.isRequired,
   isOpen: PropTypes.bool,
   buttonText: PropTypes.oneOfType([
@@ -136,8 +140,10 @@ Select.propTypes = {
       value: PropTypes.oneOfType([
         PropTypes.string, PropTypes.number, PropTypes.bool,
       ]).isRequired,
-      label: PropTypes.string.isRequired,
-    }),
+      label: PropTypes.oneOfType([
+        PropTypes.string, PropTypes.number,
+      ]).isRequired,
+    }).isRequired,
     onChange: PropTypes.func.isRequired,
   }).isRequired,
 }
