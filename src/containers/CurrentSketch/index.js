@@ -12,7 +12,6 @@ const mapStateToProps = (state, ownProps) => {
       isSketch: true,
       title: state.sketches[sketchId].title,
       sketchId: sketchId,
-      shots: state.sketches[sketchId].shotIds,
     }
   } else {
     return {

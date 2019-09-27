@@ -4,6 +4,7 @@ import Button from '../Button'
 import SceneHeader from '../../containers/SceneHeader'
 import styled from 'styled-components'
 import ParamList from '../../containers/ParamList'
+import ShotList from '../../containers/ShotList'
 
 const Wrapper = styled.div`
   display: flex;
@@ -46,6 +47,7 @@ const Sketch = ({
     </SceneHeader>
 
     <ParamList sketchId={sketchId} />
+    <ShotList sketchId={sketchId} />
 
     <Bottom>
       <div>
