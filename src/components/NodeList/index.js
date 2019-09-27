@@ -1,8 +1,8 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import ViewSubheader from '../ViewSubheader'
 import Items from '../Items'
 import Item from '../Item'
-import withDeferRender from '../../utils/withDeferRender'
 
 const NodeList = ({ nodeIds, title, component }) => {
   const Component = component
@@ -22,6 +22,12 @@ const NodeList = ({ nodeIds, title, component }) => {
   } else {
     return (null)
   }
+}
+
+NodeList.propTypes = {
+  title: PropTypes.string.isRequired,
+  nodeIds: PropTypes.arrayOf(PropTypes.string).isRequired,
+  component: PropTypes.func.isRequired,
 }
 
 export default NodeList
