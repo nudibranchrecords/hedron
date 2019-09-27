@@ -1,14 +1,9 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import Node from '../../containers/Node'
-import Shot from '../../containers/Shot'
 import Button from '../Button'
 import SceneHeader from '../../containers/SceneHeader'
-import ViewSubheader from '../ViewSubheader'
-import Items from '../Items'
-import Item from '../Item'
 import styled from 'styled-components'
-import withDeferRender from '../../utils/withDeferRender'
+import ParamList from '../../containers/ParamList'
 
 const Wrapper = styled.div`
   display: flex;
@@ -37,11 +32,8 @@ const DeleteButton = styled(Button)`
   margin-right: auto;
 `
 
-// It's more performant to spread over the mounting of many items over many frames rather than in one big go
-const SketchParam = withDeferRender(Node)
-
 const Sketch = ({
-  title, params, shots, onDeleteClick, sketchId, onRenameClick, onReloadFileClick,
+  title, onDeleteClick, sketchId, onRenameClick, onReloadFileClick,
 }) => (
   <Wrapper>
     <SceneHeader
@@ -53,31 +45,7 @@ const Sketch = ({
       {title}
     </SceneHeader>
 
-    {params.length > 0 &&
-      <div>
-        <ViewSubheader>Params</ViewSubheader>
-        <Items>
-          {params.map((id, index) => (
-            <Item key={id}>
-              <SketchParam nodeId={id} index={index} />
-            </Item>
-          ))}
-        </Items>
-      </div>
-    }
-
-    {shots.length > 0 &&
-      <div>
-        <ViewSubheader>Shots</ViewSubheader>
-        <Items>
-          {shots.map((id, index) => (
-            <Item key={id}>
-              <Shot nodeId={id} index={index} />
-            </Item>
-          ))}
-        </Items>
-      </div>
-    }
+    <ParamList sketchId={sketchId} />
 
     <Bottom>
       <div>
@@ -91,12 +59,6 @@ const Sketch = ({
 Sketch.propTypes = {
   title: PropTypes.string.isRequired,
   sketchId: PropTypes.string.isRequired,
-  params: PropTypes.arrayOf(
-    PropTypes.string
-  ).isRequired,
-  shots: PropTypes.arrayOf(
-    PropTypes.string
-  ).isRequired,
   onDeleteClick: PropTypes.func.isRequired,
   onRenameClick: PropTypes.func.isRequired,
   onReloadFileClick: PropTypes.func.isRequired,
