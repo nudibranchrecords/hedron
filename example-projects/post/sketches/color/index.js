@@ -1,4 +1,5 @@
-const { EffectPass, BrightnessContrastEffect, GammaCorrectionEffect, HueSaturationEffect } = POSTPROCESSING
+const { postprocessing } = window.HEDRON.dependencies
+const { EffectPass, BrightnessContrastEffect, GammaCorrectionEffect, HueSaturationEffect } = postprocessing
 
 class Color {
   initiatePostProcessing (composer) {

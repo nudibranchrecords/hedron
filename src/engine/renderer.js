@@ -1,5 +1,5 @@
-import * as THREE from 'three'
-import { EffectComposer, RenderPass } from 'postprocessing'
+const { THREE, postprocessing } = window.HEDRON.dependencies
+const { EffectComposer, RenderPass } = postprocessing
 
 import uiEventEmitter from '../utils/uiEventEmitter'
 import * as engine from './'

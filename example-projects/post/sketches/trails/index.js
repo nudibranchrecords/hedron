@@ -1,4 +1,5 @@
-const { EffectPass, SavePass, TextureEffect } = POSTPROCESSING
+const { postprocessing } = window.HEDRON.dependencies
+const { EffectPass, SavePass, TextureEffect } = postprocessing
 const FeedbackEffect = require('./FeedbackEffect')
 
 class Trails {

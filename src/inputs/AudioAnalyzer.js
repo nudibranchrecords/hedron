@@ -1,4 +1,5 @@
-import * as THREE from 'three'
+const { THREE } = window.HEDRON.dependencies
+
 class AudioInput {
   constructor (stream) {
     const context = new window.AudioContext()

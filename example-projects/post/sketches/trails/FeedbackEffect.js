@@ -1,7 +1,8 @@
+const { THREE, postprocessing, glslify } = window.HEDRON.dependencies
 const { Uniform, Texture } = THREE
-const { Effect, BlendFunction } = POSTPROCESSING
+const { Effect, BlendFunction } = postprocessing
 
-const frag = GLSLIFY.file('./frag.glsl')
+const frag = glslify.file('./frag.glsl')
 
 class FeedbackEffect extends Effect {
   constructor ({

@@ -1,3 +1,4 @@
+const { THREE } = window.HEDRON.dependencies
 const cubeTextureLoader = new THREE.CubeTextureLoader()
 
 class Space {

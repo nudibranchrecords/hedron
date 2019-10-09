@@ -1,3 +1,5 @@
+const { THREE } = window.HEDRON.dependencies
+
 class Env {
   constructor (scene) {
     this.scene = scene.scene
