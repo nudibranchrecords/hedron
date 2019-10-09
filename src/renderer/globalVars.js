@@ -1,12 +1,26 @@
-// Declaring THREE as a global var, so that sketches can use the same instance of three.js as Hedron does
-// This keeps the library versions matched and also prevents strange things from happening when two instances of three
-// are running at the same time
-window.THREE = require('three')
+import * as THREE from 'three'
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
+import * as postprocessing from 'postprocessing'
+import glslify from 'glslify'
+import TWEEN from '@tweenjs/tween.js'
 
-// Other useful libraries
-window.POSTPROCESSING = require('postprocessing')
-window.GLSLIFY = require('glslify')
-
-// For convenience, also requiring some common three extras
-require('three/examples/js/loaders/GLTFLoader')
-require('three/examples/js/controls/OrbitControls')
+window.HEDRON = {
+  // Third party dependencies exposed globally for sketch development
+  dependencies: {
+    // Declaring THREE as a global var, so that sketches can use the same instance of three.js as Hedron does
+    // This keeps the library versions matched and also prevents strange things from happening when the library
+    // code is being read from different sources
+    THREE: {
+      ...THREE,
+      // For convenience, also requiring some common three extras
+      GLTFLoader,
+      OrbitControls,
+    },
+    // No need for any sketch developer to call TWEEN.update() if using this reference
+    TWEEN,
+    // Other useful libraries
+    postprocessing,
+    glslify,
+  },
+}

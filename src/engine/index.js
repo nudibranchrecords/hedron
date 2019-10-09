@@ -14,8 +14,9 @@ import now from 'performance-now'
 import * as renderer from './renderer'
 import Scene from './Scene'
 import { nodeValuesBatchUpdate } from '../store/nodes/actions'
-import TWEEN from '@tweenjs/tween.js'
 import { getProjectFilepath } from '../store/project/selectors'
+
+const { TWEEN } = window.HEDRON.dependencies
 
 const configDefault = {
   defaultTitle: 'Sketch',

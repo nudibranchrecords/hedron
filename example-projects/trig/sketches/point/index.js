@@ -1,3 +1,5 @@
+const { THREE } = window.HEDRON.dependencies
+
 class Point {
   constructor () {
     this.root = new THREE.Group()

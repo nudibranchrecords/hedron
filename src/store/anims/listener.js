@@ -2,8 +2,9 @@ import getInputLink from '../../selectors/getInputLink'
 import getNode from '../../selectors/getNode'
 import getNodesValues from '../../selectors/getNodesValues'
 import { nodeValueUpdate } from '../nodes/actions'
-import TWEEN from '@tweenjs/tween.js'
 import { get } from 'lodash'
+
+const { TWEEN } = window.HEDRON.dependencies
 
 const handleAnimStart = (action, store) => {
   const state = store.getState()

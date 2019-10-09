@@ -1,5 +1,5 @@
-// POSTPROCESSING is a global variable available to Hedron sketches
-const { EffectPass, BloomEffect, BlendFunction, KernelSize } = POSTPROCESSING
+const { postprocessing } = window.HEDRON.dependencies
+const { EffectPass, BloomEffect, BlendFunction, KernelSize } = postprocessing
 
 class Bloom {
   // Here we add our passes to the composer

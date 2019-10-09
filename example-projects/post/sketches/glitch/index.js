@@ -1,4 +1,5 @@
-const { EffectPass, ChromaticAberrationEffect, GlitchEffect } = POSTPROCESSING
+const { postprocessing } = window.HEDRON.dependencies
+const { EffectPass, ChromaticAberrationEffect, GlitchEffect } = postprocessing
 
 class Glitch {
   initiatePostProcessing (composer) {
