@@ -4,11 +4,6 @@
     "standard",
     "standard-react"
   ],
-  "globals": {
-    "THREE": "readonly",
-    "POSTPROCESSING": "readonly",
-    "GLSLIFY": "readonly"
-  },
   "env": {
     "browser" : true,
     "jest/globals": true
