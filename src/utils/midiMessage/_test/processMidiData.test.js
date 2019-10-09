@@ -137,3 +137,35 @@ test('Returns correct channel and id if forcedChannel arg is set', () => {
   expect(actual.channel).toBe(10)
   expect(actual.id).toBe('midi_186_100')
 })
+
+test('Doesnt get confused by non channel messages such as timing clock', () => {
+  let data, actual
+
+  // incoming: timing clock
+  data = [248]
+  actual = processMidiData(data, false)
+
+  expect(actual.channel).toBeUndefined()
+  expect(actual.id).toBeUndefined()
+
+  // incoming: timing clock
+  data = [248]
+  actual = processMidiData(data, 10)
+
+  expect(actual.channel).toBeUndefined()
+  expect(actual.id).toBeUndefined()
+
+  // incoming: start
+  data = [250]
+  actual = processMidiData(data, false)
+
+  expect(actual.channel).toBeUndefined()
+  expect(actual.id).toBeUndefined()
+
+  // incoming: start
+  data = [250]
+  actual = processMidiData(data, 10)
+
+  expect(actual.channel).toBeUndefined()
+  expect(actual.id).toBeUndefined()
+})
