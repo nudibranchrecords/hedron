@@ -63,7 +63,6 @@ export function* loadProjectRequest () {
     yield put(projectFilepathUpdate(filepath))
     yield put(projectLoadSuccess(projectData))
     yield call([history, history.replace], projectData.router.location.pathname)
-    yield call([uiEventEmitter, uiEventEmitter.emit], 'reset-renderer')
     yield call([uiEventEmitter, uiEventEmitter.emit], 'repaint')
   } catch (error) {
     console.error(error)
