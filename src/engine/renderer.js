@@ -16,10 +16,8 @@ let delta
 export let renderer, composer, mainPass
 
 export const setRenderer = () => {
-  const settings = store.getState().settings
-
   renderer = new THREE.WebGLRenderer({
-    antialias: settings.antialias,
+    antialias: false, // antialiasing should be handled by the composer
   })
 
   domEl = renderer.domElement
@@ -125,12 +123,6 @@ export const setSize = () => {
 export const initiate = (injectedStore) => {
   store = injectedStore
 
-  uiEventEmitter.on('reset-renderer', () => {
-    composer.dispose()
-    renderer.dispose()
-    setRenderer()
-    setPostProcessing()
-  })
   uiEventEmitter.on('repaint', () => {
     setSize()
   })
