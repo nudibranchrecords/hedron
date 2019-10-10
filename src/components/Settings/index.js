@@ -46,9 +46,6 @@ const Settings = () => (
       <h2>Renderer</h2>
       <Row>
         <Col width='8rem'>
-          <Input name='antialias' label='Antialiasing' type='checkbox' />
-        </Col>
-        <Col width='8rem'>
           <Input name='throttledFPS' label='Throttled FPS' type='number' />
         </Col>
       </Row>
