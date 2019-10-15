@@ -40,6 +40,12 @@ module.exports = {
       defaultMax: 4,
     },
     {
+      key: 'isWireframe',
+      title: 'Wireframe',
+      defaultValue: true,
+      valueType: 'boolean',
+    },
+    {
       key: 'meshIndex',
       title: 'Mesh Index',
       defaultValue: 0,
