@@ -1,6 +1,6 @@
 import { connect } from 'react-redux'
 import SceneThumbComponent from '../../components/SceneThumb'
-import { rSceneSelectCurrent } from '../../store/scenes/actions'
+import { uSceneSelectCurrent } from '../../store/scenes/actions'
 import getScene from '../../selectors/getScene'
 import getCurrentSceneId from '../../selectors/getCurrentSceneId'
 import getChannelSceneId from '../../selectors/getChannelSceneId'
@@ -20,7 +20,7 @@ const mapStateToProps = (state, ownProps) => {
 }
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
-  onClick: () => { dispatch(rSceneSelectCurrent(ownProps.id)) },
+  onClick: () => { dispatch(uSceneSelectCurrent(ownProps.id)) },
 })
 
 const SceneThumb = connect(
