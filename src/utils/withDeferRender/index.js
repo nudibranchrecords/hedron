@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 
-const delay = 70
+const delay = 20
 
 const withDeferRender = Presentational => {
   class DeferRender extends Component {

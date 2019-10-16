@@ -1,7 +1,10 @@
-import React from 'react'
+import React, { useRef } from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import Button from '../Button'
+import { useStore } from 'react-redux'
+import getClockData from '../../selectors/getClockData'
+import useRaf from '../../utils/customReactHooks/useRaf'
 
 const Wrapper = styled.div`
   height: 48px;
@@ -33,11 +36,37 @@ const Bottom = styled.div`
   margin-bottom: 0.25rem;
 `
 
-const Clock = ({ beat, bar, phrase, bpm, onResetClick, onTapTempoClick }) => (
+// Optimised component as it is being updated every beat
+const ClockData = () => {
+  const store = useStore()
+  const topEl = useRef()
+  const bottomEl = useRef()
+  const prevBeat = useRef()
+
+  useRaf(() => {
+    const data = getClockData(store.getState())
+    const { beat, bar, phrase, bpm } = data
+
+    if (beat === prevBeat.current) return
+
+    topEl.current.innerText = `${beat} - ${bar} - ${phrase}`
+    bottomEl.current.innerText = bpm
+
+    prevBeat.current = beat
+  })
+
+  return (
+    <>
+      <Top ref={topEl} />
+      <Bottom ref={bottomEl} />
+    </>
+  )
+}
+
+const Clock = ({ onResetClick, onTapTempoClick }) => (
   <Wrapper>
     <Col>
-      <Top>{beat} - {bar} - {phrase}</Top>
-      <Bottom>{bpm}</Bottom>
+      <ClockData />
       <Button onMouseDown={onResetClick}>Reset</Button>
     </Col>
     <Col>
@@ -47,10 +76,6 @@ const Clock = ({ beat, bar, phrase, bpm, onResetClick, onTapTempoClick }) => (
 )
 
 Clock.propTypes = {
-  beat: PropTypes.number.isRequired,
-  bar: PropTypes.number.isRequired,
-  phrase: PropTypes.number.isRequired,
-  bpm: PropTypes.number,
   onResetClick: PropTypes.func.isRequired,
   onTapTempoClick: PropTypes.func.isRequired,
 }
