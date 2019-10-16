@@ -43,5 +43,11 @@ const mergeProps = (stateProps, dispatchProps, props) => {
 export default connect(
   mapStateToProps,
   mapDispatchToProps,
-  mergeProps
+  mergeProps,
+  {
+    areStatesEqual: (next, prev) =>
+      next.macros === prev.macros &&
+      next.nodes === prev.nodes &&
+      next.router === prev.router,
+  }
 )(MainViewOuter)

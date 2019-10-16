@@ -22,5 +22,9 @@ const mapDispatchToProps = (dispatch, ownProps) => (
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps
+  mapDispatchToProps,
+  null,
+  {
+    areStatesEqual: (next, prev) => next.scenes === prev.scenes,
+  }
 )(SceneList)

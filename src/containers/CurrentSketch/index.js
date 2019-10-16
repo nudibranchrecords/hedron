@@ -3,7 +3,6 @@ import CurrentSketchComponent from '../../components/CurrentSketch'
 import { uSketchDelete, uSketchReloadFile } from '../../store/sketches/actions'
 import getSelectedSketchId from '../../selectors/getSelectedSketchId'
 import { uiEditingOpen } from '../../store/ui/actions'
-import getVisibleSketchParamIds from '../../selectors/getVisibleSketchParamIds'
 
 const mapStateToProps = (state, ownProps) => {
   const sketchId = getSelectedSketchId(state)
@@ -12,9 +11,7 @@ const mapStateToProps = (state, ownProps) => {
     return {
       isSketch: true,
       title: state.sketches[sketchId].title,
-      params: getVisibleSketchParamIds(state, sketchId),
       sketchId: sketchId,
-      shots: state.sketches[sketchId].shotIds,
     }
   } else {
     return {
