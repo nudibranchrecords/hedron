@@ -4,7 +4,7 @@ import { rSceneCreate, rSceneDelete, rSceneSelectCurrent,
 import { generateSceneLinkableActionIds } from './utils'
 import { engineSceneAdd, engineSceneRemove } from '../../engine/actions'
 import { uSketchDelete } from '../sketches/actions'
-import { uiEditingOpen } from '../ui/actions'
+import { uiEditingOpen, uiNodeClose } from '../ui/actions'
 import getScene from '../../selectors/getScene'
 import getScenes from '../../selectors/getScenes'
 import getChannelSceneId from '../../selectors/getChannelSceneId'
@@ -81,6 +81,15 @@ const handleSceneDelete = (action, store) => {
   history.push(url)
 }
 
+const handleSceneSelectCurrent = (action, store) => {
+  const p = action.payload
+
+  store.dispatch(rSceneSelectCurrent(p.id))
+  // To stop user confusion, close the left-hand panel on scene change
+  // because it will be displaying properties for an action related to another scene
+  store.dispatch(uiNodeClose())
+}
+
 const handleSceneSketchSelect = (action, store) => {
   history.push(`/scenes/view`)
 }
@@ -121,6 +130,9 @@ export default (action, store) => {
       break
     case 'U_SCENE_DELETE':
       handleSceneDelete(action, store)
+      break
+    case 'U_SCENE_SELECT_CURRENT':
+      handleSceneSelectCurrent(action, store)
       break
     case 'U_SCENE_SELECT_CHANNEL':
       handleSceneSelectChannel(action, store)
