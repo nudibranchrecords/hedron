@@ -22,5 +22,9 @@ const mapDipatchToProps = (dispatch, ownProps) => ({
 
 export default connect(
   mapStateToProps,
-  mapDipatchToProps
+  mapDipatchToProps,
+  null,
+  {
+    areStatesEqual: (next, prev) => next.nodeId === prev.nodeId,
+  }
 )(PropertiesPanel)
