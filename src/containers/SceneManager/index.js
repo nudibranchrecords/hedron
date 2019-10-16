@@ -1,6 +1,7 @@
 import { connect } from 'react-redux'
 import SceneManager from '../../components/SceneManager'
 import getCurrentScene from '../../selectors/getCurrentScene'
+import getCurrentSceneId from '../../selectors/getCurrentSceneId'
 import {
   uSceneDelete, rSceneSelectChannel,
   uSceneSelectChannel, sceneClearChannel,
@@ -8,11 +9,9 @@ import {
   from '../../store/scenes/actions'
 import { uiEditingOpen } from '../../store/ui/actions'
 
-const mapStateToProps = (state, ownProps) => (
-  {
-    currentScene: getCurrentScene(state),
-  }
-)
+const mapStateToProps = (state, ownProps) => ({
+  currentScene: getCurrentScene(state),
+})
 
 const mapDispatchToProps = (dispatch, ownProps) => (
   {
@@ -39,5 +38,9 @@ const mapDispatchToProps = (dispatch, ownProps) => (
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps
+  mapDispatchToProps,
+  null,
+  {
+    areStatesEqual: (next, prev) => getCurrentSceneId(next) === getCurrentSceneId(prev),
+  }
 )(SceneManager)
