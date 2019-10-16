@@ -4,31 +4,31 @@ import React from 'react'
 import { render } from 'react-dom'
 import { Provider } from 'react-redux'
 import { createStore, applyMiddleware, compose } from 'redux'
-import { projectFilepathUpdate, projectLoadRequest } from '../store/project/actions'
+import { projectFilepathUpdate, projectLoadRequest } from '../../store/project/actions'
 import { ConnectedRouter, routerMiddleware } from 'connected-react-router'
 import listen from 'redux-action-listeners'
-import history from '../history'
+import history from '../../history'
 import { composeWithDevTools } from 'redux-devtools-extension'
 import createSagaMiddleware from 'redux-saga'
 import { batchedSubscribe } from 'redux-batched-subscribe'
-import rootSaga from '../store/rootSaga'
-import rootReducer from '../store/rootReducer'
-import rootListener from '../store/rootListener'
-import App from '../containers/App'
-import * as engine from '../engine'
-import { initiateScreens } from '../windows'
+import rootSaga from '../../store/rootSaga'
+import rootReducer from '../../store/rootReducer'
+import rootListener from '../../store/rootListener'
+import App from '../../containers/App'
+import * as engine from '../../engine'
+import { initiateScreens } from '../../windows'
 import { initiateMenuHandler } from './menuHandler'
-import setCoreState from '../store/setCoreState'
+import setCoreState from '../../store/setCoreState'
 import Stats from 'stats.js'
 import createDebounce from 'redux-debounced'
 import tryRequire from 'try-require'
 
-import '../style.css'
+import '../../style.css'
 
 // inputs
-import initiateAudio from '../inputs/AudioInput'
-import initiateMidi from '../inputs/MidiInput'
-import initiateGeneratedClock from '../inputs/GeneratedClock'
+import initiateAudio from '../../inputs/AudioInput'
+import initiateMidi from '../../inputs/MidiInput'
+import initiateGeneratedClock from '../../inputs/GeneratedClock'
 import debounce from 'lodash/debounce'
 
 const isDevelopment = process.env.NODE_ENV !== 'production'
@@ -72,13 +72,11 @@ setCoreState(store)
 
 const renderApp = (Component) => {
   render(
-    // <AppContainer>
     <Provider store={store}>
       <ConnectedRouter history={history}>
         <App stats={stats} />
       </ConnectedRouter>
     </Provider>,
-    // </AppContainer>,
     document.getElementById('app')
   )
 }
@@ -105,7 +103,7 @@ if (isDevelopment) {
 }
 
 if (module.hot) {
-  module.hot.accept('../containers/App', () => {
+  module.hot.accept('../../containers/App', () => {
     // Pausing engine after HMR to stop lag issue
     engine.pause()
     renderApp(App)

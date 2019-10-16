@@ -19,7 +19,11 @@
   },
   "electronWebpack": {
     "renderer": {
-      "webpackConfig": "config/webpack.custom.config.js"
+      "webpackConfig": "config/webpack.custom.config.js",
+      "sourceDirectory": "src/electron/renderer"
+    },
+    "main": {
+      "sourceDirectory": "src/electron/main"
     }
   },
   "build": {
