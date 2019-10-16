@@ -7,15 +7,18 @@ const mapStateToProps = (state, ownProps) => ({
   options: getNodeInputOptions(state, ownProps.nodeId),
 })
 
-const mapDispatchToProps = (dispatch, ownProps) => {
-  return {
-    onInputChange: (option) => {
-      dispatch(uInputLinkCreate(ownProps.nodeId, option.value, option.type))
-    },
-  }
-}
+const mapDispatchToProps = (dispatch, ownProps) => ({
+  onInputChange: (option) => {
+    dispatch(uInputLinkCreate(ownProps.nodeId, option.value, option.type))
+  },
+})
 
 export default connect(
   mapStateToProps,
   mapDispatchToProps,
+  null,
+  {
+    areStatesEqual: () => true,
+    areOwnPropsEqual: (next, prev) => next.nodeId === prev.nodeId,
+  }
 )(InputSelect)
