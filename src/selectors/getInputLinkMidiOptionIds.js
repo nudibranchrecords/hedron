@@ -13,9 +13,16 @@ export default (state, linkId) => {
     optionNodesByKey[node.key] = node
   })
 
-  if (optionNodesByKey.controlType.value === 'abs') {
-    // Remove 'sensitivity' if controlType is 'absolute'
+  const isNotCC = optionNodesByKey.messageType.value !== 'controlChange'
+
+  if (optionNodesByKey.controlType.value === 'abs' || isNotCC) {
+    // Remove 'sensitivity' if controlType is 'absolute' or messageType is NOT 'controlChange'
     optionIds = filterId(optionIds, optionNodesByKey.sensitivity.id)
+  }
+
+  if (isNotCC) {
+    // Remove 'controlType' if messageType is NOT 'controlChange'
+    optionIds = filterId(optionIds, optionNodesByKey.controlType.id)
   }
 
   if (node.valueType !== 'boolean' && optionNodesByKey.booleanMode !== undefined) {
