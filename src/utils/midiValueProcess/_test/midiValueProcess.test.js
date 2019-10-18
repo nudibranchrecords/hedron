@@ -1,7 +1,5 @@
-import test from 'tape'
 import midiValueProcess, { getValue } from '../'
-
-test('(Util) midiValueProcess - getValue() - absolute', (t) => {
+test('(Util) midiValueProcess - getValue() - absolute', () => {
   let midiValue, midiOptions, messageCount, actual, expected, nodeValue
 
   nodeValue = 0.5
@@ -15,7 +13,8 @@ test('(Util) midiValueProcess - getValue() - absolute', (t) => {
   actual = getValue(nodeValue, midiValue, midiOptions, messageCount)
   expected = midiValue
 
-  t.equal(actual, expected, 'Absolute mode ignores everything except the raw midiValue')
+  // Absolute mode ignores everything except the raw midiValue
+  expect(actual).toBe(expected)
 
   nodeValue = 0.9
   midiValue = 0.5
@@ -28,11 +27,11 @@ test('(Util) midiValueProcess - getValue() - absolute', (t) => {
   actual = getValue(nodeValue, midiValue, midiOptions, messageCount)
   expected = midiValue
 
-  t.equal(actual, expected, 'Absolute mode ignores everything except the raw midiValue')
-  t.end()
+  // Absolute mode ignores everything except the raw midiValue
+  expect(actual).toBe(expected)
 })
 
-test('(Util) midiValueProcess - getValue() - rel1', (t) => {
+test('(Util) midiValueProcess - getValue() - rel1', () => {
   let midiValue, midiOptions, messageCount, actual, expected, nodeValue
 
   nodeValue = 0.5
@@ -46,7 +45,8 @@ test('(Util) midiValueProcess - getValue() - rel1', (t) => {
   actual = getValue(nodeValue, midiValue, midiOptions, messageCount)
   expected = 0.493
 
-  t.equal(actual, expected, 'rel1 DOWN')
+  // rel1 DOWN
+  expect(actual).toBe(expected)
 
   nodeValue = 0.8
   midiValue = 1 // 1 is DOWN (rel1)
@@ -59,7 +59,8 @@ test('(Util) midiValueProcess - getValue() - rel1', (t) => {
   actual = Math.round(getValue(nodeValue, midiValue, midiOptions, messageCount) * 10000) / 10000
   expected = 0.7958
 
-  t.equal(actual, expected, 'rel1 DOWN')
+  // rel1 DOWN
+  expect(actual).toBe(expected)
 
   nodeValue = 0
   midiValue = 1 // 1 is DOWN (rel1)
@@ -72,7 +73,8 @@ test('(Util) midiValueProcess - getValue() - rel1', (t) => {
   actual = Math.round(getValue(nodeValue, midiValue, midiOptions, messageCount) * 10000) / 10000
   expected = 0
 
-  t.equal(actual, expected, 'rel1 DOWN (min 0)')
+  // rel1 DOWN (min 0)
+  expect(actual).toBe(expected)
 
   nodeValue = 0.5
   midiValue = 0.1 // 1 is DOWN (rel1) - so this is UP
@@ -85,7 +87,8 @@ test('(Util) midiValueProcess - getValue() - rel1', (t) => {
   actual = Math.round(getValue(nodeValue, midiValue, midiOptions, messageCount) * 10000) / 10000
   expected = 0.5168
 
-  t.equal(actual, expected, 'rel1 UP')
+  // rel1 UP
+  expect(actual).toBe(expected)
 
   nodeValue = 1
   midiValue = 0.1 // 1 is DOWN (rel1) - so this is UP
@@ -98,12 +101,11 @@ test('(Util) midiValueProcess - getValue() - rel1', (t) => {
   actual = Math.round(getValue(nodeValue, midiValue, midiOptions, messageCount) * 10000) / 10000
   expected = 1
 
-  t.equal(actual, expected, 'rel1 UP (max 1)')
-
-  t.end()
+  // rel1 UP (max 1)
+  expect(actual).toBe(expected)
 })
 
-test('(Util) midiValueProcess - getValue() - rel2', (t) => {
+test('(Util) midiValueProcess - getValue() - rel2', () => {
   let midiValue, midiOptions, messageCount, actual, expected, nodeValue
 
   nodeValue = 0.5
@@ -117,11 +119,11 @@ test('(Util) midiValueProcess - getValue() - rel2', (t) => {
   actual = getValue(nodeValue, midiValue, midiOptions, messageCount)
   expected = 0.493
 
-  t.equal(actual, expected, 'rel2 DOWN')
-  t.end()
+  // rel2 DOWN
+  expect(actual).toBe(expected)
 })
 
-test('(Util) midiValueProcess - type is not select', (t) => {
+test('(Util) midiValueProcess - type is not select', () => {
   let node, midiValue, midiOptions, messageCount, actual, expected
 
   node = {
@@ -138,11 +140,11 @@ test('(Util) midiValueProcess - type is not select', (t) => {
   actual = midiValueProcess(node, midiValue, midiOptions, messageCount)
   expected = getValue(node.value, midiValue, midiOptions, messageCount)
 
-  t.equal(actual, expected, 'uses getValue()')
-  t.end()
+  // uses getValue()
+  expect(actual).toBe(expected)
 })
 
-test('(Util) midiValueProcess - type is select, controlType abs', (t) => {
+test('(Util) midiValueProcess - type is select, controlType abs', () => {
   let node, midiValue, midiOptions, messageCount, actual, expected
 
   node = {
@@ -192,7 +194,8 @@ test('(Util) midiValueProcess - type is select, controlType abs', (t) => {
   actual = midiValueProcess(node, midiValue, midiOptions, messageCount)
   expected = 'one'
 
-  t.equal(actual, expected, 'Returns correct value from option')
+  // Returns correct value from option
+  expect(actual).toBe(expected)
 
   midiValue = 0.65
   midiOptions = {
@@ -204,11 +207,11 @@ test('(Util) midiValueProcess - type is select, controlType abs', (t) => {
   actual = midiValueProcess(node, midiValue, midiOptions, messageCount)
   expected = 'seven'
 
-  t.equal(actual, expected, 'Returns correct value from option')
-  t.end()
+  // Returns correct value from option
+  expect(actual).toBe(expected)
 })
 
-test('(Util) midiValueProcess - type is select, controlType rel1', (t) => {
+test('(Util) midiValueProcess - type is select, controlType rel1', () => {
   let node, midiValue, midiOptions, messageCount, actual, expected
 
   node = {
@@ -258,7 +261,8 @@ test('(Util) midiValueProcess - type is select, controlType rel1', (t) => {
   actual = midiValueProcess(node, midiValue, midiOptions, messageCount)
   expected = 'four'
 
-  t.equal(actual, expected, 'Returns correct value from option, ignores messageCount')
+  // Returns correct value from option, ignores messageCount
+  expect(actual).toBe(expected)
 
   midiValue = 0.5 // UP
   midiOptions = {
@@ -270,7 +274,8 @@ test('(Util) midiValueProcess - type is select, controlType rel1', (t) => {
   actual = midiValueProcess(node, midiValue, midiOptions, messageCount)
   expected = 'six'
 
-  t.equal(actual, expected, 'Returns correct value from option, ignores messageCount')
+  // Returns correct value from option, ignores messageCount
+  expect(actual).toBe(expected)
 
   // Changing node value to lowest
   node.value = 'one'
@@ -285,7 +290,8 @@ test('(Util) midiValueProcess - type is select, controlType rel1', (t) => {
   actual = midiValueProcess(node, midiValue, midiOptions, messageCount)
   expected = 'one'
 
-  t.equal(actual, expected, 'Stays at lowest after decrease message')
+  // Stays at lowest after decrease message
+  expect(actual).toBe(expected)
 
   // Changing node value to lowest
   node.value = 'ten'
@@ -300,7 +306,6 @@ test('(Util) midiValueProcess - type is select, controlType rel1', (t) => {
   actual = midiValueProcess(node, midiValue, midiOptions, messageCount)
   expected = 'ten'
 
-  t.equal(actual, expected, 'Stays at highest after increase message')
-
-  t.end()
+  // Stays at highest after increase message
+  expect(actual).toBe(expected)
 })
