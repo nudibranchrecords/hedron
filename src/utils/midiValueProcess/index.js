@@ -33,7 +33,6 @@ export const getValue = (nodeValue, midiValue, midiOptions, messageCount) => {
 }
 
 export default (node, midiValue, midiOptions, messageCount) => {
-  console.log(midiOptions)
   if (node.valueType === 'boolean') {
     return !node.value
   } else if (node.type === 'select') {
