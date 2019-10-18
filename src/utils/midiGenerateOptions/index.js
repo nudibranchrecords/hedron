@@ -5,6 +5,22 @@ import { uInputLinkUpdateMidiInput } from '../../store/inputLinks/actions'
 export default linkId => {
   return [
     {
+      title: 'Message Type',
+      key: 'messageType',
+      type: 'select',
+      id: uid(),
+      value: 'controlChange',
+      inputLinkIds: [],
+      subNode: true,
+      options: Object.keys(messageTypes).map(key => (
+        {
+          value: messageTypes[key].key,
+          label: messageTypes[key].title,
+        }
+      )),
+      onChangeAction: uInputLinkUpdateMidiInput(linkId),
+    },
+    {
       title: 'Control Type',
       key: 'controlType',
       type: 'select',
@@ -71,22 +87,6 @@ export default linkId => {
       inputLinkIds: [],
       subNode: true,
       options: midiNotes.map((label, value) => ({ value, label })),
-      onChangeAction: uInputLinkUpdateMidiInput(linkId),
-    },
-    {
-      title: 'Message Type',
-      key: 'messageType',
-      type: 'select',
-      id: uid(),
-      value: 'controlChange',
-      inputLinkIds: [],
-      subNode: true,
-      options: Object.keys(messageTypes).map(key => (
-        {
-          value: messageTypes[key].key,
-          label: messageTypes[key].title,
-        }
-      )),
       onChangeAction: uInputLinkUpdateMidiInput(linkId),
     },
     {
