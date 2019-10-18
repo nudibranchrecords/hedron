@@ -1,14 +1,27 @@
-import getNodesValues from './getNodesValues'
+import getNodes from './getNodes'
+import getNode from './getNode'
+
+const filterId = (obj, filteredId) => obj.filter(id => id !== filteredId)
 
 export default (state, linkId) => {
-  const ids = state.nodes[linkId].midiOptionIds
-  const vals = getNodesValues(state, ids)
+  const link = state.nodes[linkId]
+  let optionIds = link.midiOptionIds
+  const node = getNode(state, link.nodeId)
+  const optionNodes = getNodes(state, optionIds)
+  const optionNodesByKey = {}
+  optionNodes.forEach(node => {
+    optionNodesByKey[node.key] = node
+  })
 
-  if (vals.controlType === 'abs') {
-    // Remove 'sensitivity' if controlType === abs
-    // This is a bit dodgy as it assumes sensitivity
-    // will always be first in the list
-    return ids.slice(1)
+  if (optionNodesByKey.controlType.value === 'abs') {
+    // Remove 'sensitivity' if controlType is 'absolute'
+    optionIds = filterId(optionIds, optionNodesByKey.sensitivity.id)
   }
-  return ids
+
+  if (node.valueType !== 'boolean' && optionNodesByKey.booleanMode !== undefined) {
+    // Remove 'booleanMode' if node's valueType isnt boolean
+    optionIds = filterId(optionIds, optionNodesByKey.booleanMode.id)
+  }
+
+  return optionIds
 }

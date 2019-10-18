@@ -5,14 +5,6 @@ import { uInputLinkUpdateMidiInput } from '../../store/inputLinks/actions'
 export default linkId => {
   return [
     {
-      title: 'MIDI Sensitivity',
-      key: 'sensitivity',
-      id: uid(),
-      value: 0.5,
-      inputLinkIds: [],
-      subNode: true,
-    },
-    {
       title: 'Control Type',
       key: 'controlType',
       type: 'select',
@@ -36,6 +28,37 @@ export default linkId => {
         {
           value: 'rel3',
           label: 'Relative 3',
+        },
+      ],
+    },
+    {
+      title: 'MIDI Sensitivity',
+      key: 'sensitivity',
+      id: uid(),
+      value: 0.5,
+      inputLinkIds: [],
+      subNode: true,
+    },
+    {
+      title: 'Boolean Mode',
+      key: 'booleanMode',
+      type: 'select',
+      id: uid(),
+      value: 'toggle',
+      inputLinkIds: [],
+      subNode: true,
+      options: [
+        {
+          value: 'toggle',
+          label: 'Toggle',
+        },
+        {
+          value: 'returnTrue',
+          label: 'True',
+        },
+        {
+          value: 'returnFalse',
+          label: 'False',
         },
       ],
     },
