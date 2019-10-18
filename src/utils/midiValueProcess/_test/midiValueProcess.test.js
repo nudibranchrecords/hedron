@@ -320,13 +320,14 @@ test('(Util) midiValueProcess - node valueType: boolean, midi messageType: noteO
   midiValue = 1
   midiOptions = {
     messageType: 'noteOn',
+    booleanMode: 'toggle',
   }
   messageCount = 1
 
   actual = midiValueProcess(node, midiValue, midiOptions, messageCount)
   expected = true
 
-  // Toggles the value from false to true
+  // Toggles the value from false to true (mode: toggle)
   expect(actual).toBe(expected)
 
   node = {
@@ -336,12 +337,81 @@ test('(Util) midiValueProcess - node valueType: boolean, midi messageType: noteO
   midiValue = 1
   midiOptions = {
     messageType: 'noteOn',
+    booleanMode: 'toggle',
   }
   messageCount = 1
 
   actual = midiValueProcess(node, midiValue, midiOptions, messageCount)
   expected = false
 
-  // Toggles the value from true to false
+  // Toggles the value from true to false (mode: toggle)
+  expect(actual).toBe(expected)
+
+  node = {
+    valueType: 'boolean',
+    value: true,
+  }
+  midiValue = 1
+  midiOptions = {
+    messageType: 'noteOn',
+    booleanMode: 'returnTrue',
+  }
+  messageCount = 1
+
+  actual = midiValueProcess(node, midiValue, midiOptions, messageCount)
+  expected = true
+
+  // Always returns true (mode: returnTrue)
+  expect(actual).toBe(expected)
+
+  node = {
+    valueType: 'boolean',
+    value: false,
+  }
+  midiValue = 1
+  midiOptions = {
+    messageType: 'noteOn',
+    booleanMode: 'returnTrue',
+  }
+  messageCount = 1
+
+  actual = midiValueProcess(node, midiValue, midiOptions, messageCount)
+  expected = true
+
+  // Always returns true (mode: returnTrue)
+  expect(actual).toBe(expected)
+
+  node = {
+    valueType: 'boolean',
+    value: true,
+  }
+  midiValue = 1
+  midiOptions = {
+    messageType: 'noteOn',
+    booleanMode: 'returnFalse',
+  }
+  messageCount = 1
+
+  actual = midiValueProcess(node, midiValue, midiOptions, messageCount)
+  expected = false
+
+  // Always returns false (mode: returnFalse)
+  expect(actual).toBe(expected)
+
+  node = {
+    valueType: 'boolean',
+    value: false,
+  }
+  midiValue = 1
+  midiOptions = {
+    messageType: 'noteOn',
+    booleanMode: 'returnFalse',
+  }
+  messageCount = 1
+
+  actual = midiValueProcess(node, midiValue, midiOptions, messageCount)
+  expected = false
+
+  // Always returns false (mode: returnFalse)
   expect(actual).toBe(expected)
 })
