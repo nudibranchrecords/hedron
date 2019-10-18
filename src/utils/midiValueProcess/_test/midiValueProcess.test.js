@@ -309,3 +309,39 @@ test('(Util) midiValueProcess - type is select, controlType rel1', () => {
   // Stays at highest after increase message
   expect(actual).toBe(expected)
 })
+
+test('(Util) midiValueProcess - node valueType: boolean, midi messageType: noteOn', () => {
+  let node, midiValue, midiOptions, messageCount, actual, expected
+
+  node = {
+    valueType: 'boolean',
+    value: false,
+  }
+  midiValue = 1
+  midiOptions = {
+    messageType: 'noteOn',
+  }
+  messageCount = 1
+
+  actual = midiValueProcess(node, midiValue, midiOptions, messageCount)
+  expected = true
+
+  // Toggles the value from false to true
+  expect(actual).toBe(expected)
+
+  node = {
+    valueType: 'boolean',
+    value: true,
+  }
+  midiValue = 1
+  midiOptions = {
+    messageType: 'noteOn',
+  }
+  messageCount = 1
+
+  actual = midiValueProcess(node, midiValue, midiOptions, messageCount)
+  expected = false
+
+  // Toggles the value from true to false
+  expect(actual).toBe(expected)
+})
