@@ -181,7 +181,7 @@ const nodesReducer = (state = defaultState, action) => {
             [p.paramId]: {
               nodeId: p.paramLinkId,
               paramId: p.paramId,
-              startValue: false,
+              startValue: null,
             },
           },
         },

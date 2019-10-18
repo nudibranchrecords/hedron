@@ -8,10 +8,12 @@ const getControlType = node => {
     boolean: 'checkbox',
   }
 
-  if (node.type === 'param') {
-    return valueTypeToControl[node.valueType]
-  } else {
-    return node.type
+  switch (node.type) {
+    case 'param':
+    case 'macroTargetParamLink':
+      return valueTypeToControl[node.valueType]
+    default:
+      return node.type
   }
 }
 
