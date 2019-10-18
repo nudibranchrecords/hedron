@@ -19,18 +19,34 @@ import { reloadSingleSketchModule, removeSketchFromScene,
   addSketchToScene, reloadSingleSketchConfig } from '../../engine'
 import { uMacroTargetParamLinkDelete } from '../macros/actions'
 
-const generateParamFromConfig = (paramConfig, id, sketchId) => ({
+const typeDefaults = {
+  float: 0,
+  boolean: false,
+}
+
+const generateParamFromConfig = (
+  {
+    key,
+    title = key,
+    valueType = 'float',
+    defaultValue = typeDefaults[valueType],
+    hidden = false,
+    defaultMin = 0,
+    defaultMax = 1,
+  },
+  id, sketchId) => ({
   id,
   sketchId,
-  title: paramConfig.title ? paramConfig.title : paramConfig.key,
+  title,
+  valueType,
   type: 'param',
-  key: paramConfig.key,
-  value: paramConfig.defaultValue,
-  hidden: paramConfig.hidden === undefined ? false : paramConfig.hidden,
-  min: paramConfig.defaultMin ? paramConfig.defaultMin : 0,
-  max: paramConfig.defaultMax ? paramConfig.defaultMax : 1,
-  defaultMin: paramConfig.defaultMin ? paramConfig.defaultMin : 0,
-  defaultMax: paramConfig.defaultMax ? paramConfig.defaultMax : 1,
+  key,
+  value: defaultValue,
+  hidden,
+  min: valueType === 'float' && defaultMin,
+  max: valueType === 'float' && defaultMax,
+  defaultMin,
+  defaultMax,
   inputLinkIds: [],
 })
 

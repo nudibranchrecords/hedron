@@ -2,12 +2,26 @@ import { connect } from 'react-redux'
 import Control from '../../components/Control'
 import getNode from '../../selectors/getNode'
 
+const getControlType = node => {
+  const valueTypeToControl = {
+    float: 'slider',
+    boolean: 'checkbox',
+  }
+
+  switch (node.type) {
+    case 'param':
+    case 'macroTargetParamLink':
+      return valueTypeToControl[node.valueType]
+    default:
+      return node.type
+  }
+}
+
 const mapStateToProps = (state, ownProps) => {
   const node = getNode(state, ownProps.nodeId)
-  const type = node.type || 'param'
 
   return {
-    type,
+    type: getControlType(node),
     onChangeAction: node.onChangeAction,
   }
 }

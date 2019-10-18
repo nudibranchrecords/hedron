@@ -33,7 +33,16 @@ export const getValue = (nodeValue, midiValue, midiOptions, messageCount) => {
 }
 
 export default (node, midiValue, midiOptions, messageCount) => {
-  if (node.type === 'select') {
+  if (node.valueType === 'boolean') {
+    switch (midiOptions.booleanMode) {
+      case 'returnTrue':
+        return true
+      case 'returnFalse':
+        return false
+      case 'toggle':
+        return !node.value
+    }
+  } else if (node.type === 'select') {
     const opts = node.options
     const maxLength = opts.length
     let index = opts.findIndex(item => item.value === node.value)
