@@ -1,10 +1,7 @@
 import { connect } from 'react-redux'
 import InputLink from '../../components/InputLink'
-import getInputLinkLfoOptionIds from '../../selectors/getInputLinkLfoOptionIds'
+import getInputLinkOptionIds from '../../selectors/getInputLinkOptionIds.js'
 import getInputLinkModifierIds from '../../selectors/getInputLinkModifierIds'
-import getInputLinkMidiOptionIds from '../../selectors/getInputLinkMidiOptionIds'
-import getInputLinkAnimOptionIds from '../../selectors/getInputLinkAnimOptionIds'
-import getInputLinkAudioOptionIds from '../../selectors/getInputLinkAudioOptionIds'
 import getInputLink from '../../selectors/getInputLink'
 import getIsInputLinkActive from '../../selectors/getIsInputLinkActive'
 import getCanInputLinkDisable from '../../selectors/getCanInputLinkDisable'
@@ -16,11 +13,8 @@ const mapStateToProps = (state, ownProps) => {
   const link = getInputLink(state, ownProps.id)
   return {
     title: link.title,
+    optionIds: getInputLinkOptionIds(state, ownProps.id),
     modifierIds: getInputLinkModifierIds(state, ownProps.id),
-    lfoOptionIds: getInputLinkLfoOptionIds(state, ownProps.id),
-    midiOptionIds: getInputLinkMidiOptionIds(state, ownProps.id),
-    animOptionIds: getInputLinkAnimOptionIds(state, ownProps.id),
-    audioOptionIds: getInputLinkAudioOptionIds(state, ownProps.id),
     isActive: getIsInputLinkActive(state, ownProps.id),
     isActivateVisible: getCanInputLinkDisable(state, ownProps.id),
     toggleActionId: link.linkableActions.toggleActivate,

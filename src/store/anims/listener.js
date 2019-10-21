@@ -9,7 +9,7 @@ const handleAnimStart = (action, store) => {
   const state = store.getState()
   const inputLink = getInputLink(state, action.payload.linkId)
   const node = getNode(state, inputLink.nodeId)
-  const opts = getNodesValues(state, inputLink.animOptionIds)
+  const opts = getNodesValues(state, inputLink.optionIds)
   const duration = opts.duration * 10000
   const easing = get(TWEEN.Easing, opts.curve)
 
