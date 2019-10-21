@@ -26,10 +26,7 @@ export function* inputLinkCreate (action) {
   const p = action.payload
   const m = p.meta
   const modifierIds = []
-  const lfoOptionIds = []
-  const midiOptionIds = []
-  const animOptionIds = []
-  const audioOptionIds = []
+  const optionIds = []
   let linkableActions = {}
   let nodeType, linkType, sequencerGridId
   const node = yield select(getNode, p.nodeId)
@@ -44,7 +41,7 @@ export function* inputLinkCreate (action) {
     } else {
       linkType = 'node'
       nodeType = node.type
-      if (p.inputType !== 'midi' && p.inputId !== 'seq-step' && p.inputId !== 'anim') {
+      if (['audio', 'lfo'].includes(p.inputType)) {
         const modifiers = yield call(getAll)
         const defaultModifierIds = yield select(getDefaultModifierIds)
 
@@ -77,79 +74,86 @@ export function* inputLinkCreate (action) {
       }
     }
 
-    if (p.inputId === 'audio') {
-      const audioOpts = yield call(audioGenerateOptions)
+    // Populate optionIds
+    switch (p.inputType) {
+      case 'audio': {
+        const audioOpts = yield call(audioGenerateOptions)
 
-      for (let key in audioOpts) {
-        const item = audioOpts[key]
-        item.sketchId = sketchId
-        item.parentNodeId = linkId
-        audioOptionIds.push(item.id)
-
-        yield put(uNodeCreate(item.id, item))
-      }
-    }
-
-    if (p.inputId === 'lfo') {
-      const lfoOpts = yield call(lfoGenerateOptions)
-
-      for (let key in lfoOpts) {
-        const item = lfoOpts[key]
-        item.sketchId = sketchId
-        item.parentNodeId = linkId
-        lfoOptionIds.push(item.id)
-
-        yield put(uNodeCreate(item.id, item))
-      }
-    }
-
-    if (p.inputId === 'seq-step') {
-      const seqOpts = yield call(sequencerGenerateOptions)
-      sequencerGridId = seqOpts.grid.id
-      yield put(uNodeCreate(sequencerGridId, seqOpts.grid))
-    }
-
-    if (p.inputType === 'midi' || linkType === 'linkableAction') {
-      if (linkType === 'node') {
-        const midiOpts = yield call(midiGenerateOptions, linkId)
-
-        for (let key in midiOpts) {
-          const item = midiOpts[key]
+        for (let key in audioOpts) {
+          const item = audioOpts[key]
           item.sketchId = sketchId
           item.parentNodeId = linkId
-          midiOptionIds.push(item.id)
-
-          if (item.key === 'controlType' && m.controlType) item.value = m.controlType
-          if (item.key === 'channel' && m.channel) item.value = m.channel
-          if (item.key === 'noteNum' && m.noteNum) item.value = m.noteNum
-          if (item.key === 'messageType' && m.messageType) item.value = m.messageType
+          optionIds.push(item.id)
 
           yield put(uNodeCreate(item.id, item))
         }
+        break
       }
-    }
 
-    if (p.inputType === 'anim') {
-      const animStartActionId = yield call(uid)
-      const node = {
-        type: 'linkableAction',
-        title: 'Start Anim',
-        action: uAnimStart(linkId),
-        sketchId,
-        parentNodeId: linkId,
+      case 'lfo': {
+        const lfoOpts = yield call(lfoGenerateOptions)
+
+        for (let key in lfoOpts) {
+          const item = lfoOpts[key]
+          item.sketchId = sketchId
+          item.parentNodeId = linkId
+          optionIds.push(item.id)
+
+          yield put(uNodeCreate(item.id, item))
+        }
+        break
       }
-      yield put(uNodeCreate(animStartActionId, node))
-      linkableActions.animStart = animStartActionId
 
-      const animOpts = yield call(animGenerateOptions)
+      case 'seq-step': {
+        const seqOpts = yield call(sequencerGenerateOptions)
+        sequencerGridId = seqOpts.grid.id
+        yield put(uNodeCreate(sequencerGridId, seqOpts.grid))
+        break
+      }
 
-      for (let key in animOpts) {
-        const item = animOpts[key]
-        animOptionIds.push(item.id)
-        item.sketchId = sketchId
-        item.parentNodeId = linkId
+      case 'midi': {
+        if (linkType === 'node') {
+          const midiOpts = yield call(midiGenerateOptions, linkId)
 
-        yield put(uNodeCreate(item.id, item))
+          for (let key in midiOpts) {
+            const item = midiOpts[key]
+            item.sketchId = sketchId
+            item.parentNodeId = linkId
+            optionIds.push(item.id)
+
+            if (item.key === 'controlType' && m.controlType) item.value = m.controlType
+            if (item.key === 'channel' && m.channel) item.value = m.channel
+            if (item.key === 'noteNum' && m.noteNum) item.value = m.noteNum
+            if (item.key === 'messageType' && m.messageType) item.value = m.messageType
+
+            yield put(uNodeCreate(item.id, item))
+          }
+        }
+        break
+      }
+
+      case 'anim': {
+        const animStartActionId = yield call(uid)
+        const node = {
+          type: 'linkableAction',
+          title: 'Start Anim',
+          action: uAnimStart(linkId),
+          sketchId,
+          parentNodeId: linkId,
+        }
+        yield put(uNodeCreate(animStartActionId, node))
+        linkableActions.animStart = animStartActionId
+
+        const animOpts = yield call(animGenerateOptions)
+
+        for (let key in animOpts) {
+          const item = animOpts[key]
+          optionIds.push(item.id)
+          item.sketchId = sketchId
+          item.parentNodeId = linkId
+
+          yield put(uNodeCreate(item.id, item))
+        }
       }
     }
 
@@ -179,13 +183,10 @@ export function* inputLinkCreate (action) {
       parentNodeId: p.nodeId,
       nodeType,
       modifierIds,
-      lfoOptionIds,
-      midiOptionIds,
-      audioOptionIds,
+      optionIds,
       linkableActions,
       sequencerGridId,
       linkType,
-      animOptionIds,
     }
 
     yield put(rNodeCreate(linkId, link))

@@ -8,7 +8,7 @@ const getSingle = (state, sketchId) => {
 
   sketchParams.forEach((id) => {
     const param = state.nodes[id]
-    if (param.min !== undefined && param.max !== undefined) {
+    if (typeof param.min === 'number' && typeof param.max === 'number') {
       params[param.key] = lerp(param.min, param.max, param.value)
     } else {
       params[param.key] = param.value

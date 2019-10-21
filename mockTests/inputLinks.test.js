@@ -67,7 +67,7 @@ test('(mock) Input Links - Update link midi input', () => {
       },
       link_a: {
         id: 'link_a',
-        midiOptionIds: [
+        optionIds: [
           'option_a', 'option_b', 'option_c',
         ],
         input: {

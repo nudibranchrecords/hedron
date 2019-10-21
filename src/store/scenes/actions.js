@@ -1,3 +1,10 @@
+export function uSceneSelectCurrent (id) {
+  return {
+    type: 'U_SCENE_SELECT_CURRENT',
+    payload: { id },
+  }
+}
+
 export function rSceneSelectCurrent (id) {
   return {
     type: 'R_SCENE_SELECT_CURRENT',

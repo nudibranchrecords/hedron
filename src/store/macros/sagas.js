@@ -55,6 +55,7 @@ export function* macroTargetParamLinkAdd (action) {
   yield put(rNodeCreate(nodeId, {
     title: param.title,
     type: 'macroTargetParamLink',
+    valueType: param.valueType,
   }))
   yield put(rNodeMacroTargetParamLinkCreate(p.macroId, p.paramId, nodeId))
   yield put(rNodeConnectedMacroAdd(p.paramId, p.macroId))
@@ -92,13 +93,13 @@ export function* macroProcess (p, node) {
   for (let i = 0; i < keys.length; i++) {
     const l = links[keys[i]]
     let startValue = l.startValue
-    if (startValue === false) {
+    if (startValue === null) {
       const p = yield select(getNode, l.paramId)
       startValue = p.value
       yield put(rNodeMacroTargetParamLinkUpdateStartValue(node.id, l.paramId, startValue))
     }
     const n = yield select(getNode, l.nodeId)
-    const val = yield call(macroInterpolate, startValue, n.value, p.value)
+    const val = yield call(macroInterpolate, startValue, n.value, p.value, n.valueType)
     values.push(
       {
         id: l.paramId,
@@ -163,7 +164,7 @@ export function* handleNodeValueUpdate (action) {
 
               if (node.value !== false) {
                 for (const key in node.targetParamLinks) {
-                  yield put(rNodeMacroTargetParamLinkUpdateStartValue(macroId, key, false))
+                  yield put(rNodeMacroTargetParamLinkUpdateStartValue(macroId, key, null))
                 }
 
                 yield put(nodeValueUpdate(macroId, false, { type: 'macro' }))

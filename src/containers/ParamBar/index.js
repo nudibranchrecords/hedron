@@ -22,14 +22,14 @@ const mapStateToProps = (state, ownProps) => {
 }
 
 const mapDispatchToProps = (dispatch, ownProps) => {
-  const type = ownProps.type || 'param'
+  const type = ownProps.type
 
   return {
     onChange: (value) => {
       dispatch(nodeValueUpdate(ownProps.nodeId, value))
     },
     onDoubleClick: () => {
-      type === 'param' &&
+      type === 'slider' &&
       dispatch(uiEditingOpen('paramValue', ownProps.nodeId))
     },
   }
