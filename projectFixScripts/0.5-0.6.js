@@ -1,19 +1,4 @@
-/*
-A script to update your project file to be compatible with v0.6
-Definitely not guaranteed!
-
-Place your project in the input folder and run this script like so:
-node ./0.5-0.6 ./input/yourproject.json
-The result will appear in the output folder
-*/
-
-const fs = require('fs')
-const path = require('path')
-
-const args = process.argv.slice(2)
-const inputPath = args[0]
-const outputPath = './output'
-const fileName = path.basename(inputPath)
+const { fix } = require('./lib')
 
 const parseOldOptions = (key, node) => {
   if (node[key] && node[key].length) {
@@ -22,10 +7,7 @@ const parseOldOptions = (key, node) => {
   delete node[key]
 }
 
-fs.readFile(inputPath, (err, json) => {
-  if (err) return console.error(err)
-
-  const data = JSON.parse(json)
+fix(data => {
   for (const key in data.nodes) {
     const node = data.nodes[key]
     node.optionIds = []
@@ -42,8 +24,6 @@ fs.readFile(inputPath, (err, json) => {
     }
   }
 
-  fs.writeFile(`${outputPath}/${fileName}`, JSON.stringify(data), function (err) {
-    if (err) return console.error(err)
-  })
+  return data
 })
 
