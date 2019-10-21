@@ -2,11 +2,19 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import ParamBar from '../../containers/ParamBar'
 import NodeSelect from '../../containers/NodeSelect'
+import ParamCheckbox from '../../containers/ParamCheckbox'
 
 const Control = ({ nodeId, onParamBarClick, type, theme, onChangeAction }) => {
   switch (type) {
     case 'select':
-      return <NodeSelect nodeId={nodeId} onChangeAction={onChangeAction} />
+      return <NodeSelect
+        nodeId={nodeId}
+        onChangeAction={onChangeAction}
+      />
+    case 'checkbox':
+      return <ParamCheckbox
+        nodeId={nodeId}
+      />
     case 'slider':
     default:
       return <ParamBar

@@ -5,12 +5,20 @@ import { uInputLinkUpdateMidiInput } from '../../store/inputLinks/actions'
 export default linkId => {
   return [
     {
-      title: 'MIDI Sensitivity',
-      key: 'sensitivity',
+      title: 'Message Type',
+      key: 'messageType',
+      type: 'select',
       id: uid(),
-      value: 0.5,
+      value: 'controlChange',
       inputLinkIds: [],
       subNode: true,
+      options: Object.keys(messageTypes).map(key => (
+        {
+          value: messageTypes[key].key,
+          label: messageTypes[key].title,
+        }
+      )),
+      onChangeAction: uInputLinkUpdateMidiInput(linkId),
     },
     {
       title: 'Control Type',
@@ -40,6 +48,37 @@ export default linkId => {
       ],
     },
     {
+      title: 'MIDI Sensitivity',
+      key: 'sensitivity',
+      id: uid(),
+      value: 0.5,
+      inputLinkIds: [],
+      subNode: true,
+    },
+    {
+      title: 'Boolean Mode',
+      key: 'booleanMode',
+      type: 'select',
+      id: uid(),
+      value: 'toggle',
+      inputLinkIds: [],
+      subNode: true,
+      options: [
+        {
+          value: 'toggle',
+          label: 'Toggle',
+        },
+        {
+          value: 'returnTrue',
+          label: 'True',
+        },
+        {
+          value: 'returnFalse',
+          label: 'False',
+        },
+      ],
+    },
+    {
       title: 'Note',
       key: 'noteNum',
       type: 'select',
@@ -48,22 +87,6 @@ export default linkId => {
       inputLinkIds: [],
       subNode: true,
       options: midiNotes.map((label, value) => ({ value, label })),
-      onChangeAction: uInputLinkUpdateMidiInput(linkId),
-    },
-    {
-      title: 'Message Type',
-      key: 'messageType',
-      type: 'select',
-      id: uid(),
-      value: 'controlChange',
-      inputLinkIds: [],
-      subNode: true,
-      options: Object.keys(messageTypes).map(key => (
-        {
-          value: messageTypes[key].key,
-          label: messageTypes[key].title,
-        }
-      )),
       onChangeAction: uInputLinkUpdateMidiInput(linkId),
     },
     {

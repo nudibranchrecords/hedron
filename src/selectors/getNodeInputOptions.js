@@ -1,5 +1,10 @@
 export default (state, nodeId) => {
-  const nodeType = state.nodes[nodeId].type
+  const node = state.nodes[nodeId]
+  let nodeType = node.type
+
+  if (nodeType === 'param') {
+    nodeType += `-${node.valueType}`
+  }
 
   // List of options
   // exclude: remove options for those node types
@@ -7,8 +12,9 @@ export default (state, nodeId) => {
   const options = [
     {
       value: 'audio',
+      type: 'audio',
       label: 'Audio',
-      exclude: ['linkableAction'],
+      exclude: ['linkableAction', 'param-boolean'],
     },
     {
       value: 'midi-learn',
@@ -22,17 +28,19 @@ export default (state, nodeId) => {
     },
     {
       value: 'lfo',
+      type: 'lfo',
       label: 'LFO',
-      exclude: ['shot', 'linkableAction'],
+      exclude: ['shot', 'linkableAction', 'param-boolean'],
     },
     {
       value: 'anim',
       type: 'anim',
       label: 'Anim',
-      exclude: ['linkableAction', 'shot'],
+      exclude: ['linkableAction', 'shot', 'param-boolean'],
     },
     {
       value: 'seq-step',
+      type: 'seq-step',
       label: 'Sequencer',
       include: ['shot'],
     },

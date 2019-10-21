@@ -45,7 +45,7 @@ class Solid {
     this.meshes = []
 
     // Defining a single material for all the polyhedra
-    const mat = new THREE.MeshBasicMaterial(
+    this.mat = new THREE.MeshBasicMaterial(
       { wireframe: true, color: 0xffffff }
     )
     const size = 1
@@ -62,7 +62,7 @@ class Solid {
     // Loop through meshes
     geoms.forEach(geom => {
       // Create a mesh for each solid
-      const mesh = new THREE.Mesh(geom, mat)
+      const mesh = new THREE.Mesh(geom, this.mat)
       // Add to array
       this.meshes.push(mesh)
       // Add to scene
@@ -106,6 +106,9 @@ class Solid {
 
     // Change scale using params.scale
     this.group.scale.set(params.scale, params.scale, params.scale)
+
+    // Change material wireframe option using boolean param
+    this.mat.wireframe = params.isWireframe
   }
 
   /** HEDRON TIP **
