@@ -3,5 +3,3 @@
 node_modules
 dist
 config/dev.config.js
-projectFixScripts/input
-projectFixScripts/output
