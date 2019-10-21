@@ -7,7 +7,7 @@ import { nodeUpdate } from '../nodes/actions'
 const handleUpdateMidiInput = (action, store) => {
   const state = store.getState()
   const link = getInputLink(state, action.payload.linkId)
-  const opts = getNodes(state, link.midiOptionIds)
+  const opts = getNodes(state, link.optionIds)
 
   let messageType, noteNum, channel
 

@@ -12,6 +12,7 @@ export default (state, nodeId) => {
   const options = [
     {
       value: 'audio',
+      type: 'audio',
       label: 'Audio',
       exclude: ['linkableAction', 'param-boolean'],
     },
@@ -27,6 +28,7 @@ export default (state, nodeId) => {
     },
     {
       value: 'lfo',
+      type: 'lfo',
       label: 'LFO',
       exclude: ['shot', 'linkableAction', 'param-boolean'],
     },
@@ -38,6 +40,7 @@ export default (state, nodeId) => {
     },
     {
       value: 'seq-step',
+      type: 'seq-step',
       label: 'Sequencer',
       include: ['shot'],
     },

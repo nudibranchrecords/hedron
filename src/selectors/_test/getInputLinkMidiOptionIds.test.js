@@ -6,7 +6,7 @@ test('(Selector) getInputLinkMidiOptionIds', () => {
   state = {
     nodes: {
       xxx: {
-        midiOptionIds: ['opt1_sensitivity', 'opt2_controlType', 'opt3', 'opt4_messageType'],
+        optionIds: ['opt1_sensitivity', 'opt2_controlType', 'opt3', 'opt4_messageType'],
         nodeId: 'node_y',
       },
       node_y: {
@@ -39,7 +39,7 @@ test('(Selector) getInputLinkMidiOptionIds', () => {
   state = {
     nodes: {
       xxx: {
-        midiOptionIds: ['opt1_sensitivity', 'opt2_controlType', 'opt3', 'opt4_messageType'],
+        optionIds: ['opt1_sensitivity', 'opt2_controlType', 'opt3', 'opt4_messageType'],
         nodeId: 'node_y',
       },
       node_y: {
@@ -72,7 +72,7 @@ test('(Selector) getInputLinkMidiOptionIds', () => {
   state = {
     nodes: {
       xxx: {
-        midiOptionIds: ['opt2_controlType', 'opt1_sensitivity', 'opt3', 'opt4_messageType'],
+        optionIds: ['opt2_controlType', 'opt1_sensitivity', 'opt3', 'opt4_messageType'],
         nodeId: 'node_y',
       },
       node_y: {
@@ -106,7 +106,7 @@ test('(Selector) getInputLinkMidiOptionIds', () => {
   state = {
     nodes: {
       xxx: {
-        midiOptionIds: ['opt2_controlType', 'opt1_sensitivity', 'opt3_booleanMode', 'opt4_messageType'],
+        optionIds: ['opt2_controlType', 'opt1_sensitivity', 'opt3_booleanMode', 'opt4_messageType'],
         nodeId: 'node_y',
       },
       node_y: {
@@ -143,7 +143,7 @@ test('(Selector) getInputLinkMidiOptionIds', () => {
   state = {
     nodes: {
       xxx: {
-        midiOptionIds: ['opt2_controlType', 'opt1_sensitivity', 'opt3_booleanMode', 'opt4_messageType'],
+        optionIds: ['opt2_controlType', 'opt1_sensitivity', 'opt3_booleanMode', 'opt4_messageType'],
         nodeId: 'node_y',
       },
       node_y: {
@@ -180,7 +180,7 @@ test('(Selector) getInputLinkMidiOptionIds', () => {
   state = {
     nodes: {
       xxx: {
-        midiOptionIds: ['opt2_controlType', 'opt1_sensitivity', 'opt4_messageType'],
+        optionIds: ['opt2_controlType', 'opt1_sensitivity', 'opt4_messageType'],
         nodeId: 'node_y',
       },
       node_y: {
