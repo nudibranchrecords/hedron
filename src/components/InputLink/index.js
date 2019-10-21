@@ -33,19 +33,18 @@ class InputLink extends React.Component {
     return (
       this.props.isActive !== prevProps.isActive ||
       this.props.id !== prevProps.id ||
-      this.props.midiOptionIds.length !== prevProps.midiOptionIds.length ||
-      this.props.lfoOptionIds.length !== prevProps.lfoOptionIds.length
+      this.props.optionIds.length !== prevProps.optionIds.length
     )
   }
 
   render () {
-    const { modifierIds, lfoOptionIds, size, midiOptionIds, title, toggleActionId,
-      onAnimStartClick, animStartActionId, animOptionIds, audioOptionIds,
-      sequencerGridId, onDeleteClick, onActivateToggle, isActive, isActivateVisible } = this.props
+    const { modifierIds, optionIds, size, title, toggleActionId,
+      onAnimStartClick, animStartActionId, sequencerGridId, onDeleteClick,
+      onActivateToggle, isActive, isActivateVisible } = this.props
     return (
       <div>
         <Wrapper>
-          {lfoOptionIds && lfoOptionIds.map((id) => (
+          {optionIds.map((id) => (
             <Item key={id} size={size}>
               <Node nodeId={id} />
             </Item>
@@ -55,25 +54,8 @@ class InputLink extends React.Component {
               <Node nodeId={id} />
             </Item>
           ))}
-          {midiOptionIds && midiOptionIds.map((id) => (
-            <Item key={id} size={size}>
-              <Node nodeId={id} />
-            </Item>
-          ))}
-          {audioOptionIds && audioOptionIds.map((id) => (
-            <Item key={id} size={size}>
-              <Node nodeId={id} />
-            </Item>
-          ))}
           {sequencerGridId &&
             <SequencerGrid nodeId={sequencerGridId} />
-          }
-          {animStartActionId &&
-            animOptionIds.map((id) => (
-              <Item key={id} size={size}>
-                <Node nodeId={id} />
-              </Item>
-            ))
           }
         </Wrapper>
         <Row justify='space-between'>
@@ -109,16 +91,7 @@ InputLink.propTypes = {
   modifierIds: PropTypes.arrayOf(
     PropTypes.string
   ),
-  lfoOptionIds: PropTypes.arrayOf(
-    PropTypes.string
-  ),
-  midiOptionIds: PropTypes.arrayOf(
-    PropTypes.string
-  ),
-  animOptionIds: PropTypes.arrayOf(
-    PropTypes.string
-  ),
-  audioOptionIds: PropTypes.arrayOf(
+  optionIds: PropTypes.arrayOf(
     PropTypes.string
   ),
   size: PropTypes.string,

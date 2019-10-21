@@ -28,22 +28,24 @@ export function* handleInput (action) {
         } else {
           let value = p.value
           let modifiers
-          if (inputType === 'midi') {
-            let midiValue = value
-            value = linkNode.value
-            const options = yield select(getNodesValues, links[i].midiOptionIds)
-            value = yield call(midiValueProcess, linkNode, midiValue, options, messageCount)
-          }
+          const o = yield select(getNodesValues, links[i].optionIds)
 
-          if (p.inputId === 'lfo') {
-            let o = yield select(getNodesValues, links[i].lfoOptionIds)
-            const seed = o.seed === -1 ? links[i].id : o.seed
-            value = yield call(lfoProcess, value, o.shape, o.rate, o.phase, seed)
-          }
+          switch (inputType) {
+            case 'midi': {
+              value = yield call(midiValueProcess, linkNode, value, o, messageCount)
+              break
+            }
 
-          if (p.inputId === 'audio') {
-            const o = yield select(getNodesValues, links[i].audioOptionIds)
-            value = p.value[o.audioBand]
+            case 'lfo': {
+              const seed = o.seed === -1 ? links[i].id : o.seed
+              value = yield call(lfoProcess, value, o.shape, o.rate, o.phase, seed)
+              break
+            }
+
+            case 'audio': {
+              value = p.value[o.audioBand]
+              break
+            }
           }
 
           if (links[i].modifierIds && links[i].modifierIds.length) {
