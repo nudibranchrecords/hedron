@@ -1,24 +1,6 @@
 import test from 'tape'
 import getInputLinkLfoOptionIds from '../getInputLinkLfoOptionIds'
 
-test('(Selector) getInputLinkLfoOptionIds (input is not "lfo")', (t) => {
-  const state = {
-    nodes: {
-      aaa: {
-        input: {
-          id: 'BAR',
-        },
-        lfoOptionIds: [],
-      },
-    },
-  }
-
-  const actual = getInputLinkLfoOptionIds(state, 'aaa')
-
-  t.deepEqual(actual, [], 'Returns empty array')
-  t.end()
-})
-
 test('(Selector) getInputLinkLfoOptionIds (input is "lfo", shape is NOT "noise")', (t) => {
   const state = {
     nodes: {
@@ -26,7 +8,7 @@ test('(Selector) getInputLinkLfoOptionIds (input is "lfo", shape is NOT "noise")
         input: {
           id: 'lfo',
         },
-        lfoOptionIds: ['xxx', 'yyy', 'zzz'],
+        optionIds: ['xxx', 'yyy', 'zzz'],
       },
       xxx: {
         key: 'seed',
@@ -53,7 +35,7 @@ test('(Selector) getInputLinkLfoOptionIds (input is "lfo", shape is "noise")', (
         input: {
           id: 'lfo',
         },
-        lfoOptionIds: ['xxx', 'yyy', 'zzz'],
+        optionIds: ['xxx', 'yyy', 'zzz'],
       },
       xxx: {
         key: 'seed',
@@ -82,7 +64,7 @@ test('(Selector) getInputLinkLfoOptionIds (input is "lfo", link type "shot", wav
         input: {
           id: 'lfo',
         },
-        lfoOptionIds: ['xxx', 'yyy', 'zzz'],
+        optionIds: ['xxx', 'yyy', 'zzz'],
       },
       xxx: {
         key: 'seed',
@@ -111,7 +93,7 @@ test('(Selector) getInputLinkLfoOptionIds (input is "lfo", link type "shot", wav
         input: {
           id: 'lfo',
         },
-        lfoOptionIds: ['xxx', 'yyy', 'zzz'],
+        optionIds: ['xxx', 'yyy', 'zzz'],
       },
       xxx: {
         key: 'seed',

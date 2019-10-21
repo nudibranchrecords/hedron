@@ -5,7 +5,7 @@ const filterId = (obj, filteredId) => obj.filter(id => id !== filteredId)
 
 export default (state, linkId) => {
   const link = state.nodes[linkId]
-  let optionIds = link.midiOptionIds
+  let optionIds = link.optionIds
   const node = getNode(state, link.nodeId)
   const optionNodes = getNodes(state, optionIds)
   const optionNodesByKey = {}
