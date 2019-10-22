@@ -13,6 +13,7 @@ const makeMapStateToProps = () => {
     nodeIds: getVisibleSketchParamIds(state, ownProps),
     title: 'Params',
     component: DeferredNode,
+    type: 'param',
   })
   return mapStateToProps
 }

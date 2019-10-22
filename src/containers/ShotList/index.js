@@ -9,6 +9,7 @@ const DeferredNode = withDeferRender(Node)
 const mapStateToProps = (state, ownProps) => ({
   nodeIds: getSketchShotIds(state, ownProps.sketchId),
   title: 'Shots',
+  type: 'shot',
   component: DeferredNode,
 })
 

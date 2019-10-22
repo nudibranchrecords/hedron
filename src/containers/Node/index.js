@@ -7,11 +7,10 @@ import Node from '../../components/Node'
 import getNode from '../../selectors/getNode'
 import getIsNodeOpen from '../../selectors/getIsNodeOpen'
 import getActiveInputsText from '../../selectors/getActiveInputsText'
-import { nodeShotFired } from '../../store/nodes/actions'
+import { uNodeShotFired } from '../../store/nodes/actions'
 
 const mapStateToProps = (state, ownProps) => {
   const node = getNode(state, ownProps.nodeId)
-
   const inputLinkTitle = getActiveInputsText(state, ownProps.nodeId)
 
   return {
@@ -27,7 +26,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     onParamBarClick: type === 'shot'
       ? () => {
-        dispatch(nodeShotFired(ownProps.nodeId, ownProps.sketchId, ownProps.shotMethod))
+        dispatch(uNodeShotFired(ownProps.nodeId))
       } : undefined,
   }
 }
