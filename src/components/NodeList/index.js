@@ -4,7 +4,7 @@ import ViewSubheader from '../ViewSubheader'
 import Items from '../Items'
 import Item from '../Item'
 
-const NodeList = ({ nodeIds, title, component }) => {
+const NodeList = ({ nodeIds, title, component, type }) => {
   const Component = component
   if (nodeIds.length > 0) {
     return (
@@ -13,7 +13,7 @@ const NodeList = ({ nodeIds, title, component }) => {
         <Items>
           {nodeIds.map((id, index) => (
             <Item key={id}>
-              <Component nodeId={id} index={index} />
+              <Component nodeId={id} index={index} type={type} />
             </Item>
           ))}
         </Items>
@@ -28,6 +28,7 @@ NodeList.propTypes = {
   title: PropTypes.string.isRequired,
   nodeIds: PropTypes.arrayOf(PropTypes.string).isRequired,
   component: PropTypes.func.isRequired,
+  type: PropTypes.string.isRequired,
 }
 
 export default NodeList
