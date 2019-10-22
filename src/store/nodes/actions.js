@@ -158,6 +158,15 @@ export function nodeActiveInputLinkToggle (nodeId, linkId) {
   }
 }
 
+export function uNodeShotFired (nodeId) {
+  return {
+    type: 'U_NODE_SHOT_FIRED',
+    payload: {
+      nodeId,
+    },
+  }
+}
+
 export function nodeShotFired (nodeId, sketchId, method) {
   return {
     type: 'NODE_SHOT_FIRED',
