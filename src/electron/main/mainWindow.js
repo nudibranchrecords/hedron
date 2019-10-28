@@ -23,6 +23,7 @@ export const createMainWindow = () => {
   mainWindow = new BrowserWindow({
     fullscreenable: true,
     webPreferences: {
+      nodeIntegration: true,
       nativeWindowOpen: true,
       webSecurity: false,
     },
