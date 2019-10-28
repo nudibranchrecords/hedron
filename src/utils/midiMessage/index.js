@@ -19,18 +19,24 @@ export const messageTypes = {
 }
 
 export const processMidiData = (data, forcedChannel) => {
-  let value, messageType, id
+  let value, messageType, id, channel
 
-  // Force the channel if this arg has been set
-  const channel = typeof forcedChannel === 'number' ? forcedChannel : data[0] & 0x0f
-  const messageTypeCode = data[0] & 0xf0
-
-  const d0 = channel + messageTypeCode
+  let d0 = data[0] // message type + channel
   const d1 = data[1] // Note number
   const d2 = data[2] // Velocity
 
   // If the midi message is less than 240, it involves channels
   if (d0 < 0xf0) {
+    const channelIsForced = typeof forcedChannel === 'number'
+    const messageTypeCode = data[0] & 0xf0
+
+    if (channelIsForced) {
+      channel = forcedChannel
+      d0 = messageTypeCode + channel
+    } else {
+      channel = data[0] & 0x0f
+    }
+
     // Erase the first bit as this relates to channel
     const messageTypeObj = messageTypes[messageTypeCode.toString(16)]
     if (messageTypeObj !== undefined) {
