@@ -33,6 +33,9 @@ const generateParamFromConfig = (
     hidden = false,
     defaultMin = 0,
     defaultMax = 1,
+    min = defaultMin,
+    max = defaultMax,
+    value = defaultValue,
   },
   id, sketchId) => ({
   id,
@@ -41,12 +44,27 @@ const generateParamFromConfig = (
   valueType,
   type: 'param',
   key,
-  value: defaultValue,
+  value,
   hidden,
-  min: valueType === 'float' && defaultMin,
-  max: valueType === 'float' && defaultMax,
+  min: valueType === 'float' && min,
+  max: valueType === 'float' && max,
   defaultMin,
   defaultMax,
+  inputLinkIds: [],
+})
+
+const generateShotFromConfig = (
+  {
+    method,
+    title = method,
+  },
+  id, sketchId) => ({
+  id,
+  sketchId,
+  value: 0,
+  type: 'shot',
+  title,
+  method,
   inputLinkIds: [],
 })
 
@@ -70,7 +88,6 @@ const handleSketchCreate = (action, store) => {
   const uniqueSketchId = uid()
   const module = getModule(state, moduleId)
   const paramIds = []
-  const inputLinkIds = []
   const shotIds = []
 
   store.dispatch(rSceneSketchAdd(sceneId, uniqueSketchId))
@@ -95,15 +112,12 @@ const handleSketchCreate = (action, store) => {
       const shot = module.shots[i]
       uniqueId = uid()
       shotIds.push(uniqueId)
-      store.dispatch(uNodeCreate(uniqueId, {
-        id: uniqueId,
-        value: 0,
-        type: 'shot',
-        title: shot.title,
-        method: shot.method,
-        sketchId: uniqueSketchId,
-        inputLinkIds,
-      }))
+      store.dispatch(
+        uNodeCreate(
+          uniqueId,
+          generateShotFromConfig(shot, uniqueId, uniqueSketchId)
+        )
+      )
     }
   }
 
@@ -217,11 +231,9 @@ const sketchReimport = (sketchId, store) => {
     } else {
       // If param does exist, some properties may have changed (e.g. title, defaultMin, defaultMax, hidden)
       const id = sketchParam.id
+      const { title, defaultMin, defaultMax, hidden } = generateParamFromConfig(moduleParam, id, sketchId)
       store.dispatch(nodeUpdate(id, {
-        title: moduleParam.title ? moduleParam.title : moduleParam.key,
-        defaultMin: moduleParam.defaultMin ? moduleParam.defaultMin : 0,
-        defaultMax: moduleParam.defaultMax ? moduleParam.defaultMax : 1,
-        hidden: moduleParam.hidden === undefined ? false : moduleParam.hidden,
+        title, defaultMin, defaultMax, hidden,
       }))
     }
   }
@@ -237,19 +249,19 @@ const sketchReimport = (sketchId, store) => {
       shotIds = [
         ...shotIds.slice(0, i), uniqueId, ...shotIds.slice(i),
       ]
-      store.dispatch(uNodeCreate(uniqueId, {
-        id: uniqueId,
-        value: 0,
-        type: 'shot',
-        title: moduleShot.title,
-        method: moduleShot.method,
-        sketchId: sketchId,
-        inputLinkIds: [],
-      }))
+      store.dispatch(
+        uNodeCreate(
+          uniqueId,
+          generateShotFromConfig(moduleShot, uniqueId, sketchId)
+        )
+      )
     } else {
-      // If param does exist, the title may still change
+      // If shot does exist, the title may still change
       const id = sketchShot.id
-      store.dispatch(nodeUpdate(id, { title: sketchShot.title }))
+      const { title } = generateShotFromConfig(moduleShot, id, sketchId)
+      store.dispatch(nodeUpdate(id, {
+        title,
+      }))
     }
   }
 
