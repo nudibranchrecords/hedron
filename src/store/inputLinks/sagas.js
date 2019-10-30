@@ -28,7 +28,7 @@ export function* inputLinkCreate (action) {
   const modifierIds = []
   const optionIds = []
   let linkableActions = {}
-  let nodeType, linkType, sequencerGridId
+  let nodeType, linkType, sequencerGridId, nodeValueType
   const node = yield select(getNode, p.nodeId)
   const sketchId = node.sketchId
 
@@ -41,6 +41,7 @@ export function* inputLinkCreate (action) {
     } else {
       linkType = 'node'
       nodeType = node.type
+      nodeValueType = node.valueType
       if (['audio', 'lfo'].includes(p.inputType)) {
         const modifiers = yield call(getAll)
         const defaultModifierIds = yield select(getDefaultModifierIds)
@@ -77,7 +78,7 @@ export function* inputLinkCreate (action) {
     // Populate optionIds
     switch (p.inputType) {
       case 'audio': {
-        const audioOpts = yield call(audioGenerateOptions)
+        const audioOpts = yield call(audioGenerateOptions, nodeValueType)
 
         for (let key in audioOpts) {
           const item = audioOpts[key]
@@ -91,7 +92,7 @@ export function* inputLinkCreate (action) {
       }
 
       case 'lfo': {
-        const lfoOpts = yield call(lfoGenerateOptions)
+        const lfoOpts = yield call(lfoGenerateOptions, nodeValueType)
 
         for (let key in lfoOpts) {
           const item = lfoOpts[key]
@@ -105,7 +106,7 @@ export function* inputLinkCreate (action) {
       }
 
       case 'seq-step': {
-        const seqOpts = yield call(sequencerGenerateOptions)
+        const seqOpts = yield call(sequencerGenerateOptions, nodeValueType)
         sequencerGridId = seqOpts.grid.id
         yield put(uNodeCreate(sequencerGridId, seqOpts.grid))
         break
@@ -113,7 +114,7 @@ export function* inputLinkCreate (action) {
 
       case 'midi': {
         if (linkType === 'node') {
-          const midiOpts = yield call(midiGenerateOptions, linkId)
+          const midiOpts = yield call(midiGenerateOptions, nodeValueType, linkId)
 
           for (let key in midiOpts) {
             const item = midiOpts[key]
@@ -144,7 +145,7 @@ export function* inputLinkCreate (action) {
         yield put(uNodeCreate(animStartActionId, node))
         linkableActions.animStart = animStartActionId
 
-        const animOpts = yield call(animGenerateOptions)
+        const animOpts = yield call(animGenerateOptions, nodeValueType)
 
         for (let key in animOpts) {
           const item = animOpts[key]

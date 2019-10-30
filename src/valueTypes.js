@@ -1,3 +1,5 @@
+import uid from 'uid'
+
 // TODO: Everywhere types are being used should be filled with functions here. Eventually this can become
 // a plugin system where custom types can be loaded in by users, following the same API
 
@@ -6,6 +8,11 @@ const lerp = (v0, v1, t) => (1 - t) * v0 + t * v1
 class ValueType {
   get canDoMacro () { return typeof this.macroInterpolate === 'function' }
   getTransformedValue (param) { return param.value }
+  get midiOptions () { return [] }
+  get lfoOptions () { return [] }
+  get audioOptions () { return [] }
+  get sequencerOptions () { return [] }
+  get animOptions () { return [] }
 }
 
 class TypeFloat extends ValueType {
@@ -31,6 +38,33 @@ class TypeBoolean extends ValueType {
     }
     macroInterpolate (s, t, i) {
       return i > 0.99 ? t : s
+    }
+    get midiOptions () {
+      return [
+        {
+          title: 'Boolean Mode',
+          key: 'booleanMode',
+          type: 'select',
+          id: uid(),
+          value: 'toggle',
+          inputLinkIds: [],
+          subNode: true,
+          options: [
+            {
+              value: 'toggle',
+              label: 'Toggle',
+            },
+            {
+              value: 'returnTrue',
+              label: 'True',
+            },
+            {
+              value: 'returnFalse',
+              label: 'False',
+            },
+          ],
+        },
+      ]
     }
 }
 

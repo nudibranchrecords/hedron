@@ -1,6 +1,10 @@
 import uid from 'uid'
+import { getType } from '../../valueTypes'
 
-export default () => {
+export default (nodeValueType) => {
+  // Get node valueType related options
+  const extraOptions = getType(nodeValueType).lfoOptions
+
   return [
     {
       title: 'Shape',
@@ -119,5 +123,6 @@ export default () => {
         return options
       })(),
     },
+    ...extraOptions,
   ]
 }
