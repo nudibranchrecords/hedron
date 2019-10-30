@@ -25,6 +25,7 @@ class TypeFloat extends ValueType {
 
 class TypeBoolean extends ValueType {
     defaultValue = false
+    compatibleInputs = ['midi']
     doesValueMatch (value) {
       return typeof value === 'boolean'
     }
