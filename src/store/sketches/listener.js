@@ -18,33 +18,35 @@ import getModuleSketchIds from '../../selectors/getModuleSketchIds'
 import { reloadSingleSketchModule, removeSketchFromScene,
   addSketchToScene, reloadSingleSketchConfig } from '../../engine'
 import { uMacroTargetParamLinkDelete } from '../macros/actions'
+import { getType } from '../../valueTypes'
 
-const typeDefaults = {
-  float: 0,
-  boolean: false,
+const doesValueMatchType = (value, typeName) => {
+  const doesItMatch = getType(typeName).doesValueMatch(value)
+
+  if (!doesItMatch) {
+    console.warn(`[HEDRON] value "${value}" for node doesnt match valueType "${typeName}"`)
+  }
+  return doesItMatch
 }
 
-const generateParamFromConfig = (
-  {
-    key,
-    title = key,
-    valueType = 'float',
-    defaultValue = typeDefaults[valueType],
-    hidden = false,
-    defaultMin = 0,
-    defaultMax = 1,
-    min = defaultMin,
-    max = defaultMax,
-    value = defaultValue,
-  },
-  id, sketchId) => ({
+const generateParamFromConfig = ({
+  key,
+  title = key,
+  valueType = 'float',
+  defaultValue = getType(valueType).defaultValue,
+  hidden = false,
+  defaultMin = 0,
+  defaultMax = 1,
+  min = defaultMin,
+  max = defaultMax,
+}, id, sketchId) => ({
   id,
   sketchId,
   title,
   valueType,
   type: 'param',
   key,
-  value,
+  value: doesValueMatchType(defaultValue, valueType) ? defaultValue : getType(valueType).defaultValue,
   hidden,
   min: valueType === 'float' && min,
   max: valueType === 'float' && max,
@@ -231,9 +233,15 @@ const sketchReimport = (sketchId, store) => {
     } else {
       // If param does exist, some properties may have changed (e.g. title, defaultMin, defaultMax, hidden)
       const id = sketchParam.id
-      const { title, defaultMin, defaultMax, hidden } = generateParamFromConfig(moduleParam, id, sketchId)
+      const {
+        title, defaultMin, defaultMax, hidden, valueType, value: configValue,
+      } = generateParamFromConfig(moduleParam, id, sketchId)
+
+      // If the value of the param doesnt match the valueType, use defaultValue created from config
+
+      const value = doesValueMatchType(sketchParam.value, valueType) ? sketchParam.value : configValue
       store.dispatch(nodeUpdate(id, {
-        title, defaultMin, defaultMax, hidden,
+        title, defaultMin, defaultMax, hidden, valueType, value,
       }))
     }
   }
