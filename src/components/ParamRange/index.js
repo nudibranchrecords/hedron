@@ -57,14 +57,14 @@ class ParamRange extends React.Component {
           <Col>
             <label>Min</label>
             <Field
-              component='input' name='min' type='number'
+              component='input' name='min' type='number' parse={Number}
               onKeyPress={this.handleKeyPress} onBlur={this.handleBlur}
             />
           </Col>
           <Col>
             <label>Max</label>
             <Field
-              component='input' name='max' type='number'
+              component='input' name='max' type='number' parse={Number}
               onKeyPress={this.handleKeyPress} onBlur={this.handleBlur}
             />
           </Col>
