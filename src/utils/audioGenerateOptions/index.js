@@ -1,6 +1,10 @@
 import uid from 'uid'
+import { getType } from '../../valueTypes'
 
-export default () => {
+export default (nodeValueType) => {
+  // Get node valueType related options
+  const extraOptions = getType(nodeValueType).audioOptions
+
   return [
     {
       title: 'Audio Band',
@@ -29,5 +33,6 @@ export default () => {
         },
       ],
     },
+    ...extraOptions,
   ]
 }

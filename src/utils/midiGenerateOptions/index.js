@@ -1,8 +1,12 @@
 import uid from 'uid'
 import { midiNotes, messageTypes } from '../midiMessage'
 import { uInputLinkUpdateMidiInput } from '../../store/inputLinks/actions'
+import { getType } from '../../valueTypes'
 
-export default linkId => {
+export default (nodeValueType, linkId) => {
+  // Get node valueType related options
+  const extraOptions = getType(nodeValueType).midiOptions
+
   return [
     {
       title: 'Message Type',
@@ -56,29 +60,6 @@ export default linkId => {
       subNode: true,
     },
     {
-      title: 'Boolean Mode',
-      key: 'booleanMode',
-      type: 'select',
-      id: uid(),
-      value: 'toggle',
-      inputLinkIds: [],
-      subNode: true,
-      options: [
-        {
-          value: 'toggle',
-          label: 'Toggle',
-        },
-        {
-          value: 'returnTrue',
-          label: 'True',
-        },
-        {
-          value: 'returnFalse',
-          label: 'False',
-        },
-      ],
-    },
-    {
       title: 'Note',
       key: 'noteNum',
       type: 'select',
@@ -105,5 +86,6 @@ export default linkId => {
       )),
       onChangeAction: uInputLinkUpdateMidiInput(linkId),
     },
+    ...extraOptions,
   ]
 }
