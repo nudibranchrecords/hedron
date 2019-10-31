@@ -20,4 +20,6 @@ export class BaseValueType {
   // but no way to hook into the functionality
   get sequencerOptions () { return [] }
   get animOptions () { return [] }
+
+  valueProcess = {}
 }

@@ -5,8 +5,6 @@ import { projectError } from '../project/actions'
 import getNodes from '../../selectors/getNodes'
 import getNode from '../../selectors/getNode'
 import getNodesValues from '../../selectors/getNodesValues'
-import lfoProcess from '../../utils/lfoProcess'
-import midiValueProcess from '../../utils/midiValueProcess'
 import { work } from '../../externals/modifiers'
 import debounceInput from '../../utils/debounceInput'
 import { getType } from '../../valueTypes'
@@ -22,47 +20,23 @@ export function* handleInput (action) {
 
       for (let i = 0; i < links.length; i++) {
         let skip
-        const linkNode = yield select(getNode, links[i].nodeId)
+        const inpuLink = links[i]
+        const linkNode = yield select(getNode, inpuLink.nodeId)
 
         if (linkNode.type === 'linkableAction') {
           yield put(linkNode.action)
         } else {
           let value = p.value
           let modifiers
-          const options = yield select(getNodesValues, links[i].optionIds)
+          const options = yield select(getNodesValues, inpuLink.optionIds)
           const valueType = getType(linkNode.valueType)
 
-          switch (inputType) {
-            case 'midi': {
-              const process = valueType.overrideMidiProcess || midiValueProcess
-              value = yield call(process, { node: linkNode, value, options, messageCount })
+          const valueProcess = valueType.compatibleInputs[inputType].valueProcess
 
-              if (valueType.afterMidiProcess) {
-                value = yield call(valueType.overrideMidiValueProcess, { node: linkNode, value, options, messageCount })
-              }
-              break
-            }
-
-            case 'lfo': {
-              const seed = options.seed === -1 ? links[i].id : options.seed
-
-              const process = valueType.overrideLfoProcess || lfoProcess
-              value = yield call(process, { node: linkNode, value, options, seed, messageCount })
-
-              if (valueType.afterLfoProcess) {
-                value = yield call(valueType.afterLfoProcess, { node: linkNode, value, options, seed, messageCount })
-              }
-              break
-            }
-
-            case 'audio': {
-              value = value[options.audioBand]
-
-              if (valueType.afterAudioProcess) {
-                value = yield call(valueType.afterAudioProcess, { node: linkNode, value, options, messageCount })
-              }
-              break
-            }
+          if (valueProcess) {
+            value = yield call(valueProcess, { node: linkNode, inpuLink, value, options, messageCount })
+          } else {
+            console.error(`[HEDRON] no ${inputType} process function for valueType ${linkNode.valueType}`)
           }
 
           if (links[i].modifierIds && links[i].modifierIds.length) {
