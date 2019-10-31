@@ -5,7 +5,7 @@ export default (state, nodeId) => {
   let nodeType = node.type
 
   // Get compatibile inputs based on valueType
-  const valueTypeCompatibleInputs = getType(node.valueType).compatibleInputs
+  const valueTypeCompatibleInputs = Object.keys(getType(node.valueType).compatibleInputs)
 
   // List of options
   // exclude: remove options for those node types
