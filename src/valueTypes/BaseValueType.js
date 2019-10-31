@@ -21,5 +21,22 @@ export class BaseValueType {
     }
   }
 
+  compatibleInputs = {}
+
+  getValueProcess (inputType) {
+    const input = this.compatibleInputs[inputType]
+    if (!input) {
+      console.error(`[HEDRON] No ${inputType} options set for ${this.constructor.name}`)
+      return
+    }
+
+    if (!input.valueProcess) {
+      console.error(`[HEDRON] No ${inputType} valueProcess set for ${this.constructor.name}`)
+      return
+    }
+
+    return input.valueProcess
+  }
+
   valueProcess = {}
 }

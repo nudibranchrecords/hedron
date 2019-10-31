@@ -65,6 +65,7 @@ const generateShotFromConfig = (
   sketchId,
   value: 0,
   type: 'shot',
+  valueType: 'shotFloat',
   title,
   method,
   inputLinkIds: [],

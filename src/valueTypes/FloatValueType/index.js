@@ -1,5 +1,5 @@
 import { BaseValueType } from '../BaseValueType'
-import midiValueProcess from './midiValueProcess'
+import midiValueProcess from '../../utils/midiValueProcess'
 import lfoProcess from '../../utils/lfoProcess'
 
 const lerp = (v0, v1, t) => (1 - t) * v0 + t * v1
@@ -26,14 +26,16 @@ export class FloatValueType extends BaseValueType {
       valueProcess: midiValueProcess,
     },
     lfo: {
-      valueProcess: ({ node, inpuLink, value, options }) => {
-        const seed = options.seed === -1 ? inpuLink.id : options.seed
+      valueProcess: ({ node, inputLink, value, options }) => {
+        const seed = options.seed === -1 ? inputLink.id : options.seed
         return lfoProcess({ node, value, options, seed })
       },
     },
     audio: {
       valueProcess: ({ value, options }) => value[options.audioBand],
     },
+    // TODO: anim should probably be handled here instead of core
+    // For now, this empty object is enough for the option to show
     anim: {},
   }
 }

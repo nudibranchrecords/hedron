@@ -11,6 +11,7 @@ export default store => {
       id: 'sceneCrossfader',
       value: 0,
       type: 'param',
+      valueType: 'float',
     }
   ))
 
@@ -64,6 +65,7 @@ export default store => {
     type: 'param',
     value: 1,
     id: 'audioLevelsFalloff',
+    valueType: 'float',
   }))
   store.dispatch(uNodeCreate('audioLevelsPower', {
     title: 'Levels Power',
@@ -72,12 +74,14 @@ export default store => {
     min: 0.5,
     max: 3,
     id: 'audioLevelsPower',
+    valueType: 'float',
   }))
   store.dispatch(uNodeCreate('audioLevelsSmoothing', {
     title: 'Levels Smoothing',
     type: 'param',
     value: 0,
     id: 'audioLevelsSmoothing',
+    valueType: 'float',
   }))
 
   store.dispatch(uNodeCreate('audioNormalizeLevels', {
@@ -85,11 +89,13 @@ export default store => {
     type: 'param',
     value: 0.5,
     id: 'audioNormalizeLevels',
+    valueType: 'float',
   }))
   store.dispatch(uNodeCreate('audioNormalizeRangeFalloff', {
     title: 'Normalized Range Falloff',
     type: 'param',
     value: 0.01,
     id: 'audioNormalizeRangeFalloff',
+    valueType: 'float',
   }))
 }
