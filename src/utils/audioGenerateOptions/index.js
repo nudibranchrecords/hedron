@@ -9,7 +9,7 @@ export default (nodeValueType) => {
     {
       title: 'Audio Band',
       key: 'audioBand',
-      type: 'select',
+      valueType: 'enum',
       id: uid(),
       value: 0,
       inputLinkIds: [],

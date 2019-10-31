@@ -2,7 +2,6 @@ import { connect } from 'react-redux'
 import Control from '../../components/Control'
 import getNode from '../../selectors/getNode'
 import { getType } from '../../valueTypes'
-import NodeSelect from '../../containers/NodeSelect'
 import ParamBar from '../../containers/ParamBar'
 
 const mapStateToProps = (state, ownProps) => {
@@ -12,8 +11,6 @@ const mapStateToProps = (state, ownProps) => {
 
   if (valueType) {
     Component = valueType.Component
-  } else if (node.type === 'select') {
-    Component = NodeSelect
   } else {
     Component = ParamBar
   }

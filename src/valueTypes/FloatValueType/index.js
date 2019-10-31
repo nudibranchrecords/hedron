@@ -1,5 +1,5 @@
 import { BaseValueType } from '../BaseValueType'
-import midiValueProcess from '../../utils/midiValueProcess'
+import { getMidiValue } from '../../utils/getMidiValue'
 import lfoProcess from '../../utils/lfoProcess'
 import ParamBar from '../../containers/ParamBar'
 
@@ -25,7 +25,8 @@ export class FloatValueType extends BaseValueType {
 
   compatibleInputs = {
     midi: {
-      valueProcess: midiValueProcess,
+      valueProcess: ({ node, value: midiValue, options: midiOptions, messageCount }) =>
+        getMidiValue(node.value, midiValue, midiOptions, messageCount),
     },
     lfo: {
       valueProcess: ({ inputLink, value, options: { shape, rate, phase, seed } }) => {

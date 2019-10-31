@@ -19,7 +19,7 @@ export class BooleanValueType extends BaseValueType {
           {
             title: 'Boolean Mode',
             key: 'booleanMode',
-            type: 'select',
+            valueType: 'enum',
             id: uid(),
             value: 'toggle',
             inputLinkIds: [],

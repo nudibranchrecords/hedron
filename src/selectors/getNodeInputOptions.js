@@ -4,6 +4,8 @@ export default (state, nodeId) => {
   const node = state.nodes[nodeId]
   let nodeType = node.type
 
+  const valueType = getType(node.valueType)
+
   // List of options
   // exclude: remove options for those node types
   // include: ONLY allow these node types
@@ -46,8 +48,7 @@ export default (state, nodeId) => {
 
   const filteredOptions = options.filter(opt => {
     // TODO: We might be able to remove all of the logic here and just use the valueType properties
-    if (nodeType === 'param') {
-      const valueType = getType(node.valueType)
+    if (valueType) {
       return Object.keys(valueType.compatibleInputs).includes(opt.type)
     } else if (opt.include) {
       return opt.include.includes(nodeType)
