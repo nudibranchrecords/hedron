@@ -3,7 +3,7 @@ import { getType } from '../../valueTypes'
 
 export default (nodeValueType) => {
   // Get node valueType related options
-  const extraOptions = getType(nodeValueType).audioOptions
+  const extraOptions = getType(nodeValueType).getExtraInputOptions('audio')
 
   return [
     {

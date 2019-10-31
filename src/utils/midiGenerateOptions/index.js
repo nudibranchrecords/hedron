@@ -5,7 +5,7 @@ import { getType } from '../../valueTypes'
 
 export default (nodeValueType, linkId) => {
   // Get node valueType related options
-  const extraOptions = getType(nodeValueType).midiOptions
+  const extraOptions = getType(nodeValueType).getExtraInputOptions('midi')
 
   return [
     {

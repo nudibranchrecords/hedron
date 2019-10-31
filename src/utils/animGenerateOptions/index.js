@@ -36,7 +36,7 @@ easeCurves.forEach(curve => {
 
 export default (nodeValueType) => {
   // Get node valueType related options
-  const extraOptions = getType(nodeValueType).animOptions
+  const extraOptions = getType(nodeValueType).getExtraInputOptions('anim')
 
   return [
     {

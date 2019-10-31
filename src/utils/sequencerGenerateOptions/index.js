@@ -3,7 +3,7 @@ import { getType } from '../../valueTypes'
 
 export default (nodeValueType) => {
   // Get node valueType related options
-  const extraOptions = getType(nodeValueType).sequencerOptions
+  const extraOptions = getType(nodeValueType).getExtraInputOptions('seq-step')
 
   return {
     grid: {

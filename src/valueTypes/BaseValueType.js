@@ -11,15 +11,15 @@ export class BaseValueType {
     return t > 0.99 ? v1 : v0
   }
 
-  get midiOptions () { return [] }
-  get lfoOptions () { return [] }
-  get audioOptions () { return [] }
+  getExtraInputOptions (inputType) {
+    const { generateExtraOptions } = this.compatibleInputs[inputType]
 
-  // TODO
-  // sequencer and anim have editable options
-  // but no way to hook into the functionality
-  get sequencerOptions () { return [] }
-  get animOptions () { return [] }
+    if (generateExtraOptions) {
+      return generateExtraOptions()
+    } else {
+      return []
+    }
+  }
 
   valueProcess = {}
 }
