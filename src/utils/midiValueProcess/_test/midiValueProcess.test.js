@@ -137,7 +137,7 @@ test('(Util) midiValueProcess - type is not select', () => {
   }
   messageCount = 1
 
-  actual = midiValueProcess(node, midiValue, midiOptions, messageCount)
+  actual = midiValueProcess({ node, value: midiValue, options: midiOptions, messageCount })
   expected = getValue(node.value, midiValue, midiOptions, messageCount)
 
   // uses getValue()
@@ -191,7 +191,7 @@ test('(Util) midiValueProcess - type is select, controlType abs', () => {
   }
   messageCount = 5
 
-  actual = midiValueProcess(node, midiValue, midiOptions, messageCount)
+  actual = midiValueProcess({ node, value: midiValue, options: midiOptions, messageCount })
   expected = 'one'
 
   // Returns correct value from option
@@ -204,7 +204,7 @@ test('(Util) midiValueProcess - type is select, controlType abs', () => {
   }
   messageCount = 2
 
-  actual = midiValueProcess(node, midiValue, midiOptions, messageCount)
+  actual = midiValueProcess({ node, value: midiValue, options: midiOptions, messageCount })
   expected = 'seven'
 
   // Returns correct value from option
@@ -258,7 +258,7 @@ test('(Util) midiValueProcess - type is select, controlType rel1', () => {
   }
   messageCount = 1
 
-  actual = midiValueProcess(node, midiValue, midiOptions, messageCount)
+  actual = midiValueProcess({ node, value: midiValue, options: midiOptions, messageCount })
   expected = 'four'
 
   // Returns correct value from option, ignores messageCount
@@ -271,7 +271,7 @@ test('(Util) midiValueProcess - type is select, controlType rel1', () => {
   }
   messageCount = 1
 
-  actual = midiValueProcess(node, midiValue, midiOptions, messageCount)
+  actual = midiValueProcess({ node, value: midiValue, options: midiOptions, messageCount })
   expected = 'six'
 
   // Returns correct value from option, ignores messageCount
@@ -287,7 +287,7 @@ test('(Util) midiValueProcess - type is select, controlType rel1', () => {
   }
   messageCount = 1
 
-  actual = midiValueProcess(node, midiValue, midiOptions, messageCount)
+  actual = midiValueProcess({ node, value: midiValue, options: midiOptions, messageCount })
   expected = 'one'
 
   // Stays at lowest after decrease message
@@ -303,115 +303,9 @@ test('(Util) midiValueProcess - type is select, controlType rel1', () => {
   }
   messageCount = 1
 
-  actual = midiValueProcess(node, midiValue, midiOptions, messageCount)
+  actual = midiValueProcess({ node, value: midiValue, options: midiOptions, messageCount })
   expected = 'ten'
 
   // Stays at highest after increase message
-  expect(actual).toBe(expected)
-})
-
-test('(Util) midiValueProcess - node valueType: boolean, midi messageType: noteOn', () => {
-  let node, midiValue, midiOptions, messageCount, actual, expected
-
-  node = {
-    valueType: 'boolean',
-    value: false,
-  }
-  midiValue = 1
-  midiOptions = {
-    messageType: 'noteOn',
-    booleanMode: 'toggle',
-  }
-  messageCount = 1
-
-  actual = midiValueProcess(node, midiValue, midiOptions, messageCount)
-  expected = true
-
-  // Toggles the value from false to true (mode: toggle)
-  expect(actual).toBe(expected)
-
-  node = {
-    valueType: 'boolean',
-    value: true,
-  }
-  midiValue = 1
-  midiOptions = {
-    messageType: 'noteOn',
-    booleanMode: 'toggle',
-  }
-  messageCount = 1
-
-  actual = midiValueProcess(node, midiValue, midiOptions, messageCount)
-  expected = false
-
-  // Toggles the value from true to false (mode: toggle)
-  expect(actual).toBe(expected)
-
-  node = {
-    valueType: 'boolean',
-    value: true,
-  }
-  midiValue = 1
-  midiOptions = {
-    messageType: 'noteOn',
-    booleanMode: 'returnTrue',
-  }
-  messageCount = 1
-
-  actual = midiValueProcess(node, midiValue, midiOptions, messageCount)
-  expected = true
-
-  // Always returns true (mode: returnTrue)
-  expect(actual).toBe(expected)
-
-  node = {
-    valueType: 'boolean',
-    value: false,
-  }
-  midiValue = 1
-  midiOptions = {
-    messageType: 'noteOn',
-    booleanMode: 'returnTrue',
-  }
-  messageCount = 1
-
-  actual = midiValueProcess(node, midiValue, midiOptions, messageCount)
-  expected = true
-
-  // Always returns true (mode: returnTrue)
-  expect(actual).toBe(expected)
-
-  node = {
-    valueType: 'boolean',
-    value: true,
-  }
-  midiValue = 1
-  midiOptions = {
-    messageType: 'noteOn',
-    booleanMode: 'returnFalse',
-  }
-  messageCount = 1
-
-  actual = midiValueProcess(node, midiValue, midiOptions, messageCount)
-  expected = false
-
-  // Always returns false (mode: returnFalse)
-  expect(actual).toBe(expected)
-
-  node = {
-    valueType: 'boolean',
-    value: false,
-  }
-  midiValue = 1
-  midiOptions = {
-    messageType: 'noteOn',
-    booleanMode: 'returnFalse',
-  }
-  messageCount = 1
-
-  actual = midiValueProcess(node, midiValue, midiOptions, messageCount)
-  expected = false
-
-  // Always returns false (mode: returnFalse)
   expect(actual).toBe(expected)
 })

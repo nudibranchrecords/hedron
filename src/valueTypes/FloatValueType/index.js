@@ -26,9 +26,9 @@ export class FloatValueType extends BaseValueType {
       valueProcess: midiValueProcess,
     },
     lfo: {
-      valueProcess: ({ node, inputLink, value, options }) => {
-        const seed = options.seed === -1 ? inputLink.id : options.seed
-        return lfoProcess({ node, value, options, seed })
+      valueProcess: ({ inputLink, value, options: { shape, rate, phase, seed } }) => {
+        seed === -1 ? inputLink.id : seed
+        return lfoProcess(value, shape, rate, phase, seed)
       },
     },
     audio: {
