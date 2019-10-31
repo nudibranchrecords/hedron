@@ -11,26 +11,31 @@ test('(engine) getSketchParams', function (t) {
         title: 'Rotation X',
         key: 'rotX',
         value: 0.1,
+        valueType: 'float',
       },
       '02': {
         title: 'Rotation Y',
         key: 'rotY',
         value: 0.2,
+        valueType: 'float',
       },
       '03': {
         title: 'Speed X',
         key: 'speedX',
         value: 0.3,
+        valueType: 'float',
       },
       '04': {
         title: 'Speed Y',
         key: 'speedY',
         value: 0.4,
+        valueType: 'float',
       },
       '05': {
         title: 'Speed Z',
         key: 'speedZ',
         value: 0.5,
+        valueType: 'float',
       },
     },
     sketches: {
@@ -128,6 +133,7 @@ test('(engine) getSketchParams (min/max)', function (t) {
         value: 0.5,
         min: 0,
         max: 100,
+        valueType: 'float',
       },
       '07': {
         title: 'Bar',
@@ -135,6 +141,7 @@ test('(engine) getSketchParams (min/max)', function (t) {
         value: 0.5,
         min: -100,
         max: 0,
+        valueType: 'float',
       },
       '08': {
         title: 'Lorem',
@@ -142,6 +149,7 @@ test('(engine) getSketchParams (min/max)', function (t) {
         value: 0.9,
         min: 10,
         max: 20,
+        valueType: 'float',
       },
     },
     sketches: {
