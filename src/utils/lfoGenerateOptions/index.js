@@ -11,7 +11,7 @@ export default (nodeValueType) => {
       id: uid(),
       key: 'shape',
       value: 'sine',
-      type: 'select',
+      valueType: 'enum',
       inputLinkIds: [],
       subNode: true,
       options: [
@@ -46,7 +46,7 @@ export default (nodeValueType) => {
       id: uid(),
       key: 'rate',
       value: 1,
-      type: 'select',
+      valueType: 'enum',
       inputLinkIds: [],
       subNode: true,
       options: [
@@ -109,7 +109,7 @@ export default (nodeValueType) => {
       id: uid(),
       key: 'seed',
       value: -1,
-      type: 'select',
+      valueType: 'enum',
       inputLinkIds: [],
       subNode: true,
       options: (() => {

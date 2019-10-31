@@ -13,7 +13,7 @@ const isInc = (controlType, midiValue) =>
 
 // What to do with current node value and incoming midi value
 // Based on options like sensitivity and controlType
-export const getValue = (nodeValue, midiValue, midiOptions, messageCount) => {
+export const getMidiValue = (nodeValue, midiValue, midiOptions, messageCount) => {
   const { controlType, sensitivity } = midiOptions
   if (controlType === 'abs') {
     return midiValue
@@ -32,26 +32,3 @@ export const getValue = (nodeValue, midiValue, midiOptions, messageCount) => {
   }
 }
 
-export default ({ node, value: midiValue, options: midiOptions, messageCount }) => {
-  if (node.type === 'select') {
-    const opts = node.options
-    const maxLength = opts.length
-    let index = opts.findIndex(item => item.value === node.value)
-    const oldVal = index / maxLength
-    const newVal = getValue(oldVal, midiValue, midiOptions, 15)
-
-    if (midiOptions.controlType === 'abs') {
-      index = Math.floor(newVal * maxLength)
-    } else {
-      if (newVal > oldVal) {
-        index++
-      } else {
-        index--
-      }
-    }
-    index = Math.max(0, Math.min(maxLength - 1, index))
-    return opts[index].value
-  } else {
-    return getValue(node.value, midiValue, midiOptions, messageCount)
-  }
-}

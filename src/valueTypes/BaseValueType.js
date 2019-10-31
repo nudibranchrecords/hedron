@@ -1,4 +1,8 @@
 export class BaseValueType {
+  doesValueMatch (value) {
+    return true
+  }
+
   get canDoMacro () {
     return typeof this.macroInterpolate === 'function'
   }

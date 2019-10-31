@@ -18,7 +18,7 @@ export default store => {
   store.dispatch(uNodeCreate('viewerMode',
     {
       title: 'Viewer Mode',
-      type: 'select',
+      valueType: 'enum',
       id: 'viewerMode',
       value: 'mix',
       inputLinkIds: [],
@@ -41,7 +41,7 @@ export default store => {
 
   store.dispatch(uNodeCreate('sketchOrganization', {
     title: 'Sketch Organization',
-    type: 'select',
+    valueType: 'enum',
     value: 'category',
     id: 'sketchOrganization',
     options:[

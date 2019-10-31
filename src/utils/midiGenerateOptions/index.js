@@ -11,7 +11,7 @@ export default (nodeValueType, linkId) => {
     {
       title: 'Message Type',
       key: 'messageType',
-      type: 'select',
+      valueType: 'enum',
       id: uid(),
       value: 'controlChange',
       inputLinkIds: [],
@@ -27,7 +27,7 @@ export default (nodeValueType, linkId) => {
     {
       title: 'Control Type',
       key: 'controlType',
-      type: 'select',
+      valueType: 'enum',
       id: uid(),
       value: 'abs',
       inputLinkIds: [],
@@ -62,7 +62,7 @@ export default (nodeValueType, linkId) => {
     {
       title: 'Note',
       key: 'noteNum',
-      type: 'select',
+      valueType: 'enum',
       value: 12,
       id: uid(),
       inputLinkIds: [],
@@ -73,7 +73,7 @@ export default (nodeValueType, linkId) => {
     {
       title: 'Channel',
       key: 'channel',
-      type: 'select',
+      valueType: 'enum',
       id: uid(),
       value: 0,
       inputLinkIds: [],

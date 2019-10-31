@@ -52,7 +52,7 @@ export default (nodeValueType) => {
       id: uid(),
       key: 'curve',
       value: 'Linear.None',
-      type: 'select',
+      valueType: 'enum',
       inputLinkIds: [],
       subNode: true,
       options: curveOptions,
