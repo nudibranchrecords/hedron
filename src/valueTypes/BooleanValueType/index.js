@@ -1,5 +1,6 @@
 import uid from 'uid'
 import { BaseValueType } from '../BaseValueType'
+import getNode from '../../selectors/getNode'
 
 export class BooleanValueType extends BaseValueType {
   defaultValue = false
@@ -46,6 +47,12 @@ export class BooleanValueType extends BaseValueType {
           case 'toggle':
             return !node.value
         }
+      },
+    },
+    'seq-step': {
+      valueProcess: ({ value, inputLink, store }) => {
+        const seqNode = getNode(store.getState(), inputLink.sequencerGridId)
+        return seqNode.value[value] === 1
       },
     },
   }
