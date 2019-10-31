@@ -11,6 +11,10 @@ class ValueType {
   get midiOptions () { return [] }
   get lfoOptions () { return [] }
   get audioOptions () { return [] }
+
+  // TODO
+  // sequencer and anim have editable options
+  // but no way to hook into the functionality
   get sequencerOptions () { return [] }
   get animOptions () { return [] }
 }
@@ -65,6 +69,17 @@ class TypeBoolean extends ValueType {
           ],
         },
       ]
+    }
+
+    overrideMidiProcess ({ node, options }) {
+      switch (options.booleanMode) {
+        case 'returnTrue':
+          return true
+        case 'returnFalse':
+          return false
+        case 'toggle':
+          return !node.value
+      }
     }
 }
 

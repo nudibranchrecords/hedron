@@ -9,6 +9,7 @@ import lfoProcess from '../../utils/lfoProcess'
 import midiValueProcess from '../../utils/midiValueProcess'
 import { work } from '../../externals/modifiers'
 import debounceInput from '../../utils/debounceInput'
+import { getType } from '../../valueTypes'
 
 export function* handleInput (action) {
   const p = action.payload
@@ -28,22 +29,38 @@ export function* handleInput (action) {
         } else {
           let value = p.value
           let modifiers
-          const o = yield select(getNodesValues, links[i].optionIds)
+          const options = yield select(getNodesValues, links[i].optionIds)
+          const valueType = getType(linkNode.valueType)
 
           switch (inputType) {
             case 'midi': {
-              value = yield call(midiValueProcess, linkNode, value, o, messageCount)
+              const process = valueType.overrideMidiProcess || midiValueProcess
+              value = yield call(process, { node: linkNode, value, options, messageCount })
+
+              if (valueType.afterMidiProcess) {
+                value = yield call(valueType.overrideMidiValueProcess, { node: linkNode, value, options, messageCount })
+              }
               break
             }
 
             case 'lfo': {
-              const seed = o.seed === -1 ? links[i].id : o.seed
-              value = yield call(lfoProcess, value, o.shape, o.rate, o.phase, seed)
+              const seed = options.seed === -1 ? links[i].id : options.seed
+
+              const process = valueType.overrideLfoProcess || lfoProcess
+              value = yield call(process, { node: linkNode, value, options, seed, messageCount })
+
+              if (valueType.afterLfoProcess) {
+                value = yield call(valueType.afterLfoProcess, { node: linkNode, value, options, seed, messageCount })
+              }
               break
             }
 
             case 'audio': {
-              value = p.value[o.audioBand]
+              value = value[options.audioBand]
+
+              if (valueType.afterAudioProcess) {
+                value = yield call(valueType.afterAudioProcess, { node: linkNode, value, options, messageCount })
+              }
               break
             }
           }
