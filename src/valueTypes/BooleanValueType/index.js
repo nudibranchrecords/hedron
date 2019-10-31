@@ -1,9 +1,12 @@
 import uid from 'uid'
 import { BaseValueType } from '../BaseValueType'
 import getNode from '../../selectors/getNode'
+import ParamCheckbox from '../../containers/ParamCheckbox'
 
 export class BooleanValueType extends BaseValueType {
   defaultValue = false
+
+  Component = ParamCheckbox
 
   doesValueMatch (value) {
     return typeof value === 'boolean'

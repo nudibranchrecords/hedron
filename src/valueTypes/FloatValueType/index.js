@@ -1,11 +1,13 @@
 import { BaseValueType } from '../BaseValueType'
 import midiValueProcess from '../../utils/midiValueProcess'
 import lfoProcess from '../../utils/lfoProcess'
+import ParamBar from '../../containers/ParamBar'
 
 const lerp = (v0, v1, t) => (1 - t) * v0 + t * v1
 
 export class FloatValueType extends BaseValueType {
   defaultValue = 0
+  Component = ParamBar
 
   doesValueMatch (value) {
     return typeof value === 'number'
