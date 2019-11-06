@@ -1,5 +1,5 @@
 import { connect } from 'react-redux'
-import ParamCheckbox from '../../components/ParamCheckbox'
+import ParamCheckbox from './component'
 import { nodeValueUpdate } from '../../store/nodes/actions'
 
 const mapDispatchToProps = (dispatch, ownProps) => ({

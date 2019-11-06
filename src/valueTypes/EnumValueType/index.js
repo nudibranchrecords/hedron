@@ -1,6 +1,6 @@
 import { BaseValueType } from '../BaseValueType'
 import midiValueProcess from './midiValueProcess'
-import NodeSelect from '../../containers/NodeSelect'
+import NodeSelect from './container'
 import { get } from 'lodash'
 
 const parseOptions = options => options.map(opt => {

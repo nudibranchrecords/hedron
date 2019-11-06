@@ -1,7 +1,7 @@
 import { BaseValueType } from '../BaseValueType'
 import { getMidiValue } from '../../utils/getMidiValue'
 import lfoProcess from '../../utils/lfoProcess'
-import ParamBar from '../../containers/ParamBar'
+import ParamBar from './container'
 
 const lerp = (v0, v1, t) => (1 - t) * v0 + t * v1
 

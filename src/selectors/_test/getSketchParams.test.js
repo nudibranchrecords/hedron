@@ -1,9 +1,9 @@
 import deepFreeze from 'deep-freeze'
 import getSketchParams from '../getSketchParams'
 
-jest.mock('../../containers/ParamBar', () => null)
-jest.mock('../../containers/ParamCheckbox', () => null)
-jest.mock('../../containers/NodeSelect', () => null)
+jest.mock('../../valueTypes/FloatValueType/container', () => null)
+jest.mock('../../valueTypes/BooleanValueType/container', () => null)
+jest.mock('../../valueTypes/EnumValueType/container', () => null)
 
 test('(engine) getSketchParams', function () {
   let actual, expected

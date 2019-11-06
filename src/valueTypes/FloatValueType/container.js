@@ -1,5 +1,5 @@
 import { connect } from 'react-redux'
-import ValueBar from '../../components/ValueBar'
+import ValueBar from './component'
 import { nodeValueUpdate } from '../../store/nodes/actions'
 import getNode from '../../selectors/getNode'
 import getInputLink from '../../selectors/getInputLink'
