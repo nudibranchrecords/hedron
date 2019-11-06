@@ -12,5 +12,13 @@ const types = {
   // Merge in custom types here
 }
 
-export const getType = typeName => types[typeName]
+export const getType = typeName => {
+  const valueType = types[typeName]
+
+  if (typeName && valueType === undefined) {
+    console.error(`[HEDRON] valueType of "${typeName}" not recognised. Please check your config file.`)
+  }
+
+  return valueType
+}
 
