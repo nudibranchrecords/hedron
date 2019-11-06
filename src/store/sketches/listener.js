@@ -29,16 +29,26 @@ const doesValueMatchType = (value, typeName) => {
   return doesItMatch
 }
 
+const createStartingValue = ({ defaultValue, valueType, customConfig }) => {
+  if (
+    typeof defaultValue !== 'function' &&
+    defaultValue !== undefined &&
+    doesValueMatchType(defaultValue, valueType)) {
+    return defaultValue
+  } else if (typeof defaultValue === 'function') {
+    return defaultValue(customConfig)
+  } else {
+    return getType(valueType).defaultValue
+  }
+}
+
 const generateParamFromConfig = ({
   key,
   title = key,
   valueType = 'float',
   defaultValue = getType(valueType).defaultValue,
   hidden = false,
-  defaultMin = 0,
-  defaultMax = 1,
-  min = defaultMin,
-  max = defaultMax,
+  ...customConfig
 }, id, sketchId) => ({
   id,
   sketchId,
@@ -46,13 +56,10 @@ const generateParamFromConfig = ({
   valueType,
   type: 'param',
   key,
-  value: doesValueMatchType(defaultValue, valueType) ? defaultValue : getType(valueType).defaultValue,
+  value: createStartingValue({ defaultValue, valueType, customConfig }),
   hidden,
-  min: valueType === 'float' && min,
-  max: valueType === 'float' && max,
-  defaultMin,
-  defaultMax,
   inputLinkIds: [],
+  ...getType(valueType).parseCustomConfig(customConfig),
 })
 
 const generateShotFromConfig = (
@@ -235,14 +242,13 @@ const sketchReimport = (sketchId, store) => {
       // If param does exist, some properties may have changed (e.g. title, defaultMin, defaultMax, hidden)
       const id = sketchParam.id
       const {
-        title, defaultMin, defaultMax, hidden, valueType, value: configValue,
+        title, defaultMin, defaultMax, hidden, valueType, options,
       } = generateParamFromConfig(moduleParam, id, sketchId)
 
-      // If the value of the param doesnt match the valueType, use defaultValue created from config
+      const value = createStartingValue({ defaultValue: sketchParam.value, valueType, options })
 
-      const value = doesValueMatchType(sketchParam.value, valueType) ? sketchParam.value : configValue
       store.dispatch(nodeUpdate(id, {
-        title, defaultMin, defaultMax, hidden, valueType, value,
+        title, defaultMin, defaultMax, hidden, valueType, value, options,
       }))
     }
   }
