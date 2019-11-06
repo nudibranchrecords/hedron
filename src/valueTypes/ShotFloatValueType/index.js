@@ -1,7 +1,7 @@
 import { BaseValueType } from '../BaseValueType'
 import { nodeShotFired, rNodeInputLinkShotDisarm, rNodeInputLinkShotArm } from '../../store/nodes/actions'
 import getNode from '../../selectors/getNode'
-import ParamBar from '../../containers/ParamBar'
+import ParamBar from '../FloatValueType/container'
 
 export class ShotFloatValueType extends BaseValueType {
   defaultValue = 0

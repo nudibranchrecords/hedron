@@ -23,9 +23,9 @@ jest.mock('uid', () => () => {
   return 'id_' + mockUniqueId
 })
 
-jest.mock('../src/containers/ParamBar', () => null)
-jest.mock('../src/containers/ParamCheckbox', () => null)
-jest.mock('../src/containers/NodeSelect', () => null)
+jest.mock('../src/valueTypes/FloatValueType/container', () => null)
+jest.mock('../src/valueTypes/BooleanValueType/container', () => null)
+jest.mock('../src/valueTypes/EnumValueType/container', () => null)
 
 const rootListener = {
   types: 'all',

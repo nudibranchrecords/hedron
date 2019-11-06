@@ -2,7 +2,7 @@ import { connect } from 'react-redux'
 import Control from '../../components/Control'
 import getNode from '../../selectors/getNode'
 import { getType } from '../../valueTypes'
-import ParamBar from '../../containers/ParamBar'
+import ParamBar from '../../valueTypes/FloatValueType/container'
 
 const mapStateToProps = (state, ownProps) => {
   const node = getNode(state, ownProps.nodeId)
