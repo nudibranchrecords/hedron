@@ -2,9 +2,9 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { Field } from 'redux-form'
-import Row from '../Row'
-import theme from '../../utils/theme'
-import Button from '../Button'
+import Row from '../../../components/Row'
+import theme from '../../../utils/theme'
+import Button from '../../../components/Button'
 
 const Wrapper = styled.div`
   display: flex;
