@@ -35,8 +35,8 @@ class Solid {
     this.group = new THREE.Group()
     this.root.add(this.group)
 
-    // Empty array to be populated with meshes
-    this.meshes = []
+    // Empty object to be populated with meshes
+    this.meshes = {}
 
     // Defining a single material for all the polyhedra
     this.mat = new THREE.MeshBasicMaterial(
@@ -45,26 +45,28 @@ class Solid {
     const size = 1
 
     // Array geometries (the platonic solids!)
-    const geoms = [
-      new THREE.IcosahedronGeometry(size),
-      new THREE.BoxGeometry(size, size, size),
-      new THREE.OctahedronGeometry(size),
-      new THREE.TetrahedronGeometry(size),
-      new THREE.DodecahedronGeometry(size),
-    ]
+    const geoms = {
+      cube: new THREE.BoxGeometry(size, size, size),
+      tetra: new THREE.TetrahedronGeometry(size),
+      octa: new THREE.OctahedronGeometry(size),
+      icosa: new THREE.IcosahedronGeometry(size),
+      dodeca: new THREE.DodecahedronGeometry(size),
+    }
+
+    // Keep an array of the geom names
+    this.geomNames = Object.keys(geoms)
 
     // Loop through meshes
-    geoms.forEach(geom => {
+    for (const geomName in geoms) {
       // Create a mesh for each solid
-      const mesh = new THREE.Mesh(geom, this.mat)
-      // Add to array
-      this.meshes.push(mesh)
+      const mesh = new THREE.Mesh(geoms[geomName], this.mat)
+      // Add to meshes object
+      this.meshes[geomName] = mesh
       // Add to scene
       this.group.add(mesh)
-    })
-
-    // Update the shape based on params
-    this._updateShape(params.meshIndex)
+      // Hide the mesh
+      mesh.visible = false
+    }
   }
 
   /** HEDRON TIP **
@@ -103,6 +105,12 @@ class Solid {
 
     // Change material wireframe option using boolean param
     this.mat.wireframe = params.isWireframe
+
+    if (this.currGeomName !== params.geomName) {
+      if (this.currGeomName) this.meshes[this.currGeomName].visible = false
+      this.meshes[params.geomName].visible = true
+      this.currGeomName = params.geomName
+    }
   }
 
   /** HEDRON TIP **
@@ -112,33 +120,19 @@ class Solid {
 
     Current params are given as an argument
   **/
-  shapeShift (params) {
-    let meshIndex = params.meshIndex
+  randomGeom (params) {
+    const i = Math.floor(Math.random() * this.geomNames.length)
+    const geomName = this.geomNames[i]
 
-    // Increase index to shapeshift
-    meshIndex++
-
-    // If at end of array, loop round
-    if (meshIndex > this.meshes.length - 1) meshIndex = 0
-
-    this._updateShape(meshIndex)
-
-    /** HEDRON TIP **
-      If you've updated some params inside the shot, you'll need to return these new values
-    **/
-    return { meshIndex }
-  }
-
-  _updateShape (meshIndex) {
-    // Loop through meshes and only show the mesh
-    // that matches with current index
-    this.meshes.forEach((mesh, index) => {
-      if (meshIndex !== index) {
-        mesh.visible = false
-      } else {
-        mesh.visible = true
-      }
-    })
+    if (geomName === params.geomName) {
+      // If random name is the same as previous, go again
+      return this.randomGeom(params)
+    } else {
+      /** HEDRON TIP **
+        If you've updated some params inside the shot, you'll need to return these new values
+      **/
+      return { geomName }
+    }
   }
 
   /** HEDRON TIP **
