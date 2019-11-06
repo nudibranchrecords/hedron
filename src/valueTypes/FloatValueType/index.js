@@ -41,4 +41,16 @@ export class FloatValueType extends BaseValueType {
     // For now, this empty object is enough for the option to show
     anim: {},
   }
+
+  parseCustomConfig = ({
+    defaultMin = 0,
+    defaultMax = 1,
+    min = defaultMin,
+    max = defaultMax,
+  }) => ({
+    min,
+    max,
+    defaultMin,
+    defaultMax,
+  })
 }

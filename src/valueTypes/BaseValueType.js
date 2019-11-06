@@ -43,4 +43,6 @@ export class BaseValueType {
   }
 
   valueProcess = {}
+
+  parseCustomConfig = () => ({})
 }
