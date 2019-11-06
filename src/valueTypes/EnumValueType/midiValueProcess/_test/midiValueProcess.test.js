@@ -1,10 +1,9 @@
 import midiValueProcess from '../'
-test('(Util) midiValueProcess - enum - controlType abs', () => {
+test('midiValueProcess - enum - controlType abs', () => {
   let node, midiValue, midiOptions, messageCount, actual, expected
 
   node = {
     value: 'five',
-    type: 'select',
     options: [
       {
         value: 'one',
@@ -66,12 +65,11 @@ test('(Util) midiValueProcess - enum - controlType abs', () => {
   expect(actual).toBe(expected)
 })
 
-test('(Util) midiValueProcess - type is select, controlType rel1', () => {
+test('midiValueProcess - enum - controlType rel1', () => {
   let node, midiValue, midiOptions, messageCount, actual, expected
 
   node = {
     value: 'five',
-    type: 'select',
     options: [
       {
         value: 'one',
@@ -162,5 +160,70 @@ test('(Util) midiValueProcess - type is select, controlType rel1', () => {
   expected = 'ten'
 
   // Stays at highest after increase message
+  expect(actual).toBe(expected)
+})
+
+test('midiValueProcess - enum - messageType is noteOn', () => {
+  let node, midiValue, midiOptions, actual, expected
+
+  node = {
+    value: 'eight',
+    options: [
+      {
+        value: 'one',
+      },
+      {
+        value: 'two',
+      },
+      {
+        value: 'three',
+      },
+      {
+        value: 'four',
+      },
+      {
+        value: 'five',
+      },
+      {
+        value: 'six',
+      },
+      {
+        value: 'seven',
+      },
+      {
+        value: 'eight',
+      },
+      {
+        value: 'nine',
+      },
+      {
+        value: 'ten',
+      },
+    ],
+  }
+
+  midiValue = 127
+  midiOptions = {
+    messageType: 'noteOn',
+  }
+
+  actual = midiValueProcess({ node, value: midiValue, options: midiOptions })
+  expected = 'nine'
+
+  // Increments to next option
+  expect(actual).toBe(expected)
+
+  node.value = 'nine'
+  actual = midiValueProcess({ node, value: midiValue, options: midiOptions })
+  expected = 'ten'
+
+  // Increments to next option
+  expect(actual).toBe(expected)
+
+  node.value = 'ten'
+  actual = midiValueProcess({ node, value: midiValue, options: midiOptions })
+  expected = 'one'
+
+  // Wraps to first option
   expect(actual).toBe(expected)
 })
