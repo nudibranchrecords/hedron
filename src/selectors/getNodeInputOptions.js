@@ -1,10 +1,10 @@
+import { getType } from '../valueTypes'
+
 export default (state, nodeId) => {
   const node = state.nodes[nodeId]
   let nodeType = node.type
 
-  if (nodeType === 'param') {
-    nodeType += `-${node.valueType}`
-  }
+  const valueType = getType(node.valueType)
 
   // List of options
   // exclude: remove options for those node types
@@ -14,7 +14,7 @@ export default (state, nodeId) => {
       value: 'audio',
       type: 'audio',
       label: 'Audio',
-      exclude: ['linkableAction', 'param-boolean'],
+      exclude: ['linkableAction'],
     },
     {
       value: 'midi-learn',
@@ -30,13 +30,13 @@ export default (state, nodeId) => {
       value: 'lfo',
       type: 'lfo',
       label: 'LFO',
-      exclude: ['shot', 'linkableAction', 'param-boolean'],
+      exclude: ['shot', 'linkableAction'],
     },
     {
       value: 'anim',
       type: 'anim',
       label: 'Anim',
-      exclude: ['linkableAction', 'shot', 'param-boolean'],
+      exclude: ['linkableAction', 'shot'],
     },
     {
       value: 'seq-step',
@@ -47,7 +47,10 @@ export default (state, nodeId) => {
   ]
 
   const filteredOptions = options.filter(opt => {
-    if (opt.include) {
+    // TODO: We might be able to remove all of the logic here and just use the valueType properties
+    if (valueType) {
+      return Object.keys(valueType.compatibleInputs).includes(opt.type)
+    } else if (opt.include) {
       return opt.include.includes(nodeType)
     } else if (opt.exclude) {
       return !opt.exclude.includes(nodeType)

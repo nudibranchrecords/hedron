@@ -1,5 +1,5 @@
 import { connect } from 'react-redux'
-import ValueBar from '../../components/ValueBar'
+import ValueBar from './component'
 import { nodeValueUpdate } from '../../store/nodes/actions'
 import getNode from '../../selectors/getNode'
 import getInputLink from '../../selectors/getInputLink'
@@ -22,14 +22,14 @@ const mapStateToProps = (state, ownProps) => {
 }
 
 const mapDispatchToProps = (dispatch, ownProps) => {
-  const type = ownProps.type
+  const valueType = ownProps.valueType
 
   return {
     onChange: (value) => {
       dispatch(nodeValueUpdate(ownProps.nodeId, value))
     },
     onDoubleClick: () => {
-      type === 'slider' &&
+      valueType === 'float' &&
       dispatch(uiEditingOpen('paramValue', ownProps.nodeId))
     },
   }
