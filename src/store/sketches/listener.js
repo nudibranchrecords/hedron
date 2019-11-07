@@ -18,35 +18,63 @@ import getModuleSketchIds from '../../selectors/getModuleSketchIds'
 import { reloadSingleSketchModule, removeSketchFromScene,
   addSketchToScene, reloadSingleSketchConfig } from '../../engine'
 import { uMacroTargetParamLinkDelete } from '../macros/actions'
+import { getType } from '../../valueTypes'
 
-const typeDefaults = {
-  float: 0,
-  boolean: false,
+const doesValueMatchType = (value, typeName) => {
+  const doesItMatch = getType(typeName).doesValueMatch(value)
+
+  if (!doesItMatch) {
+    console.warn(`[HEDRON] value "${value}" for node doesnt match valueType "${typeName}"`)
+  }
+  return doesItMatch
 }
 
-const generateParamFromConfig = (
-  {
-    key,
-    title = key,
-    valueType = 'float',
-    defaultValue = typeDefaults[valueType],
-    hidden = false,
-    defaultMin = 0,
-    defaultMax = 1,
-  },
-  id, sketchId) => ({
+const createStartingValue = ({ defaultValue, valueType, customConfig }) => {
+  if (
+    typeof defaultValue !== 'function' &&
+    defaultValue !== undefined &&
+    doesValueMatchType(defaultValue, valueType)) {
+    return defaultValue
+  } else if (typeof defaultValue === 'function') {
+    return defaultValue(customConfig)
+  } else {
+    return getType(valueType).defaultValue
+  }
+}
+
+const generateParamFromConfig = ({
+  key,
+  title = key,
+  valueType = 'float',
+  defaultValue = getType(valueType).defaultValue,
+  hidden = false,
+  ...customConfig
+}, id, sketchId) => ({
   id,
   sketchId,
   title,
   valueType,
   type: 'param',
   key,
-  value: defaultValue,
+  value: createStartingValue({ defaultValue, valueType, customConfig }),
   hidden,
-  min: valueType === 'float' && defaultMin,
-  max: valueType === 'float' && defaultMax,
-  defaultMin,
-  defaultMax,
+  inputLinkIds: [],
+  ...getType(valueType).parseCustomConfig(customConfig),
+})
+
+const generateShotFromConfig = (
+  {
+    method,
+    title = method,
+  },
+  id, sketchId) => ({
+  id,
+  sketchId,
+  value: 0,
+  type: 'shot',
+  valueType: 'shotFloat',
+  title,
+  method,
   inputLinkIds: [],
 })
 
@@ -70,7 +98,6 @@ const handleSketchCreate = (action, store) => {
   const uniqueSketchId = uid()
   const module = getModule(state, moduleId)
   const paramIds = []
-  const inputLinkIds = []
   const shotIds = []
 
   store.dispatch(rSceneSketchAdd(sceneId, uniqueSketchId))
@@ -95,15 +122,12 @@ const handleSketchCreate = (action, store) => {
       const shot = module.shots[i]
       uniqueId = uid()
       shotIds.push(uniqueId)
-      store.dispatch(uNodeCreate(uniqueId, {
-        id: uniqueId,
-        value: 0,
-        type: 'shot',
-        title: shot.title,
-        method: shot.method,
-        sketchId: uniqueSketchId,
-        inputLinkIds,
-      }))
+      store.dispatch(
+        uNodeCreate(
+          uniqueId,
+          generateShotFromConfig(shot, uniqueId, uniqueSketchId)
+        )
+      )
     }
   }
 
@@ -217,11 +241,14 @@ const sketchReimport = (sketchId, store) => {
     } else {
       // If param does exist, some properties may have changed (e.g. title, defaultMin, defaultMax, hidden)
       const id = sketchParam.id
+      const {
+        title, defaultMin, defaultMax, hidden, valueType, options,
+      } = generateParamFromConfig(moduleParam, id, sketchId)
+
+      const value = createStartingValue({ defaultValue: sketchParam.value, valueType, options })
+
       store.dispatch(nodeUpdate(id, {
-        title: moduleParam.title ? moduleParam.title : moduleParam.key,
-        defaultMin: moduleParam.defaultMin ? moduleParam.defaultMin : 0,
-        defaultMax: moduleParam.defaultMax ? moduleParam.defaultMax : 1,
-        hidden: moduleParam.hidden === undefined ? false : moduleParam.hidden,
+        title, defaultMin, defaultMax, hidden, valueType, value, options,
       }))
     }
   }
@@ -237,19 +264,19 @@ const sketchReimport = (sketchId, store) => {
       shotIds = [
         ...shotIds.slice(0, i), uniqueId, ...shotIds.slice(i),
       ]
-      store.dispatch(uNodeCreate(uniqueId, {
-        id: uniqueId,
-        value: 0,
-        type: 'shot',
-        title: moduleShot.title,
-        method: moduleShot.method,
-        sketchId: sketchId,
-        inputLinkIds: [],
-      }))
+      store.dispatch(
+        uNodeCreate(
+          uniqueId,
+          generateShotFromConfig(moduleShot, uniqueId, sketchId)
+        )
+      )
     } else {
-      // If param does exist, the title may still change
+      // If shot does exist, the title may still change
       const id = sketchShot.id
-      store.dispatch(nodeUpdate(id, { title: sketchShot.title }))
+      const { title } = generateShotFromConfig(moduleShot, id, sketchId)
+      store.dispatch(nodeUpdate(id, {
+        title,
+      }))
     }
   }
 

@@ -1,13 +1,17 @@
 import uid from 'uid'
 import { midiNotes, messageTypes } from '../midiMessage'
 import { uInputLinkUpdateMidiInput } from '../../store/inputLinks/actions'
+import { getType } from '../../valueTypes'
 
-export default linkId => {
+export default (nodeValueType, linkId) => {
+  // Get node valueType related options
+  const extraOptions = getType(nodeValueType).getExtraInputOptions('midi')
+
   return [
     {
       title: 'Message Type',
       key: 'messageType',
-      type: 'select',
+      valueType: 'enum',
       id: uid(),
       value: 'controlChange',
       inputLinkIds: [],
@@ -23,7 +27,7 @@ export default linkId => {
     {
       title: 'Control Type',
       key: 'controlType',
-      type: 'select',
+      valueType: 'enum',
       id: uid(),
       value: 'abs',
       inputLinkIds: [],
@@ -56,32 +60,9 @@ export default linkId => {
       subNode: true,
     },
     {
-      title: 'Boolean Mode',
-      key: 'booleanMode',
-      type: 'select',
-      id: uid(),
-      value: 'toggle',
-      inputLinkIds: [],
-      subNode: true,
-      options: [
-        {
-          value: 'toggle',
-          label: 'Toggle',
-        },
-        {
-          value: 'returnTrue',
-          label: 'True',
-        },
-        {
-          value: 'returnFalse',
-          label: 'False',
-        },
-      ],
-    },
-    {
       title: 'Note',
       key: 'noteNum',
-      type: 'select',
+      valueType: 'enum',
       value: 12,
       id: uid(),
       inputLinkIds: [],
@@ -92,7 +73,7 @@ export default linkId => {
     {
       title: 'Channel',
       key: 'channel',
-      type: 'select',
+      valueType: 'enum',
       id: uid(),
       value: 0,
       inputLinkIds: [],
@@ -105,5 +86,6 @@ export default linkId => {
       )),
       onChangeAction: uInputLinkUpdateMidiInput(linkId),
     },
+    ...extraOptions,
   ]
 }

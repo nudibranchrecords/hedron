@@ -46,20 +46,40 @@ module.exports = {
       valueType: 'boolean',
     },
     {
-      key: 'meshIndex',
-      title: 'Mesh Index',
-      defaultValue: 0,
-      // meshIndex is changed by the shapeShift shot and not something
-      // the user needs to view/edit, so we set hidden:true
-      hidden: true,
+      key: 'geomName',
+      label: 'Geometry',
+      valueType: 'enum',
+      defaultValue: 'icosa',
+      options: [
+        {
+          value: 'cube',
+          label: 'Cube',
+        },
+        {
+          value: 'tetra',
+          label: 'Tetra',
+        },
+        {
+          value: 'octa',
+          label: 'Octa',
+        },
+        {
+          value: 'icosa',
+          label: 'Icosa',
+        },
+        {
+          value: 'dodeca',
+          label: 'Dodeca',
+        },
+      ],
     },
   ],
   // Shots are single functions that can fire, as opposed to values that change
   // e.g. Explosions, Pre-defined animations
   shots: [
     {
-      method: 'shapeShift', // needs to be unique
-      title: 'Shape Shift', // should be human
+      method: 'randomGeom', // needs to be unique
+      title: 'Random Geom', // should be human
     },
   ],
 }
