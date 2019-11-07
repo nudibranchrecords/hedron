@@ -2,7 +2,7 @@ module.exports = {
   title: ['Increment'],
   defaultValue: [0],
   targets: ['audio', 'lfo'],
-  controlType: ['select'],
+  valueType: ['enum'],
   controlOptions: [
     [
       {

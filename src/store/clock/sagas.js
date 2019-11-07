@@ -76,7 +76,9 @@ export function* clockUpdate () {
   }))
 
   if (info.seqStepCount % ppSeqStep === 0) {
-    yield put(inputFired('seq-step', info.seqStepCount / ppSeqStep))
+    yield put(inputFired('seq-step', info.seqStepCount / ppSeqStep, {
+      type: 'seq-step',
+    }))
   }
 
   if (info.pulses === 0) {
