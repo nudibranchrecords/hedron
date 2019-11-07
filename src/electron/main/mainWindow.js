@@ -23,6 +23,7 @@ export const createMainWindow = () => {
   mainWindow = new BrowserWindow({
     fullscreenable: true,
     webPreferences: {
+      nodeIntegration: true,
       nativeWindowOpen: true,
       webSecurity: false,
     },
@@ -52,7 +53,7 @@ export const createMainWindow = () => {
       if (!isDevelopment) {
         setTimeout(() => {
           mainWindow.setFullScreen(true)
-          event.newGuest.setAutoHideMenuBar(true)
+          event.newGuest.autoHideMenuBar = true
           event.newGuest.setMenuBarVisibility(false)
           event.newGuest.setFullScreen(true)
         }, 500)
