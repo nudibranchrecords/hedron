@@ -1,4 +1,5 @@
 import uid from 'uid'
+import { getType } from '../../valueTypes'
 
 // Generate all tween.js options for easing funcs
 const easeCurves = [
@@ -33,7 +34,10 @@ easeCurves.forEach(curve => {
   })
 })
 
-export default () => {
+export default (nodeValueType) => {
+  // Get node valueType related options
+  const extraOptions = getType(nodeValueType).getExtraInputOptions('anim')
+
   return [
     {
       title: 'Target Val',
@@ -48,7 +52,7 @@ export default () => {
       id: uid(),
       key: 'curve',
       value: 'Linear.None',
-      type: 'select',
+      valueType: 'enum',
       inputLinkIds: [],
       subNode: true,
       options: curveOptions,
@@ -61,5 +65,6 @@ export default () => {
       inputLinkIds: [],
       subNode: true,
     },
+    ...extraOptions,
   ]
 }

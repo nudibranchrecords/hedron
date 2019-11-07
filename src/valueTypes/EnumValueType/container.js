@@ -1,5 +1,5 @@
 import { connect } from 'react-redux'
-import Select from '../Select'
+import Select from '../../containers/Select'
 import { nodeValueUpdate } from '../../store/nodes/actions'
 
 const mapStateToProps = (state, ownProps) => {

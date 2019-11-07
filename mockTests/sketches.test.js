@@ -23,6 +23,10 @@ jest.mock('uid', () => () => {
   return 'id_' + mockUniqueId
 })
 
+jest.mock('../src/valueTypes/FloatValueType/container', () => null)
+jest.mock('../src/valueTypes/BooleanValueType/container', () => null)
+jest.mock('../src/valueTypes/EnumValueType/container', () => null)
+
 const rootListener = {
   types: 'all',
 
@@ -263,6 +267,7 @@ test('(mock) Sketches - Add/Delete Sketch', () => {
       shotCount: 0,
       connectedMacroIds: [],
       type: 'shot',
+      valueType: 'shotFloat',
       method: 'explode',
       sketchId: 'id_3',
     },
@@ -339,6 +344,7 @@ test('(mock) Sketches - Add/Delete Sketch', () => {
       shotCount: 0,
       connectedMacroIds: [],
       type: 'shot',
+      valueType: 'shotFloat',
       method: 'explode',
       sketchId: 'id_3',
     },

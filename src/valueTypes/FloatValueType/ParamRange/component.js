@@ -2,9 +2,9 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { Field } from 'redux-form'
-import Row from '../Row'
-import theme from '../../utils/theme'
-import Button from '../Button'
+import Row from '../../../components/Row'
+import theme from '../../../utils/theme'
+import Button from '../../../components/Button'
 
 const Wrapper = styled.div`
   display: flex;
@@ -57,14 +57,14 @@ class ParamRange extends React.Component {
           <Col>
             <label>Min</label>
             <Field
-              component='input' name='min' type='number'
+              component='input' name='min' type='number' parse={Number}
               onKeyPress={this.handleKeyPress} onBlur={this.handleBlur}
             />
           </Col>
           <Col>
             <label>Max</label>
             <Field
-              component='input' name='max' type='number'
+              component='input' name='max' type='number' parse={Number}
               onKeyPress={this.handleKeyPress} onBlur={this.handleBlur}
             />
           </Col>

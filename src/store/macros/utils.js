@@ -1,14 +1,12 @@
 import isInputTypeHuman from '../../utils/isInputTypeHuman'
-
-const allowedTypes = ['float', 'boolean']
+import { getType } from '../../valueTypes'
 
 export const shouldItLearn = (learningId, node, payload) => {
   const pType = payload.meta && payload.meta.type
-
   return (
     learningId !== false &&
     node.type !== 'macroTargetParamLink' &&
-    allowedTypes.includes(node.valueType) &&
+    getType(node.valueType).canDoMacro &&
     (!pType || pType !== 'macro' || isInputTypeHuman(pType))
   )
 }
