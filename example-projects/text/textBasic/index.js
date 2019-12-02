@@ -1,5 +1,5 @@
 const THREE = require('three')
-const fontJson = require('../../fonts/droid/droid_sans_regular.typeface.json')
+const fontJson = require('../font/droid_sans_regular.typeface.json')
 
 class TextBasic {
 
