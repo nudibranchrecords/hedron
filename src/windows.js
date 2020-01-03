@@ -1,7 +1,9 @@
 import { setOutput, stopOutput } from './engine/renderer.js'
-import { screen, ipcRenderer } from 'electron'
+import { remote, ipcRenderer } from 'electron'
 import { displaysListUpdate } from './store/displays/actions'
 let store
+
+const { screen } = remote
 
 const updateDisplays = () => {
   const displays = screen.getAllDisplays()

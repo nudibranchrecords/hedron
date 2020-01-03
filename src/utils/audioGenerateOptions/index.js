@@ -1,11 +1,15 @@
 import uid from 'uid'
+import { getType } from '../../valueTypes'
 
-export default () => {
+export default (nodeValueType) => {
+  // Get node valueType related options
+  const extraOptions = getType(nodeValueType).getExtraInputOptions('audio')
+
   return [
     {
       title: 'Audio Band',
       key: 'audioBand',
-      type: 'select',
+      valueType: 'enum',
       id: uid(),
       value: 0,
       inputLinkIds: [],
@@ -29,5 +33,6 @@ export default () => {
         },
       ],
     },
+    ...extraOptions,
   ]
 }

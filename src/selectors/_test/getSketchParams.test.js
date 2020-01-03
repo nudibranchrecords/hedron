@@ -1,8 +1,11 @@
-import test from 'tape'
 import deepFreeze from 'deep-freeze'
 import getSketchParams from '../getSketchParams'
 
-test('(engine) getSketchParams', function (t) {
+jest.mock('../../valueTypes/FloatValueType/container', () => null)
+jest.mock('../../valueTypes/BooleanValueType/container', () => null)
+jest.mock('../../valueTypes/EnumValueType/container', () => null)
+
+test('(engine) getSketchParams', function () {
   let actual, expected
 
   const state = {
@@ -11,26 +14,31 @@ test('(engine) getSketchParams', function (t) {
         title: 'Rotation X',
         key: 'rotX',
         value: 0.1,
+        valueType: 'float',
       },
       '02': {
         title: 'Rotation Y',
         key: 'rotY',
         value: 0.2,
+        valueType: 'float',
       },
       '03': {
         title: 'Speed X',
         key: 'speedX',
         value: 0.3,
+        valueType: 'float',
       },
       '04': {
         title: 'Speed Y',
         key: 'speedY',
         value: 0.4,
+        valueType: 'float',
       },
       '05': {
         title: 'Speed Z',
         key: 'speedZ',
         value: 0.5,
+        valueType: 'float',
       },
     },
     sketches: {
@@ -69,8 +77,8 @@ test('(engine) getSketchParams', function (t) {
   }
   actual = getSketchParams(state, 'xxx')
 
-  t.deepEqual(actual, expected,
-    'Returns key:value params for single sketch')
+  // Returns key:value params for single sketch
+  expect(actual).toEqual(expected)
 
   expected = {
     speedX: 0.3,
@@ -78,8 +86,8 @@ test('(engine) getSketchParams', function (t) {
   }
   actual = getSketchParams(state, 'yyy')
 
-  t.deepEqual(actual, expected,
-    'Returns key:value params for single sketch')
+  // Returns key:value params for single sketch
+  expect(actual).toEqual(expected)
 
   expected = {
     sketch_1: {
@@ -97,8 +105,8 @@ test('(engine) getSketchParams', function (t) {
 
   actual = getSketchParams(state)
 
-  t.deepEqual(actual, expected,
-    'Returns key:value params for all sketches if no id given')
+  // Returns key:value params for all sketches if no id given
+  expect(actual).toEqual(expected)
 
   expected = {
     sketch_1: {
@@ -113,13 +121,11 @@ test('(engine) getSketchParams', function (t) {
 
   actual = getSketchParams(state, null, 'aaa')
 
-  t.deepEqual(actual, expected,
-    'Returns key:value params for all sketches if scene ID given')
-
-  t.end()
+  // Returns key:value params for all sketches if no id given
+  expect(actual).toEqual(expected)
 })
 
-test('(engine) getSketchParams (min/max)', function (t) {
+test('(engine) getSketchParams (min/max)', function () {
   const state = {
     nodes: {
       '06': {
@@ -128,6 +134,7 @@ test('(engine) getSketchParams (min/max)', function (t) {
         value: 0.5,
         min: 0,
         max: 100,
+        valueType: 'float',
       },
       '07': {
         title: 'Bar',
@@ -135,6 +142,7 @@ test('(engine) getSketchParams (min/max)', function (t) {
         value: 0.5,
         min: -100,
         max: 0,
+        valueType: 'float',
       },
       '08': {
         title: 'Lorem',
@@ -142,6 +150,7 @@ test('(engine) getSketchParams (min/max)', function (t) {
         value: 0.9,
         min: 10,
         max: 20,
+        valueType: 'float',
       },
     },
     sketches: {
@@ -165,7 +174,6 @@ test('(engine) getSketchParams (min/max)', function (t) {
 
   actual = getSketchParams(state, '@@@')
 
-  t.deepEqual(actual, expected,
-    'Returns correct value based on min/max')
-  t.end()
+  // Returns correct value based on min/max
+  expect(actual).toEqual(expected)
 })

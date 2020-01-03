@@ -2,7 +2,6 @@ import React from 'react'
 import styled from 'styled-components'
 import PropTypes from 'prop-types'
 import Revealer from '../../components/Revealer'
-import ParamRange from '../../containers/ParamRange'
 import Control from '../../containers/Control'
 import InputLinkUI from '../../containers/InputLinkUI'
 import theme from '../../utils/theme'
@@ -29,7 +28,7 @@ const Bar = styled.div`
   }
 `
 
-const NodeProperties = ({ nodeId, type, advancedIsOpen, onAdvancedClick, displayValue }) => (
+const NodeProperties = ({ nodeId, type, advancedIsOpen, onAdvancedClick, displayValue, AdvancedControlComponent }) => (
   <div>
     <Top>
       { displayValue && <Bar><span>Value:</span><div><Control nodeId={nodeId} theme='panel' /></div></Bar>}
@@ -38,9 +37,10 @@ const NodeProperties = ({ nodeId, type, advancedIsOpen, onAdvancedClick, display
     {
       type === 'macro'
         ? <MacroProperties macroId={nodeId} />
-        : <Revealer title='Advanced' isOpen={advancedIsOpen} onHeaderClick={onAdvancedClick}>
-          <ParamRange nodeId={nodeId} />
-        </Revealer>
+        : AdvancedControlComponent &&
+          <Revealer title='Advanced' isOpen={advancedIsOpen} onHeaderClick={onAdvancedClick}>
+            <AdvancedControlComponent nodeId={nodeId} />
+          </Revealer>
     }
   </div>
 )
@@ -51,6 +51,7 @@ NodeProperties.propTypes = {
   onAdvancedClick: PropTypes.func.isRequired,
   type: PropTypes.string,
   displayValue: PropTypes.bool,
+  AdvancedControlComponent: PropTypes.elementType,
 }
 
 export default NodeProperties
