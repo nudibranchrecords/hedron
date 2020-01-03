@@ -1,6 +1,10 @@
 import uid from 'uid'
+import { getType } from '../../valueTypes'
 
-export default () => {
+export default (nodeValueType) => {
+  // Get node valueType related options
+  const extraOptions = getType(nodeValueType).getExtraInputOptions('seq-step')
+
   return {
     grid: {
       id: uid(),
@@ -11,5 +15,6 @@ export default () => {
         1, 0, 0, 0, 0, 0, 0, 0,
       ],
     },
+    ...extraOptions,
   }
 }

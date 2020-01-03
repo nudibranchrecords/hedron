@@ -1,44 +1,44 @@
-import '@babel/polyfill'
-import test from 'tape'
-import sinon from 'sinon'
+// import '@babel/polyfill'
+// import test from 'tape'
+// import sinon from 'sinon'
 
-import { takeEvery } from 'redux-saga/effects'
+// import { takeEvery } from 'redux-saga/effects'
 
-import proxyquire from 'proxyquire'
+// import proxyquire from 'proxyquire'
 
-// import { getAssignedLinks } from '../selectors'
-// import { nodeValuesBatchUpdate, nodeShotFired } from '../../nodes/actions'
-// import { inputLinkShotDisarm, inputLinkShotArm } from '../../inputLinks/actions'
-// import { projectError } from '../../project/actions'
+// // import { getAssignedLinks } from '../selectors'
+// // import { nodeValuesBatchUpdate, nodeShotFired } from '../../nodes/actions'
+// // import { inputLinkShotDisarm, inputLinkShotArm } from '../../inputLinks/actions'
+// // import { projectError } from '../../project/actions'
 
-// import getNodes from '../../../selectors/getNodes'
-// import getNodesValues from '../../../selectors/getNodesValues'
-// import getNode from '../../../selectors/getNode'
-// import getLinkableAction from '../../../selectors/getLinkableAction'
-// import lfoProcess from '../../../utils/lfoProcess'
-// import midiValueProcess from '../../../utils/midiValueProcess'
-// import debounceInput from '../../../utils/debounceInput'
+// // import getNodes from '../../../selectors/getNodes'
+// // import getNodesValues from '../../../selectors/getNodesValues'
+// // import getNode from '../../../selectors/getNode'
+// // import getLinkableAction from '../../../selectors/getLinkableAction'
+// // import lfoProcess from '../../../utils/lfoProcess'
+// // import midiValueProcess from '../../../utils/midiValueProcess'
+// // import debounceInput from '../../../utils/debounceInput'
 
-proxyquire.noCallThru()
+// proxyquire.noCallThru()
 
-const modifiers = {
-  work: sinon.stub(),
-}
+// const modifiers = {
+//   work: sinon.stub(),
+// }
 
-const { watchInputs, handleInput } = proxyquire('../sagas', {
-  '../../externals/modifiers': {
-    work: modifiers.work,
-  },
-})
+// const { watchInputs, handleInput } = proxyquire('../sagas', {
+//   '../../externals/modifiers': {
+//     work: modifiers.work,
+//   },
+// })
 
-test('(Saga) watchInputs', (t) => {
-  const generator = watchInputs()
-  t.deepEqual(
-    generator.next().value,
-    takeEvery('INPUT_FIRED', handleInput)
-  )
-  t.end()
-})
+// test('(Saga) watchInputs', (t) => {
+//   const generator = watchInputs()
+//   t.deepEqual(
+//     generator.next().value,
+//     takeEvery('INPUT_FIRED', handleInput)
+//   )
+//   t.end()
+// })
 
 // TODO: Convert these over to jest
 // test('(Saga) handleInput (no modifiers)', (t) => {

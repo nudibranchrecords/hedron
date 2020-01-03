@@ -36,9 +36,45 @@ module.exports = {
       key: 'rotSpeedX', // needs to be unique
       defaultValue: 0, // must be between 0 and 1
       title: 'Rotation Speed X', // optional, should be human, if not provided defaults to the key
-      defaultMin: 0, // optional, the value passed to the sketch when the param is at it's lowest value, if not provided defaults to 0
-      defaultMax: 1, // optional, the value passed to the sketch when the param is at it's highest value, if not provided defaults to 1
       hidden: false, // optional, some params may want to be hidden in the UI, if they are controlled programatically by the sketch. Defaults to false.
+      valueType: 'float', // optional, can be "float", "boolean" or "enum". Defaults to "float"
+      defaultMin: 0, // for "float" valueType, optional. The value passed to the sketch when the param is at it's lowest value, if not provided defaults to 0
+      defaultMax: 1, // for "float" valueType, optional. The value passed to the sketch when the param is at it's highest value, if not provided defaults to 1
+    },
+    {
+      key: 'isWireframe',
+      title: 'Wireframe',
+      valueType: 'boolean',
+      defaultValue: true, // If using defaultValue, it should match the valueType
+    },
+    {
+      key: 'geomName',
+      label: 'Geometry',
+      valueType: 'enum',
+      defaultValue: 'icosa',
+      // options for "enum" valueType are defined like this
+      options: [
+        {
+          value: 'cube', // required, the value of the option that will be passed around
+          label: 'Cube', // optional, human readable version (defaults to value)
+        },
+        {
+          value: 'tetra',
+          label: 'Tetra',
+        },
+        {
+          value: 'octa',
+          label: 'Octa',
+        },
+        {
+          value: 'icosa',
+          label: 'Icosa',
+        },
+        {
+          value: 'dodeca',
+          label: 'Dodeca',
+        },
+      ],
     },
   ],
   // Shots are single functions that can fire, as opposed to values that change
@@ -101,17 +137,18 @@ class Solid {
     scene - This is the THREE object for the scene. You can also access the THREE renderer
     using scene.renderer
 
-    params - The sketch params when the sketch first initialises
-
     meta - This is an object with meta data that might be useful. It has the following properties:
-      sketchesFolder - The path to the sketches folder on your computer. Useful if you need to link to a resource such as an image.
+      sketchesFolder - The path to the sketches folder on your computer.
+      Useful if you need to link to a resource such as an image.
+
+    params - The sketch params when the sketch first initialises
   **/
   constructor (scene, params, meta) {
     /** HEDRON TIP **
       Must define a "root" property as a THREE.Group or THREE.Object3D
       Hedron looks for this and will add it to the scene.
     **/
-    this.root = new THREE.Group() // THREE is a global var so no need to import
+    this.root = new THREE.Group() // THREE is a global var, so no need to import
 
     /** HEDRON TIP **
       It's good practice to not manipulate the root object
@@ -121,36 +158,38 @@ class Solid {
     this.group = new THREE.Group()
     this.root.add(this.group)
 
-    // Empty array to be populated with meshes
-    this.meshes = []
+    // Empty object to be populated with meshes
+    this.meshes = {}
 
     // Defining a single material for all the polyhedra
-    const mat = new THREE.MeshBasicMaterial(
+    this.mat = new THREE.MeshBasicMaterial(
       { wireframe: true, color: 0xffffff }
     )
-    const size = 300
+    const size = 1
 
     // Array geometries (the platonic solids!)
-    const geoms = [
-      new THREE.IcosahedronGeometry(size),
-      new THREE.BoxGeometry(size, size, size),
-      new THREE.OctahedronGeometry(size),
-      new THREE.TetrahedronGeometry(size),
-      new THREE.DodecahedronGeometry(size)
-    ]
+    const geoms = {
+      cube: new THREE.BoxGeometry(size, size, size),
+      tetra: new THREE.TetrahedronGeometry(size),
+      octa: new THREE.OctahedronGeometry(size),
+      icosa: new THREE.IcosahedronGeometry(size),
+      dodeca: new THREE.DodecahedronGeometry(size),
+    }
+
+    // Keep an array of the geom names
+    this.geomNames = Object.keys(geoms)
 
     // Loop through meshes
-    geoms.forEach(geom => {
+    for (const geomName in geoms) {
       // Create a mesh for each solid
-      const mesh = new THREE.Mesh(geom, mat)
-      // Add to array
-      this.meshes.push(mesh)
+      const mesh = new THREE.Mesh(geoms[geomName], this.mat)
+      // Add to meshes object
+      this.meshes[geomName] = mesh
       // Add to scene
       this.group.add(mesh)
-    })
-
-    // Update the shape based on params
-    this._updateShape(params.meshIndex)
+      // Hide the mesh
+      mesh.visible = false
+    }
   }
 
   /** HEDRON TIP **
@@ -185,8 +224,16 @@ class Solid {
     this.group.rotation.z += params.rotSpeedZ * baseSpeed * frameDiff
 
     // Change scale using params.scale
-    params.scale = Math.max(params.scale * 4, 0.00001)
     this.group.scale.set(params.scale, params.scale, params.scale)
+
+    // Change material wireframe option using boolean param
+    this.mat.wireframe = params.isWireframe
+
+    if (this.currGeomName !== params.geomName) {
+      if (this.currGeomName) this.meshes[this.currGeomName].visible = false
+      this.meshes[params.geomName].visible = true
+      this.currGeomName = params.geomName
+    }
   }
 
   /** HEDRON TIP **
@@ -196,39 +243,26 @@ class Solid {
 
     Current params are given as an argument
   **/
-  shapeShift (params) {
-    let meshIndex = params.meshIndex
+  randomGeom (params) {
+    const i = Math.floor(Math.random() * this.geomNames.length)
+    const geomName = this.geomNames[i]
 
-    // Increase index to shapeshift
-    meshIndex++
-
-    // If at end of array, loop round
-    if (meshIndex > this.meshes.length - 1) meshIndex = 0
-
-    this._updateShape(meshIndex)
-
-    /** HEDRON TIP **
-      If you've updated some params inside the shot, you'll need to return these new values
-    **/
-    return { meshIndex }
-  }
-
-  _updateShape (meshIndex) {
-    // Loop through meshes and only show the mesh
-    // that matches with current index
-    this.meshes.forEach((mesh, index) => {
-      if (meshIndex !== index) {
-        mesh.visible = false
-      } else {
-        mesh.visible = true
-      }
-    })
+    if (geomName === params.geomName) {
+      // If random name is the same as previous, go again
+      return this.randomGeom(params)
+    } else {
+      /** HEDRON TIP **
+        If you've updated some params inside the shot, you'll need to return these new values
+      **/
+      return { geomName }
+    }
   }
 
   /** HEDRON TIP **
     Use the destructor method to do anything when the sketch is deleted
   **/
   destructor () {
+    // eslint-disable-next-line no-console
     console.log('Solid sketch deleted!')
   }
 }

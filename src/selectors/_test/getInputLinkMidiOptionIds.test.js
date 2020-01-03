@@ -40,10 +40,6 @@ test('(Selector) getInputLinkMidiOptionIds', () => {
     nodes: {
       xxx: {
         optionIds: ['opt1_sensitivity', 'opt2_controlType', 'opt3', 'opt4_messageType'],
-        nodeId: 'node_y',
-      },
-      node_y: {
-        valueType: 'float',
       },
       opt1_sensitivity: {
         key: 'sensitivity',
@@ -73,10 +69,6 @@ test('(Selector) getInputLinkMidiOptionIds', () => {
     nodes: {
       xxx: {
         optionIds: ['opt2_controlType', 'opt1_sensitivity', 'opt3', 'opt4_messageType'],
-        nodeId: 'node_y',
-      },
-      node_y: {
-        valueType: 'float',
       },
       opt1_sensitivity: {
         key: 'sensitivity',
@@ -106,85 +98,7 @@ test('(Selector) getInputLinkMidiOptionIds', () => {
   state = {
     nodes: {
       xxx: {
-        optionIds: ['opt2_controlType', 'opt1_sensitivity', 'opt3_booleanMode', 'opt4_messageType'],
-        nodeId: 'node_y',
-      },
-      node_y: {
-        valueType: 'float',
-      },
-      opt1_sensitivity: {
-        key: 'sensitivity',
-        id: 'opt1_sensitivity',
-      },
-      opt2_controlType: {
-        key: 'controlType',
-        id: 'opt2_controlType',
-        value: 'abs',
-      },
-      opt3_booleanMode: {
-        key: 'booleanMode',
-        id: 'opt3_booleanMode',
-      },
-      opt4_messageType: {
-        key: 'messageType',
-        id: 'opt4_messageType',
-        value: 'controlChange',
-      },
-    },
-  }
-
-  actual = getInputLinkMidiOptionIds(state, 'xxx')
-  expected = ['opt2_controlType', 'opt4_messageType']
-
-  // Filters out MIDI sensitivity option because inputLink has abs controlType
-  // And Filters out booleanMode because inputLink doesnt have node with boolean valueType
-  expect(actual).toEqual(expected)
-
-  state = {
-    nodes: {
-      xxx: {
-        optionIds: ['opt2_controlType', 'opt1_sensitivity', 'opt3_booleanMode', 'opt4_messageType'],
-        nodeId: 'node_y',
-      },
-      node_y: {
-        valueType: 'boolean',
-      },
-      opt1_sensitivity: {
-        key: 'sensitivity',
-        id: 'opt1_sensitivity',
-      },
-      opt2_controlType: {
-        key: 'controlType',
-        id: 'opt2_controlType',
-        value: 'abs',
-      },
-      opt3_booleanMode: {
-        key: 'booleanMode',
-        id: 'opt3_booleanMode',
-      },
-      opt4_messageType: {
-        key: 'messageType',
-        id: 'opt4_messageType',
-        value: 'controlChange',
-      },
-    },
-  }
-
-  actual = getInputLinkMidiOptionIds(state, 'xxx')
-  expected = ['opt2_controlType', 'opt3_booleanMode', 'opt4_messageType']
-
-  // Filters out MIDI sensitivity option because inputLink has abs controlType
-  // And doesnt filter out booleanMode option because node has valueType of boolean
-  expect(actual).toEqual(expected)
-
-  state = {
-    nodes: {
-      xxx: {
         optionIds: ['opt2_controlType', 'opt1_sensitivity', 'opt4_messageType'],
-        nodeId: 'node_y',
-      },
-      node_y: {
-        valueType: 'boolean',
       },
       opt1_sensitivity: {
         key: 'sensitivity',

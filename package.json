@@ -37,7 +37,14 @@
     "testMatch": [
       "**/?(*.)+(test).[jt]s?(x)"
     ],
-    "setupFilesAfterEnv": ["./setup.jest.js"]
+    "setupFilesAfterEnv": [
+      "./setup.jest.js"
+    ]
+  },
+  "glslify": {
+    "transform": [
+      "glslify-import"
+    ]
   },
   "dependencies": {
     "@babel/core": "^7.2.2",
@@ -54,6 +61,7 @@
     "err-code": "^1.1.2",
     "eventemitter3": "^3.0.1",
     "glslify": "^7.0.0",
+    "glslify-import": "^3.1.0",
     "history": "^4.6.1",
     "jsonfile": "^2.4.0",
     "lodash": "^4.17.15",
@@ -110,10 +118,10 @@
     "cross-env": "^5.2.0",
     "css-loader": "^0.28.7",
     "deep-freeze": "^0.0.1",
-    "electron": "3",
+    "electron": "^7.1.0",
     "electron-builder": "^20.38.5",
     "electron-debug": "^1.4.0",
-    "electron-devtools-installer": "^2.2.1",
+    "electron-devtools-installer": "^2.2.4",
     "electron-log": "^2.2.14",
     "electron-webpack": "^2.6.1",
     "eslint": "^6.1.0",

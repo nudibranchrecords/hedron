@@ -52,10 +52,13 @@ export function* macroTargetParamLinkAdd (action) {
   const p = action.payload
   const param = yield select(getNode, p.paramId)
   const nodeId = yield call(uid)
+  // a macroTargetParamLink should share most of the properties
+  // of the param it is linked to, with a few changes
   yield put(rNodeCreate(nodeId, {
-    title: param.title,
+    ...param,
     type: 'macroTargetParamLink',
-    valueType: param.valueType,
+    value: undefined,
+    id: nodeId,
   }))
   yield put(rNodeMacroTargetParamLinkCreate(p.macroId, p.paramId, nodeId))
   yield put(rNodeConnectedMacroAdd(p.paramId, p.macroId))
