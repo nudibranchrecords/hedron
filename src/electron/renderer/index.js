@@ -1,4 +1,4 @@
-import './threeImports'
+import './globalVars'
 
 import React from 'react'
 import { render } from 'react-dom'

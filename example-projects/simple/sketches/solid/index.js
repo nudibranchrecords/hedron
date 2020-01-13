@@ -5,6 +5,12 @@ The user can change the scale. The user can also click on "shapeshift" and the g
 **/
 
 /** HEDRON TIP **
+  Lots of useful stuff can be found in the global var HEDRON. It is strongly advised to use this reference
+  to three.js rather than your own imported one.
+**/
+const { THREE } = window.HEDRON.dependencies
+
+/** HEDRON TIP **
   Hedron sketches must be a class
 **/
 class Solid {

@@ -5,10 +5,10 @@ export function uSketchCreate (moduleId, sceneId) {
   }
 }
 
-export function uSketchDelete (id, sceneId) {
+export function uSketchDelete (id, sceneId, options = {}) {
   return {
     type: 'U_SKETCH_DELETE',
-    payload: { id, sceneId },
+    payload: { id, sceneId, options },
   }
 }
 

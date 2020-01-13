@@ -12,7 +12,6 @@ const mapStateToProps = (state, ownProps) => ({
 const mapDispatchToProps = (dispatch, ownProps) => ({
   onChange: (values) => {
     dispatch(settingsUpdate(values))
-    uiEventEmitter.emit('reset-renderer')
     uiEventEmitter.emit('repaint')
   },
 })

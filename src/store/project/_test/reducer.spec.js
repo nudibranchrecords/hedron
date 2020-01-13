@@ -2,7 +2,7 @@ import test from 'tape'
 import deepFreeze from 'deep-freeze'
 import projectReducer from '../reducer'
 
-import { returnsPreviousState } from '../../../testUtils'
+import { returnsPreviousState } from '../../../../testUtils'
 returnsPreviousState(projectReducer)
 
 test('(Reducer) projectReducer - Updates filepath on PROJECT_FILEPATH_UPDATE', (t) => {
