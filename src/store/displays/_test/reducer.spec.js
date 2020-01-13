@@ -3,7 +3,7 @@ import deepFreeze from 'deep-freeze'
 import displaysReducer from '../reducer'
 import * as a from '../actions'
 
-import { returnsPreviousState } from '../../../testUtils'
+import { returnsPreviousState } from '../../../../testUtils'
 returnsPreviousState(displaysReducer)
 
 test('(Reducer) displaysReducer - Updates deviceList on displaysListUpdate', (t) => {

@@ -37,6 +37,9 @@
     "testMatch": [
       "**/?(*.)+(test).[jt]s?(x)"
     ],
+    "moduleNameMapper": {
+      "\\.(txt)$": "<rootDir>/testUtils/fileMock.js"
+    },
     "setupFilesAfterEnv": [
       "./setup.jest.js"
     ]
