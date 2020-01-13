@@ -3,7 +3,7 @@ import inputsReducer from '../reducer'
 import deepFreeze from 'deep-freeze'
 import * as a from '../actions'
 
-import { returnsPreviousState } from '../../../testUtils'
+import { returnsPreviousState } from '../../../../testUtils'
 returnsPreviousState(inputsReducer)
 
 test('(Reducer) inputsReducer - Updates value on INPUT_FIRED', (t) => {
