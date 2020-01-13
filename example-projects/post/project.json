@@ -1,0 +1,1883 @@
+{
+    "nodes": {
+        "sceneCrossfader": {
+            "id": "sceneCrossfader",
+            "value": 0,
+            "inputLinkIds": [],
+            "shotCount": 0,
+            "connectedMacroIds": [],
+            "title": "Scene Crossfader",
+            "type": "param"
+        },
+        "viewerMode": {
+            "id": "viewerMode",
+            "value": "mix",
+            "inputLinkIds": [],
+            "shotCount": 0,
+            "connectedMacroIds": [],
+            "title": "Viewer Mode",
+            "type": "select",
+            "options": [
+                {
+                    "value": "mix",
+                    "label": "Mix"
+                },
+                {
+                    "value": "A",
+                    "label": "A"
+                },
+                {
+                    "value": "B",
+                    "label": "B"
+                }
+            ]
+        },
+        "sketchOrganization": {
+            "id": "sketchOrganization",
+            "value": "category",
+            "inputLinkIds": [],
+            "shotCount": 0,
+            "connectedMacroIds": [],
+            "title": "Sketch Organization",
+            "type": "select",
+            "options": [
+                {
+                    "value": "folder",
+                    "label": "Folder"
+                },
+                {
+                    "value": "category",
+                    "label": "Category"
+                },
+                {
+                    "value": "author",
+                    "label": "Author"
+                }
+            ]
+        },
+        "audioLevelsFalloff": {
+            "id": "audioLevelsFalloff",
+            "value": 1,
+            "inputLinkIds": [],
+            "shotCount": 0,
+            "connectedMacroIds": [],
+            "title": "Levels Falloff",
+            "type": "param"
+        },
+        "audioLevelsPower": {
+            "id": "audioLevelsPower",
+            "value": 0.25,
+            "inputLinkIds": [],
+            "shotCount": 0,
+            "connectedMacroIds": [],
+            "title": "Levels Power",
+            "type": "param",
+            "min": 0.5,
+            "max": 3
+        },
+        "audioLevelsSmoothing": {
+            "id": "audioLevelsSmoothing",
+            "value": 0,
+            "inputLinkIds": [],
+            "shotCount": 0,
+            "connectedMacroIds": [],
+            "title": "Levels Smoothing",
+            "type": "param"
+        },
+        "audioNormalizeLevels": {
+            "id": "audioNormalizeLevels",
+            "value": 0.5,
+            "inputLinkIds": [],
+            "shotCount": 0,
+            "connectedMacroIds": [],
+            "title": "Normalize Levels",
+            "type": "param"
+        },
+        "audioNormalizeRangeFalloff": {
+            "id": "audioNormalizeRangeFalloff",
+            "value": 0.01,
+            "inputLinkIds": [],
+            "shotCount": 0,
+            "connectedMacroIds": [],
+            "title": "Normalized Range Falloff",
+            "type": "param"
+        },
+        "eim7arw": {
+            "id": "eim7arw",
+            "value": 0,
+            "inputLinkIds": [],
+            "shotCount": 0,
+            "connectedMacroIds": [],
+            "type": "linkableAction",
+            "action": {
+                "type": "R_SCENE_SELECT_CHANNEL",
+                "payload": {
+                    "id": "slrkesh",
+                    "channel": "A"
+                }
+            },
+            "title": "Add to A"
+        },
+        "r6chevx": {
+            "id": "r6chevx",
+            "value": 0,
+            "inputLinkIds": [],
+            "shotCount": 0,
+            "connectedMacroIds": [],
+            "type": "linkableAction",
+            "action": {
+                "type": "R_SCENE_SELECT_CHANNEL",
+                "payload": {
+                    "id": "slrkesh",
+                    "channel": "B"
+                }
+            },
+            "title": "Add to B"
+        },
+        "7kj4rcx": {
+            "id": "7kj4rcx",
+            "value": 0,
+            "inputLinkIds": [],
+            "shotCount": 0,
+            "connectedMacroIds": [],
+            "type": "linkableAction",
+            "action": {
+                "type": "U_SCENE_SELECT_CHANNEL",
+                "payload": {
+                    "id": "slrkesh",
+                    "type": "active"
+                }
+            },
+            "title": "Add to Active"
+        },
+        "bmmajnl": {
+            "id": "bmmajnl",
+            "value": 0,
+            "inputLinkIds": [],
+            "shotCount": 0,
+            "connectedMacroIds": [],
+            "type": "linkableAction",
+            "action": {
+                "type": "U_SCENE_SELECT_CHANNEL",
+                "payload": {
+                    "id": "slrkesh",
+                    "type": "opposite"
+                }
+            },
+            "title": "Add to Opposite"
+        },
+        "llavwe7": {
+            "id": "llavwe7",
+            "value": 0,
+            "inputLinkIds": [],
+            "shotCount": 0,
+            "connectedMacroIds": [],
+            "type": "linkableAction",
+            "action": {
+                "type": "SCENE_CLEAR_CHANNEL",
+                "payload": {
+                    "id": "slrkesh"
+                }
+            },
+            "title": "Clear"
+        },
+        "7kcbova": {
+            "id": "7kcbova",
+            "value": 0,
+            "inputLinkIds": [],
+            "shotCount": 0,
+            "connectedMacroIds": [],
+            "type": "linkableAction",
+            "action": {
+                "type": "R_SCENE_SELECT_CHANNEL",
+                "payload": {
+                    "id": "y6ypymu",
+                    "channel": "A"
+                }
+            },
+            "title": "Add to A"
+        },
+        "nhptu6x": {
+            "id": "nhptu6x",
+            "value": 0,
+            "inputLinkIds": [],
+            "shotCount": 0,
+            "connectedMacroIds": [],
+            "type": "linkableAction",
+            "action": {
+                "type": "R_SCENE_SELECT_CHANNEL",
+                "payload": {
+                    "id": "y6ypymu",
+                    "channel": "B"
+                }
+            },
+            "title": "Add to B"
+        },
+        "9abne34": {
+            "id": "9abne34",
+            "value": 0,
+            "inputLinkIds": [],
+            "shotCount": 0,
+            "connectedMacroIds": [],
+            "type": "linkableAction",
+            "action": {
+                "type": "U_SCENE_SELECT_CHANNEL",
+                "payload": {
+                    "id": "y6ypymu",
+                    "type": "active"
+                }
+            },
+            "title": "Add to Active"
+        },
+        "yk4gs9v": {
+            "id": "yk4gs9v",
+            "value": 0,
+            "inputLinkIds": [],
+            "shotCount": 0,
+            "connectedMacroIds": [],
+            "type": "linkableAction",
+            "action": {
+                "type": "U_SCENE_SELECT_CHANNEL",
+                "payload": {
+                    "id": "y6ypymu",
+                    "type": "opposite"
+                }
+            },
+            "title": "Add to Opposite"
+        },
+        "asn98a9": {
+            "id": "asn98a9",
+            "value": 0,
+            "inputLinkIds": [],
+            "shotCount": 0,
+            "connectedMacroIds": [],
+            "type": "linkableAction",
+            "action": {
+                "type": "SCENE_CLEAR_CHANNEL",
+                "payload": {
+                    "id": "y6ypymu"
+                }
+            },
+            "title": "Clear"
+        },
+        "q38ka34": {
+            "id": "q38ka34",
+            "value": 0.8722410865874364,
+            "inputLinkIds": [],
+            "shotCount": 0,
+            "connectedMacroIds": [],
+            "sketchId": "tbaup7a",
+            "title": "scale",
+            "type": "param",
+            "key": "scale",
+            "hidden": false,
+            "min": 0,
+            "max": 1,
+            "defaultMin": 0,
+            "defaultMax": 1
+        },
+        "xt75s4r": {
+            "id": "xt75s4r",
+            "value": 0.7228353140916809,
+            "inputLinkIds": [],
+            "shotCount": 0,
+            "connectedMacroIds": [],
+            "sketchId": "tbaup7a",
+            "title": "lumThreshold",
+            "type": "param",
+            "key": "lumThreshold",
+            "hidden": false,
+            "min": 0,
+            "max": 1,
+            "defaultMin": 0,
+            "defaultMax": 1
+        },
+        "aj4i9w4": {
+            "id": "aj4i9w4",
+            "value": 0.19736842105263153,
+            "inputLinkIds": [],
+            "shotCount": 0,
+            "connectedMacroIds": [],
+            "sketchId": "tbaup7a",
+            "title": "lumSmoothing",
+            "type": "param",
+            "key": "lumSmoothing",
+            "hidden": false,
+            "min": 0,
+            "max": 1,
+            "defaultMin": 0,
+            "defaultMax": 1
+        },
+        "g5jd7mn": {
+            "id": "g5jd7mn",
+            "value": 0.48684210526315785,
+            "inputLinkIds": [],
+            "shotCount": 0,
+            "connectedMacroIds": [],
+            "sketchId": "tbaup7a",
+            "title": "opacity",
+            "type": "param",
+            "key": "opacity",
+            "hidden": false,
+            "min": 0,
+            "max": 5,
+            "defaultMin": 0,
+            "defaultMax": 5
+        },
+        "gt6u7rn": {
+            "id": "gt6u7rn",
+            "value": 0.5394736842105263,
+            "inputLinkIds": [],
+            "shotCount": 0,
+            "connectedMacroIds": [],
+            "sketchId": "uvgy4q0",
+            "title": "brightness",
+            "type": "param",
+            "key": "brightness",
+            "hidden": false,
+            "min": -1,
+            "max": 1,
+            "defaultMin": -1,
+            "defaultMax": 1
+        },
+        "0dqau7l": {
+            "id": "0dqau7l",
+            "value": 0.65,
+            "inputLinkIds": [],
+            "shotCount": 0,
+            "connectedMacroIds": [],
+            "sketchId": "uvgy4q0",
+            "title": "contrast",
+            "type": "param",
+            "key": "contrast",
+            "hidden": false,
+            "min": -1,
+            "max": 1,
+            "defaultMin": -1,
+            "defaultMax": 1
+        },
+        "uxn9jcw": {
+            "id": "uxn9jcw",
+            "value": 1,
+            "inputLinkIds": [],
+            "shotCount": 0,
+            "connectedMacroIds": [],
+            "sketchId": "uvgy4q0",
+            "title": "Bright/Contr Opacity",
+            "type": "param",
+            "key": "brightnessContrastOpacity",
+            "hidden": false,
+            "min": 0,
+            "max": 1,
+            "defaultMin": 0,
+            "defaultMax": 1
+        },
+        "xqnj58p": {
+            "id": "xqnj58p",
+            "value": 0.9657894736842105,
+            "inputLinkIds": [],
+            "shotCount": 0,
+            "connectedMacroIds": [],
+            "sketchId": "uvgy4q0",
+            "title": "gamma",
+            "type": "param",
+            "key": "gamma",
+            "hidden": false,
+            "min": 0,
+            "max": 1,
+            "defaultMin": 0,
+            "defaultMax": 1
+        },
+        "i8tr9yt": {
+            "id": "i8tr9yt",
+            "value": 1,
+            "inputLinkIds": [],
+            "shotCount": 0,
+            "connectedMacroIds": [],
+            "sketchId": "uvgy4q0",
+            "title": "gammaOpacity",
+            "type": "param",
+            "key": "gammaOpacity",
+            "hidden": false,
+            "min": 0,
+            "max": 1,
+            "defaultMin": 0,
+            "defaultMax": 1
+        },
+        "0a95xcv": {
+            "id": "0a95xcv",
+            "value": 0.5,
+            "inputLinkIds": [],
+            "shotCount": 0,
+            "connectedMacroIds": [],
+            "sketchId": "uvgy4q0",
+            "title": "hue",
+            "type": "param",
+            "key": "hue",
+            "hidden": false,
+            "min": -3.141592653589793,
+            "max": 3.141592653589793,
+            "defaultMin": -3.141592653589793,
+            "defaultMax": 3.141592653589793
+        },
+        "tof7yy8": {
+            "id": "tof7yy8",
+            "value": 0.6194736842105264,
+            "inputLinkIds": [],
+            "shotCount": 0,
+            "connectedMacroIds": [],
+            "sketchId": "uvgy4q0",
+            "title": "saturation",
+            "type": "param",
+            "key": "saturation",
+            "hidden": false,
+            "min": -1,
+            "max": 1,
+            "defaultMin": -1,
+            "defaultMax": 1
+        },
+        "ig3x32e": {
+            "id": "ig3x32e",
+            "value": 1,
+            "inputLinkIds": [],
+            "shotCount": 0,
+            "connectedMacroIds": [],
+            "sketchId": "uvgy4q0",
+            "title": "hueSaturationOpacity",
+            "type": "param",
+            "key": "hueSaturationOpacity",
+            "hidden": false,
+            "min": 0,
+            "max": 1,
+            "defaultMin": 0,
+            "defaultMax": 1
+        },
+        "uha64g8": {
+            "id": "uha64g8",
+            "value": 0.3947368421052631,
+            "inputLinkIds": [],
+            "shotCount": 0,
+            "connectedMacroIds": [],
+            "sketchId": "raihtph",
+            "title": "scale",
+            "type": "param",
+            "key": "scale",
+            "hidden": false,
+            "min": -1,
+            "max": 1,
+            "defaultMin": -1,
+            "defaultMax": 1
+        },
+        "xxg41rh": {
+            "id": "xxg41rh",
+            "value": 0.9328489845420764,
+            "inputLinkIds": [
+                "9inri2u"
+            ],
+            "shotCount": 0,
+            "connectedMacroIds": [],
+            "sketchId": "raihtph",
+            "title": "rotAngle",
+            "type": "param",
+            "key": "rotAngle",
+            "hidden": false,
+            "min": -1,
+            "max": 1,
+            "defaultMin": -1,
+            "defaultMax": 1,
+            "openedLinkId": "9inri2u",
+            "activeInputLinkId": "9inri2u"
+        },
+        "12w9sfj": {
+            "id": "12w9sfj",
+            "value": 0.004112926213383299,
+            "inputLinkIds": [
+                "ysfnj2p"
+            ],
+            "shotCount": 0,
+            "connectedMacroIds": [],
+            "sketchId": "raihtph",
+            "title": "mixAmp",
+            "type": "param",
+            "key": "mixAmp",
+            "hidden": false,
+            "min": 0,
+            "max": 1,
+            "defaultMin": 0,
+            "defaultMax": 1,
+            "openedLinkId": "ysfnj2p",
+            "activeInputLinkId": "ysfnj2p"
+        },
+        "4j82ent": {
+            "id": "4j82ent",
+            "value": 0,
+            "inputLinkIds": [],
+            "shotCount": 0,
+            "connectedMacroIds": [],
+            "parentNodeId": "ysfnj2p",
+            "sketchId": "raihtph",
+            "key": "threshold",
+            "title": "Threshold",
+            "passToNext": false,
+            "subNode": true
+        },
+        "8hv46op": {
+            "id": "8hv46op",
+            "value": 0,
+            "inputLinkIds": [],
+            "shotCount": 0,
+            "connectedMacroIds": [],
+            "parentNodeId": "ysfnj2p",
+            "sketchId": "raihtph",
+            "key": "range",
+            "title": "Lower Range",
+            "passToNext": true,
+            "subNode": true
+        },
+        "e0jak76": {
+            "id": "e0jak76",
+            "value": 0.76,
+            "inputLinkIds": [],
+            "shotCount": 0,
+            "connectedMacroIds": [],
+            "parentNodeId": "ysfnj2p",
+            "sketchId": "raihtph",
+            "key": "range",
+            "title": "Upper Range",
+            "passToNext": false,
+            "subNode": true
+        },
+        "6l5eq1j": {
+            "id": "6l5eq1j",
+            "value": 0,
+            "inputLinkIds": [],
+            "shotCount": 0,
+            "connectedMacroIds": [],
+            "parentNodeId": "ysfnj2p",
+            "sketchId": "raihtph",
+            "key": "increment",
+            "title": "Increment",
+            "passToNext": false,
+            "type": "select",
+            "options": [
+                {
+                    "value": 0,
+                    "label": "Off"
+                },
+                {
+                    "value": 1,
+                    "label": "Increment"
+                },
+                {
+                    "value": 2,
+                    "label": "Decrement"
+                }
+            ],
+            "subNode": true
+        },
+        "c8c1ae4": {
+            "id": "c8c1ae4",
+            "value": "sine",
+            "inputLinkIds": [],
+            "shotCount": 0,
+            "connectedMacroIds": [],
+            "title": "Shape",
+            "key": "shape",
+            "type": "select",
+            "subNode": true,
+            "options": [
+                {
+                    "value": "sine",
+                    "label": "Sine"
+                },
+                {
+                    "value": "square",
+                    "label": "Square"
+                },
+                {
+                    "value": "sawtooth",
+                    "label": "Sawtooth"
+                },
+                {
+                    "value": "rSawtooth",
+                    "label": "Revese Sawtooth"
+                },
+                {
+                    "value": "triangle",
+                    "label": "Triangle"
+                },
+                {
+                    "value": "noise",
+                    "label": "Noise"
+                }
+            ],
+            "sketchId": "raihtph",
+            "parentNodeId": "ysfnj2p"
+        },
+        "28v9mia": {
+            "id": "28v9mia",
+            "value": 0.0625,
+            "inputLinkIds": [],
+            "shotCount": 0,
+            "connectedMacroIds": [],
+            "title": "Rate",
+            "key": "rate",
+            "type": "select",
+            "subNode": true,
+            "options": [
+                {
+                    "value": 32,
+                    "label": "32"
+                },
+                {
+                    "value": 16,
+                    "label": "16"
+                },
+                {
+                    "value": 8,
+                    "label": "8"
+                },
+                {
+                    "value": 4,
+                    "label": "4"
+                },
+                {
+                    "value": 2,
+                    "label": "2"
+                },
+                {
+                    "value": 1,
+                    "label": "1"
+                },
+                {
+                    "value": 0.5,
+                    "label": "1/2"
+                },
+                {
+                    "value": 0.25,
+                    "label": "1/4"
+                },
+                {
+                    "value": 0.125,
+                    "label": "1/8"
+                },
+                {
+                    "value": 0.0625,
+                    "label": "1/16"
+                },
+                {
+                    "value": 0.03125,
+                    "label": "1/32"
+                }
+            ],
+            "sketchId": "raihtph",
+            "parentNodeId": "ysfnj2p"
+        },
+        "mtskpmd": {
+            "id": "mtskpmd",
+            "value": 0,
+            "inputLinkIds": [],
+            "shotCount": 0,
+            "connectedMacroIds": [],
+            "title": "Phase",
+            "key": "phase",
+            "subNode": true,
+            "sketchId": "raihtph",
+            "parentNodeId": "ysfnj2p"
+        },
+        "jhlssyo": {
+            "id": "jhlssyo",
+            "value": -1,
+            "inputLinkIds": [],
+            "shotCount": 0,
+            "connectedMacroIds": [],
+            "title": "Seed",
+            "key": "seed",
+            "type": "select",
+            "subNode": true,
+            "options": [
+                {
+                    "value": -1,
+                    "label": "auto"
+                },
+                {
+                    "value": 0,
+                    "label": "0"
+                },
+                {
+                    "value": 1,
+                    "label": "1"
+                },
+                {
+                    "value": 2,
+                    "label": "2"
+                },
+                {
+                    "value": 3,
+                    "label": "3"
+                },
+                {
+                    "value": 4,
+                    "label": "4"
+                },
+                {
+                    "value": 5,
+                    "label": "5"
+                },
+                {
+                    "value": 6,
+                    "label": "6"
+                },
+                {
+                    "value": 7,
+                    "label": "7"
+                },
+                {
+                    "value": 8,
+                    "label": "8"
+                },
+                {
+                    "value": 9,
+                    "label": "9"
+                },
+                {
+                    "value": 10,
+                    "label": "10"
+                },
+                {
+                    "value": 11,
+                    "label": "11"
+                },
+                {
+                    "value": 12,
+                    "label": "12"
+                },
+                {
+                    "value": 13,
+                    "label": "13"
+                },
+                {
+                    "value": 14,
+                    "label": "14"
+                },
+                {
+                    "value": 15,
+                    "label": "15"
+                },
+                {
+                    "value": 16,
+                    "label": "16"
+                },
+                {
+                    "value": 17,
+                    "label": "17"
+                },
+                {
+                    "value": 18,
+                    "label": "18"
+                },
+                {
+                    "value": 19,
+                    "label": "19"
+                },
+                {
+                    "value": 20,
+                    "label": "20"
+                },
+                {
+                    "value": 21,
+                    "label": "21"
+                },
+                {
+                    "value": 22,
+                    "label": "22"
+                },
+                {
+                    "value": 23,
+                    "label": "23"
+                },
+                {
+                    "value": 24,
+                    "label": "24"
+                }
+            ],
+            "sketchId": "raihtph",
+            "parentNodeId": "ysfnj2p"
+        },
+        "h6xxlmx": {
+            "id": "h6xxlmx",
+            "value": 0,
+            "inputLinkIds": [],
+            "shotCount": 0,
+            "connectedMacroIds": [],
+            "type": "linkableAction",
+            "title": "Toggle Activate",
+            "action": {
+                "type": "NODE_ACTIVE_INPUT_LINK_TOGGLE",
+                "payload": {
+                    "nodeId": "12w9sfj",
+                    "linkId": "ysfnj2p"
+                }
+            },
+            "sketchId": "raihtph",
+            "parentNodeId": "ysfnj2p"
+        },
+        "ysfnj2p": {
+            "id": "ysfnj2p",
+            "value": 0,
+            "inputLinkIds": [],
+            "shotCount": 0,
+            "connectedMacroIds": [],
+            "title": "lfo",
+            "type": "inputLink",
+            "input": {
+                "id": "lfo"
+            },
+            "nodeId": "12w9sfj",
+            "sketchId": "raihtph",
+            "parentNodeId": "12w9sfj",
+            "nodeType": "param",
+            "modifierIds": [
+                "4j82ent",
+                "8hv46op",
+                "e0jak76",
+                "6l5eq1j"
+            ],
+            "lfoOptionIds": [
+                "c8c1ae4",
+                "28v9mia",
+                "mtskpmd",
+                "jhlssyo"
+            ],
+            "midiOptionIds": [],
+            "audioOptionIds": [],
+            "linkableActions": {
+                "toggleActivate": "h6xxlmx"
+            },
+            "linkType": "node",
+            "animOptionIds": []
+        },
+        "silg7jp": {
+            "id": "silg7jp",
+            "value": 0,
+            "inputLinkIds": [],
+            "shotCount": 0,
+            "connectedMacroIds": [],
+            "parentNodeId": "9inri2u",
+            "sketchId": "raihtph",
+            "key": "threshold",
+            "title": "Threshold",
+            "passToNext": false,
+            "subNode": true
+        },
+        "v4ah4ja": {
+            "id": "v4ah4ja",
+            "value": 0,
+            "inputLinkIds": [],
+            "shotCount": 0,
+            "connectedMacroIds": [],
+            "parentNodeId": "9inri2u",
+            "sketchId": "raihtph",
+            "key": "range",
+            "title": "Lower Range",
+            "passToNext": true,
+            "subNode": true
+        },
+        "ucqx7f5": {
+            "id": "ucqx7f5",
+            "value": 1,
+            "inputLinkIds": [],
+            "shotCount": 0,
+            "connectedMacroIds": [],
+            "parentNodeId": "9inri2u",
+            "sketchId": "raihtph",
+            "key": "range",
+            "title": "Upper Range",
+            "passToNext": false,
+            "subNode": true
+        },
+        "oplyvlx": {
+            "id": "oplyvlx",
+            "value": 0,
+            "inputLinkIds": [],
+            "shotCount": 0,
+            "connectedMacroIds": [],
+            "parentNodeId": "9inri2u",
+            "sketchId": "raihtph",
+            "key": "increment",
+            "title": "Increment",
+            "passToNext": false,
+            "type": "select",
+            "options": [
+                {
+                    "value": 0,
+                    "label": "Off"
+                },
+                {
+                    "value": 1,
+                    "label": "Increment"
+                },
+                {
+                    "value": 2,
+                    "label": "Decrement"
+                }
+            ],
+            "subNode": true
+        },
+        "1jgo1ai": {
+            "id": "1jgo1ai",
+            "value": "sine",
+            "inputLinkIds": [],
+            "shotCount": 0,
+            "connectedMacroIds": [],
+            "title": "Shape",
+            "key": "shape",
+            "type": "select",
+            "subNode": true,
+            "options": [
+                {
+                    "value": "sine",
+                    "label": "Sine"
+                },
+                {
+                    "value": "square",
+                    "label": "Square"
+                },
+                {
+                    "value": "sawtooth",
+                    "label": "Sawtooth"
+                },
+                {
+                    "value": "rSawtooth",
+                    "label": "Revese Sawtooth"
+                },
+                {
+                    "value": "triangle",
+                    "label": "Triangle"
+                },
+                {
+                    "value": "noise",
+                    "label": "Noise"
+                }
+            ],
+            "sketchId": "raihtph",
+            "parentNodeId": "9inri2u"
+        },
+        "vw5ir68": {
+            "id": "vw5ir68",
+            "value": 0.0625,
+            "inputLinkIds": [],
+            "shotCount": 0,
+            "connectedMacroIds": [],
+            "title": "Rate",
+            "key": "rate",
+            "type": "select",
+            "subNode": true,
+            "options": [
+                {
+                    "value": 32,
+                    "label": "32"
+                },
+                {
+                    "value": 16,
+                    "label": "16"
+                },
+                {
+                    "value": 8,
+                    "label": "8"
+                },
+                {
+                    "value": 4,
+                    "label": "4"
+                },
+                {
+                    "value": 2,
+                    "label": "2"
+                },
+                {
+                    "value": 1,
+                    "label": "1"
+                },
+                {
+                    "value": 0.5,
+                    "label": "1/2"
+                },
+                {
+                    "value": 0.25,
+                    "label": "1/4"
+                },
+                {
+                    "value": 0.125,
+                    "label": "1/8"
+                },
+                {
+                    "value": 0.0625,
+                    "label": "1/16"
+                },
+                {
+                    "value": 0.03125,
+                    "label": "1/32"
+                }
+            ],
+            "sketchId": "raihtph",
+            "parentNodeId": "9inri2u"
+        },
+        "ixfrxki": {
+            "id": "ixfrxki",
+            "value": 0.44000000000000006,
+            "inputLinkIds": [],
+            "shotCount": 0,
+            "connectedMacroIds": [],
+            "title": "Phase",
+            "key": "phase",
+            "subNode": true,
+            "sketchId": "raihtph",
+            "parentNodeId": "9inri2u"
+        },
+        "wlpytnl": {
+            "id": "wlpytnl",
+            "value": -1,
+            "inputLinkIds": [],
+            "shotCount": 0,
+            "connectedMacroIds": [],
+            "title": "Seed",
+            "key": "seed",
+            "type": "select",
+            "subNode": true,
+            "options": [
+                {
+                    "value": -1,
+                    "label": "auto"
+                },
+                {
+                    "value": 0,
+                    "label": "0"
+                },
+                {
+                    "value": 1,
+                    "label": "1"
+                },
+                {
+                    "value": 2,
+                    "label": "2"
+                },
+                {
+                    "value": 3,
+                    "label": "3"
+                },
+                {
+                    "value": 4,
+                    "label": "4"
+                },
+                {
+                    "value": 5,
+                    "label": "5"
+                },
+                {
+                    "value": 6,
+                    "label": "6"
+                },
+                {
+                    "value": 7,
+                    "label": "7"
+                },
+                {
+                    "value": 8,
+                    "label": "8"
+                },
+                {
+                    "value": 9,
+                    "label": "9"
+                },
+                {
+                    "value": 10,
+                    "label": "10"
+                },
+                {
+                    "value": 11,
+                    "label": "11"
+                },
+                {
+                    "value": 12,
+                    "label": "12"
+                },
+                {
+                    "value": 13,
+                    "label": "13"
+                },
+                {
+                    "value": 14,
+                    "label": "14"
+                },
+                {
+                    "value": 15,
+                    "label": "15"
+                },
+                {
+                    "value": 16,
+                    "label": "16"
+                },
+                {
+                    "value": 17,
+                    "label": "17"
+                },
+                {
+                    "value": 18,
+                    "label": "18"
+                },
+                {
+                    "value": 19,
+                    "label": "19"
+                },
+                {
+                    "value": 20,
+                    "label": "20"
+                },
+                {
+                    "value": 21,
+                    "label": "21"
+                },
+                {
+                    "value": 22,
+                    "label": "22"
+                },
+                {
+                    "value": 23,
+                    "label": "23"
+                },
+                {
+                    "value": 24,
+                    "label": "24"
+                }
+            ],
+            "sketchId": "raihtph",
+            "parentNodeId": "9inri2u"
+        },
+        "he6s5ii": {
+            "id": "he6s5ii",
+            "value": 0,
+            "inputLinkIds": [],
+            "shotCount": 0,
+            "connectedMacroIds": [],
+            "type": "linkableAction",
+            "title": "Toggle Activate",
+            "action": {
+                "type": "NODE_ACTIVE_INPUT_LINK_TOGGLE",
+                "payload": {
+                    "nodeId": "xxg41rh",
+                    "linkId": "9inri2u"
+                }
+            },
+            "sketchId": "raihtph",
+            "parentNodeId": "9inri2u"
+        },
+        "9inri2u": {
+            "id": "9inri2u",
+            "value": 0,
+            "inputLinkIds": [],
+            "shotCount": 0,
+            "connectedMacroIds": [],
+            "title": "lfo",
+            "type": "inputLink",
+            "input": {
+                "id": "lfo"
+            },
+            "nodeId": "xxg41rh",
+            "sketchId": "raihtph",
+            "parentNodeId": "xxg41rh",
+            "nodeType": "param",
+            "modifierIds": [
+                "silg7jp",
+                "v4ah4ja",
+                "ucqx7f5",
+                "oplyvlx"
+            ],
+            "lfoOptionIds": [
+                "1jgo1ai",
+                "vw5ir68",
+                "ixfrxki",
+                "wlpytnl"
+            ],
+            "midiOptionIds": [],
+            "audioOptionIds": [],
+            "linkableActions": {
+                "toggleActivate": "he6s5ii"
+            },
+            "linkType": "node",
+            "animOptionIds": []
+        },
+        "eys2jp2": {
+            "id": "eys2jp2",
+            "value": 0.30597014925373134,
+            "inputLinkIds": [],
+            "shotCount": 0,
+            "connectedMacroIds": [],
+            "sketchId": "59jg5d3",
+            "title": "delayMin",
+            "type": "param",
+            "key": "delayMin",
+            "hidden": false,
+            "min": 0,
+            "max": 10,
+            "defaultMin": 0,
+            "defaultMax": 10
+        },
+        "nmw8gjr": {
+            "id": "nmw8gjr",
+            "value": 0,
+            "inputLinkIds": [],
+            "shotCount": 0,
+            "connectedMacroIds": [],
+            "sketchId": "59jg5d3",
+            "title": "delayMax",
+            "type": "param",
+            "key": "delayMax",
+            "hidden": false,
+            "min": 0,
+            "max": 10,
+            "defaultMin": 0,
+            "defaultMax": 10
+        },
+        "c0sqg3o": {
+            "id": "c0sqg3o",
+            "value": 0,
+            "inputLinkIds": [],
+            "shotCount": 0,
+            "connectedMacroIds": [],
+            "sketchId": "59jg5d3",
+            "title": "durationMin",
+            "type": "param",
+            "key": "durationMin",
+            "hidden": false,
+            "min": 0,
+            "max": 10,
+            "defaultMin": 0,
+            "defaultMax": 10
+        },
+        "jiy4umv": {
+            "id": "jiy4umv",
+            "value": 0.15671641791044774,
+            "inputLinkIds": [],
+            "shotCount": 0,
+            "connectedMacroIds": [],
+            "sketchId": "59jg5d3",
+            "title": "durationMax",
+            "type": "param",
+            "key": "durationMax",
+            "hidden": false,
+            "min": 0,
+            "max": 10,
+            "defaultMin": 0,
+            "defaultMax": 10
+        },
+        "dah3ng0": {
+            "id": "dah3ng0",
+            "value": 0.291044776119403,
+            "inputLinkIds": [],
+            "shotCount": 0,
+            "connectedMacroIds": [],
+            "sketchId": "59jg5d3",
+            "title": "glitchAmpWeak",
+            "type": "param",
+            "key": "glitchAmpWeak",
+            "hidden": false,
+            "min": 0,
+            "max": 1,
+            "defaultMin": 0,
+            "defaultMax": 1
+        },
+        "dmpgfc0": {
+            "id": "dmpgfc0",
+            "value": 0.3582089552238806,
+            "inputLinkIds": [],
+            "shotCount": 0,
+            "connectedMacroIds": [],
+            "sketchId": "59jg5d3",
+            "title": "glitchAmpStrong",
+            "type": "param",
+            "key": "glitchAmpStrong",
+            "hidden": false,
+            "min": 0,
+            "max": 1,
+            "defaultMin": 0,
+            "defaultMax": 1
+        },
+        "v0x6bm7": {
+            "id": "v0x6bm7",
+            "value": 0.85,
+            "inputLinkIds": [],
+            "shotCount": 0,
+            "connectedMacroIds": [],
+            "sketchId": "59jg5d3",
+            "title": "strongWeakRatio",
+            "type": "param",
+            "key": "strongWeakRatio",
+            "hidden": false,
+            "min": 0,
+            "max": 1,
+            "defaultMin": 0,
+            "defaultMax": 1
+        },
+        "f97m7ks": {
+            "id": "f97m7ks",
+            "value": 0.10491199477539861,
+            "inputLinkIds": [
+                "cnww4te"
+            ],
+            "shotCount": 0,
+            "connectedMacroIds": [],
+            "sketchId": "59jg5d3",
+            "title": "columns",
+            "type": "param",
+            "key": "columns",
+            "hidden": false,
+            "min": 0,
+            "max": 0.5,
+            "defaultMin": 0,
+            "defaultMax": 0.5,
+            "openedLinkId": "cnww4te",
+            "activeInputLinkId": "cnww4te"
+        },
+        "pfk4qdn": {
+            "id": "pfk4qdn",
+            "value": 0,
+            "inputLinkIds": [],
+            "shotCount": 0,
+            "connectedMacroIds": [],
+            "parentNodeId": "cnww4te",
+            "sketchId": "59jg5d3",
+            "key": "threshold",
+            "title": "Threshold",
+            "passToNext": false,
+            "subNode": true
+        },
+        "5hw24qj": {
+            "id": "5hw24qj",
+            "value": 0,
+            "inputLinkIds": [],
+            "shotCount": 0,
+            "connectedMacroIds": [],
+            "parentNodeId": "cnww4te",
+            "sketchId": "59jg5d3",
+            "key": "range",
+            "title": "Lower Range",
+            "passToNext": true,
+            "subNode": true
+        },
+        "ht8diqw": {
+            "id": "ht8diqw",
+            "value": 0.2000000000000001,
+            "inputLinkIds": [],
+            "shotCount": 0,
+            "connectedMacroIds": [],
+            "parentNodeId": "cnww4te",
+            "sketchId": "59jg5d3",
+            "key": "range",
+            "title": "Upper Range",
+            "passToNext": false,
+            "subNode": true
+        },
+        "rkj9vs9": {
+            "id": "rkj9vs9",
+            "value": 0,
+            "inputLinkIds": [],
+            "shotCount": 0,
+            "connectedMacroIds": [],
+            "parentNodeId": "cnww4te",
+            "sketchId": "59jg5d3",
+            "key": "increment",
+            "title": "Increment",
+            "passToNext": false,
+            "type": "select",
+            "options": [
+                {
+                    "value": 0,
+                    "label": "Off"
+                },
+                {
+                    "value": 1,
+                    "label": "Increment"
+                },
+                {
+                    "value": 2,
+                    "label": "Decrement"
+                }
+            ],
+            "subNode": true
+        },
+        "j4jgkg8": {
+            "id": "j4jgkg8",
+            "value": "noise",
+            "inputLinkIds": [],
+            "shotCount": 0,
+            "connectedMacroIds": [],
+            "title": "Shape",
+            "key": "shape",
+            "type": "select",
+            "subNode": true,
+            "options": [
+                {
+                    "value": "sine",
+                    "label": "Sine"
+                },
+                {
+                    "value": "square",
+                    "label": "Square"
+                },
+                {
+                    "value": "sawtooth",
+                    "label": "Sawtooth"
+                },
+                {
+                    "value": "rSawtooth",
+                    "label": "Revese Sawtooth"
+                },
+                {
+                    "value": "triangle",
+                    "label": "Triangle"
+                },
+                {
+                    "value": "noise",
+                    "label": "Noise"
+                }
+            ],
+            "sketchId": "59jg5d3",
+            "parentNodeId": "cnww4te"
+        },
+        "h0q8hg3": {
+            "id": "h0q8hg3",
+            "value": 0.125,
+            "inputLinkIds": [],
+            "shotCount": 0,
+            "connectedMacroIds": [],
+            "title": "Rate",
+            "key": "rate",
+            "type": "select",
+            "subNode": true,
+            "options": [
+                {
+                    "value": 32,
+                    "label": "32"
+                },
+                {
+                    "value": 16,
+                    "label": "16"
+                },
+                {
+                    "value": 8,
+                    "label": "8"
+                },
+                {
+                    "value": 4,
+                    "label": "4"
+                },
+                {
+                    "value": 2,
+                    "label": "2"
+                },
+                {
+                    "value": 1,
+                    "label": "1"
+                },
+                {
+                    "value": 0.5,
+                    "label": "1/2"
+                },
+                {
+                    "value": 0.25,
+                    "label": "1/4"
+                },
+                {
+                    "value": 0.125,
+                    "label": "1/8"
+                },
+                {
+                    "value": 0.0625,
+                    "label": "1/16"
+                },
+                {
+                    "value": 0.03125,
+                    "label": "1/32"
+                }
+            ],
+            "sketchId": "59jg5d3",
+            "parentNodeId": "cnww4te"
+        },
+        "2yfo19k": {
+            "id": "2yfo19k",
+            "value": 0,
+            "inputLinkIds": [],
+            "shotCount": 0,
+            "connectedMacroIds": [],
+            "title": "Phase",
+            "key": "phase",
+            "subNode": true,
+            "sketchId": "59jg5d3",
+            "parentNodeId": "cnww4te"
+        },
+        "4xhubxw": {
+            "id": "4xhubxw",
+            "value": -1,
+            "inputLinkIds": [],
+            "shotCount": 0,
+            "connectedMacroIds": [],
+            "title": "Seed",
+            "key": "seed",
+            "type": "select",
+            "subNode": true,
+            "options": [
+                {
+                    "value": -1,
+                    "label": "auto"
+                },
+                {
+                    "value": 0,
+                    "label": "0"
+                },
+                {
+                    "value": 1,
+                    "label": "1"
+                },
+                {
+                    "value": 2,
+                    "label": "2"
+                },
+                {
+                    "value": 3,
+                    "label": "3"
+                },
+                {
+                    "value": 4,
+                    "label": "4"
+                },
+                {
+                    "value": 5,
+                    "label": "5"
+                },
+                {
+                    "value": 6,
+                    "label": "6"
+                },
+                {
+                    "value": 7,
+                    "label": "7"
+                },
+                {
+                    "value": 8,
+                    "label": "8"
+                },
+                {
+                    "value": 9,
+                    "label": "9"
+                },
+                {
+                    "value": 10,
+                    "label": "10"
+                },
+                {
+                    "value": 11,
+                    "label": "11"
+                },
+                {
+                    "value": 12,
+                    "label": "12"
+                },
+                {
+                    "value": 13,
+                    "label": "13"
+                },
+                {
+                    "value": 14,
+                    "label": "14"
+                },
+                {
+                    "value": 15,
+                    "label": "15"
+                },
+                {
+                    "value": 16,
+                    "label": "16"
+                },
+                {
+                    "value": 17,
+                    "label": "17"
+                },
+                {
+                    "value": 18,
+                    "label": "18"
+                },
+                {
+                    "value": 19,
+                    "label": "19"
+                },
+                {
+                    "value": 20,
+                    "label": "20"
+                },
+                {
+                    "value": 21,
+                    "label": "21"
+                },
+                {
+                    "value": 22,
+                    "label": "22"
+                },
+                {
+                    "value": 23,
+                    "label": "23"
+                },
+                {
+                    "value": 24,
+                    "label": "24"
+                }
+            ],
+            "sketchId": "59jg5d3",
+            "parentNodeId": "cnww4te"
+        },
+        "2m947hi": {
+            "id": "2m947hi",
+            "value": 0,
+            "inputLinkIds": [],
+            "shotCount": 0,
+            "connectedMacroIds": [],
+            "type": "linkableAction",
+            "title": "Toggle Activate",
+            "action": {
+                "type": "NODE_ACTIVE_INPUT_LINK_TOGGLE",
+                "payload": {
+                    "nodeId": "f97m7ks",
+                    "linkId": "cnww4te"
+                }
+            },
+            "sketchId": "59jg5d3",
+            "parentNodeId": "cnww4te"
+        },
+        "cnww4te": {
+            "id": "cnww4te",
+            "value": 0,
+            "inputLinkIds": [],
+            "shotCount": 0,
+            "connectedMacroIds": [],
+            "title": "lfo",
+            "type": "inputLink",
+            "input": {
+                "id": "lfo"
+            },
+            "nodeId": "f97m7ks",
+            "sketchId": "59jg5d3",
+            "parentNodeId": "f97m7ks",
+            "nodeType": "param",
+            "modifierIds": [
+                "pfk4qdn",
+                "5hw24qj",
+                "ht8diqw",
+                "rkj9vs9"
+            ],
+            "lfoOptionIds": [
+                "j4jgkg8",
+                "h0q8hg3",
+                "2yfo19k",
+                "4xhubxw"
+            ],
+            "midiOptionIds": [],
+            "audioOptionIds": [],
+            "linkableActions": {
+                "toggleActivate": "2m947hi"
+            },
+            "linkType": "node",
+            "animOptionIds": []
+        }
+    },
+    "scenes": {
+        "items": {
+            "slrkesh": {
+                "id": "slrkesh",
+                "title": "Main",
+                "selectedSketchId": "ko1d07n",
+                "sketchIds": [
+                    "ko1d07n"
+                ],
+                "linkableActionIds": {
+                    "addToA": "eim7arw",
+                    "addToB": "r6chevx",
+                    "addToActive": "7kj4rcx",
+                    "addToOpposite": "bmmajnl",
+                    "clear": "llavwe7"
+                },
+                "settings": {}
+            },
+            "y6ypymu": {
+                "id": "y6ypymu",
+                "title": "Global Post",
+                "selectedSketchId": "raihtph",
+                "sketchIds": [
+                    "tbaup7a",
+                    "uvgy4q0",
+                    "raihtph",
+                    "59jg5d3"
+                ],
+                "linkableActionIds": {
+                    "addToA": "7kcbova",
+                    "addToB": "nhptu6x",
+                    "addToActive": "9abne34",
+                    "addToOpposite": "yk4gs9v",
+                    "clear": "asn98a9"
+                },
+                "settings": {
+                    "globalPostProcessingEnabled": true
+                }
+            }
+        },
+        "sceneIds": [
+            "slrkesh",
+            "y6ypymu"
+        ],
+        "currentSceneId": "y6ypymu",
+        "channels": {
+            "A": "slrkesh",
+            "B": false
+        }
+    },
+    "sketches": {
+        "ko1d07n": {
+            "title": "Space",
+            "moduleId": "space",
+            "paramIds": [],
+            "shotIds": []
+        },
+        "tbaup7a": {
+            "title": "Bloom",
+            "moduleId": "bloom",
+            "paramIds": [
+                "q38ka34",
+                "xt75s4r",
+                "aj4i9w4",
+                "g5jd7mn"
+            ],
+            "shotIds": []
+        },
+        "uvgy4q0": {
+            "title": "Color",
+            "moduleId": "color",
+            "paramIds": [
+                "gt6u7rn",
+                "0dqau7l",
+                "uxn9jcw",
+                "xqnj58p",
+                "i8tr9yt",
+                "0a95xcv",
+                "tof7yy8",
+                "ig3x32e"
+            ],
+            "shotIds": []
+        },
+        "raihtph": {
+            "title": "Trails",
+            "moduleId": "trails",
+            "paramIds": [
+                "uha64g8",
+                "xxg41rh",
+                "12w9sfj"
+            ],
+            "shotIds": []
+        },
+        "59jg5d3": {
+            "title": "Glitch",
+            "moduleId": "glitch",
+            "paramIds": [
+                "eys2jp2",
+                "nmw8gjr",
+                "c0sqg3o",
+                "jiy4umv",
+                "dah3ng0",
+                "dmpgfc0",
+                "v0x6bm7",
+                "f97m7ks"
+            ],
+            "shotIds": [],
+            "openedNodeId": "f97m7ks"
+        }
+    },
+    "project": {
+        "errors": [],
+        "errorPopup": false
+    },
+    "inputs": {
+        "audio": {
+            "value": [
+                0.3661911513743198,
+                0.2243173845211632,
+                0.13744841896413454,
+                0.14203459661169524
+            ],
+            "assignedLinkIds": []
+        },
+        "lfo": {
+            "value": 811.625,
+            "assignedLinkIds": [
+                "ysfnj2p",
+                "9inri2u",
+                "cnww4te"
+            ]
+        }
+    },
+    "inputLinks": {
+        "nodeIds": [
+            null
+        ]
+    },
+    "macros": {
+        "learningId": false,
+        "nodeIds": []
+    },
+    "ui": {
+        "panelWidths": {
+            "left": 41.69415113253312
+        },
+        "isEditing": false,
+        "openedNode": false,
+        "auxOpen": [],
+        "addSketchOpen": {}
+    },
+    "router": {
+        "location": {
+            "pathname": "/scenes/view",
+            "search": "",
+            "hash": "",
+            "key": "g374xo"
+        },
+        "action": "PUSH"
+    },
+    "settings": {
+        "clockGenerated": true,
+        "clockBpm": 120,
+        "aspectW": 16,
+        "aspectH": 9,
+        "antialias": false,
+        "throttledFPS": 60,
+        "watchSketchesDir": true
+    },
+    "form": {
+        "sceneManager": {
+            "registeredFields": {
+                "globalPostProcessingEnabled": {
+                    "name": "globalPostProcessingEnabled",
+                    "type": "Field",
+                    "count": 1
+                }
+            },
+            "values": {
+                "globalPostProcessingEnabled": true
+            },
+            "initial": {
+                "globalPostProcessingEnabled": true
+            },
+            "fields": {
+                "globalPostProcessingEnabled": {
+                    "touched": true
+                }
+            },
+            "anyTouched": true
+        }
+    }
+}

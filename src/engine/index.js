@@ -14,12 +14,19 @@ import now from 'performance-now'
 import * as renderer from './renderer'
 import Scene from './Scene'
 import { nodeValuesBatchUpdate } from '../store/nodes/actions'
-import TWEEN from '@tweenjs/tween.js'
 import { getProjectFilepath } from '../store/project/selectors'
 
-export let scenes = {}
+const { TWEEN } = window.HEDRON.dependencies
 
-let sketches = {}
+const configDefault = {
+  defaultTitle: 'Sketch',
+  params: [],
+  shots: [],
+}
+
+export let scenes = {}
+export let sketches = {}
+
 let moduleConfigs = {}
 let isRunning = false
 let moduleFiles = {}
@@ -93,7 +100,10 @@ export const reloadSingleSketchModule = (url, moduleId, pathArray) => {
 
 export const reloadSingleSketchConfig = (url, moduleId, pathArray) => {
   try {
-    moduleConfigs[moduleId] = loadConfig(url)
+    moduleConfigs[moduleId] = {
+      ...configDefault,
+      ...loadConfig(url),
+    }
     moduleConfigs[moduleId].filePathArray = pathArray
     moduleConfigs[moduleId].filePath = url
   } catch (error) {
@@ -174,14 +184,16 @@ export const initiateScenes = () => {
   scenes = {}
   sketches = {}
 
-  // Add new ones
-  stateScenes.forEach((scene) => {
+  // Add new scenes and sketches
+  stateScenes.forEach(scene => {
     addScene(scene.id)
-    scene.sketchIds.forEach(sketchId => {
+    scene.sketchIds.forEach((sketchId, index) => {
       const moduleId = getSketch(state, sketchId).moduleId
       addSketchToScene(scene.id, sketchId, moduleId)
     })
   })
+
+  renderer.setPostProcessing()
 }
 
 export const run = (injectedStore, stats) => {
@@ -204,9 +216,24 @@ export const run = (injectedStore, stats) => {
         sketch = sketches[sketchId]
         const params = getSketchParams(state, sketchId)
         allParams = getSketchParams(state, null, sceneId)
-        sketch.update(params, tick, elapsedFrames, allParams)
+        if (sketch.update) sketch.update(params, tick, elapsedFrames, allParams)
       })
     }
+  }
+
+  const updateGlobalPostProcessingSketches = () => {
+    const scenes = getScenes(state)
+
+    scenes.forEach(scene => {
+      if (scene.settings.globalPostProcessingEnabled) {
+        allParams = getSketchParams(state, null, scene.id)
+        scene.sketchIds.forEach(sketchId => {
+          sketch = sketches[sketchId]
+          const params = getSketchParams(state, sketchId)
+          if (sketch.updatePostProcessing) sketch.updatePostProcessing(params, tick, elapsedFrames, allParams)
+        })
+      }
+    })
   }
 
   const loop = () => {
@@ -235,8 +262,9 @@ export const run = (injectedStore, stats) => {
         const viewerMode = getViewerMode(state)
         updateSceneSketches(channelA)
         updateSceneSketches(channelB)
+        updateGlobalPostProcessingSketches()
 
-        renderer.render(scenes[channelA], scenes[channelB], mixRatio, viewerMode)
+        renderer.render(scenes[channelA], scenes[channelB], mixRatio, viewerMode, delta)
 
         stats.end()
 

@@ -1,6 +1,6 @@
 import test from 'tape'
 import paramsReducer from '../reducer'
-import { returnsPreviousState } from '../../../testUtils'
+import { returnsPreviousState } from '../../../../testUtils'
 import * as a from '../actions'
 
 returnsPreviousState(paramsReducer)

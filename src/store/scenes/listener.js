@@ -1,6 +1,6 @@
 import uid from 'uid'
 import { rSceneCreate, rSceneDelete, rSceneSelectCurrent,
-  rSceneSelectChannel, sceneClearChannel } from './actions'
+  rSceneSelectChannel, sceneClearChannel, rScenesReorder, rSceneSketchesReorder, rSceneSettingsUpdate } from './actions'
 import { generateSceneLinkableActionIds } from './utils'
 import { engineSceneAdd, engineSceneRemove } from '../../engine/actions'
 import { uSketchDelete } from '../sketches/actions'
@@ -11,6 +11,7 @@ import getChannelSceneId from '../../selectors/getChannelSceneId'
 import getSceneCrossfaderValue from '../../selectors/getSceneCrossfaderValue'
 import history from '../../history'
 import { rNodeCreate, uNodeDelete } from '../nodes/actions'
+import { setPostProcessing } from '../../engine/renderer'
 
 const handleSceneCreate = (action, store) => {
   const state = store.getState()
@@ -37,6 +38,7 @@ const handleSceneCreate = (action, store) => {
     selectedSketchId: false,
     sketchIds: [],
     linkableActionIds,
+    settings: {},
   }
 
   store.dispatch(rSceneCreate(id, scene))
@@ -59,7 +61,9 @@ const handleSceneDelete = (action, store) => {
 
   // Delete sketches
   scene.sketchIds.forEach(sketchId => {
-    store.dispatch(uSketchDelete(sketchId, p.id))
+    // We're skipping postprocessing reset to stop it happening multiple times per sketch
+    // Instead it is called once after scene is deleted
+    store.dispatch(uSketchDelete(sketchId, p.id, { skipPostProcessingReset: true }))
   })
 
   // Delete linkableActions
@@ -79,6 +83,8 @@ const handleSceneDelete = (action, store) => {
 
   store.dispatch(rSceneSelectCurrent(lastScene ? lastScene.id : false))
   history.push(url)
+
+  setPostProcessing()
 }
 
 const handleSceneSelectCurrent = (action, store) => {
@@ -123,6 +129,27 @@ const handleSceneClearChannel = (action, store) => {
   })
 }
 
+const handleScenesReorder = (action, store) => {
+  const p = action.payload
+
+  store.dispatch(rScenesReorder(p.oldIndex, p.newIndex))
+  setPostProcessing()
+}
+
+const handleSceneSketchesReorder = (action, store) => {
+  const p = action.payload
+
+  store.dispatch(rSceneSketchesReorder(p.id, p.oldIndex, p.newIndex))
+  setPostProcessing()
+}
+
+const handleSceneSettingsUpdate = (action, store) => {
+  const p = action.payload
+
+  store.dispatch(rSceneSettingsUpdate(p.id, p.settings))
+  setPostProcessing()
+}
+
 export default (action, store) => {
   switch (action.type) {
     case 'U_SCENE_CREATE':
@@ -136,6 +163,15 @@ export default (action, store) => {
       break
     case 'U_SCENE_SELECT_CHANNEL':
       handleSceneSelectChannel(action, store)
+      break
+    case 'U_SCENES_REORDER':
+      handleScenesReorder(action, store)
+      break
+    case 'U_SCENE_SKETCHES_REORDER':
+      handleSceneSketchesReorder(action, store)
+      break
+    case 'U_SCENE_SETTINGS_UPDATE':
+      handleSceneSettingsUpdate(action, store)
       break
     case 'SCENE_SKETCH_SELECT':
       handleSceneSketchSelect(action, store)
