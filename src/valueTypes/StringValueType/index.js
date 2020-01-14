@@ -6,10 +6,7 @@ export class StringValueType extends BaseValueType {
 
   Component = ParamStringContainer
 
-  doesValueMatch(value) {
+  doesValueMatch (value) {
     return typeof value === 'string'
-  }
-
-  compatibleInputs = {
   }
 }
