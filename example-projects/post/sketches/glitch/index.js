@@ -2,7 +2,7 @@ const { postprocessing } = window.HEDRON.dependencies
 const { EffectPass, ChromaticAberrationEffect, GlitchEffect } = postprocessing
 
 class Glitch {
-  initiatePostProcessing (composer) {
+  initiatePostProcessing ({ composer }) {
     this.rgbShiftEffect = new ChromaticAberrationEffect()
 
     this.glitchEffect = new GlitchEffect({
@@ -19,7 +19,7 @@ class Glitch {
     return rgbPass
   }
 
-  updatePostProcessing (p) {
+  updatePostProcessing ({ params: p }) {
     this.glitchEffect.delay.x = p.delayMin * 1000
     this.glitchEffect.delay.y = p.delayMax * 1000
 

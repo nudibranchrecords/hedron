@@ -3,7 +3,7 @@ const { EffectPass, SavePass, TextureEffect } = postprocessing
 const FeedbackEffect = require('./FeedbackEffect')
 
 class Trails {
-  initiatePostProcessing (composer) {
+  initiatePostProcessing ({ composer }) {
     this.feedbackEffect = new FeedbackEffect()
 
     const savePass = new SavePass()
@@ -24,7 +24,7 @@ class Trails {
     return texturePass
   }
 
-  updatePostProcessing (p) {
+  updatePostProcessing ({ params: p }) {
     this.feedbackEffect.uniforms.get('scale').value = p.scale
     this.feedbackEffect.uniforms.get('rotAngle').value = p.rotAngle
     this.feedbackEffect.uniforms.get('mixAmp').value = p.mixAmp

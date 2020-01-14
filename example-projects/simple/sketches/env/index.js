@@ -1,12 +1,12 @@
 const { THREE } = window.HEDRON.dependencies
 
 class Env {
-  constructor (scene) {
-    this.scene = scene.scene
+  constructor ({ scene }) {
+    this.scene = scene
     this.clearColor = new THREE.Color()
   }
 
-  update (p) {
+  update ({ params: p }) {
     this.clearColor.setHSL(p.colorH, p.colorS, p.colorL)
     this.scene.background = this.clearColor
   }
