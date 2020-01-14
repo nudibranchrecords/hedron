@@ -2,12 +2,12 @@ const { THREE } = window.HEDRON.dependencies
 const cubeTextureLoader = new THREE.CubeTextureLoader()
 
 class Space {
-  constructor (world) {
+  constructor ({ camera, scene }) {
     this.root = new THREE.Group()
 
-    world.camera.position.z = 40
+    camera.position.z = 40
 
-    world.scene.background = cubeTextureLoader
+    scene.background = cubeTextureLoader
       .setPath(`${__dirname}/assets/`)
       .load([
         'px.jpg', 'nx.jpg',
@@ -17,7 +17,7 @@ class Space {
 
     // Hacky way to get orbit controls working with the viewer
     const viewerEl = document.getElementById('viewer')
-    this.controls = new THREE.OrbitControls(world.camera, viewerEl)
+    this.controls = new THREE.OrbitControls(camera, viewerEl)
 
     // Lights
     const ambientLight = new THREE.AmbientLight(0x11bd92)
@@ -80,9 +80,9 @@ class Space {
     }
   }
 
-  update (p, t, f) {
-    this.root.rotation.x += 0.001 * f
-    this.root.rotation.y += 0.002 * f
+  update ({ deltaFrame: d }) {
+    this.root.rotation.x += 0.001 * d
+    this.root.rotation.y += 0.002 * d
   }
 
   // Orbit controls need to be desposed of if sketch is deleted or reloaded

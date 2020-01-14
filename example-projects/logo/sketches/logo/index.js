@@ -2,7 +2,7 @@ const { THREE, TWEEN } = window.HEDRON.dependencies
 const loader = new THREE.GLTFLoader()
 
 class Logo {
-  constructor (scene) {
+  constructor () {
     this.root = new THREE.Group()
 
     // Add lights
@@ -52,7 +52,7 @@ class Logo {
       .start()
   }
 
-  update (p, t, f) {
+  update ({ params: p, deltaFrame: d }) {
     if (!this.model) return
 
     let s
@@ -72,9 +72,9 @@ class Logo {
       this.model.rotation.y = this.props.rotY
       this.model.rotation.z = this.props.rotZ
     } else {
-      this.model.rotation.x += p.logoRotSpeedX * f * 0.3
-      this.model.rotation.y += p.logoRotSpeedY * f * 0.3
-      this.model.rotation.z += p.logoRotSpeedZ * f * 0.3
+      this.model.rotation.x += p.logoRotSpeedX * d * 0.3
+      this.model.rotation.y += p.logoRotSpeedY * d * 0.3
+      this.model.rotation.z += p.logoRotSpeedZ * d * 0.3
     }
 
     // Logo Scale
