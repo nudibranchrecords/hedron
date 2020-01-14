@@ -3,7 +3,7 @@ const { EffectPass, BloomEffect, BlendFunction, KernelSize } = postprocessing
 
 class Bloom {
   // Here we add our passes to the composer
-  initiatePostProcessing (composer) {
+  initiatePostProcessing ({ composer }) {
     this.bloomEffect = new BloomEffect({
       blendFunction: BlendFunction.SCREEN,
       kernelSize: KernelSize.LARGE,
@@ -23,7 +23,7 @@ class Bloom {
   }
 
   // This method will be called every frame, just like the usual update method
-  updatePostProcessing (p) {
+  updatePostProcessing ({ params: p }) {
     this.bloomEffect.blurPass.scale = p.scale
     this.bloomEffect.luminanceMaterial.threshold = p.lumThreshold
     this.bloomEffect.luminanceMaterial.smoothing = p.lumSmoothing
