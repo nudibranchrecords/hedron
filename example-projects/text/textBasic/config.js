@@ -11,91 +11,91 @@ module.exports = {
   params: [
     {
       key: 'posX', // needs to be unique
-      defaultValue: .5,
+      defaultValue: 0.5,
       defaultMin: -10,
-      defaultMax: 10
+      defaultMax: 10,
     },
     {
       key: 'posY',
-      defaultValue: .5,
+      defaultValue: 0.5,
       defaultMin: -10,
-      defaultMax: 10
+      defaultMax: 10,
     },
     {
       key: 'posZ',
-      defaultValue: .5,
+      defaultValue: 0.5,
       defaultMin: -20,
-      defaultMax: 0
+      defaultMax: 0,
     },
 
     {
       key: 'rotX', // needs to be unique
-      defaultValue: .5,
+      defaultValue: 0.5,
       defaultMin: -3.1415,
-      defaultMax: 3.1415
+      defaultMax: 3.1415,
     },
     {
       key: 'rotY',
-      defaultValue: .5,
+      defaultValue: 0.5,
       defaultMin: -3.1415,
-      defaultMax: 3.1415
+      defaultMax: 3.1415,
     },
     {
       key: 'rotZ', // needs to be unique
-      defaultValue: .5,
+      defaultValue: 0.5,
       defaultMin: -3.1415,
-      defaultMax: 3.1415
+      defaultMax: 3.1415,
     },
     {
       key: 'colorHue',
-      defaultValue: 0.6
+      defaultValue: 0.6,
     },
     {
       key: 'colorSat',
-      defaultValue: 0.5
+      defaultValue: 0.5,
     },
     {
       key: 'colorLight',
-      defaultValue: 0.5
+      defaultValue: 0.5,
     },
     {
       key: 'alpha',
-      defaultValue: 1
+      defaultValue: 1,
     },
     {
       key: 'scale', // needs to be unique
-      defaultValue: .5, // must be between 0 and 1
+      defaultValue: 0.5, // must be between 0 and 1
       defaultMin: 0.00001,
-      defaultMax: 10
+      defaultMax: 10,
     },
     {
       key: 'thickness',
       defaultValue: 0.4,
-      defaultMin: .0001,
-      defaultMax: 1
+      defaultMin: 0.0001,
+      defaultMax: 1,
     },
     {
       key: 'bevelThickness',
       defaultValue: 0,
       defaultMin: 0,
-      defaultMax: .1
+      defaultMax: 0.1,
     },
     {
       key: 'bevelSize',
       defaultValue: 0,
       defaultMin: 0,
-      defaultMax: .1
+      defaultMax: 0.1,
     },
     {
       key: 'bevelSegments',
       defaultValue: 0,
       defaultMin: 1,
-      defaultMax: 4
+      defaultMax: 4,
     },
     {
       key: 'text',
       defaultValue: ':)',
-      valueType: 'string'
+      valueType: 'string',
     },
 
   ],
@@ -103,5 +103,5 @@ module.exports = {
   // e.g. Explosions, Pre-defined animations
   shots: [
 
-  ]
+  ],
 }

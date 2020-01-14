@@ -25,12 +25,11 @@ const ParamString = ({ onChange, nodeId }) => {
   })
   return (
     <TextField
-      value={value || ''}   //This seems to not handle multiple fast keypresses, only updating with one of the keys
+      value={value} // This seems to not handle multiple fast keypresses, only updating with one of the keys
       onChange={(event) => {
         onChange(event.target.value)
       }}
-    >
-    </TextField>
+    />
   )
 }
 
