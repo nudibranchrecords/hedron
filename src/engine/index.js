@@ -10,7 +10,6 @@ import getSceneCrossfaderValue from '../selectors/getSceneCrossfaderValue'
 import getViewerMode from '../selectors/getViewerMode'
 import { availableModulesReplaceAll } from '../store/availableModules/actions'
 import { projectError, projectSketchesPathUpdate } from '../store/project/actions'
-import now from 'performance-now'
 import * as renderer from './renderer'
 import Scene from './Scene'
 import { nodeValuesBatchUpdate } from '../store/nodes/actions'
@@ -30,7 +29,7 @@ export let sketches = {}
 let moduleConfigs = {}
 let isRunning = false
 let moduleFiles = {}
-let sketchesFolder
+let sketchesDir
 let store
 
 // Load sketches from sketches folder
@@ -39,7 +38,7 @@ export const loadSketchModules = (url) => {
 
   const load = url => {
     try {
-      sketchesFolder = url
+      sketchesDir = url
       moduleFiles = loadSketches(url)
 
       Object.keys(moduleFiles).forEach((key) => {
@@ -126,17 +125,17 @@ export const removeScene = (sceneId) => {
 }
 
 export const addSketchToScene = (sceneId, sketchId, moduleId) => {
-  const meta = {
-    sketchesFolder: `file://${sketchesFolder}`,
-  }
-
   const scene = scenes[sceneId]
-  scene.renderer = renderer.renderer
-
   const state = store.getState()
   const params = getSketchParams(state, sketchId)
 
-  const module = new moduleFiles[moduleId].Module(scene, params, meta)
+  const module = new moduleFiles[moduleId].Module({
+    scene: scene.scene,
+    camera: scene.camera,
+    params,
+    sketchesDir: `file://${sketchesDir}`,
+    renderer: renderer.renderer,
+  })
 
   sketches[sketchId] = module
   module.root && scene.scene.add(module.root)
@@ -145,9 +144,21 @@ export const addSketchToScene = (sceneId, sketchId, moduleId) => {
 export const removeSketchFromScene = (sceneId, sketchId) => {
   const sketch = sketches[sketchId]
   scenes[sceneId].scene.remove(sketch.root)
+
+  const scene = scenes[sceneId]
+  const state = store.getState()
+  const params = getSketchParams(state, sketchId)
+
   if (sketch.destructor) {
-    sketch.destructor(scenes[sceneId])
+    sketch.destructor({
+      scene: scene.scene,
+      camera: scene.camera,
+      params,
+      sketchesDir: `file://${sketchesDir}`,
+      renderer: renderer.renderer,
+    })
   }
+
   delete sketches[sketchId]
 }
 
@@ -155,16 +166,17 @@ export const fireShot = (sketchId, method) => {
   const state = store.getState()
 
   if (sketches[sketchId][method]) {
-    const params = sketches[sketchId][method](getSketchParams(state, sketchId))
+    const params = getSketchParams(state, sketchId)
+    const changedParams = sketches[sketchId][method]({ params })
     const vals = []
-    if (params) {
-      for (const key in params) {
+    if (changedParams) {
+      for (const key in changedParams) {
         const id = getSketchParamId(state, sketchId, key)
         if (id != null) {
           vals.push(
             {
               id,
-              value: params[key],
+              value: changedParams[key],
             }
           )
         }
@@ -198,16 +210,19 @@ export const initiateScenes = () => {
 
 export const run = (injectedStore, stats) => {
   let tick = 0
-  let oldTimeModified = now()
-  let oldTimeReal = now()
-  let elapsedFrames = 1
-  let delta, newTime, stateScene, sketch, state, spf, allParams
+  let elapsedFrames = 0
+  let oldTimeModifiedMs = performance.now()
+  let oldTimeRealMs = performance.now()
+  let deltaFrame = 1
+  let deltaMs, newTimeMs, stateScene, sketch, state, spf, allParams
   const spf60 = 1000 / 60
   store = injectedStore
   isRunning = true
   renderer.initiate(injectedStore, scenes)
   // Give store module params
   store.dispatch(availableModulesReplaceAll(moduleConfigs))
+
+  const getInfo = () => ({ allParams, elapsedFrames, elapsedTimeMs: newTimeMs, deltaMs, deltaFrame, tick })
 
   const updateSceneSketches = (sceneId) => {
     stateScene = getScene(state, sceneId)
@@ -216,7 +231,7 @@ export const run = (injectedStore, stats) => {
         sketch = sketches[sketchId]
         const params = getSketchParams(state, sketchId)
         allParams = getSketchParams(state, null, sceneId)
-        if (sketch.update) sketch.update(params, tick, elapsedFrames, allParams)
+        if (sketch.update) sketch.update({ ...getInfo(), params })
       })
     }
   }
@@ -230,7 +245,7 @@ export const run = (injectedStore, stats) => {
         scene.sketchIds.forEach(sketchId => {
           sketch = sketches[sketchId]
           const params = getSketchParams(state, sketchId)
-          if (sketch.updatePostProcessing) sketch.updatePostProcessing(params, tick, elapsedFrames, allParams)
+          if (sketch.updatePostProcessing) sketch.updatePostProcessing({ ...getInfo(), params })
         })
       }
     })
@@ -239,21 +254,22 @@ export const run = (injectedStore, stats) => {
   const loop = () => {
     requestAnimationFrame(loop)
     if (isRunning) {
+      tick++
       state = store.getState()
       spf = 1000 / state.settings.throttledFPS
 
-      newTime = now()
+      newTimeMs = performance.now()
 
       // Tween JS used for animated param values (anims)
-      TWEEN.update(newTime)
+      TWEEN.update(newTimeMs)
 
-      delta = newTime - oldTimeModified
+      deltaMs = newTimeMs - oldTimeModifiedMs
       // Elapsed frames are from the perspective of a 60FPS target
       // regardless of throttling (so that throttled animations dont slow down)
-      elapsedFrames = (newTime - oldTimeReal) / spf60
-      tick += elapsedFrames
+      deltaFrame = (newTimeMs - oldTimeRealMs) / spf60
+      elapsedFrames += deltaFrame
 
-      if (delta > spf || state.settings.throttledFPS >= 60) {
+      if (deltaMs > spf || state.settings.throttledFPS >= 60) {
         stats.begin()
 
         const channelA = getChannelSceneId(state, 'A')
@@ -264,15 +280,15 @@ export const run = (injectedStore, stats) => {
         updateSceneSketches(channelB)
         updateGlobalPostProcessingSketches()
 
-        renderer.render(scenes[channelA], scenes[channelB], mixRatio, viewerMode, delta)
+        renderer.render(scenes[channelA], scenes[channelB], mixRatio, viewerMode, deltaMs)
 
         stats.end()
 
         // Must take remainder away when throttling FPS
         // http://codetheory.in/controlling-the-frame-rate-with-requestanimationframe/
-        oldTimeModified = newTime - (delta % spf)
+        oldTimeModifiedMs = newTimeMs - (deltaMs % spf)
         // Need real old time for calculating elapsed frames
-        oldTimeReal = newTime
+        oldTimeRealMs = newTimeMs
       }
     }
   }
