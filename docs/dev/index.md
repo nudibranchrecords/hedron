@@ -99,10 +99,43 @@ module.exports = {
 ```
 
 ## index.js
+This is the main file for the sketch. Essentially, it's a Javascript class, with some important properties and methods. You can `require` other modules from here, so don't feel restricted to a single file. However, you should use the Hedron global version of `THREE` and not import this yourself (`window.HEDRON.dependencies`), see below.
 
-This is where the actual sketch is held. `THREE` is available as a global variable and it's strongly advised you use this rather than import the library yourself, to prevent unexpected behaviour. For convenience, `THREE.GLTFLoader` and `THREE.OrbitControls` are available too.
+### Properties
 
-You can `require` other modules from here, so don't feel restricted to a single file. 
+- `root` - This should be set in the constructor as a `THREE.Group`. It is the top-level 3D object for the sketch. Hedron takes this root object and places it in the scene. Not required if your sketch is only for post processing (see below).
+
+### Methods
+- `constructor` - Where the sketch setup happens. It has a single object literal as an argument, with the following properties:
+  - `params` - A key/value pair of all the params in the sketch
+  - `scene` - The [three.js scene](https://threejs.org/docs/#api/en/scenes/Scene) that this sketch is added to
+  - `camera` - The [three.js camera](https://threejs.org/docs/#api/en/cameras/Camera) the scene is using
+  - `renderer` - The [three.js renderer](https://threejs.org/docs/#api/en/constants/Renderer)
+  - `sketchesDir` - The location or the top level sketches directory. Useful for loading in external assets.
+- `update` - This method is called every frame.  It has a single object literal as an argument, with the following properties:
+  - `params` - A key/value pair of all the params in the sketch
+  - `elapsedTimeMs` - Elapsed time in milliseconds, since Hedron was started
+  - `elapsedFrames` - Elapsed frames since Hedron was started. This is an ideal value based on 60FPS, instead of actual frames that have been seen.
+  - `deltaMs` - Milliseconds that have passed since the last update was fired
+  - `deltaFrame` - How many should have passed since the last update was fired. Ideally, this will always be at 1. If the program experiences some lag and the FPS drops below 60, this will be some number greater than 1. Use this to multiply with any incremental values to keep animation speeds consistent
+  - `tick` - Raw number of updates that have actually been fired since Hedron started
+  - `allParams` - A key/value pair of all the sketches in the scene, aech with their own key/value pair of params
+- `destructor` - Fires when a sketch is removed. Use this to clean up anything that may continue to run afterwards. Not usually needed. Has the same argument object as the construtor.
+
+### Shots
+Any custom method in your sketch class can be defined as a shot in the config. Shot methods have a single object literal as an argument, with the following properties:
+- `params` - A key/value pair of all the params in the sketch
+
+### Global HEDRON variable
+Hedron provides a single global variable with some useful libraries to make use of.
+
+- `window.HEDRON.dependencies`
+  - `THREE` - It is strongly recommended you use this instance of `THREE` and not your own installed package. Also are the following extras have been added to this property as child properties:
+    - `GLTFLoader`
+    - `OrbitControls`
+  - `TWEEN` - A very simple [tweening library](https://github.com/tweenjs/tween.js/). The update method is called interally in Hedron, so there's no need to do that inside of a sketch.
+  - `postprocessing` - The post [processing library](https://github.com/vanruesc/postprocessing) Hedron uses
+  - `glslify` - [Module system for GLSL](https://github.com/glslify/glslify)
 
 ### Very basic example
 This is the minimum you need to do in order to use Hedron.
@@ -236,6 +269,8 @@ module.exports = Solid
 
 ## Post Processing
 Custom post processing, such as pixel shaders, are handled inside of sketches. Hedron's post processing system is a thin wrapper around the [postprocessing](https://github.com/vanruesc/postprocessing) library, so it's a good idea to understand how that works. Multiple passes can be added to the rendering composer using `initiatePostProcessing` and things are updated every frame using `updatePostProcessing`.
+
+Please note that this feature is still very much under development and so will most likely see many changes to the API in future.
 
 ### Simple example
 Below is a simple example of how to achieve a bloom effect. A config file is also needed, which is exactly the same as a normal sketch config file.
