@@ -120,7 +120,7 @@ This is the main file for the sketch. Essentially, it's a Javascript class, with
   - `deltaFrame` - How many should have passed since the last update was fired. Ideally, this will always be at 1. If the program experiences some lag and the FPS drops below 60, this will be some number greater than 1. Use this to multiply with any incremental values to keep animation speeds consistent
   - `tick` - Raw number of updates that have actually been fired since Hedron started
   - `allParams` - A key/value pair of all the sketches in the scene, aech with their own key/value pair of params
-- `destructor` - Fires when a sketch is removed. Use this to clean up anything that may continue to run afterwards. Not usually needed. Has the same argument object as the construtor.
+- `destructor` - Fires when a sketch is removed. Use this to clean up anything that may continue to run afterwards. Not usually needed. Has the same argument object as the construtor, except for the `params` property.
 
 ### Shots
 Any custom method in your sketch class can be defined as a shot in the config. Shot methods have a single object literal as an argument, with the following properties:
