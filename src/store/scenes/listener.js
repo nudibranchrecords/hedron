@@ -1,6 +1,6 @@
 import uid from 'uid'
-import { rSceneCreate, rSceneDelete, rSceneSelectCurrent,
-  rSceneSelectChannel, sceneClearChannel, rScenesReorder, rSceneSketchesReorder, rSceneSettingsUpdate } from './actions'
+import { rSceneCreate, rSceneDelete, rSceneSelectCurrent, rSceneSelectChannel,
+  uSceneSelectChannel, sceneClearChannel, rScenesReorder, rSceneSketchesReorder, rSceneSettingsUpdate } from './actions'
 import { generateSceneLinkableActionIds } from './utils'
 import { engineSceneAdd, engineSceneRemove } from '../../engine/actions'
 import { uSketchDelete } from '../sketches/actions'
@@ -47,7 +47,7 @@ const handleSceneCreate = (action, store) => {
   store.dispatch(rSceneSelectCurrent(id))
 
   if (allScenes.length === 0) {
-    store.dispatch(rSceneSelectChannel(id, 'A'))
+    store.dispatch(uSceneSelectChannel(id, 'A'))
   }
 
   history.push(`/scenes/view`)
@@ -106,10 +106,22 @@ const handleSceneSelectChannel = (action, store) => {
   const crossfaderValue = getSceneCrossfaderValue(state)
 
   let channel
-  if (p.type === 'active') {
+  if (p.channel === 'active') {
     channel = crossfaderValue < 0.5 ? 'A' : 'B'
-  } else if (p.type === 'opposite') {
+  } else if (p.channel === 'opposite') {
     channel = crossfaderValue < 0.5 ? 'B' : 'A'
+  } else if (p.channel === 'A' || p.channel === 'B') {
+    channel = p.channel
+  }
+
+  const otherChannel = channel === 'A' ? 'B' : 'A'
+  const otherChannelId = state.scenes.channels[otherChannel]
+
+  if (otherChannelId === p.id) {
+    // If opposite channel has same scene as newly switched channel, remove scene
+    store.dispatch(
+      rSceneSelectChannel(false, otherChannel)
+    )
   }
 
   store.dispatch(
@@ -125,7 +137,7 @@ const handleSceneClearChannel = (action, store) => {
   // If scene is in a channel, take it off
   channels.forEach(channel => {
     const id = getChannelSceneId(state, channel)
-    if (id === p.id) store.dispatch(rSceneSelectChannel(false, channel))
+    if (id === p.id) store.dispatch(uSceneSelectChannel(false, channel))
   })
 }
 
