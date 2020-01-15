@@ -111,7 +111,7 @@ This is the main file for the sketch. Essentially, it's a Javascript class, with
   - `scene` - The [three.js scene](https://threejs.org/docs/#api/en/scenes/Scene) that this sketch is added to
   - `camera` - The [three.js camera](https://threejs.org/docs/#api/en/cameras/Camera) the scene is using
   - `renderer` - The [three.js renderer](https://threejs.org/docs/#api/en/constants/Renderer)
-  - `sketchesDir` - The location or the top level sketches directory. Useful for loading in external assets.
+  - `sketchesDir` - The location of the top level sketches directory. Useful for loading in external assets.
 - `update` - This method is called every frame.  It has a single object literal as an argument, with the following properties:
   - `params` - A key/value pair of all the params in the sketch
   - `elapsedTimeMs` - Elapsed time in milliseconds, since Hedron was started
