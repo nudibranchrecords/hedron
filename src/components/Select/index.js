@@ -143,7 +143,7 @@ Select.propTypes = {
       label: PropTypes.oneOfType([
         PropTypes.string, PropTypes.number,
       ]).isRequired,
-    }).isRequired,
+    }),
     onChange: PropTypes.func.isRequired,
   }).isRequired,
 }
