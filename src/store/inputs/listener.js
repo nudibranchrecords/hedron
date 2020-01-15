@@ -24,7 +24,7 @@ const handleInputFired = (action, store) => {
         const linkNode = getNode(state, inputLink.nodeId)
 
         if (linkNode.type === 'linkableAction') {
-          store.dispatch(linkNode.action())
+          store.dispatch(linkNode.action)
         } else {
           let value = p.value
           let modifiers
