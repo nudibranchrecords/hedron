@@ -12,6 +12,7 @@ import getSceneCrossfaderValue from '../../selectors/getSceneCrossfaderValue'
 import history from '../../history'
 import { rNodeCreate, uNodeDelete } from '../nodes/actions'
 import { setPostProcessing } from '../../engine/renderer'
+import * as engine from '../../engine'
 
 const handleSceneCreate = (action, store) => {
   const state = store.getState()
@@ -119,14 +120,12 @@ const handleSceneSelectChannel = (action, store) => {
 
   if (otherChannelId === p.id) {
     // If opposite channel has same scene as newly switched channel, remove scene
-    store.dispatch(
-      rSceneSelectChannel(false, otherChannel)
-    )
+    store.dispatch(rSceneSelectChannel(false, otherChannel))
+    engine.channelUpdate(false, otherChannelId)
   }
 
-  store.dispatch(
-    rSceneSelectChannel(p.id, channel)
-  )
+  store.dispatch(rSceneSelectChannel(p.id, channel))
+  engine.channelUpdate(p.id, channel)
 }
 
 const handleSceneClearChannel = (action, store) => {

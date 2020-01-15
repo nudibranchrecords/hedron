@@ -16,8 +16,8 @@ export default {
     scenesListener(action, store)
     sketchesListener(action, store)
     inputLinkListener(action, store)
-    engineListener(action, store)
     animListener(action, store)
     fileWatchListener(action, store)
+    engineListener(action, store)
   },
 }
