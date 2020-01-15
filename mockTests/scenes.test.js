@@ -44,6 +44,7 @@ jest.mock('uid', () => () => {
 
 jest.mock('../src/engine/renderer', () => ({
   setPostProcessing: jest.fn(),
+  channelUpdate: jest.fn(),
 }))
 
 const rootListener = {
@@ -95,7 +96,11 @@ test('(mock) Scenes - Add/Delete/Reorder scenes', () => {
         shots: [],
       },
     },
-    nodes: {},
+    nodes: {
+      sceneCrossfader: {
+        value: 0,
+      },
+    },
     sketches: {},
     scenes: {
       currentSceneId: false,
@@ -112,9 +117,6 @@ test('(mock) Scenes - Add/Delete/Reorder scenes', () => {
   let state
 
   state = store.getState()
-
-  // 'nodes start empty'
-  expect(state.nodes).toEqual({})
 
   // 'sketches start empty'
   expect(state.sketches).toEqual({})

@@ -1,19 +1,32 @@
 const { THREE, postprocessing } = window.HEDRON.dependencies
-const { EffectComposer, RenderPass } = postprocessing
+const { EffectComposer, RenderPass, SavePass, TextureEffect, EffectPass } = postprocessing
 
 import uiEventEmitter from '../utils/uiEventEmitter'
 import * as engine from './'
-import QuadScene from './QuadScene'
 
 import getScenes from '../selectors/getScenes'
 
 let store, domEl, outputEl, viewerEl, isSendingOutput, rendererWidth, rendererHeight,
   previewCanvas, previewContext, outputCanvas, outputContext
 
-let quadScene, quadMixUniform, rttA, rttB
+let blendOpacity
 let delta
 
-export let renderer, composer, mainPass
+const blankScene = { scene: new THREE.Scene(), camera: new THREE.Camera() }
+
+const channels = {
+  'A': blankScene,
+  'B': blankScene,
+}
+
+const getChannelScene = channel => channels[channel] || blankScene
+
+const channelPasses = {
+  'A': [],
+  'B': [],
+}
+
+export let renderer, composer, renderPassA, renderPassB
 
 export const setRenderer = () => {
   renderer = new THREE.WebGLRenderer({
@@ -23,19 +36,21 @@ export const setRenderer = () => {
   domEl = renderer.domElement
   viewerEl.innerHTML = ''
   viewerEl.appendChild(domEl)
-  const renderTargetParameters = {
-    minFilter: THREE.LinearFilter,
-    magFilter: THREE.LinearFilter,
-    format: THREE.RGBFormat,
-    stencilBuffer: false,
-  }
-  rttA = new THREE.WebGLRenderTarget(null, null, renderTargetParameters)
-  rttB = new THREE.WebGLRenderTarget(null, null, renderTargetParameters)
-
-  quadScene = new QuadScene(rttA, rttB)
-  quadMixUniform = quadScene.material.uniforms.mixRatio
-
   composer = new EffectComposer(renderer)
+}
+
+export const channelUpdate = (scene, channel) => {
+  channels[channel] = scene
+  const passes = channelPasses[channel]
+
+  if (passes && passes.length) {
+    if (scene) {
+      channelPasses[channel][0].scene = scene.scene
+      channelPasses[channel][0].camera = scene.camera
+    } else {
+      channelPasses[channel] = []
+    }
+  }
 }
 
 export const setPostProcessing = () => {
@@ -43,12 +58,37 @@ export const setPostProcessing = () => {
   const stateScenes = getScenes(state)
 
   composer.reset()
+  const chanA = getChannelScene('A')
+  const chanB = getChannelScene('B')
 
-  mainPass = new RenderPass(quadScene.scene, quadScene.camera)
-  mainPass.renderToScreen = true
-  composer.addPass(mainPass)
+  channelPasses.A = []
+  channelPasses.B = []
 
-  const passes = []
+  channelPasses.A.push(new RenderPass(chanA.scene, chanA.camera))
+  channelPasses.B.push(new RenderPass(chanB.scene, chanB.camera))
+
+  const savePassA = new SavePass()
+  const savePassB = new SavePass()
+
+  channelPasses.A.push(savePassA)
+  channelPasses.B.push(savePassB)
+
+  const textureEffectA = new TextureEffect({ texture: savePassA.renderTarget.texture })
+  const textureEffectB = new TextureEffect({
+    texture: savePassB.renderTarget.texture,
+  })
+
+  blendOpacity = textureEffectB.blendMode.opacity
+
+  const mixPass = new EffectPass(null, textureEffectA, textureEffectB)
+  mixPass.renderToScreen = true
+
+  channelPasses.A.forEach(pass => composer.addPass(pass))
+  channelPasses.B.forEach(pass => composer.addPass(pass))
+
+  composer.addPass(mixPass)
+
+  const globalPasses = []
 
   stateScenes.forEach(scene => {
     scene.sketchIds.forEach(sketchId => {
@@ -57,15 +97,15 @@ export const setPostProcessing = () => {
       if (scene.settings.globalPostProcessingEnabled && module.initiatePostProcessing) {
         const pass = module.initiatePostProcessing({ composer })
         // If sketch has an output pass, add to array
-        if (pass) passes.push(pass)
+        if (pass) globalPasses.push(pass)
       }
     })
   })
 
   // Set last item of output passes to render to the screen
-  if (passes.length) {
-    mainPass.renderToScreen = false
-    passes[passes.length - 1].renderToScreen = true
+  if (globalPasses.length) {
+    mixPass.renderToScreen = false
+    globalPasses[globalPasses.length - 1].renderToScreen = true
   }
 }
 
@@ -99,13 +139,6 @@ export const setSize = () => {
   const height = width / ratio
 
   composer.setSize(width, height)
-
-  // Set sizes for render targets
-  rttA.setSize(width, height)
-  rttB.setSize(width, height)
-
-  // Set sizes for quad scene
-  quadScene.setSize(width, height)
 
   // Set ratios for each scene
   const engineScenes = engine.scenes
@@ -178,44 +211,31 @@ export const stopOutput = () => {
   setSize()
 }
 
-const renderChannels = (sceneA, sceneB, mixRatio) => {
-  renderer.setRenderTarget(rttA)
-  renderer.clear()
-  if (sceneA) {
-    renderer.render(sceneA.scene, sceneA.camera)
-  }
-
-  renderer.setRenderTarget(rttB)
-  renderer.clear()
-  if (sceneB) {
-    renderer.render(sceneB.scene, sceneB.camera)
-  }
-
-  quadMixUniform.value = mixRatio
+const renderChannels = (mixRatio) => {
+  if (blendOpacity) blendOpacity.value = mixRatio
   composer.render(delta)
 }
 
-const renderSingle = (scene, rtt, mixRatio) => {
-  if (scene) {
-    renderer.setRenderTarget(rtt)
-    renderer.clear()
-    renderer.render(scene.scene, scene.camera)
-  }
+const renderSingle = (disableChannel, mixRatio) => {
+  channelPasses[disableChannel].forEach(pass => { pass.enabled = false })
 
-  quadMixUniform.value = mixRatio
+  if (blendOpacity) blendOpacity.value = mixRatio
   composer.render(delta)
 }
 
-const renderLogic = (sceneA, sceneB, viewerMode, mixRatio) => {
+const renderLogic = (viewerMode, mixRatio) => {
+  channelPasses['A'].forEach(pass => { pass.enabled = true })
+  channelPasses['B'].forEach(pass => { pass.enabled = true })
+
   switch (viewerMode) {
     case 'A':
-      renderSingle(sceneA, rttA, 0)
+      renderSingle('B', 0)
       break
     case 'B':
-      renderSingle(sceneB, rttB, 1)
+      renderSingle('A', 1)
       break
     default:
-      renderChannels(sceneA, sceneB, mixRatio)
+      renderChannels(mixRatio)
   }
 }
 
@@ -223,7 +243,7 @@ const copyPixels = (context) => {
   context.drawImage(renderer.domElement, 0, 0, rendererWidth, rendererHeight)
 }
 
-export const render = (sceneA, sceneB, mixRatio, viewerMode, deltaIn) => {
+export const render = (mixRatio, viewerMode, deltaIn) => {
   delta = deltaIn
 
   // mixState helps with performance. If mixer is all the way to A or B
@@ -239,9 +259,9 @@ export const render = (sceneA, sceneB, mixRatio, viewerMode, deltaIn) => {
     // Always using dom element when not outputting
     if (previewCanvas) previewCanvas.style.display = 'none'
     if (viewerMode === 'mix') {
-      renderLogic(sceneA, sceneB, mixState, mixRatio)
+      renderLogic(mixState, mixRatio)
     } else {
-      renderLogic(sceneA, sceneB, viewerMode, mixRatio)
+      renderLogic(viewerMode, mixRatio)
     }
   } else {
     // When outputting, need the preview canvas
@@ -251,7 +271,7 @@ export const render = (sceneA, sceneB, mixRatio, viewerMode, deltaIn) => {
       // No need for output canvas
       outputCanvas.style.display = 'none'
       // Render the correct thing
-      renderLogic(sceneA, sceneB, mixState, mixRatio)
+      renderLogic(mixState, mixRatio)
       // Copy pixels to preview
       copyPixels(previewContext)
     } else {
@@ -260,11 +280,11 @@ export const render = (sceneA, sceneB, mixRatio, viewerMode, deltaIn) => {
       outputCanvas.style.display = 'block'
 
       // Render for output
-      renderLogic(sceneA, sceneB, mixState, mixRatio)
+      renderLogic(mixState, mixRatio)
       // Copy pixels to output canvas
       copyPixels(outputContext)
       // Render for preview
-      renderLogic(sceneA, sceneB, viewerMode, mixRatio)
+      renderLogic(viewerMode, mixRatio)
       // Copy pixels to preview canvas
       copyPixels(previewContext)
     }

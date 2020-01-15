@@ -202,7 +202,13 @@ export const initiateScenes = () => {
     })
   })
 
+  renderer.channelUpdate(scenes[state.scenes.channels.A], 'A')
+  renderer.channelUpdate(scenes[state.scenes.channels.B], 'B')
   renderer.setPostProcessing()
+}
+
+export const channelUpdate = (sceneId, channel) => {
+  renderer.channelUpdate(scenes[sceneId], channel)
 }
 
 export const run = (injectedStore, stats) => {
@@ -277,7 +283,7 @@ export const run = (injectedStore, stats) => {
         updateSceneSketches(channelB)
         updateGlobalPostProcessingSketches()
 
-        renderer.render(scenes[channelA], scenes[channelB], mixRatio, viewerMode, deltaMs)
+        renderer.render(mixRatio, viewerMode, deltaMs)
 
         stats.end()
 
