@@ -142,18 +142,15 @@ export const addSketchToScene = (sceneId, sketchId, moduleId) => {
 }
 
 export const removeSketchFromScene = (sceneId, sketchId) => {
-  const sketch = sketches[sketchId]
-  scenes[sceneId].scene.remove(sketch.root)
-
   const scene = scenes[sceneId]
-  const state = store.getState()
-  const params = getSketchParams(state, sketchId)
+  const sketch = sketches[sketchId]
+
+  scenes[sceneId].scene.remove(sketch.root)
 
   if (sketch.destructor) {
     sketch.destructor({
       scene: scene.scene,
       camera: scene.camera,
-      params,
       sketchesDir: `file://${sketchesDir}`,
       renderer: renderer.renderer,
     })
