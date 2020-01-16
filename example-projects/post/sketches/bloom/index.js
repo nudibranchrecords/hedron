@@ -22,7 +22,7 @@ class Bloom {
   }
 
   // This method will be called every frame, just like the usual update method
-  updatePostProcessing ({ params: p }) {
+  update ({ params: p }) {
     this.bloomEffect.blurPass.scale = p.scale
     this.bloomEffect.luminanceMaterial.threshold = p.lumThreshold
     this.bloomEffect.luminanceMaterial.smoothing = p.lumSmoothing

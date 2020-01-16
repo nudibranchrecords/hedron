@@ -234,10 +234,7 @@ export const run = (injectedStore, stats) => {
         sketch = sketches[sketchId]
         const params = getSketchParams(state, sketchId)
         allParams = getSketchParams(state, null, sceneId)
-        if (sketch.update) sketch.update({ ...getInfo(), params })
-        if (sketch.updatePostProcessing && !stateScene.settings.globalPostProcessingEnabled) {
-          sketch.updatePostProcessing({ ...getInfo(), params })
-        }
+        if (sketch.update && !stateScene.settings.globalPostProcessingEnabled) sketch.update({ ...getInfo(), params })
       })
     }
   }
@@ -251,7 +248,7 @@ export const run = (injectedStore, stats) => {
         scene.sketchIds.forEach(sketchId => {
           sketch = sketches[sketchId]
           const params = getSketchParams(state, sketchId)
-          if (sketch.updatePostProcessing) sketch.updatePostProcessing({ ...getInfo(), params })
+          if (sketch.update) sketch.update({ ...getInfo(), params })
         })
       }
     })
