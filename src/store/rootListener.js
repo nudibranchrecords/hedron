@@ -17,7 +17,7 @@ export default {
     sketchesListener(action, store)
     inputLinkListener(action, store)
     animListener(action, store)
-    fileWatchListener(action, store)
     engineListener(action, store)
+    fileWatchListener(action, store) // Should always be last
   },
 }

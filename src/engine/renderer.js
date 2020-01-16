@@ -1,6 +1,8 @@
 const { THREE, postprocessing } = window.HEDRON.dependencies
 const { EffectComposer, RenderPass, SavePass, TextureEffect, EffectPass } = postprocessing
 
+import getSketchParams from '../selectors/getSketchParams'
+
 import uiEventEmitter from '../utils/uiEventEmitter'
 import * as engine from './'
 
@@ -13,11 +15,12 @@ let store, domEl, outputEl, viewerEl, isSendingOutput, rendererWidth, rendererHe
 let blendOpacity
 let delta
 
+// Blank scene for empty channel
 const blankScene = { scene: new THREE.Scene(), camera: new THREE.Camera() }
 
 const channels = {
-  'A': blankScene,
-  'B': blankScene,
+  'A': false,
+  'B': false,
 }
 
 const getRenderChannelScene = channel => channels[channel] || blankScene
@@ -32,7 +35,10 @@ const channelTextureEffect = {
   B: null,
 }
 
-export let renderer, composer, renderPassA, renderPassB
+export let renderer, composer
+
+// Store renderer size as an object
+export const size = { width: 0, height: 0 }
 
 export const setRenderer = () => {
   renderer = new THREE.WebGLRenderer({
@@ -67,13 +73,13 @@ export const setPostProcessing = () => {
 
   // Go through "A" and "B"
   Object.keys(channels).forEach(c => {
-    const chan = getRenderChannelScene(c)
+    const channelScene = getRenderChannelScene(c)
 
     // Each channel has a set of passes
     channelPasses[c] = []
 
     // Render each channel as a pass
-    channelPasses[c].push(new RenderPass(chan.scene, chan.camera))
+    channelPasses[c].push(new RenderPass(channelScene.scene, channelScene.camera))
 
     // Each channel will also have their final pass saved to a texture to be mixed
     const savePass = new SavePass()
@@ -86,7 +92,16 @@ export const setPostProcessing = () => {
       stateScene.sketchIds.forEach(sketchId => {
         const module = engine.sketches[sketchId]
         if (!stateScene.settings.globalPostProcessingEnabled && module.initiatePostProcessing) {
-          const passes = module.initiatePostProcessing() || []
+          const params = getSketchParams(state, sketchId)
+
+          const passes = module.initiatePostProcessing({
+            scene: channelScene.scene,
+            camera: channelScene.camera,
+            params,
+            sketchesDir: `file://${engine.sketchesDir}`,
+            composer,
+            outputSize: size,
+          }) || []
           channelPasses[c].push(...passes)
         }
       })
@@ -147,8 +162,6 @@ export const setSize = () => {
 
     outputCanvas.width = width
     outputCanvas.height = width / ratio
-
-    composer.setSize(viewerEl.offsetWidth, viewerEl.offsetWidth / ratio)
   } else {
     // Basic width and ratio if no output
     width = viewerEl.offsetWidth
@@ -159,6 +172,8 @@ export const setSize = () => {
   const height = width / ratio
 
   composer.setSize(width, height)
+  size.width = width
+  size.height = height
 
   // Set ratios for each scene
   const engineScenes = engine.scenes
