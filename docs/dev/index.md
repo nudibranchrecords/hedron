@@ -112,6 +112,7 @@ This is the main file for the sketch. Essentially, it's a Javascript class, with
   - `camera` - The [three.js camera](https://threejs.org/docs/#api/en/cameras/Camera) the scene is using
   - `renderer` - The [three.js renderer](https://threejs.org/docs/#api/en/constants/Renderer)
   - `sketchesDir` - The location of the top level sketches directory. Useful for loading in external assets.
+  - `outputSize` - An object with `width` and `height` properties that match the image output resolution
 - `update` - This method is called every frame.  It has a single object literal as an argument, with the following properties:
   - `params` - A key/value pair of all the params in the sketch
   - `elapsedTimeMs` - Elapsed time in milliseconds, since Hedron was started
@@ -120,6 +121,7 @@ This is the main file for the sketch. Essentially, it's a Javascript class, with
   - `deltaFrame` - How many should have passed since the last update was fired. Ideally, this will always be at 1. If the program experiences some lag and the FPS drops below 60, this will be some number greater than 1. Use this to multiply with any incremental values to keep animation speeds consistent
   - `tick` - Raw number of updates that have actually been fired since Hedron started
   - `allParams` - A key/value pair of all the sketches in the scene, aech with their own key/value pair of params
+  - `outputSize` - An object with `width` and `height` properties that match the image output resolution
 - `destructor` - Fires when a sketch is removed. Use this to clean up anything that may continue to run afterwards. Not usually needed. Has the same argument object as the construtor, except for the `params` property.
 
 ### Shots
@@ -268,7 +270,9 @@ module.exports = Solid
 ```
 
 ## Post Processing
-Custom post processing, such as pixel shaders, are handled inside of sketches. Hedron's post processing system is a thin wrapper around the [postprocessing](https://github.com/vanruesc/postprocessing) library, so it's a good idea to understand how that works. Multiple passes can be added to the rendering composer using `initiatePostProcessing` and things are updated with the usual `update` method.
+Custom post processing, such as pixel shaders, are handled inside of sketches. Hedron's post processing system is a thin wrapper around the [postprocessing](https://github.com/vanruesc/postprocessing) library, so it's a good idea to understand how that works. Multiple passes can be created inside of `initiatePostProcessing` and returned as an array. `initiatePostProcessing` has a similar argument object to the class constructor (see above), except `renderer` is replaced with `composer` (for experimental usage).
+
+All values are updated with the usual `update` method.
 
 Please note that this feature is still very much under development and so will most likely see many changes to the API in future.
 
