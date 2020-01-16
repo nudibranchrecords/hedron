@@ -268,7 +268,7 @@ module.exports = Solid
 ```
 
 ## Post Processing
-Custom post processing, such as pixel shaders, are handled inside of sketches. Hedron's post processing system is a thin wrapper around the [postprocessing](https://github.com/vanruesc/postprocessing) library, so it's a good idea to understand how that works. Multiple passes can be added to the rendering composer using `initiatePostProcessing` and things are updated every frame using `updatePostProcessing`.
+Custom post processing, such as pixel shaders, are handled inside of sketches. Hedron's post processing system is a thin wrapper around the [postprocessing](https://github.com/vanruesc/postprocessing) library, so it's a good idea to understand how that works. Multiple passes can be added to the rendering composer using `initiatePostProcessing` and things are updated with the usual `update` method.
 
 Please note that this feature is still very much under development and so will most likely see many changes to the API in future.
 
@@ -297,8 +297,7 @@ class Bloom {
     return [ pass ]
   }
 
-  // This method will be called every frame, just like the usual update method
-  updatePostProcessing ({ params }) {
+  update ({ params }) {
     this.bloomEffect.blurPass.scale = params.scale
     this.bloomEffect.luminanceMaterial.threshold = params.lumThreshold
     this.bloomEffect.luminanceMaterial.smoothing = params.lumSmoothing
@@ -313,7 +312,7 @@ module.exports = Bloom
 There are plenty of other examples that can be found in the [example sketches folder](../../example-projects).
 
 ### Global postprocessing
-By default, any post processing will only affect the scene that sketch is in. This means that fading the scene out on the crossfader will also fade out any post processing effects you have in that scene. However, by checking "Global Post Processing" enabled under the scene settings, the effect will now work across all scenes. An icon will appear on the scene thumbnail if this setting is enabled. The scene does not need to be added to any channel, `updatePostProcessing` will always be running with this setting on.
+By default, any post processing will only affect the scene that sketch is in. This means that fading the scene out on the crossfader will also fade out any post processing effects you have in that scene. However, by checking "Global Post Processing" enabled under the scene settings, the effect will now work across all scenes. An icon will appear on the scene thumbnail if this setting is enabled. The scene does not need to be added to any channel, `update` will always be running with this setting on.
 
 As a convention, it makes sense to have a post processing scene, with post processing related sketches added to it. This scene does not need to have any 3D objects in it and never needs to be added to a channel.
 

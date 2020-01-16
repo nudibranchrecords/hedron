@@ -20,7 +20,7 @@ class Trails {
     return [feedbackPass, savePass, texturePass]
   }
 
-  updatePostProcessing ({ params: p }) {
+  update ({ params: p }) {
     this.feedbackEffect.uniforms.get('scale').value = p.scale
     this.feedbackEffect.uniforms.get('rotAngle').value = p.rotAngle
     this.feedbackEffect.uniforms.get('mixAmp').value = p.mixAmp
