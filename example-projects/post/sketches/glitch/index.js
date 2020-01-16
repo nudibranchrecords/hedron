@@ -2,7 +2,7 @@ const { postprocessing } = window.HEDRON.dependencies
 const { EffectPass, ChromaticAberrationEffect, GlitchEffect } = postprocessing
 
 class Glitch {
-  initiatePostProcessing ({ composer }) {
+  initiatePostProcessing () {
     this.rgbShiftEffect = new ChromaticAberrationEffect()
 
     this.glitchEffect = new GlitchEffect({
@@ -12,11 +12,8 @@ class Glitch {
     const glitchPass = new EffectPass(null, this.glitchEffect)
     const rgbPass = new EffectPass(null, this.rgbShiftEffect)
 
-    composer.addPass(glitchPass)
-    composer.addPass(rgbPass)
-
-    // Return the pass that needs to be rendered to the screen
-    return rgbPass
+    // Return array of passes in correct order
+    return [ glitchPass, rgbPass ]
   }
 
   updatePostProcessing ({ params: p }) {

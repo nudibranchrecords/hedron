@@ -235,6 +235,9 @@ export const run = (injectedStore, stats) => {
         const params = getSketchParams(state, sketchId)
         allParams = getSketchParams(state, null, sceneId)
         if (sketch.update) sketch.update({ ...getInfo(), params })
+        if (sketch.updatePostProcessing && !stateScene.settings.globalPostProcessingEnabled) {
+          sketch.updatePostProcessing({ ...getInfo(), params })
+        }
       })
     }
   }

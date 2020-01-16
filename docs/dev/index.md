@@ -276,12 +276,11 @@ Please note that this feature is still very much under development and so will m
 Below is a simple example of how to achieve a bloom effect. A config file is also needed, which is exactly the same as a normal sketch config file.
 
 ```javascript
-// POSTPROCESSING is a global variable available to Hedron sketches
-const { EffectPass, BloomEffect, BlendFunction, KernelSize } = POSTPROCESSING
+// THe postprocessing library is available under the HEDRON global variable
+const { EffectPass, BloomEffect, BlendFunction, KernelSize } = window.HEDRON.dependencies.postprocessing
 
 class Bloom {
-  // Here we add our passes to the composer
-  initiatePostProcessing ({ composer }) {
+  initiatePostProcessing () {
     // Create a bloom effect
     this.bloomEffect = new BloomEffect({
       blendFunction: BlendFunction.SCREEN,
@@ -292,12 +291,10 @@ class Bloom {
       height: 480,
     })
 
-    // Add the bloom effect as a new pass to the composer
+    // Create your passes and return as an array
     const pass = new EffectPass(null, this.bloomEffect)
-    composer.addPass(pass)
 
-    // Return the pass that needs to be rendered to the screen
-    return pass
+    return [ pass ]
   }
 
   // This method will be called every frame, just like the usual update method
@@ -315,8 +312,8 @@ module.exports = Bloom
 ### Other examples
 There are plenty of other examples that can be found in the [example sketches folder](../../example-projects).
 
-### How to see the output in Hedron
-Currently, post processing only works on the final output of Hedron (there are plans for a per-scene option too). To see the output of your passes, the sketch must be added to a scene. This scene must have "Global Post Processing" enabled under the scene settings for the passes to take effect. An icon will appear on the scene thumbnail if this setting is enabled. The scene does not need to be added to any channel, `updatePostProcessing` will always be running with this setting on.
+### Global postprocessing
+By default, any post processing will only affect the scene that sketch is in. This means that fading the scene out on the crossfader will also fade out any post processing effects you have in that scene. However, by checking "Global Post Processing" enabled under the scene settings, the effect will now work across all scenes. An icon will appear on the scene thumbnail if this setting is enabled. The scene does not need to be added to any channel, `updatePostProcessing` will always be running with this setting on.
 
 As a convention, it makes sense to have a post processing scene, with post processing related sketches added to it. This scene does not need to have any 3D objects in it and never needs to be added to a channel.
 

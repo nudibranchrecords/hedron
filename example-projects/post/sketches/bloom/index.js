@@ -3,7 +3,7 @@ const { EffectPass, BloomEffect, BlendFunction, KernelSize } = postprocessing
 
 class Bloom {
   // Here we add our passes to the composer
-  initiatePostProcessing ({ composer }) {
+  initiatePostProcessing () {
     this.bloomEffect = new BloomEffect({
       blendFunction: BlendFunction.SCREEN,
       kernelSize: KernelSize.LARGE,
@@ -16,10 +16,9 @@ class Bloom {
     // Please refer to the postprocessing documentation to understand how these classes work
     // https://github.com/vanruesc/postprocessing
     const pass = new EffectPass(null, this.bloomEffect)
-    composer.addPass(pass)
 
-    // Return the pass that needs to be rendered to the screen
-    return pass
+    // Return the pass in an array
+    return [ pass ]
   }
 
   // This method will be called every frame, just like the usual update method

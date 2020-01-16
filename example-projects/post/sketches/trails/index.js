@@ -3,7 +3,7 @@ const { EffectPass, SavePass, TextureEffect } = postprocessing
 const FeedbackEffect = require('./FeedbackEffect')
 
 class Trails {
-  initiatePostProcessing ({ composer }) {
+  initiatePostProcessing () {
     this.feedbackEffect = new FeedbackEffect()
 
     const savePass = new SavePass()
@@ -17,11 +17,7 @@ class Trails {
     const feedbackPass = new EffectPass(null, this.feedbackEffect)
     const texturePass = new EffectPass(null, textureEffect)
 
-    composer.addPass(feedbackPass)
-    composer.addPass(savePass)
-    composer.addPass(texturePass)
-
-    return texturePass
+    return [feedbackPass, savePass, texturePass]
   }
 
   updatePostProcessing ({ params: p }) {

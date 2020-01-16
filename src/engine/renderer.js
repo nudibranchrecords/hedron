@@ -5,6 +5,7 @@ import uiEventEmitter from '../utils/uiEventEmitter'
 import * as engine from './'
 
 import getScenes from '../selectors/getScenes'
+import getChannelScene from '../selectors/getChannelScene'
 
 let store, domEl, outputEl, viewerEl, isSendingOutput, rendererWidth, rendererHeight,
   previewCanvas, previewContext, outputCanvas, outputContext
@@ -19,11 +20,16 @@ const channels = {
   'B': blankScene,
 }
 
-const getChannelScene = channel => channels[channel] || blankScene
+const getRenderChannelScene = channel => channels[channel] || blankScene
 
 const channelPasses = {
   'A': [],
   'B': [],
+}
+
+const channelTextureEffect = {
+  A: null,
+  B: null,
 }
 
 export let renderer, composer, renderPassA, renderPassB
@@ -58,55 +64,69 @@ export const setPostProcessing = () => {
   const stateScenes = getScenes(state)
 
   composer.reset()
-  const chanA = getChannelScene('A')
-  const chanB = getChannelScene('B')
 
-  channelPasses.A = []
-  channelPasses.B = []
+  // Go through "A" and "B"
+  Object.keys(channels).forEach(c => {
+    const chan = getRenderChannelScene(c)
 
-  channelPasses.A.push(new RenderPass(chanA.scene, chanA.camera))
-  channelPasses.B.push(new RenderPass(chanB.scene, chanB.camera))
+    // Each channel has a set of passes
+    channelPasses[c] = []
 
-  const savePassA = new SavePass()
-  const savePassB = new SavePass()
+    // Render each channel as a pass
+    channelPasses[c].push(new RenderPass(chan.scene, chan.camera))
 
-  channelPasses.A.push(savePassA)
-  channelPasses.B.push(savePassB)
+    // Each channel will also have their final pass saved to a texture to be mixed
+    const savePass = new SavePass()
+    channelTextureEffect[c] = new TextureEffect({ texture: savePass.renderTarget.texture })
 
-  const textureEffectA = new TextureEffect({ texture: savePassA.renderTarget.texture })
-  const textureEffectB = new TextureEffect({
-    texture: savePassB.renderTarget.texture,
+    const stateScene = getChannelScene(state, c)
+
+    // Add any sketch passes, if they're not global
+    if (stateScene) {
+      stateScene.sketchIds.forEach(sketchId => {
+        const module = engine.sketches[sketchId]
+        if (!stateScene.settings.globalPostProcessingEnabled && module.initiatePostProcessing) {
+          const passes = module.initiatePostProcessing() || []
+          channelPasses[c].push(...passes)
+        }
+      })
+    }
+
+    // Save the final output of this channel
+    channelPasses[c].push(savePass)
+
+    // Add all of the channel passes to the composer
+    channelPasses[c].forEach(pass => composer.addPass(pass))
   })
 
-  blendOpacity = textureEffectB.blendMode.opacity
-
-  const mixPass = new EffectPass(null, textureEffectA, textureEffectB)
+  // Mix the two channels
+  const mixPass = new EffectPass(null, channelTextureEffect.A, channelTextureEffect.B)
   mixPass.renderToScreen = true
-
-  channelPasses.A.forEach(pass => composer.addPass(pass))
-  channelPasses.B.forEach(pass => composer.addPass(pass))
-
   composer.addPass(mixPass)
 
   const globalPasses = []
 
+  // Loop through all scenes and check for postprocessing
   stateScenes.forEach(scene => {
     scene.sketchIds.forEach(sketchId => {
       const module = engine.sketches[sketchId]
-      // Do any postprocessing related setup for this sketch
       if (scene.settings.globalPostProcessingEnabled && module.initiatePostProcessing) {
-        const pass = module.initiatePostProcessing({ composer })
-        // If sketch has an output pass, add to array
-        if (pass) globalPasses.push(pass)
+        // Add global passes
+        const passes = module.initiatePostProcessing() || []
+        globalPasses.push(...passes)
       }
     })
   })
 
-  // Set last item of output passes to render to the screen
+  // Add global passes to composer and set last pass to render to the screen
   if (globalPasses.length) {
+    globalPasses.forEach(pass => { composer.addPass(pass) })
     mixPass.renderToScreen = false
     globalPasses[globalPasses.length - 1].renderToScreen = true
   }
+
+  // The channel mix value will will be set to channelB's opacity
+  blendOpacity = channelTextureEffect.B.blendMode.opacity
 }
 
 export const setViewerEl = (el) => {
