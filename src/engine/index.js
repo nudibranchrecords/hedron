@@ -25,11 +25,12 @@ const configDefault = {
 
 export let scenes = {}
 export let sketches = {}
+export let sketchesDir
 
 let moduleConfigs = {}
 let isRunning = false
 let moduleFiles = {}
-let sketchesDir
+
 let store
 
 // Load sketches from sketches folder
@@ -135,6 +136,7 @@ export const addSketchToScene = (sceneId, sketchId, moduleId) => {
     params,
     sketchesDir: `file://${sketchesDir}`,
     renderer: renderer.renderer,
+    outputSize: renderer.size,
   })
 
   sketches[sketchId] = module
@@ -225,7 +227,15 @@ export const run = (injectedStore, stats) => {
   // Give store module params
   store.dispatch(availableModulesReplaceAll(moduleConfigs))
 
-  const getInfo = () => ({ allParams, elapsedFrames, elapsedTimeMs: newTimeMs, deltaMs, deltaFrame, tick })
+  const getInfo = () => ({
+    allParams,
+    elapsedFrames,
+    elapsedTimeMs: newTimeMs,
+    deltaMs,
+    deltaFrame,
+    tick,
+    outputSize: renderer.size,
+  })
 
   const updateSceneSketches = (sceneId) => {
     stateScene = getScene(state, sceneId)
