@@ -17,7 +17,7 @@ const TextField = styled.input`
 
 const ParamString = ({ onChange, nodeId }) => {
   const store = useStore()
-  const [value, setValue] = useState()
+  const [value, setValue] = useState({ value: '' })
 
   useUiEventListener('slow-tick', () => {
     const newValue = store.getState().nodes[nodeId].value
