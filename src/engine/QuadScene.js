@@ -1,4 +1,5 @@
-import * as THREE from 'three'
+const { THREE } = window.HEDRON.dependencies
+
 const vert = `
   varying vec2 vUv;
 

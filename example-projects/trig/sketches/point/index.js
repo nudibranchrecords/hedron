@@ -1,3 +1,5 @@
+const { THREE } = window.HEDRON.dependencies
+
 class Point {
   constructor () {
     this.root = new THREE.Group()
@@ -8,7 +10,7 @@ class Point {
     this.root.add(this.mesh)
   }
 
-  update (params, time, frameDiff, allParams) {
+  update ({ params }) {
     const rad = 5
 
     this.mesh.position.x = (rad * params.posX) - rad / 2

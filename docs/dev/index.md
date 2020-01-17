@@ -18,45 +18,57 @@ Sketches live in the sketches directory. A sketch is itself a directory with two
 - index.js
 
 ## config.js
+This is where the params and shots are defined as an object literal.
 
-This is where the params and shots are defined.
+- `defaultTitle` - Initial title of the sketch when first added to a scene (can be renamed by user)
+- `category` - Can be set to help organise sketches
+- `author` - Can be set to help organise sketches
+- `params` - Params are the values you have control over in a sketch. This setting is an array of objects, each with the following properties:
+  - `key` - A unique string for the param  _(Required)_
+  - `title` - A human readable title for the param _(defaults to `key`)_
+  - `valueType` - Can be `float` _(default)_, `boolean` or `enum`. The look and behaviour of the param control will change depending on what type you are using dropdown for `enum`, button for `boolean`)
+  - `defaultValue` - Default value for the param when the sketch is first loaded. If not set, the default depends on the value type.
+  -  `defaultMin` - Used with `float` value type. If set, will interpolate the slider value to this minimum _(defaults to 0)_
+  -  `defaultMax` - Used with `float` value type. If set, will interpolate the slider value to this maximum _(defaults to 1)_
+  - `options` - Used with `enum` value type. An array of objects with these properties:
+    - `value` - The value of the param if this option is selected _(Required)_
+    - `label` - A human readable label for the option _(defaults to `value`)_
+  - `hidden` - Hides the param from the user. One example for using this would be that you might have some param in your sketch that is controlled by a shot, but not available to edit for the user. _(Defaults to `false`)_
+- `shots` - Shots are methods you have control of in your sketch. This setting is an array of objects, each with the following properties:
+  - `method` - The name of the method to control in your sketch
+  - `title` - A human readable name for the shot _(defaults to `method`)_
+
+Example of a config file:
 
 ```javascript
 module.exports = {
-  // Default title when sketch is loaded in (can be changed by user)
   defaultTitle: 'Solid',
-  // Category and author can be used as a way to organise sketches based on the user's settings
   category: 'Simple',
   author: 'Laurence Ipsum',  
-  // Params are values between 0 and 1 that can be manipulated by the user
-  // these values are sent to the sketch every frame
-  // e.g. Speed, scale, colour
   params: [
     {
-      key: 'rotSpeedX', // needs to be unique
-      defaultValue: 0, // must be between 0 and 1
-      title: 'Rotation Speed X', // optional, should be human, if not provided defaults to the key
-      hidden: false, // optional, some params may want to be hidden in the UI, if they are controlled programatically by the sketch. Defaults to false.
-      valueType: 'float', // optional, can be "float", "boolean" or "enum". Defaults to "float"
-      defaultMin: 0, // for "float" valueType, optional. The value passed to the sketch when the param is at it's lowest value, if not provided defaults to 0
-      defaultMax: 1, // for "float" valueType, optional. The value passed to the sketch when the param is at it's highest value, if not provided defaults to 1
+      key: 'rotSpeedX',
+      defaultValue: 0,
+      title: 'Rotation Speed X', 
+      valueType: 'float',
+      defaultMin: -1,
+      defaultMax: 1,
     },
     {
       key: 'isWireframe',
       title: 'Wireframe',
       valueType: 'boolean',
-      defaultValue: true, // If using defaultValue, it should match the valueType
+      defaultValue: true,
     },
     {
       key: 'geomName',
-      label: 'Geometry',
+      title: 'Geometry',
       valueType: 'enum',
       defaultValue: 'icosa',
-      // options for "enum" valueType are defined like this
       options: [
         {
-          value: 'cube', // required, the value of the option that will be passed around
-          label: 'Cube', // optional, human readable version (defaults to value)
+          value: 'cube',
+          label: 'Cube',
         },
         {
           value: 'tetra',
@@ -77,37 +89,76 @@ module.exports = {
       ],
     },
   ],
-  // Shots are single functions that can fire, as opposed to values that change
-  // e.g. Explosions, Pre-defined animations
   shots: [
     {
-      method: 'shapeShift', // needs to be unique
-      title: 'Shape Shift' // should be human
+      method: 'shapeShift',
+      title: 'Shape Shift',
     }
   ]
 }
 ```
 
 ## index.js
+This is the main file for the sketch. Essentially, it's a Javascript class, with some important properties and methods. You can `require` other modules from here, so don't feel restricted to a single file. However, you should use the Hedron global version of `THREE` and not import this yourself (`window.HEDRON.dependencies`), see below.
 
-This is where the actual sketch is held. `THREE` is available as a global variable and it's strongly advised you use this rather than import the library yourself, to prevent unexpected behaviour. For convenience, `THREE.GLTFLoader` and `THREE.OrbitControls` are available too.
+### Properties
 
-You can `require` other modules from here, so don't feel restricted to a single file. 
+- `root` - This should be set in the constructor as a `THREE.Group`. It is the top-level 3D object for the sketch. Hedron takes this root object and places it in the scene. Not required if your sketch is only for post processing (see below).
+
+### Methods
+- `constructor` - Where the sketch setup happens. It has a single object literal as an argument, with the following properties:
+  - `params` - A key/value pair of all the params in the sketch
+  - `scene` - The [three.js scene](https://threejs.org/docs/#api/en/scenes/Scene) that this sketch is added to
+  - `camera` - The [three.js camera](https://threejs.org/docs/#api/en/cameras/Camera) the scene is using
+  - `renderer` - The [three.js renderer](https://threejs.org/docs/#api/en/constants/Renderer)
+  - `sketchesDir` - The location of the top level sketches directory. Useful for loading in external assets.
+- `update` - This method is called every frame.  It has a single object literal as an argument, with the following properties:
+  - `params` - A key/value pair of all the params in the sketch
+  - `elapsedTimeMs` - Elapsed time in milliseconds, since Hedron was started
+  - `elapsedFrames` - Elapsed frames since Hedron was started. This is an ideal value based on 60FPS, instead of actual frames that have been seen.
+  - `deltaMs` - Milliseconds that have passed since the last update was fired
+  - `deltaFrame` - How many should have passed since the last update was fired. Ideally, this will always be at 1. If the program experiences some lag and the FPS drops below 60, this will be some number greater than 1. Use this to multiply with any incremental values to keep animation speeds consistent
+  - `tick` - Raw number of updates that have actually been fired since Hedron started
+  - `allParams` - A key/value pair of all the sketches in the scene, aech with their own key/value pair of params
+- `destructor` - Fires when a sketch is removed. Use this to clean up anything that may continue to run afterwards. Not usually needed. Has the same argument object as the construtor, except for the `params` property.
+
+### Shots
+Any custom method in your sketch class can be defined as a shot in the config. Shot methods have a single object literal as an argument, with the following properties:
+- `params` - A key/value pair of all the params in the sketch
+
+### Global HEDRON variable
+Hedron provides a single global variable with some useful libraries to make use of.
+
+- `window.HEDRON.dependencies`
+  - `THREE` - It is strongly recommended you use this instance of `THREE` and not your own installed package. Also are the following extras have been added to this property as child properties:
+    - `GLTFLoader`
+    - `OrbitControls`
+  - `TWEEN` - A very simple [tweening library](https://github.com/tweenjs/tween.js/). The update method is called interally in Hedron, so there's no need to do that inside of a sketch.
+  - `postprocessing` - The post [processing library](https://github.com/vanruesc/postprocessing) Hedron uses
+  - `glslify` - [Module system for GLSL](https://github.com/glslify/glslify)
 
 ### Very basic example
 This is the minimum you need to do in order to use Hedron.
 
 ```javascript
+// Hedron exposes three.js via the HEDRON global
+// It is highly advised you use this and don't install your own version of THREE
+const { THREE } = window.HEDRON.dependencies
+
+// All sketches are a class
 class MyFirstSketch {
   constructor () {
+    // You must define a sketch root object
+    this.root = new THREE.Group()
+
     // Create a cube, add it to the root of the scene
     const mat = new THREE.MeshNormalMaterial()
-    const geom = new THREE.BoxGeometry(300, 300, 300)
+    const geom = new THREE.BoxGeometry(1, 1, 1)
     this.cube = new THREE.Mesh(geom, mat)
     this.root.add(this.cube)
   }
 
-  update (params) {
+  update ({ params }) {
     // params.rotSpeedX is a value that is controlled by the user,
     // in order to change the rotation speed of the cube
     this.cube.rotation.x += params.rotSpeedX
@@ -118,45 +169,18 @@ module.exports = MyFirstSketch
 ```
 
 ### Advanced example
-This example shows many more features of Hedron, with lots more comments
+This example shows many more features of Hedron 
 
 ```javascript
-/** HEDRON TIP **
-This is a nice and simple sketch to get you going!
-A polyhedron that can spin on all axes. The user can change the speed of the rotation.
-The user can change the scale. The user can also click on "shapeshift" and the geometry changes.
-**/
+// Hedron exposes three.js via the HEDRON global
+// It is highly advised you use this and don't install your own version of THREE
+const { THREE } = window.HEDRON.dependencies
 
-/** HEDRON TIP **
-  Hedron sketches must be a class
-**/
 class Solid {
-  /** HEDRON TIP **
-    The constructor method has three arguments:
-
-    scene - This is the THREE object for the scene. You can also access the THREE renderer
-    using scene.renderer
-
-    meta - This is an object with meta data that might be useful. It has the following properties:
-      sketchesFolder - The path to the sketches folder on your computer.
-      Useful if you need to link to a resource such as an image.
-
-    params - The sketch params when the sketch first initialises
-  **/
-  constructor (scene, params, meta) {
-    /** HEDRON TIP **
-      Must define a "root" property as a THREE.Group or THREE.Object3D
-      Hedron looks for this and will add it to the scene.
-    **/
-    this.root = new THREE.Group() // THREE is a global var, so no need to import
-
-    /** HEDRON TIP **
-      It's good practice to not manipulate the root object
-      so we create another group and add it to the root.
-      This isn't required and the name isn't important.
-    **/
-    this.group = new THREE.Group()
-    this.root.add(this.group)
+  constructor ({ scene, renderer, camera, params, meta }) {
+    // Sketches must set this root property so Hedron can place the sketch in the scene
+    // Everything should be added to this root
+    this.root = new THREE.Group()
 
     // Empty object to be populated with meshes
     this.meshes = {}
@@ -167,7 +191,7 @@ class Solid {
     )
     const size = 1
 
-    // Array geometries (the platonic solids!)
+    // Array of geometries (the platonic solids!)
     const geoms = {
       cube: new THREE.BoxGeometry(size, size, size),
       tetra: new THREE.TetrahedronGeometry(size),
@@ -186,45 +210,25 @@ class Solid {
       // Add to meshes object
       this.meshes[geomName] = mesh
       // Add to scene
-      this.group.add(mesh)
+      this.root.add(mesh)
       // Hide the mesh
       mesh.visible = false
     }
   }
 
-  /** HEDRON TIP **
-    The update method is called every frame by Hedron.
-    You have the following arguments to make use of...
-
-    ownParams: An object containing params defined in config.js.
-    These are values between 0 and 1 that can be manipulated in many ways by the user.
-
-    time: Elapsed time in ms (not used below)
-
-    frameDiff: Number of frames that should have passed since last frame.
-    Useful for keeping speeds consistent.
-    If the framerate changes, this value changes too. At 60fps the value will be
-    exactly 1. Less than 60fps and the value goes above 1. More than 60fps and the value
-    goes below 1. See below on how it can be used.
-
-    allParams: An object containing all params from all sketches. (not used below)
-  **/
-  update (params, time, frameDiff, allParams) {
+  // The update method gets called every frame and passes in params defined in the config
+  update ({ params, deltaFrame }) {
     // Solids spin too fast at 1
     const baseSpeed = 0.15
 
-    /** HEDRON TIP **
-      Making use of params.rotSpeedX to rotate the solid. When the user changes
-      the "Rotation Speed X" param (defined in config.js), it will change here and the
-      speed increases. We're multiplying the final increase by 'frameDiff'
-      so that the speed stays consistent across varying framerates.
-    **/
-    this.group.rotation.x += params.rotSpeedX * baseSpeed * frameDiff
-    this.group.rotation.y += params.rotSpeedY * baseSpeed * frameDiff
-    this.group.rotation.z += params.rotSpeedZ * baseSpeed * frameDiff
+    // Using the rotSpeed params to affect the rotation of the group
+    // We multiply by deltaFrame to keep the rotation speed consistent
+    this.root.rotation.x += params.rotSpeedX * baseSpeed * deltaFrame
+    this.root.rotation.y += params.rotSpeedY * baseSpeed * deltaFrame
+    this.root.rotation.z += params.rotSpeedZ * baseSpeed * deltaFrame
 
     // Change scale using params.scale
-    this.group.scale.set(params.scale, params.scale, params.scale)
+    this.root.scale.set(params.scale, params.scale, params.scale)
 
     // Change material wireframe option using boolean param
     this.mat.wireframe = params.isWireframe
@@ -236,33 +240,23 @@ class Solid {
     }
   }
 
-  /** HEDRON TIP **
-    All non-special methods of the class are exposed as "shots".
-    These are single functions that can fire rather than paramaters than slowly change.
-    See config.js to see how these are defined.
-
-    Current params are given as an argument
-  **/
-  randomGeom (params) {
+  
+  // All non-special methods of the class are exposed as "shots", defined in the config.
+  // These are single functions that can fire rather than paramaters than slowly change.
+  randomGeom ({ params }) {
+    // Shot can be used to directly alter something in the sketch
+    // or as in this example, to manipulate the params
     const i = Math.floor(Math.random() * this.geomNames.length)
     const geomName = this.geomNames[i]
 
-    if (geomName === params.geomName) {
-      // If random name is the same as previous, go again
-      return this.randomGeom(params)
-    } else {
-      /** HEDRON TIP **
-        If you've updated some params inside the shot, you'll need to return these new values
-      **/
-      return { geomName }
-    }
+    // In order to tell Hedron params have changed inside a shot, return the updated params
+    return { geomName }
   }
 
   /** HEDRON TIP **
     Use the destructor method to do anything when the sketch is deleted
   **/
-  destructor () {
-    // eslint-disable-next-line no-console
+  destructor ({ scene, renderer, camera, params, meta }) {
     console.log('Solid sketch deleted!')
   }
 }
@@ -272,6 +266,62 @@ class Solid {
 **/
 module.exports = Solid
 ```
+
+## Post Processing
+Custom post processing, such as pixel shaders, are handled inside of sketches. Hedron's post processing system is a thin wrapper around the [postprocessing](https://github.com/vanruesc/postprocessing) library, so it's a good idea to understand how that works. Multiple passes can be added to the rendering composer using `initiatePostProcessing` and things are updated every frame using `updatePostProcessing`.
+
+Please note that this feature is still very much under development and so will most likely see many changes to the API in future.
+
+### Simple example
+Below is a simple example of how to achieve a bloom effect. A config file is also needed, which is exactly the same as a normal sketch config file.
+
+```javascript
+// POSTPROCESSING is a global variable available to Hedron sketches
+const { EffectPass, BloomEffect, BlendFunction, KernelSize } = POSTPROCESSING
+
+class Bloom {
+  // Here we add our passes to the composer
+  initiatePostProcessing ({ composer }) {
+    // Create a bloom effect
+    this.bloomEffect = new BloomEffect({
+      blendFunction: BlendFunction.SCREEN,
+      kernelSize: KernelSize.LARGE,
+      useLuminanceFilter: true,
+      luminanceThreshold: 0.825,
+      luminanceSmoothing: 0.075,
+      height: 480,
+    })
+
+    // Add the bloom effect as a new pass to the composer
+    const pass = new EffectPass(null, this.bloomEffect)
+    composer.addPass(pass)
+
+    // Return the pass that needs to be rendered to the screen
+    return pass
+  }
+
+  // This method will be called every frame, just like the usual update method
+  updatePostProcessing ({ params }) {
+    this.bloomEffect.blurPass.scale = params.scale
+    this.bloomEffect.luminanceMaterial.threshold = params.lumThreshold
+    this.bloomEffect.luminanceMaterial.smoothing = params.lumSmoothing
+    this.bloomEffect.blendMode.opacity.value = params.opacity
+  }
+}
+
+module.exports = Bloom
+```
+
+### Other examples
+There are plenty of other examples that can be found in the [example sketches folder](../../example-projects).
+
+### How to see the output in Hedron
+Currently, post processing only works on the final output of Hedron (there are plans for a per-scene option too). To see the output of your passes, the sketch must be added to a scene. This scene must have "Global Post Processing" enabled under the scene settings for the passes to take effect. An icon will appear on the scene thumbnail if this setting is enabled. The scene does not need to be added to any channel, `updatePostProcessing` will always be running with this setting on.
+
+As a convention, it makes sense to have a post processing scene, with post processing related sketches added to it. This scene does not need to have any 3D objects in it and never needs to be added to a channel.
+
+### Order of passes
+You can reorder sketches by clicking and holding on them in the sidebar. This relates to the order in which passes are added to the composer. If passes are added to sketches across multiple scenes, the order of the scenes is also important.
 
 ## Reloading sketches / Auto reload
 If you have the "Watch sketches" setting enabled, Hedron will automatically refresh your sketches. However, if you don't have this enabled or something went wrong with the file watch (e.g. your sketch imports a file outside of its own folder) you'll need to click "Reload File" to see changes made to sketch files.

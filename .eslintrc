@@ -4,9 +4,6 @@
     "standard",
     "standard-react"
   ],
-  "globals": {
-    "THREE": "readonly"
-  },
   "env": {
     "browser" : true,
     "jest/globals": true

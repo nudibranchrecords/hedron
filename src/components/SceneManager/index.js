@@ -6,6 +6,7 @@ import styled from 'styled-components'
 import ButtonWithInputIcons from '../ButtonWithInputIcons'
 import theme from '../../utils/theme'
 import SceneList from '../../containers/SceneList'
+import SceneSettings from '../../containers/SceneSettings'
 
 const Wrapper = styled.nav`
   margin-bottom: 2rem;
@@ -108,6 +109,7 @@ const SceneManager = (
             <Button color='danger' onClick={() => { onDeleteClick(currentScene.id) }}>Delete</Button>
           </Col>
         </Row>
+        <SceneSettings sceneId={currentScene.id} />
       </Panel>
       }
     </Wrapper>

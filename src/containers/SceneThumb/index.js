@@ -16,6 +16,7 @@ const mapStateToProps = (state, ownProps) => {
     isActive: ownProps.id === currentSceneId,
     channel: isChannelA && 'A' || isChannelB && 'B' || undefined,
     to: '/scenes/view',
+    hasPost: scene.settings.globalPostProcessingEnabled,
   }
 }
 

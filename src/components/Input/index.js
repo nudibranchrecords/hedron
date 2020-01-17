@@ -57,13 +57,17 @@ const Wrapper = styled.div`
       height: 1rem;
     }
   `}
+
+${props => props.layout === 'compact' && props.type === 'checkbox' && `
+    flex-direction: row-reverse;
+  `}
 `
 
 const Input = (props) => {
-  const { name, id, label, type = 'text', component = 'input' } = props
+  const { name, id, label, type = 'text', component = 'input', layout, spacing } = props
   const fieldId = id || name
   return (
-    <Wrapper layout={props.layout} spacing={props.spacing}>
+    <Wrapper layout={layout} spacing={spacing} type={type}>
       {label && <label htmlFor={fieldId}>{label}</label>}
       <Field component={component} id={fieldId} type={type} {...props} />
     </Wrapper>

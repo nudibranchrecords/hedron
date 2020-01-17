@@ -116,6 +116,21 @@ const scenesReducer = (state = defaultState, action) => {
         },
       }
     }
+    case 'R_SCENE_SETTINGS_UPDATE': {
+      return {
+        ...state,
+        items: {
+          ...state.items,
+          [p.id]: {
+            ...state.items[p.id],
+            settings: {
+              ...state.items[p.id].settings,
+              ...p.settings,
+            },
+          },
+        },
+      }
+    }
     default:
       return state
   }

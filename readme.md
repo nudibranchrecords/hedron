@@ -23,6 +23,7 @@ Perform live shows with your three.js creations.
 ## Hedron in action
 [![Polyop](http://nudibranchrecords.github.io/hedron/polyop-creator.jpg)](https://vimeo.com/310779808)
 [![Netgrind @ Halifax Pride](http://nudibranchrecords.github.io/hedron/netgrind-halifax-pride.jpg)](https://www.netgrindgames.com/)
+[![Craig Lowe](http://nudibranchrecords.github.io/hedron/craig-lowe-euphoria.jpg)](https://www.youtube.com/watch?v=d64dCoW9Y1c)
 
 ## Getting Started
 
