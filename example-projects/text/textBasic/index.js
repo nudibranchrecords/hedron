@@ -1,8 +1,8 @@
-const THREE = require('three')
+const { THREE } = window.HEDRON.dependencies
 const fontJson = require('three/examples/fonts/droid/droid_sans_regular.typeface.json')
 
 class TextBasic {
-  constructor (scene, params) {
+  constructor ({ params }) {
     this.root = new THREE.Group()
     this.group = new THREE.Group()
     this.root.add(this.group)
@@ -52,8 +52,8 @@ class TextBasic {
     return geometry
   }
 
-  update (params, time, delta, allParams) {
-    if (this.text != params.text) {
+  update ({ params }) {
+    if (this.text !== params.text) {
       this.setText(params.text, params)
     }
 
