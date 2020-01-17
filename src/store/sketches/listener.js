@@ -17,6 +17,7 @@ import getSketchesPath from '../../selectors/getSketchesPath'
 import getModuleSketchIds from '../../selectors/getModuleSketchIds'
 import { reloadSingleSketchModule, removeSketchFromScene,
   addSketchToScene, reloadSingleSketchConfig } from '../../engine'
+import { setPostProcessing } from '../../engine/renderer'
 import { uMacroTargetParamLinkDelete } from '../macros/actions'
 import { getType } from '../../valueTypes'
 
@@ -142,11 +143,13 @@ const handleSketchCreate = (action, store) => {
   store.dispatch(engineSceneSketchAdd(sceneId, uniqueSketchId, moduleId))
 
   history.push('/scenes/view/' + sceneId)
+
+  setPostProcessing()
 }
 
 const handleSketchDelete = (action, store) => {
   let state = store.getState()
-  let { id, sceneId } = action.payload
+  let { id, sceneId, options } = action.payload
   if (!sceneId) {
     sceneId = getCurrentSceneId(state)
   }
@@ -173,6 +176,8 @@ const handleSketchDelete = (action, store) => {
   store.dispatch(sceneSketchSelect(sceneId, newSceneSketchId))
   store.dispatch(engineSceneSketchDelete(sceneId, id))
   history.push('/scenes/view/' + sceneId)
+
+  if (!options.skipPostProcessingReset) setPostProcessing()
 }
 
 const handleSketchNodeOpenedToggle = (action, store) => {
@@ -300,6 +305,8 @@ const moduleReloadFile = (moduleId, state) => {
     removeSketchFromScene(obj.sceneId, obj.sketchId)
     addSketchToScene(obj.sceneId, obj.sketchId, moduleId)
   })
+
+  setPostProcessing()
 }
 
 const handleModuleReloadFile = (action, store) => {

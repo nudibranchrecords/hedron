@@ -1,4 +1,4 @@
-import * as THREE from 'three'
+const { THREE } = window.HEDRON.dependencies
 
 class Scene {
   constructor () {

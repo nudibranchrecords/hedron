@@ -2,7 +2,7 @@ import test from 'tape'
 import deepFreeze from 'deep-freeze'
 import sketchesReducer from '../reducer'
 import { rSketchNodeOpenedToggle } from '../actions'
-import { returnsPreviousState } from '../../../testUtils'
+import { returnsPreviousState } from '../../../../testUtils'
 
 returnsPreviousState(sketchesReducer)
 

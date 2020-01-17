@@ -1,6 +1,4 @@
-/** HEDRON TIP **
-  Look in "example-projects/simple/sketches/solid" for info on how to create sketches
-**/
+const { THREE } = window.HEDRON.dependencies
 const range = 10000
 const particleCount = 1800
 
@@ -10,7 +8,6 @@ const randomInRange = () =>
 class Stars {
   constructor () {
     this.root = new THREE.Group()
-    // create the particle variables
     this.particles = new THREE.Geometry()
     this.material = new THREE.PointsMaterial({
       color: 0xFFFFFF,
@@ -18,9 +15,8 @@ class Stars {
       transparent: true,
     })
 
-    // now create the individual particles
+    // Create some random positions for particles
     for (let p = 0; p < particleCount; p++) {
-      // create a particle with random position
       const pX = randomInRange()
       const pY = randomInRange()
       const pZ = randomInRange()
@@ -31,18 +27,15 @@ class Stars {
       this.particles.vertices.push(particle)
     }
 
-    // create the particle system
+    // create the particle system and add to the sketch root
     this.particleSystem = new THREE.Points(
       this.particles,
       this.material
     )
-
-    // add it to the scene
     this.root.add(this.particleSystem)
   }
 
-  update (params, time, frameDiff, allParams) {
-    const p = params
+  update ({ params: p }) {
     let pCount = particleCount
 
     this.material.opacity = p.opacity
