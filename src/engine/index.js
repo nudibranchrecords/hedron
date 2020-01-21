@@ -204,8 +204,8 @@ export const initiateScenes = () => {
     })
   })
 
-  renderer.channelUpdate(scenes[state.scenes.channels.A], 'A')
-  renderer.channelUpdate(scenes[state.scenes.channels.B], 'B')
+  renderer.channelUpdate(scenes[state.scenes.channels.A], 'A', false)
+  renderer.channelUpdate(scenes[state.scenes.channels.B], 'B', false)
   renderer.setPostProcessing()
 }
 

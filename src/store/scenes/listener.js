@@ -121,7 +121,7 @@ const handleSceneSelectChannel = (action, store) => {
   if (otherChannelId === p.id) {
     // If opposite channel has same scene as newly switched channel, remove scene
     store.dispatch(rSceneSelectChannel(false, otherChannel))
-    engine.channelUpdate(false, otherChannelId)
+    engine.channelUpdate(null, otherChannel)
   }
 
   store.dispatch(rSceneSelectChannel(p.id, channel))
