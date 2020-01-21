@@ -7,7 +7,6 @@ import uiEventEmitter from '../utils/uiEventEmitter'
 import * as engine from './'
 
 import getScenes from '../selectors/getScenes'
-import getChannelScene from '../selectors/getChannelScene'
 
 let store, domEl, outputEl, viewerEl, isSendingOutput, rendererWidth, rendererHeight,
   previewCanvas, previewContext, outputCanvas, outputContext
@@ -15,30 +14,24 @@ let store, domEl, outputEl, viewerEl, isSendingOutput, rendererWidth, rendererHe
 let blendOpacity
 let delta
 
-// Blank scene for empty channel
-const blankScene = { scene: new THREE.Scene(), camera: new THREE.Camera() }
-
-const channelScenes = {
-  'A': null,
-  'B': null,
-}
-
-const getRenderChannelScene = channel => channelScenes[channel] || blankScene
+const renderScenes = new Map()
 
 const channelPasses = {
   'A': [],
   'B': [],
 }
 
-const channelTextureEffect = {
-  A: new TextureEffect(),
-  B: new TextureEffect(),
-}
-
 export let renderer, composer
 
 // Store renderer size as an object
 export const size = { width: 0, height: 0 }
+
+const blankTexture = new THREE.Texture()
+
+const channelTextureEffect = {
+  A: new TextureEffect({ texture: blankTexture }),
+  B: new TextureEffect({ texture: blankTexture }),
+}
 
 export const setRenderer = () => {
   renderer = new THREE.WebGLRenderer({
@@ -51,56 +44,64 @@ export const setRenderer = () => {
   composer = new EffectComposer(renderer)
 }
 
-export const channelUpdate = (scene, channel, doSetup = true) => {
-  channelScenes[channel] = scene
-  if (doSetup) setupChannel(channel)
-}
-
-export const setupChannel = c => {
-  const state = store.getState()
-  const channelScene = getRenderChannelScene(c)
-  const startingPassIndex = c === 'A' ? 0 : channelPasses['A'].length
-
-  // Remove any pre-existing passes on the channel
-  channelPasses[c].forEach(pass => {
-    composer.removePass(pass)
-  })
+export const channelUpdate = (sceneId, c) => {
+  // Disable previous passes in channel
+  channelPasses[c].forEach(pass => { pass.enabled = false })
   channelPasses[c] = []
 
-  // Render the channel as a pass
-  channelPasses[c].push(new RenderPass(channelScene.scene, channelScene.camera))
-
-  const stateScene = getChannelScene(state, c)
-
-  // Add any sketch passes, if they're not global
-  if (stateScene) {
-    stateScene.sketchIds.forEach(sketchId => {
-      const module = engine.sketches[sketchId]
-      if (!stateScene.settings.globalPostProcessingEnabled && module.initiatePostProcessing) {
-        const params = getSketchParams(state, sketchId)
-
-        const passes = module.initiatePostProcessing({
-          scene: channelScene.scene,
-          camera: channelScene.camera,
-          params,
-          sketchesDir: `file://${engine.sketchesDir}`,
-          composer,
-          outputSize: size,
-        }) || []
-        channelPasses[c].push(...passes)
-      }
-    })
+  if (!sceneId) {
+    channelTextureEffect[c].uniforms.get('texture').value = blankTexture
+    return
   }
 
-  // Channel  will also have their final pass saved to a texture to be mixed
-  const savePass = new SavePass()
-  channelTextureEffect[c].uniforms.get('texture').value = savePass.renderTarget.texture
-  channelPasses[c].push(savePass)
+  const renderScene = renderScenes.get(sceneId)
 
-  // Add all of the channel passes to the composer
-  channelPasses[c].forEach((pass, i) => {
-    composer.addPass(pass, startingPassIndex + i)
-  })
+  // Set new passes for the channel and enable them
+  channelPasses[c] = renderScene.passes
+  renderScene.passes.forEach(pass => { pass.enabled = true })
+
+  // Set output texture for the channel
+  channelTextureEffect[c].uniforms.get('texture').value = renderScene.outputTexture
+}
+
+export const getSketchPasses = (state, sketchId, hedronScene) => {
+  const module = engine.sketches[sketchId]
+
+  if (module.initiatePostProcessing) {
+    const params = getSketchParams(state, sketchId)
+
+    return module.initiatePostProcessing({
+      scene: hedronScene.scene,
+      camera: hedronScene.camera,
+      params,
+      sketchesDir: `file://${engine.sketchesDir}`,
+      composer,
+      outputSize: size,
+    }) || []
+  } else {
+    return []
+  }
+}
+
+export const sceneRenderSetup = (hedronScene, passes) => {
+  const renderScene = {
+    passes: [],
+    outputTexture: null,
+  }
+
+  // Render the channel as a pass
+  renderScene.passes.push(new RenderPass(hedronScene.scene, hedronScene.camera))
+
+  // Add all custom passes
+  renderScene.passes.push(...passes)
+
+  // Channel will also have their final pass saved to a texture to be mixed
+  // TODO: We can avoid this pass if the scene has no extra passes, by using a render target from the render pass
+  const savePass = new SavePass()
+  renderScene.passes.push(savePass)
+  renderScene.outputTexture = savePass.renderTarget.texture
+
+  return renderScene
 }
 
 export const setPostProcessing = () => {
@@ -109,27 +110,39 @@ export const setPostProcessing = () => {
 
   composer.reset()
 
-  // Setup A and B channels
-  Object.keys(channelScenes).forEach(setupChannel)
+  const globalPasses = []
+
+  // Loop through all scenes and check for postprocessing
+  stateScenes.forEach(stateScene => {
+    const hedronScene = engine.scenes[stateScene.id]
+    const localPasses = []
+    stateScene.sketchIds.forEach(sketchId => {
+      const passes = getSketchPasses(state, sketchId, hedronScene)
+      if (stateScene.settings.globalPostProcessingEnabled) {
+        // If global, add to global passes list to be added to composer later
+        globalPasses.push(...passes)
+      } else {
+        // Otherwise add to local passes to be added now
+        localPasses.push(...passes)
+      }
+    })
+
+    const renderScene = sceneRenderSetup(hedronScene, localPasses)
+    renderScene.passes.forEach(pass => {
+      composer.addPass(pass)
+      // Disable all passes (will be enabled if added to channel)
+      pass.enabled = false
+    })
+    renderScenes.set(
+      stateScene.id,
+      renderScene
+    )
+  })
 
   // Mix the two channels
   const mixPass = new EffectPass(null, channelTextureEffect.A, channelTextureEffect.B)
   mixPass.renderToScreen = true
   composer.addPass(mixPass)
-
-  const globalPasses = []
-
-  // Loop through all scenes and check for postprocessing
-  stateScenes.forEach(scene => {
-    scene.sketchIds.forEach(sketchId => {
-      const module = engine.sketches[sketchId]
-      if (scene.settings.globalPostProcessingEnabled && module.initiatePostProcessing) {
-        // Add global passes
-        const passes = module.initiatePostProcessing() || []
-        globalPasses.push(...passes)
-      }
-    })
-  })
 
   // Add global passes to composer and set last pass to render to the screen
   if (globalPasses.length) {
@@ -140,6 +153,10 @@ export const setPostProcessing = () => {
 
   // The channel mix value will will be set to channelB's opacity
   blendOpacity = channelTextureEffect.B.blendMode.opacity
+
+  // Set up channels
+  channelUpdate(state.scenes.channels.A, 'A')
+  channelUpdate(state.scenes.channels.B, 'B')
 }
 
 export const setViewerEl = (el) => {
