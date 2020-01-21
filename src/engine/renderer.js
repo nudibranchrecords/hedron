@@ -18,12 +18,12 @@ let delta
 // Blank scene for empty channel
 const blankScene = { scene: new THREE.Scene(), camera: new THREE.Camera() }
 
-const channels = {
-  'A': false,
-  'B': false,
+const channelScenes = {
+  'A': null,
+  'B': null,
 }
 
-const getRenderChannelScene = channel => channels[channel] || blankScene
+const getRenderChannelScene = channel => channelScenes[channel] || blankScene
 
 const channelPasses = {
   'A': [],
@@ -31,8 +31,8 @@ const channelPasses = {
 }
 
 const channelTextureEffect = {
-  A: null,
-  B: null,
+  A: new TextureEffect(),
+  B: new TextureEffect(),
 }
 
 export let renderer, composer
@@ -51,18 +51,56 @@ export const setRenderer = () => {
   composer = new EffectComposer(renderer)
 }
 
-export const channelUpdate = (scene, channel) => {
-  channels[channel] = scene
-  const passes = channelPasses[channel]
+export const channelUpdate = (scene, channel, doSetup = true) => {
+  channelScenes[channel] = scene
+  if (doSetup) setupChannel(channel)
+}
 
-  if (passes && passes.length) {
-    if (scene) {
-      channelPasses[channel][0].scene = scene.scene
-      channelPasses[channel][0].camera = scene.camera
-    } else {
-      channelPasses[channel] = []
-    }
+export const setupChannel = c => {
+  const state = store.getState()
+  const channelScene = getRenderChannelScene(c)
+  const startingPassIndex = c === 'A' ? 0 : channelPasses['A'].length
+
+  // Remove any pre-existing passes on the channel
+  channelPasses[c].forEach(pass => {
+    composer.removePass(pass)
+  })
+  channelPasses[c] = []
+
+  // Render the channel as a pass
+  channelPasses[c].push(new RenderPass(channelScene.scene, channelScene.camera))
+
+  const stateScene = getChannelScene(state, c)
+
+  // Add any sketch passes, if they're not global
+  if (stateScene) {
+    stateScene.sketchIds.forEach(sketchId => {
+      const module = engine.sketches[sketchId]
+      if (!stateScene.settings.globalPostProcessingEnabled && module.initiatePostProcessing) {
+        const params = getSketchParams(state, sketchId)
+
+        const passes = module.initiatePostProcessing({
+          scene: channelScene.scene,
+          camera: channelScene.camera,
+          params,
+          sketchesDir: `file://${engine.sketchesDir}`,
+          composer,
+          outputSize: size,
+        }) || []
+        channelPasses[c].push(...passes)
+      }
+    })
   }
+
+  // Channel  will also have their final pass saved to a texture to be mixed
+  const savePass = new SavePass()
+  channelTextureEffect[c].uniforms.get('texture').value = savePass.renderTarget.texture
+  channelPasses[c].push(savePass)
+
+  // Add all of the channel passes to the composer
+  channelPasses[c].forEach((pass, i) => {
+    composer.addPass(pass, startingPassIndex + i)
+  })
 }
 
 export const setPostProcessing = () => {
@@ -71,48 +109,8 @@ export const setPostProcessing = () => {
 
   composer.reset()
 
-  // Go through "A" and "B"
-  Object.keys(channels).forEach(c => {
-    const channelScene = getRenderChannelScene(c)
-
-    // Each channel has a set of passes
-    channelPasses[c] = []
-
-    // Render each channel as a pass
-    channelPasses[c].push(new RenderPass(channelScene.scene, channelScene.camera))
-
-    // Each channel will also have their final pass saved to a texture to be mixed
-    const savePass = new SavePass()
-    channelTextureEffect[c] = new TextureEffect({ texture: savePass.renderTarget.texture })
-
-    const stateScene = getChannelScene(state, c)
-
-    // Add any sketch passes, if they're not global
-    if (stateScene) {
-      stateScene.sketchIds.forEach(sketchId => {
-        const module = engine.sketches[sketchId]
-        if (!stateScene.settings.globalPostProcessingEnabled && module.initiatePostProcessing) {
-          const params = getSketchParams(state, sketchId)
-
-          const passes = module.initiatePostProcessing({
-            scene: channelScene.scene,
-            camera: channelScene.camera,
-            params,
-            sketchesDir: `file://${engine.sketchesDir}`,
-            composer,
-            outputSize: size,
-          }) || []
-          channelPasses[c].push(...passes)
-        }
-      })
-    }
-
-    // Save the final output of this channel
-    channelPasses[c].push(savePass)
-
-    // Add all of the channel passes to the composer
-    channelPasses[c].forEach(pass => composer.addPass(pass))
-  })
+  // Setup A and B channels
+  Object.keys(channelScenes).forEach(setupChannel)
 
   // Mix the two channels
   const mixPass = new EffectPass(null, channelTextureEffect.A, channelTextureEffect.B)
