@@ -116,16 +116,18 @@ export const reloadSingleSketchConfig = (url, moduleId, pathArray) => {
   }
 }
 
-export const addScene = (sceneId) => {
+export const addScene = (sceneId, shouldSetPost = true) => {
   scenes[sceneId] = new Scene()
   renderer.setSize()
+  if (shouldSetPost) renderer.setPostProcessing()
 }
 
-export const removeScene = (sceneId) => {
+export const removeScene = (sceneId, shouldSetPost) => {
   delete scenes[sceneId]
+  if (shouldSetPost) renderer.setPostProcessing()
 }
 
-export const addSketchToScene = (sceneId, sketchId, moduleId) => {
+export const addSketchToScene = (sceneId, sketchId, moduleId, shouldSetPost = true) => {
   const scene = scenes[sceneId]
   const state = store.getState()
   const params = getSketchParams(state, sketchId)
@@ -141,9 +143,11 @@ export const addSketchToScene = (sceneId, sketchId, moduleId) => {
 
   sketches[sketchId] = module
   module.root && scene.scene.add(module.root)
+
+  if (shouldSetPost) renderer.setPostProcessing()
 }
 
-export const removeSketchFromScene = (sceneId, sketchId) => {
+export const removeSketchFromScene = (sceneId, sketchId, shouldSetPost) => {
   const scene = scenes[sceneId]
   const sketch = sketches[sketchId]
 
@@ -159,6 +163,8 @@ export const removeSketchFromScene = (sceneId, sketchId) => {
   }
 
   delete sketches[sketchId]
+
+  if (shouldSetPost) renderer.setPostProcessing()
 }
 
 export const fireShot = (sketchId, method) => {
@@ -197,20 +203,18 @@ export const initiateScenes = () => {
 
   // Add new scenes and sketches
   stateScenes.forEach(scene => {
-    addScene(scene.id)
+    addScene(scene.id, false)
     scene.sketchIds.forEach((sketchId, index) => {
       const moduleId = getSketch(state, sketchId).moduleId
-      addSketchToScene(scene.id, sketchId, moduleId)
+      addSketchToScene(scene.id, sketchId, moduleId, false)
     })
   })
 
-  renderer.channelUpdate(scenes[state.scenes.channels.A], 'A', false)
-  renderer.channelUpdate(scenes[state.scenes.channels.B], 'B', false)
   renderer.setPostProcessing()
 }
 
 export const channelUpdate = (sceneId, channel) => {
-  renderer.channelUpdate(scenes[sceneId], channel)
+  renderer.channelUpdate(sceneId, channel)
 }
 
 export const run = (injectedStore, stats) => {
