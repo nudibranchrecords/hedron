@@ -8900,10 +8900,10 @@ posthtml@^0.11.2, posthtml@^0.11.3:
     posthtml-parser "^0.3.3"
     posthtml-render "^1.1.0"
 
-postprocessing@^6.6.0:
-  version "6.8.9"
-  resolved "https://registry.yarnpkg.com/postprocessing/-/postprocessing-6.8.9.tgz#d95821903ced3c38ee6aafe831d0c49087a6d686"
-  integrity sha512-zgJrWlpHoFWoRpZTejCo25JenvOfHaUr83eekQWrPTW3vgE7oIREGJhwxF/SeoG6VQXbvIqiBwCUwbyuxSyKOg==
+postprocessing@^6.10.0:
+  version "6.10.0"
+  resolved "https://registry.yarnpkg.com/postprocessing/-/postprocessing-6.10.0.tgz#2d85260176dee61054cb3ce543fecd88435b5c95"
+  integrity sha512-nA/keRGvON1NEtka8KEHj9kpdLlBL/P+JcjbIKyEYZN+YEAMMRs5rorW5WlYCpzZl4/Br9FEP88/0zpn2v7ldg==
 
 prelude-ls@~1.1.2:
   version "1.1.2"
@@ -11201,10 +11201,10 @@ text-table@^0.2.0:
   version "0.2.0"
   resolved "https://registry.yarnpkg.com/text-table/-/text-table-0.2.0.tgz#7f5ee823ae805207c00af2df4a84ec3fcfa570b4"
 
-three@^0.109.0:
-  version "0.109.0"
-  resolved "https://registry.yarnpkg.com/three/-/three-0.109.0.tgz#611c9ef860d10bd107695cead6c6abcd2422e5fd"
-  integrity sha512-XT99T3Hvgh2CEvwPdHYEunNE+clLK6KiT1U8En7YOgIqTUw4MrLeIc8zxQAJ6wbP8hhJaY5+Cff3jwBPpBa0gA==
+three@^0.112.1:
+  version "0.112.1"
+  resolved "https://registry.yarnpkg.com/three/-/three-0.112.1.tgz#f8d8f4d0f8e5f753dac6260491b8209457fdc131"
+  integrity sha512-8I0O74hiYtKl3LgDNcPJbBGOlpekbcJ6fJnImmW3mFdeUFJ2H9Y3/UuUSW2sBdjrIlCM0gvOkaTEFlofO900TQ==
 
 throat@^4.0.0:
   version "4.1.0"
