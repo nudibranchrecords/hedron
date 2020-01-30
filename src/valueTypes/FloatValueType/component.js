@@ -222,7 +222,7 @@ class ValueBar extends React.Component {
 ValueBar.propTypes = {
   nodeId: PropTypes.string.isRequired,
   onChange: PropTypes.func.isRequired,
-  onDoubleClick: PropTypes.func.isRequired,
+  onDoubleClick: PropTypes.func,
   onMouseDown: PropTypes.func,
   type: PropTypes.string,
   hideBar: PropTypes.bool,
