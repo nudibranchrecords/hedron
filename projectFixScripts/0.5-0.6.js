@@ -10,17 +10,51 @@ const parseOldOptions = (key, node) => {
 fix(data => {
   for (const key in data.nodes) {
     const node = data.nodes[key]
-    node.optionIds = []
 
-    // option Ids have become a single array
-    parseOldOptions('lfoOptionIds', node)
-    parseOldOptions('midiOptionIds', node)
-    parseOldOptions('audioOptionIds', node)
-    parseOldOptions('animOptionIds', node)
+    if (!node.optionIds) {
+      // option Ids now share the same array property
+      node.optionIds = []
+      parseOldOptions('lfoOptionIds', node)
+      parseOldOptions('midiOptionIds', node)
+      parseOldOptions('audioOptionIds', node)
+      parseOldOptions('animOptionIds', node)
+    }
 
     // We now have valueType, default is "float"
-    if (node.type === 'param' && !node.valueType) {
-      node.valueType = 'float'
+    const becomeFloat = ['param', 'macro', 'macroTargetParamLink']
+    if (!node.valueType && becomeFloat.includes(node.type)) node.valueType = 'float'
+
+    // Shots become shotFloat
+    if (node.type === 'shot') {
+      node.valueType = 'shotFloat'
+    }
+
+    // Selects become enums
+    if (node.type === 'select') {
+      delete node.type
+      node.valueType = 'enum'
+    }
+
+    // Convert macro param link start values from "false" to "null"
+    if (node.type === 'macro' && node.targetParamLinks) {
+      for (let key in node.targetParamLinks) {
+        const obj = node.targetParamLinks[key]
+        if (obj.startValue === false) obj.startValue = null
+      }
+    }
+
+    // Channel change action payload property from "type" to "channel"
+    if (
+      node.type === 'linkableAction' &&
+      node.action &&
+      node.action.type === 'U_SCENE_SELECT_CHANNEL' &&
+      node.action.payload && node.action.payload.type &&
+      !node.action.payload.channel
+    ) {
+      const p = node.action.payload
+      const channel = p.type
+      delete p.type
+      p.channel = channel
     }
   }
 
