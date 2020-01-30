@@ -13,6 +13,7 @@ const Error = styled.div`
   font-size: 0.6rem;
   overflow: hidden;
   margin-top: 0.5rem;
+  user-select: text;
 `
 
 const Menu = ({
