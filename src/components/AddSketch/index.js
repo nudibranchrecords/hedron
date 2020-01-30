@@ -60,8 +60,8 @@ const AddSketch = ({ items, hasSketches, onAddClick, onChooseFolderClick, sketch
       </Category>
     )}
 
-    {!hasSketches && <p>You haven't chosen the sketch folder for the project yet.</p>}
-    <Button onClick={onChooseFolderClick}>Choose Sketch Folder</Button>
+    {!hasSketches && <p>You haven't chosen the sketches folder for the project yet.</p>}
+    <Button onClick={onChooseFolderClick}>Choose Sketches Folder</Button>
     <br />
     {sketchesPath}
   </React.Fragment>
