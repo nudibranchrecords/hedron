@@ -33,8 +33,8 @@ let sketchesDir
 let store
 
 // Load sketches from sketches folder
-export const loadSketchModules = (url) => {
-  let hasCheckedForSiblingDir = false
+export const loadSketchModules = (url, { siblingCheck = false } = {}) => {
+  let hasCheckedForSiblingDir = !siblingCheck
 
   const load = url => {
     try {

@@ -2,7 +2,7 @@ import { save, load } from '../../utils/file'
 import uiEventEmitter from '../../utils/uiEventEmitter'
 import { getProjectData, getProjectFilepath } from './selectors'
 import getCurrentSceneId from '../../selectors/getCurrentSceneId'
-import { projectLoadSuccess, projectRehydrate, projectSaveAs,
+import { projectLoadSuccess, projectRehydrate,
   projectErrorAdd, projectErrorPopupOpen, projectErrorPopupClose,
   projectSave, projectLoadRequest, projectFilepathUpdate, projectSketchesPathUpdate,
 } from './actions'
@@ -10,33 +10,30 @@ import { uSceneCreate } from '../scenes/actions'
 import history from '../../history'
 import { remote } from 'electron'
 import { processDevices } from '../../inputs/MidiInput'
+import { loadSketchModules, initiateScenes } from '../../engine'
+import getSketchesPath from '../../selectors/getSketchesPath'
 
 const fileFilters = [
   { name: 'JSON', extensions: ['json'] },
 ]
 
-const saveAsProject = (action, store) => {
-  remote.dialog.showSaveDialog({
-    filters: fileFilters,
-  }).then(({ filePath }) => {
-    if (filePath) {
-      store.dispatch(projectFilepathUpdate(filePath))
-      store.dispatch(projectSave())
-    }
-  }).catch(err => {
-    console.error(err)
-  })
+const saveAsProject = async (action, store) => {
+  const filePath = await remote.dialog.showSaveDialog({ filters: fileFilters })
+  if (filePath) {
+    store.dispatch(projectFilepathUpdate(filePath))
+    store.dispatch(projectSave())
+  }
 }
 
-const saveProject = (action, store) => {
+const saveProject = async (action, store) => {
   try {
     const state = store.getState()
-    const filepath = getProjectFilepath(state)
-    if (filepath) {
+    const filePath = getProjectFilepath(state)
+    if (filePath) {
       const data = getProjectData(state)
-      save(filepath, data)
+      save(filePath, data)
     } else {
-      saveAsProject(action, store)
+      await saveAsProject(action, store)
     }
   } catch (error) {
     console.error(error)
@@ -44,30 +41,36 @@ const saveProject = (action, store) => {
   }
 }
 
-const loadProject = (action, store) => {
-  remote.dialog.showOpenDialog({
-    filters: fileFilters,
-  }).then(result => {
+const loadProject = async (action, store) => {
+  try {
+    const result = await remote.dialog.showOpenDialog({ filters: fileFilters })
     const filePath = result.filePaths[0]
     if (filePath) {
       store.dispatch(projectFilepathUpdate(filePath))
       store.dispatch(projectLoadRequest())
     }
-  }).catch(error => {
+  } catch (error) {
     console.error(error)
     throw new Error(`Failed to load project: ${error.message}`)
-  })
+  }
 }
 
 const loadProjectRequest = async (action, store) => {
   try {
     const state = store.getState()
-    const filepath = getProjectFilepath(state)
-    const projectData = await load(filepath)
+    const filePath = getProjectFilepath(state)
+    const projectData = await load(filePath)
+
+    const sketchesPath = getSketchesPath(projectData)
+
     store.dispatch(projectRehydrate(projectData))
     processDevices()
-    store.dispatch(projectFilepathUpdate(filepath))
-    store.dispatch(projectLoadSuccess(projectData))
+    store.dispatch(projectFilepathUpdate(filePath))
+
+    loadSketchModules(sketchesPath, { siblingCheck: true })
+    initiateScenes()
+
+    store.dispatch(projectLoadSuccess())
     history.replace(projectData.router.location.pathname)
     uiEventEmitter.emit('repaint')
   } catch (error) {
@@ -76,32 +79,29 @@ const loadProjectRequest = async (action, store) => {
   }
 }
 
-const chooseSketchesFolder = (action, store) => {
+const chooseSketchesFolder = async (action, store) => {
   const p = action.payload
   const state = store.getState()
 
   const sceneId = getCurrentSceneId(state)
-  remote.dialog.showOpenDialog(
-    {
-      properties: ['openDirectory'],
-    }
-  ).then(result => {
-    const filePath = result.filePaths[0]
-    if (filePath) {
-      store.dispatch(projectSketchesPathUpdate(filePath))
-      store.dispatch(projectLoadSuccess())
-      store.dispatch(projectErrorPopupClose())
-      if (!p.disableRedirect) {
-        history.push(`/scenes/addSketch/${sceneId}`)
-      }
-      if (p.createSceneAfter) {
-        store.dispatch(uSceneCreate())
-      }
-    }
-  }).catch(error => {
-    console.error(error)
-    throw new Error(`Failed to load sketches: ${error.message}`)
+  const result = await remote.dialog.showOpenDialog({
+    properties: ['openDirectory'],
   })
+
+  const filePath = result.filePaths[0]
+  if (filePath) {
+    loadSketchModules(filePath, { siblingCheck: false })
+    initiateScenes()
+    store.dispatch(projectSketchesPathUpdate(filePath))
+    store.dispatch(projectLoadSuccess())
+    store.dispatch(projectErrorPopupClose())
+    if (!p.disableRedirect) {
+      history.push(`/scenes/addSketch/${sceneId}`)
+    }
+    if (p.createSceneAfter) {
+      store.dispatch(uSceneCreate())
+    }
+  }
 }
 
 const handleProjectError = (action, store) => {
@@ -113,22 +113,22 @@ const handleProjectError = (action, store) => {
   }
 }
 
-export default (action, store) => {
+export default async (action, store) => {
   switch (action.type) {
     case 'PROJECT_SAVE':
-      saveProject(action, store)
+      await saveProject(action, store)
       break
     case 'PROJECT_LOAD':
-      loadProject(action, store)
+      await loadProject(action, store)
       break
     case 'PROJECT_LOAD_REQUEST':
-      loadProjectRequest(action, store)
+      await loadProjectRequest(action, store)
       break
     case 'PROJECT_SAVE_AS':
       saveAsProject(action, store)
       break
     case 'PROJECT_CHOOSE_SKETCHES_FOLDER':
-      chooseSketchesFolder(action, store)
+      await chooseSketchesFolder(action, store)
       break
     case 'PROJECT_ERROR':
       handleProjectError(action, store)

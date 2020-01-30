@@ -13,7 +13,7 @@ import { projectError } from './project/actions'
 export default {
   types: 'all',
 
-  handleAction (action, dispatched, store) {
+  async handleAction (action, dispatched, store) {
     try {
       inputsListener(action, store)
       nodesListener(action, store)
@@ -23,7 +23,7 @@ export default {
       engineListener(action, store)
       animListener(action, store)
       fileWatchListener(action, store)
-      projectListener(action, store)
+      await projectListener(action, store)
     } catch (error) {
       console.error(error)
       store.dispatch(projectError(error.message, { popup: true, code: error.code }))
