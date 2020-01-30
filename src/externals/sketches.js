@@ -24,25 +24,32 @@ const loadFile = resolvedPath => {
     file = eval(`require('${resolvedPath}')`)
   }
 
+  if (!file) {
+    throw new Error(`File not found: ${resolvedPath}`)
+  }
+
   return file
 }
 
 const loadSketch = (file) => {
   const url = path.resolve(file)
   let indexUrl = path.format({ dir: url, base: 'index.js' })
-  let configUrl = path.format({ dir: url, base: 'config.js' })
 
   return {
     Module: loadFile(indexUrl),
-    config: loadFile(configUrl),
+    config: loadConfig(file),
   }
 }
 
 const loadConfig = (file) => {
-  const url = path.resolve(file)
-  let configUrl = path.format({ dir: url, base: 'config.js' })
+  try {
+    const url = path.resolve(file)
+    let configUrl = path.format({ dir: url, base: 'config.js' })
 
-  return loadFile(configUrl)
+    return loadFile(configUrl)
+  } catch (error) {
+    throw new Error(`No config file found: ${error.message}`)
+  }
 }
 
 const findSketches = (file, all, pathArray) => {
