@@ -71,7 +71,7 @@ export const loadSketchModules = (url) => {
         isRunning = false
         console.error(error)
         store.dispatch(projectError(`Sketches failed to load: ${error.message}`, {
-          popup: 'true',
+          popup: true,
           code: error.code,
         }))
       }
