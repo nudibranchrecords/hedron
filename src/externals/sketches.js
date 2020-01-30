@@ -74,13 +74,18 @@ const loadSketches = globUrl => {
     })
 
     if (Object.keys(all).length === 0) {
-      throw errcode(new Error('No sketches found'), 'NO_SKETCH_FOLDER')
+      throw errcode(
+        new Error(
+          'No sketches found in folder. Please note you must select the parent folder that contains your sketches (usually named "sketches").'
+        ),
+        'NO_SKETCH_FOLDER'
+      )
     }
 
     return all
   } catch (error) {
     console.error(`Failed to load sketch folder.`, error)
-    throw (error)
+    throw error
   }
 }
 

@@ -38,15 +38,14 @@ export const loadSketchModules = (url) => {
 
   const load = url => {
     try {
+      isRunning = true
+
       sketchesDir = url
       moduleFiles = loadSketches(url)
 
       Object.keys(moduleFiles).forEach((key) => {
         moduleConfigs[key] = moduleFiles[key].config
       })
-
-      isRunning = true
-
       // If second check inside sibling sketches folder was successful, save the absolute path
       if (hasCheckedForSiblingDir) {
         store.dispatch(projectSketchesPathUpdate(url))
@@ -64,16 +63,17 @@ export const loadSketchModules = (url) => {
         // Generate file path for sibling folder and try again
         const state = store.getState()
         const filePath = getProjectFilepath(state)
-        const sketchesPath = path.resolve(path.dirname(filePath), 'sketches/')
-        load(sketchesPath)
+        if (filePath) {
+          const sketchesPath = path.resolve(path.dirname(filePath), 'sketches/')
+          load(sketchesPath)
+        } else {
+          isRunning = false
+          throw error
+        }
       } else {
         // If all else fails, throw error
         isRunning = false
-        console.error(error)
-        store.dispatch(projectError(`Sketches failed to load: ${error.message}`, {
-          popup: true,
-          code: error.code,
-        }))
+        throw error
       }
     }
   }
@@ -90,10 +90,15 @@ export const reloadSingleSketchModule = (url, moduleId, pathArray) => {
   } catch (error) {
     isRunning = false
     console.error(error)
-    store.dispatch(projectError(`Sketch ${moduleId} failed to load: ${error.message}`, {
-      popup: 'true',
-      code: error.code,
-    }))
+    store.dispatch(
+      projectError(
+        `Sketch ${moduleId} failed to load: ${error.message}`,
+        {
+          popup: 'true',
+          code: error.code,
+        }
+      )
+    )
   }
 }
 
@@ -108,10 +113,15 @@ export const reloadSingleSketchConfig = (url, moduleId, pathArray) => {
   } catch (error) {
     isRunning = false
     console.error(error)
-    store.dispatch(projectError(`Sketch config ${moduleId} failed to load: ${error.message}`, {
-      popup: 'true',
-      code: error.code,
-    }))
+    store.dispatch(
+      projectError(
+        `Sketch config ${moduleId} failed to load: ${error.message}`,
+        {
+          popup: 'true',
+          code: error.code,
+        }
+      )
+    )
   }
 }
 
