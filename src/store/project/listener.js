@@ -18,7 +18,8 @@ const fileFilters = [
 ]
 
 const saveAsProject = async (action, store) => {
-  const filePath = await remote.dialog.showSaveDialog({ filters: fileFilters })
+  const { filePath } = await remote.dialog.showSaveDialog({ filters: fileFilters })
+
   if (filePath) {
     store.dispatch(projectFilepathUpdate(filePath))
     store.dispatch(projectSave())
