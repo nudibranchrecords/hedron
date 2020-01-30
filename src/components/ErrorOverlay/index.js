@@ -8,10 +8,12 @@ const ErrorMessage = styled.p`
   opacity: 0.5;
   font-size: 0.8rem !important;
   margin: 0;
+  user-select: text;
 `
 
 const Wrapper = styled.div`
   margin-bottom: 1rem;
+  user-select: text;
 `
 
 const ErrorOverlay = ({ isVisible, onCancelClick, code, message, onChooseSketchFolderClick }) => {
