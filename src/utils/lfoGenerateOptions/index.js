@@ -100,6 +100,7 @@ export default (nodeValueType) => {
       title: 'Phase',
       id: uid(),
       key: 'phase',
+      valueType: 'float',
       value: 0,
       inputLinkIds: [],
       subNode: true,
