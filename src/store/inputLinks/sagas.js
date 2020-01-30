@@ -62,7 +62,7 @@ export function* inputLinkCreate (action) {
                 value: config.defaultValue[j],
                 passToNext: j < config.title.length - 1,
                 inputLinkIds: [],
-                valueType: config.valueType && config.valueType[j],
+                valueType: (config.valueType && config.valueType[j]) || 'float',
                 options: config.controlOptions && config.controlOptions[j],
                 subNode: true,
               }
