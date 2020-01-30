@@ -4,6 +4,7 @@ import styled from 'styled-components'
 
 const FilePath = styled.span`
   font-size: 0.8rem;
+  user-select: text;
 `
 
 const Error = styled.div`
