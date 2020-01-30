@@ -82,7 +82,7 @@ const loadSketches = globUrl => {
 
     return all
   } catch (error) {
-    console.error(`Failed to load sketch folder.`, error)
+    console.error(`Failed to load sketches folder.`, error)
     throw error
   }
 }
