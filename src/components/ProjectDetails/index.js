@@ -4,6 +4,7 @@ import styled from 'styled-components'
 
 const FilePath = styled.span`
   font-size: 0.8rem;
+  user-select: text;
 `
 
 const Error = styled.div`
@@ -13,6 +14,7 @@ const Error = styled.div`
   font-size: 0.6rem;
   overflow: hidden;
   margin-top: 0.5rem;
+  user-select: text;
 `
 
 const Menu = ({
