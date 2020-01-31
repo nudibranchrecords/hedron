@@ -18,7 +18,7 @@ export const getType = typeName => {
   const valueType = types[typeName]
 
   if (typeName && valueType === undefined) {
-    console.error(`[HEDRON] valueType of "${typeName}" not recognised. Please check your config file.`)
+    throw new Error(`valueType "${typeName}" not recognised. Please check your config file.`)
   }
 
   return valueType

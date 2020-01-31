@@ -1,17 +1,22 @@
 import { connect } from 'react-redux'
-import ValueBar from './component'
+import ValueBar from '../FloatValueType/component'
 import { nodeValueUpdate } from '../../store/nodes/actions'
 import getNode from '../../selectors/getNode'
-import getIsEditing from '../../selectors/getIsEditing'
-import { uiEditingOpen } from '../../store/ui/actions'
+import getInputLink from '../../selectors/getInputLink'
+
+// It's worth noting that this container shares a component with FloatValueType!
 
 const mapStateToProps = (state, ownProps) => {
   const node = getNode(state, ownProps.nodeId)
   const type = node.type
+  const linkId = node.activeInputLinkId
+  const inputLink = getInputLink(state, linkId)
+  const hideBar = !inputLink || inputLink && inputLink.input.type !== 'audio'
 
   return {
     type,
-    formIsVisible: getIsEditing(state, ownProps.nodeId, 'paramValue'),
+    hideBar,
+    markerIsVisible: !hideBar && inputLink.armed,
   }
 }
 
@@ -19,9 +24,6 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     onChange: (value) => {
       dispatch(nodeValueUpdate(ownProps.nodeId, value))
-    },
-    onDoubleClick: () => {
-      dispatch(uiEditingOpen('paramValue', ownProps.nodeId))
     },
   }
 }
