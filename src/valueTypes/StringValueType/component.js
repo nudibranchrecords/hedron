@@ -17,17 +17,21 @@ const TextField = styled.input`
 
 const ParamString = ({ onChange, nodeId }) => {
   const store = useStore()
-  const [value, setValue] = useState({ value: '' })
+  const [value, setValue] = useState('')
 
   useUiEventListener('slow-tick', () => {
     const newValue = store.getState().nodes[nodeId].value
+    // Update text box often from external changes (e.g. shots or macros)
     if (value !== newValue) setValue(newValue)
   })
+
   return (
     <TextField
-      value={value} // This seems to not handle multiple fast keypresses, only updating with one of the keys
+      value={value}
       onChange={(event) => {
         onChange(event.target.value)
+        // Update text box immediately on user input
+        setValue(event.target.value)
       }}
     />
   )
