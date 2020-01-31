@@ -27,6 +27,7 @@ export function* macroCreate (action) {
     title: 'New Macro',
     type: 'macro',
     targetParamLinks: {},
+    valueType: 'float',
     value: 0,
   }))
   yield put(rMacroAdd(nodeId))
