@@ -19,28 +19,28 @@ const handleInputFired = (action, store) => {
 
     for (let i = 0; i < links.length; i++) {
       const inputLink = links[i]
-      const linkNode = getNode(state, inputLink.nodeId)
+      const node = getNode(state, inputLink.nodeId)
 
-      if (linkNode.type === 'linkableAction') {
-        store.dispatch(linkNode.action)
+      if (node.type === 'linkableAction') {
+        store.dispatch(node.action)
       } else {
         let value = p.value
         let modifiers
         const options = getNodesValues(state, inputLink.optionIds)
-        const valueType = getType(linkNode.valueType)
+        const valueType = getType(node.valueType)
 
         if (!valueType) {
-          throw new Error(`No valueType for linkNode ${inputLink.nodeId}`)
+          throw new Error(`No valueType for node ${node.id}`)
         }
 
         const valueProcess = valueType && valueType.getValueProcess(inputType)
 
         if (!valueProcess) {
-          throw new Error(`No valueProcess function for ${inputType} input with ${linkNode.valueType} valueType`)
+          throw new Error(`No valueProcess function for ${inputType} input with ${node.valueType} valueType`)
         }
 
         value = valueProcess({
-          node: linkNode,
+          node: node,
           inputLink,
           value,
           options,
