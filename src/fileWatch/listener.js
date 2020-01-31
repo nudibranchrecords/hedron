@@ -4,6 +4,7 @@ import getAvailableModulesPaths from '../selectors/getAvailableModulesPaths'
 import { fileSketchModuleChanged, fileSketchConfigChanged } from './actions'
 import getProjectSettings from '../selectors/getProjectSettings'
 import path from 'path'
+import { projectError } from '../store/project/actions'
 
 let sketchWatcher
 
@@ -60,7 +61,9 @@ const startSketchesWatcher = (store) => {
         store.dispatch(fileSketchModuleChanged(changedModule.moduleId))
       }
     } else {
-      console.error(`File changed: Could not find related sketch module. Path: ${changedPath}`)
+      const errMsg = `File changed: Could not find related sketch module. Path: ${changedPath}`
+      store.dispatch(projectError(errMsg))
+      console.error(errMsg)
     }
   })
 }

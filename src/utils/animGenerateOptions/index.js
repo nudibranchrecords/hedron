@@ -43,6 +43,7 @@ export default (nodeValueType) => {
       title: 'Target Val',
       id: uid(),
       key: 'targetVal',
+      valueType: 'float',
       value: 1,
       inputLinkIds: [],
       subNode: true,
@@ -60,6 +61,7 @@ export default (nodeValueType) => {
     {
       title: 'Duration',
       id: uid(),
+      valueType: 'float',
       key: 'duration',
       value: 0,
       inputLinkIds: [],

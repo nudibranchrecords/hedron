@@ -8,10 +8,12 @@ const ErrorMessage = styled.p`
   opacity: 0.5;
   font-size: 0.8rem !important;
   margin: 0;
+  user-select: text;
 `
 
 const Wrapper = styled.div`
   margin-bottom: 1rem;
+  user-select: text;
 `
 
 const ErrorOverlay = ({ isVisible, onCancelClick, code, message, onChooseSketchFolderClick }) => {
@@ -21,8 +23,10 @@ const ErrorOverlay = ({ isVisible, onCancelClick, code, message, onChooseSketchF
     case 'NO_SKETCH_FOLDER':
       inner = (
         <Wrapper>
-          <p>The sketches folder for this project could not be located, please find the folder on your computer.</p>
-          <Button size='large' onClick={onChooseSketchFolderClick}>Locate Sketch Folder</Button>
+          <p>The sketches folder for this project could not be located, please find the folder on your computer.
+            Please note this is the <strong>parent folder of your sketches</strong>, usually named "sketches".
+          </p>
+          <Button size='large' onClick={onChooseSketchFolderClick}>Locate Sketches Folder</Button>
         </Wrapper>)
       break
   }

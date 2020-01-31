@@ -55,6 +55,7 @@ export default (nodeValueType, linkId) => {
       title: 'MIDI Sensitivity',
       key: 'sensitivity',
       id: uid(),
+      valueType: 'float',
       value: 0.5,
       inputLinkIds: [],
       subNode: true,

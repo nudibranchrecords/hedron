@@ -8,7 +8,7 @@ Sketches are created with [three.js](https://github.com/mrdoob/three.js/). They 
 Many sketches can be added to the same Hedron scene. These can be multiple instances of the same sketch, or different types of sketches.
 
 ### Adding and removing sketches
-In order to add sketches, click on the "+" in the right sidebar. If you're starting from scratch, you'll need to tell Hedron where your sketch folder is.
+In order to add sketches, click on the "+" in the right sidebar. If you're starting from scratch, you'll need to tell Hedron where your sketches folder is.
 
 To remove a sketch, click the delete button at the bottom of the view for that sketch.
 

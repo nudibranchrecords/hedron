@@ -28,20 +28,29 @@ const Content = styled.div`
   justify-content: center;
   flex-direction: column;
   flex: 1;
-  font-size: 2rem;
+  text-align: center;
+
+  h3 {
+    font-size: 1.5rem;
+  }
+
+  p {
+    font-size: 1rem;
+  }
 `
 
 const Home = ({ onChooseFolderClick, onLoadClick }) =>
   <Wrapper>
     <ViewHeader>Welcome</ViewHeader>
     <Content>
-      <p>Hello! Let's get started...</p>
+      <h3>Hello! Let's get started...</h3>
+      <p>Either select your parent "sketches" folder or load in a saved .json file.</p>
       <Row align='stretch'>
         <Col>
           <Button size='large' onClick={onLoadClick}>Load Existing Project</Button>
         </Col>
         <Col>
-          <Button size='large' onClick={onChooseFolderClick}>Choose Sketch Folder</Button>
+          <Button size='large' onClick={onChooseFolderClick}>Choose Sketches Folder</Button>
         </Col>
       </Row>
     </Content>
