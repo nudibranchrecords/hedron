@@ -24,25 +24,40 @@ const loadFile = resolvedPath => {
     file = eval(`require('${resolvedPath}')`)
   }
 
+  if (!file) {
+    throw new Error(`File not found: ${resolvedPath}`)
+  }
+
   return file
 }
 
 const loadSketch = (file) => {
-  const url = path.resolve(file)
-  let indexUrl = path.format({ dir: url, base: 'index.js' })
-  let configUrl = path.format({ dir: url, base: 'config.js' })
-
   return {
-    Module: loadFile(indexUrl),
-    config: loadFile(configUrl),
+    Module: loadIndex(file),
+    config: loadConfig(file),
+  }
+}
+
+const loadIndex = (file) => {
+  try {
+    const url = path.resolve(file)
+    let indexUrl = path.format({ dir: url, base: 'index.js' })
+
+    return loadFile(indexUrl)
+  } catch (error) {
+    throw new Error(`No index file found: ${error.message}`)
   }
 }
 
 const loadConfig = (file) => {
-  const url = path.resolve(file)
-  let configUrl = path.format({ dir: url, base: 'config.js' })
+  try {
+    const url = path.resolve(file)
+    let configUrl = path.format({ dir: url, base: 'config.js' })
 
-  return loadFile(configUrl)
+    return loadFile(configUrl)
+  } catch (error) {
+    throw new Error(`No config file found: ${error.message}`)
+  }
 }
 
 const findSketches = (file, all, pathArray) => {
@@ -52,16 +67,43 @@ const findSketches = (file, all, pathArray) => {
       return
     }
 
-    const sketch = loadSketch(file)
+    let numErrors = 0
+    let badFile = ''
 
-    if (sketch.Module !== false) {
-      sketch.config.filePathArray = pathArray
-      sketch.config.filePath = file
-      all[name] = sketch
-    } else {
-      glob.sync(file + '/*').forEach(function (childFile) {
-        findSketches(childFile, all, [...pathArray, name])
-      })
+    const sketch = {
+      Module: null,
+      config: null,
+    }
+
+    try {
+      sketch.Module = loadIndex(file)
+    } catch {
+      numErrors++
+      badFile = 'index'
+    }
+
+    try {
+      sketch.config = loadConfig(file)
+    } catch {
+      numErrors++
+      badFile = 'config'
+    }
+
+    switch (numErrors) {
+      case 0:
+        // If we havent had any file errors, set the sketch
+        sketch.config.filePathArray = pathArray
+        sketch.config.filePath = file
+        all[name] = sketch
+        break
+      case 1:
+        // If only one file is missing (e.g. config but no index or index but no config)
+        throw new Error(`File not found: ${badFile}`)
+      case 2:
+        // If both files are missing, keep looking at child folders
+        glob.sync(file + '/*').forEach(function (childFile) {
+          findSketches(childFile, all, [...pathArray, name])
+        })
     }
   }
 }
@@ -74,13 +116,16 @@ const loadSketches = globUrl => {
     })
 
     if (Object.keys(all).length === 0) {
-      throw errcode(new Error('No sketches found'), 'NO_SKETCH_FOLDER')
+      throw errcode(
+        new Error('No sketches found in folder.'),
+        'NO_SKETCH_FOLDER'
+      )
     }
 
     return all
   } catch (error) {
-    console.error(`Failed to load sketch folder.`, error)
-    throw (error)
+    console.error(`Failed to load sketches folder.`, error)
+    throw error
   }
 }
 
