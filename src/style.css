@@ -6,10 +6,10 @@ html {
 *:before,
 *:after {
   box-sizing: inherit;
-  user-select: none;
 }
 
 body {
+  user-select: none;
   margin: 0;
   font-size: 0.8rem;
   overflow: hidden;

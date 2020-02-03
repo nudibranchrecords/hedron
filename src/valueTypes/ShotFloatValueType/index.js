@@ -1,11 +1,11 @@
 import { BaseValueType } from '../BaseValueType'
 import { nodeShotFired, rNodeInputLinkShotDisarm, rNodeInputLinkShotArm } from '../../store/nodes/actions'
 import getNode from '../../selectors/getNode'
-import ParamBar from '../FloatValueType/container'
+import ShotBar from './container'
 
 export class ShotFloatValueType extends BaseValueType {
   defaultValue = 0
-  Component = ParamBar
+  Component = ShotBar
 
   doesValueMatch (value) {
     return typeof value === 'number'
