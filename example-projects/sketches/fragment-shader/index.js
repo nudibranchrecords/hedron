@@ -1,27 +1,36 @@
-const { THREE, postprocessing, glslify } = window.HEDRON.dependencies
-const { ShaderPass } = postprocessing
-const { ShaderMaterial, Uniform, Vector2 } = THREE
+const { postprocessing, glslify, THREE } = window.HEDRON.dependencies
+const { Uniform } = THREE
+const { EffectPass, Effect } = postprocessing
 
-const vertexShader = glslify.file('./vert.glsl')
 const fragmentShader = glslify.file('./frag.glsl')
 
 class FragmentShader {
-  initiatePostProcessing () {
-    this.mat = new ShaderMaterial({
-      vertexShader,
-      fragmentShader,
-      uniforms: {
-        resolution: new Uniform(new Vector2()),
-        time: new Uniform(0),
-      },
-    })
+  initiatePostProcessing ({ params }) {
+    // Define all params as uniforms
+    const paramUniforms = Object.entries(params).map(
+      ([key, value]) => [key, new Uniform(value)]
+    )
 
-    return [ new ShaderPass(this.mat) ]
+    class PatternEffect extends Effect {
+      constructor () {
+        super('PatternEffect', fragmentShader, {
+          uniforms: new Map([
+            ...paramUniforms,
+          ]),
+        })
+      }
+    }
+
+    this.effect = new PatternEffect()
+
+    return [ new EffectPass(null, this.effect) ]
   }
 
-  update ({ params: p, elapsedTimeMs, outputSize }) {
-    this.mat.uniforms.resolution.value = [outputSize.width, outputSize.height]
-    this.mat.uniforms.time.value = elapsedTimeMs
+  update ({ params }) {
+    // Update all uniforms using params
+    for (const [key, value] of Object.entries(params)) {
+      this.effect.uniforms.get(key).value = value
+    }
   }
 }
 

@@ -2,20 +2,25 @@
 precision mediump float;
 #endif
 
-uniform vec2 resolution;
-uniform float time;
+uniform float distanceStep;
+uniform float xMorphAmp;
+uniform float xMorphMix;
+uniform float yMorphAmp;
+uniform float yMorphMix;
 
-void main(){
-  vec2 st = gl_FragCoord.xy/resolution.xy;
+const vec2 center = vec2(0.5);
+
+void mainImage(const in vec4 inputColor, const in vec2 uv, out vec4 outputColor) {
   // Remap the space to -1. to 1.
-  st = st *2.-1.;
+  vec2 st = uv - center;
   st.x *= resolution.x/resolution.y;
 
-  vec3 color = vec3(0.0);
+  float xMorph = mix(1., st.x * xMorphAmp, xMorphMix);
+  float yMorph = mix(1., st.y * yMorphAmp, yMorphMix);
 
   // Make the distance field
-  float d = length( abs(st) - sin(time * 0.001) );
+  float d = length( st * yMorph * xMorph );
 
   // Visualize the distance field
-  gl_FragColor = vec4(vec3(fract(d*10.0)),1.0);
+  outputColor = vec4(vec3(fract(d*distanceStep)),1.0);
 }

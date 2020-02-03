@@ -1,5 +1,5 @@
 const { THREE, postprocessing } = window.HEDRON.dependencies
-const { EffectComposer, RenderPass, SavePass, TextureEffect, EffectPass } = postprocessing
+const { EffectComposer, RenderPass, SavePass, TextureEffect, EffectPass, ClearPass } = postprocessing
 
 import getSketchParams from '../selectors/getSketchParams'
 
@@ -89,14 +89,18 @@ export const sceneRenderSetup = (hedronScene, passes) => {
     outputTexture: null,
   }
 
-  // Render the channel as a pass
-  renderScene.passes.push(new RenderPass(hedronScene.scene, hedronScene.camera))
+  if (hedronScene.scene.children.length > 0) {
+    // Render the scene if it has anything to render
+    renderScene.passes.push(new RenderPass(hedronScene.scene, hedronScene.camera))
+  } else {
+    // Otherwise just clear the buffer
+    renderScene.passes.push(new ClearPass())
+  }
 
   // Add all custom passes
   renderScene.passes.push(...passes)
 
-  // Channel will also have their final pass saved to a texture to be mixed
-  // TODO: We can avoid this pass if the scene has no extra passes, by using a render target from the render pass
+  // Channel will also have the final pass saved to a texture to be mixed
   const savePass = new SavePass()
   renderScene.passes.push(savePass)
   renderScene.outputTexture = savePass.renderTarget.texture
@@ -263,14 +267,14 @@ export const stopOutput = () => {
 
 const renderChannels = (mixRatio) => {
   if (blendOpacity) blendOpacity.value = mixRatio
-  composer.render(delta)
+  composer.render(delta / 1000)
 }
 
 const renderSingle = (disableChannel, mixRatio) => {
   channelPasses[disableChannel].forEach(pass => { pass.enabled = false })
 
   if (blendOpacity) blendOpacity.value = mixRatio
-  composer.render(delta)
+  composer.render(delta / 1000)
 }
 
 const renderLogic = (viewerMode, mixRatio) => {
