@@ -2,7 +2,7 @@ const { postprocessing } = window.HEDRON.dependencies
 const { EffectPass, BrightnessContrastEffect, GammaCorrectionEffect, HueSaturationEffect } = postprocessing
 
 class Color {
-  initiatePostProcessing ({ composer }) {
+  initiatePostProcessing () {
     this.brightnessContrastEffect = new BrightnessContrastEffect()
     this.gammaCorrectionEffect = new GammaCorrectionEffect()
     this.hueSaturationEffect = new HueSaturationEffect()
@@ -13,13 +13,11 @@ class Color {
       this.hueSaturationEffect
     )
 
-    composer.addPass(pass)
-
-    // Return the pass that needs to be rendered to the screen
-    return pass
+    // Return the pass in array
+    return [ pass ]
   }
 
-  updatePostProcessing ({ params: p }) {
+  update ({ params: p }) {
     this.brightnessContrastEffect.uniforms.get('brightness').value = p.brightness
     this.brightnessContrastEffect.uniforms.get('contrast').value = p.contrast
     this.brightnessContrastEffect.blendMode.opacity.value = p.brightnessContrastOpacity
