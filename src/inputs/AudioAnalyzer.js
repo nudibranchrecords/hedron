@@ -1,4 +1,4 @@
-const { THREE } = window.HEDRON.dependencies
+import * as THREE from 'three'
 
 class AudioInput {
   constructor (stream) {
