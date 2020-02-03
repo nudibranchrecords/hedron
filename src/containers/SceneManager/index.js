@@ -3,8 +3,7 @@ import SceneManager from '../../components/SceneManager'
 import getCurrentScene from '../../selectors/getCurrentScene'
 import getCurrentSceneId from '../../selectors/getCurrentSceneId'
 import {
-  uSceneDelete, rSceneSelectChannel,
-  uSceneSelectChannel, sceneClearChannel,
+  uSceneDelete, uSceneSelectChannel, sceneClearChannel,
 }
   from '../../store/scenes/actions'
 import { uiEditingOpen } from '../../store/ui/actions'
@@ -31,7 +30,7 @@ const mapDispatchToProps = (dispatch, ownProps) => (
       dispatch(uiEditingOpen('sceneTitle', sceneId))
     },
     onChannelClick: (sceneId, channel) => {
-      dispatch(rSceneSelectChannel(sceneId, channel))
+      dispatch(uSceneSelectChannel(sceneId, channel))
     },
   }
 )

@@ -25,11 +25,12 @@ const configDefault = {
 
 export let scenes = {}
 export let sketches = {}
+export let sketchesDir
 
 let moduleConfigs = {}
 let isRunning = false
 let moduleFiles = {}
-let sketchesDir
+
 let store
 
 // Load sketches from sketches folder
@@ -125,16 +126,18 @@ export const reloadSingleSketchConfig = (url, moduleId, pathArray) => {
   }
 }
 
-export const addScene = (sceneId) => {
+export const addScene = (sceneId, shouldSetPost = true) => {
   scenes[sceneId] = new Scene()
   renderer.setSize()
+  if (shouldSetPost) renderer.setPostProcessing()
 }
 
-export const removeScene = (sceneId) => {
+export const removeScene = (sceneId, shouldSetPost) => {
   delete scenes[sceneId]
+  if (shouldSetPost) renderer.setPostProcessing()
 }
 
-export const addSketchToScene = (sceneId, sketchId, moduleId) => {
+export const addSketchToScene = (sceneId, sketchId, moduleId, shouldSetPost = true) => {
   const scene = scenes[sceneId]
   const state = store.getState()
   const params = getSketchParams(state, sketchId)
@@ -145,13 +148,16 @@ export const addSketchToScene = (sceneId, sketchId, moduleId) => {
     params,
     sketchesDir: `file://${sketchesDir}`,
     renderer: renderer.renderer,
+    outputSize: renderer.size,
   })
 
   sketches[sketchId] = module
   module.root && scene.scene.add(module.root)
+
+  if (shouldSetPost) renderer.setPostProcessing()
 }
 
-export const removeSketchFromScene = (sceneId, sketchId) => {
+export const removeSketchFromScene = (sceneId, sketchId, shouldSetPost) => {
   const scene = scenes[sceneId]
   const sketch = sketches[sketchId]
 
@@ -167,6 +173,8 @@ export const removeSketchFromScene = (sceneId, sketchId) => {
   }
 
   delete sketches[sketchId]
+
+  if (shouldSetPost) renderer.setPostProcessing()
 }
 
 export const fireShot = (sketchId, method) => {
@@ -205,14 +213,18 @@ export const initiateScenes = () => {
 
   // Add new scenes and sketches
   stateScenes.forEach(scene => {
-    addScene(scene.id)
+    addScene(scene.id, false)
     scene.sketchIds.forEach((sketchId, index) => {
       const moduleId = getSketch(state, sketchId).moduleId
-      addSketchToScene(scene.id, sketchId, moduleId)
+      addSketchToScene(scene.id, sketchId, moduleId, false)
     })
   })
 
   renderer.setPostProcessing()
+}
+
+export const channelUpdate = (sceneId, channel) => {
+  renderer.channelUpdate(sceneId, channel)
 }
 
 export const run = (injectedStore, stats) => {
@@ -229,7 +241,15 @@ export const run = (injectedStore, stats) => {
   // Give store module params
   store.dispatch(availableModulesReplaceAll(moduleConfigs))
 
-  const getInfo = () => ({ allParams, elapsedFrames, elapsedTimeMs: newTimeMs, deltaMs, deltaFrame, tick })
+  const getInfo = () => ({
+    allParams,
+    elapsedFrames,
+    elapsedTimeMs: newTimeMs,
+    deltaMs,
+    deltaFrame,
+    tick,
+    outputSize: renderer.size,
+  })
 
   const updateSceneSketches = (sceneId) => {
     stateScene = getScene(state, sceneId)
@@ -238,7 +258,7 @@ export const run = (injectedStore, stats) => {
         sketch = sketches[sketchId]
         const params = getSketchParams(state, sketchId)
         allParams = getSketchParams(state, null, sceneId)
-        if (sketch.update) sketch.update({ ...getInfo(), params })
+        if (sketch.update && !stateScene.settings.globalPostProcessingEnabled) sketch.update({ ...getInfo(), params })
       })
     }
   }
@@ -252,7 +272,7 @@ export const run = (injectedStore, stats) => {
         scene.sketchIds.forEach(sketchId => {
           sketch = sketches[sketchId]
           const params = getSketchParams(state, sketchId)
-          if (sketch.updatePostProcessing) sketch.updatePostProcessing({ ...getInfo(), params })
+          if (sketch.update) sketch.update({ ...getInfo(), params })
         })
       }
     })
@@ -287,7 +307,7 @@ export const run = (injectedStore, stats) => {
         updateSceneSketches(channelB)
         updateGlobalPostProcessingSketches()
 
-        renderer.render(scenes[channelA], scenes[channelB], mixRatio, viewerMode, deltaMs)
+        renderer.render(mixRatio, viewerMode, deltaMs)
 
         stats.end()
 
