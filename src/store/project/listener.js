@@ -12,6 +12,8 @@ import { remote } from 'electron'
 import { processDevices } from '../../inputs/MidiInput'
 import { loadSketchModules, initiateScenes } from '../../engine'
 import getSketchesPath from '../../selectors/getSketchesPath'
+import getConnectedDevices from '../../selectors/getConnectedDevices'
+import { initialize } from 'redux-form'
 
 const fileFilters = [
   { name: 'JSON', extensions: ['json'] },
@@ -58,14 +60,13 @@ const loadProject = async (action, store) => {
 
 const loadProjectRequest = async (action, store) => {
   try {
-    const state = store.getState()
+    let state = store.getState()
     const filePath = getProjectFilepath(state)
     const projectData = await load(filePath)
 
     const sketchesPath = getSketchesPath(projectData)
 
     store.dispatch(projectRehydrate(projectData))
-    processDevices()
     store.dispatch(projectFilepathUpdate(filePath))
 
     loadSketchModules(sketchesPath, { siblingCheck: true })
@@ -73,6 +74,17 @@ const loadProjectRequest = async (action, store) => {
 
     store.dispatch(projectLoadSuccess())
     history.replace(projectData.router.location.pathname)
+
+    await processDevices()
+    state = store.getState()
+    const devices = getConnectedDevices(state)
+    // We have to initialize forms for each midi device, because redux-form
+    // doesn't seem to want to initialize automatically
+    // TODO: Prevent the need to do this (probably replace redux-form)
+    devices.forEach(device => {
+      store.dispatch(initialize(`device_${device.id}`, device.settings))
+    })
+
     uiEventEmitter.emit('repaint')
   } catch (error) {
     console.error(error)
