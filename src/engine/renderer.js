@@ -1,5 +1,5 @@
-const { THREE, postprocessing } = window.HEDRON.dependencies
-const { EffectComposer, RenderPass, SavePass, TextureEffect, EffectPass, ClearPass } = postprocessing
+import * as THREE from 'three'
+import { EffectComposer, RenderPass, SavePass, TextureEffect, EffectPass, ClearPass } from 'postprocessing'
 
 import getSketchParams from '../selectors/getSketchParams'
 
