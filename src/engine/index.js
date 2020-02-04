@@ -1,4 +1,5 @@
 import path from 'path'
+import TWEEN from '@tweenjs/tween.js'
 import { loadSketches, loadSketch, loadConfig } from '../externals/sketches'
 import getSketch from '../selectors/getSketch'
 import getScenes from '../selectors/getScenes'
@@ -14,8 +15,6 @@ import * as renderer from './renderer'
 import Scene from './Scene'
 import { nodeValuesBatchUpdate } from '../store/nodes/actions'
 import { getProjectFilepath } from '../store/project/selectors'
-
-const { TWEEN } = window.HEDRON.dependencies
 
 const configDefault = {
   defaultTitle: 'Sketch',
