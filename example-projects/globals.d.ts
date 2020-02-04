@@ -13,7 +13,7 @@
   /Users/alex/Applications/Hedron/Resources/static/globals
 
   From source
-  /Users/alex/path/to/hedron/src/electron/renderer/globalVars
+  /path/to/hedron/src/electron/renderer/globalVars
 */
 
 // This local path only works for example projects inside of the hedron folder
