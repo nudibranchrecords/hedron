@@ -10,7 +10,7 @@
   C:/Users/alex/AppData/Local/Programs/Hedron/resources/static/globals
 
   Installed (OSX)
-  /Users/alex/Applications/Hedron/Resources/static/globals
+  /Applications/Hedron.app/Contents/Resources/static/globals
 
   From source
   /path/to/hedron/src/electron/renderer/globalVars
