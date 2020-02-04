@@ -1,13 +1,23 @@
 /*
- Include this file in the root of your project, along with jsconfig.json,
- to get VS Code intellisense hints on the packages that hedron exposes with the HEDRON global var.
+  Include this file in the root of your project, along with jsconfig.json,
+  to get VS Code intellisense hints on the packages that hedron exposes with the HEDRON global var.
 
- You will need to update the import path, please see the docs for details.
+  You will need to update the import path, please see the docs for details.
 
- For this to work, you must also include jsconfig.json in the root of your project.
+  Example import paths:
+
+  Installed (Windows)
+  C:/Users/alex/AppData/Local/Programs/Hedron/resources/static/globals
+
+  Installed (OSX)
+  /Users/alex/Applications/Hedron/Resources/static/globals
+
+  From source
+  /Users/alex/path/to/hedron/src/electron/renderer/globalVars
 */
 
-import { dependencies } from '../src/electron/renderer/globalVars'
+// This local path only works for example projects inside of the hedron folder
+import { dependencies } from '../src/electron/renderer/globalVars' 
 
 export as namespace HEDRON;
 
