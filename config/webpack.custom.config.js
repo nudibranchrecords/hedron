@@ -10,11 +10,11 @@ const globalDepNames = [
   '@tweenjs/tween.js',
 ]
 
-const staticGlobalsPath = path.join(process.cwd(), 'static/globals')
+const staticGlobalVarsPath = path.join(process.cwd(), 'static/globalVars')
 
 const copyPatterns = globalDepNames.map(name => ({
   from: `node_modules/${name}/**/*`,
-  to: staticGlobalsPath,
+  to: staticGlobalVarsPath,
 }))
 
 const config = {
@@ -27,15 +27,15 @@ const config = {
     ],
   },
   plugins: [
-    // Clear out static/globals for each build
+    // Clear out static/globalVars for each build
     new CleanWebpackPlugin({
-      cleanOnceBeforeBuildPatterns: [`${staticGlobalsPath}/**/*`],
+      cleanOnceBeforeBuildPatterns: [`${staticGlobalVarsPath}/**/*`],
     }),
     // Copy global dependency files to be included externally in the build
     new CopyPlugin([
       {
         from: 'src/electron/renderer/globalVars.js',
-        to: `${staticGlobalsPath}/index.js`,
+        to: `${staticGlobalVarsPath}/index.js`,
       },
       ...copyPatterns,
     ]),
