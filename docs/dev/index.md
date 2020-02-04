@@ -99,7 +99,7 @@ module.exports = {
 ```
 
 ## index.js
-This is the main file for the sketch. Essentially, it's a Javascript class, with some important properties and methods. You can `require` other modules from here, so don't feel restricted to a single file. However, you should use the Hedron global version of `THREE` and not import this yourself (`window.HEDRON.dependencies`), see below.
+This is the main file for the sketch. Essentially, it's a Javascript class, with some important properties and methods. You can `require` other modules from here, so don't feel restricted to a single file. However, you should use the Hedron global version of `THREE` and not import this yourself (`window.HEDRON.dependencies`), [see below](#global-hedron-variable).
 
 ### Properties
 
@@ -138,6 +138,8 @@ Hedron provides a single global variable with some useful libraries to make use 
   - `TWEEN` - A very simple [tweening library](https://github.com/tweenjs/tween.js/). The update method is called interally in Hedron, so there's no need to do that inside of a sketch.
   - `postprocessing` - The post [processing library](https://github.com/vanruesc/postprocessing) Hedron uses
   - `glslify` - [Module system for GLSL](https://github.com/glslify/glslify)
+
+Using this variable means that VS Code Intellisense won't work by default. [See below](#setting-up-vs-code-intellisense) on how to fix this.
 
 ### Very basic example
 This is the minimum you need to do in order to use Hedron.
@@ -329,6 +331,44 @@ If you have the "Watch sketches" setting enabled, Hedron will automatically refr
 This refresh will remove the sketch from the scene, import any new params or shots, remove and old params and shots, and then add the new sketch back into the scene.
 
 **Please note: File change detection may not work with all text editors. (e.g. Atom on OSX is reported to be inconsistent).**
+
+## Setting up VS Code Intellisense
+Using the `HEDRON` global variable is recommended, but it does come back with a drawback by default. VS Code Intellisense (e.g. autocomplete, paramater info) won't work with these libraries. To remedy this, Hedron exposes these dependencies, which means they can be imported with the right config files. In the root of your project folder, you'll need `jsconfig.json` and `globals.d.ts`. Below is information on these, examples can also be found in the `example-projects` directory.
+
+#### jsconfig.json
+```json
+{
+  "compilerOptions": {},
+  "exclude": ["node_modules", "**/node_modules/*"]
+}
+```
+This file does not need to be edited and can be uses as above.
+
+#### globals.d.ts
+```typescript
+import { dependencies } from 'path/to/hedron/src/electron/renderer/globalVars' 
+
+export as namespace HEDRON;
+
+export { dependencies }
+```
+The import path in this file will need updating, depending on your operating system and if you are using a compiled version of Hedron or the source code. Below are some examples (which you may still need to edit to your needs).
+
+Installed (Windows):
+```
+  C:/Users/alex/AppData/Local/Programs/Hedron/resources/static/globalVars
+```
+
+Installed (OSX):
+```
+  /Applications/Hedron.app/Contents/Resources/static/globalVars
+```
+
+From source:
+```
+  /path/to/hedron/src/electron/renderer/globalVars
+```
+
 
 ## Hedron dev config
 
