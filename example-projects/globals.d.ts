@@ -7,10 +7,10 @@
   Example import paths:
 
   Installed (Windows)
-  C:/Users/alex/AppData/Local/Programs/Hedron/resources/static/globals
+  C:/Users/alex/AppData/Local/Programs/Hedron/resources/static/globalVars
 
   Installed (OSX)
-  /Applications/Hedron.app/Contents/Resources/static/globals
+  /Applications/Hedron.app/Contents/Resources/static/globalVars
 
   From source
   /path/to/hedron/src/electron/renderer/globalVars
