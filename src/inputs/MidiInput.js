@@ -8,6 +8,11 @@ import getConnectedDevice from '../selectors/getConnectedDevice'
 
 let store, midiAccess
 
+const getMidiAccess = () => {
+  if (!midiAccess) midiAccess = navigator.requestMIDIAccess()
+  return midiAccess
+}
+
 const onMessage = (rawMessage) => {
   const state = store.getState()
   const deviceId = rawMessage.target.name
@@ -62,8 +67,10 @@ const onMessage = (rawMessage) => {
   }
 }
 
-export const processDevices = () => {
+export const processDevices = async () => {
   const devices = {}
+
+  const midiAccess = await getMidiAccess()
 
   midiAccess.inputs.forEach((entry) => {
     devices[entry.name] = {
@@ -77,15 +84,13 @@ export const processDevices = () => {
   store.dispatch(midiUpdateDevices(devices))
 }
 
-export default (injectedStore) => {
+export default async (injectedStore) => {
   store = injectedStore
+  const midiAccess = await getMidiAccess()
 
-  navigator.requestMIDIAccess().then((injectedMidiAccess) => {
-    midiAccess = injectedMidiAccess
+  processDevices()
+
+  midiAccess.onstatechange = () => {
     processDevices()
-
-    midiAccess.onstatechange = () => {
-      processDevices()
-    }
-  })
+  }
 }
