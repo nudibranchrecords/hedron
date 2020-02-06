@@ -18,6 +18,7 @@
     "object-curly-spacing" : [2, "always"],
     "no-var"               : 2,
     "comma-dangle"         : [2, "always-multiline"],
-    "no-console"           : [2, { "allow": ["warn", "error"] }]
+    "no-console"           : [2, { "allow": ["warn", "error"] }],
+    "no-unused-expressions": 2
   }
 }
