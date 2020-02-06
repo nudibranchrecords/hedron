@@ -43,7 +43,7 @@ export class FloatValueType extends BaseValueType {
     },
     lfo: {
       valueProcess: ({ inputLink, value, options: { shape, rate, phase, seed } }) => {
-        seed === -1 ? inputLink.id : seed
+        seed = seed === -1 ? inputLink.id : seed
         return lfoProcess(value, shape, rate, phase, seed)
       },
     },
