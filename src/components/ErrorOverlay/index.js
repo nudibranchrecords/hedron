@@ -3,6 +3,7 @@ import styled from 'styled-components'
 import PropTypes from 'prop-types'
 import OverlayModal from '../OverlayModal'
 import Button from '../Button'
+import Control from '../../containers/Control'
 
 const ErrorMessage = styled.p`
   opacity: 0.5;
@@ -18,9 +19,11 @@ const Wrapper = styled.div`
 
 const ErrorOverlay = ({ isVisible, onCancelClick, code, message, onChooseSketchFolderClick }) => {
   let inner = <p>Whoops!</p>
+  let showPopupControl = true
 
   switch (code) {
     case 'NO_SKETCH_FOLDER':
+      showPopupControl = false
       inner = (
         <Wrapper>
           <p>The sketches folder for this project could not be located, please find the folder on your computer.
@@ -40,6 +43,13 @@ const ErrorOverlay = ({ isVisible, onCancelClick, code, message, onChooseSketchF
 
       {inner}
       <ErrorMessage>{message}</ErrorMessage>
+
+      {
+        showPopupControl && <>
+          <p>Stop errors from popping up (Can be enabled again in settings)</p>
+          <Control nodeId='areErrorPopupsDisabled' />
+        </>
+      }
 
     </OverlayModal>
   )
