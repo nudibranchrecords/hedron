@@ -42,7 +42,7 @@ export default store => {
   store.dispatch(uNodeCreate('sketchOrganization', {
     title: 'Sketch Organization',
     valueType: 'enum',
-    value: 'category',
+    value: 'folder',
     id: 'sketchOrganization',
     options:[
       {
