@@ -151,7 +151,7 @@ export const addSketchToScene = (sceneId, sketchId, moduleId, shouldSetPost = tr
   })
 
   sketches[sketchId] = module
-  module.root && scene.scene.add(module.root)
+  if (module.root) scene.scene.add(module.root)
 
   if (shouldSetPost) renderer.setPostProcessing()
 }

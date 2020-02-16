@@ -2,13 +2,13 @@ const { THREE } = window.HEDRON.dependencies
 const cubeTextureLoader = new THREE.CubeTextureLoader()
 
 class Space {
-  constructor ({ camera, scene }) {
+  constructor ({ camera, scene, sketchesDir }) {
     this.root = new THREE.Group()
 
     camera.position.z = 40
 
     scene.background = cubeTextureLoader
-      .setPath(`${__dirname}/assets/`)
+      .setPath(`${sketchesDir}/space/assets/`)
       .load([
         'px.jpg', 'nx.jpg',
         'py.jpg', 'ny.jpg',
