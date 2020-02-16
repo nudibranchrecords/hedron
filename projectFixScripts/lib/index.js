@@ -3,7 +3,7 @@ const path = require('path')
 
 const args = process.argv.slice(2)
 const inputPath = args[0]
-const outputPath = './output'
+const outputPath = args[1] || './output'
 const fileName = path.basename(inputPath)
 
 const fix = cb => {
