@@ -54,6 +54,12 @@ const coreNodes = [
     ],
   },
   {
+    title: 'Disable Error Popups',
+    id: 'areErrorPopupsDisabled',
+    valueType: 'boolean',
+    value: false,
+  },
+  {
     title: 'Levels Falloff',
     type: 'param',
     value: 1,
