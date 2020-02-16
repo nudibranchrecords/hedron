@@ -40,10 +40,10 @@ Download the latest [release](https://github.com/nudibranchrecords/hedron/releas
 5. 👽
 
 ## User Guide
-Head to the [User Guide](docs/user-guide/index.md) to learn how to use Hedron.
+Head to the [User Guide](blob/stable/docs/user-guide/index.md) to learn how to use Hedron.
 
 ## Creating Sketches
-Head to the [Creating Sketches Guide](docs/dev/index.md) to learn how to create sketches.
+Head to the [Creating Sketches Guide](blob/stable/docs/dev/index.md) to learn how to create sketches.
 
 ## Get in touch
 Made something awesome in Hedron you'd like to share? Need help or have some cool ideas? Let's talk! Find Alex on Twitter: [@funtriangles](https://twitter.com/funtriangles), or email: [alex@funwithtriangles.net](mailto:https://twitter.com/funtriangles).
@@ -67,7 +67,7 @@ If you are having fun with Hedron, we'd love you to help with development. See t
 Don't worry too much if the tests aren't passing, we can work on that together. :)
 
 ### Build From Source
-Building from source gives you some extra development features such as setting a default project that will always load on start.
+Build from source for the latest features (expect bugs!). This also gives you some extra development features such as setting a default project that will always load on start.
 
 1. Make sure [Node.js](https://nodejs.org/en/) and [Yarn](https://yarnpkg.com/en/docs/install) are installed on your machine. (_Hedron 0.6.0 has been tested with Node 12.14.1 and Yarn 1.21.1_)
 2. Open terminal and run the commands below.

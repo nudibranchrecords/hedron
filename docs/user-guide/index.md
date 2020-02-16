@@ -68,6 +68,25 @@ This refresh will remove the sketch from the scene, import any new params or sho
 
 **Please note: File change detection may not work with all text editors. (e.g. Atom on OSX is reported to be inconsistent).**
 
+## Post Processing
+Sketches that make use of post processing features can be added to a scene like any normal sketch. The difference being that they may not add any objects to the scene and instead add effect passes to the rendering of that scene. If you are using more than one post processing sketch, the order of the sketches determines the order of the passes.
+
+### Global post processing
+By default, any post processing will only affect the scene that sketch is in. This means that fading the scene out on the crossfader will also fade out any post processing effects you have in that scene. However, by checking "Global Post Processing" under the scene settings, the post processing for that scene will now work across all scenes. An icon will appear on the scene thumbnail if this setting is enabled. The scene does not need to be added to any channel, `update` will always be running with this setting on.
+
+As a convention, it makes sense to have a global post processing scene, with post processing related sketches added to it. This scene does not need to have any 3D objects in it and never needs to be added to a channel.
+
+### Order of passes
+You can reorder sketches by clicking and holding on them in the sidebar. This relates to the order in which passes are added to the composer. If you have more than one global post processing scene, the order of scenes is also taken into account. You can reorder scenes in the same way as sketches, by clicking and holding them before dragging.
+
+### Global postprocessing
+By default, any post processing will only affect the scene that sketch is in. This means that fading the scene out on the crossfader will also fade out any post processing effects you have in that scene. However, by checking "Global Post Processing" enabled under the scene settings, the effect will now work across all scenes. An icon will appear on the scene thumbnail if this setting is enabled. The scene does not need to be added to any channel, `update` will always be running with this setting on.
+
+As a convention, it makes sense to have a post processing scene, with post processing related sketches added to it. This scene does not need to have any 3D objects in it and never needs to be added to a channel.
+
+### Order of passes
+You can reorder sketches by clicking and holding on them in the sidebar. This relates to the order in which passes are added to the composer. If passes are added to sketches across multiple scenes, the order of the scenes is also important.
+
 ## Macros
 Macros make it possible to control many params at once. To start using macros, click on "Macros" on the right sidebar.
 
