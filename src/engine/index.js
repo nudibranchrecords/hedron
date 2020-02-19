@@ -152,6 +152,7 @@ export const addSketchToScene = (sceneId, sketchId, moduleId, shouldSetPost = tr
 
   sketches[sketchId] = module
   module.root && scene.scene.add(module.root)
+  module.render && scene.renderMethods.set(sketchId, module.render.bind(module))
 
   if (shouldSetPost) renderer.setPostProcessing()
 }
@@ -161,6 +162,9 @@ export const removeSketchFromScene = (sceneId, sketchId, shouldSetPost) => {
   const sketch = sketches[sketchId]
 
   scenes[sceneId].scene.remove(sketch.root)
+  if (sketch.render) {
+    scenes[sceneId].renderMethods.delete(sketchId)
+  }
 
   if (sketch.destructor) {
     sketch.destructor({

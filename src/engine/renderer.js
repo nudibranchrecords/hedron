@@ -1,5 +1,5 @@
 import * as THREE from 'three'
-import { EffectComposer, RenderPass, SavePass, TextureEffect, EffectPass, ClearPass } from 'postprocessing'
+import { EffectComposer, RenderPass, SavePass, TextureEffect, EffectPass, ClearPass, Pass } from 'postprocessing'
 
 import getSketchParams from '../selectors/getSketchParams'
 
@@ -19,6 +19,23 @@ const renderScenes = new Map()
 const channelPasses = {
   'A': [],
   'B': [],
+}
+
+class CallbackPass extends Pass {
+  constructor (callback) {
+    super('CallbackPass')
+
+    this.callback = callback
+
+    this.needsDepthTexture = true
+    this.needsSwap = false
+
+    return
+  }
+
+  render (renderer, inputBuffer, outputBuffer, deltaTime, stencilTest) {
+    this.callback(renderer)
+  }
 }
 
 export let renderer, composer
@@ -95,6 +112,11 @@ export const sceneRenderSetup = (hedronScene, passes) => {
   } else {
     // Otherwise just clear the buffer
     renderScene.passes.push(new ClearPass())
+  }
+
+  const renderMethods = hedronScene.renderMethods.values()
+  for (const renderMethod of renderMethods) {
+    renderScene.passes.push(new CallbackPass(renderMethod))
   }
 
   // Add all custom passes
