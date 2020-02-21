@@ -51,8 +51,10 @@ const Settings = () => (
       </Row>
       <h2>GUI</h2>
       <Row>
-        <Col width='8rem'>
+        <Col noWidth>
           <p>Disable Error Popups</p>
+        </Col>
+        <Col width='1rem'>
           <Control nodeId='areErrorPopupsDisabled' />
         </Col>
       </Row>
