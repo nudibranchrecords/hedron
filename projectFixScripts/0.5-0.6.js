@@ -8,6 +8,7 @@ const parseOldOptions = (key, node) => {
 }
 
 fix(data => {
+  // Loop through nodes in project
   for (const key in data.nodes) {
     const node = data.nodes[key]
 
@@ -55,6 +56,16 @@ fix(data => {
       const channel = p.type
       delete p.type
       p.channel = channel
+    }
+  }
+
+  // Check if new core nodes are missing
+  if (data.nodes.areErrorPopupsDisabled === undefined) {
+    data.nodes.areErrorPopupsDisabled = {
+      title: 'Disable Error Popups',
+      id: 'areErrorPopupsDisabled',
+      valueType: 'boolean',
+      value: false,
     }
   }
 

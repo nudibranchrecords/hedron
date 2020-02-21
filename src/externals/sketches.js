@@ -25,7 +25,11 @@ const loadFile = resolvedPath => {
   }
 
   if (!file) {
-    throw new Error(`File not found: ${resolvedPath}`)
+    throw errcode(
+      new Error(`File not found: ${resolvedPath}`),
+      'FILE_NOT_FOUND',
+      { forcePopup: true }
+    )
   }
 
   return file
@@ -45,7 +49,11 @@ const loadIndex = (file) => {
 
     return loadFile(indexUrl)
   } catch (error) {
-    throw new Error(`No index file found: ${error.message}`)
+    throw errcode(
+      new Error(`No index file found: ${error.message}`),
+      'SKETCH_INDEX_NOT_FOUND',
+      { forcePopup: true }
+    )
   }
 }
 
@@ -56,7 +64,11 @@ const loadConfig = (file) => {
 
     return loadFile(configUrl)
   } catch (error) {
-    throw new Error(`No config file found: ${error.message}`)
+    throw errcode(
+      new Error(`No config file found: ${error.message}`),
+      'SKETCH_CONFIG_NOT_FOUND',
+      { forcePopup: true }
+    )
   }
 }
 
@@ -98,7 +110,11 @@ const findSketches = (file, all, pathArray) => {
         break
       case 1:
         // If only one file is missing (e.g. config but no index or index but no config)
-        throw new Error(`File not found: ${badFile}`)
+        throw errcode(
+          new Error(`File not found: ${badFile}`),
+          'FILE_NOT_FOUND',
+          { forcePopup: true }
+        )
       case 2:
         // If both files are missing, keep looking at child folders
         glob.sync(file + '/*').forEach(function (childFile) {
@@ -118,7 +134,8 @@ const loadSketches = globUrl => {
     if (Object.keys(all).length === 0) {
       throw errcode(
         new Error('No sketches found in folder.'),
-        'NO_SKETCH_FOLDER'
+        'NO_SKETCH_FOLDER',
+        { forcePopup: true }
       )
     }
 

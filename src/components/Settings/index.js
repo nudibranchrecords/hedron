@@ -49,6 +49,15 @@ const Settings = () => (
           <Input name='throttledFPS' label='Throttled FPS' type='number' />
         </Col>
       </Row>
+      <h2>GUI</h2>
+      <Row>
+        <Col noWidth>
+          <p>Disable Error Popups</p>
+        </Col>
+        <Col width='1rem'>
+          <Control nodeId='areErrorPopupsDisabled' />
+        </Col>
+      </Row>
     </form>
   </Wrapper>
 )
