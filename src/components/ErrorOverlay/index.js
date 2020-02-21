@@ -3,6 +3,8 @@ import styled from 'styled-components'
 import PropTypes from 'prop-types'
 import OverlayModal from '../OverlayModal'
 import Button from '../Button'
+import Col from '../Col'
+import Row from '../Row'
 import Control from '../../containers/Control'
 
 const ErrorMessage = styled.p`
@@ -15,6 +17,15 @@ const ErrorMessage = styled.p`
 const Wrapper = styled.div`
   margin-bottom: 1rem;
   user-select: text;
+`
+
+const PopupControl = styled(Row)`
+  margin-top: 1rem;
+  font-size: 0.7rem;
+  background: rgba(100,100,100,0.5);
+  border-radius: 2px;
+  padding: 0.5rem;
+  text-align: left;
 `
 
 const ErrorOverlay = ({ isVisible, onCancelClick, code, message, onChooseSketchFolderClick }) => {
@@ -45,10 +56,10 @@ const ErrorOverlay = ({ isVisible, onCancelClick, code, message, onChooseSketchF
       <ErrorMessage>{message}</ErrorMessage>
 
       {
-        showPopupControl && <>
-          <p>Stop errors from popping up (Can be enabled again in settings)</p>
-          <Control nodeId='areErrorPopupsDisabled' />
-        </>
+        showPopupControl && <PopupControl>
+          <Col width='2rem'><Control nodeId='areErrorPopupsDisabled' /></Col>
+          <Col noWidth>Stop errors from popping up (Can be enabled again in settings)</Col>
+        </PopupControl>
       }
 
     </OverlayModal>
