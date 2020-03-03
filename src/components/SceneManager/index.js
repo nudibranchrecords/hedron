@@ -3,21 +3,16 @@ import PropTypes from 'prop-types'
 import Button from '../Button'
 import RowComponent from '../Row'
 import styled from 'styled-components'
-import SceneThumb from '../SceneThumb'
-import SceneThumbContainer from '../../containers/SceneThumb'
 import ButtonWithInputIcons from '../ButtonWithInputIcons'
 import theme from '../../utils/theme'
+import SceneList from '../../containers/SceneList'
+import SceneSettings from '../../containers/SceneSettings'
 
 const Wrapper = styled.nav`
   margin-bottom: 2rem;
 `
 
 const Row = styled(RowComponent)`
-  flex-wrap: wrap;
-`
-
-const Thumbs = styled.div`
-  display: flex;
   flex-wrap: wrap;
 `
 
@@ -47,22 +42,14 @@ const ActionButton = (props) => (
 
 const SceneManager = (
   {
-    items, onAddClick, currentScene, onDeleteClick, onRenameClick, onChannelClick,
+    currentScene, onDeleteClick, onRenameClick, onChannelClick,
     onClearClick, onActiveClick, onOppositeClick,
   }
 ) => {
   const la = currentScene && currentScene.linkableActionIds
   return (
     <Wrapper>
-      <Thumbs>
-        {items.map(item => (
-          <SceneThumbContainer
-            key={item.id}
-            id={item.id}
-          />
-        ))}
-        <SceneThumb onClick={onAddClick}>+</SceneThumb>
-      </Thumbs>
+      <SceneList />
       {currentScene &&
       <Panel>
         <h4>Current scene: {currentScene.title}</h4>
@@ -122,6 +109,7 @@ const SceneManager = (
             <Button color='danger' onClick={() => { onDeleteClick(currentScene.id) }}>Delete</Button>
           </Col>
         </Row>
+        <SceneSettings sceneId={currentScene.id} />
       </Panel>
       }
     </Wrapper>
@@ -130,19 +118,12 @@ const SceneManager = (
 
 SceneManager.propTypes = {
   currentScene: PropTypes.object,
-  onAddClick: PropTypes.func.isRequired,
   onRenameClick: PropTypes.func.isRequired,
   onDeleteClick: PropTypes.func.isRequired,
   onChannelClick: PropTypes.func.isRequired,
   onClearClick: PropTypes.func.isRequired,
   onActiveClick: PropTypes.func.isRequired,
   onOppositeClick: PropTypes.func.isRequired,
-  items: PropTypes.arrayOf(
-    PropTypes.shape({
-      id: PropTypes.string,
-      title: PropTypes.string,
-    })
-  ),
 }
 
 export default SceneManager

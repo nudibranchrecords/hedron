@@ -46,10 +46,16 @@ const Settings = () => (
       <h2>Renderer</h2>
       <Row>
         <Col width='8rem'>
-          <Input name='antialias' label='Antialiasing' type='checkbox' />
-        </Col>
-        <Col width='8rem'>
           <Input name='throttledFPS' label='Throttled FPS' type='number' />
+        </Col>
+      </Row>
+      <h2>GUI</h2>
+      <Row>
+        <Col noWidth>
+          <p>Disable Error Popups</p>
+        </Col>
+        <Col width='1rem'>
+          <Control nodeId='areErrorPopupsDisabled' />
         </Col>
       </Row>
     </form>

@@ -1,7 +1,21 @@
+export function uSceneSelectCurrent (id) {
+  return {
+    type: 'U_SCENE_SELECT_CURRENT',
+    payload: { id },
+  }
+}
+
 export function rSceneSelectCurrent (id) {
   return {
     type: 'R_SCENE_SELECT_CURRENT',
     payload: { id },
+  }
+}
+
+export function uSceneSelectChannel (id, channel) {
+  return {
+    type: 'U_SCENE_SELECT_CHANNEL',
+    payload: { id, channel },
   }
 }
 
@@ -22,13 +36,6 @@ export function sceneClearChannel (id) {
 export function uSceneCreate () {
   return {
     type: 'U_SCENE_CREATE',
-  }
-}
-
-export function uSceneSelectChannel (id, type) {
-  return {
-    type: 'U_SCENE_SELECT_CHANNEL',
-    payload: { id, type },
   }
 }
 
@@ -87,6 +94,60 @@ export function rSceneSketchRemove (id, sketchId) {
     type: 'R_SCENE_SKETCH_REMOVE',
     payload: {
       id, sketchId,
+    },
+  }
+}
+
+export function uSceneSketchesReorder (id, oldIndex, newIndex) {
+  return {
+    type: 'U_SCENE_SKETCHES_REORDER',
+    payload: {
+      id, oldIndex, newIndex,
+    },
+  }
+}
+
+export function rSceneSketchesReorder (id, oldIndex, newIndex) {
+  return {
+    type: 'R_SCENE_SKETCHES_REORDER',
+    payload: {
+      id, oldIndex, newIndex,
+    },
+  }
+}
+
+export function uScenesReorder (oldIndex, newIndex) {
+  return {
+    type: 'U_SCENES_REORDER',
+    payload: {
+      oldIndex, newIndex,
+    },
+  }
+}
+
+export function rScenesReorder (oldIndex, newIndex) {
+  return {
+    type: 'R_SCENES_REORDER',
+    payload: {
+      oldIndex, newIndex,
+    },
+  }
+}
+
+export function uSceneSettingsUpdate (id, settings = {}) {
+  return {
+    type: 'U_SCENE_SETTINGS_UPDATE',
+    payload: {
+      id, settings,
+    },
+  }
+}
+
+export function rSceneSettingsUpdate (id, settings) {
+  return {
+    type: 'R_SCENE_SETTINGS_UPDATE',
+    payload: {
+      id, settings,
     },
   }
 }

@@ -1,4 +1,5 @@
 import * as THREE from 'three'
+
 class AudioInput {
   constructor (stream) {
     const context = new window.AudioContext()

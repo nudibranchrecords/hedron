@@ -2,7 +2,7 @@ import { connect } from 'react-redux'
 import SketchesNav from '../../components/SketchesNav'
 import getCurrentSketches from '../../selectors/getCurrentSketches'
 import getCurrentSceneId from '../../selectors/getCurrentSceneId'
-import { sceneSketchSelect } from '../../store/scenes/actions'
+import { sceneSketchSelect, uSceneSketchesReorder } from '../../store/scenes/actions'
 import getSelectedSketchId from '../../selectors/getSelectedSketchId'
 
 const mapStateToProps = (state, ownProps) => {
@@ -17,6 +17,9 @@ const mapStateToProps = (state, ownProps) => {
 const mapDispatchToProps = (dispatch, ownProps) => ({
   onNavItemClick: (sceneId, itemId) => {
     dispatch(sceneSketchSelect(sceneId, itemId))
+  },
+  onSortEnd: (sceneId, oldIndex, newIndex) => {
+    dispatch(uSceneSketchesReorder(sceneId, oldIndex, newIndex))
   },
 })
 

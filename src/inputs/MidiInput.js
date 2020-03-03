@@ -4,79 +4,93 @@ import { uInputLinkCreate } from '../store/inputLinks/actions'
 import { clockPulse } from '../store/clock/actions'
 import { newData as teachMidi } from '../utils/getMidiMode'
 import { processMidiData } from '../utils/midiMessage'
+import getConnectedDevice from '../selectors/getConnectedDevice'
 
-export default (store) => {
-  const onMessage = (rawMessage) => {
-    const state = store.getState()
-    const m = processMidiData(rawMessage.data)
+let store, midiAccess
 
-    if (m.messageType !== 'timingClock' && m.messageType !== 'noteOff') {
-      store.dispatch(midiMessage(rawMessage.target.name, {
-        data: rawMessage.data,
-        timeStamp: rawMessage.timeStamp,
-      }))
+const getMidiAccess = () => {
+  if (!midiAccess) midiAccess = navigator.requestMIDIAccess()
+  return midiAccess
+}
 
-      const learning = state.midi.learning
+const onMessage = (rawMessage) => {
+  const state = store.getState()
+  const deviceId = rawMessage.target.name
 
-      if (learning) {
-        let controlType
-        const mode = teachMidi(rawMessage.data, m.messageType)
+  const device = getConnectedDevice(state, deviceId)
+  const m = processMidiData(rawMessage.data, device.settings.forceChannel.value)
 
-        if (mode !== 'learning') {
-          if (mode === 'ignore') {
-            controlType = undefined
-          } else {
-            // abs, rel1, rel2, rel3
-            controlType = mode
-          }
-          store.dispatch(uInputLinkCreate(
-            learning.id,
-            m.id,
-            learning.type,
-            {
-              controlType,
-              channel: m.channel,
-              messageType: m.messageType,
-              noteNum: m.noteNum,
-            }
-          ))
-          store.dispatch(midiStopLearning())
+  if (m.messageType !== 'timingClock' && m.messageType !== 'noteOff') {
+    store.dispatch(midiMessage(deviceId, {
+      data: rawMessage.data,
+      timeStamp: rawMessage.timeStamp,
+    }))
+
+    const learning = state.midi.learning
+
+    if (learning) {
+      let controlType
+      const mode = teachMidi(rawMessage.data, m.messageType)
+
+      if (mode !== 'learning') {
+        if (mode === 'ignore') {
+          controlType = undefined
+        } else {
+          // abs, rel1, rel2, rel3
+          controlType = mode
         }
-      } else {
-        store.dispatch(inputFired(m.id, m.value, {
-          noteOn: m.messageType === 'noteOn',
-          type: 'midi',
-        }))
+        store.dispatch(uInputLinkCreate(
+          learning.id,
+          m.id,
+          learning.type,
+          {
+            controlType,
+            channel: m.channel,
+            messageType: m.messageType,
+            noteNum: m.noteNum,
+          }
+        ))
+        store.dispatch(midiStopLearning())
       }
-    // If no note data, treat as clock
-    } else if (m.messageType === 'timingClock') {
-      // Only dispatch clock pulse if no generated clock
-      if (!state.clock.isGenerated) {
-        store.dispatch(clockPulse())
-      }
+    } else {
+      store.dispatch(inputFired(m.id, m.value, {
+        noteOn: m.messageType === 'noteOn',
+        type: 'midi',
+      }))
+    }
+  // If no note data, treat as clock
+  } else if (m.messageType === 'timingClock') {
+    // Only dispatch clock pulse if no generated clock
+    if (!state.clock.isGenerated) {
+      store.dispatch(clockPulse())
     }
   }
+}
 
-  const processDevices = ports => {
-    const devices = {}
+export const processDevices = async () => {
+  const devices = {}
 
-    ports.forEach((entry) => {
-      devices[entry.name] = {
-        title: entry.name,
-        id: entry.name,
-        manufacturer: entry.manufacturer,
-      }
-      entry.onmidimessage = onMessage
-    })
+  const midiAccess = await getMidiAccess()
 
-    store.dispatch(midiUpdateDevices(devices))
-  }
-
-  navigator.requestMIDIAccess().then((midiAccess) => {
-    processDevices(midiAccess.inputs)
-
-    midiAccess.onstatechange = () => {
-      processDevices(midiAccess.inputs)
+  midiAccess.inputs.forEach((entry) => {
+    devices[entry.name] = {
+      title: entry.name,
+      id: entry.name,
+      manufacturer: entry.manufacturer,
     }
+    entry.onmidimessage = onMessage
   })
+
+  store.dispatch(midiUpdateDevices(devices))
+}
+
+export default async (injectedStore) => {
+  store = injectedStore
+  const midiAccess = await getMidiAccess()
+
+  processDevices()
+
+  midiAccess.onstatechange = () => {
+    processDevices()
+  }
 }

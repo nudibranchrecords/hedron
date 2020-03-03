@@ -1,22 +1,14 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import ParamBar from '../../containers/ParamBar'
-import NodeSelect from '../../containers/NodeSelect'
 
-const Control = ({ nodeId, onParamBarClick, type, theme, onChangeAction }) => {
-  switch (type) {
-    case 'select':
-      return <NodeSelect nodeId={nodeId} onChangeAction={onChangeAction} />
-    case 'slider':
-    default:
-      return <ParamBar
-        nodeId={nodeId}
-        onMouseDown={onParamBarClick}
-        type={type}
-        theme={theme}
-      />
-  }
-}
+const Control = ({ nodeId, onParamBarClick, Component, theme, onChangeAction, valueType }) =>
+  <Component
+    nodeId={nodeId}
+    onMouseDown={onParamBarClick}
+    onChangeAction={onChangeAction}
+    theme={theme}
+    valueType={valueType}
+  />
 
 Control.propTypes = {
   nodeId: PropTypes.string.isRequired,
@@ -25,8 +17,9 @@ Control.propTypes = {
     type: PropTypes.string.isRequired,
     payload: PropTypes.object,
   }),
-  type: PropTypes.string,
+  Component: PropTypes.elementType.isRequired,
   theme: PropTypes.string,
+  valueType: PropTypes.string,
 }
 
 export default Control

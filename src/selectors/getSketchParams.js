@@ -1,6 +1,4 @@
-const lerp = (v0, v1, t) => {
-  return (1 - t) * v0 + t * v1
-}
+import { getType } from '../valueTypes'
 
 const getSingle = (state, sketchId) => {
   const sketchParams = state.sketches[sketchId].paramIds
@@ -8,11 +6,8 @@ const getSingle = (state, sketchId) => {
 
   sketchParams.forEach((id) => {
     const param = state.nodes[id]
-    if (param.min !== undefined && param.max !== undefined) {
-      params[param.key] = lerp(param.min, param.max, param.value)
-    } else {
-      params[param.key] = param.value
-    }
+    const type = getType(param.valueType)
+    params[param.key] = type.getTransformedValue(param)
   })
 
   return params

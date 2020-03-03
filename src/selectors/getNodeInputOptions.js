@@ -1,5 +1,10 @@
+import { getType } from '../valueTypes'
+
 export default (state, nodeId) => {
-  const nodeType = state.nodes[nodeId].type
+  const node = state.nodes[nodeId]
+  let nodeType = node.type
+
+  const valueType = getType(node.valueType)
 
   // List of options
   // exclude: remove options for those node types
@@ -7,8 +12,14 @@ export default (state, nodeId) => {
   const options = [
     {
       value: 'audio',
+      type: 'audio',
       label: 'Audio',
       exclude: ['linkableAction'],
+    },
+    {
+      value: 'midi-learn',
+      type: 'midi',
+      label: 'MIDI Learn',
     },
     {
       value: 'midi',
@@ -17,6 +28,7 @@ export default (state, nodeId) => {
     },
     {
       value: 'lfo',
+      type: 'lfo',
       label: 'LFO',
       exclude: ['shot', 'linkableAction'],
     },
@@ -28,13 +40,17 @@ export default (state, nodeId) => {
     },
     {
       value: 'seq-step',
+      type: 'seq-step',
       label: 'Sequencer',
       include: ['shot'],
     },
   ]
 
   const filteredOptions = options.filter(opt => {
-    if (opt.include) {
+    // TODO: We might be able to remove all of the logic here and just use the valueType properties
+    if (valueType) {
+      return Object.keys(valueType.compatibleInputs).includes(opt.type)
+    } else if (opt.include) {
       return opt.include.includes(nodeType)
     } else if (opt.exclude) {
       return !opt.exclude.includes(nodeType)

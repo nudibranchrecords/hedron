@@ -13,6 +13,8 @@ const fsStub = {
   statSync: sinon.stub(),
 }
 
+const purgeSpy = sinon.spy()
+
 globStub.sync.returns([])
 globStub.sync.withArgs('foo/bar/*').returns(['foo/bar/dog', 'foo/bar/cat', 'foo/bar/amphibians'])
 globStub.sync.withArgs('foo/bar/amphibians/*').returns(['foo/bar/amphibians/frog'])
@@ -28,6 +30,7 @@ fsStub.existsSync.withArgs(path.resolve('foo/bar/amphibians/config.js')).returns
 const { loadSketches } = proxyquire('../sketches', {
   glob: globStub,
   fs: fsStub,
+  './purgeRequireCache': purgeSpy,
   // Mocked up modules and meta (just returning strings for test)
   [path.resolve('foo/bar/dog/index.js')]: 'dogModule',
   [path.resolve('foo/bar/cat/index.js')]: 'catModule',
@@ -63,6 +66,7 @@ test('(External) sketches - loadSketches()', (t) => {
     },
   }
   const actual = loadSketches('foo/bar')
+  t.isEqual(purgeSpy.called, true)
   t.deepEqual(actual, expected, 'Returns modules from files')
   t.end()
 })

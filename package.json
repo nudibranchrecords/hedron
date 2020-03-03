@@ -2,7 +2,7 @@
   "name": "Hedron",
   "author": "Nudibranch Records",
   "description": "Perform live shows with your three.js creations",
-  "version": "0.5.1",
+  "version": "0.6.0",
   "homepage": "https://github.com/nudibranchrecords/hedron",
   "repository": {},
   "license": "AGPL-3.0+",
@@ -19,7 +19,11 @@
   },
   "electronWebpack": {
     "renderer": {
-      "webpackConfig": "config/webpack.custom.config.js"
+      "webpackConfig": "config/webpack.custom.config.js",
+      "sourceDirectory": "src/electron/renderer"
+    },
+    "main": {
+      "sourceDirectory": "src/electron/main"
     }
   },
   "build": {
@@ -29,14 +33,20 @@
       ]
     }
   },
-  "glslify": {
-    "transform": [
-      "glslify-import"
-    ]
-  },
   "jest": {
     "testMatch": [
       "**/?(*.)+(test).[jt]s?(x)"
+    ],
+    "moduleNameMapper": {
+      "\\.(txt)$": "<rootDir>/testUtils/fileMock.js"
+    },
+    "setupFilesAfterEnv": [
+      "./setup.jest.js"
+    ]
+  },
+  "glslify": {
+    "transform": [
+      "glslify-import"
     ]
   },
   "dependencies": {
@@ -46,40 +56,47 @@
     "@babel/preset-env": "^7.3.1",
     "@babel/register": "^7.0.0",
     "@tweenjs/tween.js": "^17.2.0",
+    "array-move": "^2.1.0",
     "babel-loader": "^8.0.5",
     "chokidar": "^3.0.0",
+    "connected-react-router": "^6.5.2",
     "create-react-class": "^15.5.2",
     "err-code": "^1.1.2",
     "eventemitter3": "^3.0.1",
+    "glslify": "^7.0.0",
     "glslify-import": "^3.1.0",
     "history": "^4.6.1",
     "jsonfile": "^2.4.0",
     "lodash": "^4.17.15",
     "performance-now": "^2.1.0",
+    "postprocessing": "^6.10.0",
     "proxyquire": "^1.7.11",
-    "react": "^16.7.0",
+    "react": "^16.9.0",
     "react-addons-perf": "^15.4.2",
     "react-create-class": "^1.0.0",
-    "react-dom": "^16.7.0",
+    "react-dom": "^16.9.0",
     "react-hot-loader": "next",
     "react-input-autosize": "^1.1.3",
     "react-popper": "^1.3.3",
-    "react-redux": "^5.0.2",
-    "react-router-dom": "next",
-    "react-router-redux": "^5.0.0-alpha.9",
+    "react-redux": "^7.1.0",
+    "react-router": "^5.0.1",
+    "react-router-dom": "^5.0.1",
+    "react-sortable-hoc": "^1.9.1",
     "recompose": "^0.26.0",
     "redux": "^3.6.0",
     "redux-action-listeners": "^1.0.2",
     "redux-batched-subscribe": "^0.1.6",
     "redux-debounce": "^1.0.1",
-    "redux-form": "^7.2.3",
+    "redux-form": "^8.2.6",
     "redux-ignore": "^1.2.4",
     "redux-saga": "^0.16.0",
+    "reselect": "^4.0.0",
+    "source-map-support": "^0.5.16",
     "stats.js": "^0.17.0",
-    "styled-components": "^4.1.3",
+    "styled-components": "^5.0.0-beta.9",
     "tap-diff": "^0.1.1",
     "tap-tempo": "^0.1.1",
-    "three": "^0.107.0",
+    "three": "^0.112.1",
     "tinycolor2": "^1.4.1",
     "try-require": "^1.2.1",
     "uid": "^0.0.2"
@@ -99,18 +116,18 @@
     "@babel/runtime": "^7.3.1",
     "babel-eslint": "8.2.6",
     "babel-plugin-styled-components": "^1.10.0",
-    "clean-webpack-plugin": "^0.1.16",
+    "clean-webpack-plugin": "^3.0.0",
     "concurrently": "^3.4.0",
-    "copy-webpack-plugin": "^4.0.1",
+    "copy-webpack-plugin": "^5.1.1",
     "cross-env": "^5.2.0",
     "css-loader": "^0.28.7",
     "deep-freeze": "^0.0.1",
-    "electron": "3",
-    "electron-builder": "^20.38.5",
+    "electron": "^7.1.9",
+    "electron-builder": "^22.2.0",
     "electron-debug": "^1.4.0",
-    "electron-devtools-installer": "^2.2.1",
+    "electron-devtools-installer": "^2.2.4",
     "electron-log": "^2.2.14",
-    "electron-webpack": "^2.6.1",
+    "electron-webpack": "2.6.1",
     "eslint": "^6.1.0",
     "eslint-config-standard": "^6.2.1",
     "eslint-config-standard-react": "^4.2.0",
@@ -134,7 +151,7 @@
     "tap-colorize": "^1.2.0",
     "tape": "^4.6.3",
     "tape-watch": "^2.3.0",
-    "webpack": "^4.29.1",
+    "webpack": "^4.41.5",
     "webpack-cli": "^3.2.3",
     "webpack-dev-server": "^3.1.14"
   }

@@ -1,14 +1,14 @@
 import uid from 'uid'
-import { rSceneSelectChannel, uSceneSelectChannel, sceneClearChannel } from './actions'
+import { uSceneSelectChannel, sceneClearChannel } from './actions'
 
 export const generateSceneLinkableActionIds = id => ({
   addToA: {
-    action: rSceneSelectChannel(id, 'A'),
+    action: uSceneSelectChannel(id, 'A'),
     id: uid(),
     title: 'Add to A',
   },
   addToB: {
-    action: rSceneSelectChannel(id, 'B'),
+    action: uSceneSelectChannel(id, 'B'),
     id: uid(),
     title: 'Add to B',
   },

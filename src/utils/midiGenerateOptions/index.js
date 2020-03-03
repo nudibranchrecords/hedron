@@ -1,21 +1,33 @@
 import uid from 'uid'
 import { midiNotes, messageTypes } from '../midiMessage'
 import { uInputLinkUpdateMidiInput } from '../../store/inputLinks/actions'
+import { getType } from '../../valueTypes'
 
-export default linkId => {
+export default (nodeValueType, linkId) => {
+  // Get node valueType related options
+  const extraOptions = nodeValueType ? getType(nodeValueType).getExtraInputOptions('midi') : []
+
   return [
     {
-      title: 'MIDI Sensitivity',
-      key: 'sensitivity',
+      title: 'Message Type',
+      key: 'messageType',
+      valueType: 'enum',
       id: uid(),
-      value: 0.5,
+      value: 'controlChange',
       inputLinkIds: [],
       subNode: true,
+      options: Object.keys(messageTypes).map(key => (
+        {
+          value: messageTypes[key].key,
+          label: messageTypes[key].title,
+        }
+      )),
+      onChangeAction: uInputLinkUpdateMidiInput(linkId),
     },
     {
       title: 'Control Type',
       key: 'controlType',
-      type: 'select',
+      valueType: 'enum',
       id: uid(),
       value: 'abs',
       inputLinkIds: [],
@@ -40,9 +52,19 @@ export default linkId => {
       ],
     },
     {
+      title: 'MIDI Sensitivity',
+      key: 'sensitivity',
+      id: uid(),
+      valueType: 'float',
+      value: 0.5,
+      inputLinkIds: [],
+      subNode: true,
+    },
+    {
       title: 'Note',
       key: 'noteNum',
-      type: 'select',
+      valueType: 'enum',
+      value: 12,
       id: uid(),
       inputLinkIds: [],
       subNode: true,
@@ -50,25 +72,11 @@ export default linkId => {
       onChangeAction: uInputLinkUpdateMidiInput(linkId),
     },
     {
-      title: 'Message Type',
-      key: 'messageType',
-      type: 'select',
-      id: uid(),
-      inputLinkIds: [],
-      subNode: true,
-      options: Object.keys(messageTypes).map(key => (
-        {
-          value: messageTypes[key].key,
-          label: messageTypes[key].title,
-        }
-      )),
-      onChangeAction: uInputLinkUpdateMidiInput(linkId),
-    },
-    {
       title: 'Channel',
       key: 'channel',
-      type: 'select',
+      valueType: 'enum',
       id: uid(),
+      value: 0,
       inputLinkIds: [],
       subNode: true,
       options: Array(16).fill(0).map((value, index) => (
@@ -79,5 +87,6 @@ export default linkId => {
       )),
       onChangeAction: uInputLinkUpdateMidiInput(linkId),
     },
+    ...extraOptions,
   ]
 }

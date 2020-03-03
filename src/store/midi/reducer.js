@@ -1,6 +1,7 @@
 const defaultState = {
   learning: false,
   devices: {},
+  connectedDeviceIds: [],
 }
 
 const midiReducer = (state = defaultState, action) => {
@@ -23,9 +24,27 @@ const midiReducer = (state = defaultState, action) => {
       }
     }
     case 'MIDI_UPDATE_DEVICES': {
+      const devices = {}
+
+      for (let key in p.devices) {
+        devices[key] = {
+          ...p.devices[key],
+          settings: {
+            forceChannel: {
+              value: false,
+              label: '-',
+            },
+          },
+        }
+      }
+
       return {
         ...state,
-        devices: p.devices,
+        devices: {
+          ...devices,
+          ...state.devices,
+        },
+        connectedDeviceIds: Object.keys(p.devices),
       }
     }
     case 'MIDI_MESSAGE': {
@@ -36,6 +55,21 @@ const midiReducer = (state = defaultState, action) => {
           [p.id]: {
             ...state.devices[p.id],
             lastMessage: p.message,
+          },
+        },
+      }
+    }
+    case 'DEVICE_SETTINGS_UPDATE': {
+      return {
+        ...state,
+        devices: {
+          ...state.devices,
+          [p.id]: {
+            ...state.devices[p.id],
+            settings: {
+              ...state.devices[p.id].settings,
+              ...p.values,
+            },
           },
         },
       }

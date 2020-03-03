@@ -4,6 +4,7 @@ import styled from 'styled-components'
 import theme from '../../utils/theme'
 import downIcon from '../../assets/icons/down.icon.txt'
 import uiEventEmitter from '../../utils/uiEventEmitter'
+import { get } from 'lodash'
 
 import { Manager, Reference, Popper } from 'react-popper'
 import Icon from '../Icon'
@@ -20,6 +21,7 @@ const Button = styled.div`
   position: relative;
   border-color: ${props => props.isOpen ? 'white' : theme.lineColor2};
   cursor: pointer;
+  min-width: 2rem;
 `
 
 const DownIcon = styled(Icon)`
@@ -74,14 +76,19 @@ class Select extends React.Component {
   }
 
   render () {
-    const { onOpenClick, isOpen, options, onChange, buttonText, value } = this.props
+    const { onOpenClick, isOpen, options, input, buttonText } = this.props
+
+    // TODO: This is should really be handled in a container but must happen
+    // at component level here due to way redux-form works
+    const visibleText = buttonText || get(input, 'value.label')
+    const inputValue = get(input, 'value.value')
 
     return (
       <Manager>
         <Reference>
           {({ ref }) => (
             <Button ref={ref} onClick={onOpenClick} onMouseDown={e => e.stopPropagation()} isOpen={isOpen}>
-              { buttonText }
+              { visibleText }
               <DownIcon glyph={downIcon} />
             </Button>
           )}
@@ -103,8 +110,8 @@ class Select extends React.Component {
                 {options.map(option =>
                   <Option
                     key={option.value}
-                    isActive={value === option.value}
-                    onMouseDown={e => onChange(option)}
+                    isActive={inputValue === option.value}
+                    onMouseDown={e => input.onChange(option)}
                   >
                     {option.label}
                   </Option>
@@ -123,15 +130,22 @@ Select.propTypes = {
   options: PropTypes.arrayOf(
     PropTypes.object
   ),
-  onChange: PropTypes.func.isRequired,
   onOpenClick: PropTypes.func.isRequired,
   isOpen: PropTypes.bool,
   buttonText: PropTypes.oneOfType([
     PropTypes.string, PropTypes.number,
-  ]).isRequired,
-  value: PropTypes.oneOfType([
-    PropTypes.string, PropTypes.number, PropTypes.bool,
   ]),
+  input: PropTypes.shape({
+    value: PropTypes.shape({
+      value: PropTypes.oneOfType([
+        PropTypes.string, PropTypes.number, PropTypes.bool,
+      ]).isRequired,
+      label: PropTypes.oneOfType([
+        PropTypes.string, PropTypes.number,
+      ]).isRequired,
+    }),
+    onChange: PropTypes.func.isRequired,
+  }).isRequired,
 }
 
 export default Select

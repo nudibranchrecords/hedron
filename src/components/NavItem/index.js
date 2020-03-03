@@ -12,6 +12,7 @@ const baseLink = css`
   background: #222;
   color: white;
   text-decoration: none;
+  border: 1px solid #222;
   border-top: 1px solid #333;
   cursor: pointer;
 
@@ -31,6 +32,10 @@ const baseLink = css`
     text-align: center;
     font-size: 1rem;
     font-weight: bold;
+  }
+
+  .is-sorting & {
+    border: 1px dashed white;
   }
 `
 
