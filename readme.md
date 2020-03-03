@@ -92,3 +92,12 @@ Run `yarn dist` to package up the app for best performance and no dev tools. Onc
 | `yarn lint` | Run linting |
 | `yarn test` | Run pre deployment tests (including linting) |
 | `yarn test:dev` | Run tests on file changes (does not include linting) |
+
+### Acknowledgements
+Hedron has been created using some amazing open-source libraries. Most notably:
+
+- [three.js](https://github.com/mrdoob/three.js/)
+- [postprocessing](https://github.com/vanruesc/postprocessing)
+- [React](https://github.com/facebook/react)
+- [Redux](https://github.com/reduxjs/redux)
+
