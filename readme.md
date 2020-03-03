@@ -40,10 +40,10 @@ Download the latest [release](https://github.com/nudibranchrecords/hedron/releas
 5. 👽
 
 ## User Guide
-Head to the [User Guide](blob/stable/docs/user-guide/index.md) to learn how to use Hedron.
+Head to the [User Guide](/docs/user-guide/index.md) to learn how to use Hedron.
 
 ## Creating Sketches
-Head to the [Creating Sketches Guide](blob/stable/docs/dev/index.md) to learn how to create sketches.
+Head to the [Creating Sketches Guide](/docs/dev/index.md) to learn how to create sketches.
 
 ## Get in touch
 Made something awesome in Hedron you'd like to share? Need help or have some cool ideas? Let's talk! Find Alex on Twitter: [@funtriangles](https://twitter.com/funtriangles), or email: [alex@funwithtriangles.net](mailto:https://twitter.com/funtriangles).
