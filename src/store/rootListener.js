@@ -25,8 +25,10 @@ export default {
       fileWatchListener(action, store)
       await projectListener(action, store)
     } catch (error) {
+      const state = store.getState()
+      const shouldPopup = !state.nodes.areErrorPopupsDisabled.value || error.forcePopup
       console.error(error)
-      store.dispatch(projectError(error.message, { popup: true, code: error.code }))
+      store.dispatch(projectError(error.message, { popup: shouldPopup, code: error.code }))
     }
   },
 }

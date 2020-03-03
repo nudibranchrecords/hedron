@@ -17,5 +17,10 @@ module.exports = {
       title: 'BG Color L',
       defaultValue: 0,
     },
+    {
+      key: 'fogDensity',
+      title: 'Fog Density',
+      defaultValue: 0,
+    },
   ],
 }

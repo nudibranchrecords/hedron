@@ -317,14 +317,6 @@ module.exports = Bloom
 ### Other examples
 There are plenty of other examples that can be found in the [example sketches folder](../../example-projects).
 
-### Global postprocessing
-By default, any post processing will only affect the scene that sketch is in. This means that fading the scene out on the crossfader will also fade out any post processing effects you have in that scene. However, by checking "Global Post Processing" enabled under the scene settings, the effect will now work across all scenes. An icon will appear on the scene thumbnail if this setting is enabled. The scene does not need to be added to any channel, `update` will always be running with this setting on.
-
-As a convention, it makes sense to have a post processing scene, with post processing related sketches added to it. This scene does not need to have any 3D objects in it and never needs to be added to a channel.
-
-### Order of passes
-You can reorder sketches by clicking and holding on them in the sidebar. This relates to the order in which passes are added to the composer. If passes are added to sketches across multiple scenes, the order of the scenes is also important.
-
 ## Reloading sketches / Auto reload
 If you have the "Watch sketches" setting enabled, Hedron will automatically refresh your sketches. However, if you don't have this enabled or something went wrong with the file watch (e.g. your sketch imports a file outside of its own folder) you'll need to click "Reload File" to see changes made to sketch files.
 

@@ -1,3 +1,5 @@
+/* eslint-disable no-unused-expressions */
+
 import listen from 'redux-action-listeners'
 import { createStore, applyMiddleware, combineReducers } from 'redux'
 import createSagaMiddleware from 'redux-saga'
