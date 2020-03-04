@@ -1,13 +1,3 @@
-export function uNodeCreate (id, node) {
-  return {
-    type: 'U_NODE_CREATE',
-    payload: {
-      id,
-      node,
-    },
-  }
-}
-
 export function rNodeCreate (id, node) {
   return {
     type: 'R_NODE_CREATE',
