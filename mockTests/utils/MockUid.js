@@ -17,4 +17,10 @@ export class MockUid {
     this.currentMockName = 'id'
     return id
   }
+
+  resetMocks () {
+    Object.keys(this.mocks).forEach(key => {
+      this.mocks[key] = 0
+    })
+  }
 }
