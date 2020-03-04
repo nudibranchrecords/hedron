@@ -1,7 +1,7 @@
 import { uSketchNodeOpenedToggle } from '../../store/sketches/actions'
 import { uiNodeToggleOpen } from '../../store/ui/actions'
 import { rMacroOpenToggle } from '../../store/macros/actions'
-import { nodeShotFired, rNodeDelete, rNodeInputLinkAdd, nodeTabOpen, uNodeInputLinkAdd } from './actions'
+import { nodeShotFired, rNodeDelete, rNodeInputLinkAdd, nodeTabOpen } from './actions'
 import getNode from '../../selectors/getNode'
 import { uInputLinkDelete } from '../inputLinks/actions'
 

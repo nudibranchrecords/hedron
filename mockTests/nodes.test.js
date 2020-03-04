@@ -1,11 +1,6 @@
 import listen from 'redux-action-listeners'
 import { createStore, applyMiddleware, combineReducers } from 'redux'
 
-import { fork } from 'redux-saga/effects'
-
-import createSagaMiddleware from 'redux-saga'
-const sagaMiddleware = createSagaMiddleware()
-
 import nodesReducer from '../src/store/nodes/reducer'
 import nodesListener from '../src/store/nodes/listener'
 
