@@ -22,27 +22,11 @@ import {
   uSceneCreate, uScenesReorder, uSceneSketchesReorder, uSceneDelete, uSceneSettingsUpdate,
 } from '../src/store/scenes/actions'
 
-let mockId = 0
-let mockSceneid = 0
-let mockSketchId = 0
+import { MockUid } from './utils/MockUid'
 
-let mockNextIdIsScene = false
-let mockNextIdIsSketch = false
+const mockUid = new MockUid(['scene', 'sketch'])
 
-jest.mock('uid', () => () => {
-  if (mockNextIdIsScene) {
-    mockSceneid++
-    mockNextIdIsScene = false
-    return 'scene_' + mockSceneid
-  } else if (mockNextIdIsSketch) {
-    mockSketchId++
-    mockNextIdIsSketch = false
-    return 'sketch_' + mockSketchId
-  } else {
-    mockId++
-    return 'id_' + mockId
-  }
-})
+jest.mock('uid', () => () => mockUid.getNewId())
 
 jest.mock('../src/engine/renderer', () => ({
   setPostProcessing: jest.fn(),
@@ -124,8 +108,7 @@ test('(mock) Scenes - Add/Delete/Reorder scenes', () => {
   expect(state.sketches).toEqual({})
 
   // setting this flag keeps scene Ids neat
-  mockNextIdIsScene = true
-
+  mockUid.currentMockName = 'scene'
   store.dispatch(uSceneCreate())
   state = store.getState()
 
@@ -133,9 +116,9 @@ test('(mock) Scenes - Add/Delete/Reorder scenes', () => {
   expect(state.scenes.sceneIds).toEqual(['scene_1'])
   expect(state.scenes.items).toHaveProperty('scene_1')
 
-  mockNextIdIsScene = true
+  mockUid.currentMockName = 'scene'
   store.dispatch(uSceneCreate())
-  mockNextIdIsScene = true
+  mockUid.currentMockName = 'scene'
   store.dispatch(uSceneCreate())
 
   state = store.getState()
@@ -146,11 +129,11 @@ test('(mock) Scenes - Add/Delete/Reorder scenes', () => {
   expect(state.scenes.items).toHaveProperty('scene_2')
   expect(state.scenes.items).toHaveProperty('scene_3')
 
-  mockNextIdIsSketch = true
+  mockUid.currentMockName = 'sketch'
   store.dispatch(uSketchCreate('foo', 'scene_1'))
-  mockNextIdIsSketch = true
+  mockUid.currentMockName = 'sketch'
   store.dispatch(uSketchCreate('foo', 'scene_1'))
-  mockNextIdIsSketch = true
+  mockUid.currentMockName = 'sketch'
   store.dispatch(uSketchCreate('foo', 'scene_1'))
   ppCalled += 3
 
