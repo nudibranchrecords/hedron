@@ -3,7 +3,7 @@ import path from 'path'
 
 import { sketchCreate, sketchDelete, sketchUpdate, rSketchNodeOpenedToggle } from './actions'
 import { rSceneSketchAdd, rSceneSketchRemove, sceneSketchSelect } from '../scenes/actions'
-import { uNodeCreate, uNodeDelete, nodeUpdate } from '../nodes/actions'
+import { rNodeCreate, uNodeDelete, nodeUpdate } from '../nodes/actions'
 import { engineSceneSketchAdd, engineSceneSketchDelete } from '../../engine/actions'
 import getScene from '../../selectors/getScene'
 import getSketch from '../../selectors/getSketch'
@@ -110,7 +110,7 @@ const handleSketchCreate = (action, store) => {
       uniqueId = uid()
       paramIds.push(uniqueId)
       store.dispatch(
-        uNodeCreate(
+        rNodeCreate(
           uniqueId,
           generateParamFromConfig(param, uniqueId, uniqueSketchId)
         )
@@ -124,7 +124,7 @@ const handleSketchCreate = (action, store) => {
       uniqueId = uid()
       shotIds.push(uniqueId)
       store.dispatch(
-        uNodeCreate(
+        rNodeCreate(
           uniqueId,
           generateShotFromConfig(shot, uniqueId, uniqueSketchId)
         )
@@ -238,7 +238,7 @@ const sketchReimport = (sketchId, store) => {
         ...paramIds.slice(0, i), uniqueId, ...paramIds.slice(i),
       ]
       store.dispatch(
-        uNodeCreate(
+        rNodeCreate(
           uniqueId,
           generateParamFromConfig(moduleParam, uniqueId, sketchId)
         )
@@ -270,7 +270,7 @@ const sketchReimport = (sketchId, store) => {
         ...shotIds.slice(0, i), uniqueId, ...shotIds.slice(i),
       ]
       store.dispatch(
-        uNodeCreate(
+        rNodeCreate(
           uniqueId,
           generateShotFromConfig(moduleShot, uniqueId, sketchId)
         )

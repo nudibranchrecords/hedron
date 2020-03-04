@@ -1,14 +1,7 @@
 import { select, takeEvery, put } from 'redux-saga/effects'
 import getNode from '../../selectors/getNode'
 import { uInputLinkDelete } from '../inputLinks/actions'
-import { rNodeCreate, rNodeDelete, rNodeInputLinkAdd, nodeTabOpen } from './actions'
-
-export function* nodeCreate (action) {
-  const p = action.payload
-  const node = p.node
-
-  yield put(rNodeCreate(p.id, node))
-}
+import { rNodeDelete, rNodeInputLinkAdd, nodeTabOpen } from './actions'
 
 export function* nodeDelete (action) {
   const p = action.payload
@@ -34,7 +27,6 @@ export function* nodeInputLinkAdd (action) {
 }
 
 export function* watchNodes () {
-  yield takeEvery('U_NODE_CREATE', nodeCreate)
   yield takeEvery('U_NODE_DELETE', nodeDelete)
   yield takeEvery('U_NODE_INPUT_LINK_ADD', nodeInputLinkAdd)
 }

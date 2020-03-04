@@ -4,7 +4,7 @@ import getInputLink from '../../selectors/getInputLink'
 import getNode from '../../selectors/getNode'
 import { rInputLinkAdd, rInputLinkDelete } from './actions'
 import { uAnimStart } from '../anims/actions'
-import { rNodeCreate, uNodeCreate, uNodeDelete, uNodeInputLinkAdd,
+import { rNodeCreate, uNodeDelete, uNodeInputLinkAdd,
   nodeInputLinkRemove, nodeActiveInputLinkToggle, rNodeDelete } from '../nodes/actions'
 import { inputAssignedLinkCreate, inputAssignedLinkDelete } from '../inputs/actions'
 import lfoGenerateOptions from '../../utils/lfoGenerateOptions'
@@ -86,7 +86,7 @@ export function* inputLinkCreate (action) {
           item.parentNodeId = linkId
           optionIds.push(item.id)
 
-          yield put(uNodeCreate(item.id, item))
+          yield put(rNodeCreate(item.id, item))
         }
         break
       }
@@ -100,7 +100,7 @@ export function* inputLinkCreate (action) {
           item.parentNodeId = linkId
           optionIds.push(item.id)
 
-          yield put(uNodeCreate(item.id, item))
+          yield put(rNodeCreate(item.id, item))
         }
         break
       }
@@ -108,7 +108,7 @@ export function* inputLinkCreate (action) {
       case 'seq-step': {
         const seqOpts = yield call(sequencerGenerateOptions, nodeValueType)
         sequencerGridId = seqOpts.grid.id
-        yield put(uNodeCreate(sequencerGridId, seqOpts.grid))
+        yield put(rNodeCreate(sequencerGridId, seqOpts.grid))
         break
       }
 
@@ -127,7 +127,7 @@ export function* inputLinkCreate (action) {
             if (item.key === 'noteNum' && m.noteNum) item.value = m.noteNum
             if (item.key === 'messageType' && m.messageType) item.value = m.messageType
 
-            yield put(uNodeCreate(item.id, item))
+            yield put(rNodeCreate(item.id, item))
           }
         }
         break
@@ -142,7 +142,7 @@ export function* inputLinkCreate (action) {
           sketchId,
           parentNodeId: linkId,
         }
-        yield put(uNodeCreate(animStartActionId, node))
+        yield put(rNodeCreate(animStartActionId, node))
         linkableActions.animStart = animStartActionId
 
         const animOpts = yield call(animGenerateOptions, nodeValueType)
@@ -153,7 +153,7 @@ export function* inputLinkCreate (action) {
           item.sketchId = sketchId
           item.parentNodeId = linkId
 
-          yield put(uNodeCreate(item.id, item))
+          yield put(rNodeCreate(item.id, item))
         }
       }
     }
@@ -167,7 +167,7 @@ export function* inputLinkCreate (action) {
         sketchId,
         parentNodeId: linkId,
       }
-      yield put(uNodeCreate(toggleActionId, node))
+      yield put(rNodeCreate(toggleActionId, node))
       linkableActions.toggleActivate = toggleActionId
     }
 

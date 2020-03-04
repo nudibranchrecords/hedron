@@ -2,7 +2,7 @@
   Items that are hard items of the store, set from the beginning of the app.
 **/
 
-import { uNodeCreate } from './nodes/actions'
+import { rNodeCreate } from './nodes/actions'
 
 const coreNodes = [
   {
@@ -100,6 +100,6 @@ const coreNodes = [
 
 export default store => {
   coreNodes.forEach(node => {
-    store.dispatch(uNodeCreate(node.id, node))
+    store.dispatch(rNodeCreate(node.id, node))
   })
 }
