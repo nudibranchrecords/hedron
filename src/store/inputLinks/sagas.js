@@ -202,9 +202,7 @@ export function* inputLinkDelete (action) {
 
   const link = yield select(getInputLink, p.id)
 
-  const { input, modifierIds, nodeId } = link
-
-  yield put(inputAssignedLinkDelete(input.id, p.id))
+  const { input, modifierIds, nodeId, optionIds, linkableActions } = link
 
   if (modifierIds) {
     for (let i = 0; i < modifierIds.length; i++) {
@@ -212,12 +210,18 @@ export function* inputLinkDelete (action) {
     }
   }
 
-  yield put(nodeInputLinkRemove(nodeId, p.id))
-
-  for (const key in link.linkableActions) {
-    yield put(uNodeDelete(link.linkableActions[key]))
+  if (optionIds) {
+    for (let i = 0; i < optionIds.length; i++) {
+      yield put(uNodeDelete(optionIds[i]))
+    }
   }
 
+  for (const key in linkableActions) {
+    yield put(uNodeDelete(linkableActions[key]))
+  }
+
+  yield put(inputAssignedLinkDelete(input.id, p.id))
+  yield put(nodeInputLinkRemove(nodeId, p.id))
   yield put(rNodeDelete(p.id))
   yield put(rInputLinkDelete(p.id))
 }

@@ -1,47 +1,57 @@
 /** * SETUP ***/
 
-import proxyquire from 'proxyquire'
 import listen from 'redux-action-listeners'
 import { createStore, applyMiddleware, combineReducers } from 'redux'
 
 import inputsReducer from '../src/store/inputs/reducer'
 import nodesReducer from '../src/store/nodes/reducer'
-import inputLinksReducer from '../src/store/inputLinks/reducer'
+import inputLinkReducer from '../src/store/inputLinks/reducer'
+import inputLinkListener from '../src/store/inputLinks/listener'
+import nodeListener from '../src/store/nodes/listener'
 
 import { constructMidiId } from '../src/utils/midiMessage'
 
-import { uInputLinkUpdateMidiInput } from '../src/store/inputLinks/actions'
+import { uInputLinkUpdateMidiInput, uInputLinkCreate, uInputLinkDelete } from '../src/store/inputLinks/actions'
+import { inputLinkCreate, inputLinkDelete } from '../src/store/inputLinks/sagas'
+
+import { fork } from 'redux-saga/effects'
+import { watchInputLinks } from '../src/store/inputLinks/sagas'
+
+import createSagaMiddleware from 'redux-saga'
+import { MockUid } from './utils/MockUid'
+import { uNodeDelete } from '../src/store/nodes/actions'
+const sagaMiddleware = createSagaMiddleware()
 
 const rootReducer = combineReducers(
   {
     nodes: nodesReducer,
     inputs: inputsReducer,
-    inputLinks: inputLinksReducer,
+    inputLinks: inputLinkReducer,
   }
 )
 
-let uniqueId
-const uid = () => {
-  uniqueId++
-  return 'id_' + uniqueId
-}
+const mockUid = new MockUid(['link'])
 
-const inputLinksListener = proxyquire('../src/store/inputLinks/listener', {
-  'uid': uid,
-}).default
+jest.mock('uid', () => () => mockUid.getNewId())
 
 const rootListener = {
   types: 'all',
 
   handleAction (action, dispatched, store) {
-    inputLinksListener(action, store)
+    inputLinkListener(action, store)
+    nodeListener(action, store)
   },
+}
+
+function* rootSaga (dispatch) {
+  yield [
+    fork(watchInputLinks),
+  ]
 }
 
 /** * TEST ***/
 
 test('(mock) Input Links - Update link midi input', () => {
-  uniqueId = 0
   const messageType = 'controlChange'
   const noteNum = 100
   const channel = 13
@@ -107,4 +117,112 @@ test('(mock) Input Links - Update link midi input', () => {
   expect(link.input.id).toBe(newInputId)
 })
 
-// TODO: Test node deletion removes related input links too
+test('(mock) Input Links - Add/Remove/Remove Node with link', () => {
+  mockUid.resetMocks()
+
+  const startState = {
+    nodes: {
+      node_1: {
+        id: 'node_1',
+        inputLinkIds: [],
+      },
+    },
+    inputs: {
+    },
+    inputLinks: {
+      nodeIds: [],
+    },
+  }
+
+  const store = createStore(rootReducer, startState, applyMiddleware(sagaMiddleware, listen(rootListener)))
+  sagaMiddleware.run(rootSaga, store.dispatch)
+
+  mockUid.currentMockName = 'link'
+  store.dispatch(uInputLinkCreate('node_1', 'midi_1', 'midi'))
+
+  let state
+  state = store.getState()
+
+  // Update input link nodeId list
+  expect(state.inputLinks).toEqual({
+    nodeIds: ['link_1'],
+  })
+
+  // Add link to inputs
+  expect(state.inputs).toEqual({
+    midi_1: {
+      assignedLinkIds: ['link_1'],
+    },
+  })
+
+  // Add link to nodes
+  expect(state.nodes.link_1).toMatchObject({
+    id: 'link_1',
+    type: 'inputLink',
+    nodeId: 'node_1',
+    input: {
+      type: 'midi',
+      id: 'midi_1',
+    },
+  })
+
+  // Has some options
+  expect(state.nodes.link_1.optionIds.length).toBeGreaterThan(0)
+
+  // Has toggle action
+  expect(state.nodes.link_1.linkableActions.toggleActivate).toBeTruthy()
+
+  state.nodes.link_1.optionIds.forEach(id => {
+    // Link node option Ids exist
+    expect(state.nodes[id]).toBeTruthy()
+  })
+
+  // Has toggle action node
+  expect(state.nodes[state.nodes.link_1.linkableActions.toggleActivate]).toBeTruthy()
+
+  const numNodesWithOneLink = Object.keys(state.nodes).length
+
+  mockUid.currentMockName = 'link'
+  store.dispatch(uInputLinkCreate('node_1', 'midi_2', 'midi'))
+
+  state = store.getState()
+
+  expect(Object.keys(state.nodes).length).toBeGreaterThan(numNodesWithOneLink)
+
+  // Update input link nodeId list
+  expect(state.inputLinks).toEqual({
+    nodeIds: ['link_1', 'link_2'],
+  })
+
+  store.dispatch(uInputLinkDelete('link_2'))
+
+  state = store.getState()
+
+  // All relevant nodes deleted when input link is deleted
+  expect(Object.keys(state.nodes).length).toBe(numNodesWithOneLink)
+
+  // Assigned link for input removed
+  expect(state.inputs.midi_2.assignedLinkIds.length).toBe(0)
+
+  store.dispatch(uNodeDelete('node_1'))
+
+  state = store.getState()
+
+  // Removing node removes all relevant state
+  expect(state).toEqual({
+    nodes: {},
+    inputLinks: {
+      nodeIds: [],
+    },
+    inputs: {
+      midi_1: {
+        assignedLinkIds: [],
+      },
+      midi_2: {
+        assignedLinkIds: [],
+      },
+    },
+  })
+})
+
+// TODO: Midi learn
