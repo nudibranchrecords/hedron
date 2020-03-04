@@ -106,3 +106,5 @@ test('(mock) Input Links - Update link midi input', () => {
   const link = state.nodes.link_a
   expect(link.input.id).toBe(newInputId)
 })
+
+// TODO: Test node deletion removes related input links too
