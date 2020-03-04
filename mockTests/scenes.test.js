@@ -7,7 +7,6 @@ const sagaMiddleware = createSagaMiddleware()
 import { uSketchCreate } from '../src/store/sketches/actions'
 
 import { fork } from 'redux-saga/effects'
-import { watchNodes } from '../src/store/nodes/sagas'
 import { watchMacros } from '../src/store/macros/sagas'
 import sketchesReducer from '../src/store/sketches/reducer'
 import availableModulesReducer from '../src/store/availableModules/reducer'
@@ -16,6 +15,7 @@ import scenesReducer from '../src/store/scenes/reducer'
 
 import sketchesListener from '../src/store/sketches/listener'
 import scenesListener from '../src/store/scenes/listener'
+import nodesListener from '../src/store/nodes/listener'
 
 import renderer from '../src/engine/renderer'
 import {
@@ -37,6 +37,7 @@ const rootListener = {
   types: 'all',
 
   handleAction (action, dispatched, store) {
+    nodesListener(action, store)
     sketchesListener(action, store)
     scenesListener(action, store)
   },
@@ -44,7 +45,6 @@ const rootListener = {
 
 function* rootSaga (dispatch) {
   yield [
-    fork(watchNodes),
     fork(watchMacros),
   ]
 }
