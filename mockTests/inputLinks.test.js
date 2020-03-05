@@ -13,9 +13,6 @@ import { constructMidiId } from '../src/utils/midiMessage'
 import { uInputLinkUpdateMidiInput, uInputLinkCreate, uInputLinkDelete } from '../src/store/inputLinks/actions'
 import { uNodeDelete } from '../src/store/nodes/actions'
 
-import { fork } from 'redux-saga/effects'
-import { watchInputLinks } from '../src/store/inputLinks/sagas'
-
 import { MockUid } from './utils/MockUid'
 import { createMockStore } from './utils/createMockStore'
 
@@ -44,12 +41,6 @@ const setup = (startState = {
 },) => {
   mockUid.resetMocks()
 
-  function* rootSaga (dispatch) {
-    yield [
-      fork(watchInputLinks),
-    ]
-  }
-
   return createMockStore({
     startState,
     reducers: {
@@ -62,7 +53,6 @@ const setup = (startState = {
       inputLinkListener,
       nodeListener,
     ],
-    rootSaga,
   })
 }
 
