@@ -1,57 +1,29 @@
-/** * SETUP ***/
-
-import listen from 'redux-action-listeners'
-import { createStore, applyMiddleware, combineReducers } from 'redux'
+/** SETUP **/
 
 import inputsReducer from '../src/store/inputs/reducer'
 import nodesReducer from '../src/store/nodes/reducer'
 import inputLinkReducer from '../src/store/inputLinks/reducer'
-
 import midiReducer from '../src/store/midi/reducer'
+
 import inputLinkListener from '../src/store/inputLinks/listener'
 import nodeListener from '../src/store/nodes/listener'
 
 import { constructMidiId } from '../src/utils/midiMessage'
 
 import { uInputLinkUpdateMidiInput, uInputLinkCreate, uInputLinkDelete } from '../src/store/inputLinks/actions'
+import { uNodeDelete } from '../src/store/nodes/actions'
 
 import { fork } from 'redux-saga/effects'
 import { watchInputLinks } from '../src/store/inputLinks/sagas'
 
-import createSagaMiddleware from 'redux-saga'
 import { MockUid } from './utils/MockUid'
-import { uNodeDelete } from '../src/store/nodes/actions'
-const sagaMiddleware = createSagaMiddleware()
-
-const rootReducer = combineReducers(
-  {
-    nodes: nodesReducer,
-    inputs: inputsReducer,
-    inputLinks: inputLinkReducer,
-    midi: midiReducer,
-  }
-)
+import { createMockStore } from './utils/createMockStore'
 
 const mockUid = new MockUid(['link'])
 
 jest.mock('uid', () => () => mockUid.getNewId())
 
-const rootListener = {
-  types: 'all',
-
-  handleAction (action, dispatched, store) {
-    inputLinkListener(action, store)
-    nodeListener(action, store)
-  },
-}
-
-function* rootSaga (dispatch) {
-  yield [
-    fork(watchInputLinks),
-  ]
-}
-
-const createMockStore = (startState = {
+const setup = (startState = {
   nodes: {
     node_1: {
       id: 'node_1',
@@ -69,15 +41,32 @@ const createMockStore = (startState = {
     devices: {},
     connectedDeviceIds: [],
   },
-}) => {
+},) => {
   mockUid.resetMocks()
-  const store = createStore(rootReducer, startState, applyMiddleware(sagaMiddleware, listen(rootListener)))
-  sagaMiddleware.run(rootSaga, store.dispatch)
 
-  return { store, startState }
+  function* rootSaga (dispatch) {
+    yield [
+      fork(watchInputLinks),
+    ]
+  }
+
+  return createMockStore({
+    startState,
+    reducers: {
+      nodes: nodesReducer,
+      inputs: inputsReducer,
+      inputLinks: inputLinkReducer,
+      midi: midiReducer,
+    },
+    listeners: [
+      inputLinkListener,
+      nodeListener,
+    ],
+    rootSaga,
+  })
 }
 
-/** * TEST ***/
+/** TEST **/
 
 test('(mock) Input Links - Update link midi input', () => {
   const messageType = 'controlChange'
@@ -131,7 +120,7 @@ test('(mock) Input Links - Update link midi input', () => {
     },
   }
 
-  const store = createStore(rootReducer, startState, applyMiddleware(listen(rootListener)))
+  const { store } = setup(startState)
 
   let state
 
@@ -151,7 +140,7 @@ test('(mock) Input Links - Update link midi input', () => {
 })
 
 test('(mock) Input Links - Create/Remove/Remove Node with link (midi)', () => {
-  const { store } = createMockStore()
+  const { store } = setup()
 
   mockUid.currentMockName = 'link'
   store.dispatch(uInputLinkCreate('node_1', 'midi_1', 'midi'))
@@ -250,7 +239,7 @@ test('(mock) Input Links - Create/Remove/Remove Node with link (midi)', () => {
 })
 
 test('(mock) Input Links - create - audio / lfo has modifiers', () => {
-  const { store } = createMockStore()
+  const { store } = setup()
 
   mockUid.currentMockName = 'link'
   store.dispatch(uInputLinkCreate('node_1', 'audio', 'audio'))
@@ -278,7 +267,7 @@ test('(mock) Input Links - create - audio / lfo has modifiers', () => {
 })
 
 test('(mock) Input Links - create - linkableAction', () => {
-  const { store } = createMockStore()
+  const { store } = setup()
 
   mockUid.currentMockName = 'link'
   store.dispatch(uInputLinkCreate('node_1', 'action', 'linkableAction'))
@@ -297,7 +286,7 @@ test('(mock) Input Links - create - linkableAction', () => {
 })
 
 test('(mock) Input Links - Midi Learn', () => {
-  const { store, startState } = createMockStore()
+  const { store, startState } = setup()
 
   store.dispatch(uInputLinkCreate('node_1', 'midi-learn', 'midi'))
 
