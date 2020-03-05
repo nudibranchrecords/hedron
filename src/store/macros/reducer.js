@@ -26,7 +26,7 @@ const macroReducer = (state = defaultState, action) => {
     case 'R_MACRO_LEARNING_TOGGLE': {
       return {
         ...state,
-        learningId: state.learningId !== false ? false : p.id,
+        learningId: state.learningId === p.id ? false : p.id,
       }
     }
     case 'R_MACRO_LEARNING_STOP': {
@@ -42,9 +42,13 @@ const macroReducer = (state = defaultState, action) => {
       }
     }
     case 'R_MACRO_CLOSE': {
-      return {
-        ...state,
-        openedId: undefined,
+      if (!p.id || p.id === state.openedId) {
+        return {
+          ...state,
+          openedId: undefined,
+        }
+      } else {
+        return state
       }
     }
     case 'R_MACRO_UPDATE_LAST_ID': {

@@ -24,5 +24,5 @@ export const createMockStore = ({ startState, reducers, rootSaga, listeners }) =
     sagaMiddleware.run(rootSaga, store.dispatch)
   }
 
-  return { store, startState }
+  return { store, startState: store.getState() }
 }
