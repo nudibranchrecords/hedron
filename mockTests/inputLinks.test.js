@@ -6,13 +6,14 @@ import { createStore, applyMiddleware, combineReducers } from 'redux'
 import inputsReducer from '../src/store/inputs/reducer'
 import nodesReducer from '../src/store/nodes/reducer'
 import inputLinkReducer from '../src/store/inputLinks/reducer'
+
+import midiReducer from '../src/store/midi/reducer'
 import inputLinkListener from '../src/store/inputLinks/listener'
 import nodeListener from '../src/store/nodes/listener'
 
 import { constructMidiId } from '../src/utils/midiMessage'
 
 import { uInputLinkUpdateMidiInput, uInputLinkCreate, uInputLinkDelete } from '../src/store/inputLinks/actions'
-import { inputLinkCreate, inputLinkDelete } from '../src/store/inputLinks/sagas'
 
 import { fork } from 'redux-saga/effects'
 import { watchInputLinks } from '../src/store/inputLinks/sagas'
@@ -27,6 +28,7 @@ const rootReducer = combineReducers(
     nodes: nodesReducer,
     inputs: inputsReducer,
     inputLinks: inputLinkReducer,
+    midi: midiReducer,
   }
 )
 
@@ -96,6 +98,11 @@ test('(mock) Input Links - Update link midi input', () => {
     inputLinks: {
       nodeIds: ['link_a'],
     },
+    midi: {
+      learning: false,
+      devices: {},
+      connectedDeviceIds: [],
+    },
   }
 
   const store = createStore(rootReducer, startState, applyMiddleware(listen(rootListener)))
@@ -131,6 +138,11 @@ test('(mock) Input Links - Add/Remove/Remove Node with link', () => {
     },
     inputLinks: {
       nodeIds: [],
+    },
+    midi: {
+      learning: false,
+      devices: {},
+      connectedDeviceIds: [],
     },
   }
 
@@ -222,7 +234,64 @@ test('(mock) Input Links - Add/Remove/Remove Node with link', () => {
         assignedLinkIds: [],
       },
     },
+    midi: {
+      learning: false,
+      devices: {},
+      connectedDeviceIds: [],
+    },
   })
 })
 
-// TODO: Midi learn
+test('(mock) Input Links - Midi Learn', () => {
+  mockUid.resetMocks()
+
+  const startState = {
+    nodes: {
+      node_1: {
+        id: 'node_1',
+        inputLinkIds: [],
+      },
+    },
+    inputs: {
+    },
+    inputLinks: {
+      nodeIds: [],
+    },
+    midi: {
+      learning: false,
+      devices: {},
+      connectedDeviceIds: [],
+    },
+  }
+
+  const store = createStore(rootReducer, startState, applyMiddleware(sagaMiddleware, listen(rootListener)))
+  sagaMiddleware.run(rootSaga, store.dispatch)
+
+  store.dispatch(uInputLinkCreate('node_1', 'midi-learn', 'midi'))
+
+  let state
+  state = store.getState()
+
+  // Midi learning state updates, no other changes
+  expect(state).toEqual({
+    nodes: {
+      node_1: {
+        id: 'node_1',
+        inputLinkIds: [],
+      },
+    },
+    inputs: {
+    },
+    inputLinks: {
+      nodeIds: [],
+    },
+    midi: {
+      learning: {
+        id: 'node_1',
+        type: 'midi',
+      },
+      devices: {},
+      connectedDeviceIds: [],
+    },
+  })
+})
