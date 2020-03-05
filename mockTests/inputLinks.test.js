@@ -51,6 +51,32 @@ function* rootSaga (dispatch) {
   ]
 }
 
+const createMockStore = (startState = {
+  nodes: {
+    node_1: {
+      id: 'node_1',
+      inputLinkIds: [],
+      valueType: 'float',
+    },
+  },
+  inputs: {
+  },
+  inputLinks: {
+    nodeIds: [],
+  },
+  midi: {
+    learning: false,
+    devices: {},
+    connectedDeviceIds: [],
+  },
+}) => {
+  mockUid.resetMocks()
+  const store = createStore(rootReducer, startState, applyMiddleware(sagaMiddleware, listen(rootListener)))
+  sagaMiddleware.run(rootSaga, store.dispatch)
+
+  return { store, startState }
+}
+
 /** * TEST ***/
 
 test('(mock) Input Links - Update link midi input', () => {
@@ -124,30 +150,8 @@ test('(mock) Input Links - Update link midi input', () => {
   expect(link.input.id).toBe(newInputId)
 })
 
-test('(mock) Input Links - Add/Remove/Remove Node with link', () => {
-  mockUid.resetMocks()
-
-  const startState = {
-    nodes: {
-      node_1: {
-        id: 'node_1',
-        inputLinkIds: [],
-      },
-    },
-    inputs: {
-    },
-    inputLinks: {
-      nodeIds: [],
-    },
-    midi: {
-      learning: false,
-      devices: {},
-      connectedDeviceIds: [],
-    },
-  }
-
-  const store = createStore(rootReducer, startState, applyMiddleware(sagaMiddleware, listen(rootListener)))
-  sagaMiddleware.run(rootSaga, store.dispatch)
+test('(mock) Input Links - Create/Remove/Remove Node with link (midi)', () => {
+  const { store } = createMockStore()
 
   mockUid.currentMockName = 'link'
   store.dispatch(uInputLinkCreate('node_1', 'midi_1', 'midi'))
@@ -180,6 +184,9 @@ test('(mock) Input Links - Add/Remove/Remove Node with link', () => {
 
   // Has some options
   expect(state.nodes.link_1.optionIds.length).toBeGreaterThan(0)
+
+  // Midi, so no modifiers
+  expect(state.nodes.link_1.modifierIds.length).toBe(0)
 
   // Has toggle action
   expect(state.nodes.link_1.linkableActions.toggleActivate).toBeTruthy()
@@ -242,30 +249,55 @@ test('(mock) Input Links - Add/Remove/Remove Node with link', () => {
   })
 })
 
+test('(mock) Input Links - create - audio / lfo has modifiers', () => {
+  const { store } = createMockStore()
+
+  mockUid.currentMockName = 'link'
+  store.dispatch(uInputLinkCreate('node_1', 'audio', 'audio'))
+  mockUid.currentMockName = 'link'
+  store.dispatch(uInputLinkCreate('node_1', 'lfo', 'lfo'))
+
+  let state
+  state = store.getState()
+
+  // Audio, so has modifiers
+  expect(state.nodes.link_1.modifierIds.length).toBeGreaterThan(0)
+
+  // lfo, so has modifiers
+  expect(state.nodes.link_2.modifierIds.length).toBeGreaterThan(0)
+
+  state.nodes.link_1.modifierIds.forEach(id => {
+    // Link node modifiers exist
+    expect(state.nodes[id]).toBeTruthy()
+  })
+
+  state.nodes.link_2.modifierIds.forEach(id => {
+    // Link node modifiers exist
+    expect(state.nodes[id]).toBeTruthy()
+  })
+})
+
+test('(mock) Input Links - create - linkableAction', () => {
+  const { store } = createMockStore()
+
+  mockUid.currentMockName = 'link'
+  store.dispatch(uInputLinkCreate('node_1', 'action', 'linkableAction'))
+
+  let state
+  state = store.getState()
+
+  // Linkable action, so no modifiers
+  expect(state.nodes.link_1.modifierIds).toEqual([])
+
+  // Linkable action, so no options
+  expect(state.nodes.link_1.optionIds).toEqual([])
+
+  // Linkable action, so no linkableActions
+  expect(state.nodes.link_1.linkableActions).toEqual({})
+})
+
 test('(mock) Input Links - Midi Learn', () => {
-  mockUid.resetMocks()
-
-  const startState = {
-    nodes: {
-      node_1: {
-        id: 'node_1',
-        inputLinkIds: [],
-      },
-    },
-    inputs: {
-    },
-    inputLinks: {
-      nodeIds: [],
-    },
-    midi: {
-      learning: false,
-      devices: {},
-      connectedDeviceIds: [],
-    },
-  }
-
-  const store = createStore(rootReducer, startState, applyMiddleware(sagaMiddleware, listen(rootListener)))
-  sagaMiddleware.run(rootSaga, store.dispatch)
+  const { store, startState } = createMockStore()
 
   store.dispatch(uInputLinkCreate('node_1', 'midi-learn', 'midi'))
 
@@ -274,17 +306,7 @@ test('(mock) Input Links - Midi Learn', () => {
 
   // Midi learning state updates, no other changes
   expect(state).toEqual({
-    nodes: {
-      node_1: {
-        id: 'node_1',
-        inputLinkIds: [],
-      },
-    },
-    inputs: {
-    },
-    inputLinks: {
-      nodeIds: [],
-    },
+    ...startState,
     midi: {
       learning: {
         id: 'node_1',
