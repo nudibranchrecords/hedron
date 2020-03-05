@@ -25,9 +25,12 @@ export function uiEditingToggle (type, id) {
   }
 }
 
-export function uiEditingClose () {
+export function uiEditingClose (type, id) {
   return {
     type: 'UI_EDITING_CLOSE',
+    payload: {
+      type, id,
+    },
   }
 }
 
