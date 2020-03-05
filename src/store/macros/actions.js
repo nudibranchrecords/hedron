@@ -53,9 +53,10 @@ export function rMacroOpenToggle (id) {
   }
 }
 
-export function rMacroClose () {
+export function rMacroClose (id) {
   return {
     type: 'R_MACRO_CLOSE',
+    payload: { id },
   }
 }
 

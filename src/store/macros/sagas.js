@@ -14,9 +14,9 @@ import { rNodeCreate, nodeValueUpdate, uNodeDelete, rNodeConnectedMacroAdd,
   rNodeMacroTargetParamLinkDelete, rNodeMacroTargetParamLinkUpdateStartValue,
 } from '../nodes/actions'
 import { rMacroAdd, rMacroDelete, uMacroTargetParamLinkAdd, rMacroLearningToggle,
-  rMacroUpdateLastId, rMacroOpenToggle,
+  rMacroUpdateLastId, rMacroOpenToggle, rMacroClose,
 } from './actions'
-import { uiEditingOpen } from '../ui/actions'
+import { uiEditingOpen, uiEditingClose } from '../ui/actions'
 import { projectError } from '../project/actions'
 
 import uid from 'uid'
@@ -41,6 +41,8 @@ export function* macroDelete (action) {
   yield put(rMacroLearningToggle(false))
   yield put(rMacroDelete(nodeId))
   yield put(uNodeDelete(nodeId))
+  yield put(uiEditingClose('nodeTitle', nodeId))
+  yield put(rMacroClose(nodeId))
 
   for (const linkId in node.targetParamLinks) {
     const link = node.targetParamLinks[linkId]
