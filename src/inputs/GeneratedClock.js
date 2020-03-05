@@ -1,7 +1,7 @@
 import tapTempoFunc from 'tap-tempo'
-import { clockPulse } from '../store/clock/actions'
 import { settingsUpdate } from '../store/settings/actions'
 import { ipcRenderer } from 'electron'
+import { clockUpdate } from '../clock'
 
 let store
 let requestId
@@ -22,7 +22,7 @@ const loop = () => {
 
     while (diff > mspp) {
       // Pulse if so
-      store.dispatch(clockPulse())
+      clockUpdate()
       // Increase next time to check against by time per pulse
       marker += mspp
       // Loop over in case missed more than one pulse

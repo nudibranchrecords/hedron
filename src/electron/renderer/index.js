@@ -30,6 +30,7 @@ import initiateAudio from '../../inputs/AudioInput'
 import initiateMidi from '../../inputs/MidiInput'
 import initiateGeneratedClock from '../../inputs/GeneratedClock'
 import debounce from 'lodash/debounce'
+import { initiateClock } from '../../clock'
 
 const isDevelopment = process.env.NODE_ENV !== 'production'
 const devConfig = tryRequire('../../config/dev.config')
@@ -44,7 +45,7 @@ if (process.env.NODE_ENV !== 'development') {
 } else {
   composeEnhancers = composeWithDevTools({
     actionsBlacklist: [
-      'CLOCK_PULSE', 'CLOCK_BEAT_INC', 'CLOCK_BPM_UPDATE', 'INPUT_FIRED',
+      'CLOCK_BEAT_INC', 'CLOCK_BPM_UPDATE', 'INPUT_FIRED',
       'NODE_VALUE_UPDATE', 'NODE_RANGE_UPDATE', 'NODE_SHOT_ARM', 'NODE_SHOT_DISARM', 'NODE_SHOT_FIRED',
       'NODE_VALUES_BATCH_UPDATE',
     ],
@@ -95,6 +96,7 @@ initiateAudio(store)
 initiateMidi(store)
 initiateGeneratedClock(store)
 initiateScreens(store)
+initiateClock(store)
 
 engine.run(store, stats)
 

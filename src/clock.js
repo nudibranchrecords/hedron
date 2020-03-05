@@ -1,14 +1,15 @@
 import '@babel/polyfill'
 import now from 'performance-now'
-import { takeEvery, put, call } from 'redux-saga/effects'
-import { inputFired } from '../inputs/actions'
-import * as a from './actions'
+import { inputFired } from './store/inputs/actions'
+import * as a from './store/clock/actions'
 
 const ppqn = 24
 let pulses, beats, lastBar, totalBeats
 let seqStepCount = 0 // Sequencer step count
 const ppSeqStep = ppqn / 8 // Pulses per 8th beat
 const seqStepPerBar = ppSeqStep * 8 * 4
+
+let store
 
 export const clockReset = () => {
   pulses = 0
@@ -18,7 +19,7 @@ export const clockReset = () => {
   lastBar = now()
 }
 
-export function* clockSnap () {
+export const clockSnap = () => {
   // Get how many sequence pulses since last sequence step
   const seqMod = seqStepCount % ppqn
 
@@ -39,7 +40,7 @@ export function* clockSnap () {
   }
 }
 
-export const newPulse = () => {
+const newPulse = () => {
   pulses++
   seqStepCount++
   if (seqStepCount > seqStepPerBar - 1) {
@@ -62,39 +63,37 @@ export const newPulse = () => {
   }
 }
 
-export const calcBpm = () => {
+const calcBpm = () => {
   let newBar = now()
   let msperbar = newBar - lastBar
   lastBar = newBar
   return Math.round(240000 / msperbar)
 }
 
-export function* clockUpdate () {
-  const info = yield call(newPulse)
-  yield put(inputFired('lfo', info.delta, {
+export const clockUpdate = () => {
+  const info = newPulse()
+
+  store.dispatch(inputFired('lfo', info.delta, {
     type: 'lfo',
   }))
 
   if (info.seqStepCount % ppSeqStep === 0) {
-    yield put(inputFired('seq-step', info.seqStepCount / ppSeqStep, {
+    store.dispatch(inputFired('seq-step', info.seqStepCount / ppSeqStep, {
       type: 'seq-step',
     }))
   }
 
   if (info.pulses === 0) {
-    yield put(a.clockBeatInc())
+    store.dispatch(a.clockBeatInc())
 
     if (info.beats === 0) {
-      const bpm = yield call(calcBpm)
-      yield put(a.clockBpmUpdate(bpm))
+      const bpm = calcBpm()
+      store.dispatch(a.clockBpmUpdate(bpm))
     }
   }
 }
 
-export function* watchClock () {
-  yield takeEvery('CLOCK_PULSE', clockUpdate)
-  yield takeEvery('CLOCK_RESET', clockReset)
-  yield takeEvery('CLOCK_SNAP', clockSnap)
+export const initiateClock = (injectedStore) => {
+  store = injectedStore
+  clockReset()
 }
-
-clockReset()
