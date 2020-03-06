@@ -3,9 +3,6 @@
 import listen from 'redux-action-listeners'
 import { createStore, applyMiddleware, combineReducers } from 'redux'
 
-import createSagaMiddleware from 'redux-saga'
-const sagaMiddleware = createSagaMiddleware()
-
 export const createMockStore = ({ startState, reducers, listeners }) => {
   const rootReducer = combineReducers(reducers)
 
@@ -19,7 +16,7 @@ export const createMockStore = ({ startState, reducers, listeners }) => {
     },
   }
 
-  const store = createStore(rootReducer, startState, applyMiddleware(sagaMiddleware, listen(rootListener)))
+  const store = createStore(rootReducer, startState, applyMiddleware(listen(rootListener)))
 
   return { store, startState: store.getState() }
 }
