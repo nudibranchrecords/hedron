@@ -102,14 +102,13 @@ const macroProcess = (store, p, node) => {
 
   for (let i = 0; i < keys.length; i++) {
     const l = links[keys[i]]
-    let startValue = l.startValue
-    if (startValue === null) {
+    if (l.startValue === null) {
       const p = getNode(state, l.paramId)
-      startValue = p.value
-      store.dispatch(rNodeMacroTargetParamLinkUpdateStartValue(node.id, l.paramId, startValue))
+      // Intentionally mutating state here
+      l.startValue = p.value
     }
     const n = getNode(state, l.nodeId)
-    const val = macroInterpolate(startValue, n.value, p.value, n.valueType)
+    const val = macroInterpolate(l.startValue, n.value, p.value, n.valueType)
     values.push(
       {
         id: l.paramId,
