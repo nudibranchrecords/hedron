@@ -210,13 +210,6 @@ export function rNodeMacroTargetParamLinkDelete (macroId, paramId) {
   }
 }
 
-export function rNodeMacroTargetParamLinkUpdateStartValue (macroId, paramId, value) {
-  return {
-    type: 'R_NODE_MACRO_TARGET_PARAM_LINK_UPDATE_START_VALUE',
-    payload: { macroId, paramId, value },
-  }
-}
-
 /* input links */
 
 export function rNodeInputLinkShotArm (linkId) {
