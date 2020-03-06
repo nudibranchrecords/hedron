@@ -2,7 +2,7 @@ import { uiEditingClose } from '../actions'
 import uiReducer from '../reducer'
 
 test('(Reducer) uiReducer - UI_EDITING_CLOSE', () => {
-  let state, expected, actual
+  let state, actual
 
   state = {
     isEditing: {

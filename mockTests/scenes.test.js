@@ -2,12 +2,8 @@
 
 import listen from 'redux-action-listeners'
 import { createStore, applyMiddleware, combineReducers } from 'redux'
-import createSagaMiddleware from 'redux-saga'
-const sagaMiddleware = createSagaMiddleware()
 import { uSketchCreate } from '../src/store/sketches/actions'
 
-import { fork } from 'redux-saga/effects'
-import { watchMacros } from '../src/store/macros/sagas'
 import sketchesReducer from '../src/store/sketches/reducer'
 import availableModulesReducer from '../src/store/availableModules/reducer'
 import nodesReducer from '../src/store/nodes/reducer'
@@ -16,6 +12,7 @@ import scenesReducer from '../src/store/scenes/reducer'
 import sketchesListener from '../src/store/sketches/listener'
 import scenesListener from '../src/store/scenes/listener'
 import nodesListener from '../src/store/nodes/listener'
+import macrosListener from '../src/store/macros/listener'
 
 import renderer from '../src/engine/renderer'
 import {
@@ -40,13 +37,8 @@ const rootListener = {
     nodesListener(action, store)
     sketchesListener(action, store)
     scenesListener(action, store)
+    macrosListener(action, store)
   },
-}
-
-function* rootSaga (dispatch) {
-  yield [
-    fork(watchMacros),
-  ]
 }
 
 test('(mock) Scenes - Add/Delete/Reorder scenes', () => {
@@ -97,8 +89,7 @@ test('(mock) Scenes - Add/Delete/Reorder scenes', () => {
         B: false,
       },
     },
-  }, applyMiddleware(sagaMiddleware, listen(rootListener)))
-  sagaMiddleware.run(rootSaga, store.dispatch)
+  }, applyMiddleware(listen(rootListener)))
 
   let state
 
