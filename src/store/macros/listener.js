@@ -151,10 +151,10 @@ const handleNodeValueUpdate = (action, store) => {
 
     const node = getNode(state, p.id)
 
-    if (node.type === 'macro' && senderType !== 'macro') {
+    if (node.type === 'macro') {
       // Normal behaviour, simple process of macro using value of node
       macroProcess(store, p, node)
-    } else if (node.type !== 'macro') {
+    } else {
       const isHuman = isInputTypeHuman(senderType)
 
       if (isHuman) {
@@ -176,10 +176,12 @@ const handleNodeValueUpdate = (action, store) => {
 
               if (node.value !== false) {
                 for (const key in node.targetParamLinks) {
-                  store.dispatch(rNodeMacroTargetParamLinkUpdateStartValue(macroId, key, null))
+                  // Intentionally mutating state here
+                  node.targetParamLinks[key].startValue = null
                 }
 
-                store.dispatch(nodeValueUpdate(macroId, false, { type: 'macro' }))
+                // Intentionally mutating state here
+                node.value = false
               }
             }
           }
