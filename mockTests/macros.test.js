@@ -366,12 +366,22 @@ test('(mock) macros - Usage', () => {
 
   let state = startState
 
+  store.dispatch(nodeValueUpdate('macro_1', 0.5))
+  state = store.getState()
+
+  // Value of macro should update as normal
+  expect(state.nodes.macro_1.value).toBeCloseTo(0.5)
+  // Start value of paramLink should match current value of param
+  expect(state.nodes.macro_1.targetParamLinks.param_1.startValue).toBeCloseTo(0.1)
+  // Value of connected param should update based on paramLink targetValue
+  expect(state.nodes.param_1.value).toBeCloseTo(0.3)
+
   store.dispatch(nodeValueUpdate('macro_1', 1))
   state = store.getState()
 
   // Value of macro should update as normal
   expect(state.nodes.macro_1.value).toBeCloseTo(1)
-  // Start value of paramLink should match current value of param
+  // Start value of paramLink should stay the same as before
   expect(state.nodes.macro_1.targetParamLinks.param_1.startValue).toBeCloseTo(0.1)
   // Value of connected param should update based on paramLink targetValue
   expect(state.nodes.param_1.value).toBeCloseTo(0.5)
