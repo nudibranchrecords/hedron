@@ -7,8 +7,10 @@ import { MockUid } from './utils/MockUid'
 import { createMockStore } from './utils/createMockStore'
 
 import { fork } from 'redux-saga/effects'
-import { watchMacros, macroTargetParamLinkAdd } from '../src/store/macros/sagas'
-import { uMacroCreate, rMacroLearningToggle, uMacroDelete, uMacroTargetParamLinkAdd, uMacroTargetParamLinkDelete } from '../src/store/macros/actions'
+import { watchMacros } from '../src/store/macros/sagas'
+import { uMacroCreate, rMacroLearningToggle, uMacroDelete, uMacroTargetParamLinkAdd,
+  uMacroTargetParamLinkDelete } from '../src/store/macros/actions'
+import { nodeValueUpdate, nodeValuesBatchUpdate } from '../src/store/nodes/actions'
 
 const mockUid = new MockUid(['macro', 'paramLink'])
 jest.mock('uid', () => () => mockUid.getNewId())
@@ -24,10 +26,17 @@ const setup = (startState = {
     param_1: {
       id: 'param_1',
       connectedMacroIds: [],
+      valueType: 'float',
     },
     param_2: {
       id: 'param_2',
       connectedMacroIds: [],
+      valueType: 'float',
+    },
+    param_3: {
+      id: 'param_3',
+      connectedMacroIds: [],
+      valueType: 'float',
     },
   },
 }) => {
@@ -163,4 +172,228 @@ test('(mock) macros - create, learning start/stop, add/remove paramlink, delete'
 
   // State same as start of test (all related nodes removed)
   expect(state).toEqual(startState)
+})
+
+test('(mock) macros - paramlink creation while learning', () => {
+  const { store } = setup()
+  let state
+
+  // Set up with 2 macros
+  mockUid.currentMockName = 'macro'
+  store.dispatch(uMacroCreate())
+  mockUid.currentMockName = 'macro'
+  store.dispatch(uMacroCreate())
+  const startState = store.getState()
+
+  store.dispatch(nodeValueUpdate('param_1', 0.5))
+  store.dispatch(nodeValuesBatchUpdate([
+    {
+      id: 'param_1',
+      value: 0.8,
+    },
+    {
+      id: 'param_2',
+      value: 0.8,
+    },
+  ]))
+  state = store.getState()
+
+  // Nothing happens to macro if node changes but not learning
+  expect(state.nodes.macro_1).toEqual(startState.nodes.macro_1)
+  expect(state.nodes.macro_2).toEqual(startState.nodes.macro_2)
+
+  mockUid.currentMockName = 'paramLink'
+  store.dispatch(rMacroLearningToggle('macro_1'))
+  store.dispatch(nodeValueUpdate('param_1', 0.4))
+  state = store.getState()
+
+  // paramLink node created while learning
+  expect(state.nodes.paramLink_1.type).toBe('macroTargetParamLink')
+  expect(state.nodes.paramLink_1.value).toBe(0.4)
+
+  // param updated with connected macro
+  expect(state.nodes.param_1.connectedMacroIds).toEqual(['macro_1'])
+  // paramLink ref added to macro
+  expect(state.nodes.macro_1.targetParamLinks).toEqual({
+    'param_1': {
+      'nodeId': 'paramLink_1',
+      'paramId': 'param_1',
+      'startValue': null,
+    },
+  })
+
+  store.dispatch(nodeValueUpdate('param_1', 0.3))
+  state = store.getState()
+
+  // Value of param link updates while learning
+  expect(state.nodes.paramLink_1.value).toBe(0.3)
+
+  mockUid.currentMockName = 'paramLink'
+  store.dispatch(nodeValuesBatchUpdate([
+    {
+      id: 'param_1',
+      value: 0.5,
+    },
+    {
+      id: 'param_2',
+      value: 0.5,
+    },
+  ]))
+  state = store.getState()
+
+  // Value of param link updates on batch node update
+  expect(state.nodes.paramLink_1.value).toBe(0.5)
+  // paramLink node created while learning on batch node update
+  expect(state.nodes.paramLink_2.type).toBe('macroTargetParamLink')
+  expect(state.nodes.paramLink_2.value).toBe(0.5)
+
+  const twoLinks = {
+    'param_1': {
+      'nodeId': 'paramLink_1',
+      'paramId': 'param_1',
+      'startValue': null,
+    },
+    'param_2': {
+      'nodeId': 'paramLink_2',
+      'paramId': 'param_2',
+      'startValue': null,
+    },
+  }
+
+  // paramLink ref added to macro
+  expect(state.nodes.macro_1.targetParamLinks).toEqual(twoLinks)
+
+  store.dispatch(nodeValueUpdate('macro_2', 0.3))
+  state = store.getState()
+
+  // Macros dont get added while learning
+  expect(state.nodes.macro_1.targetParamLinks).toEqual(twoLinks)
+
+  store.dispatch(nodeValueUpdate('paramLink_2', 0.3))
+  state = store.getState()
+
+  // Param links dont get added while learning
+  expect(state.nodes.macro_1.targetParamLinks).toEqual(twoLinks)
+
+  store.dispatch(nodeValueUpdate('param_3', 0.3, { type: 'lfo' }))
+  state = store.getState()
+
+  // Params dont get added if not from a human
+  expect(state.nodes.macro_1.targetParamLinks).toEqual(twoLinks)
+
+  store.dispatch(nodeValueUpdate('macro_1', 0.3))
+  state = store.getState()
+
+  // Macro itself does work while learning
+  expect(state.nodes.macro_1.targetParamLinks.param_1.startValue).not.toBe(null)
+})
+
+test('(mock) macros - Usage', () => {
+  // Setup with two macros. One has two params, the other one. The share one.
+  const { store, startState } = setup({
+    nodes: {
+      param_1: {
+        id: 'param_1',
+        connectedMacroIds: ['macro_1'],
+        valueType: 'float',
+        value: 0.1,
+      },
+      param_2: {
+        id: 'param_2',
+        connectedMacroIds: ['macro_1', 'macro_2'],
+        valueType: 'float',
+        value: 0.1,
+      },
+      macro_1: {
+        id: 'macro_1',
+        value: false,
+        type: 'macro',
+        targetParamLinks: {
+          'param_1': {
+            'nodeId': 'paramLink_1a',
+            'paramId': 'param_1',
+            'startValue': null,
+          },
+        },
+        valueType: 'float',
+      },
+      macro_2: {
+        id: 'macro_2',
+        value: 0,
+        type: 'macro',
+        targetParamLinks: {
+          'param_1': {
+            'nodeId': 'paramLink_1b',
+            'paramId': 'param_1',
+            'startValue': null,
+          },
+          'param_2': {
+            'nodeId': 'paramLink_2a',
+            'paramId': 'param_2',
+            'startValue': null,
+          },
+        },
+        valueType: 'float',
+      },
+      paramLink_1a: {
+        id: 'paramLink_1a',
+        value: 0.5,
+        inputLinkIds: [],
+        shotCount: 0,
+        connectedMacroIds: [],
+        valueType: 'float',
+        type: 'macroTargetParamLink',
+      },
+      paramLink_1b: {
+        id: 'paramLink_1b',
+        value: 0.75,
+        inputLinkIds: [],
+        shotCount: 0,
+        connectedMacroIds: [],
+        valueType: 'float',
+        type: 'macroTargetParamLink',
+      },
+      paramLink_2a: {
+        id: 'paramLink_2a',
+        value: 0.8,
+        inputLinkIds: [],
+        shotCount: 0,
+        connectedMacroIds: [],
+        valueType: 'float',
+        type: 'macroTargetParamLink',
+      },
+    },
+    macros: {
+      learningId: false,
+      openedId: 'macro_2',
+      lastId: undefined,
+      nodeIds: [ 'macro_1', 'macro_2' ],
+    },
+  })
+
+  let state = startState
+
+  store.dispatch(nodeValueUpdate('macro_1', 1))
+  state = store.getState()
+
+  // Value of macro should update as normal
+  expect(state.nodes.macro_1.value).toBeCloseTo(1)
+  // Start value of paramLink should match current value of param
+  expect(state.nodes.macro_1.targetParamLinks.param_1.startValue).toBeCloseTo(0.1)
+  // Value of connected param should update based on paramLink targetValue
+  expect(state.nodes.param_1.value).toBeCloseTo(0.5)
+
+  store.dispatch(nodeValueUpdate('macro_2', 1))
+  state = store.getState()
+
+  // Value of macro should update as normal
+  expect(state.nodes.macro_2.value).toBeCloseTo(1)
+  // Value of connected param should update based on paramLink targetValue
+  expect(state.nodes.param_1.value).toBeCloseTo(0.75)
+  // Value of connected param should update based on paramLink targetValue
+  expect(state.nodes.param_2.value).toBeCloseTo(0.8)
+  // Value of other macro should reset to fase, as they share params
+  expect(state.nodes.macro_1.value).toBe(false)
+  // Start value of other macro paramLinks should be reset to null
+  expect(state.nodes.macro_1.targetParamLinks.param_1.startValue).toBe(null)
 })
