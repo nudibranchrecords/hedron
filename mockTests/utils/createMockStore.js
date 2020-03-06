@@ -6,7 +6,7 @@ import { createStore, applyMiddleware, combineReducers } from 'redux'
 import createSagaMiddleware from 'redux-saga'
 const sagaMiddleware = createSagaMiddleware()
 
-export const createMockStore = ({ startState, reducers, rootSaga, listeners }) => {
+export const createMockStore = ({ startState, reducers, listeners }) => {
   const rootReducer = combineReducers(reducers)
 
   const rootListener = {
@@ -20,9 +20,6 @@ export const createMockStore = ({ startState, reducers, rootSaga, listeners }) =
   }
 
   const store = createStore(rootReducer, startState, applyMiddleware(sagaMiddleware, listen(rootListener)))
-  if (rootSaga) {
-    sagaMiddleware.run(rootSaga, store.dispatch)
-  }
 
   return { store, startState: store.getState() }
 }

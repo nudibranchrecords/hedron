@@ -9,9 +9,7 @@ import { ConnectedRouter, routerMiddleware } from 'connected-react-router'
 import listen from 'redux-action-listeners'
 import history from '../../history'
 import { composeWithDevTools } from 'redux-devtools-extension'
-import createSagaMiddleware from 'redux-saga'
 import { batchedSubscribe } from 'redux-batched-subscribe'
-import rootSaga from '../../store/rootSaga'
 import rootReducer from '../../store/rootReducer'
 import rootListener from '../../store/rootListener'
 import App from '../../containers/App'
@@ -55,19 +53,14 @@ if (process.env.NODE_ENV !== 'development') {
 
 const debounceNotify = debounce(notify => notify())
 
-const sagaMiddleware = createSagaMiddleware()
-
 const store = createStore(rootReducer, composeEnhancers(
   applyMiddleware(
     routerMiddleware(history),
     createDebounce(),
-    sagaMiddleware,
     listen(rootListener)
   ),
   batchedSubscribe(debounceNotify)
 ))
-
-sagaMiddleware.run(rootSaga, store.dispatch)
 
 setCoreState(store)
 

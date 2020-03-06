@@ -1,25 +1,18 @@
 import nodesReducer from '../src/store/nodes/reducer'
-import macrosReducer from '../src/store/macros/reducer'
+import macroReducer from '../src/store/macros/reducer'
 import uiReducer from '../src/store/ui/reducer'
 import nodeListener from '../src/store/nodes/listener'
+import macroListener from '../src/store/macros/listener'
 
 import { MockUid } from './utils/MockUid'
 import { createMockStore } from './utils/createMockStore'
 
-import { fork } from 'redux-saga/effects'
-import { watchMacros } from '../src/store/macros/sagas'
 import { uMacroCreate, rMacroLearningToggle, uMacroDelete, uMacroTargetParamLinkAdd,
   uMacroTargetParamLinkDelete } from '../src/store/macros/actions'
 import { nodeValueUpdate, nodeValuesBatchUpdate } from '../src/store/nodes/actions'
 
 const mockUid = new MockUid(['macro', 'paramLink'])
 jest.mock('uid', () => () => mockUid.getNewId())
-
-function* rootSaga (dispatch) {
-  yield [
-    fork(watchMacros),
-  ]
-}
 
 const setup = (startState = {
   nodes: {
@@ -46,13 +39,13 @@ const setup = (startState = {
     startState,
     reducers: {
       nodes: nodesReducer,
-      macros: macrosReducer,
+      macros: macroReducer,
       ui: uiReducer,
     },
     listeners: [
       nodeListener,
+      macroListener,
     ],
-    rootSaga,
   })
 }
 
