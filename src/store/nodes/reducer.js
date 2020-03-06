@@ -197,19 +197,9 @@ const nodesReducer = (state = defaultState, action) => {
       }
     }
     case 'R_NODE_MACRO_TARGET_PARAM_LINK_UPDATE_START_VALUE': {
-      return {
-        ...state,
-        [p.macroId]: {
-          ...state[p.macroId],
-          targetParamLinks: {
-            ...state[p.macroId].targetParamLinks,
-            [p.paramId]: {
-              ...state[p.macroId].targetParamLinks[p.paramId],
-              startValue: p.value,
-            },
-          },
-        },
-      }
+      // intentionally mutating state here
+      state[p.macroId].targetParamLinks[p.paramId].startValue = p.value
+      return state
     }
 
     /* input links */
