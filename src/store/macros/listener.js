@@ -10,7 +10,7 @@ import macroInterpolate from '../../utils/macroInterpolate'
 import isInputTypeHuman from '../../utils/isInputTypeHuman'
 import { rNodeCreate, nodeValueUpdate, uNodeDelete, rNodeConnectedMacroAdd,
   rNodeConnectedMacroRemove, nodeValuesBatchUpdate, rNodeMacroTargetParamLinkCreate,
-  rNodeMacroTargetParamLinkDelete, rNodeMacroTargetParamLinkUpdateStartValue,
+  rNodeMacroTargetParamLinkDelete,
 } from '../nodes/actions'
 import { rMacroAdd, rMacroDelete, uMacroTargetParamLinkAdd, rMacroLearningToggle,
   rMacroUpdateLastId, rMacroOpenToggle, rMacroClose,
