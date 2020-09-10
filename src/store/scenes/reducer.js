@@ -16,14 +16,11 @@ const scenesReducer = (state = defaultState, action) => {
 
   switch (action.type) {
     case 'R_SCENE_SELECT_CHANNEL': {
-      const otherChannel = p.channel === 'A' ? 'B' : 'A'
-      const otherChannelId = state.channels[otherChannel]
       return {
         ...state,
         channels: {
           ...state.channels,
           [p.channel]: p.id,
-          [otherChannel]: otherChannelId === p.id ? false : otherChannelId,
         },
       }
     }
@@ -112,6 +109,21 @@ const scenesReducer = (state = defaultState, action) => {
           [p.id]: {
             ...state.items[p.id],
             selectedSketchId: p.sketchId,
+          },
+        },
+      }
+    }
+    case 'R_SCENE_SETTINGS_UPDATE': {
+      return {
+        ...state,
+        items: {
+          ...state.items,
+          [p.id]: {
+            ...state.items[p.id],
+            settings: {
+              ...state.items[p.id].settings,
+              ...p.settings,
+            },
           },
         },
       }

@@ -7,6 +7,10 @@ const defaultState = {
     value: 0,
     assignedLinkIds: [],
   },
+  texture: {
+    value: null,
+    assignedLinkIds: [],
+  },
 }
 
 const inputsReducer = (state = defaultState, action) => {

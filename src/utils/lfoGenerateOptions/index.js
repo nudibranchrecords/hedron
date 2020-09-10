@@ -1,13 +1,17 @@
 import uid from 'uid'
+import { getType } from '../../valueTypes'
 
-export default () => {
+export default (nodeValueType) => {
+  // Get node valueType related options
+  const extraOptions = getType(nodeValueType).getExtraInputOptions('lfo')
+
   return [
     {
       title: 'Shape',
       id: uid(),
       key: 'shape',
       value: 'sine',
-      type: 'select',
+      valueType: 'enum',
       inputLinkIds: [],
       subNode: true,
       options: [
@@ -42,7 +46,7 @@ export default () => {
       id: uid(),
       key: 'rate',
       value: 1,
-      type: 'select',
+      valueType: 'enum',
       inputLinkIds: [],
       subNode: true,
       options: [
@@ -96,6 +100,7 @@ export default () => {
       title: 'Phase',
       id: uid(),
       key: 'phase',
+      valueType: 'float',
       value: 0,
       inputLinkIds: [],
       subNode: true,
@@ -105,7 +110,7 @@ export default () => {
       id: uid(),
       key: 'seed',
       value: -1,
-      type: 'select',
+      valueType: 'enum',
       inputLinkIds: [],
       subNode: true,
       options: (() => {
@@ -119,5 +124,6 @@ export default () => {
         return options
       })(),
     },
+    ...extraOptions,
   ]
 }

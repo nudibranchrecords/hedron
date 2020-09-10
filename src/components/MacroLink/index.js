@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import ParamBar from '../../containers/ParamBar'
+import Control from '../../containers/Control'
 import styled from 'styled-components'
 import SubNode from '../SubNode'
 import Row from '../Row'
@@ -26,7 +26,7 @@ const MacroLink = (
   <SubNode nodeId={nodeId} title={title} noInfo>
     <Row>
       <BarCol>
-        <ParamBar nodeId={nodeId} />
+        <Control nodeId={nodeId} />
       </BarCol>
       <ButtonCol>
         <span onClick={onDeleteClick}>&times;</span>

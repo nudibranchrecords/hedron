@@ -17,6 +17,7 @@ export default (store) => {
 
       bands = input.update(state.settings)
       store.dispatch(inputFired('audio', bands, { type: 'audio' }))
+      store.dispatch(inputFired('texture', input.texture, { type: 'texture' }))
     }, 30)
   }
 

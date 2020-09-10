@@ -3,7 +3,6 @@ const defaultState = {
   clockBpm: 120,
   aspectW: 16,
   aspectH: 9,
-  antialias: false,
   throttledFPS: 60,
   watchSketchesDir: true,
   generateAudioTexture: false,

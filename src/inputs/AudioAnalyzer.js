@@ -1,7 +1,7 @@
 import * as THREE from 'three'
 
 export class AudioAnalyzer {
-  constructor (stream) {
+  constructor(stream) {
     const context = new window.AudioContext()
     const source = context.createMediaStreamSource(stream)
 
@@ -56,11 +56,11 @@ export class AudioAnalyzer {
     this.texture.magFilter = this.texture.minFilter = THREE.LinearFilter
   }
 
-  lerp (v0, v1, t) {
+  lerp(v0, v1, t) {
     return (1 - t) * v0 + t * v1
   }
 
-  update ({ computeFullSpectrum, generateAudioTexture }) {
+  update({ computeFullSpectrum, generateAudioTexture }) {
     this.analyser.getByteFrequencyData(this.freqs)
     this.processBands()
     if (computeFullSpectrum) {
@@ -69,7 +69,7 @@ export class AudioAnalyzer {
     return this.levelsData
   }
 
-  processFullSpectrum (generateAudioTexture) {
+  processFullSpectrum(generateAudioTexture) {
     for (let i = 0; i < this.freqs.length; i++) {
       let freq = this.freqs[i] / 256
       freq = Math.max(freq, Math.max(0, this.fullCleanLevelsData[i] - this.levelsFalloff))
@@ -99,7 +99,7 @@ export class AudioAnalyzer {
     }
   }
 
-  processBands () {
+  processBands() {
     for (let i = 0; i < this.numBands; i++) {
       let sum = 0
 

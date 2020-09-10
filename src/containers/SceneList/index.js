@@ -1,7 +1,7 @@
 import { connect } from 'react-redux'
 import SceneList from '../../components/SceneList'
 import getScenes from '../../selectors/getScenes'
-import { uSceneCreate, rScenesReorder } from '../../store/scenes/actions'
+import { uSceneCreate, uScenesReorder } from '../../store/scenes/actions'
 
 const mapStateToProps = (state, ownProps) => (
   {
@@ -15,12 +15,16 @@ const mapDispatchToProps = (dispatch, ownProps) => (
       dispatch(uSceneCreate())
     },
     onSortEnd: (oldIndex, newIndex) => {
-      dispatch(rScenesReorder(oldIndex, newIndex))
+      dispatch(uScenesReorder(oldIndex, newIndex))
     },
   }
 )
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps
+  mapDispatchToProps,
+  null,
+  {
+    areStatesEqual: (next, prev) => next.scenes === prev.scenes,
+  }
 )(SceneList)

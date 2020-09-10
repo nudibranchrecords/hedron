@@ -7,7 +7,7 @@ import Crossfader from '../../containers/Crossfader'
 import AudioAnalyzer from '../../containers/AudioAnalyzer'
 import Clock from '../../containers/Clock'
 import SceneManager from '../../containers/SceneManager'
-import Devices from '../../containers/Devices'
+import ConnectedDevices from '../../containers/ConnectedDevices'
 import Node from '../../containers/Node'
 import OverviewPropertiesPanel from '../../containers/OverviewPropertiesPanel'
 import theme from '../../utils/theme'
@@ -72,7 +72,7 @@ class Overview extends React.Component {
             <SceneManager />
           </Top>
           <Bottom>
-            <Devices />
+            <ConnectedDevices />
             <ProjectDetails />
           </Bottom>
         </Scroller>

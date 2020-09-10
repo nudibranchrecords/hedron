@@ -24,6 +24,11 @@ const Main = styled.div`
   margin-top: 1rem;
 `
 
+const SketchesPath = styled.p`
+  margin-top: 1rem;
+  user-select: text;
+`
+
 const SketchItems = ({ subcategories, items, onAddClick }) => (
   <Main>
     {(subcategories !== undefined) && subcategories.map(category =>
@@ -60,10 +65,10 @@ const AddSketch = ({ items, hasSketches, onAddClick, onChooseFolderClick, sketch
       </Category>
     )}
 
-    {!hasSketches && <p>You haven't chosen the sketch folder for the project yet.</p>}
-    <Button onClick={onChooseFolderClick}>Choose Sketch Folder</Button>
-    <br />
-    {sketchesPath}
+    {!hasSketches && <p>You haven't chosen the sketches folder for the project yet.</p>}
+    <Button onClick={onChooseFolderClick}>Choose Sketches Folder</Button>
+    <SketchesPath>{sketchesPath}</SketchesPath>
+
   </React.Fragment>
 )
 
