@@ -24,7 +24,7 @@ fix(data => {
 
     // We now have valueType, default is "float"
     const becomeFloat = ['param', 'macro', 'macroTargetParamLink']
-    if (!node.valueType && becomeFloat.includes(node.type)) {
+    if (!node.valueType && (becomeFloat.includes(node.type) || node.subNode === true)) {
       console.log(`${node.id}: ${node.type} set to "float" valueType by default`)
       node.valueType = 'float'
     }
