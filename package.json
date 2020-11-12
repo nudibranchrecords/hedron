@@ -89,7 +89,6 @@
     "redux-debounce": "^1.0.1",
     "redux-form": "^8.2.6",
     "redux-ignore": "^1.2.4",
-    "redux-saga": "^0.16.0",
     "reselect": "^4.0.0",
     "source-map-support": "^0.5.16",
     "stats.js": "^0.17.0",

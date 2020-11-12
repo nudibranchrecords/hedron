@@ -46,7 +46,21 @@ const uiReducer = (state = defaultState, action) => {
           : newEditing,
       }
     }
-    case 'UI_EDITING_CLOSE':
+    case 'UI_EDITING_CLOSE': {
+      const closing = {
+        id: p.id,
+        type: p.type,
+      }
+
+      if (!p.id || !p.type || _.isEqual(state.isEditing, closing)) {
+        return {
+          ...state,
+          isEditing: false,
+        }
+      } else {
+        return state
+      }
+    }
     case LOCATION_CHANGE:
     {
       return {
