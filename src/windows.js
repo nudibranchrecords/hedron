@@ -3,10 +3,10 @@ import { remote, ipcRenderer } from 'electron'
 import { displaysListUpdate } from './store/displays/actions'
 let store
 
-const { screen } = remote
+const eScreen = remote.screen
 
 const updateDisplays = () => {
-  const displays = screen.getAllDisplays()
+  const displays = eScreen.getAllDisplays()
   ipcRenderer.send('update-displays', displays)
   store.dispatch(displaysListUpdate(displays))
 }
@@ -16,12 +16,12 @@ export const initiateScreens = (injectedStore) => {
   updateDisplays()
 }
 
-screen.on('display-added', updateDisplays)
-screen.on('display-removed', updateDisplays)
-screen.on('display-metrics-changed', updateDisplays)
+eScreen.on('display-added', updateDisplays)
+eScreen.on('display-removed', updateDisplays)
+eScreen.on('display-metrics-changed', updateDisplays)
 
 export const sendOutput = (index) => {
-  const display = screen.getAllDisplays()[index]
+  const display = eScreen.getAllDisplays()[index]
 
   let outputWin = window.open('', 'modal')
 
