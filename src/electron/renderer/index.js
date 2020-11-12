@@ -9,9 +9,7 @@ import { ConnectedRouter, routerMiddleware } from 'connected-react-router'
 import listen from 'redux-action-listeners'
 import history from '../../history'
 import { composeWithDevTools } from 'redux-devtools-extension'
-import createSagaMiddleware from 'redux-saga'
 import { batchedSubscribe } from 'redux-batched-subscribe'
-import rootSaga from '../../store/rootSaga'
 import rootReducer from '../../store/rootReducer'
 import rootListener from '../../store/rootListener'
 import App from '../../containers/App'
@@ -30,6 +28,7 @@ import initiateAudio from '../../inputs/AudioInput'
 import initiateMidi from '../../inputs/MidiInput'
 import initiateGeneratedClock from '../../inputs/GeneratedClock'
 import debounce from 'lodash/debounce'
+import { initiateClock } from '../../clock'
 
 const isDevelopment = process.env.NODE_ENV !== 'production'
 const devConfig = tryRequire('../../config/dev.config')
@@ -44,7 +43,7 @@ if (process.env.NODE_ENV !== 'development') {
 } else {
   composeEnhancers = composeWithDevTools({
     actionsBlacklist: [
-      'CLOCK_PULSE', 'CLOCK_BEAT_INC', 'CLOCK_BPM_UPDATE', 'INPUT_FIRED',
+      'CLOCK_BEAT_INC', 'CLOCK_BPM_UPDATE', 'INPUT_FIRED',
       'NODE_VALUE_UPDATE', 'NODE_RANGE_UPDATE', 'NODE_SHOT_ARM', 'NODE_SHOT_DISARM', 'NODE_SHOT_FIRED',
       'NODE_VALUES_BATCH_UPDATE',
     ],
@@ -54,19 +53,14 @@ if (process.env.NODE_ENV !== 'development') {
 
 const debounceNotify = debounce(notify => notify())
 
-const sagaMiddleware = createSagaMiddleware()
-
 const store = createStore(rootReducer, composeEnhancers(
   applyMiddleware(
     routerMiddleware(history),
     createDebounce(),
-    sagaMiddleware,
     listen(rootListener)
   ),
   batchedSubscribe(debounceNotify)
 ))
-
-sagaMiddleware.run(rootSaga, store.dispatch)
 
 setCoreState(store)
 
@@ -95,6 +89,7 @@ initiateAudio(store)
 initiateMidi(store)
 initiateGeneratedClock(store)
 initiateScreens(store)
+initiateClock(store)
 
 engine.run(store, stats)
 
