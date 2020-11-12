@@ -23,6 +23,7 @@ export const createMainWindow = () => {
   mainWindow = new BrowserWindow({
     fullscreenable: true,
     webPreferences: {
+      enableRemoteModule: true,
       nodeIntegration: true,
       nativeWindowOpen: true,
       webSecurity: false,
@@ -90,13 +91,6 @@ export const createMainWindow = () => {
     mainWindow.webContents.send('window-show')
   })
 
-  mainWindow.webContents.send('devtools-opened', () => {
-    mainWindow.focus()
-    setImmediate(() => {
-      mainWindow.focus()
-    })
-  })
-
   // Open anchor tag links in new browser window
   mainWindow.webContents.on('will-navigate', (event, url) => {
     // Don't do anything if "localhost" as this is most likely
@@ -107,9 +101,9 @@ export const createMainWindow = () => {
     shell.openExternal(url)
   })
 
-  setTimeout(() => {
-    mainWindow.webContents.send('args', argv)
-  }, 2000)
+  // setTimeout(() => {
+  //   mainWindow.webContents.send('args', argv)
+  // }, 2000)
 
   return mainWindow
 }
