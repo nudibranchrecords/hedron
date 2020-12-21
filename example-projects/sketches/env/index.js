@@ -5,7 +5,15 @@ class Env {
     this.scene = scene
     this.clearColor = new THREE.Color()
     this.fog = new THREE.FogExp2()
+    this.ambientLight = new THREE.AmbientLight(0xffffff, 0.5)
+    this.directionalLight = new THREE.DirectionalLight(0xffffff, 1)
+    this.directionalLight.position.set(0.5, 0.5, 0.5)
+
+    this.root = new THREE.Group()
+
     scene.fog = this.fog
+    this.root.add(this.directionalLight)
+    this.root.add(this.ambientLight)
   }
 
   update ({ params: p }) {

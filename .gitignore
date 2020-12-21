@@ -4,3 +4,4 @@ node_modules
 dist
 config/dev.config.js
 static/globalVars
+*.blend1

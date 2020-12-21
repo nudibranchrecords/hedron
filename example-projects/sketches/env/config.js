@@ -22,5 +22,15 @@ module.exports = {
       title: 'Fog Density',
       defaultValue: 0,
     },
+    {
+      key: 'ambientLightIntensity',
+      title: 'Ambient Light Intensity',
+      defaultValue: 0.5,
+    },
+    {
+      key: 'directionalLightIntensity',
+      title: 'Directional Light Intensity',
+      defaultValue: 0.5,
+    },
   ],
 }
