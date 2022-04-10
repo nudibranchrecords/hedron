@@ -138,7 +138,7 @@
     "jest": "^24.1.0",
     "jsdom": "^11.5.1",
     "jsdom-global": "^3.0.2",
-    "minimist": "^1.2.3",
+    "minimist": "^1.2.6",
     "redux-debounced": "^0.4.0",
     "redux-devtools-extension": "^2.13.7",
     "sinon": "^2.1.0",
