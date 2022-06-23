@@ -136,7 +136,7 @@
     "eslint-plugin-react": "^6.10.0",
     "eslint-plugin-standard": "^2.0.1",
     "jest": "^24.1.0",
-    "jsdom": "^11.5.1",
+    "jsdom": "^16.5.0",
     "jsdom-global": "^3.0.2",
     "minimist": "^1.2.3",
     "redux-debounced": "^0.4.0",
