@@ -43,7 +43,7 @@ const ActionButton = (props) => (
 const SceneManager = (
   {
     currentScene, onDeleteClick, onRenameClick, onChannelClick,
-    onClearClick, onActiveClick, onOppositeClick,
+    onClearClick, onActiveClick, onOppositeClick, onRandomClick
   }
 ) => {
   const la = currentScene && currentScene.linkableActionIds
@@ -97,6 +97,15 @@ const SceneManager = (
             Clear
           </ActionButton>
 
+            <ActionButton
+              onClick={() => { onRandomClick(currentScene.id) }}
+              linkableActionId={la.randomize}
+              panelId='overview'
+            >
+              Randomize
+            </ActionButton>
+
+
           <Col>
             <Button
               onClick={e => {
@@ -124,6 +133,7 @@ SceneManager.propTypes = {
   onClearClick: PropTypes.func.isRequired,
   onActiveClick: PropTypes.func.isRequired,
   onOppositeClick: PropTypes.func.isRequired,
+  onRandomClick: PropTypes.func.isRequired,
 }
 
 export default SceneManager

@@ -161,6 +161,18 @@ const handleSceneSettingsUpdate = (action, store) => {
   setPostProcessing()
 }
 
+const handleSceneRandomize = (action, store) => {
+  const p = action.payload
+  const scene = store.getState().scenes.items[p.id]
+  if (!scene) {
+    console.warn('Scene not found, skipping randomize', p.id)
+    return
+  }
+  scene.sketchIds.forEach(sketchId => {
+    engine.fireShot(sketchId, 'randomize')
+  });
+}
+
 export default (action, store) => {
   switch (action.type) {
     case 'U_SCENE_CREATE':
@@ -189,6 +201,9 @@ export default (action, store) => {
       break
     case 'SCENE_CLEAR_CHANNEL':
       handleSceneClearChannel(action, store)
+      break
+    case 'U_SCENE_RANDOMIZE':
+      handleSceneRandomize(action, store)
       break
   }
 }

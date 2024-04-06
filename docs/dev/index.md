@@ -123,10 +123,13 @@ This is the main file for the sketch. Essentially, it's a Javascript class, with
   - `allParams` - A key/value pair of all the sketches in the scene, aech with their own key/value pair of params
   - `outputSize` - An object with `width` and `height` properties that match the image output resolution
 - `destructor` - Fires when a sketch is removed. Use this to clean up anything that may continue to run afterwards. Not usually needed. Has the same argument object as the construtor, except for the `params` property.
+  `randomize` - If a function exists, and is setup as a [shot](#shots) in the config, it will be called when a scenes `Randomize` button is clicked or triggered.
 
 ### Shots
 Any custom method in your sketch class can be defined as a shot in the config. Shot methods have a single object literal as an argument, with the following properties:
 - `params` - A key/value pair of all the params in the sketch
+
+Shots can optionally return a partial key/value pair of sketch params, where the values are normalized 0-1. Doing so will apply that value to the slider.
 
 ### Global HEDRON variable
 Hedron provides a single global variable with some useful libraries to make use of.

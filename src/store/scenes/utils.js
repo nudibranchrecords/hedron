@@ -1,5 +1,5 @@
 import uid from 'uid'
-import { uSceneSelectChannel, sceneClearChannel } from './actions'
+import { uSceneSelectChannel, sceneClearChannel, uSceneRandomize } from './actions'
 
 export const generateSceneLinkableActionIds = id => ({
   addToA: {
@@ -26,5 +26,10 @@ export const generateSceneLinkableActionIds = id => ({
     action: sceneClearChannel(id),
     id: uid(),
     title: 'Clear',
+  },
+  randomize: {
+    action: uSceneRandomize(id),
+    id: uid(),
+    title: 'Call Randomize',
   },
 })

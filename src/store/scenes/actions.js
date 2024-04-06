@@ -53,6 +53,11 @@ export function sceneRename (id, title) {
   }
 }
 
+export const uSceneRandomize = (id) => ({
+  type: 'U_SCENE_RANDOMIZE',
+  payload: { id },
+})
+
 export function uSceneDelete (id) {
   return {
     type: 'U_SCENE_DELETE',
