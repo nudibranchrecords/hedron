@@ -1,13 +1,3 @@
-export function uNodeCreate (id, node) {
-  return {
-    type: 'U_NODE_CREATE',
-    payload: {
-      id,
-      node,
-    },
-  }
-}
-
 export function rNodeCreate (id, node) {
   return {
     type: 'R_NODE_CREATE',
@@ -217,13 +207,6 @@ export function rNodeMacroTargetParamLinkDelete (macroId, paramId) {
   return {
     type: 'R_NODE_MACRO_TARGET_PARAM_LINK_DELETE',
     payload: { macroId, paramId },
-  }
-}
-
-export function rNodeMacroTargetParamLinkUpdateStartValue (macroId, paramId, value) {
-  return {
-    type: 'R_NODE_MACRO_TARGET_PARAM_LINK_UPDATE_START_VALUE',
-    payload: { macroId, paramId, value },
   }
 }
 

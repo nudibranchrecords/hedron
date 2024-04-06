@@ -19,7 +19,7 @@ const clockReducer = (state = defaultState, action) => {
       state.bpm = p.bpm
       return state
     }
-    case 'CLOCK_RESET': {
+    case 'R_CLOCK_RESET': {
       // Purposefully mutating state
       state.beat = 0
       return state

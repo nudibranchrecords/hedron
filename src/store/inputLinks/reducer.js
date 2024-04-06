@@ -10,13 +10,13 @@ const inputLinkReducer = (state = defaultState, action) => {
     case 'R_INPUT_LINK_ADD': {
       return {
         ...state,
-        nodeIds: _.union(state.nodeIds, [p.nodeId]),
+        nodeIds: _.union(state.nodeIds, [p.id]),
       }
     }
     case 'R_INPUT_LINK_DELETE': {
       return {
         ...state,
-        nodeIds: state.nodeIds.filter(item => item !== p.nodeId),
+        nodeIds: state.nodeIds.filter(item => item !== p.id),
       }
     }
     case 'INPUT_LINKS_REPLACE_ALL': {

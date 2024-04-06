@@ -1,10 +1,10 @@
 import { inputFired } from '../store/inputs/actions'
 import { midiStopLearning, midiUpdateDevices, midiMessage } from '../store/midi/actions'
 import { uInputLinkCreate } from '../store/inputLinks/actions'
-import { clockPulse } from '../store/clock/actions'
 import { newData as teachMidi } from '../utils/getMidiMode'
 import { processMidiData } from '../utils/midiMessage'
 import getConnectedDevice from '../selectors/getConnectedDevice'
+import { clockUpdate } from '../clock'
 
 let store, midiAccess
 
@@ -60,9 +60,9 @@ const onMessage = (rawMessage) => {
     }
   // If no note data, treat as clock
   } else if (m.messageType === 'timingClock') {
-    // Only dispatch clock pulse if no generated clock
+    // Only do clock pulse if no generated clock
     if (!state.clock.isGenerated) {
-      store.dispatch(clockPulse())
+      clockUpdate()
     }
   }
 }

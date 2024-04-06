@@ -31,7 +31,7 @@ test('(Reducer) clockReducer -  - Increases beat on CLOCK_BEAT_INC', (t) => {
   t.end()
 })
 
-test('(Reducer) clockReducer - resets beat on CLOCK_RESET', (t) => {
+test('(Reducer) clockReducer - resets beat on R_CLOCK_RESET', (t) => {
   let originalState, expectedState, actualState
 
   originalState = {
@@ -42,7 +42,7 @@ test('(Reducer) clockReducer - resets beat on CLOCK_RESET', (t) => {
     beat: 0,
   }
 
-  actualState = paramsReducer(originalState, a.clockReset())
+  actualState = paramsReducer(originalState, a.rClockReset())
 
   t.deepEqual(actualState, expectedState)
 
