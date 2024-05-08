@@ -25,6 +25,7 @@ export const createMainWindow = () => {
     webPreferences: {
       enableRemoteModule: true,
       nodeIntegration: true,
+      contextIsolation: false,
       nativeWindowOpen: true,
       webSecurity: false,
     },
@@ -34,6 +35,8 @@ export const createMainWindow = () => {
     icon: isDevelopment && path.join(__dirname, '../../../build/icon.png'),
     ...dimensions,
   })
+
+  require('@electron/remote/main').enable(mainWindow.webContents)
 
   mainWindow.webContents.on('new-window', (event, url, frameName, disposition, options, additionalFeatures) => {
     if (frameName === 'modal') {

@@ -4,7 +4,8 @@ import OverlayModal from '../OverlayModal'
 import styled from 'styled-components'
 import logo from '../../../build/icon.png'
 
-const { app } = require('electron').remote
+const remote = require('@electron/remote')
+const app = remote.app
 const isDevelopment = process.env.NODE_ENV !== 'production'
 const vNum = app.getVersion()
 

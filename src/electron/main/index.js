@@ -5,6 +5,8 @@ const isDevelopment = process.env.NODE_ENV !== 'production'
 
 // Create main BrowserWindow when electron is ready
 app.on('ready', () => {
+  require('@electron/remote/main').initialize()
+
   updateMenu()
   createMainWindow()
   if (isDevelopment) {

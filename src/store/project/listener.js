@@ -8,7 +8,6 @@ import { projectLoadSuccess, projectRehydrate,
 } from './actions'
 import { uSceneCreate } from '../scenes/actions'
 import history from '../../history'
-import { remote } from 'electron'
 import { processDevices } from '../../inputs/MidiInput'
 import { loadSketchModules, initiateScenes } from '../../engine'
 import getSketchesPath from '../../selectors/getSketchesPath'
@@ -19,8 +18,10 @@ const fileFilters = [
   { name: 'JSON', extensions: ['json'] },
 ]
 
+const { dialog } = require('@electron/remote')
+
 const saveAsProject = async (action, store) => {
-  const { filePath } = await remote.dialog.showSaveDialog({ filters: fileFilters })
+  const { filePath } = await dialog.showSaveDialog({ filters: fileFilters })
 
   if (filePath) {
     store.dispatch(projectFilepathUpdate(filePath))
@@ -46,7 +47,7 @@ const saveProject = async (action, store) => {
 
 const loadProject = async (action, store) => {
   try {
-    const result = await remote.dialog.showOpenDialog({ filters: fileFilters })
+    const result = await dialog.showOpenDialog({ filters: fileFilters })
     const filePath = result.filePaths[0]
     if (filePath) {
       store.dispatch(projectFilepathUpdate(filePath))
@@ -97,7 +98,7 @@ const chooseSketchesFolder = async (action, store) => {
   const state = store.getState()
 
   const sceneId = getCurrentSceneId(state)
-  const result = await remote.dialog.showOpenDialog({
+  const result = await dialog.showOpenDialog({
     properties: ['openDirectory'],
   })
 
