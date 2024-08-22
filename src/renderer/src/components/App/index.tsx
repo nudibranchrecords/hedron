@@ -1,7 +1,7 @@
-import classes from './style.module.css'
+import c from './styles.module.css'
 
 function App(): JSX.Element {
-  return <div className={classes.wrapper}></div>
+  return <div className={c.wrapper}></div>
 }
 
 export default App
