@@ -26,6 +26,7 @@
     "electron-updater": "^6.1.7",
     "postprocessing": "^6.36.0",
     "three": "^0.167.1",
+    "uid": "^2.0.2",
     "zustand": "^4.5.5"
   },
   "devDependencies": {
