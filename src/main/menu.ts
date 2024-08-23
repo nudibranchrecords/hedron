@@ -1,5 +1,5 @@
 import { Display, Menu, ipcMain } from 'electron'
-// import { mainWindow } from './mainWindow'
+import { getMainWindow, mainWindow } from '.'
 
 const onClick = (...args) => {
   mainWindow.webContents.send('app-menu-click', ...args)
@@ -87,7 +87,7 @@ export const updateDisplayMenu = (displays: Display[]): void => {
     return {
       label: `${display.label} (${w}x${h})`,
       click: () => {
-        mainWindow.webContents.send('send-output', index)
+        getMainWindow().webContents.send('send-output', index)
       },
     }
   })

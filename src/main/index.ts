@@ -1,13 +1,20 @@
-import { app, shell, BrowserWindow, ipcMain } from 'electron'
+import { app, shell, BrowserWindow, ipcMain, screen } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
-import { updateMenu } from './menu'
-import { initiateScreens } from './windows'
+import { updateDisplayMenu, updateMenu } from './menu'
+
+export let mainWindow: BrowserWindow | undefined
+
+export const getMainWindow = (): BrowserWindow => {
+  if (!mainWindow) throw new Error("Can't get main window")
+
+  return mainWindow
+}
 
 function createWindow(): void {
   // Create the browser window.
-  const mainWindow = new BrowserWindow({
+  mainWindow = new BrowserWindow({
     width: 900,
     height: 670,
     show: false,
@@ -20,12 +27,7 @@ function createWindow(): void {
   })
 
   mainWindow.on('ready-to-show', () => {
-    mainWindow.show()
-  })
-
-  mainWindow.webContents.setWindowOpenHandler((details) => {
-    shell.openExternal(details.url)
-    return { action: 'deny' }
+    mainWindow?.show()
   })
 
   // HMR for renderer base on electron-vite cli.
@@ -64,6 +66,21 @@ app.whenReady().then(() => {
     if (BrowserWindow.getAllWindows().length === 0) createWindow()
   })
 })
+
+const updateDisplays = (): void => {
+  const displays = screen.getAllDisplays()
+  updateDisplayMenu(displays)
+  // ipcMain.send('update-displays', displays)
+  // store.dispatch(displaysListUpdate(displays))
+}
+
+export const initiateScreens = (): void => {
+  updateDisplays()
+
+  screen.on('display-added', updateDisplays)
+  screen.on('display-removed', updateDisplays)
+  screen.on('display-metrics-changed', updateDisplays)
+}
 
 // Quit when all windows are closed, except on macOS. There, it's common
 // for applications and their menu bar to stay active until the user quits

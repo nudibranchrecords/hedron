@@ -70,6 +70,10 @@ export const setSize = (): void => {
   viewerEl.style.paddingBottom = perc + '%'
 }
 
+export const setOutput = (win: Window): void => {}
+
+export const stopOutput = () => {}
+
 export const render = ({ scene, camera }: EngineScene): void => {
   if (!renderer) return
 
