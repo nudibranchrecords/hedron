@@ -1,6 +1,6 @@
 import { uid } from 'uid'
 import { EngineScene } from './EngineScene'
-import { BoxGeometry, Mesh, MeshBasicMaterial } from 'three'
+import { BoxGeometry, Mesh, MeshBasicMaterial, MeshNormalMaterial } from 'three'
 import { render } from './renderer'
 
 export const engineScenes = new Map<string, EngineScene>()
@@ -20,11 +20,9 @@ export const createDebugScene = (): void => {
   const id = uid()
   const scene = addScene(id)
   const geom = new BoxGeometry(1, 1, 1)
-  const mat = new MeshBasicMaterial({ color: 0x00ff00 })
+  const mat = new MeshNormalMaterial()
   const mesh = new Mesh(geom, mat)
-
   scene.scene.add(mesh)
-  scene.setRatio(0.5)
 
   debugScene = scene
 
@@ -36,8 +34,12 @@ export const run = (): void => {
 
   const loop = (): void => {
     requestAnimationFrame(loop)
-    console.log(debugScene)
-    if (debugScene) render(debugScene)
+    if (debugScene) {
+      const cube = debugScene.scene.children[0]
+      cube.rotation.x += 0.1
+      cube.rotation.y += 0.1
+      render(debugScene)
+    }
   }
 
   loop()
