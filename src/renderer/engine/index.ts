@@ -1,20 +1,14 @@
 import { uid } from 'uid'
 import { EngineScene } from './EngineScene'
-import {
-  BoxGeometry,
-  IcosahedronGeometry,
-  Mesh,
-  MeshBasicMaterial,
-  MeshNormalMaterial,
-} from 'three'
+import { BoxGeometry, Mesh, MeshBasicMaterial } from 'three'
 import { render } from './renderer'
 
-export const scenes = new Map<string, EngineScene>()
+export const engineScenes = new Map<string, EngineScene>()
 let debugScene: EngineScene | undefined
 
 export const addScene = (sceneId: string): EngineScene => {
   const newScene = new EngineScene()
-  scenes.set(sceneId, newScene)
+  engineScenes.set(sceneId, newScene)
 
   // renderer.setSize()
   // if (shouldSetPost) renderer.setPostProcessing()
