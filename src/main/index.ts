@@ -2,6 +2,8 @@ import { app, shell, BrowserWindow, ipcMain } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
+import { updateMenu } from './menu'
+import { initiateScreens } from './windows'
 
 function createWindow(): void {
   // Create the browser window.
@@ -13,8 +15,8 @@ function createWindow(): void {
     ...(process.platform === 'linux' ? { icon } : {}),
     webPreferences: {
       preload: join(__dirname, '../preload/index.js'),
-      sandbox: false
-    }
+      sandbox: false,
+    },
   })
 
   mainWindow.on('ready-to-show', () => {
@@ -39,6 +41,8 @@ function createWindow(): void {
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.whenReady().then(() => {
+  updateMenu()
+  initiateScreens()
   // Set app user model id for windows
   electronApp.setAppUserModelId('com.electron')
 
