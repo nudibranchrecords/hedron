@@ -1,14 +1,14 @@
+import { Viewer } from '../Viewer'
 import c from './styles.module.css'
 
-function App(): JSX.Element {
+export const App = (): JSX.Element => {
   return (
     <div className={c.wrapper}>
       <div className={c.left}>
+        <Viewer />
         {/* <Overview stats={stats} />
       <PanelDragger onHandleDrag={onLeftDrag} position={leftWidth} /> */}
       </div>
     </div>
   )
 }
-
-export default App

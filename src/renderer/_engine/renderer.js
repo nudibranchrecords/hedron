@@ -1,5 +1,12 @@
 import * as THREE from 'three'
-import { EffectComposer, RenderPass, SavePass, TextureEffect, EffectPass, ClearPass } from 'postprocessing'
+import {
+  EffectComposer,
+  RenderPass,
+  SavePass,
+  TextureEffect,
+  EffectPass,
+  ClearPass,
+} from 'postprocessing'
 
 import getSketchParams from '../selectors/getSketchParams'
 
@@ -8,8 +15,17 @@ import * as engine from './'
 
 import getScenes from '../selectors/getScenes'
 
-let store, domEl, outputEl, viewerEl, isSendingOutput, rendererWidth, rendererHeight,
-  previewCanvas, previewContext, outputCanvas, outputContext
+let store,
+  domEl,
+  outputEl,
+  viewerEl,
+  isSendingOutput,
+  rendererWidth,
+  rendererHeight,
+  previewCanvas,
+  previewContext,
+  outputCanvas,
+  outputContext
 
 let blendOpacity
 let delta
@@ -17,8 +33,8 @@ let delta
 const renderScenes = new Map()
 
 const channelPasses = {
-  'A': [],
-  'B': [],
+  A: [],
+  B: [],
 }
 
 export let renderer, composer
@@ -46,7 +62,9 @@ export const setRenderer = () => {
 
 export const channelUpdate = (sceneId, c) => {
   // Disable previous passes in channel
-  channelPasses[c].forEach(pass => { pass.enabled = false })
+  channelPasses[c].forEach((pass) => {
+    pass.enabled = false
+  })
   channelPasses[c] = []
 
   if (!sceneId) {
@@ -58,7 +76,9 @@ export const channelUpdate = (sceneId, c) => {
 
   // Set new passes for the channel and enable them
   channelPasses[c] = renderScene.passes
-  renderScene.passes.forEach(pass => { pass.enabled = true })
+  renderScene.passes.forEach((pass) => {
+    pass.enabled = true
+  })
 
   // Set output texture for the channel
   channelTextureEffect[c].uniforms.get('texture').value = renderScene.outputTexture
@@ -70,14 +90,16 @@ export const getSketchPasses = (state, sketchId, hedronScene) => {
   if (module.initiatePostProcessing) {
     const params = getSketchParams(state, sketchId)
 
-    return module.initiatePostProcessing({
-      scene: hedronScene.scene,
-      camera: hedronScene.camera,
-      params,
-      sketchesDir: `file://${engine.sketchesDir}`,
-      composer,
-      outputSize: size,
-    }) || []
+    return (
+      module.initiatePostProcessing({
+        scene: hedronScene.scene,
+        camera: hedronScene.camera,
+        params,
+        sketchesDir: `file://${engine.sketchesDir}`,
+        composer,
+        outputSize: size,
+      }) || []
+    )
   } else {
     return []
   }
@@ -117,10 +139,10 @@ export const setPostProcessing = () => {
   const globalPasses = []
 
   // Loop through all scenes and check for postprocessing
-  stateScenes.forEach(stateScene => {
+  stateScenes.forEach((stateScene) => {
     const hedronScene = engine.scenes[stateScene.id]
     const localPasses = []
-    stateScene.sketchIds.forEach(sketchId => {
+    stateScene.sketchIds.forEach((sketchId) => {
       const passes = getSketchPasses(state, sketchId, hedronScene)
       if (stateScene.settings.globalPostProcessingEnabled) {
         // If global, add to global passes list to be added to composer later
@@ -132,15 +154,12 @@ export const setPostProcessing = () => {
     })
 
     const renderScene = sceneRenderSetup(hedronScene, localPasses)
-    renderScene.passes.forEach(pass => {
+    renderScene.passes.forEach((pass) => {
       composer.addPass(pass)
       // Disable all passes (will be enabled if added to channel)
       pass.enabled = false
     })
-    renderScenes.set(
-      stateScene.id,
-      renderScene
-    )
+    renderScenes.set(stateScene.id, renderScene)
   })
 
   // Mix the two channels
@@ -150,7 +169,9 @@ export const setPostProcessing = () => {
 
   // Add global passes to composer and set last pass to render to the screen
   if (globalPasses.length) {
-    globalPasses.forEach(pass => { composer.addPass(pass) })
+    globalPasses.forEach((pass) => {
+      composer.addPass(pass)
+    })
     mixPass.renderToScreen = false
     globalPasses[globalPasses.length - 1].renderToScreen = true
   }
@@ -271,15 +292,21 @@ const renderChannels = (mixRatio) => {
 }
 
 const renderSingle = (disableChannel, mixRatio) => {
-  channelPasses[disableChannel].forEach(pass => { pass.enabled = false })
+  channelPasses[disableChannel].forEach((pass) => {
+    pass.enabled = false
+  })
 
   if (blendOpacity) blendOpacity.value = mixRatio
   composer.render(delta / 1000)
 }
 
 const renderLogic = (viewerMode, mixRatio) => {
-  channelPasses['A'].forEach(pass => { pass.enabled = true })
-  channelPasses['B'].forEach(pass => { pass.enabled = true })
+  channelPasses['A'].forEach((pass) => {
+    pass.enabled = true
+  })
+  channelPasses['B'].forEach((pass) => {
+    pass.enabled = true
+  })
 
   switch (viewerMode) {
     case 'A':
