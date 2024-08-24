@@ -11,19 +11,21 @@ let rendererWidth: number
 let outputEl: HTMLDivElement | undefined | null
 let previewCanvas: HTMLCanvasElement | undefined
 let outputCanvas: HTMLCanvasElement | undefined
-let domEl: HTMLCanvasElement | undefined
+let canvas: HTMLCanvasElement | undefined
 
-const isSendingOutput = false
+const canvasStyle = 'position: absolute; left: 0; top:0; height: 0; width:100%; height:100%;'
+
+let isSendingOutput = false
 
 export const createCanvas = (containerEl: HTMLDivElement): void => {
   renderer = new WebGLRenderer({
     antialias: false, // antialiasing should be handled by the composer
   })
 
-  domEl = renderer.domElement
+  canvas = renderer.domElement
 
   containerEl.innerHTML = ''
-  containerEl.appendChild(domEl)
+  containerEl.appendChild(canvas)
   viewerEl = containerEl
 
   setSize()
@@ -42,15 +44,15 @@ export const setSize = (): void => {
   let width: number, ratio: number
 
   if (isSendingOutput) {
+    if (!previewCanvas) throw new Error('previewCanvas not set')
+    if (!outputCanvas) throw new Error('outputCanvas not set')
     // Get width and ratio from output window
-    // width = outputEl.offsetWidth
-    // ratio = width / outputEl.offsetHeight
-    // previewCanvas.width = width
-    // previewCanvas.height = width / ratio
-    // outputCanvas.width = width
-    // outputCanvas.height = width / ratio
-    ratio = 1
-    width = 1
+    width = outputEl.offsetWidth
+    ratio = width / outputEl.offsetHeight
+    previewCanvas.width = width
+    previewCanvas.height = width / ratio
+    outputCanvas.width = width
+    outputCanvas.height = width / ratio
   } else {
     // Basic width and ratio if no output
     width = viewerEl.offsetWidth
@@ -80,28 +82,31 @@ export const setOutput = (win: Window): void => {
   stopOutput()
   const container = win.document.querySelector('div')
 
+  if (!container) throw new Error("Can't find container")
+  if (!canvas) throw new Error("Can't find canvas")
+
   rendererHeight = container.offsetWidth
   rendererWidth = container.offsetHeight
   outputEl = container
 
   // Move renderer canvas to new window
-  outputEl.appendChild(domEl)
-  domEl.setAttribute('style', '')
+  outputEl.appendChild(canvas)
+  canvas.setAttribute('style', '')
 
   // Setup output canvas
   // If preview and output are different, this canvas will be used and
   // renderer renders two different images, with images being copied from
   // the dom element to both preview and output canvases
   outputCanvas = document.createElement('canvas')
-  outputCanvas.style = 'position: absolute; left: 0; top:0; height: 0; width:100%; height:100%;'
-  outputContext = outputCanvas.getContext('2d')
+  // outputCanvas.setAttribute('style', canvasStyle)
+  // outputContext = outputCanvas.getContext('2d')
   outputEl.appendChild(outputCanvas)
 
   // Setup preview canvas in dom
   // Pixels will be copied from renderer dom element to this
   previewCanvas = document.createElement('canvas')
-  previewCanvas.style = 'position: absolute; left: 0; top:0; height: 0; width:100%; height:100%;'
-  previewContext = previewCanvas.getContext('2d')
+  // previewCanvas.setAttribute('style', canvasStyle)
+  // previewContext = previewCanvas.getContext('2d')
   viewerEl.appendChild(previewCanvas)
 
   isSendingOutput = true
