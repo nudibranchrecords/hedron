@@ -12,6 +12,7 @@ let outputContainer: HTMLDivElement | undefined | null
 let previewCanvas: HTMLCanvasElement | undefined
 let outputCanvas: HTMLCanvasElement | undefined
 let canvas: HTMLCanvasElement | undefined
+let previewContext: CanvasRenderingContext2D | undefined | null
 
 let isSendingOutput = false
 
@@ -104,7 +105,7 @@ export const setOutput = (win: Window): void => {
   // Setup preview canvas in dom
   // Pixels will be copied from renderer dom element to this
   previewCanvas = document.createElement('canvas')
-  // previewContext = previewCanvas.getContext('2d')
+  previewContext = previewCanvas.getContext('2d')
   viewerContainer.appendChild(previewCanvas)
 
   isSendingOutput = true
@@ -116,10 +117,20 @@ export const setOutput = (win: Window): void => {
   })
 }
 
-export const stopOutput = () => {}
+const copyPixels = (context: CanvasRenderingContext2D): void => {
+  if (!renderer) throw new Error("can't find renderer")
+  context.drawImage(renderer.domElement, 0, 0, rendererWidth, rendererHeight)
+}
+
+export const stopOutput = (): void => {}
 
 export const render = ({ scene, camera }: EngineScene): void => {
   if (!renderer) return
 
   renderer.render(scene, camera)
+
+  if (isSendingOutput) {
+    if (!previewContext) throw new Error('no preview context')
+    copyPixels(previewContext)
+  }
 }
