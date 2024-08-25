@@ -29,8 +29,12 @@ export const createDebugScene = (): void => {
   console.log(scene)
 }
 
-export const run = (): void => {
+export const run = (sketch): void => {
   createDebugScene()
+
+  if (debugScene) {
+    debugScene.scene.add(sketch.root)
+  }
 
   const loop = (): void => {
     requestAnimationFrame(loop)
