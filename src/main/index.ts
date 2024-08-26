@@ -4,6 +4,7 @@ import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 import { updateDisplayMenu, updateMenu } from './menu'
 import { loadFile, loadIndex } from './sketches'
+import { createSketchesServer } from './sketchesServer'
 
 export let mainWindow: BrowserWindow | undefined
 
@@ -57,15 +58,12 @@ app.whenReady().then(() => {
     optimizer.watchWindowShortcuts(window)
   })
 
-  // IPC test
-  ipcMain.on('ping', () => console.log('pong'))
-
   createWindow()
 
   setTimeout(() => {
-    const text = loadIndex('/Users/alex/Desktop/test-sketch')
+    const sketchesServerUrl = createSketchesServer()
 
-    getMainWindow().webContents.send('new-sketch', text)
+    getMainWindow().webContents.send('new-sketch', sketchesServerUrl)
   }, 1000)
 
   app.on('activate', function () {
