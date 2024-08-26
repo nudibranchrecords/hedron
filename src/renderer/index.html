@@ -6,7 +6,13 @@
     <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
     <meta
       http-equiv="Content-Security-Policy"
-      content="default-src 'self'; script-src * 'self' 'unsafe-eval' 'unsafe-inline' blob: data: gap:; style-src 'self' 'unsafe-inline'; img-src 'self' data:"
+      content="
+        default-src self;
+        connect-src * 'unsafe-inline';
+        script-src * 'unsafe-inline';
+        style-src self 'unsafe-inline';
+        img-src * 'unsafe-inline';
+      "
     />
   </head>
 

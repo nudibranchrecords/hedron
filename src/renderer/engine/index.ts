@@ -29,19 +29,26 @@ export const createDebugScene = (): void => {
   console.log(scene)
 }
 
-export const run = (sketch): void => {
+export const run = async (sketch): void => {
   createDebugScene()
 
-  if (debugScene) {
-    debugScene.scene.add(sketch.root)
-  }
+  const thing = await import('http://127.0.0.1:3000/test-sketch/index.js')
+
+  const testSketch = new thing.TestSketch()
+
+  // if (debugScene) {
+  //   debugScene.scene.add(sketch.root)
+  // }
 
   const loop = (): void => {
     requestAnimationFrame(loop)
     if (debugScene) {
-      const cube = debugScene.scene.children[0]
-      cube.rotation.x += 0.1
-      cube.rotation.y += 0.1
+      // const cube = debugScene.scene.children[0]
+      // cube.rotation.x += 0.1
+      // cube.rotation.y += 0.1
+
+      debugScene.scene.add(testSketch.root)
+
       render(debugScene)
     }
   }

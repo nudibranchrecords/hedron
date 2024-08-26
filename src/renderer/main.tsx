@@ -6,13 +6,14 @@ import { run } from './engine'
 import './windows'
 import './globalVars'
 
-window.electron.ipcRenderer.on('new-sketch', (e, code) => {
-  const test = import(`data:text/javascript,${code}`).then((s) => {
-    const sketch = new s.TestSketch({ sketchesDir: '/Users/alex/Desktop/' })
+run()
+// window.electron.ipcRenderer.on('new-sketch', async (e, code) => {
+//   const sketch = await import('public/test-sketch')
 
-    run(sketch)
-  })
-})
+//   console.log(sketch)
+
+//   run(sketch)
+// })
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
