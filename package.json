@@ -25,6 +25,7 @@
     "@electron-toolkit/utils": "^3.0.0",
     "cors": "^2.8.5",
     "electron-updater": "^6.1.7",
+    "esbuild": "^0.23.1",
     "express": "^4.19.2",
     "postprocessing": "^6.36.0",
     "three": "^0.167.1",

@@ -26,14 +26,12 @@ export const createDebugScene = (): void => {
   scene.scene.add(mesh)
 
   debugScene = scene
-
-  console.log(scene)
 }
 
-export const run = async (sketchesServerUrl: string): void => {
+export const run = async (sketchesServerUrl: string): Promise<void> => {
   createDebugScene()
 
-  const thing = await import(`${sketchesServerUrl}/test-sketch/index.js`)
+  const thing = await import(/* @vite-ignore */ `${sketchesServerUrl}/test-sketch/index.js`)
 
   const testSketch = new thing.TestSketch({ sketchesDir: sketchesServerUrl })
 

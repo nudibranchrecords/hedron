@@ -1,16 +1,43 @@
-import express from 'express'
-import cors from 'cors'
-const app = express()
+import * as esbuild from 'esbuild'
+
 const PORT = 3030
-const baseUrl = `http://localhost:${PORT}`
+const HOST = '0.0.0.0'
 
-export const createSketchesServer = (): string => {
-  app.use(cors())
-  app.use(express.static('/Users/alex/Desktop/sketches'))
+const fileExtensions = [
+  'glb',
+  'fbx',
+  'obj',
+  'png',
+  'jpg',
+  'jpeg',
+  'gif',
+  'svg',
+  'mp3',
+  'mp4',
+  'ogg',
+  'wav',
+]
 
-  app.listen(PORT, () => {
-    console.log(`Sketches server is running on http://localhost:${PORT}`)
+const loaderFileExtensions: { [key: string]: 'file' } = {}
+fileExtensions.forEach((ext) => {
+  loaderFileExtensions[`.${ext}`] = 'file'
+})
+
+export const createSketchesServer = async (): Promise<esbuild.ServeResult> => {
+  const ctx = await esbuild.context({
+    entryPoints: ['/Users/alex/Desktop/sketches/sketches/**/index.js'],
+    outdir: 'sketches-server',
+    loader: loaderFileExtensions,
+    publicPath: `http://${HOST}:${PORT}`,
+    bundle: true,
+    format: 'esm',
   })
 
-  return baseUrl
+  const { host, port } = await ctx.serve({
+    servedir: 'sketches-server',
+    port: PORT,
+    host: HOST,
+  })
+
+  return { host, port }
 }

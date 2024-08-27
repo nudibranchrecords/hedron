@@ -60,10 +60,12 @@ app.whenReady().then(() => {
 
   createWindow()
 
-  setTimeout(() => {
-    const sketchesServerUrl = createSketchesServer()
+  setTimeout(async () => {
+    const { host, port } = await createSketchesServer()
 
-    getMainWindow().webContents.send('new-sketch', sketchesServerUrl)
+    const url = `http://${host}:${port}`
+
+    getMainWindow().webContents.send('new-sketch', url)
   }, 1000)
 
   app.on('activate', function () {
