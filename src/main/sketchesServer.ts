@@ -1,7 +1,7 @@
 import * as esbuild from 'esbuild'
 
 const PORT = 3030
-const HOST = '0.0.0.0'
+const HOST = 'localhost'
 
 const fileExtensions = [
   'glb',
