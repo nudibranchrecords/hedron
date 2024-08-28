@@ -1,12 +1,12 @@
 export enum SketchEvents {
-    NewSketch = 'new-sketch',
+  NewSketch = 'new-sketch',
 }
 
 export enum ScreenEvents {
-    SendOutput = 'send-output',
-    UpdateDisplays = 'update-displays',
+  SendOutput = 'send-output',
+  UpdateDisplays = 'update-displays',
 }
 
 export enum UIEvents {
-    Repaint = 'repaint',
+  Repaint = 'repaint',
 }

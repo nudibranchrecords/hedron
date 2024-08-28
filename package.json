@@ -23,6 +23,7 @@
   "dependencies": {
     "@electron-toolkit/preload": "^3.0.1",
     "@electron-toolkit/utils": "^3.0.0",
+    "chokidar": "^3.6.0",
     "cors": "^2.8.5",
     "electron-updater": "^6.1.7",
     "esbuild": "^0.23.1",
