@@ -1,7 +1,9 @@
 import * as esbuild from 'esbuild'
+import path from 'path'
+const userSettings = require(path.normalize(`${__dirname}/../../user-settings.json`));
 
 const PORT = 3030
-const HOST = '0.0.0.0'
+const HOST = 'localhost'
 
 const fileExtensions = [
   'glb',
@@ -25,7 +27,7 @@ fileExtensions.forEach((ext) => {
 
 export const createSketchesServer = async (): Promise<esbuild.ServeResult> => {
   const ctx = await esbuild.context({
-    entryPoints: ['/Users/alex/Desktop/sketches/sketches/**/index.js'],
+    entryPoints: [userSettings.sketchEntry],
     outdir: 'sketches-server',
     loader: loaderFileExtensions,
     publicPath: `http://${HOST}:${PORT}`,
