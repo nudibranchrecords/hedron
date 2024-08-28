@@ -7,11 +7,15 @@ export const handleSketchChanges = async (): Promise<void> => {
 
   const { host, port } = await sketchesServer.init()
 
-  sketchesServer.on('change', (sketchId) => {
-    console.log(sketchId)
-  })
+  // TODO: Don't fire events while all sketches initially loading
+  // We can do this in a nicer way than a timeout
+  setTimeout(() => {
+    sketchesServer.on('change', (sketchId) => {
+      getMainWindow().webContents.send(SketchEvents.RefreshSketch, sketchId)
+    })
+  }, 1000)
 
   const url = `http://${host}:${port}`
 
-  getMainWindow().webContents.send(SketchEvents.NewSketch, url)
+  getMainWindow().webContents.send(SketchEvents.ServerStart, url)
 }
