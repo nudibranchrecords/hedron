@@ -4,7 +4,9 @@
     "src/renderer/env.d.ts",
     "src/renderer/**/*",
     "src/renderer/**/*.tsx",
-    "src/preload/*.d.ts" ],
+    "src/preload/*.d.ts",
+    "src/shared/**/*"
+  ],
   "compilerOptions": {
     "strict": true,
     "noImplicitAny": true,

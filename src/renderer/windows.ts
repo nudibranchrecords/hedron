@@ -1,3 +1,4 @@
+import { ScreenEvents } from 'src/shared/Events.js'
 import { setOutput, stopOutput } from './engine/renderer.js'
 import { ipcRenderer } from 'electron'
 
@@ -25,7 +26,7 @@ export const sendOutput = (index: number): void => {
   }, 1000)
 }
 
-window.electron.ipcRenderer.on('send-output', (e, index) => {
+window.electron.ipcRenderer.on(ScreenEvents.SendOutput, (e, index) => {
   sendOutput(index)
 })
 

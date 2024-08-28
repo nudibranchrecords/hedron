@@ -1,5 +1,6 @@
 import { Display, Menu, ipcMain } from 'electron'
 import { getMainWindow, mainWindow } from '.'
+import { ScreenEvents } from '../shared/Events'
 
 const onClick = (...args) => {
   mainWindow.webContents.send('app-menu-click', ...args)
@@ -87,7 +88,7 @@ export const updateDisplayMenu = (displays: Display[]): void => {
     return {
       label: `${display.label} (${w}x${h})`,
       click: () => {
-        getMainWindow().webContents.send('send-output', index)
+        getMainWindow().webContents.send(ScreenEvents.SendOutput, index)
       },
     }
   })
@@ -95,7 +96,7 @@ export const updateDisplayMenu = (displays: Display[]): void => {
   updateMenu()
 }
 
-ipcMain.on('update-displays', (e, displays) => {
+ipcMain.on(ScreenEvents.UpdateDisplays, (e, displays) => {
   updateDisplayMenu(displays)
 })
 

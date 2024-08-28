@@ -1,6 +1,7 @@
 import { WebGLRenderer } from 'three'
 import { EngineScene } from './EngineScene'
 import { engineScenes } from '.'
+import { UIEvents } from 'src/shared/Events'
 
 // TODO: typing with undefined should be enforced with new TS setting soon
 // https://github.com/microsoft/TypeScript/pull/55887
@@ -113,7 +114,7 @@ export const setOutput = (win: Window): void => {
   setSize()
 
   win.addEventListener('resize', () => {
-    uiEventEmitter.emit('repaint')
+    uiEventEmitter.emit(UIEvents.Repaint)
   })
 }
 
