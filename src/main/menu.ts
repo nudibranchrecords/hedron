@@ -1,6 +1,7 @@
 import { Display, Menu, ipcMain } from 'electron'
-import { getMainWindow, mainWindow } from '.'
+
 import { ScreenEvents } from '../shared/Events'
+import { getMainWindow } from './mainWindow'
 
 const onClick = (...args) => {
   mainWindow.webContents.send('app-menu-click', ...args)
