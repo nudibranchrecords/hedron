@@ -1,6 +1,6 @@
 import { WebGLRenderer } from 'three'
 import { EngineScene } from './EngineScene'
-import { engineScenes } from '.'
+import { engineScenes } from './scenes'
 import { UIEvents } from 'src/shared/Events'
 
 // TODO: typing with undefined should be enforced with new TS setting soon

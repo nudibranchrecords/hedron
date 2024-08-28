@@ -2,10 +2,11 @@ import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { App } from './components/App'
 import './base.css'
-import { refreshSketch, run } from './engine'
+import { run } from './engine'
 import './windows'
 import './globalVars'
 import { SketchEvents } from '../shared/Events'
+import { refreshSketch } from './engine/sketches'
 
 window.electron.ipcRenderer.on(SketchEvents.ServerStart, (_, sketchesServerUrl) => {
   run(sketchesServerUrl)
