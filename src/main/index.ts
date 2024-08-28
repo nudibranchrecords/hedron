@@ -5,6 +5,7 @@ import icon from '../../resources/icon.png?asset'
 import { updateDisplayMenu, updateMenu } from './menu'
 import { loadFile, loadIndex } from './sketches'
 import { createSketchesServer } from './sketchesServer'
+import { SketchEvents } from '../shared/Events'
 
 export let mainWindow: BrowserWindow | undefined
 
@@ -65,7 +66,7 @@ app.whenReady().then(() => {
 
     const url = `http://${host}:${port}`
 
-    getMainWindow().webContents.send('new-sketch', url)
+    getMainWindow().webContents.send(SketchEvents.NewSketch, url)
   }, 1000)
 
   app.on('activate', function () {
@@ -78,7 +79,7 @@ app.whenReady().then(() => {
 const updateDisplays = (): void => {
   const displays = screen.getAllDisplays()
   updateDisplayMenu(displays)
-  // ipcMain.send('update-displays', displays)
+  // ipcMain.send(ScreenEvents.UpdateDisplays, displays)
   // store.dispatch(displaysListUpdate(displays))
 }
 

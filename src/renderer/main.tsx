@@ -5,8 +5,9 @@ import './base.css'
 import { run } from './engine'
 import './windows'
 import './globalVars'
+import { SketchEvents } from '../shared/Events'
 
-window.electron.ipcRenderer.on('new-sketch', async (e, sketchesServerUrl) => {
+window.electron.ipcRenderer.on(SketchEvents.NewSketch, async (e, sketchesServerUrl) => {
   run(sketchesServerUrl)
 })
 
