@@ -4,7 +4,7 @@ import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 import { updateDisplayMenu, updateMenu } from './menu'
 import { loadFile, loadIndex } from './sketches'
-import { createSketchesServer } from './sketchesServer'
+import { createSketchesServer, SketchesServer } from './sketchesServer'
 import { SketchEvents } from '../shared/Events'
 
 export let mainWindow: BrowserWindow | undefined
@@ -62,7 +62,13 @@ app.whenReady().then(() => {
   createWindow()
 
   setTimeout(async () => {
-    const { host, port } = await createSketchesServer()
+    const sketchesServer = new SketchesServer()
+
+    const { host, port } = await sketchesServer.init()
+
+    sketchesServer.on('change', (sketchId) => {
+      console.log(sketchId)
+    })
 
     const url = `http://${host}:${port}`
 
