@@ -32,7 +32,6 @@ fileExtensions.forEach((ext) => {
 })
 
 const getSketchIdFromPath = (path: string): string => {
-  console.log(path)
   const pieces = path.split('/')
   const index = pieces.findIndex((val) => val === 'sketches-server') + 1
   return pieces[index]
