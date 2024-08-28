@@ -1,46 +1,8 @@
-import { app, shell, BrowserWindow, ipcMain, screen } from 'electron'
-import { join } from 'path'
-import { electronApp, optimizer, is } from '@electron-toolkit/utils'
-import icon from '../../resources/icon.png?asset'
+import { app, BrowserWindow, screen } from 'electron'
+import { electronApp, optimizer } from '@electron-toolkit/utils'
 import { updateDisplayMenu, updateMenu } from './menu'
-import { loadFile, loadIndex } from './sketches'
-import { createSketchesServer, SketchesServer } from './sketchesServer'
-import { SketchEvents } from '../shared/Events'
-
-export let mainWindow: BrowserWindow | undefined
-
-export const getMainWindow = (): BrowserWindow => {
-  if (!mainWindow) throw new Error("Can't get main window")
-
-  return mainWindow
-}
-
-function createWindow(): void {
-  // Create the browser window.
-  mainWindow = new BrowserWindow({
-    width: 900,
-    height: 670,
-    show: false,
-    autoHideMenuBar: !process.platform.startsWith('win'),
-    ...(process.platform === 'linux' ? { icon } : {}),
-    webPreferences: {
-      preload: join(__dirname, '../preload/index.js'),
-      sandbox: false,
-    },
-  })
-
-  mainWindow.on('ready-to-show', () => {
-    mainWindow?.show()
-  })
-
-  // HMR for renderer base on electron-vite cli.
-  // Load the remote URL for development or the local html file for production.
-  if (is.dev && process.env['ELECTRON_RENDERER_URL']) {
-    mainWindow.loadURL(process.env['ELECTRON_RENDERER_URL'])
-  } else {
-    mainWindow.loadFile(join(__dirname, '../renderer/index.html'))
-  }
-}
+import { createWindow } from './mainWindow'
+import { handleSketchChanges } from './handleSketchChanges'
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
@@ -61,18 +23,9 @@ app.whenReady().then(() => {
 
   createWindow()
 
-  setTimeout(async () => {
-    const sketchesServer = new SketchesServer()
-
-    const { host, port } = await sketchesServer.init()
-
-    sketchesServer.on('change', (sketchId) => {
-      console.log(sketchId)
-    })
-
-    const url = `http://${host}:${port}`
-
-    getMainWindow().webContents.send(SketchEvents.NewSketch, url)
+  // TODO: Clearly there is some event we can listen to to trigger this...
+  setTimeout(() => {
+    handleSketchChanges()
   }, 1000)
 
   app.on('activate', function () {
