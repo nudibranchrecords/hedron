@@ -4,10 +4,10 @@ interface SketchState {
 }
 
 const sketchesState: { [key: string]: SketchState } = {
-  // id_a: {
-  //   id: 'id_a',
-  //   sketchId: 'logo',
-  // },
+  id_a: {
+    id: 'id_a',
+    sketchId: 'logo',
+  },
   id_b: {
     id: 'id_b',
     sketchId: 'solid',
