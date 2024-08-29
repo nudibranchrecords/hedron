@@ -1,5 +1,3 @@
-import { int } from 'three/webgpu'
-
 const { THREE } = window.HEDRON.dependencies
 const geomSize = 1
 

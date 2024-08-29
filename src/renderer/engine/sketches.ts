@@ -36,8 +36,11 @@ export const removeSketch = (instanceId: string): void => {
 
 export const refreshSketch = async (sketchId: string): Promise<void> => {
   const scene = getDebugScene().scene
-  removeSketch(sketchId)
+
   getSketchesState().forEach(async (item) => {
+    if (item.sketchId !== sketchId) return
+
+    removeSketch(item.id)
     const newSketch = await loadSketch(sketchId, item.id)
     scene.add(newSketch.root)
   })
