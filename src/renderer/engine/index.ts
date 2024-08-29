@@ -1,13 +1,11 @@
 import { render } from './renderer'
 import { createDebugScene } from './debugScene'
-import { loadSketch } from './sketches'
+import { loadAllSketchesFromState } from './sketches'
 
 export const run = async (): Promise<void> => {
   const debugScene = createDebugScene()
 
-  // TODO: Actually load in sketches from state!
-  const testSketch = await loadSketch('test-sketch')
-  debugScene.scene.add(testSketch.root)
+  loadAllSketchesFromState()
 
   const loop = (): void => {
     requestAnimationFrame(loop)
