@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "@parcel/config-default": "^2.12.0",
+    "is-even": "^1.0.0"
+  }
+}
