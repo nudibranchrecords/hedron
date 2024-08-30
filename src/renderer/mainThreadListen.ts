@@ -9,6 +9,10 @@ const listen = (event: string, cb: (info: string) => void): void => {
   })
 }
 
+listen(SketchEvents.InitialSketchIds, (sketchIds) => {
+  console.log(sketchIds)
+})
+
 listen(SketchEvents.ServerStart, (sketchesServerUrl) => {
   setSketchesServerUrl(sketchesServerUrl)
   run()

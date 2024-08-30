@@ -2,11 +2,9 @@ import * as esbuild from 'esbuild'
 import path from 'path'
 import chokidar from 'chokidar'
 import { EventEmitter } from 'events'
+import { userSettings } from './userSettings'
 
-const userSettingsPath = path.normalize(`${__dirname}/../../user-settings.json`)
 const sketchesServerOutputPath = path.normalize(`${__dirname}/../../sketches-server`)
-
-const userSettings = require(userSettingsPath)
 
 const PORT = 3030
 const HOST = 'localhost'
