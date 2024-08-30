@@ -1,4 +1,4 @@
-module.exports = {
+export default {
   defaultTitle: 'Hedron Logo',
   params: [
     {
@@ -34,4 +34,3 @@ module.exports = {
     },
   ],
 }
-
