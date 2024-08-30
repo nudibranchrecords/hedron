@@ -46,8 +46,9 @@ export class SketchesServer extends EventEmitter {
   }
 
   init = async (): Promise<esbuild.ServeResult> => {
+    const entryBase = userSettings.sketchesDir
     const ctx = await esbuild.context({
-      entryPoints: [userSettings.sketchEntry],
+      entryPoints: [`${entryBase}/**/index.js`, `${entryBase}/**/config.js`],
       outdir: 'sketches-server',
       loader: loaderFileExtensions,
       assetNames: '[dir]/[name]-[hash]',
