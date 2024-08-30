@@ -11,6 +11,10 @@ export const getMainWindow = (): BrowserWindow => {
   return mainWindow
 }
 
+export const sendToMainWindow = (event: string, data: string | string[]): void => {
+  getMainWindow().webContents.send(event, data)
+}
+
 export const createWindow = (): void => {
   // Create the browser window.
   mainWindow = new BrowserWindow({

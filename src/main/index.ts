@@ -2,7 +2,7 @@ import { app, BrowserWindow, screen } from 'electron'
 import { electronApp, optimizer } from '@electron-toolkit/utils'
 import { updateDisplayMenu, updateMenu } from './menu'
 import { createWindow } from './mainWindow'
-import { handleSketchChanges } from './handleSketchChanges'
+import { handleSketchFiles } from './handleSketchFiles'
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
@@ -23,7 +23,7 @@ app.whenReady().then(() => {
 
   createWindow()
 
-  handleSketchChanges()
+  handleSketchFiles()
 
   app.on('activate', function () {
     // On macOS it's common to re-create a window in the app when the
