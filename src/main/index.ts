@@ -23,10 +23,7 @@ app.whenReady().then(() => {
 
   createWindow()
 
-  // TODO: Clearly there is some event we can listen to to trigger this...
-  setTimeout(() => {
-    handleSketchChanges()
-  }, 1000)
+  handleSketchChanges()
 
   app.on('activate', function () {
     // On macOS it's common to re-create a window in the app when the

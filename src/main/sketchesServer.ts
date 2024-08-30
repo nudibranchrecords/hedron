@@ -55,27 +55,14 @@ export class SketchesServer extends EventEmitter {
       bundle: true,
       format: 'esm',
       plugins: [
-        // Chokidar watches files only after first build is complete
         {
-          name: 'chokidar',
+          name: 'on-end',
           setup: (build): void => {
             build.onEnd(() => {
-              if (this.isFirstBuildComplete) return
-
-              const watcher = chokidar.watch(sketchesServerOutputPath, {
-                persistent: true,
-                ignoreInitial: true,
-              })
-
-              watcher.on('change', (path) => {
-                this.emit('change', getSketchIdFromPath(path))
-              })
-
-              watcher.on('add', (path) => {
-                this.emit('add', getSketchIdFromPath(path))
-              })
-
-              this.isFirstBuildComplete = true
+              // setTimeout is needed because chokidar is overly sensitive and firing change events after first build is complete
+              setTimeout(() => {
+                this.isFirstBuildComplete = true
+              }, 1000)
             })
           },
         },
@@ -89,6 +76,20 @@ export class SketchesServer extends EventEmitter {
     })
 
     await ctx.watch()
+
+    const watcher = chokidar.watch(sketchesServerOutputPath, {
+      persistent: true,
+      ignoreInitial: true,
+    })
+
+    watcher.on('change', (path) => {
+      if (!this.isFirstBuildComplete) return
+      this.emit('change', getSketchIdFromPath(path))
+    })
+
+    watcher.on('add', (path) => {
+      this.emit('add', getSketchIdFromPath(path))
+    })
 
     return { host, port }
   }

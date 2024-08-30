@@ -8,12 +8,12 @@ export const handleSketchChanges = async (): Promise<void> => {
   const { host, port } = await sketchesServer.init()
 
   sketchesServer.on('change', (sketchId) => {
-    console.log('change', sketchId)
+    console.log(`sketch changed: ${sketchId}`)
     getMainWindow().webContents.send(SketchEvents.RefreshSketch, sketchId)
   })
 
   sketchesServer.on('add', (sketchId) => {
-    console.log('add')
+    console.log(`sketch added: ${sketchId}`)
     // getMainWindow().webContents.send(SketchEvents.RefreshSketch, sketchId)
   })
 
@@ -26,6 +26,4 @@ export const handleSketchChanges = async (): Promise<void> => {
   getMainWindow().webContents.on('did-finish-load', () => {
     startSketches()
   })
-
-  startSketches()
 }
