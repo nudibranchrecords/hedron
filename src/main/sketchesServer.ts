@@ -38,6 +38,13 @@ const getSketchIdFromPath = (path: string): string => {
 }
 
 export class SketchesServer extends EventEmitter {
+  private isFirstBuildComplete: boolean
+
+  constructor() {
+    super()
+    this.isFirstBuildComplete = false
+  }
+
   init = async (): Promise<esbuild.ServeResult> => {
     const ctx = await esbuild.context({
       entryPoints: [userSettings.sketchEntry],
@@ -47,6 +54,32 @@ export class SketchesServer extends EventEmitter {
       publicPath: `http://${HOST}:${PORT}`,
       bundle: true,
       format: 'esm',
+      plugins: [
+        // Chokidar watches files only after first build is complete
+        {
+          name: 'chokidar',
+          setup: (build): void => {
+            build.onEnd(() => {
+              if (this.isFirstBuildComplete) return
+
+              const watcher = chokidar.watch(sketchesServerOutputPath, {
+                persistent: true,
+                ignoreInitial: true,
+              })
+
+              watcher.on('change', (path) => {
+                this.emit('change', getSketchIdFromPath(path))
+              })
+
+              watcher.on('add', (path) => {
+                this.emit('add', getSketchIdFromPath(path))
+              })
+
+              this.isFirstBuildComplete = true
+            })
+          },
+        },
+      ],
     })
 
     const { host, port } = await ctx.serve({
@@ -56,10 +89,6 @@ export class SketchesServer extends EventEmitter {
     })
 
     await ctx.watch()
-
-    const watcher = chokidar.watch(sketchesServerOutputPath, { persistent: true })
-
-    watcher.on('change', (path) => this.emit('change', getSketchIdFromPath(path)))
 
     return { host, port }
   }
