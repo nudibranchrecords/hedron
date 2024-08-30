@@ -7,15 +7,25 @@ export const handleSketchChanges = async (): Promise<void> => {
 
   const { host, port } = await sketchesServer.init()
 
-  // TODO: Don't fire events while all sketches initially loading
-  // We can do this in a nicer way than a timeout
-  setTimeout(() => {
-    sketchesServer.on('change', (sketchId) => {
-      getMainWindow().webContents.send(SketchEvents.RefreshSketch, sketchId)
-    })
-  }, 1000)
+  sketchesServer.on('change', (sketchId) => {
+    console.log('change', sketchId)
+    getMainWindow().webContents.send(SketchEvents.RefreshSketch, sketchId)
+  })
+
+  sketchesServer.on('add', (sketchId) => {
+    console.log('add')
+    // getMainWindow().webContents.send(SketchEvents.RefreshSketch, sketchId)
+  })
 
   const url = `http://${host}:${port}`
 
-  getMainWindow().webContents.send(SketchEvents.ServerStart, url)
+  const startSketches = (): void => {
+    getMainWindow().webContents.send(SketchEvents.ServerStart, url)
+  }
+
+  getMainWindow().webContents.on('did-finish-load', () => {
+    startSketches()
+  })
+
+  startSketches()
 }
