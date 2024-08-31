@@ -34,12 +34,8 @@ export const handleSketchFiles = async (): Promise<void> => {
 
   const url = `http://${host}:${port}`
 
-  const startSketches = (): void => {
-    sendToMainWindow(SketchEvents.ServerStart, url)
-  }
-
   getMainWindow().webContents.on('did-finish-load', () => {
-    startSketches()
+    sendToMainWindow(SketchEvents.ServerStart, url)
     sendToMainWindow(SketchEvents.InitialSketchLibraryIds, sketchIds)
   })
 }
