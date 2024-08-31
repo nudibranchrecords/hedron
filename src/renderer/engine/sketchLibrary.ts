@@ -9,7 +9,6 @@ export const initiateSketchLibrary = (sketchLibraryIds: string[]): void => {
   const getSketchInfo = async (): Promise<void> => {
     const sketchLibrary: SketchLibrary = {}
     for (const sketchId of sketchLibraryIds) {
-      console.log(sketchId)
       const module = await import(/* @vite-ignore */ `${base}/${sketchId}/config.js?${cacheBust}`)
 
       const name = module.default.defaultTitle
@@ -19,8 +18,10 @@ export const initiateSketchLibrary = (sketchLibraryIds: string[]): void => {
         name,
       }
 
-      useAppStore.getState().setSketchLibrary(sketchLibrary)
+      console.log(sketchLibrary)
     }
+
+    useAppStore.getState().setSketchLibrary(sketchLibrary)
   }
 
   getSketchInfo()

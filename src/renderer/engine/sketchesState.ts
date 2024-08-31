@@ -1,6 +1,7 @@
 import { create } from 'zustand'
 import { devtools, persist } from 'zustand/middleware'
 import type {} from '@redux-devtools/extension' // required for devtools typing
+import { uid } from 'uid'
 
 interface SketchState {
   id: string
@@ -20,37 +21,50 @@ interface AppState {
   sketches: Sketches
   sketchLibrary: SketchLibrary
 
+  addSketch: (sketchId: string) => void
   setSketchLibrary: (newSketchLibrary: SketchLibrary) => void
 }
 
 export const useAppStore = create<AppState>()(
   devtools(
-    persist(
-      (set) => ({
-        sketches: {
-          id_a: {
-            id: 'id_a',
-            sketchId: 'logo',
-          },
-          id_b: {
-            id: 'id_b',
-            sketchId: 'solid',
-          },
-          id_c: {
-            id: 'id_c',
-            sketchId: 'solid',
-          },
+    // persist(
+    (set) => ({
+      sketches: {
+        id_a: {
+          id: 'id_a',
+          sketchId: 'logo',
         },
-        sketchLibrary: {},
-        setSketchLibrary: (newSketchLibrary) =>
-          set(() => ({
-            sketchLibrary: newSketchLibrary,
-          })),
-      }),
-      {
-        name: 'app-storage',
+        id_b: {
+          id: 'id_b',
+          sketchId: 'solid',
+        },
+        id_c: {
+          id: 'id_c',
+          sketchId: 'solid',
+        },
       },
-    ),
+      sketchLibrary: {},
+      addSketch: (sketchId) => {
+        const newId = uid()
+        set((state) => ({
+          sketches: {
+            ...state.sketches,
+            [newId]: {
+              id: newId,
+              sketchId,
+            },
+          },
+        }))
+      },
+      setSketchLibrary: (newSketchLibrary) =>
+        set(() => ({
+          sketchLibrary: newSketchLibrary,
+        })),
+    }),
+    //   {
+    //     name: 'app-storage',
+    //   },
+    // ),
   ),
 )
 
