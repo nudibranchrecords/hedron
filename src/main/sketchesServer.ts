@@ -2,11 +2,9 @@ import * as esbuild from 'esbuild'
 import path from 'path'
 import chokidar from 'chokidar'
 import { EventEmitter } from 'events'
+import { userSettings } from './userSettings'
 
-const userSettingsPath = path.normalize(`${__dirname}/../../user-settings.json`)
 const sketchesServerOutputPath = path.normalize(`${__dirname}/../../sketches-server`)
-
-const userSettings = require(userSettingsPath)
 
 const PORT = 3030
 const HOST = 'localhost'
@@ -38,15 +36,36 @@ const getSketchIdFromPath = (path: string): string => {
 }
 
 export class SketchesServer extends EventEmitter {
+  private isFirstBuildComplete: boolean
+
+  constructor() {
+    super()
+    this.isFirstBuildComplete = false
+  }
+
   init = async (): Promise<esbuild.ServeResult> => {
+    const entryBase = userSettings.sketchesDir
     const ctx = await esbuild.context({
-      entryPoints: [userSettings.sketchEntry],
+      entryPoints: [`${entryBase}/**/index.js`, `${entryBase}/**/config.js`],
       outdir: 'sketches-server',
       loader: loaderFileExtensions,
       assetNames: '[dir]/[name]-[hash]',
       publicPath: `http://${HOST}:${PORT}`,
       bundle: true,
       format: 'esm',
+      plugins: [
+        {
+          name: 'on-end',
+          setup: (build): void => {
+            build.onEnd(() => {
+              // setTimeout is needed because chokidar is overly sensitive and firing change events after first build is complete
+              setTimeout(() => {
+                this.isFirstBuildComplete = true
+              }, 1000)
+            })
+          },
+        },
+      ],
     })
 
     const { host, port } = await ctx.serve({
@@ -57,9 +76,19 @@ export class SketchesServer extends EventEmitter {
 
     await ctx.watch()
 
-    const watcher = chokidar.watch(sketchesServerOutputPath, { persistent: true })
+    const watcher = chokidar.watch(sketchesServerOutputPath, {
+      persistent: true,
+      ignoreInitial: true,
+    })
 
-    watcher.on('change', (path) => this.emit('change', getSketchIdFromPath(path)))
+    watcher.on('change', (path) => {
+      if (!this.isFirstBuildComplete) return
+      this.emit('change', getSketchIdFromPath(path))
+    })
+
+    watcher.on('add', (path) => {
+      this.emit('add', getSketchIdFromPath(path))
+    })
 
     return { host, port }
   }

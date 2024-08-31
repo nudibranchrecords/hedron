@@ -22,7 +22,7 @@ export default class Logo {
       this.model.material = matcapMat
       this.root.add(this.model)
 
-      const s = 0.7
+      const s = 0.5
       this.model.scale.set(s, s, s)
       this.resetLogoRot()
 

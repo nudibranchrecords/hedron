@@ -1,6 +1,6 @@
-module.exports = {
+export default {
   defaultTitle: 'Solid',
-  category:'simple',
+  category: 'simple',
   params: [
     {
       key: 'rotSpeedX',
