@@ -1,5 +1,5 @@
 export enum SketchEvents {
-  InitialSketchIds = 'initial-sketch-ids',
+  InitialSketchLibraryIds = 'initial-sketch-library-ids',
   NewSketch = 'new-sketch',
   RefreshSketch = 'refresh-sketch',
   ServerStart = 'sketch-server-start',
