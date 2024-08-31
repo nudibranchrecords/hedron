@@ -7,15 +7,6 @@ import { getSketchesState } from './sketchesState'
 // ts: ignore
 type Sketch = any
 
-export const loadAllSketchesFromState = (): void => {
-  const scene = getDebugScene().scene
-
-  getSketchesState().forEach(async ({ sketchId, id }) => {
-    const sketch = await loadSketch(sketchId, id)
-    scene.add(sketch.root)
-  })
-}
-
 export const loadSketch = async (sketchId: string, instanceId: string): Promise<Sketch> => {
   const base = getSketchesServerUrl()
   const cacheBust = uid()
@@ -23,6 +14,12 @@ export const loadSketch = async (sketchId: string, instanceId: string): Promise<
   const sketch = new module.default({ sketchesDir: base })
   sketch.root.name = instanceId
   return sketch
+}
+
+export const addSketch = async (sketchId: string, instanceId: string): Promise<void> => {
+  const scene = getDebugScene().scene
+  const sketch = await loadSketch(sketchId, instanceId)
+  scene.add(sketch.root)
 }
 
 export const removeSketch = (instanceId: string): void => {
