@@ -40,6 +40,6 @@ export const handleSketchFiles = async (): Promise<void> => {
 
   getMainWindow().webContents.on('did-finish-load', () => {
     startSketches()
-    sendToMainWindow(SketchEvents.InitialSketchIds, sketchIds)
+    sendToMainWindow(SketchEvents.InitialSketchLibraryIds, sketchIds)
   })
 }
