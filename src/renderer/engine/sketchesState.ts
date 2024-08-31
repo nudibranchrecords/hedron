@@ -22,6 +22,7 @@ interface AppState {
   sketchLibrary: SketchLibrary
 
   addSketch: (sketchId: string) => void
+  deleteSketch: (instanceId: string) => void
   setSketchLibrary: (newSketchLibrary: SketchLibrary) => void
 }
 
@@ -55,6 +56,14 @@ export const useAppStore = create<AppState>()(
             },
           },
         }))
+      },
+      deleteSketch: (instanceId) => {
+        set((state) => {
+          delete state.sketches[instanceId]
+          return {
+            sketches: { ...state.sketches },
+          }
+        })
       },
       setSketchLibrary: (newSketchLibrary) =>
         set(() => ({

@@ -5,14 +5,11 @@ export const WorkArea = (): JSX.Element => {
   const sketchLibrary = useAppStore((state) => state.sketchLibrary)
   const sketches = useAppStore((state) => state.sketches)
   const addSketch = useAppStore((state) => state.addSketch)
+  const deleteSketch = useAppStore((state) => state.deleteSketch)
 
   // TODO: Proper selectors/hooks to get this stuff
   const sketchLibraryVals = useMemo(() => Object.values(sketchLibrary), [sketchLibrary])
   const sketchesVals = useMemo(() => Object.values(sketches), [sketches])
-
-  console.log(sketchLibrary)
-
-  console.log(sketchLibraryVals)
 
   return (
     <div>
@@ -28,7 +25,7 @@ export const WorkArea = (): JSX.Element => {
       <ul>
         {sketchesVals.map(({ sketchId, id }) => (
           <li key={id}>
-            <button>
+            <button onClick={() => deleteSketch(id)}>
               Remove {sketchId} ({id})
             </button>
           </li>

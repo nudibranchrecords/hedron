@@ -17,8 +17,6 @@ export const initiateSketchLibrary = (sketchLibraryIds: string[]): void => {
         sketchId,
         name,
       }
-
-      console.log(sketchLibrary)
     }
 
     useAppStore.getState().setSketchLibrary(sketchLibrary)
