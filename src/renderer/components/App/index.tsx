@@ -1,5 +1,6 @@
 import { Audio } from '../Audio'
 import { Viewer } from '../Viewer'
+import { WorkArea } from '../WorkArea'
 import c from './styles.module.css'
 
 export const App = (): JSX.Element => {
@@ -10,6 +11,9 @@ export const App = (): JSX.Element => {
         <Audio />
         {/* <Overview stats={stats} />
       <PanelDragger onHandleDrag={onLeftDrag} position={leftWidth} /> */}
+      </div>
+      <div>
+        <WorkArea />
       </div>
     </div>
   )
