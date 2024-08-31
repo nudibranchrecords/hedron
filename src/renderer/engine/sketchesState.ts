@@ -7,11 +7,23 @@ interface SketchState {
   sketchId: string
 }
 
-interface AppState {
-  sketches: { [key: string]: SketchState }
+type Sketches = { [key: string]: SketchState }
+
+interface SketchLibraryItem {
+  sketchId: string
+  name: string
 }
 
-const useAppStore = create<AppState>()(
+export type SketchLibrary = { [key: string]: SketchLibraryItem }
+
+interface AppState {
+  sketches: Sketches
+  sketchLibrary: SketchLibrary
+
+  setSketchLibrary: (newSketchLibrary: SketchLibrary) => void
+}
+
+export const useAppStore = create<AppState>()(
   devtools(
     persist(
       (set) => ({
@@ -29,9 +41,14 @@ const useAppStore = create<AppState>()(
             sketchId: 'solid',
           },
         },
+        sketchLibrary: {},
+        setSketchLibrary: (newSketchLibrary) =>
+          set(() => ({
+            sketchLibrary: newSketchLibrary,
+          })),
       }),
       {
-        name: 'bear-storage',
+        name: 'app-storage',
       },
     ),
   ),
