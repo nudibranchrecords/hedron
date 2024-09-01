@@ -13,7 +13,7 @@ type Sketches = { [key: string]: SketchState }
 interface SketchLibraryItem {
   sketchId: string
   name: string
-  module: { default: any }
+  module: any
 }
 
 export type SketchLibrary = { [key: string]: SketchLibraryItem }
@@ -27,6 +27,7 @@ interface AppState {
   addSketch: (sketchId: string) => void
   deleteSketch: (instanceId: string) => void
   setSketchLibrary: (newSketchLibrary: SketchLibrary) => void
+  setSketchLibraryItem: (newItem: SketchLibraryItem) => void
 }
 
 export const useAppStore = create<AppState>()(
@@ -73,6 +74,13 @@ export const useAppStore = create<AppState>()(
       setSketchLibrary: (newSketchLibrary) =>
         set(() => ({
           sketchLibrary: newSketchLibrary,
+        })),
+      setSketchLibraryItem: (newItem: SketchLibraryItem) =>
+        set((state) => ({
+          sketchLibrary: {
+            ...state.sketchLibrary,
+            [newItem.sketchId]: newItem,
+          },
         })),
     }),
     //   {

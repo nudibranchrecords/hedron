@@ -2,26 +2,31 @@ import { uid } from 'uid'
 import { getSketchesServerUrl } from './globals'
 import { SketchLibrary, useAppStore } from './sketchesState'
 
-export const initiateSketchLibrary = (sketchLibraryIds: string[]): void => {
+const importSketch = async (sketchId: string): Promise<{ config: any; module: any }> => {
   const base = getSketchesServerUrl()
   const cacheBust = uid()
 
+  const configModule = await import(/* @vite-ignore */ `${base}/${sketchId}/config.js?${cacheBust}`)
+  const sketchModule = await import(/* @vite-ignore */ `${base}/${sketchId}/index.js?${cacheBust}`)
+
+  return {
+    config: configModule.default,
+    module: sketchModule.default,
+  }
+}
+
+export const initiateSketchLibrary = (sketchLibraryIds: string[]): void => {
   const getSketchInfo = async (): Promise<void> => {
     const sketchLibrary: SketchLibrary = {}
     for (const sketchId of sketchLibraryIds) {
-      const configModule = await import(
-        /* @vite-ignore */ `${base}/${sketchId}/config.js?${cacheBust}`
-      )
-      const sketchModule = await import(
-        /* @vite-ignore */ `${base}/${sketchId}/index.js?${cacheBust}`
-      )
+      const { config, module } = await importSketch(sketchId)
 
-      const name = configModule.default.defaultTitle
+      const name = config.defaultTitle
 
       sketchLibrary[sketchId] = {
         sketchId,
         name,
-        module: sketchModule,
+        module,
       }
     }
 
@@ -31,4 +36,18 @@ export const initiateSketchLibrary = (sketchLibraryIds: string[]): void => {
   }
 
   getSketchInfo()
+}
+
+export const reimportSketchModule = async (sketchId: string): Promise<void> => {
+  const { config, module } = await importSketch(sketchId)
+
+  const name = config.defaultTitle
+
+  const item = {
+    sketchId,
+    name,
+    module,
+  }
+
+  useAppStore.getState().setSketchLibraryItem(item)
 }

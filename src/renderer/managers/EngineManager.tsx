@@ -6,6 +6,8 @@ import { addSketch, removeSketch } from '../engine/sketches'
 const SketchManager = ({ id }: { id: string }): JSX.Element => {
   const sketches = useAppStore((state) => state.sketches)
   const { sketchId } = sketches[id]
+  const sketchLibrary = useAppStore((state) => state.sketchLibrary)
+  const libraryItem = sketchLibrary[sketchId]
 
   useEffect(() => {
     addSketch(sketchId, id)
@@ -13,7 +15,7 @@ const SketchManager = ({ id }: { id: string }): JSX.Element => {
     return (): void => {
       removeSketch(id)
     }
-  }, [sketchId, id])
+  }, [sketchId, id, libraryItem])
 
   return <></>
 }
