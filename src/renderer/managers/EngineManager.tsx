@@ -1,32 +1,36 @@
 import { useEffect, useMemo } from 'react'
 import { useAppStore } from 'src/renderer/engine/sketchesState'
 
-import { addSketch } from '../engine/sketches'
+import { addSketch, removeSketch } from '../engine/sketches'
 
 const SketchManager = ({ id }: { id: string }): JSX.Element => {
   const sketches = useAppStore((state) => state.sketches)
   const { sketchId } = sketches[id]
 
   useEffect(() => {
-    console.log(sketchId)
     addSketch(sketchId, id)
 
-    return () => { }
-  }, [])
+    return (): void => {
+      removeSketch(id)
+    }
+  }, [sketchId, id])
 
   return <></>
 }
 
-export const EngineStateManager = (): JSX.Element => {
-  const sketches = useAppStore((state) => state.sketches)
-
+export const EngineManager = (): JSX.Element => {
   // TODO: Proper selectors/hooks to get this stuff
+  const sketches = useAppStore((state) => state.sketches)
+  const isReady = useAppStore((state) => state.isSketchLibraryReady)
   const sketchesVals = useMemo(() => Object.values(sketches), [sketches])
-  return (
+
+  return isReady ? (
     <>
       {sketchesVals.map(({ id }) => (
         <SketchManager key={id} id={id} />
       ))}
     </>
+  ) : (
+    <></>
   )
 }

@@ -6,12 +6,12 @@ import './base.css'
 import './windows'
 import './globalVars'
 import './mainThreadListen'
-import { EngineStateManager } from './managers/EngineStateManager'
+import { EngineManager } from './managers/EngineManager'
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
     <App />
-    // TODO: create hook that mounts this only when ready (after signal from main thread)
-    <EngineStateManager />
+
+    <EngineManager />
   </React.StrictMode>,
 )
