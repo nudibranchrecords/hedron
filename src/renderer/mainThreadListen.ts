@@ -3,6 +3,7 @@ import { refreshSketch } from './engine/sketches'
 import { run } from './engine'
 import { setSketchesServerUrl } from './engine/globals'
 import { initiateSketchLibrary } from './engine/sketchLibrary'
+import { useAppStore } from './engine/sketchesState'
 
 const listen = (event: string, cb: (info: any) => void): void => {
   window.electron.ipcRenderer.on(event, (_, info) => {
@@ -16,6 +17,7 @@ listen(SketchEvents.InitialSketchLibraryIds, (sketchLibraryIds: string[]) => {
 
 listen(SketchEvents.ServerStart, (sketchesServerUrl: string) => {
   setSketchesServerUrl(sketchesServerUrl)
+
   run()
 })
 
