@@ -1,9 +1,7 @@
 import { SketchEvents } from '../shared/Events'
-import { refreshSketch } from './engine/sketches'
 import { run } from './engine'
 import { setSketchesServerUrl } from './engine/globals'
-import { initiateSketchLibrary } from './engine/sketchLibrary'
-import { useAppStore } from './engine/sketchesState'
+import { initiateSketchLibrary, reimportSketchModule } from './engine/sketchLibrary'
 
 const listen = (event: string, cb: (info: any) => void): void => {
   window.electron.ipcRenderer.on(event, (_, info) => {
@@ -21,6 +19,6 @@ listen(SketchEvents.ServerStart, (sketchesServerUrl: string) => {
   run()
 })
 
-listen(SketchEvents.RefreshSketch, (sketchId: string) => {
-  refreshSketch(sketchId)
+listen(SketchEvents.ReimportSketchModule, (sketchId: string) => {
+  reimportSketchModule(sketchId)
 })
