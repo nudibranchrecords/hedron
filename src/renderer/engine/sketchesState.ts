@@ -155,9 +155,14 @@ export const useAppStore = create<AppState>()(
       },
       deleteSketch: (instanceId) => {
         set((state) => {
+          state.sketches[instanceId].paramIds.forEach((paramId) => {
+            delete state.nodes[paramId]
+          })
+
           delete state.sketches[instanceId]
           return {
             sketches: { ...state.sketches },
+            nodes: { ...state.nodes },
           }
         })
       },
