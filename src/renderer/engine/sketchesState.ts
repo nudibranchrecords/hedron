@@ -17,6 +17,8 @@ export type SketchModule = any
 
 interface NodeBase {
   id: string
+  key: string
+  title?: string
 }
 
 interface NodeParamNumber extends NodeBase {
@@ -31,7 +33,9 @@ interface NodeParamBoolean extends NodeBase {
   value: boolean
 }
 
-type Node = NodeParamNumber | NodeParamBoolean
+export type Param = NodeParamBoolean | NodeParamNumber
+
+type Node = Param
 
 type Nodes = { [key: string]: Node }
 
@@ -99,26 +103,29 @@ export const useAppStore = create<AppState>()(
 
           for (const paramConfig of config.params) {
             const valueType = paramConfig.valueType ?? 'number'
+            const { key, title, defaultValue } = paramConfig
             const id = uid()
 
             paramIds.push(id)
 
             const base = {
               id,
+              key,
+              title,
               type: 'param' as const,
             }
 
-            if (typeof paramConfig.defaultValue === 'number' && valueType === 'number') {
+            if (typeof defaultValue === 'number' && valueType === 'number') {
               nodes[id] = {
                 ...base,
                 valueType,
-                value: paramConfig.defaultValue,
+                value: defaultValue,
               }
-            } else if (typeof paramConfig.defaultValue === 'boolean' && valueType === 'boolean') {
+            } else if (typeof defaultValue === 'boolean' && valueType === 'boolean') {
               nodes[id] = {
                 ...base,
                 valueType,
-                value: paramConfig.defaultValue,
+                value: defaultValue,
               }
             } else {
               throw new Error(
