@@ -5,3 +5,4 @@ out
 *.log*
 sketches-server
 user-settings.json
+chrome-extensions

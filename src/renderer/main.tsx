@@ -6,9 +6,12 @@ import './base.css'
 import './windows'
 import './globalVars'
 import './mainThreadListen'
+import { EngineManager } from './managers/EngineManager'
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
     <App />
+
+    <EngineManager />
   </React.StrictMode>,
 )

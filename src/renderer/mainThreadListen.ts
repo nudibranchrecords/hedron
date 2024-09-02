@@ -1,23 +1,24 @@
 import { SketchEvents } from '../shared/Events'
-import { refreshSketch } from './engine/sketches'
 import { run } from './engine'
 import { setSketchesServerUrl } from './engine/globals'
+import { initiateSketchLibrary, reimportSketchModule } from './engine/sketchLibrary'
 
-const listen = (event: string, cb: (info: string) => void): void => {
+const listen = (event: string, cb: (info: any) => void): void => {
   window.electron.ipcRenderer.on(event, (_, info) => {
     cb(info)
   })
 }
 
-listen(SketchEvents.InitialSketchIds, (sketchIds) => {
-  console.log(sketchIds)
+listen(SketchEvents.InitialSketchLibraryIds, (sketchLibraryIds: string[]) => {
+  initiateSketchLibrary(sketchLibraryIds)
 })
 
-listen(SketchEvents.ServerStart, (sketchesServerUrl) => {
+listen(SketchEvents.ServerStart, (sketchesServerUrl: string) => {
   setSketchesServerUrl(sketchesServerUrl)
+
   run()
 })
 
-listen(SketchEvents.RefreshSketch, (sketchId) => {
-  refreshSketch(sketchId)
+listen(SketchEvents.ReimportSketchModule, (sketchId: string) => {
+  reimportSketchModule(sketchId)
 })
