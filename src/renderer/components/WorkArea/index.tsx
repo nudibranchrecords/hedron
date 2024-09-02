@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useCallback, useMemo } from 'react'
 import { useAppStore } from 'src/renderer/engine/sketchesState'
 
 export const WorkArea = (): JSX.Element => {
@@ -37,7 +37,14 @@ export const WorkArea = (): JSX.Element => {
       <ul>
         {sketchLibraryVals.map(({ title, moduleId }) => (
           <li key={moduleId}>
-            <button onClick={() => addSketch(moduleId)}>{title}</button>
+            <button
+              onClick={() => {
+                const id = addSketch(moduleId)
+                setActiveSketchId(id)
+              }}
+            >
+              {title}
+            </button>
           </li>
         ))}
       </ul>
