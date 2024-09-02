@@ -51,7 +51,7 @@ export const useAppStore = create<AppState>()(
               ...state.sketches,
               [newId]: {
                 id: newId,
-                moduleId: moduleId,
+                moduleId,
                 title,
               },
             },
