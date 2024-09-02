@@ -15,15 +15,15 @@ const importSketch = async (sketchId: string): Promise<{ config: any; module: an
   }
 }
 
-export const initiateSketchModules = (sketchLibraryIds: string[]): void => {
+export const initiateSketchModules = (moduleIds: string[]): void => {
   const getSketchInfo = async (): Promise<void> => {
-    const sketchLibrary: SketchModules = {}
-    for (const moduleId of sketchLibraryIds) {
+    const modules: SketchModules = {}
+    for (const moduleId of moduleIds) {
       const { config, module } = await importSketch(moduleId)
 
       const title = config.title
 
-      sketchLibrary[moduleId] = {
+      modules[moduleId] = {
         moduleId,
         title,
         module,
@@ -31,7 +31,7 @@ export const initiateSketchModules = (sketchLibraryIds: string[]): void => {
     }
 
     const appState = useAppStore.getState()
-    appState.setSketchLibrary(sketchLibrary)
+    appState.setSketchModules(modules)
     appState.setIsSketchModulesReady()
   }
 
@@ -49,5 +49,5 @@ export const reimportSketchModule = async (sketchId: string): Promise<void> => {
     module,
   }
 
-  useAppStore.getState().setSketchLibraryItem(item)
+  useAppStore.getState().setSketchModuleItem(item)
 }

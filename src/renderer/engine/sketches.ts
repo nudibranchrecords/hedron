@@ -9,8 +9,8 @@ type Sketch = any
 export const createSketch = (sketchId: string, instanceId: string): Sketch => {
   const base = getSketchesServerUrl()
 
-  const sketchLibrary = useAppStore.getState().sketchModules
-  const module = sketchLibrary[sketchId].module
+  const modules = useAppStore.getState().sketchModules
+  const module = modules[sketchId].module
 
   const sketch = new module({ sketchesDir: base })
   sketch.root.name = instanceId
