@@ -24,22 +24,17 @@ export const handleSketchFiles = async (): Promise<void> => {
 
   sketchesServer.on('change', (sketchId) => {
     console.log(`sketch changed: ${sketchId}`)
-    sendToMainWindow(SketchEvents.RefreshSketch, sketchId)
+    sendToMainWindow(SketchEvents.ReimportSketchModule, sketchId)
   })
 
   sketchesServer.on('add', (sketchId) => {
     console.log(`sketch added: ${sketchId}`)
-    // sendToMainWindow(SketchEvents.RefreshSketch, sketchId)
   })
 
   const url = `http://${host}:${port}`
 
-  const startSketches = (): void => {
-    sendToMainWindow(SketchEvents.ServerStart, url)
-  }
-
   getMainWindow().webContents.on('did-finish-load', () => {
-    startSketches()
-    sendToMainWindow(SketchEvents.InitialSketchIds, sketchIds)
+    sendToMainWindow(SketchEvents.ServerStart, url)
+    sendToMainWindow(SketchEvents.InitialSketchLibraryIds, sketchIds)
   })
 }

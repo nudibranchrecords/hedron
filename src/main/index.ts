@@ -1,8 +1,12 @@
-import { app, BrowserWindow, screen } from 'electron'
+import { app, BrowserWindow, screen, session } from 'electron'
 import { electronApp, optimizer } from '@electron-toolkit/utils'
 import { updateDisplayMenu, updateMenu } from './menu'
 import { createWindow } from './mainWindow'
 import { handleSketchFiles } from './handleSketchFiles'
+import { userSettings } from './userSettings'
+import installExtension, { REDUX_DEVTOOLS } from '@tomjs/electron-devtools-installer'
+
+const isDevelopment = process.env.NODE_ENV !== 'production'
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
@@ -30,6 +34,23 @@ app.whenReady().then(() => {
     // dock icon is clicked and there are no other windows open.
     if (BrowserWindow.getAllWindows().length === 0) createWindow()
   })
+
+  if (isDevelopment) {
+    let reduxDevtoolsInstaller: Promise<Electron.Extension>
+
+    if (userSettings.reduxDevtoolsDir) {
+      // Override automatic install
+      // This is needed if there is some bug with the latest version
+      // https://github.com/reduxjs/redux-devtools/issues/1730
+      reduxDevtoolsInstaller = session.defaultSession.loadExtension(userSettings.reduxDevtoolsDir)
+    } else {
+      reduxDevtoolsInstaller = installExtension(REDUX_DEVTOOLS)
+    }
+
+    reduxDevtoolsInstaller
+      .then((name) => console.log(`Added Extension:  ${name}`))
+      .catch((err) => console.error('An error occurred: ', err))
+  }
 })
 
 const updateDisplays = (): void => {
