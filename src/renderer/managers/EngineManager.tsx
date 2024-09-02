@@ -7,7 +7,7 @@ import { addSketch, removeSketch } from '../engine/sketches'
 const SketchManager = ({ id }: { id: string }): JSX.Element => {
   const sketches = useAppStore((state) => state.sketches)
   const { moduleId: sketchId } = sketches[id]
-  const sketchLibrary = useAppStore((state) => state.sketchLibrary)
+  const sketchLibrary = useAppStore((state) => state.sketchModules)
   const libraryItem = sketchLibrary[sketchId]
 
   useEffect(() => {
@@ -25,7 +25,7 @@ const SketchManager = ({ id }: { id: string }): JSX.Element => {
 export const EngineManager = (): JSX.Element => {
   // TODO: Proper selectors/hooks to get this stuff
   const sketches = useAppStore((state) => state.sketches)
-  const isReady = useAppStore((state) => state.isSketchLibraryReady)
+  const isReady = useAppStore((state) => state.isSketchModulesReady)
   const sketchesVals = useMemo(() => Object.values(sketches), [sketches])
 
   return isReady ? (

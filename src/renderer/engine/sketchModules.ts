@@ -1,6 +1,6 @@
 import { uid } from 'uid'
 import { getSketchesServerUrl } from './globals'
-import { SketchLibrary, useAppStore } from './sketchesState'
+import { SketchModules, useAppStore } from './sketchesState'
 
 const importSketch = async (sketchId: string): Promise<{ config: any; module: any }> => {
   const base = getSketchesServerUrl()
@@ -15,9 +15,9 @@ const importSketch = async (sketchId: string): Promise<{ config: any; module: an
   }
 }
 
-export const initiateSketchLibrary = (sketchLibraryIds: string[]): void => {
+export const initiateSketchModules = (sketchLibraryIds: string[]): void => {
   const getSketchInfo = async (): Promise<void> => {
-    const sketchLibrary: SketchLibrary = {}
+    const sketchLibrary: SketchModules = {}
     for (const moduleId of sketchLibraryIds) {
       const { config, module } = await importSketch(moduleId)
 
@@ -32,7 +32,7 @@ export const initiateSketchLibrary = (sketchLibraryIds: string[]): void => {
 
     const appState = useAppStore.getState()
     appState.setSketchLibrary(sketchLibrary)
-    appState.setIsSketchLibraryReady()
+    appState.setIsSketchModulesReady()
   }
 
   getSketchInfo()
