@@ -17,6 +17,6 @@
       "@renderer/*": [
         "src/renderer/src/*"
       ]
-    }
-  }
+    },
+  },
 }
