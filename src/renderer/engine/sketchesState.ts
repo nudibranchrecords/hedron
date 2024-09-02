@@ -11,10 +11,27 @@ interface SketchState {
 
 type Sketches = { [key: string]: SketchState }
 
+// TODO: How to type this??
+export type SketchModule = any
+
+interface SketchConfigParam {
+  key: string
+  title: string
+  defaultValue: number
+}
+
+interface SketchConfigParams {
+  params: SketchConfigParam[]
+}
+export interface SketchConfig {
+  title: string
+  params: SketchConfigParams
+}
 interface SketchModuleItem {
   moduleId: string
   title: string
-  module: any
+  config: SketchConfig
+  module: SketchModule
 }
 
 export type SketchModules = { [key: string]: SketchModuleItem }
