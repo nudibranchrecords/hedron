@@ -26,7 +26,7 @@ interface AppState {
   activeSketchId: string | null
   setActiveSketchId: (id: string) => void
   setIsSketchLibraryReady: () => void
-  addSketch: (moduleId: string) => void
+  addSketch: (moduleId: string) => string
   deleteSketch: (instanceId: string) => void
   setSketchLibrary: (newSketchLibrary: SketchLibrary) => void
   setSketchLibraryItem: (newItem: SketchLibraryItem) => void
@@ -57,6 +57,8 @@ export const useAppStore = create<AppState>()(
             },
           }
         })
+
+        return newId
       },
       deleteSketch: (instanceId) => {
         set((state) => {
