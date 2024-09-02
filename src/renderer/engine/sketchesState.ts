@@ -5,14 +5,15 @@ import { uid } from 'uid'
 
 interface SketchState {
   id: string
-  sketchId: string
+  title: string
+  moduleId: string
 }
 
 type Sketches = { [key: string]: SketchState }
 
 interface SketchLibraryItem {
-  sketchId: string
-  name: string
+  moduleId: string
+  title: string
   module: any
 }
 
@@ -22,9 +23,10 @@ interface AppState {
   isSketchLibraryReady: boolean
   sketches: Sketches
   sketchLibrary: SketchLibrary
-
+  activeSketchId: string | null
+  setActiveSketchId: (id: string) => void
   setIsSketchLibraryReady: () => void
-  addSketch: (sketchId: string) => void
+  addSketch: (moduleId: string) => void
   deleteSketch: (instanceId: string) => void
   setSketchLibrary: (newSketchLibrary: SketchLibrary) => void
   setSketchLibraryItem: (newItem: SketchLibraryItem) => void
@@ -35,33 +37,26 @@ export const useAppStore = create<AppState>()(
     // persist(
     (set) => ({
       isSketchLibraryReady: false,
-      sketches: {
-        id_a: {
-          id: 'id_a',
-          sketchId: 'logo',
-        },
-        id_b: {
-          id: 'id_b',
-          sketchId: 'solid',
-        },
-        id_c: {
-          id: 'id_c',
-          sketchId: 'solid',
-        },
-      },
+      activeSketchId: 'id_a',
+      sketches: {},
       sketchLibrary: {},
+      setActiveSketchId: (id) => set(() => ({ activeSketchId: id })),
       setIsSketchLibraryReady: () => set(() => ({ isSketchLibraryReady: true })),
-      addSketch: (sketchId) => {
+      addSketch: (moduleId) => {
         const newId = uid()
-        set((state) => ({
-          sketches: {
-            ...state.sketches,
-            [newId]: {
-              id: newId,
-              sketchId,
+        set((state) => {
+          const { title } = state.sketchLibrary[moduleId]
+          return {
+            sketches: {
+              ...state.sketches,
+              [newId]: {
+                id: newId,
+                moduleId: moduleId,
+                title,
+              },
             },
-          },
-        }))
+          }
+        })
       },
       deleteSketch: (instanceId) => {
         set((state) => {
@@ -79,7 +74,7 @@ export const useAppStore = create<AppState>()(
         set((state) => ({
           sketchLibrary: {
             ...state.sketchLibrary,
-            [newItem.sketchId]: newItem,
+            [newItem.moduleId]: newItem,
           },
         })),
     }),

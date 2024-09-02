@@ -1,5 +1,5 @@
 export default {
-  defaultTitle: 'Solid',
+  title: 'Solid',
   category: 'simple',
   params: [
     {

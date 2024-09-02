@@ -1,5 +1,5 @@
 export default {
-  defaultTitle: 'Hedron Logo',
+  title: 'Hedron Logo',
   params: [
     {
       key: 'logoRotSpeedX',
