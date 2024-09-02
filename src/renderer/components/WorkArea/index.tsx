@@ -1,8 +1,8 @@
-import { useCallback, useMemo } from 'react'
+import { useMemo } from 'react'
 import { useAppStore } from 'src/renderer/engine/sketchesState'
 
 export const WorkArea = (): JSX.Element => {
-  const sketchLibrary = useAppStore((state) => state.sketchLibrary)
+  const sketchModules = useAppStore((state) => state.sketchModules)
   const sketches = useAppStore((state) => state.sketches)
   const addSketch = useAppStore((state) => state.addSketch)
   const deleteSketch = useAppStore((state) => state.deleteSketch)
@@ -10,7 +10,7 @@ export const WorkArea = (): JSX.Element => {
   const activeSketchId = useAppStore((state) => state.activeSketchId)
 
   // TODO: Proper selectors/hooks to get this stuff
-  const sketchLibraryVals = useMemo(() => Object.values(sketchLibrary), [sketchLibrary])
+  const sketchModuleVals = useMemo(() => Object.values(sketchModules), [sketchModules])
   const sketchesVals = useMemo(() => Object.values(sketches), [sketches])
   const activeSketch = activeSketchId && sketches[activeSketchId]
 
@@ -35,7 +35,7 @@ export const WorkArea = (): JSX.Element => {
 
       <h2>Add Sketches</h2>
       <ul>
-        {sketchLibraryVals.map(({ title, moduleId }) => (
+        {sketchModuleVals.map(({ title, moduleId }) => (
           <li key={moduleId}>
             <button
               onClick={() => {

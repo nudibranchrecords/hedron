@@ -11,41 +11,41 @@ interface SketchState {
 
 type Sketches = { [key: string]: SketchState }
 
-interface SketchLibraryItem {
+interface SketchModuleItem {
   moduleId: string
   title: string
   module: any
 }
 
-export type SketchLibrary = { [key: string]: SketchLibraryItem }
+export type SketchModules = { [key: string]: SketchModuleItem }
 
 interface AppState {
-  isSketchLibraryReady: boolean
+  isSketchModulesReady: boolean
   sketches: Sketches
-  sketchLibrary: SketchLibrary
+  sketchModules: SketchModules
   activeSketchId: string | null
   setActiveSketchId: (id: string) => void
-  setIsSketchLibraryReady: () => void
+  setIsSketchModulesReady: () => void
   addSketch: (moduleId: string) => string
   deleteSketch: (instanceId: string) => void
-  setSketchLibrary: (newSketchLibrary: SketchLibrary) => void
-  setSketchLibraryItem: (newItem: SketchLibraryItem) => void
+  setSketchLibrary: (newSketchLibrary: SketchModules) => void
+  setSketchLibraryItem: (newItem: SketchModuleItem) => void
 }
 
 export const useAppStore = create<AppState>()(
   devtools(
     // persist(
     (set) => ({
-      isSketchLibraryReady: false,
+      isSketchModulesReady: false,
       activeSketchId: 'id_a',
       sketches: {},
-      sketchLibrary: {},
+      sketchModules: {},
       setActiveSketchId: (id) => set(() => ({ activeSketchId: id })),
-      setIsSketchLibraryReady: () => set(() => ({ isSketchLibraryReady: true })),
+      setIsSketchModulesReady: () => set(() => ({ isSketchModulesReady: true })),
       addSketch: (moduleId) => {
         const newId = uid()
         set((state) => {
-          const { title } = state.sketchLibrary[moduleId]
+          const { title } = state.sketchModules[moduleId]
           return {
             sketches: {
               ...state.sketches,
@@ -70,12 +70,12 @@ export const useAppStore = create<AppState>()(
       },
       setSketchLibrary: (newSketchLibrary) =>
         set(() => ({
-          sketchLibrary: newSketchLibrary,
+          sketchModules: newSketchLibrary,
         })),
-      setSketchLibraryItem: (newItem: SketchLibraryItem) =>
+      setSketchLibraryItem: (newItem: SketchModuleItem) =>
         set((state) => ({
-          sketchLibrary: {
-            ...state.sketchLibrary,
+          sketchModules: {
+            ...state.sketchModules,
             [newItem.moduleId]: newItem,
           },
         })),
