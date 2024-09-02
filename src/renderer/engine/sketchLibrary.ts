@@ -18,14 +18,14 @@ const importSketch = async (sketchId: string): Promise<{ config: any; module: an
 export const initiateSketchLibrary = (sketchLibraryIds: string[]): void => {
   const getSketchInfo = async (): Promise<void> => {
     const sketchLibrary: SketchLibrary = {}
-    for (const sketchId of sketchLibraryIds) {
-      const { config, module } = await importSketch(sketchId)
+    for (const moduleId of sketchLibraryIds) {
+      const { config, module } = await importSketch(moduleId)
 
-      const name = config.defaultTitle
+      const title = config.title
 
-      sketchLibrary[sketchId] = {
-        sketchId,
-        name,
+      sketchLibrary[moduleId] = {
+        moduleId,
+        title,
         module,
       }
     }
