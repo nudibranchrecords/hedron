@@ -1,8 +1,10 @@
 import { uid } from 'uid'
 import { getSketchesServerUrl } from './globals'
-import { SketchModules, useAppStore } from './sketchesState'
+import { SketchConfig, SketchModule, SketchModules, useAppStore } from './sketchesState'
 
-const importSketch = async (sketchId: string): Promise<{ config: any; module: any }> => {
+const importSketch = async (
+  sketchId: string,
+): Promise<{ config: SketchConfig; module: SketchModule }> => {
   const base = getSketchesServerUrl()
   const cacheBust = uid()
 
@@ -27,6 +29,7 @@ export const initiateSketchModules = (moduleIds: string[]): void => {
         moduleId,
         title,
         module,
+        config,
       }
     }
 
@@ -38,15 +41,16 @@ export const initiateSketchModules = (moduleIds: string[]): void => {
   getSketchInfo()
 }
 
-export const reimportSketchModule = async (sketchId: string): Promise<void> => {
-  const { config, module } = await importSketch(sketchId)
+export const reimportSketchModule = async (moduleId: string): Promise<void> => {
+  const { config, module } = await importSketch(moduleId)
 
-  const name = config.defaultTitle
+  const title = config.title
 
   const item = {
-    sketchId,
-    name,
+    moduleId,
+    title,
     module,
+    config,
   }
 
   useAppStore.getState().setSketchModuleItem(item)

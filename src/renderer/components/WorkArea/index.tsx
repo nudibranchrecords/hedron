@@ -19,6 +19,7 @@ export const WorkArea = (): JSX.Element => {
       {activeSketch && (
         <>
           <h2>Sketch: {activeSketch.title}</h2>
+          <button onClick={() => deleteSketch(activeSketchId)}>Delete </button>
         </>
       )}
 
@@ -44,16 +45,6 @@ export const WorkArea = (): JSX.Element => {
               }}
             >
               {title}
-            </button>
-          </li>
-        ))}
-      </ul>
-      <h2>Remove sketches</h2>
-      <ul>
-        {sketchesVals.map(({ moduleId: sketchId, id }) => (
-          <li key={id}>
-            <button onClick={() => deleteSketch(id)}>
-              Remove {sketchId} ({id})
             </button>
           </li>
         ))}
