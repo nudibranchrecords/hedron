@@ -28,8 +28,8 @@ interface AppState {
   setIsSketchModulesReady: () => void
   addSketch: (moduleId: string) => string
   deleteSketch: (instanceId: string) => void
-  setSketchLibrary: (newSketchLibrary: SketchModules) => void
-  setSketchLibraryItem: (newItem: SketchModuleItem) => void
+  setSketchModules: (newSketchModules: SketchModules) => void
+  setSketchModuleItem: (newItem: SketchModuleItem) => void
 }
 
 export const useAppStore = create<AppState>()(
@@ -68,11 +68,11 @@ export const useAppStore = create<AppState>()(
           }
         })
       },
-      setSketchLibrary: (newSketchLibrary) =>
+      setSketchModules: (newSketchModules) =>
         set(() => ({
-          sketchModules: newSketchLibrary,
+          sketchModules: newSketchModules,
         })),
-      setSketchLibraryItem: (newItem: SketchModuleItem) =>
+      setSketchModuleItem: (newItem: SketchModuleItem) =>
         set((state) => ({
           sketchModules: {
             ...state.sketchModules,
