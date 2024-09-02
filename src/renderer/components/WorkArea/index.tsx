@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { useAppStore } from 'src/renderer/engine/sketchesState'
+import { Param, useAppStore } from 'src/renderer/engine/sketchesState'
 
 export const WorkArea = (): JSX.Element => {
   const sketchModules = useAppStore((state) => state.sketchModules)
@@ -13,12 +13,28 @@ export const WorkArea = (): JSX.Element => {
   const sketchModuleVals = useMemo(() => Object.values(sketchModules), [sketchModules])
   const sketchesVals = useMemo(() => Object.values(sketches), [sketches])
   const activeSketch = activeSketchId && sketches[activeSketchId]
+  const nodes = useAppStore((state) => state.nodes)
+
+  const params = useMemo(() => {
+    if (activeSketch) {
+      return activeSketch.paramIds.map((id) => nodes[id])
+    }
+
+    return []
+  }, [nodes, activeSketch])
 
   return (
     <div>
       {activeSketch && (
         <>
           <h2>Sketch: {activeSketch.title}</h2>
+          <ul>
+            {params.map(({ key, title, value }) => (
+              <li key={key}>
+                {title ?? key} - {value}
+              </li>
+            ))}
+          </ul>
           <button onClick={() => deleteSketch(activeSketchId)}>Delete </button>
         </>
       )}
