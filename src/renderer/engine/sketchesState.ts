@@ -7,6 +7,7 @@ interface SketchState {
   id: string
   title: string
   moduleId: string
+  paramIds: string[]
 }
 
 type Sketches = { [key: string]: SketchState }
@@ -14,18 +15,46 @@ type Sketches = { [key: string]: SketchState }
 // TODO: How to type this??
 export type SketchModule = any
 
-interface SketchConfigParam {
+interface NodeBase {
+  id: string
+}
+
+interface NodeParamNumber extends NodeBase {
+  type: 'param'
+  valueType: 'number'
+  value: number
+}
+
+interface NodeParamBoolean extends NodeBase {
+  type: 'param'
+  valueType: 'boolean'
+  value: boolean
+}
+
+type Node = NodeParamNumber | NodeParamBoolean
+
+type Nodes = { [key: string]: Node }
+
+interface SketchConfigParamBase {
   key: string
   title: string
+}
+
+interface SketchConfigParamNumber extends SketchConfigParamBase {
+  valueType: undefined
   defaultValue: number
 }
 
-interface SketchConfigParams {
-  params: SketchConfigParam[]
+interface SketchConfigParamBoolean extends SketchConfigParamBase {
+  valueType: 'boolean'
+  defaultValue: boolean
 }
+
+type SketchConfigParam = SketchConfigParamNumber | SketchConfigParamBoolean
+
 export interface SketchConfig {
   title: string
-  params: SketchConfigParams
+  params: SketchConfigParam[]
 }
 interface SketchModuleItem {
   moduleId: string
@@ -39,6 +68,7 @@ export type SketchModules = { [key: string]: SketchModuleItem }
 interface AppState {
   isSketchModulesReady: boolean
   sketches: Sketches
+  nodes: Nodes
   sketchModules: SketchModules
   activeSketchId: string | null
   setActiveSketchId: (id: string) => void
@@ -56,13 +86,47 @@ export const useAppStore = create<AppState>()(
       isSketchModulesReady: false,
       activeSketchId: 'id_a',
       sketches: {},
+      nodes: {},
       sketchModules: {},
       setActiveSketchId: (id) => set(() => ({ activeSketchId: id })),
       setIsSketchModulesReady: () => set(() => ({ isSketchModulesReady: true })),
       addSketch: (moduleId) => {
         const newId = uid()
         set((state) => {
-          const { title } = state.sketchModules[moduleId]
+          const { title, config } = state.sketchModules[moduleId]
+          const nodes: Nodes = {}
+          const paramIds = []
+
+          for (const paramConfig of config.params) {
+            const valueType = paramConfig.valueType ?? 'number'
+            const id = uid()
+
+            paramIds.push(id)
+
+            const base = {
+              id,
+              type: 'param' as const,
+            }
+
+            if (typeof paramConfig.defaultValue === 'number' && valueType === 'number') {
+              nodes[id] = {
+                ...base,
+                valueType,
+                value: paramConfig.defaultValue,
+              }
+            } else if (typeof paramConfig.defaultValue === 'boolean' && valueType === 'boolean') {
+              nodes[id] = {
+                ...base,
+                valueType,
+                value: paramConfig.defaultValue,
+              }
+            } else {
+              throw new Error(
+                `valueType of param ${paramConfig.key} does not match defaultValue for sketch ${moduleId}`,
+              )
+            }
+          }
+
           return {
             sketches: {
               ...state.sketches,
@@ -70,7 +134,12 @@ export const useAppStore = create<AppState>()(
                 id: newId,
                 moduleId,
                 title,
+                paramIds,
               },
+            },
+            nodes: {
+              ...state.nodes,
+              ...nodes,
             },
           }
         })
