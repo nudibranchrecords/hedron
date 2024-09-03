@@ -6,3 +6,5 @@ out
 sketches-server
 user-settings.json
 chrome-extensions
+
+*storybook.log
