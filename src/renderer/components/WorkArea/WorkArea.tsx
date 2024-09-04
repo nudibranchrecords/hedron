@@ -6,12 +6,11 @@ import { deleteSketch } from 'src/renderer/store/actions/deleteSketch'
 import { setStoreProperty } from 'src/renderer/store/actions/setStoreProperty'
 import { useSketchModuleList } from 'src/renderer/store/hooks/useSketchModuleList'
 import { useActiveSketch } from 'src/renderer/store/hooks/useActiveSketch'
-import { useActiveSketchParams } from 'src/renderer/store/hooks/useActiveSketchParams'
+import { SketchParams } from '../SketchParams/SketchParams'
 
 export const WorkArea = () => {
   const sketchModules = useSketchModuleList()
   const activeSketch = useActiveSketch()
-  const params = useActiveSketchParams()
 
   return (
     <div className={c.wrapper}>
@@ -19,13 +18,7 @@ export const WorkArea = () => {
         {activeSketch && (
           <>
             <h2>Sketch: {activeSketch.title}</h2>
-            <ul>
-              {params.map(({ key, title, value }) => (
-                <li key={key}>
-                  {title ?? key} - {value}
-                </li>
-              ))}
-            </ul>
+            <SketchParams />
             <Button onClick={() => deleteSketch(activeSketch.id)}>Delete </Button>
           </>
         )}
