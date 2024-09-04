@@ -10,9 +10,14 @@ export const SideTabs = ({ children }: SideTabsProps) => {
 
 export interface SideTabsItemProps {
   children: React.ReactNode
+  onClick: () => void
   isActive?: boolean
 }
 
-export const SideTabsItem = ({ children, isActive }: SideTabsItemProps) => {
-  return <button className={`${c.item} ${isActive && 'active'}`}>{children}</button>
+export const SideTabsItem = ({ children, isActive, onClick }: SideTabsItemProps) => {
+  return (
+    <button onClick={onClick} className={`${c.item} ${isActive && 'active'}`}>
+      {children}
+    </button>
+  )
 }
