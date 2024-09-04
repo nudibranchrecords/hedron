@@ -15,7 +15,7 @@ const Item = ({ id, children }: ItemProps) => {
 
   const onClick = useCallback(() => {
     setStoreProperty('activeSketchId', id)
-  }, [])
+  }, [id])
 
   return (
     <SideTabsItem isActive={isActive} onClick={onClick}>
