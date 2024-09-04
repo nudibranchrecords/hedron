@@ -6,19 +6,10 @@ export interface ButtonProps {
   onClick?: () => void
 }
 
-export const Button = ({
-  type = 'primary',
-  children,
-  ...props
-}: ButtonProps) => {
-
+export const Button = ({ type = 'primary', children, ...props }: ButtonProps) => {
   return (
-    <button
-      type="button"
-      className={`${c.wrapper} ${type}`}
-      {...props}
-    >
+    <button type="button" className={`${c.wrapper} ${type}`} {...props}>
       {children}
     </button>
-  );
-};
+  )
+}
