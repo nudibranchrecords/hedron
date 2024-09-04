@@ -1,6 +1,8 @@
 import { uid } from 'uid'
 import { getSketchesServerUrl } from './globals'
-import { SketchConfig, SketchModule, SketchModules, useAppStore } from './sketchesState'
+import { SketchConfig, SketchModule, SketchModules } from '../store/types'
+import { setStoreProperty } from '../store/actions/setStoreProperty'
+import { setSketchModuleItem } from '../store/actions/setSketchModuleItem'
 
 const importSketch = async (
   sketchId: string,
@@ -33,9 +35,8 @@ export const initiateSketchModules = (moduleIds: string[]): void => {
       }
     }
 
-    const appState = useAppStore.getState()
-    appState.setSketchModules(modules)
-    appState.setIsSketchModulesReady()
+    setStoreProperty('sketchModules', modules)
+    setStoreProperty('isSketchModulesReady', true)
   }
 
   getSketchInfo()
@@ -53,5 +54,5 @@ export const reimportSketchModule = async (moduleId: string): Promise<void> => {
     config,
   }
 
-  useAppStore.getState().setSketchModuleItem(item)
+  setSketchModuleItem(item)
 }

@@ -1,6 +1,8 @@
 import { useAppStore } from 'src/renderer/store/useAppStore'
 import { SideTabs, SideTabsItem } from '../core/SideTabs/SideTabs'
-import { useCallback, useMemo } from 'react'
+import { useCallback } from 'react'
+import { useSketchList } from 'src/renderer/store/hooks/useSketchList'
+import { setStoreProperty } from 'src/renderer/store/actions/setStoreProperty'
 
 interface ItemProps {
   children: React.ReactNode
@@ -11,10 +13,8 @@ const Item = ({ id, children }: ItemProps) => {
   const activeSketchId = useAppStore((state) => state.activeSketchId)
   const isActive = activeSketchId === id
 
-  const setActiveSketchId = useAppStore((state) => state.setActiveSketchId)
-
   const onClick = useCallback(() => {
-    setActiveSketchId(id)
+    setStoreProperty('activeSketchId', id)
   }, [])
 
   return (
@@ -25,13 +25,11 @@ const Item = ({ id, children }: ItemProps) => {
 }
 
 export const SketchTabs = () => {
-  const sketches = useAppStore((state) => state.sketches)
-  // TODO: Proper selectors/hooks to get this stuff
-  const sketchesVals = useMemo(() => Object.values(sketches), [sketches])
+  const sketches = useSketchList()
 
   return (
     <SideTabs>
-      {sketchesVals.map(({ title, id }) => (
+      {sketches.map(({ title, id }) => (
         <Item key={id} id={id}>
           {title}
         </Item>

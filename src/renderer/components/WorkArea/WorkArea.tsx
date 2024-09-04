@@ -3,13 +3,13 @@ import { useAppStore } from 'src/renderer/store/useAppStore'
 import c from './WorkArea.module.css'
 import { SketchTabs } from '../SketchTabs/SketchTabs'
 import { Button } from '../core/Button'
+import { addSketch } from 'src/renderer/store/actions/addSketch'
+import { deleteSketch } from 'src/renderer/store/actions/deleteSketch'
+import { setStoreProperty } from 'src/renderer/store/actions/setStoreProperty'
 
 export const WorkArea = () => {
   const sketchModules = useAppStore((state) => state.sketchModules)
   const sketches = useAppStore((state) => state.sketches)
-  const addSketch = useAppStore((state) => state.addSketch)
-  const deleteSketch = useAppStore((state) => state.deleteSketch)
-  const setActiveSketchId = useAppStore((state) => state.setActiveSketchId)
   const activeSketchId = useAppStore((state) => state.activeSketchId)
 
   // TODO: Proper selectors/hooks to get this stuff
@@ -49,7 +49,7 @@ export const WorkArea = () => {
               <button
                 onClick={() => {
                   const id = addSketch(moduleId)
-                  setActiveSketchId(id)
+                  setStoreProperty('activeSketchId', id)
                 }}
               >
                 {title}
