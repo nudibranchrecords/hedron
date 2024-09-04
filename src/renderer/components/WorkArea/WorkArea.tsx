@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { useAppStore } from 'src/renderer/engine/sketchesState'
+import { useAppStore } from 'src/renderer/store/useAppStore'
 import c from './WorkArea.module.css'
 import { SketchTabs } from '../SketchTabs/SketchTabs'
 import { Button } from '../core/Button'

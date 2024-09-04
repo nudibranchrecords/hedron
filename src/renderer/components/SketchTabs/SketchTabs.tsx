@@ -1,4 +1,4 @@
-import { useAppStore } from 'src/renderer/engine/sketchesState'
+import { useAppStore } from 'src/renderer/store/useAppStore'
 import { SideTabs, SideTabsItem } from '../core/SideTabs/SideTabs'
 import { useCallback, useMemo } from 'react'
 

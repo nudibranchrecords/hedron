@@ -10,7 +10,7 @@ export const SideTabs = ({ children }: SideTabsProps) => {
 
 export interface SideTabsItemProps {
   children: React.ReactNode
-  onClick: () => void
+  onClick?: () => void
   isActive?: boolean
 }
 

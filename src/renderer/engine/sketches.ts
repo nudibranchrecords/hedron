@@ -1,9 +1,8 @@
+import { useAppStore } from '../store/useAppStore'
 import { getDebugScene } from './debugScene'
 import { getSketchesServerUrl } from './globals'
-import { useAppStore } from './sketchesState'
 
 // TODO: type this!
-// ts: ignore
 type Sketch = any
 
 export const createSketch = (sketchId: string, instanceId: string): Sketch => {
