@@ -1,5 +1,3 @@
-import { useMemo } from 'react'
-import { useAppStore } from 'src/renderer/store/useAppStore'
 import c from './WorkArea.module.css'
 import { SketchTabs } from '../SketchTabs/SketchTabs'
 import { Button } from '../core/Button'
@@ -8,19 +6,12 @@ import { deleteSketch } from 'src/renderer/store/actions/deleteSketch'
 import { setStoreProperty } from 'src/renderer/store/actions/setStoreProperty'
 import { useSketchModuleList } from 'src/renderer/store/hooks/useSketchModuleList'
 import { useActiveSketch } from 'src/renderer/store/hooks/useActiveSketch'
+import { useActiveSketchParams } from 'src/renderer/store/hooks/useActiveSketchParams'
 
 export const WorkArea = () => {
   const sketchModules = useSketchModuleList()
   const activeSketch = useActiveSketch()
-  const nodes = useAppStore((state) => state.nodes)
-
-  const params = useMemo(() => {
-    if (activeSketch) {
-      return activeSketch.paramIds.map((id) => nodes[id])
-    }
-
-    return []
-  }, [nodes, activeSketch])
+  const params = useActiveSketchParams()
 
   return (
     <div className={c.wrapper}>
