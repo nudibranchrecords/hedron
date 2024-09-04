@@ -1,5 +1,5 @@
 import { useEffect, useMemo } from 'react'
-import { useAppStore } from 'src/renderer/engine/sketchesState'
+import { useAppStore } from 'src/renderer/store/useAppStore'
 
 import { addSketch, removeSketch } from '../engine/sketches'
 

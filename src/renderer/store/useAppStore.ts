@@ -70,10 +70,11 @@ interface SketchModuleItem {
 export type SketchModules = { [key: string]: SketchModuleItem }
 
 interface AppState {
+  // TODO: Maybe the modules should move to a separate store inside engine...
+  sketchModules: SketchModules
   isSketchModulesReady: boolean
   sketches: Sketches
   nodes: Nodes
-  sketchModules: SketchModules
   activeSketchId: string | null
   setActiveSketchId: (id: string) => void
   setIsSketchModulesReady: () => void
