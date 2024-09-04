@@ -1,0 +1,44 @@
+.wrapper {
+  border: 1px solid var(--lineColor1);
+  border-radius: 3px;
+  color: var(--textColorLight1);
+  fill: var(--textColorLight1);
+  padding: 0.25rem;
+  display: flex;
+  flex-direction: column;
+  transition: var(--transition-time);
+  min-width: 8rem;
+
+  &:global(.active) {
+    border-color: white;
+  }
+}
+
+.main {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.inner {
+  margin-bottom: 0.25rem;
+  width: 50%;
+}
+
+.title {
+  width: 50%;
+  border-bottom: 1px dotted var(--bgColorDark3);
+  display: flex;
+  align-items: center;
+  height: 16px;
+  text-transform: uppercase;
+  margin-bottom: 0.25rem;
+  margin-right: 0.25rem;
+  font-size: 0.5rem;
+  z-index: 1;
+  overflow: hidden;
+
+  &:global(.light) {
+    border-color: var(--lineColor2);
+  }
+}
