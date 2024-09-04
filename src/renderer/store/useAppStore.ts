@@ -4,7 +4,6 @@ import type {} from '@redux-devtools/extension' // required for devtools typing
 import { Nodes, Sketches, SketchModules } from './types'
 
 export interface AppState {
-  // TODO: Maybe the modules should move to a separate store inside engine...
   sketchModules: SketchModules
   isSketchModulesReady: boolean
   sketches: Sketches
