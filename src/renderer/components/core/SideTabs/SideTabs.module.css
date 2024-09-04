@@ -1,0 +1,25 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+}
+
+.item {
+  display: block;
+  padding: 0.5rem 0.25rem;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  background: #222;
+  color: white;
+  text-decoration: none;
+  border: 1px solid #222;
+  border-top: 1px solid #333;
+  cursor: pointer;
+
+  &:hover {
+    background: var(--primary-color);
+  }
+
+  &:global(.active) {
+    background: var(--primary-color);
+  }
+}
