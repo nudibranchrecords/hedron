@@ -6,15 +6,12 @@ import { Button } from '../core/Button'
 import { addSketch } from 'src/renderer/store/actions/addSketch'
 import { deleteSketch } from 'src/renderer/store/actions/deleteSketch'
 import { setStoreProperty } from 'src/renderer/store/actions/setStoreProperty'
+import { useSketchModuleList } from 'src/renderer/store/hooks/useSketchModuleList'
+import { useActiveSketch } from 'src/renderer/store/hooks/useActiveSketch'
 
 export const WorkArea = () => {
-  const sketchModules = useAppStore((state) => state.sketchModules)
-  const sketches = useAppStore((state) => state.sketches)
-  const activeSketchId = useAppStore((state) => state.activeSketchId)
-
-  // TODO: Proper selectors/hooks to get this stuff
-  const sketchModuleVals = useMemo(() => Object.values(sketchModules), [sketchModules])
-  const activeSketch = activeSketchId && sketches[activeSketchId]
+  const sketchModules = useSketchModuleList()
+  const activeSketch = useActiveSketch()
   const nodes = useAppStore((state) => state.nodes)
 
   const params = useMemo(() => {
@@ -38,13 +35,13 @@ export const WorkArea = () => {
                 </li>
               ))}
             </ul>
-            <Button onClick={() => deleteSketch(activeSketchId)}>Delete </Button>
+            <Button onClick={() => deleteSketch(activeSketch.id)}>Delete </Button>
           </>
         )}
 
         <h2>Add Sketches</h2>
         <ul>
-          {sketchModuleVals.map(({ title, moduleId }) => (
+          {sketchModules.map(({ title, moduleId }) => (
             <li key={moduleId}>
               <button
                 onClick={() => {
