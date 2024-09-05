@@ -22,13 +22,14 @@ const SketchManager = ({ id }: { id: string }): JSX.Element => {
 
   // TODO: useAnimationFrame ??
   useInterval(() => {
-    const nodes = useAppStore.getState().nodes
+    const nodesValues = useAppStore.getState().nodeValues
     const paramValues: { [key: string]: any } = {}
 
     paramIds.forEach((id, index) => {
-      const node = nodes[id]
+      const value = nodesValues[id]
+
       const paramKey = libraryItem.config.params[index].key
-      paramValues[paramKey] = node.value
+      paramValues[paramKey] = value
     })
 
     sketchInstances[id].update({ deltaFrame: 1, params: paramValues })

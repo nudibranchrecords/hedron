@@ -9,9 +9,9 @@ import {
 } from '../core/NodeControl/NodeControl'
 import { useActiveSketchParams } from 'src/renderer/store/hooks/useActiveSketchParams'
 import { Param } from 'src/renderer/store/types'
-import { useCallback, useEffect, useRef } from 'react'
-import { useAppStore } from 'src/renderer/store/useAppStore'
+import { useCallback, useRef } from 'react'
 import { useInterval } from 'usehooks-ts'
+import { useAppStore } from 'src/renderer/store/useAppStore'
 
 interface ParamProps {
   param: Param
@@ -27,8 +27,9 @@ const ParamItem = ({ param: { key, title, id } }: ParamProps) => {
     [id],
   )
 
+  // TODO: useAnimationFrame?
   useInterval(() => {
-    const nodeValue = useAppStore.getState().nodes[id].value
+    const nodeValue = useAppStore.getState().nodeValues[id]
     ref.current?.drawBar(nodeValue)
   }, 100)
 
