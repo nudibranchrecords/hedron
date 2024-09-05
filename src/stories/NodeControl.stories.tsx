@@ -1,5 +1,14 @@
-import type { Meta, StoryObj } from '@storybook/react'
-import { NodeControl } from '../renderer/components/core/NodeControl/NodeControl'
+import type { Meta } from '@storybook/react'
+import {
+  NodeControl,
+  NodeControlMain,
+  NodeControlTitle,
+  NodeControlInner,
+} from '../renderer/components/core/NodeControl/NodeControl'
+
+import { FloatSlider, FloatSliderHandle } from '../renderer/components/core/FloatSlider/FloatSlider'
+import { useRef } from 'react'
+import { useInterval } from 'usehooks-ts'
 
 const meta = {
   title: 'NodeControl',
@@ -9,7 +18,7 @@ const meta = {
   },
   decorators: [
     (Story) => (
-      <div style={{ width: '8em' }}>
+      <div style={{ width: '80vw', padding: '2em', backgroundColor: 'var(--bgColorDark1)' }}>
         <Story />
       </div>
     ),
@@ -17,17 +26,21 @@ const meta = {
 } satisfies Meta<typeof NodeControl>
 
 export default meta
-type Story = StoryObj<typeof meta>
 
-export const Simple: Story = {
-  args: {
-    title: 'Test Param',
-  },
-}
+export const FloatSliderInner = () => {
+  const ref = useRef<FloatSliderHandle>(null)
 
-export const Active: Story = {
-  args: {
-    title: 'Test Param',
-    isActive: true,
-  },
+  useInterval(() => {
+    ref.current!.drawBar(Math.random())
+  }, 1000)
+  return (
+    <NodeControl>
+      <NodeControlMain>
+        <NodeControlTitle>Hey!</NodeControlTitle>
+        <NodeControlInner>
+          <FloatSlider ref={ref} />
+        </NodeControlInner>
+      </NodeControlMain>
+    </NodeControl>
+  )
 }

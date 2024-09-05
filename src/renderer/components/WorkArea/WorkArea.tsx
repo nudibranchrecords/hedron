@@ -1,6 +1,6 @@
 import c from './WorkArea.module.css'
 import { SketchTabs } from '../SketchTabs/SketchTabs'
-import { Button } from '../core/Button'
+import { Button } from '../core/Button/Button'
 import { addSketch } from 'src/renderer/store/actions/addSketch'
 import { deleteSketch } from 'src/renderer/store/actions/deleteSketch'
 import { setStoreProperty } from 'src/renderer/store/actions/setStoreProperty'

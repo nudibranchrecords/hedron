@@ -1,0 +1,9 @@
+.wrapper {
+  height: 1rem;
+  overflow: hidden;
+}
+
+.canvas {
+  background: var(--bgColorDark2);
+  cursor: pointer;
+}
