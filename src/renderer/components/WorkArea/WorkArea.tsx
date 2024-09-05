@@ -7,6 +7,7 @@ import { setStoreProperty } from 'src/renderer/store/actions/setStoreProperty'
 import { useSketchModuleList } from 'src/renderer/store/hooks/useSketchModuleList'
 import { useActiveSketch } from 'src/renderer/store/hooks/useActiveSketch'
 import { SketchParams } from '../SketchParams/SketchParams'
+import { ViewHeader } from '../core/ViewHeader/ViewHeader'
 
 export const WorkArea = () => {
   const sketchModules = useSketchModuleList()
@@ -14,11 +15,13 @@ export const WorkArea = () => {
 
   return (
     <div className={c.wrapper}>
-      <div>
+      <div className={c.main}>
         {activeSketch && (
           <>
-            <h2>Sketch: {activeSketch.title}</h2>
-            <SketchParams />
+            <ViewHeader>Sketch: {activeSketch.title}</ViewHeader>
+            <div className={c.section}>
+              <SketchParams />
+            </div>
             <Button onClick={() => deleteSketch(activeSketch.id)}>Delete </Button>
           </>
         )}

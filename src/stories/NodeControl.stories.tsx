@@ -7,6 +7,13 @@ const meta = {
   parameters: {
     layout: 'centered',
   },
+  decorators: [
+    (Story) => (
+      <div style={{ width: '8em' }}>
+        <Story />
+      </div>
+    ),
+  ],
 } satisfies Meta<typeof NodeControl>
 
 export default meta

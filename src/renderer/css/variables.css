@@ -23,4 +23,7 @@
   --bg-color-secondary: #042923;
 
   --transition-time: 0.2s;
+
+  --gap-small: 0.25rem;
+  --gap-large: 0.5rem;
 }
