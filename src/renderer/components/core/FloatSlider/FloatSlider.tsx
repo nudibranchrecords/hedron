@@ -14,7 +14,14 @@ export type FloatSliderHandle = {
   drawBar: (value: number) => void
 }
 
-export const FloatSlider = forwardRef<FloatSliderHandle>(function FloatSlider(_, ref) {
+interface FloatSliderProps {
+  onValueChange: (val: number) => void
+}
+
+export const FloatSlider = forwardRef<FloatSliderHandle, FloatSliderProps>(function FloatSlider(
+  { onValueChange },
+  ref,
+) {
   const containerRef = useRef<HTMLDivElement>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const canvasCtx = useRef<CanvasRenderingContext2D | null>(null)
@@ -61,6 +68,10 @@ export const FloatSlider = forwardRef<FloatSliderHandle>(function FloatSlider(_,
     const newVal = Math.max(0, Math.min(1, currVal.current + diff))
 
     drawBar(newVal)
+
+    // currVal.current = newVal
+
+    onValueChange(newVal)
   })
 
   useEffect(() => {
