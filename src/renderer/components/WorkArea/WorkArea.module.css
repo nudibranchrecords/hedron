@@ -1,8 +1,18 @@
 .wrapper {
   display: flex;
+  height: 100%;
+}
+
+.section {
+  margin-bottom: var(--gap-large);
+}
+
+.main {
+  flex: 1;
+  margin-top: var(--gap-large);
 }
 
 .nav {
-  margin-left: auto;
+  margin-left: var(--gap-large);
   width: 3rem;
 }

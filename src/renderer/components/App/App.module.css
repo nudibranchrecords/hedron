@@ -9,7 +9,7 @@
 .left {
   flex: 0 0 50%;
   position: relative;
-  padding: 0.5rem;
+  padding: var(--gap-large);
 }
 
 .right {

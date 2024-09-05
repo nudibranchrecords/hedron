@@ -1,6 +1,8 @@
 .wrapper {
   display: flex;
   flex-direction: column;
+  background: var(--bgColorDark2);
+  height: 100%;
 }
 
 .item {

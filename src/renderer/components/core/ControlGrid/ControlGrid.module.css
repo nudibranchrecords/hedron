@@ -1,5 +1,5 @@
 .wrapper {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
-  grid-gap: 0.25rem;
+  grid-gap: var(--gap-small);
 }
