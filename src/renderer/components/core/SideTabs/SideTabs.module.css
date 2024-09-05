@@ -16,12 +16,13 @@
   border: 1px solid #222;
   border-top: 1px solid #333;
   cursor: pointer;
+  transition: var(--transitionTime);
 
   &:hover {
-    background: var(--primary-color);
+    background: var(--actionColor1);
   }
 
   &:global(.active) {
-    background: var(--primary-color);
+    background: var(--actionColor1);
   }
 }
