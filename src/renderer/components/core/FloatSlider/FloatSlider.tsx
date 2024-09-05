@@ -1,4 +1,11 @@
-import { forwardRef, useCallback, useEffect, useImperativeHandle, useRef } from 'react'
+import {
+  forwardRef,
+  MouseEventHandler,
+  useCallback,
+  useEffect,
+  useImperativeHandle,
+  useRef,
+} from 'react'
 import c from './FloatSlider.module.css'
 import { useDebounceCallback, useResizeObserver } from 'usehooks-ts'
 
@@ -17,21 +24,22 @@ export const FloatSlider = forwardRef<FloatSliderHandle>(function FloatSlider(_,
   const containerRef = useRef<HTMLDivElement>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const canvasCtx = useRef<CanvasRenderingContext2D | null>(null)
-  const prevVal = useRef<number>(0)
+  const currVal = useRef<number>(0)
+  const mouseDownStartX = useRef<number>(0)
+  const size = useRef({ width: 0, height: 0 })
 
   const drawBar = useCallback((value: number) => {
     const ctx = canvasCtx.current
 
-    const canvas = canvasRef.current!
     if (value > 1 || value < 0) {
       throw new Error(`drawBar value must be within range 0-1. Value was ${value}`)
     }
     if (!ctx) return
 
-    const w = canvas.width
-    const h = canvas.height
+    const w = size.current.width
+    const h = size.current.height
     const x = value * w
-    const prevX = prevVal.current * w
+    const prevX = currVal.current * w
 
     // Only clear the area from the last position
     ctx.clearRect(prevX - 1, 0, barWidth + 2, h)
@@ -40,13 +48,15 @@ export const FloatSlider = forwardRef<FloatSliderHandle>(function FloatSlider(_,
     ctx.fillStyle = '#fff'
     ctx.fillRect(x, 0, barWidth, h)
 
-    prevVal.current = value
+    currVal.current = value
   }, [])
 
   const onResize = useDebounceCallback(({ width, height }: Size) => {
     const canvas = canvasRef.current!
     canvas.height = height!
     canvas.width = width!
+    size.current.width = width!
+    size.current.height = height!
   }, 200)
 
   useResizeObserver({
@@ -57,7 +67,39 @@ export const FloatSlider = forwardRef<FloatSliderHandle>(function FloatSlider(_,
   useEffect(() => {
     const canvas = canvasRef.current!
     canvasCtx.current = canvas.getContext('2d')
-  }, [drawBar])
+  }, [])
+
+  useEffect(() => {
+    const canvas = canvasRef.current!
+
+    const handleMouseDown = (e: MouseEvent) => {
+      mouseDownStartX.current = e.screenX
+      console.log(e.screenX)
+
+      document.addEventListener('mousemove', onMouseMove)
+      document.addEventListener('mouseup', onMouseUp)
+    }
+
+    const onMouseMove = (e: MouseEvent) => {
+      const diff = (e.screenX - mouseDownStartX.current) / size.current.width
+
+      const newVal = Math.max(0, Math.min(1, currVal.current + diff))
+      currVal.current = newVal
+      mouseDownStartX.current = e.screenX
+    }
+
+    const onMouseUp = () => {
+      document.removeEventListener('mouseup', onMouseUp)
+      document.removeEventListener('mousemove', onMouseMove)
+    }
+
+    canvas.addEventListener('mousedown', handleMouseDown)
+
+    return () => {
+      canvas.removeEventListener('mousedown', handleMouseDown)
+      onMouseUp()
+    }
+  }, [])
 
   useImperativeHandle(ref, () => {
     return { drawBar }
