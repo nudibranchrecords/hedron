@@ -21,8 +21,6 @@ export const createSketch = (sketchId: string, instanceId: string): SketchInstan
 
   sketchInstances[instanceId] = sketch
 
-  // console.log(sketchInstances)
-
   return sketch
 }
 
