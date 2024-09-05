@@ -1,13 +1,14 @@
 import { create } from 'zustand'
 import { devtools } from 'zustand/middleware'
 import type {} from '@redux-devtools/extension' // required for devtools typing
-import { Nodes, Sketches, SketchModules } from './types'
+import { Nodes, NodeValues, Sketches, SketchModules } from './types'
 
 export interface AppState {
   sketchModules: SketchModules
   isSketchModulesReady: boolean
   sketches: Sketches
   nodes: Nodes
+  nodeValues: NodeValues
   activeSketchId: string | null
 }
 
@@ -19,6 +20,7 @@ export const useAppStore = create<AppState>()(
       activeSketchId: 'id_a',
       sketches: {},
       nodes: {},
+      nodeValues: {},
       sketchModules: {},
     }),
     //   {

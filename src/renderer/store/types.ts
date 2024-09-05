@@ -19,20 +19,20 @@ export interface NodeBase {
 export interface NodeParamNumber extends NodeBase {
   type: 'param'
   valueType: 'number'
-  value: number
 }
 
 export interface NodeParamBoolean extends NodeBase {
   type: 'param'
   valueType: 'boolean'
-  value: boolean
 }
 
 export type Param = NodeParamBoolean | NodeParamNumber
 
 export type Node = Param
-
 export type Nodes = { [key: string]: Node }
+
+export type NodeValue = number | boolean
+export type NodeValues = { [key: string]: NodeValue }
 
 export interface SketchConfigParamBase {
   key: string

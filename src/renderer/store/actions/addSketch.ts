@@ -1,12 +1,13 @@
 import { uid } from 'uid'
 import { useAppStore } from '../useAppStore'
-import { Nodes } from '../types'
+import { Nodes, NodeValues } from '../types'
 
 export const addSketch = (moduleId: string) => {
   const newId = uid()
   useAppStore.setState((state) => {
     const { title, config } = state.sketchModules[moduleId]
     const nodes: Nodes = {}
+    const nodeValues: NodeValues = {}
     const paramIds = []
 
     for (const paramConfig of config.params) {
@@ -16,25 +17,19 @@ export const addSketch = (moduleId: string) => {
 
       paramIds.push(id)
 
-      const base = {
+      nodes[id] = {
         id,
         key,
         title,
         type: 'param' as const,
+        valueType,
       }
 
-      if (typeof defaultValue === 'number' && valueType === 'number') {
-        nodes[id] = {
-          ...base,
-          valueType,
-          value: defaultValue,
-        }
-      } else if (typeof defaultValue === 'boolean' && valueType === 'boolean') {
-        nodes[id] = {
-          ...base,
-          valueType,
-          value: defaultValue,
-        }
+      if (
+        (typeof defaultValue === 'number' && valueType === 'number') ||
+        (typeof defaultValue === 'boolean' && valueType === 'boolean')
+      ) {
+        nodeValues[id] = defaultValue
       } else {
         throw new Error(
           `valueType of param ${paramConfig.key} does not match defaultValue for sketch ${moduleId}`,
@@ -55,6 +50,10 @@ export const addSketch = (moduleId: string) => {
       nodes: {
         ...state.nodes,
         ...nodes,
+      },
+      nodeValues: {
+        ...state.nodeValues,
+        ...nodeValues,
       },
     }
   })
