@@ -6,7 +6,7 @@
   padding: 0.25rem;
   display: flex;
   flex-direction: column;
-  transition: var(--transition-time);
+  transition: var(--transitionTime);
 
   &:global(.active) {
     border-color: white;

@@ -1,0 +1,25 @@
+.wrapper {
+  background: var(--actionColor1);
+  color: white;
+  text-transform: uppercase;
+  font-weight: 600;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+  transition: var(--transitionTime);
+  cursor: pointer;
+
+  &:hover {
+    background: var(--actionColor1Hover);
+  }
+
+  &:global(.secondary) {
+    background: var(--bgColorDark2);
+    border: 1px solid var(--actionColor2);
+    color: var(--actionColor2);
+
+    &:hover {
+      color: var(--actionColor2Hover);
+      border-color: var(--actionColor2Hover);
+    }
+  }
+}

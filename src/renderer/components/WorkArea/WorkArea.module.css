@@ -4,15 +4,15 @@
 }
 
 .section {
-  margin-bottom: var(--gap-large);
+  margin-bottom: var(--gapLarge);
 }
 
 .main {
   flex: 1;
-  margin-top: var(--gap-large);
+  margin-top: var(--gapLarge);
 }
 
 .nav {
-  margin-left: var(--gap-large);
+  margin-left: var(--gapLarge);
   width: 3rem;
 }

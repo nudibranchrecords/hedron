@@ -1,4 +1,4 @@
-import c from './styles.module.css'
+import c from './Button.module.css'
 
 export interface ButtonProps {
   type?: 'primary' | 'secondary'

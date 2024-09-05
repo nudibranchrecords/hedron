@@ -7,23 +7,13 @@
   --bgColorDark3: #111;
   --bgColorLight1: #434343;
   --actionColor1: #da5782;
+  --actionColor1Hover: #d87a9a;
+  --actionColor2: #0c7967;
+  --actionColor2Hover: #0f9680;
   --channelAColor: #e35a59;
   --channelBColor: #24965c;
   --dangerColor: red;
-
-  /* TODO: only use either above or below vars */
-  --primary-color: #0c7967;
-  --primary-color-hover: #0f9680;
-  --text-color-on-primary: #ffffff;
-
-  --secondary-color: #9cd7cd;
-  --text-color-on-secondary: #064238;
-
-  --bg-color-primary: #141515;
-  --bg-color-secondary: #042923;
-
-  --transition-time: 0.2s;
-
-  --gap-small: 0.25rem;
-  --gap-large: 0.5rem;
+  --transitionTime: 0.2s;
+  --gapSmall: 0.25rem;
+  --gapLarge: 0.5rem;
 }
