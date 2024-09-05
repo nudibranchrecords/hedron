@@ -1,6 +1,7 @@
 import { forwardRef, useCallback, useEffect, useImperativeHandle, useRef } from 'react'
 import c from './FloatSlider.module.css'
 import { useDebounceCallback, useResizeObserver } from 'usehooks-ts'
+import { useElementScrub } from '../../hooks/useElementScrub'
 
 type Size = {
   width?: number
@@ -18,7 +19,6 @@ export const FloatSlider = forwardRef<FloatSliderHandle>(function FloatSlider(_,
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const canvasCtx = useRef<CanvasRenderingContext2D | null>(null)
   const currVal = useRef<number>(0)
-  const mouseDownStartX = useRef<number>(0)
   const size = useRef({ width: 0, height: 0 })
 
   const drawBar = useCallback((value: number) => {
@@ -57,41 +57,16 @@ export const FloatSlider = forwardRef<FloatSliderHandle>(function FloatSlider(_,
     onResize,
   })
 
+  useElementScrub(canvasRef, (diff: number) => {
+    const newVal = Math.max(0, Math.min(1, currVal.current + diff))
+
+    drawBar(newVal)
+  })
+
   useEffect(() => {
     const canvas = canvasRef.current!
     canvasCtx.current = canvas.getContext('2d')
   }, [])
-
-  useEffect(() => {
-    const canvas = canvasRef.current!
-
-    const handleMouseDown = (e: MouseEvent) => {
-      mouseDownStartX.current = e.screenX
-
-      document.addEventListener('mousemove', onMouseMove)
-      document.addEventListener('mouseup', onMouseUp)
-    }
-
-    const onMouseMove = (e: MouseEvent) => {
-      const diff = (e.screenX - mouseDownStartX.current) / size.current.width
-
-      const newVal = Math.max(0, Math.min(1, currVal.current + diff))
-      mouseDownStartX.current = e.screenX
-      drawBar(newVal)
-    }
-
-    const onMouseUp = () => {
-      document.removeEventListener('mouseup', onMouseUp)
-      document.removeEventListener('mousemove', onMouseMove)
-    }
-
-    canvas.addEventListener('mousedown', handleMouseDown)
-
-    return () => {
-      canvas.removeEventListener('mousedown', handleMouseDown)
-      onMouseUp()
-    }
-  }, [drawBar])
 
   useImperativeHandle(ref, () => {
     return { drawBar }
