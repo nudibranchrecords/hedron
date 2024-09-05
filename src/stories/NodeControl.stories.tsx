@@ -31,8 +31,8 @@ export const FloatSliderInner = () => {
   const ref = useRef<FloatSliderHandle>(null)
 
   useInterval(() => {
-    // ref.current!.drawBar(Math.random())
-  }, 1000)
+    ref.current!.drawBar(Math.random())
+  }, 3000)
   return (
     <NodeControl>
       <NodeControlMain>

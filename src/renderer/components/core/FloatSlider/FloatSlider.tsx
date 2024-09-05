@@ -1,11 +1,4 @@
-import {
-  forwardRef,
-  MouseEventHandler,
-  useCallback,
-  useEffect,
-  useImperativeHandle,
-  useRef,
-} from 'react'
+import { forwardRef, useCallback, useEffect, useImperativeHandle, useRef } from 'react'
 import c from './FloatSlider.module.css'
 import { useDebounceCallback, useResizeObserver } from 'usehooks-ts'
 
@@ -36,7 +29,7 @@ export const FloatSlider = forwardRef<FloatSliderHandle>(function FloatSlider(_,
     }
     if (!ctx) return
 
-    const w = size.current.width
+    const w = size.current.width - barWidth
     const h = size.current.height
     const x = value * w
     const prevX = currVal.current * w
@@ -74,7 +67,6 @@ export const FloatSlider = forwardRef<FloatSliderHandle>(function FloatSlider(_,
 
     const handleMouseDown = (e: MouseEvent) => {
       mouseDownStartX.current = e.screenX
-      console.log(e.screenX)
 
       document.addEventListener('mousemove', onMouseMove)
       document.addEventListener('mouseup', onMouseUp)
@@ -84,8 +76,8 @@ export const FloatSlider = forwardRef<FloatSliderHandle>(function FloatSlider(_,
       const diff = (e.screenX - mouseDownStartX.current) / size.current.width
 
       const newVal = Math.max(0, Math.min(1, currVal.current + diff))
-      currVal.current = newVal
       mouseDownStartX.current = e.screenX
+      drawBar(newVal)
     }
 
     const onMouseUp = () => {
@@ -99,7 +91,7 @@ export const FloatSlider = forwardRef<FloatSliderHandle>(function FloatSlider(_,
       canvas.removeEventListener('mousedown', handleMouseDown)
       onMouseUp()
     }
-  }, [])
+  }, [drawBar])
 
   useImperativeHandle(ref, () => {
     return { drawBar }
