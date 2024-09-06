@@ -1,0 +1,16 @@
+@import './reset.css';
+@import './variables.css';
+
+body {
+  user-select: none;
+  margin: 0;
+  font-size: 0.8rem;
+  overflow: hidden;
+  font-family: sans-serif;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: inherit;
+}

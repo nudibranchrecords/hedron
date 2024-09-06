@@ -1,19 +1,26 @@
+import { useAppStore } from '../store/useAppStore'
 import { getDebugScene } from './debugScene'
 import { getSketchesServerUrl } from './globals'
-import { useAppStore } from './sketchesState'
 
-// TODO: type this!
-// ts: ignore
-type Sketch = any
+// TODO: type this! (class instance with methods, eg. update())
+type SketchInstance = {
+  update: any
+  root: any
+}
 
-export const createSketch = (sketchId: string, instanceId: string): Sketch => {
+export const sketchInstances: { [id: string]: SketchInstance } = {}
+
+export const createSketch = (sketchId: string, instanceId: string): SketchInstance => {
   const base = getSketchesServerUrl()
 
-  const sketchLibrary = useAppStore.getState().sketchLibrary
-  const module = sketchLibrary[sketchId].module
+  const modules = useAppStore.getState().sketchModules
+  const module = modules[sketchId].module
 
   const sketch = new module({ sketchesDir: base })
   sketch.root.name = instanceId
+
+  sketchInstances[instanceId] = sketch
+
   return sketch
 }
 
@@ -30,4 +37,5 @@ export const removeSketch = (instanceId: string): void => {
     throw new Error(`couldn't find sketch to remove: ${instanceId}`)
   }
   scene.remove(oldSketch)
+  delete sketchInstances[instanceId]
 }

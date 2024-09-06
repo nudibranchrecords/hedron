@@ -1,23 +1,39 @@
 import { useEffect, useMemo } from 'react'
-import { useAppStore } from 'src/renderer/engine/sketchesState'
+import { useAppStore } from 'src/renderer/store/useAppStore'
 
-import { addSketch, removeSketch } from '../engine/sketches'
+import { addSketch, removeSketch, sketchInstances } from '../engine/sketches'
+import { useInterval } from 'usehooks-ts'
 
 // Handles adding, removing and reimporting of sketch modules
 const SketchManager = ({ id }: { id: string }): JSX.Element => {
   const sketches = useAppStore((state) => state.sketches)
-  const { sketchId } = sketches[id]
-  const sketchLibrary = useAppStore((state) => state.sketchLibrary)
-  const libraryItem = sketchLibrary[sketchId]
+  const { moduleId, paramIds } = sketches[id]
+  const modules = useAppStore((state) => state.sketchModules)
+  const libraryItem = modules[moduleId]
 
   useEffect(() => {
-    addSketch(sketchId, id)
+    addSketch(moduleId, id)
 
     return (): void => {
       removeSketch(id)
     }
     // libraryItem as a dep so sketch refreshes when module is updated
-  }, [sketchId, id, libraryItem])
+  }, [moduleId, id, libraryItem])
+
+  // TODO: useAnimationFrame ??
+  useInterval(() => {
+    const nodesValues = useAppStore.getState().nodeValues
+    const paramValues: { [key: string]: any } = {}
+
+    paramIds.forEach((id, index) => {
+      const value = nodesValues[id]
+
+      const paramKey = libraryItem.config.params[index].key
+      paramValues[paramKey] = value
+    })
+
+    sketchInstances[id].update({ deltaFrame: 1, params: paramValues })
+  }, 16)
 
   return <></>
 }
@@ -25,7 +41,7 @@ const SketchManager = ({ id }: { id: string }): JSX.Element => {
 export const EngineManager = (): JSX.Element => {
   // TODO: Proper selectors/hooks to get this stuff
   const sketches = useAppStore((state) => state.sketches)
-  const isReady = useAppStore((state) => state.isSketchLibraryReady)
+  const isReady = useAppStore((state) => state.isSketchModulesReady)
   const sketchesVals = useMemo(() => Object.values(sketches), [sketches])
 
   return isReady ? (
