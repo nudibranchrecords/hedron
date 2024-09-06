@@ -1,8 +1,8 @@
 import { SideTabs, SideTabsItem } from '../core/SideTabs/SideTabs'
 import { useCallback } from 'react'
-import { useSketchList } from 'src/renderer/store/hooks/useSketchList'
-import { setStoreProperty } from 'src/renderer/store/actions/setStoreProperty'
-import { useIsActiveSketch } from 'src/renderer/store/hooks/useIsActiveSketch'
+import { useSketchList } from 'src/renderer/engine/store/hooks/useSketchList'
+import { setStoreProperty } from 'src/renderer/engine/store/actions/setStoreProperty'
+import { useIsActiveSketch } from 'src/renderer/engine/store/hooks/useIsActiveSketch'
 
 interface ItemProps {
   children: React.ReactNode
