@@ -9,5 +9,9 @@
 .left {
   flex: 0 0 50%;
   position: relative;
-  padding: 0.5rem;
+  padding: var(--gapLarge);
+}
+
+.right {
+  flex: 1;
 }

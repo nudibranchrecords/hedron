@@ -21,12 +21,6 @@ export default class Solid {
 
     this.geomNames = Object.keys(geoms)
 
-    // TODO: this is just while we don't have params to feed in
-    this.root.rotation.x += Math.random()
-    this.root.rotation.y += Math.random()
-    this.root.rotation.z += Math.random()
-    this.root.scale.set(2, 2, 2)
-
     const keys = Object.keys(geoms)
     const initGeom = keys[Math.floor(Math.random() * keys.length)]
 

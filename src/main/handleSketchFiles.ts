@@ -4,20 +4,20 @@ import { SketchesServer } from './SketchesServer'
 import fs from 'fs'
 import { userSettings } from './userSettings'
 
-const getInitialSketchIds = async (): Promise<string[]> => {
-  const sketchIds: string[] = []
+const getInitialModuleIds = async (): Promise<string[]> => {
+  const moduleIds: string[] = []
   const dir = await fs.promises.opendir(userSettings.sketchesDir)
   for await (const dirent of dir) {
     if (dirent.isDirectory()) {
-      sketchIds.push(dirent.name)
+      moduleIds.push(dirent.name)
     }
   }
 
-  return sketchIds
+  return moduleIds
 }
 
 export const handleSketchFiles = async (): Promise<void> => {
-  const sketchIds = await getInitialSketchIds()
+  const moduleIds = await getInitialModuleIds()
   const sketchesServer = new SketchesServer()
 
   const { host, port } = await sketchesServer.init()
@@ -35,6 +35,6 @@ export const handleSketchFiles = async (): Promise<void> => {
 
   getMainWindow().webContents.on('did-finish-load', () => {
     sendToMainWindow(SketchEvents.ServerStart, url)
-    sendToMainWindow(SketchEvents.InitialSketchLibraryIds, sketchIds)
+    sendToMainWindow(SketchEvents.InitialSketchModuleIds, moduleIds)
   })
 }

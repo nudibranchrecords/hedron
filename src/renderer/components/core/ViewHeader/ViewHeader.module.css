@@ -1,0 +1,12 @@
+.wrapper {
+  font-weight: normal;
+  font-size: 1.2rem;
+  background: var(--bgColorDark2);
+  padding: 0.5rem;
+  flex: 0 0 2rem;
+  margin: -0.5rem -0.5rem 0.5rem;
+  border-bottom: 1px solid var(--lineColor2);
+  color: var(--textColorLight1);
+  display: flex;
+  align-items: center;
+}
