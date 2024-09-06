@@ -1,4 +1,4 @@
-import { updateNodeValue } from 'src/renderer/engine/store/actions/updateNodeValue'
+import { updateNodeValue } from 'src/engine/store/actions/updateNodeValue'
 import { ControlGrid } from '../core/ControlGrid/ControlGrid'
 import { FloatSlider, FloatSliderHandle } from '../core/FloatSlider/FloatSlider'
 import {
@@ -7,11 +7,11 @@ import {
   NodeControlMain,
   NodeControlTitle,
 } from '../core/NodeControl/NodeControl'
-import { useActiveSketchParams } from 'src/renderer/engine/store/hooks/useActiveSketchParams'
-import { Param } from 'src/renderer/engine/store/types'
+import { useActiveSketchParams } from 'src/engine/store/hooks/useActiveSketchParams'
+import { Param } from 'src/engine/store/types'
 import { useCallback, useRef } from 'react'
 import { useInterval } from 'usehooks-ts'
-import { useAppStore } from 'src/renderer/engine/store/useAppStore'
+import { useAppStore } from 'src/engine/store/useAppStore'
 
 interface ParamProps {
   param: Param

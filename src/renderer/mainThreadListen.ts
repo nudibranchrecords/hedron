@@ -1,7 +1,7 @@
 import { SketchEvents } from '../shared/Events'
-import { run } from './engine/3d'
-import { setSketchesServerUrl } from './engine/3d/globals'
-import { initiateSketchModules, reimportSketchModule } from './engine/3d/sketchModules'
+import { run } from '../engine/3d'
+import { setSketchesServerUrl } from '../engine/3d/globals'
+import { initiateSketchModules, reimportSketchModule } from '../engine/3d/sketchModules'
 
 const listen = (event: string, cb: (info: any) => void): void => {
   window.electron.ipcRenderer.on(event, (_, info) => {
