@@ -1,5 +1,5 @@
 import { ScreenEvents } from 'src/shared/Events.js'
-import { setOutput, stopOutput } from './engine/renderer.js'
+import { setOutput, stopOutput } from './engine/3d/renderer.js'
 import { ipcRenderer } from 'electron'
 
 export const sendOutput = (index: number): void => {

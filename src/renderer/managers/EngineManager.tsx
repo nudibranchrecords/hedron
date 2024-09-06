@@ -1,7 +1,7 @@
 import { useEffect, useMemo } from 'react'
-import { useAppStore } from 'src/renderer/store/useAppStore'
+import { useAppStore } from 'src/renderer/engine/store/useAppStore'
 
-import { addSketch, removeSketch, sketchInstances } from '../engine/sketches'
+import { addSketch, removeSketch, sketchInstances } from '../engine/3d/sketches'
 import { useInterval } from 'usehooks-ts'
 
 // Handles adding, removing and reimporting of sketch modules
