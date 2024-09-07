@@ -1,4 +1,4 @@
-import { useEngineStore } from '../engine'
+import { useEngineStore } from '../../engine'
 
 export const useActiveSketch = () => {
   const sketches = useEngineStore((state) => state.sketches)
