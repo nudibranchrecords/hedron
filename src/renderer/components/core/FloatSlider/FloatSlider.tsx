@@ -52,7 +52,10 @@ export const FloatSlider = forwardRef<FloatSliderHandle, FloatSliderProps>(funct
   }, [])
 
   const onResize = useDebounceCallback(({ width, height }: Size) => {
-    const canvas = canvasRef.current!
+    const canvas = canvasRef.current
+
+    if (!canvas) return
+
     canvas.height = height!
     canvas.width = width!
     size.current.width = width!
