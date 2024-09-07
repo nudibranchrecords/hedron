@@ -9,8 +9,4 @@ export const createDeleteSketch: SetterCreator<'deleteSketch'> =
       })
 
       delete state.sketches[instanceId]
-      return {
-        sketches: { ...state.sketches },
-        nodes: { ...state.nodes },
-      }
     })
