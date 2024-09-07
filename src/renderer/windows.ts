@@ -1,4 +1,5 @@
 import { ScreenEvents } from 'src/shared/Events.js'
+import { engine } from './engine'
 
 export const sendOutput = (index: number): void => {
   // const display = screen.getAllDisplays()[index]
@@ -16,11 +17,11 @@ export const sendOutput = (index: number): void => {
   outputWin.document.body.style.cursor = 'none'
 
   outputWin.addEventListener('beforeunload', () => {
-    // engine.stopOutput()
+    engine.stopOutput()
   })
 
   setTimeout(() => {
-    // engine.setOutput(outputWin)
+    engine.setOutput(outputWin)
   }, 1000)
 }
 

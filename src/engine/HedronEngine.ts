@@ -40,6 +40,14 @@ export class HedronEngine {
     return this.renderer.createCanvas(containerEl)
   }
 
+  public setOutput(window: Window) {
+    this.renderer.setOutput(window)
+  }
+
+  public stopOutput() {
+    this.renderer.stopOutput()
+  }
+
   run() {
     if (!this.sketchManager) throw new Error('Sketch Manager not ready')
 
