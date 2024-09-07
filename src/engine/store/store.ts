@@ -1,5 +1,7 @@
 import { createStore, StoreApi } from 'zustand/vanilla'
 import { devtools, subscribeWithSelector } from 'zustand/middleware'
+import { immer } from 'zustand/middleware/immer'
+
 import type {} from '@redux-devtools/extension' // required for devtools typing
 import { Nodes, NodeValues, Sketches, SketchModuleItem, SketchModules } from './types'
 import { createAddSketch } from './actionCreators/addSketch'
@@ -24,23 +26,34 @@ export interface HedronState {
 
 export type SetState = StoreApi<HedronState>['setState']
 
-export type SetterCreator<K extends keyof HedronState> = (setState: SetState) => HedronState[K]
+// Matches immer middleware and devtools
+export type CustomSetState = (
+  cb: (draft: HedronState) => void,
+  replace?: boolean,
+  name?: string,
+) => void
+
+export type SetterCreator<K extends keyof HedronState> = (
+  setState: CustomSetState,
+) => HedronState[K]
 
 export const createHedronStore = () =>
   createStore<HedronState>()(
     subscribeWithSelector(
-      devtools((set) => ({
-        isSketchModulesReady: false,
-        activeSketchId: 'id_a',
-        sketches: {},
-        nodes: {},
-        nodeValues: {},
-        sketchModules: {},
-        addSketch: createAddSketch(set),
-        setSketchModuleItem: createSetSketchModuleItem(set),
-        updateNodeValue: createUpdateNodeValue(set),
-        deleteSketch: createDeleteSketch(set),
-      })),
+      devtools(
+        immer((set) => ({
+          isSketchModulesReady: false,
+          activeSketchId: 'id_a',
+          sketches: {},
+          nodes: {},
+          nodeValues: {},
+          sketchModules: {},
+          addSketch: createAddSketch(set),
+          setSketchModuleItem: createSetSketchModuleItem(set),
+          updateNodeValue: createUpdateNodeValue(set),
+          deleteSketch: createDeleteSketch(set),
+        })),
+      ),
     ),
   )
 

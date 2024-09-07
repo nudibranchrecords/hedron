@@ -8,6 +8,8 @@ export const listenToStore = (
   store.subscribe(
     (state) => state.sketches,
     (sketches, previousSketches) => {
+      console.log({ sketches, previousSketches })
+      console.log(Object.keys(previousSketches))
       Object.keys(previousSketches).forEach((prevId) => {
         if (!sketches[prevId]) {
           console.log('Removing sketch:', prevId)
