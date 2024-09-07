@@ -6,11 +6,12 @@ import {
   NodeControlMain,
   NodeControlTitle,
 } from '../core/NodeControl/NodeControl'
-import { useActiveSketchParams } from 'src/renderer/hooks/useActiveSketchParams'
+import { useActiveSketchParams } from '../hooks/useActiveSketchParams'
 import { Param } from 'src/engine'
 import { useCallback, useRef } from 'react'
 import { useInterval } from 'usehooks-ts'
 import { engineStore } from 'src/renderer/engine'
+import { useUpdateNodeValue } from '../hooks/useUpdateNodeValue'
 
 interface ParamProps {
   param: Param
@@ -18,12 +19,13 @@ interface ParamProps {
 
 const ParamItem = ({ param: { key, title, id } }: ParamProps) => {
   const ref = useRef<FloatSliderHandle>(null)
+  const updateNodeValue = useUpdateNodeValue()
 
   const onValueChange = useCallback(
     (value: number) => {
-      engineStore.getState().updateNodeValue(id, value)
+      updateNodeValue(id, value)
     },
-    [id],
+    [id, updateNodeValue],
   )
 
   // TODO: useAnimationFrame?

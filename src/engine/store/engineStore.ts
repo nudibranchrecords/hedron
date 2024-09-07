@@ -15,7 +15,6 @@ export interface EngineState {
   sketches: Sketches
   nodes: Nodes
   nodeValues: NodeValues
-  activeSketchId: string | null
   addSketch: (moduleId: string) => string
   deleteSketch: (instanceId: string) => void
   setSketchModuleItem: (newItem: SketchModuleItem) => void
@@ -41,7 +40,6 @@ export const createEngineStore = () =>
       devtools(
         immer((set) => ({
           isSketchModulesReady: false,
-          activeSketchId: 'id_a',
           sketches: {},
           nodes: {},
           nodeValues: {},

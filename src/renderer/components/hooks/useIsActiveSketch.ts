@@ -1,6 +1,6 @@
-import { useEngineStore } from '../../engine'
+import { useAppStore } from 'src/renderer/appStore'
 
 export const useIsActiveSketch = (id: string) => {
-  const activeSketchId = useEngineStore((state) => state.activeSketchId)
+  const activeSketchId = useAppStore((state) => state.activeSketchId)
   return activeSketchId === id
 }
