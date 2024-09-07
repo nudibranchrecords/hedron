@@ -1,7 +1,5 @@
 import { SketchEvents } from '../shared/Events'
-import { run } from './engine'
-import { setSketchesServerUrl } from './engine/globals'
-import { initiateSketchModules, reimportSketchModule } from './engine/sketchModules'
+import { engine } from './engine'
 
 const listen = (event: string, cb: (info: any) => void): void => {
   window.electron.ipcRenderer.on(event, (_, info) => {
@@ -10,15 +8,15 @@ const listen = (event: string, cb: (info: any) => void): void => {
 }
 
 listen(SketchEvents.InitialSketchModuleIds, (sketchModuleIds: string[]) => {
-  initiateSketchModules(sketchModuleIds)
+  engine.initiateSketchModules(sketchModuleIds)
 })
 
 listen(SketchEvents.ServerStart, (sketchesServerUrl: string) => {
-  setSketchesServerUrl(sketchesServerUrl)
+  engine.setSketchesUrl(sketchesServerUrl)
 
-  run()
+  engine.run()
 })
 
 listen(SketchEvents.ReimportSketchModule, (moduleId: string) => {
-  reimportSketchModule(moduleId)
+  engine.reimportSketchModule(moduleId)
 })

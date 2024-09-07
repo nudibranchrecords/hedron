@@ -1,4 +1,3 @@
-import { updateNodeValue } from 'src/renderer/store/actions/updateNodeValue'
 import { ControlGrid } from '../core/ControlGrid/ControlGrid'
 import { FloatSlider, FloatSliderHandle } from '../core/FloatSlider/FloatSlider'
 import {
@@ -7,11 +6,12 @@ import {
   NodeControlMain,
   NodeControlTitle,
 } from '../core/NodeControl/NodeControl'
-import { useActiveSketchParams } from 'src/renderer/store/hooks/useActiveSketchParams'
-import { Param } from 'src/renderer/store/types'
+import { useActiveSketchParams } from '../hooks/useActiveSketchParams'
+import { Param } from 'src/engine'
 import { useCallback, useRef } from 'react'
 import { useInterval } from 'usehooks-ts'
-import { useAppStore } from 'src/renderer/store/useAppStore'
+import { engineStore } from 'src/renderer/engine'
+import { useUpdateNodeValue } from '../hooks/useUpdateNodeValue'
 
 interface ParamProps {
   param: Param
@@ -19,17 +19,18 @@ interface ParamProps {
 
 const ParamItem = ({ param: { key, title, id } }: ParamProps) => {
   const ref = useRef<FloatSliderHandle>(null)
+  const updateNodeValue = useUpdateNodeValue()
 
   const onValueChange = useCallback(
     (value: number) => {
       updateNodeValue(id, value)
     },
-    [id],
+    [id, updateNodeValue],
   )
 
   // TODO: useAnimationFrame?
   useInterval(() => {
-    const nodeValue = useAppStore.getState().nodeValues[id]
+    const nodeValue = engineStore.getState().nodeValues[id]
     ref.current?.drawBar(nodeValue)
   }, 100)
 
