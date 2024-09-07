@@ -9,7 +9,7 @@ import { createSetSketchModuleItem } from './actionCreators/setSketchModuleItem'
 import { createUpdateNodeValue } from './actionCreators/updateNodeValue'
 import { createDeleteSketch } from './actionCreators/deleteSketch'
 
-export interface HedronState {
+export interface EngineState {
   sketchModules: SketchModules
   isSketchModulesReady: boolean
   sketches: Sketches
@@ -22,23 +22,21 @@ export interface HedronState {
   updateNodeValue: (nodeId: string, value: number) => void
 }
 
-// export type HedronStore = StoreApi<HedronState>
-
-export type SetState = StoreApi<HedronState>['setState']
+export type SetState = StoreApi<EngineState>['setState']
 
 // Matches immer middleware and devtools
 export type CustomSetState = (
-  cb: (draft: HedronState) => void,
+  cb: (draft: EngineState) => void,
   replace?: boolean,
   name?: string,
 ) => void
 
-export type SetterCreator<K extends keyof HedronState> = (
+export type SetterCreator<K extends keyof EngineState> = (
   setState: CustomSetState,
-) => HedronState[K]
+) => EngineState[K]
 
-export const createHedronStore = () =>
-  createStore<HedronState>()(
+export const createEngineStore = () =>
+  createStore<EngineState>()(
     subscribeWithSelector(
       devtools(
         immer((set) => ({
@@ -57,4 +55,4 @@ export const createHedronStore = () =>
     ),
   )
 
-export type HedronStore = ReturnType<typeof createHedronStore>
+export type EngineStore = ReturnType<typeof createEngineStore>

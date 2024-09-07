@@ -1,5 +1,5 @@
 import { uid } from 'uid'
-import { HedronStore } from '../store/store'
+import { EngineStore } from '../store/engineStore'
 import { SketchConfig, SketchModule, SketchModules } from '../store/types'
 import { getDebugScene } from './debugScene'
 
@@ -13,9 +13,9 @@ type SketchInstance = {
 class SketchManager {
   private sketchInstances: { [id: string]: SketchInstance } = {}
   private sketchesUrl: string
-  private store: HedronStore
+  private store: EngineStore
 
-  constructor(sketchesUrl: string, store: HedronStore) {
+  constructor(sketchesUrl: string, store: EngineStore) {
     this.sketchesUrl = sketchesUrl
     this.store = store
   }

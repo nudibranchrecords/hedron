@@ -1,5 +1,5 @@
 import { uid } from 'uid'
-import { SetterCreator } from '../store'
+import { SetterCreator } from '../engineStore'
 
 export const createAddSketch: SetterCreator<'addSketch'> = (setState) => (moduleId: string) => {
   const newId = uid()
