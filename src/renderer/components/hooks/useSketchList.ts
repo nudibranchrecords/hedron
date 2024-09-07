@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { useEngineStore } from '../engine'
+import { useEngineStore } from '../../engine'
 
 export const useSketchList = () => {
   const sketches = useEngineStore((state) => state.sketches)
