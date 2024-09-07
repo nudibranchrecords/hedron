@@ -1,10 +1,10 @@
 import { uid } from 'uid'
-import { useAppStore } from '../useAppStore'
+import { SetterCreator } from '../store'
 import { Nodes, NodeValues } from '../types'
 
-export const addSketch = (moduleId: string) => {
+export const createAddSketch: SetterCreator<'addSketch'> = (setState) => (moduleId: string) => {
   const newId = uid()
-  useAppStore.setState((state) => {
+  setState((state) => {
     const { title, config } = state.sketchModules[moduleId]
     const nodes: Nodes = {}
     const nodeValues: NodeValues = {}

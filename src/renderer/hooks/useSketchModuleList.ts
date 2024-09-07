@@ -1,8 +1,8 @@
 import { useMemo } from 'react'
-import { useAppStore } from '../useAppStore'
+import { useEngineStore } from '../engine'
 
 export const useSketchModuleList = () => {
-  const modules = useAppStore((state) => state.sketchModules)
+  const modules = useEngineStore((state) => state.sketchModules)
   const list = useMemo(() => Object.values(modules), [modules])
 
   return list

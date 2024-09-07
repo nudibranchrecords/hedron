@@ -1,10 +1,10 @@
 import { useMemo } from 'react'
-import { useAppStore } from '../useAppStore'
 import { useActiveSketch } from './useActiveSketch'
+import { useEngineStore } from '../engine'
 
 export const useActiveSketchParams = () => {
   const activeSketch = useActiveSketch()
-  const nodes = useAppStore((state) => state.nodes)
+  const nodes = useEngineStore((state) => state.nodes)
 
   const params = useMemo(() => {
     if (activeSketch) {

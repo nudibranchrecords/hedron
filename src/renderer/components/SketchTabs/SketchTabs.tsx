@@ -1,8 +1,8 @@
 import { SideTabs, SideTabsItem } from '../core/SideTabs/SideTabs'
 import { useCallback } from 'react'
-import { useSketchList } from 'src/engine/store/hooks/useSketchList'
-import { setStoreProperty } from 'src/engine/store/actions/setStoreProperty'
-import { useIsActiveSketch } from 'src/engine/store/hooks/useIsActiveSketch'
+import { useSketchList } from 'src/renderer/hooks/useSketchList'
+import { useIsActiveSketch } from 'src/renderer/hooks/useIsActiveSketch'
+import { engineStore } from 'src/renderer/engine'
 
 interface ItemProps {
   children: React.ReactNode
@@ -13,7 +13,7 @@ const Item = ({ id, children }: ItemProps) => {
   const isActive = useIsActiveSketch(id)
 
   const onClick = useCallback(() => {
-    setStoreProperty('activeSketchId', id)
+    engineStore.setState({ activeSketchId: id })
   }, [id])
 
   return (
