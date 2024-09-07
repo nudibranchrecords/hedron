@@ -1,8 +1,8 @@
 import { useMemo } from 'react'
-import { useAppStore } from '../useAppStore'
+import { useEngineStore } from '../engine'
 
 export const useSketchList = () => {
-  const sketches = useAppStore((state) => state.sketches)
+  const sketches = useEngineStore((state) => state.sketches)
   const sketchesVals = useMemo(() => Object.values(sketches), [sketches])
 
   return sketchesVals

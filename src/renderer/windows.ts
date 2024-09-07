@@ -1,6 +1,4 @@
 import { ScreenEvents } from 'src/shared/Events.js'
-import { setOutput, stopOutput } from '../engine/3d/renderer.js'
-import { ipcRenderer } from 'electron'
 
 export const sendOutput = (index: number): void => {
   // const display = screen.getAllDisplays()[index]
@@ -18,11 +16,11 @@ export const sendOutput = (index: number): void => {
   outputWin.document.body.style.cursor = 'none'
 
   outputWin.addEventListener('beforeunload', () => {
-    stopOutput()
+    // engine.stopOutput()
   })
 
   setTimeout(() => {
-    setOutput(outputWin)
+    // engine.setOutput(outputWin)
   }, 1000)
 }
 

@@ -1,13 +1,11 @@
 import c from './WorkArea.module.css'
 import { SketchTabs } from '../SketchTabs/SketchTabs'
 import { Button } from '../core/Button/Button'
-import { addSketch } from 'src/engine/store/actions/addSketch'
-import { deleteSketch } from 'src/engine/store/actions/deleteSketch'
-import { setStoreProperty } from 'src/engine/store/actions/setStoreProperty'
-import { useSketchModuleList } from 'src/engine/store/hooks/useSketchModuleList'
-import { useActiveSketch } from 'src/engine/store/hooks/useActiveSketch'
+import { useSketchModuleList } from 'src/renderer/hooks/useSketchModuleList'
+import { useActiveSketch } from 'src/renderer/hooks/useActiveSketch'
 import { SketchParams } from '../SketchParams/SketchParams'
 import { ViewHeader } from '../core/ViewHeader/ViewHeader'
+import { engineStore } from 'src/renderer/engine'
 
 export const WorkArea = () => {
   const sketchModules = useSketchModuleList()
@@ -22,7 +20,9 @@ export const WorkArea = () => {
             <div className={c.section}>
               <SketchParams />
             </div>
-            <Button onClick={() => deleteSketch(activeSketch.id)}>Delete </Button>
+            <Button onClick={() => engineStore.getState().deleteSketch(activeSketch.id)}>
+              Delete{' '}
+            </Button>
           </>
         )}
 
@@ -32,8 +32,8 @@ export const WorkArea = () => {
             <li key={moduleId}>
               <button
                 onClick={() => {
-                  const id = addSketch(moduleId)
-                  setStoreProperty('activeSketchId', id)
+                  const id = engineStore.getState().addSketch(moduleId)
+                  engineStore.setState({ activeSketchId: id })
                 }}
               >
                 {title}
