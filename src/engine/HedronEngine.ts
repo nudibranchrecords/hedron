@@ -1,4 +1,5 @@
 import { createHedronStore, HedronStore } from './store/store'
+import { Param } from './store/types'
 import { listenToStore } from './storeListener'
 import { createDebugScene } from './world/debugScene'
 import { Renderer } from './world/Renderer'
@@ -41,9 +42,26 @@ export class HedronEngine {
   }
 
   run() {
+    if (!this.sketchManager) throw new Error('Sketch Manager not ready')
+
     const debugScene = createDebugScene()
 
     const loop = (): void => {
+      const { sketches, nodeValues, nodes } = this.store.getState()
+      const sketchInstances = this.sketchManager!.getSketchInstances()
+
+      Object.values(sketches).forEach((sketch) => {
+        const paramValues: { [key: string]: any } = {}
+
+        sketch.paramIds.forEach((id) => {
+          const value = nodeValues[id]
+          const paramKey = nodes[id].key
+          paramValues[paramKey] = value
+        })
+
+        sketchInstances[sketch.id].update({ deltaFrame: 1, params: paramValues })
+      })
+
       requestAnimationFrame(loop)
       if (debugScene) {
         this.renderer.render(debugScene)

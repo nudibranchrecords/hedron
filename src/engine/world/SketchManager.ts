@@ -107,8 +107,8 @@ class SketchManager {
     this.store.getState().setSketchModuleItem(item)
   }
 
-  public getSketch = (instanceId: string): SketchInstance | undefined => {
-    return this.sketchInstances[instanceId]
+  public getSketchInstances = () => {
+    return this.sketchInstances
   }
 }
 
