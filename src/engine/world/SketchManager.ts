@@ -4,7 +4,9 @@ import { SketchConfig, SketchModule, SketchModules } from '../store/types'
 import { getDebugScene } from './debugScene'
 
 type SketchInstance = {
+  // eslint-disable-next-line -- TODO: Type this!
   update: any
+  // eslint-disable-next-line
   root: any
 }
 

@@ -1,5 +1,4 @@
 import { createHedronStore, HedronStore } from './store/store'
-import { Param } from './store/types'
 import { listenToStore } from './storeListener'
 import { createDebugScene } from './world/debugScene'
 import { Renderer } from './world/Renderer'
@@ -51,6 +50,7 @@ export class HedronEngine {
       const sketchInstances = this.sketchManager!.getSketchInstances()
 
       Object.values(sketches).forEach((sketch) => {
+        // eslint-disable-next-line
         const paramValues: { [key: string]: any } = {}
 
         sketch.paramIds.forEach((id) => {
