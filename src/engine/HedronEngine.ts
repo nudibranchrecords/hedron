@@ -1,4 +1,4 @@
-import { createHedronStore, HedronStore } from './store/store'
+import { createEngineStore, EngineStore } from './store/engineStore'
 import { listenToStore } from './storeListener'
 import { createDebugScene } from './world/debugScene'
 import { Renderer } from './world/Renderer'
@@ -6,13 +6,13 @@ import SketchManager from './world/SketchManager'
 
 export class HedronEngine {
   private renderer: Renderer
-  private store: HedronStore
+  private store: EngineStore
   private sketchesUrl: string | null = null
   private sketchManager: SketchManager | null = null
 
   constructor() {
     this.renderer = new Renderer()
-    this.store = createHedronStore()
+    this.store = createEngineStore()
   }
 
   public setSketchesUrl(sketchesUrl: string) {

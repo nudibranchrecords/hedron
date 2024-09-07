@@ -1,7 +1,7 @@
-import { HedronStore } from './store/store'
+import { EngineStore } from './store/engineStore'
 
 export const listenToStore = (
-  store: HedronStore,
+  store: EngineStore,
   addSketch: (instanceId: string, moduleId: string) => void,
   removeSketch: (instanceId: string) => void,
 ) =>

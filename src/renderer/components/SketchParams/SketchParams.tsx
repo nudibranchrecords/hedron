@@ -7,7 +7,7 @@ import {
   NodeControlTitle,
 } from '../core/NodeControl/NodeControl'
 import { useActiveSketchParams } from 'src/renderer/hooks/useActiveSketchParams'
-import { Param } from 'src/engine/store/types'
+import { Param } from 'src/engine'
 import { useCallback, useRef } from 'react'
 import { useInterval } from 'usehooks-ts'
 import { engineStore } from 'src/renderer/engine'

@@ -1,4 +1,4 @@
-import { SetterCreator } from '../store'
+import { SetterCreator } from '../engineStore'
 
 export const createDeleteSketch: SetterCreator<'deleteSketch'> =
   (setState) => (instanceId: string) =>
