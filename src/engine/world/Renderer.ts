@@ -90,8 +90,7 @@ export class Renderer {
     this.canvas.setAttribute('style', '')
 
     // Setup output canvas
-    this.outputCanvas = document.createElement('canvas')
-    this.outputContainer.appendChild(this.outputCanvas)
+    this.outputCanvas = this.canvas
 
     // Setup preview canvas in dom
     this.previewCanvas = document.createElement('canvas')
@@ -102,9 +101,9 @@ export class Renderer {
 
     this.setSize()
 
-    // win.addEventListener('resize', () => {
-    //   uiEventEmitter.emit(UIEvents.Repaint)
-    // })
+    win.addEventListener('resize', () => {
+      this.setSize()
+    })
   }
 
   private copyPixels(context: CanvasRenderingContext2D): void {
@@ -113,7 +112,18 @@ export class Renderer {
   }
 
   public stopOutput(): void {
+    if (!this.isSendingOutput) return
+
+    if (!this.outputContainer) throw new Error("Can't find container")
+    if (!this.canvas) throw new Error("Can't find canvas")
+    if (!this.viewerContainer) throw new Error("Can't find viewerContainer")
+
+    this.viewerContainer.innerHTML = ''
+    this.canvas.setAttribute('style', '')
+    this.viewerContainer.appendChild(this.canvas)
     this.isSendingOutput = false
+
+    this.setSize()
   }
 
   public render({ scene, camera }: EngineScene): void {
