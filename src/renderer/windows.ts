@@ -20,7 +20,7 @@ export const sendOutput = (display: Display): void => {
   })
 
   setTimeout(() => {
-    engine.setOutput(outputWin)
+    engine.setOutput(outputWin.document.querySelector('div') as HTMLDivElement)
   }, 1000)
 }
 
