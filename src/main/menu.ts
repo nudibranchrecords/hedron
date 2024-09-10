@@ -82,14 +82,14 @@ const template = [
 ]
 
 export const updateDisplayMenu = (displays: Display[]): void => {
-  displayMenu.submenu = displays.map((display, index) => {
+  displayMenu.submenu = displays.map((display) => {
     const w = display.size.width
     const h = display.size.height
 
     return {
       label: `${display.label} (${w}x${h})`,
       click: () => {
-        getMainWindow().webContents.send(ScreenEvents.SendOutput, index)
+        getMainWindow().webContents.send(ScreenEvents.SendOutput, display)
       },
     }
   })
