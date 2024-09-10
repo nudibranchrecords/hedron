@@ -4,7 +4,7 @@ import { updateDisplayMenu, updateMenu } from './menu'
 import { createWindow } from './mainWindow'
 import { handleSketchFiles } from './handleSketchFiles'
 import { userSettings } from './userSettings'
-import installExtension, { REDUX_DEVTOOLS } from '@tomjs/electron-devtools-installer'
+import { REDUX_DEVTOOLS, installExtension } from '@tomjs/electron-devtools-installer'
 
 const isDevelopment = process.env.NODE_ENV !== 'production'
 
