@@ -1,6 +1,7 @@
 import { WebGLRenderer } from 'three'
 import { EngineScene } from './EngineScene'
 import { engineScenes } from './scenes'
+import debounce from 'lodash.debounce'
 
 export class Renderer {
   private renderer: WebGLRenderer | undefined
@@ -15,6 +16,16 @@ export class Renderer {
 
   private isSendingOutput = false
 
+  private setResizeObserver = (el: HTMLDivElement) => {
+    const resizeObserver = new ResizeObserver(
+      debounce(() => {
+        this.setSize()
+      }, 300),
+    )
+
+    resizeObserver.observe(el)
+  }
+
   public createCanvas(containerEl: HTMLDivElement): void {
     this.renderer = new WebGLRenderer({
       antialias: false, // Antialiasing should be handled by the composer
@@ -25,7 +36,7 @@ export class Renderer {
     containerEl.appendChild(this.canvas)
     this.viewerContainer = containerEl
 
-    this.setSize()
+    this.setResizeObserver(containerEl)
   }
 
   public setSize(): void {
@@ -74,9 +85,10 @@ export class Renderer {
     this.viewerContainer.style.paddingBottom = perc + '%'
   }
 
-  public setOutput(win: Window): void {
+  // Set the output to a second canvas (e.g. a separate window for making full screen)
+  public setOutput(container: HTMLDivElement): void {
     this.stopOutput()
-    this.outputContainer = win.document.querySelector('div')
+    this.outputContainer = container
 
     if (!this.outputContainer) throw new Error("Can't find container")
     if (!this.canvas) throw new Error("Can't find canvas")
@@ -85,7 +97,7 @@ export class Renderer {
     this.rendererHeight = this.outputContainer.offsetWidth
     this.rendererWidth = this.outputContainer.offsetHeight
 
-    // Move renderer canvas to new window
+    // Move renderer canvas to new output container
     this.outputContainer.appendChild(this.canvas)
     this.canvas.setAttribute('style', '')
 
@@ -99,11 +111,7 @@ export class Renderer {
 
     this.isSendingOutput = true
 
-    this.setSize()
-
-    win.addEventListener('resize', () => {
-      this.setSize()
-    })
+    this.setResizeObserver(this.outputContainer)
   }
 
   private copyPixels(context: CanvasRenderingContext2D): void {

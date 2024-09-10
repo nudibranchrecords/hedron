@@ -40,8 +40,8 @@ export class HedronEngine {
     return this.renderer.createCanvas(containerEl)
   }
 
-  public setOutput(window: Window) {
-    this.renderer.setOutput(window)
+  public setOutput(container: HTMLDivElement) {
+    this.renderer.setOutput(container)
   }
 
   public stopOutput() {
