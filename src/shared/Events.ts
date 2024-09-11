@@ -10,6 +10,7 @@ export enum ScreenEvents {
   UpdateDisplays = 'update-displays',
 }
 
-export enum UIEvents {
-  Repaint = 'repaint',
+export enum FileEvents {
+  OpenSketchesDirDialog = 'open-sketches-dir-dialog',
+  SelectSketchesDir = 'select-sketches-dir',
 }

@@ -1,10 +1,11 @@
-import { app, BrowserWindow, screen, session } from 'electron'
+import { app, BrowserWindow, dialog, ipcMain, screen, session } from 'electron'
 import { electronApp, optimizer } from '@electron-toolkit/utils'
 import { updateDisplayMenu, updateMenu } from './menu'
-import { createWindow } from './mainWindow'
+import { createWindow, sendToMainWindow } from './mainWindow'
 import { handleSketchFiles } from './handleSketchFiles'
 import { userSettings } from './userSettings'
 import { REDUX_DEVTOOLS, installExtension } from '@tomjs/electron-devtools-installer'
+import { FileEvents } from '../shared/Events'
 
 const isDevelopment = process.env.NODE_ENV !== 'production'
 
@@ -26,8 +27,6 @@ app.whenReady().then(() => {
   })
 
   createWindow()
-
-  handleSketchFiles()
 
   app.on('activate', function () {
     // On macOS it's common to re-create a window in the app when the
@@ -77,5 +76,13 @@ app.on('window-all-closed', () => {
   }
 })
 
-// In this file you can include the rest of your app"s specific main process
-// code. You can also put them in separate files and require them here.
+ipcMain.on(FileEvents.OpenSketchesDirDialog, async () => {
+  const result = await dialog.showOpenDialog({
+    properties: ['openDirectory'],
+  })
+
+  const dirPath = result.filePaths[0]
+
+  handleSketchFiles(dirPath)
+  sendToMainWindow(FileEvents.SelectSketchesDir, dirPath)
+})
