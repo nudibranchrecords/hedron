@@ -5,7 +5,9 @@ import type {} from '@redux-devtools/extension' // required for devtools typing
 
 export interface AppState {
   activeSketchId: string | null
+  sketchesDir: string | null
   setActiveSketchId: (id: string) => void
+  setSketchesDir: (dir: string) => void
 }
 
 export type SetState = StoreApi<AppState>['setState']
@@ -24,9 +26,15 @@ export const useAppStore = create<AppState>()(
     devtools(
       immer((set) => ({
         activeSketchId: null,
+        sketchesDir: null,
         setActiveSketchId: (id: string) => {
           set((state) => {
             state.activeSketchId = id
+          })
+        },
+        setSketchesDir: (dir: string) => {
+          set((state) => {
+            state.sketchesDir = dir
           })
         },
       })),

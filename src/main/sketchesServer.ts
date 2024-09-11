@@ -2,12 +2,11 @@ import * as esbuild from 'esbuild'
 import path from 'path'
 import chokidar from 'chokidar'
 import { EventEmitter } from 'events'
-import { userSettings } from './userSettings'
+import { getPort } from 'get-port-please'
 
 const sketchesServerOutputPath = path.normalize(`${__dirname}/../../sketches-server`)
 
-const PORT = 3030
-const HOST = 'localhost'
+const HOST = '0.0.0.0'
 
 const fileExtensions = [
   'glb',
@@ -43,14 +42,16 @@ export class SketchesServer extends EventEmitter {
     this.isFirstBuildComplete = false
   }
 
-  init = async (): Promise<esbuild.ServeResult> => {
-    const entryBase = userSettings.sketchesDir
+  init = async (dirPath: string): Promise<esbuild.ServeResult> => {
+    const port = await getPort({ host: HOST })
+
+    const entryBase = dirPath
     const ctx = await esbuild.context({
       entryPoints: [`${entryBase}/**/index.js`, `${entryBase}/**/config.js`],
       outdir: 'sketches-server',
       loader: loaderFileExtensions,
       assetNames: '[dir]/[name]-[hash]',
-      publicPath: `http://${HOST}:${PORT}`,
+      publicPath: `http://${HOST}:${port}`,
       bundle: true,
       format: 'esm',
       plugins: [
@@ -68,11 +69,15 @@ export class SketchesServer extends EventEmitter {
       ],
     })
 
-    const { host, port } = await ctx.serve({
+    console.log(`Starting server... http://${HOST}:${port}`)
+
+    const { host } = await ctx.serve({
       servedir: 'sketches-server',
-      port: PORT,
+      port,
       host: HOST,
     })
+
+    console.log(`Running sketches server: http://${HOST}:${port}`)
 
     await ctx.watch()
 
