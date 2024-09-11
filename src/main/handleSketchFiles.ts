@@ -1,12 +1,11 @@
 import { SketchEvents } from '../shared/Events'
-import { getMainWindow, sendToMainWindow } from './mainWindow'
+import { sendToMainWindow } from './mainWindow'
 import { SketchesServer } from './SketchesServer'
 import fs from 'fs'
-import { userSettings } from './userSettings'
 
-const getInitialModuleIds = async (): Promise<string[]> => {
+const getInitialModuleIds = async (dirPath: string): Promise<string[]> => {
   const moduleIds: string[] = []
-  const dir = await fs.promises.opendir(userSettings.sketchesDir)
+  const dir = await fs.promises.opendir(dirPath)
   for await (const dirent of dir) {
     if (dirent.isDirectory()) {
       moduleIds.push(dirent.name)
@@ -16,11 +15,11 @@ const getInitialModuleIds = async (): Promise<string[]> => {
   return moduleIds
 }
 
-export const handleSketchFiles = async (): Promise<void> => {
-  const moduleIds = await getInitialModuleIds()
+export const handleSketchFiles = async (dirPath: string): Promise<void> => {
+  const moduleIds = await getInitialModuleIds(dirPath)
   const sketchesServer = new SketchesServer()
 
-  const { host, port } = await sketchesServer.init()
+  const { host, port } = await sketchesServer.init(dirPath)
 
   sketchesServer.on('change', (sketchId) => {
     console.log(`sketch changed: ${sketchId}`)
@@ -33,8 +32,6 @@ export const handleSketchFiles = async (): Promise<void> => {
 
   const url = `http://${host}:${port}`
 
-  getMainWindow().webContents.on('did-finish-load', () => {
-    sendToMainWindow(SketchEvents.ServerStart, url)
-    sendToMainWindow(SketchEvents.InitialSketchModuleIds, moduleIds)
-  })
+  sendToMainWindow(SketchEvents.ServerStart, url)
+  sendToMainWindow(SketchEvents.InitialSketchModuleIds, moduleIds)
 }

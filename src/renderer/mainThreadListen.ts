@@ -1,4 +1,5 @@
-import { SketchEvents } from '../shared/Events'
+import { FileEvents, SketchEvents } from '../shared/Events'
+import { useAppStore } from './appStore'
 import { engine } from './engine'
 
 const listen = (event: string, cb: (info: any) => void): void => {
@@ -12,6 +13,7 @@ listen(SketchEvents.InitialSketchModuleIds, (sketchModuleIds: string[]) => {
 })
 
 listen(SketchEvents.ServerStart, (sketchesServerUrl: string) => {
+  console.log(sketchesServerUrl)
   engine.setSketchesUrl(sketchesServerUrl)
 
   engine.run()
@@ -19,4 +21,8 @@ listen(SketchEvents.ServerStart, (sketchesServerUrl: string) => {
 
 listen(SketchEvents.ReimportSketchModule, (moduleId: string) => {
   engine.reimportSketchModule(moduleId)
+})
+
+listen(FileEvents.SelectSketchesDir, (sketchesDir: string) => {
+  useAppStore.getState().setSketchesDir(sketchesDir)
 })
