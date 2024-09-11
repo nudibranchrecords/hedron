@@ -6,7 +6,7 @@ import { getPort } from 'get-port-please'
 
 const sketchesServerOutputPath = path.normalize(`${__dirname}/../../sketches-server`)
 
-const HOST = '0.0.0.0'
+const HOST = process.platform.startsWith('win') ? 'localhost' : '0.0.0.0'
 
 const fileExtensions = [
   'glb',
@@ -48,6 +48,7 @@ export class SketchesServer extends EventEmitter {
     const entryBase = dirPath
     const ctx = await esbuild.context({
       entryPoints: [`${entryBase}/**/index.js`, `${entryBase}/**/config.js`],
+      // TODO: Make outdir unique, in case of multiple Hedron instances. Cleanup too!
       outdir: 'sketches-server',
       loader: loaderFileExtensions,
       assetNames: '[dir]/[name]-[hash]',
