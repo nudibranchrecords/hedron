@@ -17,6 +17,7 @@ interface ParamProps {
   param: Param
 }
 
+// TODO: param types (currently just floats!)
 const ParamItem = ({ param: { key, title, id } }: ParamProps) => {
   const ref = useRef<FloatSliderHandle>(null)
   const updateNodeValue = useUpdateNodeValue()
@@ -30,7 +31,7 @@ const ParamItem = ({ param: { key, title, id } }: ParamProps) => {
 
   // TODO: useAnimationFrame?
   useInterval(() => {
-    const nodeValue = engineStore.getState().nodeValues[id]
+    const nodeValue = engineStore.getState().nodeValues[id] as number
     ref.current?.drawBar(nodeValue)
   }, 100)
 
