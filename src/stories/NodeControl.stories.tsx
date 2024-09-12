@@ -6,6 +6,8 @@ import {
   NodeControlInner,
 } from '../renderer/components/core/NodeControl/NodeControl'
 
+import { fn } from '@storybook/test'
+
 import { FloatSlider, FloatSliderHandle } from '../renderer/components/core/FloatSlider/FloatSlider'
 import { useRef } from 'react'
 import { useInterval } from 'usehooks-ts'
@@ -38,7 +40,7 @@ export const FloatSliderInner = () => {
       <NodeControlMain>
         <NodeControlTitle>Hey!</NodeControlTitle>
         <NodeControlInner>
-          <FloatSlider ref={ref} />
+          <FloatSlider onValueChange={fn()} ref={ref} />
         </NodeControlInner>
       </NodeControlMain>
     </NodeControl>
