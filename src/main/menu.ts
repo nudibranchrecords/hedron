@@ -3,9 +3,9 @@ import { Display, Menu, ipcMain } from 'electron'
 import { ScreenEvents } from '../shared/Events'
 import { getMainWindow } from './mainWindow'
 
-const onClick = (...args) => {
-  mainWindow.webContents.send('app-menu-click', ...args)
-}
+// const onClick = () => {
+//   mainWindow.webContents.send('app-menu-click', ...args)
+// }
 
 const hedronMenu = {
   label: 'Hedron',
@@ -13,7 +13,7 @@ const hedronMenu = {
     {
       label: 'About Hedron',
       click: () => {
-        onClick('hedron-about')
+        // onClick('hedron-about')
       },
     },
   ],
@@ -21,47 +21,47 @@ const hedronMenu = {
 
 const projectMenu = {
   label: 'Project',
-  submenu: [
-    {
-      label: 'New',
-      role: 'forcereload',
-    },
-    {
-      label: 'Save',
-      click: () => {
-        onClick('project-save')
-      },
-      accelerator: 'CommandOrControl+S',
-    },
-    {
-      label: 'Save As...',
-      click: () => {
-        onClick('project-save-as')
-      },
-      accelerator: 'CommandOrControl+Shift+S',
-    },
-    {
-      label: 'Load',
-      click: () => {
-        onClick('project-load')
-      },
-    },
-    {
-      label: 'Settings',
-      click: () => {
-        onClick('project-settings')
-      },
-      accelerator: 'CommandOrControl+,',
-    },
-  ],
+  // submenu: [
+  //   {
+  //     label: 'New',
+  //     role: 'forcereload',
+  //   },
+  //   {
+  //     label: 'Save',
+  //     click: () => {
+  //       onClick('project-save')
+  //     },
+  //     accelerator: 'CommandOrControl+S',
+  //   },
+  //   {
+  //     label: 'Save As...',
+  //     click: () => {
+  //       onClick('project-save-as')
+  //     },
+  //     accelerator: 'CommandOrControl+Shift+S',
+  //   },
+  //   {
+  //     label: 'Load',
+  //     click: () => {
+  //       onClick('project-load')
+  //     },
+  //   },
+  //   {
+  //     label: 'Settings',
+  //     click: () => {
+  //       onClick('project-settings')
+  //     },
+  //     accelerator: 'CommandOrControl+,',
+  //   },
+  // ],
 }
 
-const displayMenu = {
+const displayMenu: Electron.MenuItemConstructorOptions = {
   label: 'Send to display...',
   submenu: [],
 }
 
-const template = [
+const template: Electron.MenuItemConstructorOptions[] = [
   hedronMenu,
   projectMenu,
   displayMenu,
@@ -69,12 +69,12 @@ const template = [
     label: 'View',
     submenu: [
       { role: 'reload' },
-      { role: 'forcereload' },
-      { role: 'toggledevtools' },
+      { role: 'forceReload' },
+      { role: 'toggleDevTools' },
       { type: 'separator' },
-      { role: 'resetzoom' },
-      { role: 'zoomin' },
-      { role: 'zoomout' },
+      { role: 'resetZoom' },
+      { role: 'zoomIn' },
+      { role: 'zoomOut' },
       { type: 'separator' },
       { role: 'togglefullscreen' },
     ],
@@ -97,7 +97,7 @@ export const updateDisplayMenu = (displays: Display[]): void => {
   updateMenu()
 }
 
-ipcMain.on(ScreenEvents.UpdateDisplays, (e, displays) => {
+ipcMain.on(ScreenEvents.UpdateDisplays, (_, displays) => {
   updateDisplayMenu(displays)
 })
 

@@ -24,6 +24,14 @@ export const dependencies = {
   // glslify,
 }
 
+declare global {
+  interface Window {
+    HEDRON: {
+      dependencies: typeof dependencies
+    }
+  }
+}
+
 window.HEDRON = {
   dependencies,
 }
