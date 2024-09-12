@@ -1,8 +1,10 @@
-import * as esbuild from 'esbuild'
 import path from 'path'
 import chokidar from 'chokidar'
 import { EventEmitter } from 'events'
 import { getPort } from 'get-port-please'
+import { app } from 'electron'
+import { getEsbuild } from './getUnpackedModules'
+import * as esbuild from 'esbuild'
 
 const sketchesServerOutputPath = path.normalize(`${__dirname}/../../sketches-server`)
 
@@ -43,13 +45,16 @@ export class SketchesServer extends EventEmitter {
   }
 
   init = async (dirPath: string): Promise<esbuild.ServeResult> => {
+    const esbuild = getEsbuild()
     const port = await getPort({ host: HOST })
 
     const entryBase = dirPath
+    // TODO: Make outdir unique, in case of multiple Hedron instances. Also cleanup folder...
+    const outdir = path.normalize(`${app.getPath('temp')}/hedron/sketches-server`)
+
     const ctx = await esbuild.context({
       entryPoints: [`${entryBase}/**/index.js`, `${entryBase}/**/config.js`],
-      // TODO: Make outdir unique, in case of multiple Hedron instances. Cleanup too!
-      outdir: 'sketches-server',
+      outdir,
       loader: loaderFileExtensions,
       assetNames: '[dir]/[name]-[hash]',
       publicPath: `http://${HOST}:${port}`,
@@ -73,7 +78,7 @@ export class SketchesServer extends EventEmitter {
     console.log(`Starting server... http://${HOST}:${port}`)
 
     const { host } = await ctx.serve({
-      servedir: 'sketches-server',
+      servedir: outdir,
       port,
       host: HOST,
     })
