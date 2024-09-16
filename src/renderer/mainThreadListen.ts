@@ -27,6 +27,10 @@ listen(SketchEvents.AddSketchModule, (moduleId: string) => {
   engine.addSketchModule(moduleId)
 })
 
+listen(SketchEvents.RemoveSketchModule, (moduleId: string) => {
+  engine.getStore().getState().deleteSketchModuleAndSketches(moduleId)
+})
+
 listen(FileEvents.SelectSketchesDir, (sketchesDir: string) => {
   useAppStore.getState().setSketchesDir(sketchesDir)
 })

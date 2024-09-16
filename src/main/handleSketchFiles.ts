@@ -31,6 +31,11 @@ export const handleSketchFiles = async (dirPath: string): Promise<void> => {
     sendToMainWindow(SketchEvents.AddSketchModule, moduleId)
   })
 
+  sketchesServer.on('unlink', (moduleId) => {
+    console.log(`sketch module removed: ${moduleId}`)
+    sendToMainWindow(SketchEvents.RemoveSketchModule, moduleId)
+  })
+
   const url = `http://${host}:${port}`
 
   sendToMainWindow(SketchEvents.ServerStart, url)

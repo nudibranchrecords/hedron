@@ -1,4 +1,5 @@
 import { createEngineStore, EngineStore } from './store/engineStore'
+import { getSketchesOfModuleId } from './store/selectors/getSketchesOfModuleId'
 import { listenToStore } from './storeListener'
 import { createDebugScene } from './world/debugScene'
 import { Renderer } from './world/Renderer'
@@ -36,13 +37,18 @@ export class HedronEngine {
     this.sketchManager.addSketchModule(moduleId)
   }
 
+  public removeSketchModule(moduleId: string) {
+    if (!this.sketchManager) throw new Error('Sketch Manager not ready')
+
+    this.sketchManager.removeSketchModule(moduleId)
+  }
+
   public async reimportSketchModuleAndReloadSketches(moduleId: string) {
     if (!this.sketchManager) throw new Error('Sketch Manager not ready')
 
     await this.sketchManager.reimportSketchModule(moduleId)
-    const sketchesToRefresh = Object.values(this.store.getState().sketches).filter(
-      (sketch) => sketch.moduleId === moduleId,
-    )
+
+    const sketchesToRefresh = getSketchesOfModuleId(this.store.getState(), moduleId)
 
     for (const sketch of sketchesToRefresh) {
       this.sketchManager.removeSketchFromScene(sketch.id)

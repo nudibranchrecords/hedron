@@ -86,6 +86,14 @@ class SketchManager {
     })
   }
 
+  public removeSketchModule = async (moduleId: string): Promise<void> => {
+    await this.removeSketchModule(moduleId)
+
+    this.store.setState((state) => {
+      delete state.sketchModules[moduleId]
+    })
+  }
+
   public initiateSketchModules = (moduleIds: string[]): void => {
     const getSketchInfo = async (): Promise<void> => {
       for (const moduleId of moduleIds) {
