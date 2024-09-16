@@ -28,7 +28,7 @@ listen(SketchEvents.AddSketchModule, (moduleId: string) => {
 })
 
 listen(SketchEvents.RemoveSketchModule, (moduleId: string) => {
-  engine.deleteSketchModule(moduleId)
+  engine.removeSketchModule(moduleId)
 })
 
 listen(FileEvents.SelectSketchesDir, (sketchesDir: string) => {

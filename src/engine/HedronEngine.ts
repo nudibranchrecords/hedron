@@ -37,10 +37,6 @@ export class HedronEngine {
     this.sketchManager.addSketchModule(moduleId)
   }
 
-  public deleteSketchModule(moduleId: string) {
-    this.store.getState().deleteSketchModule(moduleId)
-  }
-
   public removeSketchModule(moduleId: string) {
     if (!this.sketchManager) throw new Error('Sketch Manager not ready')
 
