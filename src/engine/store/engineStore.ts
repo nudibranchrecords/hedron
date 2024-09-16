@@ -7,7 +7,7 @@ import { Nodes, NodeValues, Sketches, SketchModuleItem, SketchModules } from './
 import { createAddSketch } from './actionCreators/addSketch'
 import { createSetSketchModuleItem } from './actionCreators/setSketchModuleItem'
 import { createUpdateNodeValue } from './actionCreators/updateNodeValue'
-import { createDeleteSketchModuleAndSketches } from './actionCreators/deleteSketchModuleAndSketches'
+import { createDeleteSketchModule } from './actionCreators/deleteSketchModule'
 import { createDeleteSketch } from './actionCreators/deleteSketch'
 
 export interface EngineState {
@@ -20,7 +20,7 @@ export interface EngineState {
   deleteSketch: (instanceId: string) => void
   setSketchModuleItem: (newItem: SketchModuleItem) => void
   updateNodeValue: (nodeId: string, value: number) => void
-  deleteSketchModuleAndSketches: (moduleId: string) => void
+  deleteSketchModule: (moduleId: string) => void
 }
 
 export type SetState = StoreApi<EngineState>['setState']
@@ -50,7 +50,7 @@ export const createEngineStore = () =>
           setSketchModuleItem: createSetSketchModuleItem(set),
           updateNodeValue: createUpdateNodeValue(set),
           deleteSketch: createDeleteSketch(set),
-          deleteSketchModuleAndSketches: createDeleteSketchModuleAndSketches(set),
+          deleteSketchModule: createDeleteSketchModule(set),
         })),
       ),
     ),
