@@ -5,8 +5,11 @@ import { getPort } from 'get-port-please'
 import { app } from 'electron'
 import { getEsbuild } from './getUnpackedModules'
 import * as esbuild from 'esbuild'
+import debounce from 'lodash.debounce'
 
 const HOST = process.platform.startsWith('win') ? 'localhost' : '0.0.0.0'
+
+const WATCH_DEBOUNCE_MS = 300
 
 const fileExtensions = [
   'glb',
@@ -90,14 +93,27 @@ export class SketchesServer extends EventEmitter {
       ignoreInitial: true,
     })
 
-    watcher.on('change', (path) => {
-      if (!this.isFirstBuildComplete) return
-      this.emit('change', getSketchIdFromPath(path))
-    })
+    watcher.on(
+      'change',
+      debounce((path) => {
+        if (!this.isFirstBuildComplete) return
+        this.emit('change', getSketchIdFromPath(path))
+      }, WATCH_DEBOUNCE_MS),
+    )
 
-    watcher.on('add', (path) => {
-      this.emit('add', getSketchIdFromPath(path))
-    })
+    watcher.on(
+      'add',
+      debounce((path) => {
+        this.emit('add', getSketchIdFromPath(path))
+      }, WATCH_DEBOUNCE_MS),
+    )
+
+    watcher.on(
+      'unlink',
+      debounce((path) => {
+        this.emit('unlink', getSketchIdFromPath(path))
+      }, WATCH_DEBOUNCE_MS),
+    )
 
     return { host, port }
   }
