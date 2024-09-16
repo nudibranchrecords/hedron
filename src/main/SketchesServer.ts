@@ -5,7 +5,8 @@ import { getPort } from 'get-port-please'
 import { app } from 'electron'
 import { getEsbuild } from './getUnpackedModules'
 import * as esbuild from 'esbuild'
-import debounce from 'lodash.debounce'
+import { debounceWithId } from '../shared/utils/debounceWithId'
+import { FileWatchEvents } from '../shared/Events'
 
 const HOST = process.platform.startsWith('win') ? 'localhost' : '0.0.0.0'
 
@@ -93,27 +94,24 @@ export class SketchesServer extends EventEmitter {
       ignoreInitial: true,
     })
 
-    watcher.on(
-      'change',
-      debounce((path) => {
-        if (!this.isFirstBuildComplete) return
-        this.emit('change', getSketchIdFromPath(path))
-      }, WATCH_DEBOUNCE_MS),
-    )
+    const echoEmitWithDebounce = (eventName: string) => {
+      watcher.on(eventName, (path) => {
+        const id = getSketchIdFromPath(path)
 
-    watcher.on(
-      'add',
-      debounce((path) => {
-        this.emit('add', getSketchIdFromPath(path))
-      }, WATCH_DEBOUNCE_MS),
-    )
+        debounceWithId(
+          () => {
+            if (!this.isFirstBuildComplete) return
+            this.emit(eventName, id)
+          },
+          WATCH_DEBOUNCE_MS,
+          id + eventName,
+        )
+      })
+    }
 
-    watcher.on(
-      'unlink',
-      debounce((path) => {
-        this.emit('unlink', getSketchIdFromPath(path))
-      }, WATCH_DEBOUNCE_MS),
-    )
+    echoEmitWithDebounce(FileWatchEvents.change)
+    echoEmitWithDebounce(FileWatchEvents.add)
+    echoEmitWithDebounce(FileWatchEvents.unlink)
 
     return { host, port }
   }

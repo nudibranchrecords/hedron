@@ -16,3 +16,9 @@ export enum FileEvents {
   OpenSketchesDirDialog = 'open-sketches-dir-dialog',
   SelectSketchesDir = 'select-sketches-dir',
 }
+
+export enum FileWatchEvents {
+  change = 'change',
+  unlink = 'unlink',
+  add = 'add',
+}
