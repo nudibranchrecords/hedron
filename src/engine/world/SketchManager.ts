@@ -1,6 +1,6 @@
 import { uid } from 'uid'
 import { EngineStore } from '../store/engineStore'
-import { SketchConfig, SketchModule, SketchModules } from '../store/types'
+import { SketchConfig, SketchModule } from '../store/types'
 import { getDebugScene } from './debugScene'
 
 type SketchInstance = {
@@ -71,23 +71,27 @@ class SketchManager {
     }
   }
 
+  public addSketchModule = async (moduleId: string): Promise<void> => {
+    const { config, module } = await this.importSketch(moduleId)
+
+    const title = config.title
+
+    this.store.setState((state) => {
+      state.sketchModules[moduleId] = {
+        moduleId,
+        title,
+        module,
+        config,
+      }
+    })
+  }
+
   public initiateSketchModules = (moduleIds: string[]): void => {
     const getSketchInfo = async (): Promise<void> => {
-      const modules: SketchModules = {}
       for (const moduleId of moduleIds) {
-        const { config, module } = await this.importSketch(moduleId)
-
-        const title = config.title
-
-        modules[moduleId] = {
-          moduleId,
-          title,
-          module,
-          config,
-        }
+        this.addSketchModule(moduleId)
       }
 
-      this.store.setState({ sketchModules: modules })
       this.store.setState({ isSketchModulesReady: true })
     }
 

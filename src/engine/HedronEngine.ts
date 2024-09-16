@@ -30,10 +30,24 @@ export class HedronEngine {
     this.sketchManager.initiateSketchModules(moduleIds)
   }
 
-  public reimportSketchModule(moduleId: string) {
+  public addSketchModule(moduleId: string) {
     if (!this.sketchManager) throw new Error('Sketch Manager not ready')
 
-    this.sketchManager.reimportSketchModule(moduleId)
+    this.sketchManager.addSketchModule(moduleId)
+  }
+
+  public async reimportSketchModuleAndReloadSketches(moduleId: string) {
+    if (!this.sketchManager) throw new Error('Sketch Manager not ready')
+
+    await this.sketchManager.reimportSketchModule(moduleId)
+    const sketchesToRefresh = Object.values(this.store.getState().sketches).filter(
+      (sketch) => sketch.moduleId === moduleId,
+    )
+
+    for (const sketch of sketchesToRefresh) {
+      this.sketchManager.removeSketchFromScene(sketch.id)
+      this.sketchManager.addSketchToScene(sketch.id, moduleId)
+    }
   }
 
   public createCanvas(containerEl: HTMLDivElement) {
