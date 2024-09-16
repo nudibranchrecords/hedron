@@ -21,13 +21,14 @@ export const handleSketchFiles = async (dirPath: string): Promise<void> => {
 
   const { host, port } = await sketchesServer.init(dirPath)
 
-  sketchesServer.on('change', (sketchId) => {
-    console.log(`sketch changed: ${sketchId}`)
-    sendToMainWindow(SketchEvents.ReimportSketchModule, sketchId)
+  sketchesServer.on('change', (moduleId) => {
+    console.log(`sketch module changed: ${moduleId}`)
+    sendToMainWindow(SketchEvents.ReimportSketchModule, moduleId)
   })
 
-  sketchesServer.on('add', (sketchId) => {
-    console.log(`sketch added: ${sketchId}`)
+  sketchesServer.on('add', (moduleId) => {
+    console.log(`sketch module added: ${moduleId}`)
+    sendToMainWindow(SketchEvents.AddSketchModule, moduleId)
   })
 
   const url = `http://${host}:${port}`

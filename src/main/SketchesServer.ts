@@ -6,8 +6,6 @@ import { app } from 'electron'
 import { getEsbuild } from './getUnpackedModules'
 import * as esbuild from 'esbuild'
 
-const sketchesServerOutputPath = path.normalize(`${__dirname}/../../sketches-server`)
-
 const HOST = process.platform.startsWith('win') ? 'localhost' : '0.0.0.0'
 
 const fileExtensions = [
@@ -87,7 +85,7 @@ export class SketchesServer extends EventEmitter {
 
     await ctx.watch()
 
-    const watcher = chokidar.watch(sketchesServerOutputPath, {
+    const watcher = chokidar.watch(outdir, {
       persistent: true,
       ignoreInitial: true,
     })
