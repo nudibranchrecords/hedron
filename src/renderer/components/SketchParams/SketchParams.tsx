@@ -6,15 +6,14 @@ import {
   NodeControlMain,
   NodeControlTitle,
 } from '../core/NodeControl/NodeControl'
-import { useActiveSketchParams } from '../hooks/useActiveSketchParams'
-import { Param } from 'src/engine'
+import { ParamWithInfo, useActiveSketchParams } from '../hooks/useActiveSketchParams'
 import { useCallback, useRef } from 'react'
 import { useInterval } from 'usehooks-ts'
 import { engineStore } from 'src/renderer/engine'
 import { useUpdateNodeValue } from '../hooks/useUpdateNodeValue'
 
 interface ParamProps {
-  param: Param
+  param: ParamWithInfo
 }
 
 // TODO: param types (currently just floats!)
