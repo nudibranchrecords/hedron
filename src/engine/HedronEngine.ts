@@ -4,7 +4,7 @@ import { listenToStore } from './storeListener'
 import { createDebugScene } from './world/debugScene'
 import { Renderer } from './world/Renderer'
 import { SketchManager } from './world/SketchManager'
-import { importSketchModule } from './importModule'
+import { importSketchModule } from './importSketchModule'
 
 export class HedronEngine {
   private renderer: Renderer
