@@ -16,7 +16,7 @@ export const useActiveSketchParams = () => {
     if (activeSketch) {
       return activeSketch.paramIds.map((id, index) => {
         const node = nodes[id]
-        const title = module?.config.params[index].title
+        const title = module?.config.params[index]?.title
         return { ...node, title }
       })
     }

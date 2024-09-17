@@ -9,6 +9,7 @@ import { createSetSketchModuleItem } from './actionCreators/setSketchModuleItem'
 import { createUpdateNodeValue } from './actionCreators/updateNodeValue'
 import { createDeleteSketchModule } from './actionCreators/deleteSketchModule'
 import { createDeleteSketch } from './actionCreators/deleteSketch'
+import { createUpdateSketchParams } from './actionCreators/updateSketchParams'
 
 export interface EngineState {
   sketchModules: SketchModules
@@ -17,6 +18,7 @@ export interface EngineState {
   nodes: Nodes
   nodeValues: NodeValues
   addSketch: (moduleId: string) => string
+  updateSketchParams: (instanceId: string) => void
   deleteSketch: (instanceId: string) => void
   setSketchModuleItem: (newItem: SketchModuleItem) => void
   updateNodeValue: (nodeId: string, value: number) => void
@@ -47,6 +49,7 @@ export const createEngineStore = () =>
           nodeValues: {},
           sketchModules: {},
           addSketch: createAddSketch(set),
+          updateSketchParams: createUpdateSketchParams(set),
           setSketchModuleItem: createSetSketchModuleItem(set),
           updateNodeValue: createUpdateNodeValue(set),
           deleteSketch: createDeleteSketch(set),

@@ -53,6 +53,7 @@ export class HedronEngine {
     for (const sketch of sketchesToRefresh) {
       this.sketchManager.removeSketchFromScene(sketch.id)
       this.sketchManager.addSketchToScene(sketch.id, moduleId)
+      this.store.getState().updateSketchParams(sketch.id)
     }
   }
 
