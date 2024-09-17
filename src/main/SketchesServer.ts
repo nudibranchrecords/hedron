@@ -1,5 +1,5 @@
 import path from 'path'
-import chokidar from 'chokidar'
+import chokidar, { FSWatcher } from 'chokidar'
 import { EventEmitter } from 'events'
 import { getPort } from 'get-port-please'
 import { app } from 'electron'
@@ -7,6 +7,7 @@ import { getEsbuild } from './getUnpackedModules'
 import * as esbuild from 'esbuild'
 import { debounceWithId } from '../shared/utils/debounceWithId'
 import { FileWatchEvents } from '../shared/Events'
+import { emptyDirSync } from 'fs-extra'
 
 const HOST = process.platform.startsWith('win') ? 'localhost' : '0.0.0.0'
 
@@ -34,8 +35,26 @@ fileExtensions.forEach((ext) => {
 
 const getSketchIdFromPath = (path: string): string => {
   const pieces = path.split('/')
-  const index = pieces.findIndex((val) => val === 'sketches-server') + 1
+  const index = pieces.findIndex((val) => val.endsWith('sketches-server')) + 1
   return pieces[index]
+}
+
+const watchWithDebounce = (
+  watcher: FSWatcher,
+  eventName: string,
+  cb: (path: string, moduleId: string) => void,
+) => {
+  watcher.on(eventName, (path) => {
+    const id = getSketchIdFromPath(path)
+
+    debounceWithId(
+      () => {
+        cb(path, id)
+      },
+      WATCH_DEBOUNCE_MS,
+      id + eventName,
+    )
+  })
 }
 
 export class SketchesServer extends EventEmitter {
@@ -51,8 +70,14 @@ export class SketchesServer extends EventEmitter {
     const port = await getPort({ host: HOST })
 
     const entryBase = dirPath
-    // TODO: Make outdir unique, in case of multiple Hedron instances. Also cleanup folder...
-    const outdir = path.normalize(`${app.getPath('temp')}/hedron/sketches-server`)
+
+    // we want the temp sketches-dir to be inside this project during development, just so we can see what's being generated
+    const outdir = app.isPackaged
+      ? path.normalize(`${app.getPath('temp')}/hedron/sketches-server`)
+      : '.sketches-server'
+
+    // Clear out sketches-server dir
+    emptyDirSync(outdir)
 
     const ctx = await esbuild.context({
       entryPoints: [`${entryBase}/**/index.js`, `${entryBase}/**/config.js`],
@@ -90,28 +115,25 @@ export class SketchesServer extends EventEmitter {
     await ctx.watch()
 
     const watcher = chokidar.watch(outdir, {
-      persistent: true,
+      // @ts-expect-error -- TODO: Update chokidar when types are fixed
+      ignored: (file, stats) =>
+        // Only watch for changes to index and config files
+        stats && stats.isFile() && !(file.endsWith('index.js') || file.endsWith('config.js')),
       ignoreInitial: true,
     })
 
-    const echoEmitWithDebounce = (eventName: string) => {
-      watcher.on(eventName, (path) => {
-        const id = getSketchIdFromPath(path)
+    watchWithDebounce(watcher, FileWatchEvents.change, (_, id) => {
+      if (!this.isFirstBuildComplete) return
+      this.emit(FileWatchEvents.change, id)
+    })
 
-        debounceWithId(
-          () => {
-            if (!this.isFirstBuildComplete) return
-            this.emit(eventName, id)
-          },
-          WATCH_DEBOUNCE_MS,
-          id + eventName,
-        )
-      })
-    }
+    watchWithDebounce(watcher, FileWatchEvents.add, (_, id) => {
+      this.emit(FileWatchEvents.add, id)
+    })
 
-    echoEmitWithDebounce(FileWatchEvents.change)
-    echoEmitWithDebounce(FileWatchEvents.add)
-    echoEmitWithDebounce(FileWatchEvents.unlink)
+    watchWithDebounce(watcher, FileWatchEvents.unlink, (_, id) => {
+      this.emit(FileWatchEvents.unlink, id)
+    })
 
     return { host, port }
   }

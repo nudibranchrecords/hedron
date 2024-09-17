@@ -11,7 +11,5 @@ export const debounceWithId = (func: Func, wait: number, id: string) => {
     pool[id] = debounce(func, wait)
   }
 
-  console.log(id)
-
   pool[id]()
 }
