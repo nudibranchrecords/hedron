@@ -1,5 +1,5 @@
 import { uid } from 'uid'
-import { SketchModuleItem } from './store/types'
+import { SketchConfig, SketchModule, SketchModuleItem } from './store/types'
 
 export const importSketchModule = async (
   baseUrl: string,
@@ -14,12 +14,15 @@ export const importSketchModule = async (
     /* @vite-ignore */ `${baseUrl}/${moduleId}/index.js?${cacheBust}`
   )
 
-  const title = configModule.default.title
+  const config: SketchConfig = configModule.default
+  const module: SketchModule = sketchModule.default
+
+  const title = config.title ?? moduleId
 
   return {
     title,
     moduleId,
-    config: configModule.default,
-    module: sketchModule.default,
+    config,
+    module,
   }
 }
