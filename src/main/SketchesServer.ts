@@ -117,7 +117,9 @@ export class SketchesServer extends EventEmitter {
     const watcher = chokidar.watch(outdir, {
       // @ts-expect-error -- TODO: Update chokidar when types are fixed
       ignored: (file, stats) =>
-        // Only watch for changes to index and config files
+        // Only watch for changes to generated index and config files
+        // Note: When imported assets are edited (e.g. a GLB file), the index file will still update
+        //       so no need to watch anything else!
         stats && stats.isFile() && !(file.endsWith('index.js') || file.endsWith('config.js')),
       ignoreInitial: true,
     })
