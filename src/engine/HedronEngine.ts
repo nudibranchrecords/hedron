@@ -10,20 +10,26 @@ export class HedronEngine {
   private renderer: Renderer
   private store: EngineStore
   private sketchesUrl: string | null = null
-  private sketchManager: SketchManager | null = null
+  private sketchManager: SketchManager
 
   constructor() {
-    this.renderer = new Renderer()
     this.store = createEngineStore()
+    this.sketchManager = new SketchManager()
+    this.renderer = new Renderer()
   }
 
   public setSketchesUrl(sketchesUrl: string) {
     this.sketchesUrl = sketchesUrl
-    this.sketchManager = new SketchManager()
 
     const { removeSketchFromScene } = this.sketchManager
 
-    listenToStore(this.store, this.addSketchToScene, removeSketchFromScene)
+    const addSketchToScene = (sketchId: string, moduleId: string) => {
+      const modules = this.store.getState().sketchModules
+      const module = modules[moduleId].module
+      this.sketchManager.addSketchToScene(sketchId, module)
+    }
+
+    listenToStore(this.store, addSketchToScene, removeSketchFromScene)
   }
 
   public async initiateSketchModules(moduleIds: string[]) {
@@ -32,14 +38,6 @@ export class HedronEngine {
     }
 
     this.store.setState({ isSketchModulesReady: true })
-  }
-
-  addSketchToScene = (sketchId: string, moduleId: string) => {
-    if (!this.sketchManager) throw new Error('Sketch Manager not ready')
-
-    const modules = this.store.getState().sketchModules
-    const module = modules[moduleId].module
-    this.sketchManager.addSketchToScene(sketchId, module)
   }
 
   public async addSketchModule(moduleId: string) {
@@ -56,8 +54,6 @@ export class HedronEngine {
   }
 
   public async reimportSketchModuleAndReloadSketches(moduleId: string) {
-    if (!this.sketchManager) throw new Error('Sketch Manager not ready')
-
     const moduleItem = await this.addSketchModule(moduleId)
 
     const sketchesToRefresh = getSketchesOfModuleId(this.store.getState(), moduleId)
@@ -82,8 +78,6 @@ export class HedronEngine {
   }
 
   run() {
-    if (!this.sketchManager) throw new Error('Sketch Manager not ready')
-
     const debugScene = createDebugScene()
 
     const loop = (): void => {
