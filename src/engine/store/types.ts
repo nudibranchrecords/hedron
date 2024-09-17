@@ -13,7 +13,6 @@ export type SketchModule = any
 export interface NodeBase {
   id: string
   key: string
-  title?: string
 }
 
 export interface NodeParamNumber extends NodeBase {
@@ -36,7 +35,7 @@ export type NodeValues = { [key: string]: NodeValue }
 
 export interface SketchConfigParamBase {
   key: string
-  title: string
+  title?: string
 }
 
 export interface SketchConfigParamNumber extends SketchConfigParamBase {
