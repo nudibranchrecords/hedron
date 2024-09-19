@@ -9,10 +9,9 @@
 
 .main {
   flex: 1;
-  margin-top: var(--gapLarge);
+  padding: var(--gapLarge);
 }
 
 .nav {
-  margin-left: var(--gapLarge);
   width: 3rem;
 }
