@@ -1,7 +1,8 @@
 .wrapper {
   display: block;
-  border: 1px solid var(--lineColor2);
+  border: 1px solid var(--lineColor1);
   border-radius: 0.5rem;
+  background-color: var(--bgColorDark1);
 }
 
 .header {

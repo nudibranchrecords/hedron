@@ -7,19 +7,19 @@
   border-radius: 0.25rem;
   transition: var(--transitionTime);
   cursor: pointer;
+  font-size: 0.8rem;
 
   &:hover {
     background: var(--actionColor1Hover);
   }
 
   &:global(.secondary) {
-    background: var(--bgColorDark2);
-    border: 1px solid var(--actionColor2);
-    color: var(--actionColor2);
+    border: 1px solid var(--lineColor2);
+    color: var(--textColorLight1);
+    background: var(--bgColorDark1);
 
     &:hover {
-      color: var(--actionColor2Hover);
-      border-color: var(--actionColor2Hover);
+      background: var(--bgColorDark2);
     }
   }
 }
