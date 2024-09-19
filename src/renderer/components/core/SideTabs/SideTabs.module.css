@@ -17,6 +17,7 @@
   border-top: 1px solid #333;
   cursor: pointer;
   transition: var(--transitionTime);
+  font-family: inherit;
 
   &:hover {
     background: var(--actionColor1);
@@ -24,5 +25,6 @@
 
   &:global(.active) {
     background: var(--actionColor1);
+    cursor: default;
   }
 }

@@ -8,6 +8,7 @@
   transition: var(--transitionTime);
   cursor: pointer;
   font-size: 0.8rem;
+  font-family: inherit;
 
   &:hover {
     background: var(--actionColor1Hover);
