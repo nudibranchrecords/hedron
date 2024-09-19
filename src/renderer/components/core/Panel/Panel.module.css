@@ -1,0 +1,22 @@
+.wrapper {
+  display: block;
+  border: 1px solid var(--lineColor2);
+  border-radius: 0.5rem;
+}
+
+.header {
+  padding: var(--gapLarge);
+  border-bottom: 1px solid var(--lineColor1);
+}
+
+.body {
+  padding: var(--gapLarge);
+}
+
+.actions {
+  padding: var(--gapLarge);
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--gapLarge);
+  border-top: 1px solid var(--lineColor1);
+}
