@@ -1,15 +1,12 @@
 :root {
   --lineColor1: #212121;
   --lineColor2: #555555;
-  --textColorLight1: #aaa;
+  --textColorLight1: #d7d7d7;
   --bgColorDark1: #333;
   --bgColorDark2: #222;
   --bgColorDark3: #111;
-  --bgColorLight1: #434343;
   --actionColor1: #da5782;
-  --actionColor1Hover: #d87a9a;
-  --actionColor2: #0c7967;
-  --actionColor2Hover: #0f9680;
+  --actionColor1Hover: rgb(156, 67, 97);
   --channelAColor: #e35a59;
   --channelBColor: #24965c;
   --dangerColor: red;
