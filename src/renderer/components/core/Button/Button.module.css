@@ -2,7 +2,7 @@
   background: var(--actionColor1);
   color: white;
   text-transform: uppercase;
-  font-weight: 600;
+  font-weight: 400;
   padding: 0.25rem 0.5rem;
   border-radius: 0.25rem;
   transition: var(--transitionTime);
