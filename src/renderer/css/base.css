@@ -7,10 +7,21 @@ body {
   font-size: 0.8rem;
   overflow: hidden;
   font-family: sans-serif;
+  color: var(--textColorLight1);
 }
 
 *,
 *::before,
 *::after {
   box-sizing: inherit;
+}
+
+h2 {
+  font-size: 1.1rem;
+  text-transform: uppercase;
+  font-weight: 800;
+}
+
+p {
+  line-height: 1.1rem;
 }

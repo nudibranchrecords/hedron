@@ -16,4 +16,6 @@
   --transitionTime: 0.2s;
   --gapSmall: 0.25rem;
   --gapLarge: 0.5rem;
+  --fontSizeHeader: 1.5rem;
+  --fontWeightHeader: 800;
 }
