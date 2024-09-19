@@ -21,6 +21,7 @@
 
 .inner {
   margin-bottom: 0.25rem;
+  height: 20px;
   width: 50%;
 }
 
@@ -29,7 +30,7 @@
   border-bottom: 1px dotted var(--bgColorDark3);
   display: flex;
   align-items: center;
-  height: 16px;
+  height: 20px;
   text-transform: uppercase;
   margin-bottom: 0.25rem;
   margin-right: 0.25rem;

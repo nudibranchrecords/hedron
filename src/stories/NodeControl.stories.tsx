@@ -20,7 +20,7 @@ const meta = {
   },
   decorators: [
     (Story) => (
-      <div style={{ width: '80vw', padding: '2em', backgroundColor: 'var(--bgColorDark1)' }}>
+      <div style={{ width: '15rem', padding: '2em', backgroundColor: 'var(--bgColorDark1)' }}>
         <Story />
       </div>
     ),
@@ -38,7 +38,25 @@ export const FloatSliderInner = () => {
   return (
     <NodeControl>
       <NodeControlMain>
-        <NodeControlTitle>Hey!</NodeControlTitle>
+        <NodeControlTitle>Short Name</NodeControlTitle>
+        <NodeControlInner>
+          <FloatSlider onValueChange={fn()} ref={ref} />
+        </NodeControlInner>
+      </NodeControlMain>
+    </NodeControl>
+  )
+}
+
+export const LongName = () => {
+  const ref = useRef<FloatSliderHandle>(null)
+
+  useInterval(() => {
+    ref.current!.drawBar(Math.random())
+  }, 3000)
+  return (
+    <NodeControl>
+      <NodeControlMain>
+        <NodeControlTitle>My Cool ParamLongName X</NodeControlTitle>
         <NodeControlInner>
           <FloatSlider onValueChange={fn()} ref={ref} />
         </NodeControlInner>
