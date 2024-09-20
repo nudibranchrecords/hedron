@@ -3,7 +3,7 @@
   color: var(--textColorLight1);
   fill: var(--textColorLight1);
   background-color: var(--bgColorDark2);
-  padding: 0.25rem;
+  padding: var(--gapSmall);
   display: flex;
   flex-direction: column;
   transition: border-color var(--transitionTime);
@@ -21,20 +21,18 @@
 }
 
 .inner {
-  margin-bottom: var(--gapSmall);
-  height: 24px;
+  height: 26px;
   width: 50%;
 }
 
 .title {
   width: 50%;
   border-bottom: 1px dotted var(--lineColor1);
+  padding: 3px;
   display: flex;
-  align-items: center;
-  height: 24px;
-  margin-bottom: 0.25rem;
+  align-items: flex-start;
+  height: 26px;
   margin-right: 0.25rem;
-  padding-left: 0.25rem;
   letter-spacing: 1px;
   line-height: 100%;
   font-size: 9px;
