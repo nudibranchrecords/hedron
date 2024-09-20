@@ -13,6 +13,9 @@ export type IconName =
   | 'content_copy'
   | 'folder_open'
   | 'description'
+  | 'token'
+
+export const sketchIcon: IconName = 'token'
 
 export interface IconProps extends React.HTMLAttributes<HTMLSpanElement> {
   name: IconName
