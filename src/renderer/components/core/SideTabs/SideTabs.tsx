@@ -17,7 +17,7 @@ export interface SideTabsItemProps {
 export const SideTabsItem = ({ children, isActive, onClick }: SideTabsItemProps) => {
   return (
     <button onClick={onClick} className={`${c.item} ${isActive && 'active'}`}>
-      {children}
+      <span>{children}</span>
     </button>
   )
 }

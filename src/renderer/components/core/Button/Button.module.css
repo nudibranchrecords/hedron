@@ -10,6 +10,7 @@
   cursor: pointer;
   font-size: 0.8rem;
   font-family: inherit;
+  box-shadow: 3px 3px 0 0 black;
 
   &:hover {
     background: var(--actionColor1Hover);

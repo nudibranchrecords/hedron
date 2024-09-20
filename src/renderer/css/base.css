@@ -11,6 +11,11 @@ body {
   color: var(--textColorLight1);
   font-weight: 100;
   background: var(--bgColorDark1);
+  text-shadow: var(--textShadow);
+}
+
+button {
+  text-shadow: var(--textShadow);
 }
 
 *,
@@ -20,11 +25,11 @@ body {
 }
 
 h2 {
-  font-size: 1rem;
-  text-transform: uppercase;
-  font-weight: 300;
+  font-size: 1.2rem;
+  /* text-transform: uppercase; */
+  font-weight: 500;
 }
 
 p {
-  line-height: 1.1rem;
+  line-height: 1.3rem;
 }

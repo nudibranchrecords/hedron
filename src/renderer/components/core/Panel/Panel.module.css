@@ -2,20 +2,21 @@
   display: block;
   border: 1px solid var(--lineColor1);
   border-radius: 0.5rem;
-  background-color: var(--bgColorDark1);
+  background-color: var(--bgColorDark2);
+  box-shadow: 3px 3px 0 0 black;
 }
 
 .header {
-  padding: var(--gapLarge);
+  padding: var(--gapXLarge);
   border-bottom: 1px solid var(--lineColor1);
 }
 
 .body {
-  padding: var(--gapLarge);
+  padding: var(--gapXLarge);
 }
 
 .actions {
-  padding: var(--gapLarge);
+  padding: var(--gapXLarge);
   display: flex;
   justify-content: flex-end;
   gap: var(--gapLarge);
