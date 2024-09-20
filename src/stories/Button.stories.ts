@@ -24,3 +24,10 @@ export const Secondary: Story = {
     type: 'secondary',
   },
 }
+
+export const Muted: Story = {
+  args: {
+    children: 'Button',
+    type: 'neutral',
+  },
+}

@@ -17,6 +17,14 @@
   }
 
   &:global(.secondary) {
+    background: var(--actionColor2);
+
+    &:hover {
+      background: var(--actionColor2Hover);
+    }
+  }
+
+  &:global(.neutral) {
     border: 1px solid var(--lineColor2);
     color: var(--textColorLight1);
     background: var(--bgColorDark1);
