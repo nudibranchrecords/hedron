@@ -32,6 +32,7 @@ export const Simple = () => {
           {tab}
         </SideTabsItem>
       ))}
+      <SideTabsItem iconName="add_circle" />
     </SideTabs>
   )
 }

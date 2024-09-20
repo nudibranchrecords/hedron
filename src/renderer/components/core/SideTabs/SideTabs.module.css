@@ -24,13 +24,18 @@
     background: var(--actionColor1);
   }
 
+  &:global(.active) {
+    background: var(--actionColor1);
+    cursor: default;
+  }
+
   span {
     transition: inherit;
     display: block;
   }
 
-  &:global(.active) {
-    background: var(--actionColor1);
-    cursor: default;
+  .icon {
+    font-size: 1.5em;
+    line-height: 0.8;
   }
 }
