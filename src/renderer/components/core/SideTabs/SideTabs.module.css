@@ -1,26 +1,32 @@
 .wrapper {
   display: flex;
   flex-direction: column;
-  background: var(--bgColorDark2);
+  background: var(--bgColorDark3);
   height: 100%;
 }
 
 .item {
+  --inset: 2px;
+
   display: block;
   padding: 0.5rem 0.25rem;
   font-size: 0.7rem;
-  background: #222;
+  background: var(--bgColorDark3);
   color: white;
   font-weight: 400;
   text-decoration: none;
-  border: 1px solid #222;
-  border-top: 1px solid #333;
+  border-bottom: 1px solid var(--lineColor1);
   cursor: pointer;
   transition: var(--transitionTime);
   font-family: inherit;
 
   &:hover {
     background: var(--actionColor1);
+  }
+
+  span {
+    transition: inherit;
+    display: block;
   }
 
   &:global(.active) {

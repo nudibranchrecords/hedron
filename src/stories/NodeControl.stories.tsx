@@ -6,6 +6,8 @@ import {
   NodeControlInner,
 } from '../renderer/components/core/NodeControl/NodeControl'
 
+import { ControlGrid } from '../renderer/components/core/ControlGrid/ControlGrid'
+
 import { fn } from '@storybook/test'
 
 import { FloatSlider, FloatSliderHandle } from '../renderer/components/core/FloatSlider/FloatSlider'
@@ -15,21 +17,15 @@ import { useInterval } from 'usehooks-ts'
 const meta = {
   title: 'NodeControl',
   component: NodeControl,
-  parameters: {
-    layout: 'centered',
-  },
-  decorators: [
-    (Story) => (
-      <div style={{ width: '15rem', padding: '2em', backgroundColor: 'var(--bgColorDark1)' }}>
-        <Story />
-      </div>
-    ),
-  ],
 } satisfies Meta<typeof NodeControl>
 
 export default meta
 
-export const FloatSliderInner = () => {
+interface BasicProps {
+  title: string
+}
+
+const Base = ({ title = 'Short Name' }: BasicProps) => {
   const ref = useRef<FloatSliderHandle>(null)
 
   useInterval(() => {
@@ -38,7 +34,7 @@ export const FloatSliderInner = () => {
   return (
     <NodeControl>
       <NodeControlMain>
-        <NodeControlTitle>Short Name</NodeControlTitle>
+        <NodeControlTitle>{title}</NodeControlTitle>
         <NodeControlInner>
           <FloatSlider onValueChange={fn()} ref={ref} />
         </NodeControlInner>
@@ -47,20 +43,21 @@ export const FloatSliderInner = () => {
   )
 }
 
-export const LongName = () => {
-  const ref = useRef<FloatSliderHandle>(null)
+const params = [
+  'Velocity X',
+  'Velocity Y',
+  'Rotation Speed X',
+  'Rotation Speed Y',
+  'some long name x',
+  'some other thing y',
+  'short',
+  'another long param',
+]
 
-  useInterval(() => {
-    ref.current!.drawBar(Math.random())
-  }, 3000)
-  return (
-    <NodeControl>
-      <NodeControlMain>
-        <NodeControlTitle>My Cool ParamLongName X</NodeControlTitle>
-        <NodeControlInner>
-          <FloatSlider onValueChange={fn()} ref={ref} />
-        </NodeControlInner>
-      </NodeControlMain>
-    </NodeControl>
-  )
-}
+export const WithControlGrid = () => (
+  <ControlGrid>
+    {params.map((item, i) => (
+      <Base key={i} title={item} />
+    ))}
+  </ControlGrid>
+)

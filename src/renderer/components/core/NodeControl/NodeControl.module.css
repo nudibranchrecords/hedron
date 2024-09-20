@@ -1,12 +1,13 @@
 .wrapper {
-  border: 1px solid var(--lineColor1);
   border-radius: 3px;
   color: var(--textColorLight1);
   fill: var(--textColorLight1);
+  background-color: var(--bgColorDark2);
   padding: 0.25rem;
   display: flex;
   flex-direction: column;
-  transition: var(--transitionTime);
+  transition: border-color var(--transitionTime);
+  box-shadow: 1px 1px 0 0 var(--lineColor1);
 
   &:global(.active) {
     border-color: white;
@@ -20,22 +21,23 @@
 }
 
 .inner {
-  margin-bottom: 0.25rem;
-  height: 20px;
+  margin-bottom: var(--gapSmall);
+  height: 24px;
   width: 50%;
 }
 
 .title {
   width: 50%;
-  border-bottom: 1px dotted var(--bgColorDark3);
+  border-bottom: 1px dotted var(--lineColor1);
   display: flex;
   align-items: center;
-  height: 20px;
-  /* text-transform: uppercase; */
+  height: 24px;
   margin-bottom: 0.25rem;
   margin-right: 0.25rem;
+  padding-left: 0.25rem;
   letter-spacing: 1px;
-  font-size: 0.5rem;
+  line-height: 100%;
+  font-size: 9px;
   font-weight: 200;
   z-index: 1;
   overflow: hidden;
