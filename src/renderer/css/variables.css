@@ -11,7 +11,8 @@
   --actionColor2Hover: rgb(12, 92, 9);
   --channelAColor: #e35a59;
   --channelBColor: #24965c;
-  --dangerColor: red;
+  --dangerColor: rgb(207, 23, 23);
+  --dangerColorHover: rgb(166, 30, 30);
   --transitionTime: 0.2s;
   --gapSmall: 0.3rem;
   --gapLarge: 0.5rem;

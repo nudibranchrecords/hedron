@@ -11,6 +11,8 @@
   font-size: 0.8rem;
   font-family: inherit;
   box-shadow: 3px 3px 0 0 black;
+  display: flex;
+  align-content: center;
 
   &:hover {
     background: var(--actionColor1Hover);
@@ -33,4 +35,19 @@
       background: var(--bgColorDark2);
     }
   }
+
+  &:global(.danger) {
+    color: var(--textColorLight1);
+    background: var(--dangerColor);
+
+    &:hover {
+      background: var(--dangerColorHover);
+    }
+  }
+}
+
+.icon {
+  margin-right: var(--gapSmall);
+  font-size: 1.1em;
+  line-height: 1.1;
 }
