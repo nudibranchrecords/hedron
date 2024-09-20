@@ -31,3 +31,19 @@ export const Muted: Story = {
     type: 'neutral',
   },
 }
+
+export const WithIcon: Story = {
+  args: {
+    children: 'Copy Sketch',
+    type: 'primary',
+    iconName: 'content_copy',
+  },
+}
+
+export const Danger: Story = {
+  args: {
+    children: 'Delete Sketch',
+    type: 'danger',
+    iconName: 'delete',
+  },
+}

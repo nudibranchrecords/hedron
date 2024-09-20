@@ -15,7 +15,9 @@ export const Intro = () => {
         <PanelHeader>Welcome back</PanelHeader>
         <PanelBody>Choose your sketches folder or open a project to get started</PanelBody>
         <PanelActions>
-          <Button onClick={onButtonClick}>Select Sketches Folder</Button>
+          <Button onClick={onButtonClick} iconName="folder_open">
+            Select Sketches Folder
+          </Button>
         </PanelActions>
       </Panel>
     </div>

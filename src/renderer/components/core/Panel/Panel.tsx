@@ -1,3 +1,4 @@
+import { Icon, IconName } from '../Icon/Icon'
 import c from './Panel.module.css'
 
 export interface PanelProps {
@@ -8,10 +9,12 @@ export const Panel = ({ children }: PanelProps) => <div className={c.wrapper}>{c
 
 export interface PanelHeaderProps {
   children: React.ReactNode
+  iconName: IconName
 }
 
-export const PanelHeader = ({ children }: PanelHeaderProps) => (
+export const PanelHeader = ({ children, iconName }: PanelHeaderProps) => (
   <div className={c.header}>
+    {iconName && <Icon name={iconName} className={c.icon} />}
     <h2>{children}</h2>
   </div>
 )
