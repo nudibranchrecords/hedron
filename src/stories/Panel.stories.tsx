@@ -7,7 +7,6 @@ import {
 } from '../renderer/components/core/Panel/Panel'
 import { fn } from '@storybook/test'
 import { Button } from '../renderer/components/core/Button/Button'
-import { Icon } from '../renderer/components/core/Icon/Icon'
 
 const meta = {
   title: 'Panel',

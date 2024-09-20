@@ -9,7 +9,7 @@ export const Panel = ({ children }: PanelProps) => <div className={c.wrapper}>{c
 
 export interface PanelHeaderProps {
   children: React.ReactNode
-  iconName: IconName
+  iconName?: IconName
 }
 
 export const PanelHeader = ({ children, iconName }: PanelHeaderProps) => (
