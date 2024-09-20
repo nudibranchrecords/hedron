@@ -28,9 +28,12 @@ export const WithActions = () => {
         </p>
       </PanelBody>
       <PanelActions>
-        <Button onClick={fn()}>Do something</Button>
+        <Button onClick={fn()}>Choose Project</Button>
         <Button type="secondary" onClick={fn()}>
-          Do something else
+          Choose Sketch Folder
+        </Button>
+        <Button type="neutral" onClick={fn()}>
+          Cancel
         </Button>
       </PanelActions>
     </Panel>
