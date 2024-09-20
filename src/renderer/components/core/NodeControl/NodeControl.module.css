@@ -10,7 +10,7 @@
   box-shadow: 1px 1px 0 0 var(--lineColor1);
 
   &:global(.active) {
-    border-color: white;
+    outline: 1px solid var(--lineColor2);
   }
 }
 
