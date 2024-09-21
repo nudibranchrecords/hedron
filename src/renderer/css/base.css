@@ -21,6 +21,7 @@ body {
   font-weight: 100;
   background: var(--bgColorDark1);
   text-shadow: var(--textShadow);
+  box-sizing: border-box;
 }
 
 button {
