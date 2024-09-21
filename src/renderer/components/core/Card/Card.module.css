@@ -40,6 +40,12 @@
 .actions {
   display: flex;
   justify-content: flex-end;
-  flex-direction: column;
+  align-items: flex-end;
+  margin-left: auto;
   gap: var(--gapLarge);
+
+  &:global(.column) {
+    flex-direction: column;
+    align-items: stretch;
+  }
 }

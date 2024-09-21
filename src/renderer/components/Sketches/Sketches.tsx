@@ -7,6 +7,7 @@ import { SketchParams } from '../SketchParams/SketchParams'
 import { ViewHeader } from '../core/ViewHeader/ViewHeader'
 import { engineStore } from 'src/renderer/engine'
 import { useSetActiveSketchId } from '../hooks/useSetActiveSketchId'
+import { Card, CardActions } from '../core/Card/Card'
 
 export const Sketches = () => {
   const sketchModules = useSketchModuleList()
@@ -22,9 +23,17 @@ export const Sketches = () => {
             <div className={c.section}>
               <SketchParams />
             </div>
-            <Button onClick={() => engineStore.getState().deleteSketch(activeSketch.id)}>
-              Delete{' '}
-            </Button>
+            <Card>
+              <CardActions>
+                <Button
+                  type="danger"
+                  iconName="delete"
+                  onClick={() => engineStore.getState().deleteSketch(activeSketch.id)}
+                >
+                  Delete Sketch
+                </Button>
+              </CardActions>
+            </Card>
           </>
         )}
 
