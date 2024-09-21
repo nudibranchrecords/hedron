@@ -37,6 +37,21 @@ export const Everything = () => {
   )
 }
 
+export const OnlyActions = () => {
+  return (
+    <Card>
+      <CardActions>
+        <Button onClick={fn()} iconName="content_copy">
+          Copy Sketch
+        </Button>
+        <Button onClick={fn()} type="danger" iconName="delete">
+          Delete Sketch
+        </Button>
+      </CardActions>
+    </Card>
+  )
+}
+
 export const LongText = () => {
   return (
     <Card>
@@ -51,6 +66,31 @@ export const LongText = () => {
         </CardBody>
       </CardContent>
       <CardActions>
+        <Button onClick={fn()} iconName="add">
+          Add To Scene
+        </Button>
+      </CardActions>
+    </Card>
+  )
+}
+
+export const ActionsColumn = () => {
+  return (
+    <Card>
+      <CardContent>
+        <CardHeader iconName="token">Sketch: Starfield</CardHeader>
+        <CardBody>
+          <p>
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Autem optio earum dolore unde
+            ipsam, fugiat debitis explicabo aut ex culpa? Est non sint maiores velit quisquam
+            doloremque dolor, quasi sapiente?
+          </p>
+        </CardBody>
+      </CardContent>
+      <CardActions column>
+        <Button onClick={fn()} type="neutral" iconName="info">
+          More Info
+        </Button>
         <Button onClick={fn()} iconName="add">
           Add To Scene
         </Button>

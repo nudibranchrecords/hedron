@@ -35,10 +35,11 @@ export const CardBody = ({ children }: CardBodyProps) => <div className={c.body}
 
 export interface CardActionsProps {
   children: React.ReactNode
+  column?: boolean
 }
 
-export const CardActions = ({ children }: CardActionsProps) => (
-  <div className={c.actions}>{children}</div>
+export const CardActions = ({ children, column }: CardActionsProps) => (
+  <div className={`${c.actions} ${column && 'column'}`}>{children}</div>
 )
 
 export interface CardContentProps {
