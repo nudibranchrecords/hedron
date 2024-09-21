@@ -1,9 +1,7 @@
 .wrapper {
   padding: var(--gapXLarge);
-  /* border: 1px solid var(--lineColor1); */
   border-radius: 0.5rem;
-  background-color: var(--bgColorDark2);
-  box-shadow: 3px 3px 0 0 var(--bgColorDark3);
+  background-color: var(--bgColorDark3);
 
   display: flex;
   gap: 2rem;
