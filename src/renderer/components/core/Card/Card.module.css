@@ -5,18 +5,13 @@
   background-color: var(--bgColorDark2);
   box-shadow: 3px 3px 0 0 var(--bgColorDark3);
 
-  display: grid;
-  grid-template-columns: 1fr 1fr auto;
-  grid-template-rows: auto 1fr;
+  display: flex;
+  gap: 2rem;
 }
 
 .header {
   display: flex;
   align-items: center;
-  margin-bottom: var(--gapLarge);
-
-  grid-column: 1 / 3;
-  grid-row: 1;
 
   .icon {
     font-size: 1.2rem;
@@ -24,11 +19,22 @@
   }
 }
 
+.details {
+  color: var(--textColorLight2);
+  text-shadow: none;
+  font-style: italic;
+}
+
 .body {
-  grid-column: 1 / 3;
-  grid-row: 2;
-  padding-right: 1rem;
   max-width: 40rem;
+}
+
+.content {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  gap: var(--gapLarge);
+  flex: 1;
 }
 
 .actions {
@@ -36,5 +42,4 @@
   justify-content: flex-end;
   flex-direction: column;
   gap: var(--gapLarge);
-  grid-row: 1 / 3;
 }

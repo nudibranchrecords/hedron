@@ -19,6 +19,14 @@ export const CardHeader = ({ children, iconName }: CardHeaderProps) => (
   </div>
 )
 
+export interface CardDetailsProps {
+  children: React.ReactNode
+}
+
+export const CardDetails = ({ children }: CardDetailsProps) => (
+  <div className={c.details}>{children}</div>
+)
+
 export interface CardBodyProps {
   children: React.ReactNode
 }
@@ -31,4 +39,12 @@ export interface CardActionsProps {
 
 export const CardActions = ({ children }: CardActionsProps) => (
   <div className={c.actions}>{children}</div>
+)
+
+export interface CardContentProps {
+  children: React.ReactNode
+}
+
+export const CardContent = ({ children }: CardContentProps) => (
+  <div className={c.content}>{children}</div>
 )
