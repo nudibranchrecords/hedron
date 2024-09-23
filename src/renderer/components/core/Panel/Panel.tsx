@@ -1,24 +1,44 @@
+import React from 'react'
+import { Button } from '../Button/Button'
 import { Icon, IconName } from '../Icon/Icon'
 import c from './Panel.module.css'
 
-export interface PanelProps {
-  children: React.ReactNode
+export interface PanelProps extends React.HTMLAttributes<HTMLDivElement> {
   size?: 'full'
 }
 
-export const Panel = ({ children, size }: PanelProps) => (
-  <div className={`${c.wrapper} ${size}`}>{children}</div>
+export const Panel = ({ children, size, className, ...props }: PanelProps) => (
+  <div className={`${c.wrapper} ${size} ${className}`} {...props}>
+    {children}
+  </div>
 )
 
 export interface PanelHeaderProps {
   children: React.ReactNode
   iconName?: IconName
+  buttonIcon?: IconName
+  buttonOnClick?: () => void
 }
 
-export const PanelHeader = ({ children, iconName }: PanelHeaderProps) => (
+export const PanelHeader = ({
+  children,
+  iconName,
+  buttonIcon = 'close',
+  buttonOnClick,
+}: PanelHeaderProps) => (
   <div className={c.header}>
     {iconName && <Icon name={iconName} className={c.icon} />}
     <h2>{children}</h2>
+
+    {buttonOnClick && (
+      <Button
+        className={c.button}
+        iconName={buttonIcon}
+        size="slim"
+        type="neutral"
+        onClick={buttonOnClick}
+      />
+    )}
   </div>
 )
 

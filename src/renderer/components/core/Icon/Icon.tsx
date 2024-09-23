@@ -14,6 +14,7 @@ export type IconName =
   | 'folder_open'
   | 'description'
   | 'token'
+  | 'close'
 
 export const sketchIcon: IconName = 'token'
 

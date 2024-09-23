@@ -39,3 +39,7 @@
   gap: var(--gapLarge);
   border-top: 1px solid var(--lineColor1);
 }
+
+.button {
+  margin-left: auto;
+}
