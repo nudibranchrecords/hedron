@@ -1,9 +1,15 @@
 .wrapper {
-  display: block;
+  display: flex;
+  flex-direction: column;
   border: 1px solid var(--lineColor1);
   border-radius: 0.5rem;
   background-color: var(--bgColorDark2);
   box-shadow: 3px 3px 0 0 black;
+
+  &:global(.full) {
+    width: 100%;
+    height: 100%;
+  }
 }
 
 .header {
@@ -20,6 +26,10 @@
 
 .body {
   padding: var(--gapXLarge);
+
+  &:global(.scrollable) {
+    overflow: auto;
+  }
 }
 
 .actions {
