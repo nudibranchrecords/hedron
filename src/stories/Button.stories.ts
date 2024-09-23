@@ -47,3 +47,11 @@ export const Danger: Story = {
     iconName: 'delete',
   },
 }
+
+export const IconOnly: Story = {
+  args: {
+    type: 'neutral',
+    size: 'slim',
+    iconName: 'close',
+  },
+}

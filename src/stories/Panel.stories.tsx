@@ -145,3 +145,34 @@ export const ScrollableWithoutActions: Story = {
     )
   },
 }
+
+export const WithCloseButton: Story = {
+  parameters: {
+    layout: 'centered',
+  },
+  decorators: [
+    (Story) => {
+      return (
+        <div style={{ width: '40rem', height: '20rem' }}>
+          <Story />
+        </div>
+      )
+    },
+  ],
+  render: () => {
+    return (
+      <Panel>
+        <PanelHeader iconName="info" buttonOnClick={fn()}>
+          Welcome to the panel!
+        </PanelHeader>
+        <PanelBody>
+          <p>
+            Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quibusdam recusandae
+            voluptatum quidem minus atque, numquam explicabo blanditiis ad corporis eligendi
+            delectus, incidunt ipsum harum error. Quidem dolorem exercitationem nostrum dignissimos!
+          </p>
+        </PanelBody>
+      </Panel>
+    )
+  },
+}

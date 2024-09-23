@@ -13,6 +13,7 @@
   box-shadow: 3px 3px 0 0 black;
   display: flex;
   align-content: center;
+  gap: var(--gapSmall);
 
   &:hover {
     background: var(--actionColor1Hover);
@@ -45,8 +46,11 @@
     }
   }
 
+  &:global(.slim) {
+    padding: 0.25rem;
+  }
+
   .icon {
-    margin-right: var(--gapSmall);
     font-size: 1.1em;
     line-height: 1.1;
   }

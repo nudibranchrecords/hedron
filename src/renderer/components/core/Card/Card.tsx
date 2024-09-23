@@ -49,3 +49,9 @@ export interface CardContentProps {
 export const CardContent = ({ children }: CardContentProps) => (
   <div className={c.content}>{children}</div>
 )
+
+export interface CardListProps {
+  children: React.ReactNode
+}
+
+export const CardList = ({ children }: CardListProps) => <div className={c.list}>{children}</div>
