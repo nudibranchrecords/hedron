@@ -3,9 +3,12 @@ import c from './Panel.module.css'
 
 export interface PanelProps {
   children: React.ReactNode
+  size?: 'full'
 }
 
-export const Panel = ({ children }: PanelProps) => <div className={c.wrapper}>{children}</div>
+export const Panel = ({ children, size }: PanelProps) => (
+  <div className={`${c.wrapper} ${size}`}>{children}</div>
+)
 
 export interface PanelHeaderProps {
   children: React.ReactNode
@@ -21,9 +24,12 @@ export const PanelHeader = ({ children, iconName }: PanelHeaderProps) => (
 
 export interface PanelBodyProps {
   children: React.ReactNode
+  scrollable?: boolean
 }
 
-export const PanelBody = ({ children }: PanelBodyProps) => <div className={c.body}>{children}</div>
+export const PanelBody = ({ children, scrollable }: PanelBodyProps) => (
+  <div className={`${c.body} ${scrollable && 'scrollable'}`}>{children}</div>
+)
 
 export interface PanelActionsProps {
   children: React.ReactNode
