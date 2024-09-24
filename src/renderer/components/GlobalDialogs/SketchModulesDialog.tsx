@@ -24,9 +24,8 @@ interface SketchCardProps {
 
 export const SketchCard = ({
   item: {
-    title,
     moduleId,
-    config: { params },
+    config: { params, title, description },
   },
   closeDialog,
 }: SketchCardProps) => {
@@ -44,9 +43,11 @@ export const SketchCard = ({
       <CardContent>
         <CardHeader iconName="token">{title}</CardHeader>
         <CardDetails>Params: {params.length}</CardDetails>
-        <CardBody>
-          <p>Some stars fly through the scene.</p>
-        </CardBody>
+        {description && (
+          <CardBody>
+            <p>{description}</p>
+          </CardBody>
+        )}
       </CardContent>
       <CardActions>
         <Button onClick={onButtonClick} iconName="add">
