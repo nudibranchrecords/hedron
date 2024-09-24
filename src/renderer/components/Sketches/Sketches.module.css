@@ -3,16 +3,15 @@
   height: 100%;
 }
 
-.section {
-  margin-bottom: var(--gapLarge);
-}
-
 .main {
   flex: 1;
-  margin-top: var(--gapLarge);
+  padding: var(--gapLarge);
 }
 
 .nav {
-  margin-left: var(--gapLarge);
   width: 3rem;
+}
+
+.intro {
+  padding: calc(var(--gapMega) - var(--gapLarge));
 }

@@ -3,23 +3,55 @@
   color: white;
   text-transform: uppercase;
   font-weight: 600;
+  letter-spacing: 0.1em;
   padding: 0.25rem 0.5rem;
   border-radius: 0.25rem;
   transition: var(--transitionTime);
   cursor: pointer;
+  font-size: 0.8rem;
+  font-family: inherit;
+  box-shadow: 3px 3px 0 0 black;
+  display: flex;
+  align-content: center;
+  gap: var(--gapSmall);
 
   &:hover {
     background: var(--actionColor1Hover);
   }
 
   &:global(.secondary) {
-    background: var(--bgColorDark2);
-    border: 1px solid var(--actionColor2);
-    color: var(--actionColor2);
+    background: var(--actionColor2);
 
     &:hover {
-      color: var(--actionColor2Hover);
-      border-color: var(--actionColor2Hover);
+      background: var(--actionColor2Hover);
     }
+  }
+
+  &:global(.neutral) {
+    border: 1px solid var(--lineColor2);
+    color: var(--textColorLight1);
+    background: var(--bgColorDark1);
+
+    &:hover {
+      background: var(--bgColorDark2);
+    }
+  }
+
+  &:global(.danger) {
+    color: var(--textColorLight1);
+    background: var(--dangerColor);
+
+    &:hover {
+      background: var(--dangerColorHover);
+    }
+  }
+
+  &:global(.slim) {
+    padding: 0.25rem;
+  }
+
+  .icon {
+    font-size: 1.1em;
+    line-height: 1.1;
   }
 }
