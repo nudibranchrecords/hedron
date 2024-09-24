@@ -9,7 +9,7 @@ export const createAddSketch: SetterCreator<'addSketch'> = (setState) => (module
 
     for (const paramConfig of config.params) {
       const valueType = paramConfig.valueType ?? 'number'
-      const { key, title, defaultValue } = paramConfig
+      const { key, defaultValue } = paramConfig
       const id = uid()
 
       paramIds.push(id)
@@ -17,7 +17,6 @@ export const createAddSketch: SetterCreator<'addSketch'> = (setState) => (module
       state.nodes[id] = {
         id,
         key,
-        title,
         type: 'param' as const,
         valueType,
       }

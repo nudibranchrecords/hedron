@@ -20,7 +20,15 @@ listen(SketchEvents.ServerStart, (sketchesServerUrl: string) => {
 })
 
 listen(SketchEvents.ReimportSketchModule, (moduleId: string) => {
-  engine.reimportSketchModule(moduleId)
+  engine.reimportSketchModuleAndReloadSketches(moduleId)
+})
+
+listen(SketchEvents.AddSketchModule, (moduleId: string) => {
+  engine.addSketchModule(moduleId)
+})
+
+listen(SketchEvents.RemoveSketchModule, (moduleId: string) => {
+  engine.removeSketchModule(moduleId)
 })
 
 listen(FileEvents.SelectSketchesDir, (sketchesDir: string) => {
