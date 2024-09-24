@@ -1,19 +1,26 @@
 :root {
   --lineColor1: #212121;
   --lineColor2: #555555;
-  --textColorLight1: #aaa;
-  --bgColorDark1: #333;
-  --bgColorDark2: #222;
-  --bgColorDark3: #111;
-  --bgColorLight1: #434343;
+  --textColorLight1: #d7d7d7;
+  --textColorLight2: #6b6b6b;
+  --bgColorDark1: #353535;
+  --bgColorDark2: #303030;
+  --bgColorDark3: #2c2c2c;
+  --bgColorDark4: #252525;
   --actionColor1: #da5782;
-  --actionColor1Hover: #d87a9a;
-  --actionColor2: #0c7967;
-  --actionColor2Hover: #0f9680;
+  --actionColor1Hover: rgb(156, 67, 97);
+  --actionColor2: #1a8e17;
+  --actionColor2Hover: rgb(12, 92, 9);
   --channelAColor: #e35a59;
   --channelBColor: #24965c;
-  --dangerColor: red;
+  --dangerColor: rgb(207, 23, 23);
+  --dangerColorHover: rgb(166, 30, 30);
   --transitionTime: 0.2s;
-  --gapSmall: 0.25rem;
+  --gapSmall: 0.3rem;
   --gapLarge: 0.5rem;
+  --gapXLarge: 0.75rem;
+  --gapMega: 2rem;
+  --fontSizeHeader: 1.5rem;
+  --fontWeightHeader: 800;
+  --textShadow: 1px 1px black;
 }

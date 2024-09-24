@@ -3,6 +3,7 @@ import { useCallback } from 'react'
 import { useSketchList } from '../hooks/useSketchList'
 import { useIsActiveSketch } from '../hooks/useIsActiveSketch'
 import { useSetActiveSketchId } from '../hooks/useSetActiveSketchId'
+import { useGlobalDialog } from '../GlobalDialogs/useGlobalDialog'
 
 interface ItemProps {
   children: React.ReactNode
@@ -26,6 +27,7 @@ const Item = ({ id, children }: ItemProps) => {
 
 export const SketchTabs = () => {
   const sketches = useSketchList()
+  const { openDialog } = useGlobalDialog('sketchModules')
 
   return (
     <SideTabs>
@@ -34,6 +36,7 @@ export const SketchTabs = () => {
           {title}
         </Item>
       ))}
+      <SideTabsItem iconName="add_circle" onClick={openDialog} />
     </SideTabs>
   )
 }
