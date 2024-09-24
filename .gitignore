@@ -3,7 +3,7 @@ dist
 out
 .DS_Store
 *.log*
-sketches-server
+.sketches-server
 user-settings.json
 chrome-extensions
 

@@ -1,39 +1,68 @@
 import { createEngineStore, EngineStore } from './store/engineStore'
+import { getSketchesOfModuleId } from './store/selectors/getSketchesOfModuleId'
 import { listenToStore } from './storeListener'
 import { createDebugScene } from './world/debugScene'
 import { Renderer } from './world/Renderer'
-import SketchManager from './world/SketchManager'
+import { SketchManager } from './world/SketchManager'
+import { importSketchModule } from './importSketchModule'
 
 export class HedronEngine {
   private renderer: Renderer
   private store: EngineStore
   private sketchesUrl: string | null = null
-  private sketchManager: SketchManager | null = null
+  private sketchManager: SketchManager
 
   constructor() {
-    this.renderer = new Renderer()
     this.store = createEngineStore()
+    this.sketchManager = new SketchManager()
+    this.renderer = new Renderer()
   }
 
   public setSketchesUrl(sketchesUrl: string) {
     this.sketchesUrl = sketchesUrl
-    this.sketchManager = new SketchManager(this.sketchesUrl, this.store)
 
-    const { addSketchToScene, removeSketchFromScene } = this.sketchManager
+    const { removeSketchFromScene } = this.sketchManager
+
+    const addSketchToScene = (sketchId: string, moduleId: string) => {
+      const modules = this.store.getState().sketchModules
+      const module = modules[moduleId].module
+      this.sketchManager.addSketchToScene(sketchId, module)
+    }
 
     listenToStore(this.store, addSketchToScene, removeSketchFromScene)
   }
 
-  public initiateSketchModules(moduleIds: string[]) {
-    if (!this.sketchManager) throw new Error('Sketch Manager not ready')
+  public async initiateSketchModules(moduleIds: string[]) {
+    for (const moduleId of moduleIds) {
+      await this.addSketchModule(moduleId)
+    }
 
-    this.sketchManager.initiateSketchModules(moduleIds)
+    this.store.setState({ isSketchModulesReady: true })
   }
 
-  public reimportSketchModule(moduleId: string) {
-    if (!this.sketchManager) throw new Error('Sketch Manager not ready')
+  public async addSketchModule(moduleId: string) {
+    if (!this.sketchesUrl) throw new Error('Sketches URL not ready')
 
-    this.sketchManager.reimportSketchModule(moduleId)
+    const moduleItem = await importSketchModule(this.sketchesUrl, moduleId)
+    this.store.getState().setSketchModuleItem(moduleItem)
+
+    return moduleItem
+  }
+
+  public removeSketchModule = async (moduleId: string): Promise<void> => {
+    this.store.getState().deleteSketchModule(moduleId)
+  }
+
+  public async reimportSketchModuleAndReloadSketches(moduleId: string) {
+    const moduleItem = await this.addSketchModule(moduleId)
+
+    const sketchesToRefresh = getSketchesOfModuleId(this.store.getState(), moduleId)
+
+    for (const sketch of sketchesToRefresh) {
+      this.sketchManager.removeSketchFromScene(sketch.id)
+      this.sketchManager.addSketchToScene(sketch.id, moduleItem.module)
+      this.store.getState().updateSketchParams(sketch.id)
+    }
   }
 
   public createCanvas(containerEl: HTMLDivElement) {
@@ -49,8 +78,6 @@ export class HedronEngine {
   }
 
   run() {
-    if (!this.sketchManager) throw new Error('Sketch Manager not ready')
-
     const debugScene = createDebugScene()
 
     const loop = (): void => {

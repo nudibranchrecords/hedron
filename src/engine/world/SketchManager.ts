@@ -1,6 +1,4 @@
-import { uid } from 'uid'
-import { EngineStore } from '../store/engineStore'
-import { SketchConfig, SketchModule, SketchModules } from '../store/types'
+import { SketchModule } from '../store/types'
 import { getDebugScene } from './debugScene'
 
 type SketchInstance = {
@@ -10,22 +8,11 @@ type SketchInstance = {
   root: any
 }
 
-class SketchManager {
+export class SketchManager {
   private sketchInstances: { [id: string]: SketchInstance } = {}
-  private sketchesUrl: string
-  private store: EngineStore
 
-  constructor(sketchesUrl: string, store: EngineStore) {
-    this.sketchesUrl = sketchesUrl
-    this.store = store
-  }
-
-  private createSketch = (instanceId: string, moduleId: string): SketchInstance => {
-    const base = this.sketchesUrl
-    const modules = this.store.getState().sketchModules
-    const module = modules[moduleId].module
-
-    const sketch = new module({ sketchesDir: base })
+  private createSketch = (instanceId: string, module: SketchModule): SketchInstance => {
+    const sketch = new module()
     sketch.root.name = instanceId
 
     this.sketchInstances[instanceId] = sketch
@@ -33,9 +20,9 @@ class SketchManager {
     return sketch
   }
 
-  public addSketchToScene = (instanceId: string, moduleId: string): void => {
+  public addSketchToScene = (instanceId: string, module: SketchModule): void => {
     const scene = getDebugScene().scene
-    const sketch = this.createSketch(instanceId, moduleId)
+    const sketch = this.createSketch(instanceId, module)
 
     scene.add(sketch.root)
   }
@@ -52,66 +39,7 @@ class SketchManager {
     delete this.sketchInstances[instanceId]
   }
 
-  private importSketch = async (
-    moduleId: string,
-  ): Promise<{ config: SketchConfig; module: SketchModule }> => {
-    const base = this.sketchesUrl
-    const cacheBust = uid()
-
-    const configModule = await import(
-      /* @vite-ignore */ `${base}/${moduleId}/config.js?${cacheBust}`
-    )
-    const sketchModule = await import(
-      /* @vite-ignore */ `${base}/${moduleId}/index.js?${cacheBust}`
-    )
-
-    return {
-      config: configModule.default,
-      module: sketchModule.default,
-    }
-  }
-
-  public initiateSketchModules = (moduleIds: string[]): void => {
-    const getSketchInfo = async (): Promise<void> => {
-      const modules: SketchModules = {}
-      for (const moduleId of moduleIds) {
-        const { config, module } = await this.importSketch(moduleId)
-
-        const title = config.title
-
-        modules[moduleId] = {
-          moduleId,
-          title,
-          module,
-          config,
-        }
-      }
-
-      this.store.setState({ sketchModules: modules })
-      this.store.setState({ isSketchModulesReady: true })
-    }
-
-    getSketchInfo()
-  }
-
-  public reimportSketchModule = async (moduleId: string): Promise<void> => {
-    const { config, module } = await this.importSketch(moduleId)
-
-    const title = config.title
-
-    const item = {
-      moduleId,
-      title,
-      module,
-      config,
-    }
-
-    this.store.getState().setSketchModuleItem(item)
-  }
-
   public getSketchInstances = () => {
     return this.sketchInstances
   }
 }
-
-export default SketchManager

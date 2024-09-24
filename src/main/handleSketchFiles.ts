@@ -1,4 +1,4 @@
-import { SketchEvents } from '../shared/Events'
+import { FileWatchEvents, SketchEvents } from '../shared/Events'
 import { sendToMainWindow } from './mainWindow'
 import { SketchesServer } from './SketchesServer'
 import fs from 'fs'
@@ -21,13 +21,19 @@ export const handleSketchFiles = async (dirPath: string): Promise<void> => {
 
   const { host, port } = await sketchesServer.init(dirPath)
 
-  sketchesServer.on('change', (sketchId) => {
-    console.log(`sketch changed: ${sketchId}`)
-    sendToMainWindow(SketchEvents.ReimportSketchModule, sketchId)
+  sketchesServer.on(FileWatchEvents.change, (moduleId) => {
+    console.log(`sketch module changed: ${moduleId}`)
+    sendToMainWindow(SketchEvents.ReimportSketchModule, moduleId)
   })
 
-  sketchesServer.on('add', (sketchId) => {
-    console.log(`sketch added: ${sketchId}`)
+  sketchesServer.on(FileWatchEvents.add, (moduleId) => {
+    console.log(`sketch module added: ${moduleId}`)
+    sendToMainWindow(SketchEvents.AddSketchModule, moduleId)
+  })
+
+  sketchesServer.on(FileWatchEvents.unlink, (moduleId) => {
+    console.log(`sketch module removed: ${moduleId}`)
+    sendToMainWindow(SketchEvents.RemoveSketchModule, moduleId)
   })
 
   const url = `http://${host}:${port}`
