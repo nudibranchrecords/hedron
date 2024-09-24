@@ -9,6 +9,7 @@ type Size = {
 }
 
 const barWidth = 2
+const PIXEL_DENSITY = 2
 
 export type FloatSliderHandle = {
   drawBar: (value: number) => void
@@ -56,10 +57,11 @@ export const FloatSlider = forwardRef<FloatSliderHandle, FloatSliderProps>(funct
 
     if (!canvas) return
 
-    canvas.height = height!
-    canvas.width = width!
-    size.current.width = width!
-    size.current.height = height!
+    canvas.height = height! * PIXEL_DENSITY
+    canvas.width = width! * PIXEL_DENSITY
+    size.current.width = width! * PIXEL_DENSITY
+    size.current.height = height! * PIXEL_DENSITY
+    canvas.setAttribute('style', 'width:' + width + 'px; height:' + height + 'px;')
   }, 200)
 
   useResizeObserver({

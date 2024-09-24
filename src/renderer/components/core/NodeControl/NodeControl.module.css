@@ -1,15 +1,16 @@
 .wrapper {
-  border: 1px solid var(--lineColor1);
   border-radius: 3px;
   color: var(--textColorLight1);
   fill: var(--textColorLight1);
-  padding: 0.25rem;
+  background-color: var(--bgColorDark2);
+  padding: var(--gapSmall);
   display: flex;
   flex-direction: column;
-  transition: var(--transitionTime);
+  transition: border-color var(--transitionTime);
+  box-shadow: 1px 1px 0 0 var(--lineColor1);
 
   &:global(.active) {
-    border-color: white;
+    outline: 1px solid var(--lineColor2);
   }
 }
 
@@ -20,20 +21,22 @@
 }
 
 .inner {
-  margin-bottom: 0.25rem;
+  height: 26px;
   width: 50%;
 }
 
 .title {
   width: 50%;
-  border-bottom: 1px dotted var(--bgColorDark3);
+  border-bottom: 1px dotted var(--lineColor1);
+  padding: 3px;
   display: flex;
-  align-items: center;
-  height: 16px;
-  text-transform: uppercase;
-  margin-bottom: 0.25rem;
+  align-items: flex-start;
+  height: 26px;
   margin-right: 0.25rem;
-  font-size: 0.5rem;
+  letter-spacing: 1px;
+  line-height: 100%;
+  font-size: 9px;
+  font-weight: 200;
   z-index: 1;
   overflow: hidden;
 

@@ -1,6 +1,6 @@
 export default {
   title: 'Solid',
-  category: 'simple',
+  description: 'Platonic solids! Rotate, scale, wireframe mode.',
   params: [
     {
       key: 'rotSpeedX',

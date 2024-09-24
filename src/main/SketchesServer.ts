@@ -80,7 +80,12 @@ export class SketchesServer extends EventEmitter {
     emptyDirSync(outdir)
 
     const ctx = await esbuild.context({
-      entryPoints: [`${entryBase}/**/index.js`, `${entryBase}/**/config.js`],
+      entryPoints: [
+        `${entryBase}/**/index.js`,
+        `${entryBase}/**/config.js`,
+        `${entryBase}/**/index.ts`,
+        `${entryBase}/**/config.ts`,
+      ],
       outdir,
       loader: loaderFileExtensions,
       assetNames: '[dir]/[name]-[hash]',
