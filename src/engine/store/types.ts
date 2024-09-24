@@ -64,3 +64,5 @@ export interface SketchModuleItem {
 }
 
 export type SketchModules = { [key: string]: SketchModuleItem }
+
+export type DialogId = 'sketchModules'

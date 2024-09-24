@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { MouseEventHandler, useCallback } from 'react'
 import { Button } from '../Button/Button'
 import { Icon, IconName } from '../Icon/Icon'
 import c from './Panel.module.css'
@@ -7,11 +7,21 @@ export interface PanelProps extends React.HTMLAttributes<HTMLDivElement> {
   size?: 'full'
 }
 
-export const Panel = ({ children, size, className, ...props }: PanelProps) => (
-  <div className={`${c.wrapper} ${size} ${className}`} {...props}>
-    {children}
-  </div>
-)
+export const Panel = ({ children, size, className, onClick, ...props }: PanelProps) => {
+  const onClickHandler = useCallback<MouseEventHandler<HTMLDivElement>>(
+    (e) => {
+      e.stopPropagation()
+      onClick?.(e)
+    },
+    [onClick],
+  )
+
+  return (
+    <div onClick={onClickHandler} className={`${c.wrapper} ${size} ${className}`} {...props}>
+      {children}
+    </div>
+  )
+}
 
 export interface PanelHeaderProps {
   children: React.ReactNode

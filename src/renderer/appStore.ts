@@ -2,12 +2,15 @@ import { create, StoreApi } from 'zustand'
 import { devtools, subscribeWithSelector } from 'zustand/middleware'
 import { immer } from 'zustand/middleware/immer'
 import type {} from '@redux-devtools/extension' // required for devtools typing
+import { DialogId } from 'src/engine/store/types'
 
 export interface AppState {
   activeSketchId: string | null
   sketchesDir: string | null
+  globalDialogId: DialogId | null
   setActiveSketchId: (id: string) => void
   setSketchesDir: (dir: string) => void
+  setGlobalDialogId: (id: DialogId | null) => void
 }
 
 export type SetState = StoreApi<AppState>['setState']
@@ -27,6 +30,7 @@ export const useAppStore = create<AppState>()(
       immer((set) => ({
         activeSketchId: null,
         sketchesDir: null,
+        globalDialogId: null,
         setActiveSketchId: (id: string) => {
           set((state) => {
             state.activeSketchId = id
@@ -35,6 +39,11 @@ export const useAppStore = create<AppState>()(
         setSketchesDir: (dir: string) => {
           set((state) => {
             state.sketchesDir = dir
+          })
+        },
+        setGlobalDialogId: (id: DialogId | null) => {
+          set((state) => {
+            state.globalDialogId = id
           })
         },
       })),
