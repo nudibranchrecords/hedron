@@ -2,9 +2,13 @@
   min-height: 1rem;
   height: 100%;
   overflow: hidden;
+  position: relative;
 }
 
 .canvas {
   background: var(--bgColorDark4);
   cursor: pointer;
+  position: absolute;
+  left: 0;
+  right: 0;
 }

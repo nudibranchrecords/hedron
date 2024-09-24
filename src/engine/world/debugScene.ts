@@ -11,14 +11,10 @@ export const getDebugScene = (): EngineScene => {
   return debugScene
 }
 
-export const createDebugScene = (): EngineScene => {
+export const createDebugScene = (aspectRatio: number): EngineScene => {
   const id = uid()
   const scene = addScene(id)
-  // const geom = new BoxGeometry(1, 1, 1)
-  // const mat = new MeshNormalMaterial()
-  // const mesh = new Mesh(geom, mat)
-  // mesh.scale.set(2, 2, 2)
-  // scene.scene.add(mesh)
+  scene.setRatio(aspectRatio)
 
   debugScene = scene
 

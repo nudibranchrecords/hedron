@@ -78,7 +78,7 @@ export class HedronEngine {
   }
 
   run() {
-    const debugScene = createDebugScene()
+    const debugScene = createDebugScene(this.renderer.aspectRatio)
 
     const loop = (): void => {
       const { sketches, nodeValues, nodes } = this.store.getState()
