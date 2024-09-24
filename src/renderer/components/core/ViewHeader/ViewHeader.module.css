@@ -9,4 +9,6 @@
   display: flex;
   align-items: center;
   border-bottom: 1px dotted var(--lineColor1);
+  display: flex;
+  gap: var(--gapLarge);
 }

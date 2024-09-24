@@ -5,6 +5,7 @@ import { SketchParams } from '../SketchParams/SketchParams'
 import { ViewHeader } from '../core/ViewHeader/ViewHeader'
 import { engineStore } from 'src/renderer/engine'
 import { Card, CardActions } from '../core/Card/Card'
+import { Icon } from '../core/Icon/Icon'
 
 export const ActiveSketch = () => {
   const activeSketch = useActiveSketch()
@@ -15,7 +16,9 @@ export const ActiveSketch = () => {
 
   return (
     <>
-      <ViewHeader>Sketch: {activeSketch.title}</ViewHeader>
+      <ViewHeader>
+        <Icon name="token" /> {activeSketch.title}
+      </ViewHeader>
       <div className={c.section}>
         <SketchParams />
       </div>
