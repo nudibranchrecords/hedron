@@ -52,14 +52,16 @@ export type SketchConfigParam = SketchConfigParamNumber | SketchConfigParamBoole
 
 export interface SketchConfig {
   title?: string
+  description?: string
   params: SketchConfigParam[]
 }
 
 export interface SketchModuleItem {
   moduleId: string
-  title: string
   config: SketchConfig
   module: SketchModule
 }
 
 export type SketchModules = { [key: string]: SketchModuleItem }
+
+export type DialogId = 'sketchModules'

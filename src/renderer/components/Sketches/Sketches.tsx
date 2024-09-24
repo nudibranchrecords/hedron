@@ -1,48 +1,27 @@
 import c from './Sketches.module.css'
 import { SketchTabs } from '../SketchTabs/SketchTabs'
-import { Button } from '../core/Button/Button'
-import { useSketchModuleList } from '../hooks/useSketchModuleList'
 import { useActiveSketch } from '../hooks/useActiveSketch'
-import { SketchParams } from '../SketchParams/SketchParams'
-import { ViewHeader } from '../core/ViewHeader/ViewHeader'
-import { engineStore } from 'src/renderer/engine'
-import { useSetActiveSketchId } from '../hooks/useSetActiveSketchId'
+import { ActiveSketch } from '../ActiveSketch/ActiveSketch'
+import { Panel, PanelBody, PanelHeader } from '../core/Panel/Panel'
 
 export const Sketches = () => {
-  const sketchModules = useSketchModuleList()
   const activeSketch = useActiveSketch()
-  const setActiveSketchId = useSetActiveSketchId()
 
   return (
     <div className={c.wrapper}>
       <div className={c.main}>
-        {activeSketch && (
-          <>
-            <ViewHeader>Sketch: {activeSketch.title}</ViewHeader>
-            <div className={c.section}>
-              <SketchParams />
-            </div>
-            <Button onClick={() => engineStore.getState().deleteSketch(activeSketch.id)}>
-              Delete{' '}
-            </Button>
-          </>
+        {activeSketch ? (
+          <ActiveSketch />
+        ) : (
+          <div className={c.intro}>
+            <Panel>
+              <PanelHeader iconName="info">Add A Sketch</PanelHeader>
+              <PanelBody>
+                Use the &quot;+&quot; button on the right to start adding sketches to your scene.
+              </PanelBody>
+            </Panel>
+          </div>
         )}
-
-        <h2>Add Sketches</h2>
-        <ul>
-          {sketchModules.map(({ title, moduleId }) => (
-            <li key={moduleId}>
-              <button
-                onClick={() => {
-                  const id = engineStore.getState().addSketch(moduleId)
-                  setActiveSketchId(id)
-                }}
-              >
-                {title}
-              </button>
-            </li>
-          ))}
-        </ul>
       </div>
       <div className={c.nav}>
         <SketchTabs />

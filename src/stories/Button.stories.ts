@@ -24,3 +24,34 @@ export const Secondary: Story = {
     type: 'secondary',
   },
 }
+
+export const Muted: Story = {
+  args: {
+    children: 'Button',
+    type: 'neutral',
+  },
+}
+
+export const WithIcon: Story = {
+  args: {
+    children: 'Copy Sketch',
+    type: 'primary',
+    iconName: 'content_copy',
+  },
+}
+
+export const Danger: Story = {
+  args: {
+    children: 'Delete Sketch',
+    type: 'danger',
+    iconName: 'delete',
+  },
+}
+
+export const IconOnly: Story = {
+  args: {
+    type: 'neutral',
+    size: 'slim',
+    iconName: 'close',
+  },
+}

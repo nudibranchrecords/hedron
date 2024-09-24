@@ -4,10 +4,15 @@ import c from './NodeControl.module.css'
 export interface NodeControlProps {
   isActive?: boolean
   children: React.ReactNode
+  onClick?: () => void
 }
 
-export const NodeControl = ({ isActive, children }: NodeControlProps) => {
-  return <div className={`${c.wrapper} ${isActive && 'active'}`}>{children}</div>
+export const NodeControl = ({ isActive, children, onClick }: NodeControlProps) => {
+  return (
+    <div onClick={onClick} className={`${c.wrapper} ${isActive && 'active'}`}>
+      {children}
+    </div>
+  )
 }
 
 export interface NodeControlMainProps {

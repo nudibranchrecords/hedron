@@ -1,5 +1,6 @@
 export default {
   title: 'Hedron Logo',
+  description: 'A 3D Model of the Hedron logo that can dance.',
   params: [
     {
       key: 'logoRotSpeedX',

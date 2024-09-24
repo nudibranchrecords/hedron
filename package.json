@@ -34,6 +34,7 @@
     "get-port-please": "^3.1.2",
     "immer": "^10.1.1",
     "lodash.debounce": "^4.0.8",
+    "material-symbols": "^0.23.0",
     "postprocessing": "^6.36.0",
     "three": "^0.167.1",
     "uid": "^2.0.2",

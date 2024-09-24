@@ -3,17 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <title>Electron</title>
-    <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
-    <meta
-      http-equiv="Content-Security-Policy"
-      content="
-        default-src self;
-        connect-src * 'unsafe-inline';
-        script-src * 'unsafe-inline';
-        style-src * 'unsafe-inline';
-        img-src * 'unsafe-inline';
-      "
-    />
+    <meta http-equiv="Content-Security-Policy" content="default-src * 'unsafe-inline'" />
   </head>
 
   <body>
