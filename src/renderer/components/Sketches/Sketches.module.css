@@ -3,10 +3,6 @@
   height: 100%;
 }
 
-.section {
-  margin-bottom: var(--gapXLarge);
-}
-
 .main {
   flex: 1;
   padding: var(--gapLarge);
@@ -14,4 +10,8 @@
 
 .nav {
   width: 3rem;
+}
+
+.intro {
+  padding: calc(var(--gapMega) - var(--gapLarge));
 }
