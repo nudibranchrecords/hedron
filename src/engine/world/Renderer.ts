@@ -13,6 +13,7 @@ export class Renderer {
   private outputCanvas: HTMLCanvasElement | undefined
   private canvas: HTMLCanvasElement | undefined
   private previewContext: CanvasRenderingContext2D | undefined | null
+  public aspectRatio: number = 1
 
   private isSendingOutput = false
 
@@ -42,6 +43,7 @@ export class Renderer {
   public setSize(): void {
     if (!this.renderer) throw new Error('Renderer not set')
     if (!this.viewerContainer) throw new Error('viewerEl not set')
+    console.log('set size')
 
     const settings = {
       aspectW: 16,
@@ -83,6 +85,8 @@ export class Renderer {
 
     // CSS trick to resize canvas
     this.viewerContainer.style.paddingBottom = perc + '%'
+
+    this.aspectRatio = ratio
   }
 
   // Set the output to a second canvas (e.g. a separate window for making full screen)
