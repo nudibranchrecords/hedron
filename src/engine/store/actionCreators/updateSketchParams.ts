@@ -1,5 +1,6 @@
 import { uid } from 'uid'
 import { SetterCreator } from '../engineStore'
+import { NodeTypes } from '../types'
 
 export const createUpdateSketchParams: SetterCreator<'updateSketchParams'> =
   (setState) => (sketchId: string) => {
@@ -17,7 +18,7 @@ export const createUpdateSketchParams: SetterCreator<'updateSketchParams'> =
 
       // 1. Add new params that are in the new config but not in the current sketch.
       for (const paramConfig of config.params) {
-        const valueType = paramConfig.valueType ?? 'number'
+        const valueType = paramConfig.valueType ?? NodeTypes.Number
         const { key, defaultValue } = paramConfig
 
         // Find existing node for this key, if any.
@@ -35,8 +36,8 @@ export const createUpdateSketchParams: SetterCreator<'updateSketchParams'> =
 
           // Set the default value if it matches the valueType.
           if (
-            (typeof defaultValue === 'number' && valueType === 'number') ||
-            (typeof defaultValue === 'boolean' && valueType === 'boolean')
+            (typeof defaultValue === NodeTypes.Number && valueType === NodeTypes.Number) ||
+            (typeof defaultValue === NodeTypes.Boolean && valueType === NodeTypes.Boolean)
           ) {
             state.nodeValues[paramId] = defaultValue
           } else {

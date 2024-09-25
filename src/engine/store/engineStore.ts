@@ -3,7 +3,7 @@ import { devtools, subscribeWithSelector } from 'zustand/middleware'
 import { immer } from 'zustand/middleware/immer'
 
 import type {} from '@redux-devtools/extension' // required for devtools typing
-import { Nodes, NodeValues, Sketches, SketchModuleItem, SketchModules } from './types'
+import { Nodes, NodeValue, NodeValues, Sketches, SketchModuleItem, SketchModules } from './types'
 import { createAddSketch } from './actionCreators/addSketch'
 import { createSetSketchModuleItem } from './actionCreators/setSketchModuleItem'
 import { createUpdateNodeValue } from './actionCreators/updateNodeValue'
@@ -21,7 +21,7 @@ export interface EngineState {
   updateSketchParams: (instanceId: string) => void
   deleteSketch: (instanceId: string) => void
   setSketchModuleItem: (newItem: SketchModuleItem) => void
-  updateNodeValue: (nodeId: string, value: number) => void
+  updateNodeValue: (nodeId: string, value: NodeValue) => void
   deleteSketchModule: (moduleId: string) => void
 }
 
