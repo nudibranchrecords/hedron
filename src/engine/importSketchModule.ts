@@ -7,20 +7,21 @@ export const importSketchModule = async (
 ): Promise<SketchModuleItem> => {
   const cacheBust = uid()
 
-  const configModule = await import(
-    /* @vite-ignore */ `${baseUrl}/${moduleId}/config.js?${cacheBust}`
-  )
-  const sketchModule = await import(
-    /* @vite-ignore */ `${baseUrl}/${moduleId}/index.js?${cacheBust}`
-  )
+  const configPath = `${baseUrl}/${moduleId}/config.js?${cacheBust}`
+  const sketchPath = `${baseUrl}/${moduleId}/index.js?${cacheBust}`
+
+  const configModule = await import(/* @vite-ignore */ configPath)
+  const sketchModule = await import(/* @vite-ignore */ sketchPath)
 
   const config: SketchConfig = configModule.default
   const module: SketchModule = sketchModule.default
 
-  const title = config.title ?? moduleId
+  // A config could be missing a title, but it is a required parameter
+  if (!config.title) {
+    config.title = moduleId
+  }
 
   return {
-    title,
     moduleId,
     config,
     module,

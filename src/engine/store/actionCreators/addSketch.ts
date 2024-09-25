@@ -4,7 +4,7 @@ import { SetterCreator } from '../engineStore'
 export const createAddSketch: SetterCreator<'addSketch'> = (setState) => (moduleId: string) => {
   const newId = uid()
   setState((state) => {
-    const { title, config } = state.sketchModules[moduleId]
+    const { config } = state.sketchModules[moduleId]
     const paramIds = []
 
     for (const paramConfig of config.params) {
@@ -36,7 +36,7 @@ export const createAddSketch: SetterCreator<'addSketch'> = (setState) => (module
     state.sketches[newId] = {
       id: newId,
       moduleId,
-      title,
+      title: config.title,
       paramIds,
     }
   })
