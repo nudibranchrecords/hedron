@@ -12,28 +12,30 @@ import { useInterval } from 'usehooks-ts'
 import { engineStore } from 'src/renderer/engine'
 import { useUpdateNodeValue } from '../hooks/useUpdateNodeValue'
 import { NodeTypes, NodeValue } from 'src/engine/store/types'
+import { BooleanToggle } from '../core/BooleanToggle/BooleanToggle'
 
 interface ParamProps {
   param: ParamWithInfo
 }
 
-// TODO: param types (currently just floats!)
+const getInputElement = (valueType: NodeTypes, onValueChange: (value: NodeValue) => void, ref: React.RefObject<FloatSliderHandle>) => {
+  switch (valueType) {
+    case NodeTypes.Number:
+      return <FloatSlider ref={ref} onValueChange={onValueChange} />
+    case NodeTypes.Boolean:
+      return <BooleanToggle ref={ref} onValueChange={onValueChange} />
+    default:
+      return <i>`Unsupported type ${valueType}`</i>
+  }
+}
+
 const ParamItem = ({ param: { key, title, id, valueType } }: ParamProps) => {
   const ref = useRef<FloatSliderHandle>(null)
   const updateNodeValue = useUpdateNodeValue()
 
   const onValueChange = useCallback(
     (value: NodeValue) => {
-      switch (valueType) {
-        case NodeTypes.Number:
-          updateNodeValue(id, value)
-          break
-        case NodeTypes.Boolean:
-          updateNodeValue(id, (value as number) > 0.5)
-          break
-        default:
-          throw new Error(`Unsupported valueType: ${valueType}`)
-      }
+      updateNodeValue(id, value)
     },
     [id, updateNodeValue],
   )
@@ -45,11 +47,7 @@ const ParamItem = ({ param: { key, title, id, valueType } }: ParamProps) => {
       case NodeTypes.Number:
         ref.current?.drawBar(nodeValue);
         break;
-      case NodeTypes.Boolean:
-        //ref.current?.drawBar(nodeValue ? 1 : 0);
-        break;
       default:
-        // Handle other types if necessary
         break;
     }
   }, 100)
@@ -58,7 +56,7 @@ const ParamItem = ({ param: { key, title, id, valueType } }: ParamProps) => {
       <NodeControlMain>
         <NodeControlTitle>{title ?? key}</NodeControlTitle>
         <NodeControlInner>
-          <FloatSlider onValueChange={onValueChange} ref={ref} />
+          {getInputElement(valueType, onValueChange, ref)}
         </NodeControlInner>
       </NodeControlMain>
     </NodeControl>
