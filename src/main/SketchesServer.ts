@@ -33,10 +33,10 @@ fileExtensions.forEach((ext) => {
   loaderFileExtensions[`.${ext}`] = 'file'
 })
 
-const getSketchIdFromPath = (path: string): string => {
-  const pieces = path.split('/')
-  const index = pieces.findIndex((val) => val.endsWith('sketches-server')) + 1
-  return pieces[index]
+const getSketchIdFromPath = (sketchPath: string): string => {
+  const folderName = path.dirname(sketchPath).split(path.sep).pop()
+  if (!folderName) return sketchPath
+  return folderName
 }
 
 const watchWithDebounce = (
@@ -129,25 +129,16 @@ export class SketchesServer extends EventEmitter {
       ignoreInitial: true,
     })
 
-    const getFolderName = (id: string) => {
-      const folderName = path.dirname(id).split(path.sep).pop()
-      if (!folderName) return id
-      return folderName
-    }
-
     watchWithDebounce(watcher, FileWatchEvents.change, (_, id) => {
       if (!this.isFirstBuildComplete) return
-      id = getFolderName(id)
       this.emit(FileWatchEvents.change, id)
     })
 
     watchWithDebounce(watcher, FileWatchEvents.add, (_, id) => {
-      id = getFolderName(id)
       this.emit(FileWatchEvents.add, id)
     })
 
     watchWithDebounce(watcher, FileWatchEvents.unlink, (_, id) => {
-      id = getFolderName(id)
       this.emit(FileWatchEvents.unlink, id)
     })
 
