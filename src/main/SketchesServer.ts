@@ -119,28 +119,37 @@ export class SketchesServer extends EventEmitter {
 
     await ctx.watch()
 
-    const watcher = chokidar.watch(outdir, {
-      // @ts-expect-error -- TODO: Update chokidar when types are fixed
-      ignored: (file, stats) =>
-        // Only watch for changes to generated index and config files
-        // Note: When imported assets are edited (e.g. a GLB file), the index file will still update
-        //       so no need to watch anything else!
-        stats && stats.isFile() && !(file.endsWith('index.js') || file.endsWith('config.js')),
-      ignoreInitial: true,
-    })
+const watcher = chokidar.watch(outdir, {
+  // @ts-expect-error -- TODO: Update chokidar when types are fixed
+  ignored: (file, stats) =>
+    // Only watch for changes to generated index and config files
+    // Note: When imported assets are edited (e.g. a GLB file), the index file will still update
+    //       so no need to watch anything else!
+    stats && stats.isFile() && !(file.endsWith('index.js') || file.endsWith('config.js')),
+  ignoreInitial: true,
+})
 
-    watchWithDebounce(watcher, FileWatchEvents.change, (_, id) => {
-      if (!this.isFirstBuildComplete) return
-      this.emit(FileWatchEvents.change, id)
-    })
+const getFolderName = (id: string) => {
+  const folderName = path.dirname(id).split(path.sep).pop()
+  if (!folderName) return id
+  return folderName
+}
 
-    watchWithDebounce(watcher, FileWatchEvents.add, (_, id) => {
-      this.emit(FileWatchEvents.add, id)
-    })
+watchWithDebounce(watcher, FileWatchEvents.change, (_, id) => {
+  if (!this.isFirstBuildComplete) return
+  id = getFolderName(id)
+  this.emit(FileWatchEvents.change, id)
+})
 
-    watchWithDebounce(watcher, FileWatchEvents.unlink, (_, id) => {
-      this.emit(FileWatchEvents.unlink, id)
-    })
+watchWithDebounce(watcher, FileWatchEvents.add, (_, id) => {
+  id = getFolderName(id)
+  this.emit(FileWatchEvents.add, id)
+})
+
+watchWithDebounce(watcher, FileWatchEvents.unlink, (_, id) => {
+  id = getFolderName(id)
+  this.emit(FileWatchEvents.unlink, id)
+})
 
     return { host, port }
   }
