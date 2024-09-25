@@ -13,6 +13,7 @@ import { engineStore } from 'src/renderer/engine'
 import { useUpdateNodeValue } from '../hooks/useUpdateNodeValue'
 import { NodeTypes, NodeValue } from 'src/engine/store/types'
 import { BooleanToggle } from '../core/BooleanToggle/BooleanToggle'
+import { EnumDropdown } from '../core/EnumDropdown/EnumDropdown'
 
 interface ParamProps {
   param: ParamWithInfo
@@ -24,6 +25,8 @@ const getInputElement = (param: ParamWithInfo, onValueChange: (value: NodeValue)
       return <FloatSlider ref={ref} onValueChange={onValueChange} />
     case NodeTypes.Boolean:
       return <BooleanToggle ref={ref} onValueChange={onValueChange} />
+    case NodeTypes.Enum:
+      return <EnumDropdown ref={ref} values={param.options} onValueChange={onValueChange} />
     default:
       return <i>`Unsupported type ${valueType}`</i>
   }
@@ -49,6 +52,9 @@ const ParamItem = ({ param }: ParamProps) => {
         break;
       case NodeTypes.Boolean:
         ref.current?.setChecked(nodeValue);
+        break;
+      case NodeTypes.Enum:
+        ref.current?.setValue(nodeValue);
         break;
       default:
         break;

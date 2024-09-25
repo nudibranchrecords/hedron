@@ -23,8 +23,9 @@ export const createAddSketch: SetterCreator<'addSketch'> = (setState) => (module
       }
 
       if (
-        (typeof defaultValue === NodeTypes.Number && valueType === NodeTypes.Number) ||
-        (typeof defaultValue === NodeTypes.Boolean && valueType === NodeTypes.Boolean)
+        (typeof defaultValue === 'number' && valueType === NodeTypes.Number) ||
+        (typeof defaultValue === 'boolean' && valueType === NodeTypes.Boolean) ||
+        (typeof defaultValue === 'string' && valueType === NodeTypes.Enum)
       ) {
         state.nodeValues[id] = defaultValue
       } else {
