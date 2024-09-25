@@ -47,6 +47,9 @@ const ParamItem = ({ param: { key, title, id, valueType } }: ParamProps) => {
       case NodeTypes.Number:
         ref.current?.drawBar(nodeValue);
         break;
+      case NodeTypes.Boolean:
+        ref.current?.setChecked(nodeValue);
+        break;
       default:
         break;
     }
