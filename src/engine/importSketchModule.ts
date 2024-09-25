@@ -7,12 +7,11 @@ export const importSketchModule = async (
 ): Promise<SketchModuleItem> => {
   const cacheBust = uid()
 
-  const configModule = await import(
-    /* @vite-ignore */ `${baseUrl}/${moduleId}/config.js?${cacheBust}`
-  )
-  const sketchModule = await import(
-    /* @vite-ignore */ `${baseUrl}/${moduleId}/index.js?${cacheBust}`
-  )
+  const configPath = `${baseUrl}/${moduleId}/config.js?${cacheBust}`
+  const sketchPath = `${baseUrl}/${moduleId}/index.js?${cacheBust}`
+
+  const configModule = await import(/* @vite-ignore */ configPath)
+  const sketchModule = await import(/* @vite-ignore */ sketchPath)
 
   const config: SketchConfig = configModule.default
   const module: SketchModule = sketchModule.default
