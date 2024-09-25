@@ -33,10 +33,10 @@ fileExtensions.forEach((ext) => {
   loaderFileExtensions[`.${ext}`] = 'file'
 })
 
-const getSketchIdFromPath = (path: string): string => {
-  const pieces = path.split('/')
-  const index = pieces.findIndex((val) => val.endsWith('sketches-server')) + 1
-  return pieces[index]
+const getSketchIdFromPath = (sketchPath: string): string => {
+  const folderName = path.dirname(sketchPath).split(path.sep).pop()
+  if (!folderName) return sketchPath
+  return folderName
 }
 
 const watchWithDebounce = (
