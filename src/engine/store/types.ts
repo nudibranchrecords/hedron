@@ -15,14 +15,19 @@ export interface NodeBase {
   key: string
 }
 
+export enum NodeTypes {
+  Number = 'number',
+  Boolean = 'boolean',
+}
+
 export interface NodeParamNumber extends NodeBase {
   type: 'param'
-  valueType: 'number'
+  valueType: NodeTypes.Number
 }
 
 export interface NodeParamBoolean extends NodeBase {
   type: 'param'
-  valueType: 'boolean'
+  valueType: NodeTypes.Boolean
 }
 
 export type Param = NodeParamBoolean | NodeParamNumber
@@ -39,12 +44,12 @@ export interface SketchConfigParamBase {
 }
 
 export interface SketchConfigParamNumber extends SketchConfigParamBase {
-  valueType: undefined
+  valueType?: NodeTypes.Number
   defaultValue: number
 }
 
 export interface SketchConfigParamBoolean extends SketchConfigParamBase {
-  valueType: 'boolean'
+  valueType: NodeTypes.Boolean
   defaultValue: boolean
 }
 

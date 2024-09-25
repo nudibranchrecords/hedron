@@ -1,5 +1,6 @@
 import { uid } from 'uid'
 import { SetterCreator } from '../engineStore'
+import { NodeTypes } from '../types'
 
 export const createAddSketch: SetterCreator<'addSketch'> = (setState) => (moduleId: string) => {
   const newId = uid()
@@ -8,7 +9,7 @@ export const createAddSketch: SetterCreator<'addSketch'> = (setState) => (module
     const paramIds = []
 
     for (const paramConfig of config.params) {
-      const valueType = paramConfig.valueType ?? 'number'
+      const valueType = paramConfig.valueType ?? NodeTypes.Number
       const { key, defaultValue } = paramConfig
       const id = uid()
 
@@ -22,8 +23,8 @@ export const createAddSketch: SetterCreator<'addSketch'> = (setState) => (module
       }
 
       if (
-        (typeof defaultValue === 'number' && valueType === 'number') ||
-        (typeof defaultValue === 'boolean' && valueType === 'boolean')
+        (typeof defaultValue === NodeTypes.Number && valueType === NodeTypes.Number) ||
+        (typeof defaultValue === NodeTypes.Boolean && valueType === NodeTypes.Boolean)
       ) {
         state.nodeValues[id] = defaultValue
       } else {
