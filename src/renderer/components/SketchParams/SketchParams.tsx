@@ -24,7 +24,6 @@ const ParamItem = ({ param: { key, title, id, valueType } }: ParamProps) => {
 
   const onValueChange = useCallback(
     (value: NodeValue) => {
-      console.warn(valueType, value);
       switch (valueType) {
         case NodeTypes.Number:
           updateNodeValue(id, value)
