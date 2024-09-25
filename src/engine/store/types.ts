@@ -57,6 +57,7 @@ export interface SketchConfig {
 }
 
 export interface SketchModuleItem {
+  title: string
   moduleId: string
   config: SketchConfig
   module: SketchModule
