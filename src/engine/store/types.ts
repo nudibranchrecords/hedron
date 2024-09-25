@@ -18,6 +18,7 @@ export interface NodeBase {
 export enum NodeTypes {
   Number = 'number',
   Boolean = 'boolean',
+  Enum = 'enum',
 }
 
 export interface NodeParamNumber extends NodeBase {
@@ -30,12 +31,18 @@ export interface NodeParamBoolean extends NodeBase {
   valueType: NodeTypes.Boolean
 }
 
-export type Param = NodeParamBoolean | NodeParamNumber
+export interface NodeParamEnum extends NodeBase {
+  type: 'param'
+  valueType: NodeTypes.Enum
+  options: EnumOption[]
+}
+
+export type Param = NodeParamBoolean | NodeParamNumber | NodeParamEnum
 
 export type Node = Param
 export type Nodes = { [key: string]: Node }
 
-export type NodeValue = number | boolean
+export type NodeValue = number | boolean | string
 export type NodeValues = { [key: string]: NodeValue }
 
 export interface SketchConfigParamBase {
@@ -53,7 +60,16 @@ export interface SketchConfigParamBoolean extends SketchConfigParamBase {
   defaultValue: boolean
 }
 
-export type SketchConfigParam = SketchConfigParamNumber | SketchConfigParamBoolean
+export interface SketchConfigParamEnum extends SketchConfigParamBase {
+  valueType: NodeTypes.Enum
+  defaultValue: string
+  options: EnumOption[]
+}
+
+export type SketchConfigParam =
+  | SketchConfigParamNumber
+  | SketchConfigParamBoolean
+  | SketchConfigParamEnum
 
 export interface SketchConfig {
   title: string
@@ -70,3 +86,5 @@ export interface SketchModuleItem {
 export type SketchModules = { [key: string]: SketchModuleItem }
 
 export type DialogId = 'sketchModules'
+
+export type EnumOption = { value: string; label: string }
