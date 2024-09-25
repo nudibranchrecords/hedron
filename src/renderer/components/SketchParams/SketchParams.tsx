@@ -18,8 +18,8 @@ interface ParamProps {
   param: ParamWithInfo
 }
 
-const getInputElement = (valueType: NodeTypes, onValueChange: (value: NodeValue) => void, ref: React.RefObject<FloatSliderHandle>) => {
-  switch (valueType) {
+const getInputElement = (param: ParamWithInfo, onValueChange: (value: NodeValue) => void, ref: React.RefObject<FloatSliderHandle>) => {
+  switch (param.valueType) {
     case NodeTypes.Number:
       return <FloatSlider ref={ref} onValueChange={onValueChange} />
     case NodeTypes.Boolean:
@@ -29,21 +29,21 @@ const getInputElement = (valueType: NodeTypes, onValueChange: (value: NodeValue)
   }
 }
 
-const ParamItem = ({ param: { key, title, id, valueType } }: ParamProps) => {
+const ParamItem = ({ param }: ParamProps) => {
   const ref = useRef<FloatSliderHandle>(null)
   const updateNodeValue = useUpdateNodeValue()
 
   const onValueChange = useCallback(
     (value: NodeValue) => {
-      updateNodeValue(id, value)
+      updateNodeValue(param.id, value)
     },
-    [id, updateNodeValue],
+    [param.id, updateNodeValue],
   )
 
   // TODO: useAnimationFrame?
   useInterval(() => {
-    const nodeValue = engineStore.getState().nodeValues[id];
-    switch (typeof nodeValue) {
+    const nodeValue = engineStore.getState().nodeValues[param.id];
+    switch (param.valueType) {
       case NodeTypes.Number:
         ref.current?.drawBar(nodeValue);
         break;
@@ -55,11 +55,11 @@ const ParamItem = ({ param: { key, title, id, valueType } }: ParamProps) => {
     }
   }, 100)
   return (
-    <NodeControl key={key}>
+    <NodeControl key={param.key}>
       <NodeControlMain>
-        <NodeControlTitle>{title ?? key}</NodeControlTitle>
+        <NodeControlTitle>{param.title ?? param.key}</NodeControlTitle>
         <NodeControlInner>
-          {getInputElement(valueType, onValueChange, ref)}
+          {getInputElement(param, onValueChange, ref)}
         </NodeControlInner>
       </NodeControlMain>
     </NodeControl>
