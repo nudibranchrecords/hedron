@@ -51,13 +51,12 @@ export interface SketchConfigParamBoolean extends SketchConfigParamBase {
 export type SketchConfigParam = SketchConfigParamNumber | SketchConfigParamBoolean
 
 export interface SketchConfig {
-  title?: string
+  title: string
   description?: string
   params: SketchConfigParam[]
 }
 
 export interface SketchModuleItem {
-  title: string
   moduleId: string
   config: SketchConfig
   module: SketchModule

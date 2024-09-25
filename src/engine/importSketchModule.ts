@@ -16,10 +16,12 @@ export const importSketchModule = async (
   const config: SketchConfig = configModule.default
   const module: SketchModule = sketchModule.default
 
-  const title = config.title ?? moduleId
+  // A config could be missing a title, but it is a required parameter
+  if (!config.title) {
+    config.title = moduleId
+  }
 
   return {
-    title,
     moduleId,
     config,
     module,
