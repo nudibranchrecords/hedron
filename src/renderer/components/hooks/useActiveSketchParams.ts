@@ -15,12 +15,9 @@ export const useActiveSketchParams = () => {
   const params: ParamWithInfo[] = useMemo(() => {
     if (activeSketch) {
       return activeSketch.paramIds.map((id, index) => {
-        const node: ParamWithInfo = { ...nodes[id], title: undefined }
-        const paramConfig = module?.config.params[index]
-        if (paramConfig) {
-          node.title = paramConfig.title
-        }
-        return node
+        const node = nodes[id]
+        const title = module?.config.params[index]?.title
+        return { ...node, title }
       })
     }
     return []
