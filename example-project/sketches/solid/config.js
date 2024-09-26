@@ -44,11 +44,11 @@ export default {
       options: [
         {
           value: 'tetra',
-          label: 'Tetrahedron',
+          label: 'Tetra',
         },
         {
           value: 'octa',
-          label: 'Octahedron',
+          label: 'Octa',
         },
         {
           value: 'cube',
@@ -56,7 +56,7 @@ export default {
         },
         {
           value: 'icosa',
-          label: 'Icosahedron',
+          label: 'Icosa',
         },
         // no dodeca until drawn with 5 sided faces
         // {
