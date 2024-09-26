@@ -21,15 +21,12 @@ export default class Solid {
 
     this.geomNames = Object.keys(geoms)
 
-    const keys = Object.keys(geoms)
-    const initGeom = keys[Math.floor(Math.random() * keys.length)]
-
     // Create all 5 meshes and add to the sketch
     for (const geomName in geoms) {
       const mesh = new THREE.Mesh(geoms[geomName], this.mat)
       this.meshes[geomName] = mesh
       this.root.add(mesh)
-      mesh.visible = geomName === initGeom
+      mesh.visible = false
     }
   }
 
