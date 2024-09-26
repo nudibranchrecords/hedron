@@ -16,15 +16,11 @@ export const EnumDropdown = forwardRef<EnumDropdownHandle, EnumDropdownProps>(fu
 ) {
   const selectRef = useRef<HTMLSelectElement>(null)
 
-  const setValue = useCallback(
-    (value: string) => {
-      if (selectRef.current) {
-        selectRef.current.value = value
-        onValueChange(value)
-      }
-    },
-    [onValueChange],
-  )
+  const setValue = useCallback((value: string) => {
+    if (selectRef.current) {
+      selectRef.current.value = value
+    }
+  }, [])
 
   const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     onValueChange(event.target.value)
