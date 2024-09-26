@@ -34,7 +34,7 @@ export const EnumDropdown = forwardRef<EnumDropdownHandle, EnumDropdownProps>(fu
     <select ref={selectRef} onChange={handleChange}>
       {values.map((value) => (
         <option key={value.label} value={value.value}>
-          {value.value}
+          {value.label}
         </option>
       ))}
     </select>
