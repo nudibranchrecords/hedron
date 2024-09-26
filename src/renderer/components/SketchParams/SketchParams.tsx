@@ -10,6 +10,7 @@ import { ParamWithInfo, useActiveSketchParams } from '../hooks/useActiveSketchPa
 import { NodeTypes } from 'src/engine/store/types'
 import { ParamNumber } from '../ParamNumber/ParamNumber'
 import { ParamBoolean } from '../ParamBoolean/ParamBoolean'
+import { ParamEnum } from '../ParamEnum/ParamEnum'
 
 interface ParamProps {
   param: ParamWithInfo
@@ -21,8 +22,10 @@ const getInputElement = (valueType: NodeTypes, id: string) => {
       return <ParamNumber id={id} />
     case NodeTypes.Boolean:
       return <ParamBoolean id={id} />
+    case NodeTypes.Enum:
+      return <ParamEnum id={id} />
     default:
-      return <i>`Unsupported type ${valueType}`</i>
+      return <i>Unsupported type {valueType}</i>
   }
 }
 

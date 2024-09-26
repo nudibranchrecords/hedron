@@ -21,20 +21,23 @@ export enum NodeTypes {
   Enum = 'enum',
 }
 
-export interface NodeParamNumber extends NodeBase {
+export interface NodeParamBase extends NodeBase {
+  sketchId: string
+}
+
+export interface NodeParamNumber extends NodeParamBase {
   type: 'param'
   valueType: NodeTypes.Number
 }
 
-export interface NodeParamBoolean extends NodeBase {
+export interface NodeParamBoolean extends NodeParamBase {
   type: 'param'
   valueType: NodeTypes.Boolean
 }
 
-export interface NodeParamEnum extends NodeBase {
+export interface NodeParamEnum extends NodeParamBase {
   type: 'param'
   valueType: NodeTypes.Enum
-  options: EnumOption[]
 }
 
 export type Param = NodeParamBoolean | NodeParamNumber | NodeParamEnum

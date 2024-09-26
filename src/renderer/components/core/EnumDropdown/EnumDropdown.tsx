@@ -1,4 +1,4 @@
-import { forwardRef, useImperativeHandle, useRef } from 'react'
+import { forwardRef, useCallback, useImperativeHandle, useRef } from 'react'
 import { EnumOption } from 'src/engine/store/types'
 
 export type EnumDropdownHandle = {
@@ -16,20 +16,23 @@ export const EnumDropdown = forwardRef<EnumDropdownHandle, EnumDropdownProps>(fu
 ) {
   const selectRef = useRef<HTMLSelectElement>(null)
 
-  const setValue = (value: string) => {
-    if (selectRef.current) {
-      selectRef.current.value = value;
-      onValueChange(value);
-    }
-  }
+  const setValue = useCallback(
+    (value: string) => {
+      if (selectRef.current) {
+        selectRef.current.value = value
+        onValueChange(value)
+      }
+    },
+    [onValueChange],
+  )
 
   const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    onValueChange(event.target.value);
+    onValueChange(event.target.value)
   }
 
   useImperativeHandle(ref, () => {
     return { setValue }
-  }, [])
+  }, [setValue])
 
   return (
     <select ref={selectRef} onChange={handleChange}>
