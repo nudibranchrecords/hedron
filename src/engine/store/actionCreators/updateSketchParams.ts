@@ -32,6 +32,7 @@ export const createUpdateSketchParams: SetterCreator<'updateSketchParams'> =
             key,
             type: 'param' as const,
             valueType,
+            sketchId,
           }
 
           // Set the default value if it matches the valueType.

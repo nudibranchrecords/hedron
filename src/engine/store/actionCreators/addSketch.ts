@@ -3,7 +3,7 @@ import { SetterCreator } from '../engineStore'
 import { NodeTypes } from '../types'
 
 export const createAddSketch: SetterCreator<'addSketch'> = (setState) => (moduleId: string) => {
-  const newId = uid()
+  const newSketchId = uid()
   setState((state) => {
     const { config } = state.sketchModules[moduleId]
     const paramIds = []
@@ -20,6 +20,7 @@ export const createAddSketch: SetterCreator<'addSketch'> = (setState) => (module
         key,
         type: 'param' as const,
         valueType,
+        sketchId: newSketchId,
       }
 
       if (
@@ -35,13 +36,13 @@ export const createAddSketch: SetterCreator<'addSketch'> = (setState) => (module
       }
     }
 
-    state.sketches[newId] = {
-      id: newId,
+    state.sketches[newSketchId] = {
+      id: newSketchId,
       moduleId,
       title: config.title,
       paramIds,
     }
   })
 
-  return newId
+  return newSketchId
 }

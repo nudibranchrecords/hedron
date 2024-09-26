@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import { useActiveSketch } from './useActiveSketch'
 import { useEngineStore } from '../../engine'
-import { NodeParamEnum, Param } from 'src/engine/store/types'
+import { Param } from 'src/engine/store/types'
 
 export type ParamWithInfo = Param & { title: string | undefined }
 
@@ -19,9 +19,6 @@ export const useActiveSketchParams = () => {
         const paramConfig = module?.config.params[index]
         if (paramConfig) {
           node.title = paramConfig.title
-          if (paramConfig.valueType === 'enum') {
-            ;(node as NodeParamEnum).options = paramConfig.options
-          }
         }
         return node
       })
