@@ -1,5 +1,4 @@
 import { ControlGrid } from '../core/ControlGrid/ControlGrid'
-import { FloatSlider, FloatSliderHandle } from '../core/FloatSlider/FloatSlider'
 import {
   NodeControl,
   NodeControlInner,
@@ -7,60 +6,32 @@ import {
   NodeControlTitle,
 } from '../core/NodeControl/NodeControl'
 import { ParamWithInfo, useActiveSketchParams } from '../hooks/useActiveSketchParams'
-import { useCallback, useRef } from 'react'
-import { useInterval } from 'usehooks-ts'
-import { engineStore } from 'src/renderer/engine'
-import { useUpdateNodeValue } from '../hooks/useUpdateNodeValue'
-import { NodeTypes, NodeValue } from 'src/engine/store/types'
-import { BooleanToggle } from '../core/BooleanToggle/BooleanToggle'
+
+import { NodeTypes } from 'src/engine/store/types'
+import { ParamNumber } from '../ParamNumber/ParamNumber'
+import { ParamBoolean } from '../ParamBoolean/ParamBoolean'
 
 interface ParamProps {
   param: ParamWithInfo
 }
 
-const getInputElement = (valueType: NodeTypes, onValueChange: (value: NodeValue) => void, ref: React.RefObject<FloatSliderHandle>) => {
+const getInputElement = (valueType: NodeTypes, id: string) => {
   switch (valueType) {
     case NodeTypes.Number:
-      return <FloatSlider ref={ref} onValueChange={onValueChange} />
+      return <ParamNumber id={id} />
     case NodeTypes.Boolean:
-      return <BooleanToggle ref={ref} onValueChange={onValueChange} />
+      return <ParamBoolean id={id} />
     default:
       return <i>`Unsupported type ${valueType}`</i>
   }
 }
 
 const ParamItem = ({ param: { key, title, id, valueType } }: ParamProps) => {
-  const ref = useRef<FloatSliderHandle>(null)
-  const updateNodeValue = useUpdateNodeValue()
-
-  const onValueChange = useCallback(
-    (value: NodeValue) => {
-      updateNodeValue(id, value)
-    },
-    [id, updateNodeValue],
-  )
-
-  // TODO: useAnimationFrame?
-  useInterval(() => {
-    const nodeValue = engineStore.getState().nodeValues[id];
-    switch (typeof nodeValue) {
-      case NodeTypes.Number:
-        ref.current?.drawBar(nodeValue);
-        break;
-      case NodeTypes.Boolean:
-        ref.current?.setChecked(nodeValue);
-        break;
-      default:
-        break;
-    }
-  }, 100)
   return (
     <NodeControl key={key}>
       <NodeControlMain>
         <NodeControlTitle>{title ?? key}</NodeControlTitle>
-        <NodeControlInner>
-          {getInputElement(valueType, onValueChange, ref)}
-        </NodeControlInner>
+        <NodeControlInner>{getInputElement(valueType, id)}</NodeControlInner>
       </NodeControlMain>
     </NodeControl>
   )
