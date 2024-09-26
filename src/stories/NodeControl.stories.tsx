@@ -13,6 +13,10 @@ import { fn } from '@storybook/test'
 import { FloatSlider, FloatSliderHandle } from '../renderer/components/core/FloatSlider/FloatSlider'
 import { useRef, useState } from 'react'
 import { useInterval } from 'usehooks-ts'
+import {
+  BooleanToggle,
+  BooleanToggleHandle,
+} from '../renderer/components/core/BooleanToggle/BooleanToggle'
 
 const meta = {
   title: 'NodeControl',
@@ -27,7 +31,7 @@ interface BasicProps {
   onClick: () => void
 }
 
-const Base = ({ title = 'Short Name', isActive, onClick }: BasicProps) => {
+export const Number = ({ title = 'Short Name', isActive, onClick }: BasicProps) => {
   const ref = useRef<FloatSliderHandle>(null)
 
   useInterval(() => {
@@ -39,6 +43,24 @@ const Base = ({ title = 'Short Name', isActive, onClick }: BasicProps) => {
         <NodeControlTitle>{title}</NodeControlTitle>
         <NodeControlInner>
           <FloatSlider onValueChange={fn()} ref={ref} />
+        </NodeControlInner>
+      </NodeControlMain>
+    </NodeControl>
+  )
+}
+
+export const Boolean = ({ title = 'Boolean Thing', isActive, onClick }: BasicProps) => {
+  const ref = useRef<BooleanToggleHandle>(null)
+
+  useInterval(() => {
+    ref.current!.setChecked(Math.random() > 0.5)
+  }, 3000)
+  return (
+    <NodeControl isActive={isActive} onClick={onClick}>
+      <NodeControlMain>
+        <NodeControlTitle>{title}</NodeControlTitle>
+        <NodeControlInner>
+          <BooleanToggle onValueChange={fn()} ref={ref} />
         </NodeControlInner>
       </NodeControlMain>
     </NodeControl>
@@ -61,9 +83,13 @@ export const WithControlGrid = () => {
 
   return (
     <ControlGrid>
-      {params.map((item, i) => (
-        <Base key={i} title={item} isActive={activeId === i} onClick={() => setActiveId(i)} />
-      ))}
+      {params.map((item, i) =>
+        i % 2 == 0 ? (
+          <Number key={i} title={item} isActive={activeId === i} onClick={() => setActiveId(i)} />
+        ) : (
+          <Boolean key={i} title={item} isActive={activeId === i} onClick={() => setActiveId(i)} />
+        ),
+      )}
     </ControlGrid>
   )
 }

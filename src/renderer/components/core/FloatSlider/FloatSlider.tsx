@@ -1,5 +1,5 @@
 import { forwardRef, useCallback, useEffect, useImperativeHandle, useRef } from 'react'
-import c from './FloatSlider.module.css'
+import css from './FloatSlider.module.css'
 import { useDebounceCallback, useResizeObserver } from 'usehooks-ts'
 import { useElementScrub } from '../../hooks/useElementScrub'
 
@@ -89,8 +89,8 @@ export const FloatSlider = forwardRef<FloatSliderHandle, FloatSliderProps>(funct
   }, [drawBar])
 
   return (
-    <div className={c.wrapper} ref={containerRef}>
-      <canvas ref={canvasRef} className={c.canvas} width={0} height={0} />
+    <div className={css.wrapper} ref={containerRef}>
+      <canvas ref={canvasRef} className={css.canvas} width={0} height={0} />
     </div>
   )
 })
