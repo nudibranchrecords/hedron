@@ -1,0 +1,14 @@
+.wrapper {
+  font-weight: normal;
+  font-size: 1.2rem;
+  flex: 0 0 2rem;
+  margin-bottom: var(--gapXLarge);
+  padding-bottom: var(--gapLarge);
+  border-bottom: 1px solid var(--lineColor1);
+  color: var(--textColorLight1);
+  display: flex;
+  align-items: center;
+  border-bottom: 1px dotted var(--lineColor1);
+  display: flex;
+  gap: var(--gapLarge);
+}
