@@ -1,0 +1,46 @@
+@import './reset.css';
+@import './variables.css';
+@import './fonts.css';
+@import 'material-symbols';
+
+.material-symbols-rounded {
+  font-variation-settings:
+    'FILL' 1,
+    'wght' 500,
+    'GRAD' 0,
+    'opsz' 24;
+}
+
+body {
+  user-select: none;
+  margin: 0;
+  font-size: 0.8rem;
+  overflow: hidden;
+  font-family: 'Chivo Mono', sans-serif;
+  color: var(--textColorLight1);
+  font-weight: 100;
+  background: var(--bgColorDark1);
+  text-shadow: var(--textShadow);
+  box-sizing: border-box;
+}
+
+button {
+  text-shadow: var(--textShadow);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: inherit;
+}
+
+h2 {
+  font-size: 1.2rem;
+  /* text-transform: uppercase; */
+  font-weight: 500;
+}
+
+p {
+  line-height: 1.3rem;
+  margin-bottom: 0.8rem;
+}
