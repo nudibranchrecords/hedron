@@ -36,34 +36,35 @@ export default {
       defaultValue: true,
       valueType: 'boolean',
     },
-    // {
-    //   key: 'geomName',
-    //   label: 'Geometry',
-    //   valueType: 'enum',
-    //   defaultValue: 'icosa',
-    //   options: [
-    //     {
-    //       value: 'cube',
-    //       label: 'Cube',
-    //     },
-    //     {
-    //       value: 'tetra',
-    //       label: 'Tetra',
-    //     },
-    //     {
-    //       value: 'octa',
-    //       label: 'Octa',
-    //     },
-    //     {
-    //       value: 'icosa',
-    //       label: 'Icosa',
-    //     },
-    //     {
-    //       value: 'dodeca',
-    //       label: 'Dodeca',
-    //     },
-    //   ],
-    // },
+    {
+      key: 'geomName',
+      title: 'Geometry',
+      valueType: 'enum',
+      defaultValue: 'icosa',
+      options: [
+        {
+          value: 'tetra',
+          label: 'Tetra',
+        },
+        {
+          value: 'octa',
+          label: 'Octa',
+        },
+        {
+          value: 'cube',
+          label: 'Cube',
+        },
+        {
+          value: 'icosa',
+          label: 'Icosa',
+        },
+        // no dodeca until drawn with 5 sided faces
+        // {
+        //   value: 'dodeca',
+        //   label: 'Dodeca',
+        // },
+      ],
+    },
   ],
   shots: [
     {

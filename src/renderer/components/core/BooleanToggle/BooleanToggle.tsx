@@ -13,15 +13,11 @@ export const BooleanToggle = forwardRef<BooleanToggleHandle, BooleanToggleProps>
   function BooleanToggle({ onValueChange }, ref) {
     const checkboxRef = useRef<HTMLInputElement>(null)
 
-    const setChecked = useCallback(
-      (value: boolean) => {
-        if (checkboxRef.current) {
-          checkboxRef.current.checked = value
-          onValueChange(value)
-        }
-      },
-      [onValueChange],
-    )
+    const setChecked = useCallback((value: boolean) => {
+      if (checkboxRef.current) {
+        checkboxRef.current.checked = value
+      }
+    }, [])
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
       onValueChange(event.target.checked)
