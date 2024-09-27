@@ -1,6 +1,0 @@
-.DS_STORE
-*.log
-node_modules
-dist
-config/dev.config.js
-static/globalVars
