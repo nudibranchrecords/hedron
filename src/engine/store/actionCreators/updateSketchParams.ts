@@ -1,6 +1,5 @@
 import { uid } from 'uid'
-import { SetterCreator } from '../engineStore'
-import { NodeTypes } from '../types'
+import { NodeTypes, SetterCreator } from '../types'
 
 export const createUpdateSketchParams: SetterCreator<'updateSketchParams'> =
   (setState) => (sketchId: string) => {

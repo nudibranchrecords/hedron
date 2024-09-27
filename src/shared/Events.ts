@@ -14,7 +14,8 @@ export enum ScreenEvents {
 
 export enum FileEvents {
   OpenSketchesDirDialog = 'open-sketches-dir-dialog',
-  SelectSketchesDir = 'select-sketches-dir',
+  SketchesDirSelected = 'sketches-dir-selected',
+  LoadSketches = 'load-sketches',
 }
 
 export enum FileWatchEvents {

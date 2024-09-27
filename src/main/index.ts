@@ -84,5 +84,9 @@ ipcMain.on(FileEvents.OpenSketchesDirDialog, async () => {
   const dirPath = result.filePaths[0]
 
   handleSketchFiles(dirPath)
-  sendToMainWindow(FileEvents.SelectSketchesDir, dirPath)
+  sendToMainWindow(FileEvents.SketchesDirSelected, dirPath)
+})
+
+ipcMain.handle(FileEvents.LoadSketches, async (_, sketchesDir: string) => {
+  await handleSketchFiles(sketchesDir)
 })
