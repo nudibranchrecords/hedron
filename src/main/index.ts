@@ -3,7 +3,7 @@ import { electronApp, optimizer } from '@electron-toolkit/utils'
 import { updateDisplayMenu, updateMenu } from './menu'
 import { createWindow, sendToMainWindow } from './mainWindow'
 import { handleSketchFiles } from './handleSketchFiles'
-import { userSettings } from './userSettings'
+import { devSettings } from './devSettings'
 import { REDUX_DEVTOOLS, installExtension } from '@tomjs/electron-devtools-installer'
 import { FileEvents } from '../shared/Events'
 
@@ -37,11 +37,11 @@ app.whenReady().then(() => {
   if (isDevelopment) {
     let reduxDevtoolsInstaller: Promise<Electron.Extension>
 
-    if (userSettings.reduxDevtoolsDir) {
+    if (devSettings.reduxDevtoolsDir) {
       // Override automatic install
       // This is needed if there is some bug with the latest version
       // https://github.com/reduxjs/redux-devtools/issues/1730
-      reduxDevtoolsInstaller = session.defaultSession.loadExtension(userSettings.reduxDevtoolsDir)
+      reduxDevtoolsInstaller = session.defaultSession.loadExtension(devSettings.reduxDevtoolsDir)
     } else {
       reduxDevtoolsInstaller = installExtension(REDUX_DEVTOOLS)
     }
