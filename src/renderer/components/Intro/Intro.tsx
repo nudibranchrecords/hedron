@@ -187,17 +187,12 @@ export const Intro = () => {
     await startEngineWithSketchesDir(sketchesDirPath)
   }, [])
 
-  const onProjectButtonClick = useCallback(() => {
-    const sketchesFolder = '/Users/alex/Sites/hedron/example-project/sketches'
+  const onProjectButtonClick = useCallback(async () => {
+    const sketchesDirPath = '/Users/alex/Sites/hedron/example-project/sketches'
 
-    // Renderer process
-    // window.electron.ipcRenderer.invoke(FileEvents.LoadSketches, sketchesFolder).then(() => {
-    //   useAppStore.getState().setSketchesDir(sketchesFolder)
+    await startEngineWithSketchesDir(sketchesDirPath)
 
-    //   setTimeout(() => {
-    //     engineStore.getState().loadProject(projectState)
-    //   }, 500)
-    // })
+    engineStore.getState().loadProject(projectState)
   }, [])
 
   return (
