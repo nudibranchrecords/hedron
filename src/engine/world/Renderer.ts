@@ -43,7 +43,6 @@ export class Renderer {
   public setSize(): void {
     if (!this.renderer) throw new Error('Renderer not set')
     if (!this.viewerContainer) throw new Error('viewerEl not set')
-    console.log('set size')
 
     const settings = {
       aspectW: 16,
