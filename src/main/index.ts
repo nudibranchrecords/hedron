@@ -91,8 +91,6 @@ ipcMain.handle(FileEvents.OpenProjectFileDialog, async (): Promise<ProjectFileDi
     filters: [{ name: 'Poject', extensions: ['json'] }],
   })
 
-  const sketchesDirPath: null | string = null
-
   if (!result.canceled && result.filePaths.length > 0) {
     const projectFile = result.filePaths[0]
 
@@ -107,18 +105,30 @@ ipcMain.handle(FileEvents.OpenProjectFileDialog, async (): Promise<ProjectFileDi
       // Path to the neighboring 'sketches' directory
       const sketchesDir = path.join(projectDir, 'sketches')
 
+      // TODO: allow users to select sketches folder if not found
+      try {
+        const stats = fs.statSync(sketchesDir)
+        if (!stats.isDirectory()) {
+          return { result: 'error', error: 'Could not find associated sketches folder for project' }
+        }
+      } catch (err) {
+        console.error(err)
+        return { result: 'error', error: 'Could not find associated sketches folder for project' }
+      }
+
       // Return both the JSON data and the sketches directory path (if it exists)
       return {
+        result: 'success',
         projectData,
         sketchesDirPath: sketchesDir,
       }
     } catch (err) {
       console.error('Error reading or parsing the project file:', err)
-      return { error: 'Failed to read or parse the project file' }
+      return { result: 'error', error: 'Failed to read or parse the project file' }
     }
   }
 
-  return { error: 'No file selected' }
+  return { result: 'cancelled' }
 })
 
 ipcMain.handle(SketchEvents.StartSketchesServer, async (_, sketchesDir: string) => {

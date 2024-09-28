@@ -21,10 +21,25 @@ export enum FileEvents {
   OpenProjectFileDialog = 'open-project-file-dialog',
 }
 
-export interface ProjectFileDialogResponse {
+type ProjectFileDialogResponseSuccess = {
+  result: 'success'
   sketchesDirPath: string
   projectData: any
 }
+
+type ProjectFileDialogResponseCancelled = {
+  result: 'cancelled'
+}
+
+interface ProjectFileDialogResponseError {
+  result: 'error'
+  error: string
+}
+
+export type ProjectFileDialogResponse =
+  | ProjectFileDialogResponseSuccess
+  | ProjectFileDialogResponseError
+  | ProjectFileDialogResponseCancelled
 
 export enum FileWatchEvents {
   change = 'change',

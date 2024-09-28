@@ -24,7 +24,6 @@ export const startSketchesServer = (sketchesDirPath: string) =>
     window.electron.ipcRenderer
       .invoke(SketchEvents.StartSketchesServer, sketchesDirPath)
       .then((response) => {
-        console.log(response)
         resolve(response)
       })
   })
