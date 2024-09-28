@@ -75,7 +75,6 @@ export class Renderer {
     const perc = 100 / ratio
     const height = width / ratio
 
-   // this.renderer.setSize(width, height)
     this.composer.setSize(width, height)
 
     // Set ratios for each scene
