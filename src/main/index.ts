@@ -1,11 +1,13 @@
 import { app, BrowserWindow, dialog, ipcMain, screen, session } from 'electron'
 import { electronApp, optimizer } from '@electron-toolkit/utils'
 import { updateDisplayMenu, updateMenu } from './menu'
-import { createWindow, sendToMainWindow } from './mainWindow'
+import { createWindow } from './mainWindow'
 import { startSketchesServer } from './handleSketchFiles'
 import { devSettings } from './devSettings'
 import { REDUX_DEVTOOLS, installExtension } from '@tomjs/electron-devtools-installer'
-import { FileEvents, SketchEvents } from '../shared/Events'
+import { FileEvents, ProjectFileDialogResponse, SketchEvents } from '../shared/Events'
+import path from 'path'
+import fs from 'fs'
 
 const isDevelopment = process.env.NODE_ENV !== 'production'
 
@@ -82,6 +84,41 @@ ipcMain.handle(FileEvents.OpenSketchesDirDialog, async () => {
   })
 
   return result.filePaths[0]
+})
+
+ipcMain.handle(FileEvents.OpenProjectFileDialog, async (): Promise<ProjectFileDialogResponse> => {
+  const result = await dialog.showOpenDialog({
+    filters: [{ name: 'Poject', extensions: ['json'] }],
+  })
+
+  const sketchesDirPath: null | string = null
+
+  if (!result.canceled && result.filePaths.length > 0) {
+    const projectFile = result.filePaths[0]
+
+    try {
+      // Read and parse the JSON from the project file
+      const fileContent = fs.readFileSync(projectFile, { encoding: 'utf8' })
+      const projectData = JSON.parse(fileContent)
+
+      // Get the directory of the project file
+      const projectDir = path.dirname(projectFile)
+
+      // Path to the neighboring 'sketches' directory
+      const sketchesDir = path.join(projectDir, 'sketches')
+
+      // Return both the JSON data and the sketches directory path (if it exists)
+      return {
+        projectData,
+        sketchesDirPath: sketchesDir,
+      }
+    } catch (err) {
+      console.error('Error reading or parsing the project file:', err)
+      return { error: 'Failed to read or parse the project file' }
+    }
+  }
+
+  return { error: 'No file selected' }
 })
 
 ipcMain.handle(SketchEvents.StartSketchesServer, async (_, sketchesDir: string) => {

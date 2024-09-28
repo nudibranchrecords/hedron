@@ -18,6 +18,12 @@ export enum ScreenEvents {
 
 export enum FileEvents {
   OpenSketchesDirDialog = 'open-sketches-dir-dialog',
+  OpenProjectFileDialog = 'open-project-file-dialog',
+}
+
+export interface ProjectFileDialogResponse {
+  sketchesDirPath: string
+  projectData: any
 }
 
 export enum FileWatchEvents {
