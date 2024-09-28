@@ -1,10 +1,11 @@
+import debounce from 'lodash.debounce'
+import { EffectComposer } from 'postprocessing'
 import { WebGLRenderer } from 'three'
 import { EngineScene } from './EngineScene'
 import { engineScenes } from './scenes'
-import debounce from 'lodash.debounce'
 
 export class Renderer {
-  private renderer: WebGLRenderer | undefined
+  public composer: EffectComposer | undefined
   private rendererHeight: number = 0
   private rendererWidth: number = 0
   private viewerContainer: HTMLDivElement | undefined
@@ -28,11 +29,12 @@ export class Renderer {
   }
 
   public createCanvas(containerEl: HTMLDivElement): void {
-    this.renderer = new WebGLRenderer({
+    const renderer = new WebGLRenderer({
       antialias: false, // Antialiasing should be handled by the composer
     })
+    this.composer = new EffectComposer(renderer)
 
-    this.canvas = this.renderer.domElement
+    this.canvas = renderer.domElement
     containerEl.innerHTML = ''
     containerEl.appendChild(this.canvas)
     this.viewerContainer = containerEl
@@ -41,7 +43,7 @@ export class Renderer {
   }
 
   public setSize(): void {
-    if (!this.renderer) throw new Error('Renderer not set')
+    if (!this.composer) throw new Error('Renderer not set')
     if (!this.viewerContainer) throw new Error('viewerEl not set')
     console.log('set size')
 
@@ -73,7 +75,8 @@ export class Renderer {
     const perc = 100 / ratio
     const height = width / ratio
 
-    this.renderer.setSize(width, height)
+   // this.renderer.setSize(width, height)
+    this.composer.setSize(width, height)
 
     // Set ratios for each scene
     engineScenes.forEach((scene) => {
@@ -119,8 +122,8 @@ export class Renderer {
   }
 
   private copyPixels(context: CanvasRenderingContext2D): void {
-    if (!this.renderer) throw new Error("Can't find renderer")
-    context.drawImage(this.renderer.domElement, 0, 0, this.rendererWidth, this.rendererHeight)
+    if (!this.canvas) throw new Error("Can't find canvas")
+    context.drawImage(this.canvas, 0, 0, this.rendererWidth, this.rendererHeight)
   }
 
   public stopOutput(): void {
@@ -138,10 +141,16 @@ export class Renderer {
     this.setSize()
   }
 
-  public render({ scene, camera }: EngineScene): void {
-    if (!this.renderer) return
+  public render(scene: EngineScene): void {
+    if (!this.composer) return
 
-    this.renderer.render(scene, camera)
+    this.composer.removeAllPasses()
+    this.composer.passes = scene.passes
+    for (let i = 0; i < scene.passes.length - 1; i++) {
+      scene.passes[i].renderToScreen = false
+    }
+    scene.passes[scene.passes.length - 1].renderToScreen = true
+    this.composer.render()
 
     if (this.isSendingOutput) {
       if (!this.previewContext) throw new Error('No preview context')
