@@ -6,7 +6,8 @@ import { Panel, PanelActions, PanelBody, PanelHeader } from '../core/Panel/Panel
 import { useAppStore } from 'src/renderer/appStore'
 import { engine, engineStore } from 'src/renderer/engine'
 import { ProjectData } from 'src/engine/store/types'
-import { openSketchesDirDialog, startSketchesServer } from 'src/renderer/mainThreadTalk'
+import { openSketchesDirDialog } from 'src/renderer/ipc/mainThreadTalk'
+import { startEngineWithSketchesDir } from 'src/renderer/setup'
 
 const projectState: ProjectData = {
   sketches: {
@@ -183,13 +184,7 @@ export const Intro = () => {
 
     if (!sketchesDirPath) return
 
-    useAppStore.getState().setSketchesDir(sketchesDirPath)
-    const { moduleIds, url } = await startSketchesServer(sketchesDirPath)
-
-    engine.setSketchesUrl(url)
-    await engine.initiateSketchModules(moduleIds)
-
-    engine.run()
+    await startEngineWithSketchesDir(sketchesDirPath)
   }, [])
 
   const onProjectButtonClick = useCallback(() => {

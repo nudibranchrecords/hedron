@@ -1,5 +1,5 @@
-import { SketchEvents } from '../shared/Events'
-import { engine } from './engine'
+import { SketchEvents } from '../../shared/Events'
+import { engine } from '../engine'
 
 const listen = (event: string, cb: (info: any) => void): void => {
   window.electron.ipcRenderer.on(event, (_, info) => {
