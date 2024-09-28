@@ -1,10 +1,14 @@
 export enum SketchEvents {
-  InitialSketchModuleIds = 'initial-sketch-module-ids',
+  StartSketchesServer = 'start-sketches-server',
   NewSketch = 'new-sketch',
   ReimportSketchModule = 'reimport-sketch-module',
   AddSketchModule = 'add-sketch-module',
   RemoveSketchModule = 'remove-sketch-module',
-  ServerStart = 'sketch-server-start',
+}
+
+export interface SketchesServerResponse {
+  moduleIds: string[]
+  url: string
 }
 
 export enum ScreenEvents {
@@ -14,8 +18,6 @@ export enum ScreenEvents {
 
 export enum FileEvents {
   OpenSketchesDirDialog = 'open-sketches-dir-dialog',
-  SketchesDirSelected = 'sketches-dir-selected',
-  LoadSketches = 'load-sketches',
 }
 
 export enum FileWatchEvents {

@@ -4,8 +4,9 @@ import { Button } from '../core/Button/Button'
 import { FileEvents } from 'src/shared/Events'
 import { Panel, PanelActions, PanelBody, PanelHeader } from '../core/Panel/Panel'
 import { useAppStore } from 'src/renderer/appStore'
-import { engineStore } from 'src/renderer/engine'
+import { engine, engineStore } from 'src/renderer/engine'
 import { ProjectData } from 'src/engine/store/types'
+import { openSketchesDirDialog, startSketchesServer } from 'src/renderer/mainThreadTalk'
 
 const projectState: ProjectData = {
   sketches: {
@@ -177,21 +178,31 @@ const projectState: ProjectData = {
 }
 
 export const Intro = () => {
-  const onSketchesButtonClick = useCallback(() => {
-    window.electron.ipcRenderer.send(FileEvents.OpenSketchesDirDialog)
+  const onSketchesButtonClick = useCallback(async () => {
+    const sketchesDirPath = await openSketchesDirDialog()
+
+    if (!sketchesDirPath) return
+
+    useAppStore.getState().setSketchesDir(sketchesDirPath)
+    const { moduleIds, url } = await startSketchesServer(sketchesDirPath)
+
+    engine.setSketchesUrl(url)
+    await engine.initiateSketchModules(moduleIds)
+
+    engine.run()
   }, [])
 
   const onProjectButtonClick = useCallback(() => {
     const sketchesFolder = '/Users/alex/Sites/hedron/example-project/sketches'
 
     // Renderer process
-    window.electron.ipcRenderer.invoke(FileEvents.LoadSketches, sketchesFolder).then(() => {
-      useAppStore.getState().setSketchesDir(sketchesFolder)
+    // window.electron.ipcRenderer.invoke(FileEvents.LoadSketches, sketchesFolder).then(() => {
+    //   useAppStore.getState().setSketchesDir(sketchesFolder)
 
-      setTimeout(() => {
-        engineStore.getState().loadProject(projectState)
-      }, 500)
-    })
+    //   setTimeout(() => {
+    //     engineStore.getState().loadProject(projectState)
+    //   }, 500)
+    // })
   }, [])
 
   return (

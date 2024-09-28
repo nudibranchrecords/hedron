@@ -2,10 +2,10 @@ import { app, BrowserWindow, dialog, ipcMain, screen, session } from 'electron'
 import { electronApp, optimizer } from '@electron-toolkit/utils'
 import { updateDisplayMenu, updateMenu } from './menu'
 import { createWindow, sendToMainWindow } from './mainWindow'
-import { handleSketchFiles } from './handleSketchFiles'
+import { startSketchesServer } from './handleSketchFiles'
 import { devSettings } from './devSettings'
 import { REDUX_DEVTOOLS, installExtension } from '@tomjs/electron-devtools-installer'
-import { FileEvents } from '../shared/Events'
+import { FileEvents, SketchEvents } from '../shared/Events'
 
 const isDevelopment = process.env.NODE_ENV !== 'production'
 
@@ -76,17 +76,14 @@ app.on('window-all-closed', () => {
   }
 })
 
-ipcMain.on(FileEvents.OpenSketchesDirDialog, async () => {
+ipcMain.handle(FileEvents.OpenSketchesDirDialog, async () => {
   const result = await dialog.showOpenDialog({
     properties: ['openDirectory'],
   })
 
-  const dirPath = result.filePaths[0]
-
-  handleSketchFiles(dirPath)
-  sendToMainWindow(FileEvents.SketchesDirSelected, dirPath)
+  return result.filePaths[0]
 })
 
-ipcMain.handle(FileEvents.LoadSketches, async (_, sketchesDir: string) => {
-  await handleSketchFiles(sketchesDir)
+ipcMain.handle(SketchEvents.StartSketchesServer, async (_, sketchesDir: string) => {
+  return await startSketchesServer(sketchesDir)
 })
