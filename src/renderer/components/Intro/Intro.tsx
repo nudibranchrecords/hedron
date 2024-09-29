@@ -1,7 +1,7 @@
 import c from './Intro.module.css'
 import { Button } from '../core/Button/Button'
 import { Panel, PanelActions, PanelBody, PanelHeader } from '../core/Panel/Panel'
-import { handleProjectDialog, handleSketchesDialog } from 'src/renderer/handlers/sketchFileHandlers'
+import { handleLoadProjectDialog, handleSketchesDialog } from '../../handlers/fileHandlers'
 
 export const Intro = () => {
   return (
@@ -13,7 +13,7 @@ export const Intro = () => {
           <Button onClick={handleSketchesDialog} iconName="folder_open">
             Select Sketches Folder
           </Button>
-          <Button type="secondary" onClick={handleProjectDialog} iconName="file_open">
+          <Button type="secondary" onClick={handleLoadProjectDialog} iconName="file_open">
             Open Project
           </Button>
         </PanelActions>

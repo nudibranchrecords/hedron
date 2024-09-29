@@ -3,6 +3,7 @@ import { engine, engineStore } from '../engine'
 import {
   openProjectFileDialog,
   openSketchesDirDialog,
+  saveProjectFileDialog,
   startSketchesServer,
 } from '../ipc/mainThreadTalk'
 
@@ -24,7 +25,7 @@ export const handleSketchesDialog = async () => {
   await startEngineWithSketchesDir(sketchesDirPath)
 }
 
-export const handleProjectDialog = async () => {
+export const handleLoadProjectDialog = async () => {
   const response = await openProjectFileDialog()
 
   if (response.result === 'cancelled') return
@@ -39,4 +40,12 @@ export const handleProjectDialog = async () => {
   await startEngineWithSketchesDir(sketchesDirPath)
 
   engineStore.getState().loadProject(projectData)
+}
+
+export const handleSaveProjectDialog = async () => {
+  const data = engine.getSaveData()
+
+  console.log(data)
+
+  saveProjectFileDialog(data)
 }

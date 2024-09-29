@@ -11,14 +11,23 @@ export interface SketchesServerResponse {
   url: string
 }
 
+export enum AppMenuEvents {
+  AppMenuClick = 'app-menu-click',
+}
+
+export enum AppMenuEventsItem {
+  Save = 'save',
+}
+
 export enum ScreenEvents {
   SendOutput = 'send-output',
   UpdateDisplays = 'update-displays',
 }
 
-export enum FileEvents {
+export enum DialogEvents {
   OpenSketchesDirDialog = 'open-sketches-dir-dialog',
   OpenProjectFileDialog = 'open-project-file-dialog',
+  SaveProjectFileDialog = 'save-project-file-dialog',
 }
 
 type ProjectFileDialogResponseSuccess = {
@@ -36,7 +45,7 @@ interface ProjectFileDialogResponseError {
   error: string
 }
 
-export type ProjectFileDialogResponse =
+export type OpenProjectFileDialogResponse =
   | ProjectFileDialogResponseSuccess
   | ProjectFileDialogResponseError
   | ProjectFileDialogResponseCancelled

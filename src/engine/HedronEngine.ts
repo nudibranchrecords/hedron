@@ -5,6 +5,8 @@ import { createDebugScene } from './world/debugScene'
 import { Renderer } from './world/Renderer'
 import { SketchManager } from './world/SketchManager'
 import { importSketchModule } from './importSketchModule'
+import { ProjectData } from './store/types'
+import { stripForSave } from './utils/stripForSave'
 
 export class HedronEngine {
   private renderer: Renderer
@@ -77,6 +79,14 @@ export class HedronEngine {
     this.renderer.stopOutput()
   }
 
+  public getStore() {
+    return this.store
+  }
+
+  public getSaveData(): ProjectData {
+    return stripForSave(this.store.getState())
+  }
+
   run() {
     const debugScene = createDebugScene(this.renderer.aspectRatio)
 
@@ -104,9 +114,5 @@ export class HedronEngine {
     }
 
     loop()
-  }
-
-  public getStore() {
-    return this.store
   }
 }
