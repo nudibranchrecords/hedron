@@ -78,12 +78,12 @@ export class HedronEngine {
   }
 
   run() {
-    const debugScene = createDebugScene(this.renderer.aspectRatio)
+    const debugScene = createDebugScene(this.renderer)
 
     const loop = (): void => {
       const { sketches, nodeValues, nodes } = this.store.getState()
       const sketchInstances = this.sketchManager!.getSketchInstances()
-
+      debugScene.clearPasses()
       Object.values(sketches).forEach((sketch) => {
         // eslint-disable-next-line
         const paramValues: { [key: string]: any } = {}
@@ -94,7 +94,14 @@ export class HedronEngine {
           paramValues[paramKey] = value
         })
 
-        sketchInstances[sketch.id].update({ deltaFrame: 1, params: paramValues })
+        const instance = sketchInstances[sketch.id]
+
+        if (instance.getPasses) {
+          instance.getPasses(debugScene).forEach((pass) => {
+            debugScene.addPass(pass)
+          })
+        }
+        instance.update({ deltaFrame: 1, params: paramValues })
       })
 
       requestAnimationFrame(loop)
