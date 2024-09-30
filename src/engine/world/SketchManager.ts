@@ -1,11 +1,16 @@
+import { Group } from 'three'
 import { SketchModule } from '../store/types'
 import { getDebugScene } from './debugScene'
+import { Pass } from 'postprocessing'
+import { EngineScene } from './EngineScene'
 
 type SketchInstance = {
   // eslint-disable-next-line -- TODO: Type this!
   update: any
   // eslint-disable-next-line
-  root: any
+  root?: Group
+
+  getPasses?: (engineScene: EngineScene) => Pass[]
 }
 
 export class SketchManager {
@@ -13,7 +18,9 @@ export class SketchManager {
 
   private createSketch = (instanceId: string, module: SketchModule): SketchInstance => {
     const sketch = new module()
-    sketch.root.name = instanceId
+    if (sketch.root) {
+      sketch.root.name = instanceId
+    }
 
     this.sketchInstances[instanceId] = sketch
 
@@ -23,8 +30,9 @@ export class SketchManager {
   public addSketchToScene = (instanceId: string, module: SketchModule): void => {
     const scene = getDebugScene().scene
     const sketch = this.createSketch(instanceId, module)
-
-    scene.add(sketch.root)
+    if (sketch.root) {
+      scene.add(sketch.root)
+    }
   }
 
   public removeSketchFromScene = (instanceId: string): void => {

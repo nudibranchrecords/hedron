@@ -1,6 +1,7 @@
 // import { BoxGeometry, Mesh, MeshNormalMaterial } from 'three'
 import { addScene } from './scenes'
 import { EngineScene } from './EngineScene'
+import { Renderer } from './Renderer'
 import { uid } from 'uid'
 
 let debugScene: EngineScene | undefined
@@ -11,10 +12,11 @@ export const getDebugScene = (): EngineScene => {
   return debugScene
 }
 
-export const createDebugScene = (aspectRatio: number): EngineScene => {
+export const createDebugScene = (renderer: Renderer): EngineScene => {
   const id = uid()
   const scene = addScene(id)
-  scene.setRatio(aspectRatio)
+  scene.setRatio(renderer.aspectRatio)
+  scene.renderer = renderer.composer?.getRenderer()
 
   debugScene = scene
 
