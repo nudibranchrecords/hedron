@@ -12,6 +12,7 @@ export type IconName =
   | 'info'
   | 'content_copy'
   | 'folder_open'
+  | 'file_open'
   | 'description'
   | 'token'
   | 'close'

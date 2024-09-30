@@ -1,4 +1,4 @@
-import { FileWatchEvents, SketchEvents } from '../shared/Events'
+import { FileWatchEvents, SketchesServerResponse, SketchEvents } from '../shared/Events'
 import { sendToMainWindow } from './mainWindow'
 import { SketchesServer } from './SketchesServer'
 import fs from 'fs'
@@ -15,7 +15,7 @@ const getInitialModuleIds = async (dirPath: string): Promise<string[]> => {
   return moduleIds
 }
 
-export const handleSketchFiles = async (dirPath: string): Promise<void> => {
+export const startSketchesServer = async (dirPath: string): Promise<SketchesServerResponse> => {
   const moduleIds = await getInitialModuleIds(dirPath)
   const sketchesServer = new SketchesServer()
 
@@ -38,6 +38,5 @@ export const handleSketchFiles = async (dirPath: string): Promise<void> => {
 
   const url = `http://${host}:${port}`
 
-  sendToMainWindow(SketchEvents.ServerStart, url)
-  sendToMainWindow(SketchEvents.InitialSketchModuleIds, moduleIds)
+  return { url, moduleIds }
 }

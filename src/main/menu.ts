@@ -1,11 +1,11 @@
 import { Display, Menu, ipcMain } from 'electron'
 
-import { ScreenEvents } from '../shared/Events'
-import { getMainWindow } from './mainWindow'
+import { AppMenuEvents, AppMenuEventsItem, ScreenEvents } from '../shared/Events'
+import { sendToMainWindow } from './mainWindow'
 
-// const onClick = () => {
-//   mainWindow.webContents.send('app-menu-click', ...args)
-// }
+const onClick = (menuItemClick: AppMenuEventsItem) => {
+  sendToMainWindow(AppMenuEvents.AppMenuClick, menuItemClick)
+}
 
 const hedronMenu = {
   label: 'Hedron',
@@ -21,39 +21,39 @@ const hedronMenu = {
 
 const projectMenu = {
   label: 'Project',
-  // submenu: [
-  //   {
-  //     label: 'New',
-  //     role: 'forcereload',
-  //   },
-  //   {
-  //     label: 'Save',
-  //     click: () => {
-  //       onClick('project-save')
-  //     },
-  //     accelerator: 'CommandOrControl+S',
-  //   },
-  //   {
-  //     label: 'Save As...',
-  //     click: () => {
-  //       onClick('project-save-as')
-  //     },
-  //     accelerator: 'CommandOrControl+Shift+S',
-  //   },
-  //   {
-  //     label: 'Load',
-  //     click: () => {
-  //       onClick('project-load')
-  //     },
-  //   },
-  //   {
-  //     label: 'Settings',
-  //     click: () => {
-  //       onClick('project-settings')
-  //     },
-  //     accelerator: 'CommandOrControl+,',
-  //   },
-  // ],
+  submenu: [
+    //   {
+    //     label: 'New',
+    //     role: 'forcereload',
+    //   },
+    {
+      label: 'Save',
+      click: () => {
+        onClick(AppMenuEventsItem.Save)
+      },
+      accelerator: 'CommandOrControl+S',
+    },
+    {
+      label: 'Save As...',
+      click: () => {
+        onClick(AppMenuEventsItem.SaveAs)
+      },
+      accelerator: 'CommandOrControl+Shift+S',
+    },
+    //   {
+    //     label: 'Load',
+    //     click: () => {
+    //       onClick('project-load')
+    //     },
+    //   },
+    //   {
+    //     label: 'Settings',
+    //     click: () => {
+    //       onClick('project-settings')
+    //     },
+    //     accelerator: 'CommandOrControl+,',
+    //   },
+  ],
 }
 
 const displayMenu: Electron.MenuItemConstructorOptions = {

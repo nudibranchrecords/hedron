@@ -1,3 +1,5 @@
+import { StoreApi } from 'zustand'
+
 export interface SketchState {
   id: string
   title: string
@@ -91,3 +93,42 @@ export type SketchModules = { [key: string]: SketchModuleItem }
 export type DialogId = 'sketchModules'
 
 export type EnumOption = { value: string; label: string }
+
+export interface ProjectData {
+  sketches: Sketches
+  nodes: Nodes
+  nodeValues: NodeValues
+}
+
+interface AuxState {
+  sketchModules: SketchModules
+  isSketchModulesReady: boolean
+}
+
+export type EngineState = ProjectData & AuxState
+
+interface Actions {
+  addSketch: (moduleId: string) => string
+  updateSketchParams: (instanceId: string) => void
+  deleteSketch: (instanceId: string) => void
+  setSketchModuleItem: (newItem: SketchModuleItem) => void
+  updateNodeValue: (nodeId: string, value: NodeValue) => void
+  deleteSketchModule: (moduleId: string) => void
+  loadProject: (project: ProjectData) => void
+  reset: () => void
+}
+
+export type EngineStateWithActions = ProjectData & AuxState & Actions
+
+export type SetState = StoreApi<EngineStateWithActions>['setState']
+
+// Matches immer middleware and devtools
+export type CustomSetState = (
+  cb: (draft: EngineStateWithActions) => void,
+  replace?: boolean,
+  name?: string,
+) => void
+
+export type SetterCreator<K extends keyof EngineStateWithActions> = (
+  setState: CustomSetState,
+) => EngineStateWithActions[K]
