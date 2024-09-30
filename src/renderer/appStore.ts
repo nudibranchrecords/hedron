@@ -8,9 +8,11 @@ export interface AppState {
   activeSketchId: string | null
   sketchesDir: string | null
   globalDialogId: DialogId | null
+  currentSavePath: string | null
   setActiveSketchId: (id: string) => void
   setSketchesDir: (dir: string) => void
   setGlobalDialogId: (id: DialogId | null) => void
+  setCurrentSavePath: (path: string) => void
 }
 
 export type SetState = StoreApi<AppState>['setState']
@@ -31,6 +33,7 @@ export const useAppStore = create<AppState>()(
         activeSketchId: null,
         sketchesDir: null,
         globalDialogId: null,
+        currentSavePath: null,
         setActiveSketchId: (id: string) => {
           set((state) => {
             state.activeSketchId = id
@@ -44,6 +47,11 @@ export const useAppStore = create<AppState>()(
         setGlobalDialogId: (id: DialogId | null) => {
           set((state) => {
             state.globalDialogId = id
+          })
+        },
+        setCurrentSavePath: (path: string) => {
+          set((state) => {
+            state.currentSavePath = path
           })
         },
       })),

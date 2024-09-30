@@ -5,7 +5,7 @@ import './css/base.css'
 
 import './windows'
 import './globalVars'
-import './mainThreadListen'
+import './ipc/mainThreadListen'
 import './engine'
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(

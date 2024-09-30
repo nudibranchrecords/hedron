@@ -4,7 +4,7 @@ out
 .DS_Store
 *.log*
 .sketches-server
-user-settings.json
+dev-settings.json
 chrome-extensions
 
 *storybook.log

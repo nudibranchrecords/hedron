@@ -1,11 +1,19 @@
 import { app, BrowserWindow, dialog, ipcMain, screen, session } from 'electron'
 import { electronApp, optimizer } from '@electron-toolkit/utils'
 import { updateDisplayMenu, updateMenu } from './menu'
-import { createWindow, sendToMainWindow } from './mainWindow'
-import { handleSketchFiles } from './handleSketchFiles'
-import { userSettings } from './userSettings'
+import { createWindow } from './mainWindow'
+import { startSketchesServer } from './handleSketchFiles'
+import { devSettings } from './devSettings'
 import { REDUX_DEVTOOLS, installExtension } from '@tomjs/electron-devtools-installer'
-import { FileEvents } from '../shared/Events'
+import {
+  DialogEvents,
+  FileEvents,
+  OpenProjectResponse,
+  SaveProjectResponse,
+  SketchEvents,
+} from '../shared/Events'
+import { saveProjectFile } from './handlers/saveProjectFile'
+import { openProjectFile } from './handlers/openProjectFile'
 
 const isDevelopment = process.env.NODE_ENV !== 'production'
 
@@ -37,11 +45,11 @@ app.whenReady().then(() => {
   if (isDevelopment) {
     let reduxDevtoolsInstaller: Promise<Electron.Extension>
 
-    if (userSettings.reduxDevtoolsDir) {
+    if (devSettings.reduxDevtoolsDir) {
       // Override automatic install
       // This is needed if there is some bug with the latest version
       // https://github.com/reduxjs/redux-devtools/issues/1730
-      reduxDevtoolsInstaller = session.defaultSession.loadExtension(userSettings.reduxDevtoolsDir)
+      reduxDevtoolsInstaller = session.defaultSession.loadExtension(devSettings.reduxDevtoolsDir)
     } else {
       reduxDevtoolsInstaller = installExtension(REDUX_DEVTOOLS)
     }
@@ -76,13 +84,25 @@ app.on('window-all-closed', () => {
   }
 })
 
-ipcMain.on(FileEvents.OpenSketchesDirDialog, async () => {
+ipcMain.handle(DialogEvents.OpenSketchesDirDialog, async () => {
   const result = await dialog.showOpenDialog({
     properties: ['openDirectory'],
   })
 
-  const dirPath = result.filePaths[0]
+  return result.filePaths[0]
+})
 
-  handleSketchFiles(dirPath)
-  sendToMainWindow(FileEvents.SelectSketchesDir, dirPath)
+ipcMain.handle(DialogEvents.OpenProjectFileDialog, async (): Promise<OpenProjectResponse> => {
+  return await openProjectFile()
+})
+
+ipcMain.handle(
+  FileEvents.SaveProject,
+  async (_, projectData: string, savePath?: string | null): Promise<SaveProjectResponse> => {
+    return await saveProjectFile(projectData, savePath)
+  },
+)
+
+ipcMain.handle(SketchEvents.StartSketchesServer, async (_, sketchesDir: string) => {
+  return await startSketchesServer(sketchesDir)
 })
