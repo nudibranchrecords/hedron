@@ -33,13 +33,13 @@ const projectMenu = {
       },
       accelerator: 'CommandOrControl+S',
     },
-    //   {
-    //     label: 'Save As...',
-    //     click: () => {
-    //       onClick('project-save-as')
-    //     },
-    //     accelerator: 'CommandOrControl+Shift+S',
-    //   },
+    {
+      label: 'Save As...',
+      click: () => {
+        onClick(AppMenuEventsItem.SaveAs)
+      },
+      accelerator: 'CommandOrControl+Shift+S',
+    },
     //   {
     //     label: 'Load',
     //     click: () => {

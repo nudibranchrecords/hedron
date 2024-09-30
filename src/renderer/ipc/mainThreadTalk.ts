@@ -1,6 +1,9 @@
+import { ProjectData } from 'src/engine/store/types'
 import {
   DialogEvents,
-  OpenProjectFileDialogResponse,
+  FileEvents,
+  OpenProjectResponse,
+  SaveProjectResponse,
   SketchesServerResponse,
   SketchEvents,
 } from 'src/shared/Events'
@@ -15,16 +18,19 @@ export const openSketchesDirDialog = () =>
   })
 
 export const openProjectFileDialog = () =>
-  new Promise<OpenProjectFileDialogResponse>((resolve) => {
+  new Promise<OpenProjectResponse>((resolve) => {
     window.electron.ipcRenderer.invoke(DialogEvents.OpenProjectFileDialog).then((response) => {
       resolve(response)
     })
   })
 
-export const saveProjectFileDialog = (projectData: string) =>
-  new Promise<void>((resolve) => {
+export const saveProjectFileDialog = (
+  projectData: ProjectData,
+  options: { savePath: string | null },
+) =>
+  new Promise<SaveProjectResponse>((resolve) => {
     window.electron.ipcRenderer
-      .invoke(DialogEvents.SaveProjectFileDialog, projectData)
+      .invoke(FileEvents.SaveProject, projectData, options.savePath)
       .then((response) => {
         resolve(response)
       })

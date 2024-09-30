@@ -1,14 +1,38 @@
 import { dialog } from 'electron'
 import fs from 'fs'
+import { SaveProjectResponse } from '../../shared/Events'
 
-export const saveProjectFile = async (projectData: string) => {
-  const result = await dialog.showSaveDialog({
-    filters: [{ name: 'Poject', extensions: ['json'] }],
-  })
+export const saveProjectFile = async (
+  projectData: string,
+  _savePath: string | null,
+): Promise<SaveProjectResponse> => {
+  let savePath = _savePath
 
-  const projectFile = result.filePath
+  if (!savePath) {
+    const result = await dialog.showSaveDialog({
+      filters: [{ name: 'Project', extensions: ['json'] }],
+    })
 
-  const fileContent = JSON.stringify(projectData)
+    if (result.canceled) {
+      return {
+        result: 'canceled',
+      }
+    }
 
-  await fs.writeFileSync(projectFile, fileContent, { encoding: 'utf8' })
+    savePath = result.filePath
+  }
+
+  try {
+    const fileContent = JSON.stringify(projectData)
+
+    await fs.writeFileSync(savePath, fileContent, { encoding: 'utf8' })
+
+    return {
+      result: 'success',
+      savePath,
+    }
+  } catch (err) {
+    console.error('Error saving the project file:', err)
+    return { result: 'error', error: 'Failed to save the project file' }
+  }
 }

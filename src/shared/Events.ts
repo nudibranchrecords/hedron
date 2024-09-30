@@ -17,6 +17,7 @@ export enum AppMenuEvents {
 
 export enum AppMenuEventsItem {
   Save = 'save',
+  SaveAs = 'save-as',
 }
 
 export enum ScreenEvents {
@@ -30,25 +31,34 @@ export enum DialogEvents {
   SaveProjectFileDialog = 'save-project-file-dialog',
 }
 
-type ProjectFileDialogResponseSuccess = {
-  result: 'success'
-  sketchesDirPath: string
-  projectData: any
+export enum FileEvents {
+  SaveProject = 'save-project',
 }
 
-type ProjectFileDialogResponseCancelled = {
-  result: 'cancelled'
+type ResponseCanceled = {
+  result: 'canceled'
 }
 
-interface ProjectFileDialogResponseError {
+type ResponseError = {
   result: 'error'
   error: string
 }
 
-export type OpenProjectFileDialogResponse =
-  | ProjectFileDialogResponseSuccess
-  | ProjectFileDialogResponseError
-  | ProjectFileDialogResponseCancelled
+type OpenProjectResponseSuccess = {
+  result: 'success'
+  sketchesDirPath: string
+  savePath: string
+  projectData: any
+}
+
+type SaveProjectResponseSuccess = {
+  result: 'success'
+  savePath: string
+}
+
+export type OpenProjectResponse = OpenProjectResponseSuccess | ResponseError | ResponseCanceled
+
+export type SaveProjectResponse = SaveProjectResponseSuccess | ResponseError | ResponseCanceled
 
 export enum FileWatchEvents {
   change = 'change',

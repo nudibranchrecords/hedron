@@ -5,7 +5,13 @@ import { createWindow } from './mainWindow'
 import { startSketchesServer } from './handleSketchFiles'
 import { devSettings } from './devSettings'
 import { REDUX_DEVTOOLS, installExtension } from '@tomjs/electron-devtools-installer'
-import { DialogEvents, OpenProjectFileDialogResponse, SketchEvents } from '../shared/Events'
+import {
+  DialogEvents,
+  FileEvents,
+  OpenProjectResponse,
+  SaveProjectResponse,
+  SketchEvents,
+} from '../shared/Events'
 import { saveProjectFile } from './handlers/saveProjectFile'
 import { openProjectFile } from './handlers/openProjectFile'
 
@@ -86,16 +92,16 @@ ipcMain.handle(DialogEvents.OpenSketchesDirDialog, async () => {
   return result.filePaths[0]
 })
 
+ipcMain.handle(DialogEvents.OpenProjectFileDialog, async (): Promise<OpenProjectResponse> => {
+  return await openProjectFile()
+})
+
 ipcMain.handle(
-  DialogEvents.OpenProjectFileDialog,
-  async (): Promise<OpenProjectFileDialogResponse> => {
-    return await openProjectFile()
+  FileEvents.SaveProject,
+  async (_, projectData: string, savePath?: string | null): Promise<SaveProjectResponse> => {
+    return await saveProjectFile(projectData, savePath)
   },
 )
-
-ipcMain.handle(DialogEvents.SaveProjectFileDialog, async (_, projectData: string) => {
-  saveProjectFile(projectData)
-})
 
 ipcMain.handle(SketchEvents.StartSketchesServer, async (_, sketchesDir: string) => {
   return await startSketchesServer(sketchesDir)

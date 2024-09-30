@@ -25,5 +25,8 @@ listen(AppMenuEvents.AppMenuClick, (item: AppMenuEventsItem) => {
     case AppMenuEventsItem.Save:
       handleSaveProjectDialog()
       break
+    case AppMenuEventsItem.SaveAs:
+      handleSaveProjectDialog({ saveAs: true })
+      break
   }
 })
