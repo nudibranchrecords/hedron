@@ -1,16 +1,16 @@
-import { EffectPass, SavePass, CopyPass, Pass, ShaderPass } from 'postprocessing'
-import { Uniform, Texture, Scene, Camera, WebGLRenderer, WebGLRenderTarget, ShaderMaterial, Vector3 } from 'three';
+import { Pass, ShaderPass } from 'postprocessing'
+import { Uniform, Texture, ShaderMaterial, Vector3 } from 'three'
 
-import fragmentShader from './hsl.js';
+import fragmentShader from './hsl.glsl'
 
 /**
  * A basic post proicessing effect to adjust the hue, saturation, and lightness of the scene.
  * While this could be created with existing postprocessing passes, this example demonstrates how to create a custom effect.
  */
 export default class HSL {
-  shader: ShaderMaterial;
-  pass: ShaderPass;
-  passes:Pass[]
+  shader: ShaderMaterial
+  pass: ShaderPass
+  passes: Pass[]
 
   /**
    * Gets the passes for this effect.
@@ -20,35 +20,33 @@ export default class HSL {
    * You can also modify the pass list at any time, and Hedron will update the scene accordingly.
    */
   getPasses(): Pass[] {
-    if(!this.passes){
+    if (!this.passes) {
       this.createPasses()
     }
     return this.passes
   }
 
-  createPasses(){
+  createPasses() {
     this.shader = this.createBloom()
     this.pass = new ShaderPass(this.shader, 'u_texture')
-    this.passes = [
-      this.pass
-    ]
+    this.passes = [this.pass]
   }
 
   createBloom(): ShaderMaterial {
     const uniforms = [
       ['u_hsl', new Uniform(new Vector3(0.0, 1.0, 1.0))],
       ['u_texture', new Uniform(Texture)],
-    ];
+    ]
 
     return new ShaderMaterial({
-        uniforms: Object.fromEntries(uniforms),
-        vertexShader: `
+      uniforms: Object.fromEntries(uniforms),
+      vertexShader: `
 		varying vec2 vUv;
 		void main() {
 		    vUv = uv;
 		    gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
 	    }`,
-        fragmentShader,
+      fragmentShader,
     })
   }
 
@@ -61,7 +59,7 @@ export default class HSL {
 
   setUniform(key: string, value: any) {
     if (this.shader.uniforms[key]) {
-      this.shader.uniforms[key].value = value;
+      this.shader.uniforms[key].value = value
     }
   }
 
@@ -71,32 +69,32 @@ export default class HSL {
    */
   getConfig() {
     return {
-        title: 'HSL',
-        description: 'Hue, Saturation, Lightness',
-        category: 'simple',
-        params: [
-            {
-                title: 'Hue',
-                key: 'hue',
-                defaultValue: 0.0,
-                defaultMin: 0.0,
-                defaultMax: 1.0,
-            },
-            {
-                title: 'Saturation',
-                key: 'saturation',
-                defaultValue: 1.0,
-                defaultMin: 0.0,
-                defaultMax: 1.0,
-            },
-            {
-                title: 'Lightness',
-                key: 'lightness',
-                defaultValue: 1.0,
-                defaultMin: 0.0,
-                defaultMax: 1.0,
-            },
-        ],
+      title: 'HSL',
+      description: 'Hue, Saturation, Lightness',
+      category: 'simple',
+      params: [
+        {
+          title: 'Hue',
+          key: 'hue',
+          defaultValue: 0.0,
+          defaultMin: 0.0,
+          defaultMax: 1.0,
+        },
+        {
+          title: 'Saturation',
+          key: 'saturation',
+          defaultValue: 1.0,
+          defaultMin: 0.0,
+          defaultMax: 1.0,
+        },
+        {
+          title: 'Lightness',
+          key: 'lightness',
+          defaultValue: 1.0,
+          defaultMin: 0.0,
+          defaultMax: 1.0,
+        },
+      ],
     }
   }
 }
