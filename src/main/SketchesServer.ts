@@ -13,26 +13,6 @@ const HOST = process.platform.startsWith('win') ? 'localhost' : '0.0.0.0'
 
 const WATCH_DEBOUNCE_MS = 300
 
-const fileExtensions = [
-  'glb',
-  'fbx',
-  'obj',
-  'png',
-  'jpg',
-  'jpeg',
-  'gif',
-  'svg',
-  'mp3',
-  'mp4',
-  'ogg',
-  'wav',
-]
-
-const loaderFileExtensions: { [key: string]: 'file' } = {}
-fileExtensions.forEach((ext) => {
-  loaderFileExtensions[`.${ext}`] = 'file'
-})
-
 const getSketchIdFromPath = (sketchPath: string): string => {
   const folderName = path.dirname(sketchPath).split(path.sep).pop()
   if (!folderName) return sketchPath
@@ -87,7 +67,25 @@ export class SketchesServer extends EventEmitter {
         `${entryBase}/**/config.ts`,
       ],
       outdir,
-      loader: loaderFileExtensions,
+      loader: {
+        // https://esbuild.github.io/content-types/
+        // file: loaded into sketch as path
+        '.glb': 'file',
+        '.fbx': 'file',
+        '.obj': 'file',
+        '.png': 'file',
+        '.jpg': 'file',
+        '.jpeg': 'file',
+        '.gif': 'file',
+        '.svg': 'file',
+        '.mp3': 'file',
+        '.mp4': 'file',
+        '.ogg': 'file',
+        '.wav': 'file',
+        // text: loaded into sketch as string
+        '.glsl': 'text',
+        '.isf': 'text',
+      },
       assetNames: '[dir]/[name]-[hash]',
       publicPath: `http://${HOST}:${port}`,
       bundle: true,
