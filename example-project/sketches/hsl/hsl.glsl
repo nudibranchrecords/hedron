@@ -1,5 +1,3 @@
-export default `
-
 uniform sampler2D u_texture;
 uniform vec3 u_hsl;  // Hue, saturation, lightness adjustments
 varying vec2 vUv;
@@ -63,4 +61,3 @@ void main() {
 
     gl_FragColor = vec4(rgb, 1.0);
 }
-`;
