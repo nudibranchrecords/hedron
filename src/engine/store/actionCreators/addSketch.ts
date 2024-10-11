@@ -1,4 +1,3 @@
-import { uid } from 'uid'
 import { SetterCreator } from '../types'
 import { NodeTypes } from '../types'
 import { createUniqueId } from 'src/engine/utils/createUniqueId'

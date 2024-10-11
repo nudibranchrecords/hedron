@@ -2,7 +2,6 @@
 import { addScene } from './scenes'
 import { EngineScene } from './EngineScene'
 import { Renderer } from './Renderer'
-import { uid } from 'uid'
 import { createUniqueId } from '../utils/createUniqueId'
 
 let debugScene: EngineScene | undefined
