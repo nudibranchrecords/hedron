@@ -1,5 +1,5 @@
-import { uid } from 'uid'
 import { NodeTypes, SetterCreator } from '../types'
+import { createUniqueId } from 'src/engine/utils/createUniqueId'
 
 export const createUpdateSketchParams: SetterCreator<'updateSketchParams'> =
   (setState) => (sketchId: string) => {
@@ -25,7 +25,7 @@ export const createUpdateSketchParams: SetterCreator<'updateSketchParams'> =
 
         // If no existing node, create a new one.
         if (!paramId) {
-          paramId = uid()
+          paramId = createUniqueId()
           state.nodes[paramId] = {
             id: paramId,
             key,

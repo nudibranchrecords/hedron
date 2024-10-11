@@ -1,9 +1,9 @@
-import { uid } from 'uid'
 import { SetterCreator } from '../types'
 import { NodeTypes } from '../types'
+import { createUniqueId } from 'src/engine/utils/createUniqueId'
 
 export const createAddSketch: SetterCreator<'addSketch'> = (setState) => (moduleId: string) => {
-  const newSketchId = uid()
+  const newSketchId = createUniqueId()
   setState((state) => {
     const { config } = state.sketchModules[moduleId]
     const paramIds = []
@@ -11,7 +11,7 @@ export const createAddSketch: SetterCreator<'addSketch'> = (setState) => (module
     for (const paramConfig of config.params) {
       const valueType = paramConfig.valueType ?? NodeTypes.Number
       const { key, defaultValue } = paramConfig
-      const id = uid()
+      const id = createUniqueId()
 
       paramIds.push(id)
 

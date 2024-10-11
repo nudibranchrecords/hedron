@@ -1,11 +1,11 @@
-import { uid } from 'uid'
 import { SketchConfig, SketchModule, SketchModuleItem } from './store/types'
+import { createUniqueId } from './utils/createUniqueId'
 
 export const importSketchModule = async (
   baseUrl: string,
   moduleId: string,
 ): Promise<SketchModuleItem> => {
-  const cacheBust = uid()
+  const cacheBust = createUniqueId()
 
   // Get the sketch module
   const sketchPath = `${baseUrl}/${moduleId}/index.js?${cacheBust}`
