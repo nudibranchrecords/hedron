@@ -1,6 +1,6 @@
 import { AppMenuEvents, AppMenuEventsItem, SketchEvents } from '../../shared/Events'
 import { engine } from '../engine'
-import { handleSaveProjectDialog } from '../handlers/fileHandlers'
+import { handleLoadProjectDialog, handleSaveProjectDialog } from '../handlers/fileHandlers'
 
 const listen = (event: string, cb: (info: any) => void): void => {
   window.electron.ipcRenderer.on(event, (_, info) => {
@@ -27,6 +27,9 @@ listen(AppMenuEvents.AppMenuClick, (item: AppMenuEventsItem) => {
       break
     case AppMenuEventsItem.SaveAs:
       handleSaveProjectDialog({ saveAs: true })
+      break
+    case AppMenuEventsItem.Load:
+      handleLoadProjectDialog()
       break
   }
 })

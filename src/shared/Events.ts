@@ -18,6 +18,7 @@ export enum AppMenuEvents {
 export enum AppMenuEventsItem {
   Save = 'save',
   SaveAs = 'save-as',
+  Load = 'load',
 }
 
 export enum ScreenEvents {
