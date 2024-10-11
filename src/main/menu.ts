@@ -40,12 +40,12 @@ const projectMenu = {
       },
       accelerator: 'CommandOrControl+Shift+S',
     },
-    //   {
-    //     label: 'Load',
-    //     click: () => {
-    //       onClick('project-load')
-    //     },
-    //   },
+    {
+      label: 'Load...',
+      click: () => {
+        onClick(AppMenuEventsItem.Load)
+      },
+    },
     //   {
     //     label: 'Settings',
     //     click: () => {
