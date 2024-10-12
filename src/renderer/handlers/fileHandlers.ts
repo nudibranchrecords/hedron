@@ -42,6 +42,7 @@ export const handleLoadProjectDialog = async () => {
 
   engineStore.getState().loadProject(projectData.engine)
   useAppStore.getState().setCurrentSavePath(savePath)
+  useAppStore.getState().setSketchesDir(sketchesDirAbsolute)
 }
 
 export const handleSaveProjectDialog = async (options?: { saveAs?: boolean }) => {

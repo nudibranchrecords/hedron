@@ -229,5 +229,5 @@
       "8f6f5f09f4dbf57a": "cube"
     }
   },
-  "app": { "sketchesDir": "./sketches" }
+  "app": { "sketchesDir": "sketches" }
 }
