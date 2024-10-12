@@ -1,8 +1,5 @@
 {
   "version": 0,
-  "app": {
-    "sketchesDir": "./sketches"
-  },
   "engine": {
     "sketches": {
       "c64ceed4673": {
@@ -35,6 +32,19 @@
           "72e7c5d3f4a45228",
           "2e7c5d3f4a45228b",
           "e7c5d3f4a45228b7"
+        ]
+      },
+      "1359768f6f5f09f4": {
+        "id": "1359768f6f5f09f4",
+        "moduleId": "solid",
+        "title": "Solid",
+        "paramIds": [
+          "359768f6f5f09f4d",
+          "59768f6f5f09f4db",
+          "9768f6f5f09f4dbf",
+          "768f6f5f09f4dbf5",
+          "68f6f5f09f4dbf57",
+          "8f6f5f09f4dbf57a"
         ]
       }
     },
@@ -150,6 +160,48 @@
         "type": "param",
         "valueType": "enum",
         "sketchId": "785d72e7c5d3f4a4"
+      },
+      "359768f6f5f09f4d": {
+        "id": "359768f6f5f09f4d",
+        "key": "rotSpeedX",
+        "type": "param",
+        "valueType": "number",
+        "sketchId": "1359768f6f5f09f4"
+      },
+      "59768f6f5f09f4db": {
+        "id": "59768f6f5f09f4db",
+        "key": "rotSpeedY",
+        "type": "param",
+        "valueType": "number",
+        "sketchId": "1359768f6f5f09f4"
+      },
+      "9768f6f5f09f4dbf": {
+        "id": "9768f6f5f09f4dbf",
+        "key": "rotSpeedZ",
+        "type": "param",
+        "valueType": "number",
+        "sketchId": "1359768f6f5f09f4"
+      },
+      "768f6f5f09f4dbf5": {
+        "id": "768f6f5f09f4dbf5",
+        "key": "scale",
+        "type": "param",
+        "valueType": "number",
+        "sketchId": "1359768f6f5f09f4"
+      },
+      "68f6f5f09f4dbf57": {
+        "id": "68f6f5f09f4dbf57",
+        "key": "isWireframe",
+        "type": "param",
+        "valueType": "boolean",
+        "sketchId": "1359768f6f5f09f4"
+      },
+      "8f6f5f09f4dbf57a": {
+        "id": "8f6f5f09f4dbf57a",
+        "key": "geomName",
+        "type": "param",
+        "valueType": "enum",
+        "sketchId": "1359768f6f5f09f4"
       }
     },
     "nodeValues": {
@@ -168,7 +220,14 @@
       "d72e7c5d3f4a4522": 0.5,
       "72e7c5d3f4a45228": 1,
       "2e7c5d3f4a45228b": true,
-      "e7c5d3f4a45228b7": "icosa"
+      "e7c5d3f4a45228b7": "icosa",
+      "359768f6f5f09f4d": 0,
+      "59768f6f5f09f4db": 0,
+      "9768f6f5f09f4dbf": 0,
+      "768f6f5f09f4dbf5": 1,
+      "68f6f5f09f4dbf57": true,
+      "8f6f5f09f4dbf57a": "cube"
     }
-  }
+  },
+  "app": { "sketchesDir": "./sketches" }
 }
