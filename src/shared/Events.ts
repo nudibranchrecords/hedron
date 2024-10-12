@@ -1,3 +1,5 @@
+import { ProjectData } from './types'
+
 export enum SketchEvents {
   StartSketchesServer = 'start-sketches-server',
   NewSketch = 'new-sketch',
@@ -47,9 +49,9 @@ type ResponseError = {
 
 type OpenProjectResponseSuccess = {
   result: 'success'
-  sketchesDirPath: string
+  sketchesDirAbsolute: string
   savePath: string
-  projectData: any
+  projectData: ProjectData
 }
 
 type SaveProjectResponseSuccess = {
