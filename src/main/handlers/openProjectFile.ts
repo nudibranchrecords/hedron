@@ -23,9 +23,8 @@ export const openProjectFile = async (): Promise<OpenProjectResponse> => {
     // Get the directory of the project file
     const projectDir = path.dirname(projectFile)
 
-    // Find sketches dir from project data
-    const sketchesDir = projectData.app.sketchesDir
-    const sketchesDirAbsolute = path.resolve(projectDir, sketchesDir)
+    // Find sketches dir from project data (will work with rel or abs path)
+    const sketchesDirAbsolute = path.resolve(projectDir, projectData.app.sketchesDir)
 
     try {
       const stats = fs.statSync(sketchesDirAbsolute)
