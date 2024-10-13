@@ -26,8 +26,8 @@ export const handleSketchesDialog = async () => {
   await startEngineWithSketchesDir(sketchesDir)
 }
 
-export const handleLoadProjectDialog = async () => {
-  const response = await openProjectFileDialog()
+export const handleLoadProjectDialog = async (projectPath?: string) => {
+  const response = await openProjectFileDialog(projectPath)
 
   if (response.result === 'canceled') return
 

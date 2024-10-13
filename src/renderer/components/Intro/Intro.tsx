@@ -16,7 +16,7 @@ export const Intro = () => {
           <Button onClick={handleSketchesDialog} iconName="folder_open">
             Select Sketches Folder
           </Button>
-          <Button type="secondary" onClick={handleLoadProjectDialog} iconName="file_open">
+          <Button type="secondary" onClick={() => handleLoadProjectDialog()} iconName="file_open">
             Open Project
           </Button>
         </PanelActions>
@@ -25,7 +25,14 @@ export const Intro = () => {
         <PanelHeader>Recent Projects</PanelHeader>
         <PanelBody>
           {saveList.map((item) => (
-            <div key={item.path}>{item.path}</div>
+            <div
+              key={item.path}
+              onClick={() => {
+                handleLoadProjectDialog(item.path)
+              }}
+            >
+              {item.path}
+            </div>
           ))}
         </PanelBody>
       </Panel>
