@@ -46,7 +46,8 @@ export const handleLoadProjectDialog = async () => {
 }
 
 export const handleSaveProjectDialog = async (options?: { saveAs?: boolean }) => {
-  const sketchesDir = useAppStore.getState().sketchesDir
+  const appState = useAppStore.getState()
+  const sketchesDir = appState.sketchesDir
 
   if (!sketchesDir) {
     throw new Error("Can't save project without sketches dir")
@@ -61,7 +62,7 @@ export const handleSaveProjectDialog = async (options?: { saveAs?: boolean }) =>
     },
   }
 
-  const savePath = options?.saveAs ? null : useAppStore.getState().currentSavePath
+  const savePath = options?.saveAs ? null : appState.currentSavePath
 
   const response = await saveProjectFileDialog(projectData, { savePath })
 
@@ -71,6 +72,11 @@ export const handleSaveProjectDialog = async (options?: { saveAs?: boolean }) =>
   }
 
   if (response.result === 'success') {
-    useAppStore.getState().setCurrentSavePath(response.savePath)
+    appState.setCurrentSavePath(response.savePath)
+    appState.addToSaveList({
+      date: 'some date here',
+      path: response.savePath,
+      numSketches: 99,
+    })
   }
 }
