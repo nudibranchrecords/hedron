@@ -18,9 +18,9 @@ export class FreqPreview {
     this.canvas = this.renderer.domElement
     node.appendChild(this.canvas)
 
-    var geometry = new THREE.PlaneGeometry(1, 1)
-    var material = new THREE.MeshBasicMaterial({ map: audioData.texture, side: THREE.DoubleSide })
-    var mesh = new THREE.Mesh(geometry, material)
+    const geometry = new THREE.PlaneGeometry(1, 1)
+    const material = new THREE.MeshBasicMaterial({ map: audioData.texture, side: THREE.DoubleSide })
+    const mesh = new THREE.Mesh(geometry, material)
 
     this.scene = new THREE.Scene()
     this.scene.add(mesh)

@@ -2,6 +2,7 @@ import { AppMenuEvents, AppMenuEventsItem, SketchEvents } from '../../shared/Eve
 import { engine } from '../engine'
 import { handleLoadProjectDialog, handleSaveProjectDialog } from '../handlers/fileHandlers'
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const listen = (event: string, cb: (info: any) => void): void => {
   window.electron.ipcRenderer.on(event, (_, info) => {
     cb(info)

@@ -10,6 +10,7 @@ export interface SketchState {
 export type Sketches = { [key: string]: SketchState }
 
 // TODO: How to type this??
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type SketchModule = any
 
 export interface NodeBase {

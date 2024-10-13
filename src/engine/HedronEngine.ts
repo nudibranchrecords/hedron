@@ -95,7 +95,7 @@ export class HedronEngine {
       const sketchInstances = this.sketchManager!.getSketchInstances()
       debugScene.clearPasses()
       Object.values(sketches).forEach((sketch) => {
-        // eslint-disable-next-line
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const paramValues: { [key: string]: any } = {}
 
         sketch.paramIds.forEach((id) => {

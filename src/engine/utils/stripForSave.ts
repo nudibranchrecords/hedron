@@ -11,6 +11,7 @@ export const stripForSave = (state: EngineStateWithActions): EngineData => {
     withoutActions[key] = data
   })
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { sketchModules, isSketchModulesReady, ...data } = withoutActions
 
   return data

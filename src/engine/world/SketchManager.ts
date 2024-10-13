@@ -5,9 +5,8 @@ import { Pass } from 'postprocessing'
 import { EngineScene } from './EngineScene'
 
 type SketchInstance = {
-  // eslint-disable-next-line -- TODO: Type this!
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   update: any
-  // eslint-disable-next-line
   root?: Group
 
   getPasses?: (engineScene: EngineScene) => Pass[]
