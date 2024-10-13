@@ -3,7 +3,6 @@
   "include": [
     "electron.vite.config.*",
     "src/main/**/*",
-    "src/shared/**/*",
     "src/preload/**/*",
   ],
   "compilerOptions": {
@@ -16,6 +15,7 @@
       "@shared/*": ["src/shared/*"],
       "@main/*": ["src/main/*"],
       "@resources/*": ["resources/*"],
+      "@engine/*": ["src/engine/*"]
     },
   }
 }
