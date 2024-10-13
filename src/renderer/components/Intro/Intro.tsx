@@ -23,6 +23,7 @@ const RecentProjectItem = ({ item }: { item: SaveItem }) => {
     <Card>
       <CardContent>
         <CardHeader iconName="draft">{item.title}</CardHeader>
+        <CardDetails>{item.path}</CardDetails>
         <CardDetails>{formatDistanceToNow(item.date, { addSuffix: true })}</CardDetails>
         <CardBody>
           <IconList>

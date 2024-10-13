@@ -7,6 +7,7 @@ import {
   saveProjectFileDialog,
   startSketchesServer,
 } from '../ipc/mainThreadTalk'
+import path from 'path-browserify'
 
 const startEngineWithSketchesDir = async (sketchesDirPath: string) => {
   const { moduleIds, url } = await startSketchesServer(sketchesDirPath)
@@ -77,7 +78,7 @@ export const handleSaveProjectDialog = async (options?: { saveAs?: boolean }) =>
   if (response.result === 'success') {
     appState.setCurrentSavePath(response.savePath)
     appState.addToSaveList({
-      title: appState.projectTitle,
+      title: path.basename(response.savePath),
       date: Date.now(),
       path: response.savePath,
       numScenes: 1,

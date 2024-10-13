@@ -13,7 +13,6 @@ export interface SaveItem {
 }
 
 export interface AppState {
-  projectTitle: string
   activeSketchId: string | null
   sketchesDir: string | null
   globalDialogId: DialogId | null
@@ -43,7 +42,6 @@ export const useAppStore = create<AppState>()(
     subscribeWithSelector(
       devtools(
         immer((set) => ({
-          projectTitle: 'Cool Project',
           activeSketchId: null,
           sketchesDir: null,
           globalDialogId: null,
