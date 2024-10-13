@@ -1,6 +1,6 @@
 import { useStore } from 'zustand'
-import { HedronEngine } from 'src/engine'
-import { EngineStateWithActions } from 'src/engine/store/types'
+import { HedronEngine } from '@engine/index'
+import { EngineStateWithActions } from '@engine/store/types'
 
 export const engine = new HedronEngine()
 

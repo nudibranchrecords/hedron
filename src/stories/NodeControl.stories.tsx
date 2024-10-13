@@ -7,15 +7,12 @@ import {
   NodeControlMain,
   NodeControlTitle,
   NodeControlInner,
-} from '../renderer/components/core/NodeControl/NodeControl'
+} from '@components/core/NodeControl/NodeControl'
 
-import { ControlGrid } from '../renderer/components/core/ControlGrid/ControlGrid'
+import { ControlGrid } from '@components/core/ControlGrid/ControlGrid'
 
-import { FloatSlider, FloatSliderHandle } from '../renderer/components/core/FloatSlider/FloatSlider'
-import {
-  BooleanToggle,
-  BooleanToggleHandle,
-} from '../renderer/components/core/BooleanToggle/BooleanToggle'
+import { FloatSlider, FloatSliderHandle } from '@components/core/FloatSlider/FloatSlider'
+import { BooleanToggle, BooleanToggleHandle } from '@components/core/BooleanToggle/BooleanToggle'
 
 const meta = {
   title: 'NodeControl',

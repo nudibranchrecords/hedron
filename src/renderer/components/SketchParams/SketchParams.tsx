@@ -1,16 +1,16 @@
-import { ControlGrid } from '../core/ControlGrid/ControlGrid'
+import { ParamWithInfo, useActiveSketchParams } from '@components/hooks/useActiveSketchParams'
+
+import { ParamNumber } from '@components/ParamNumber/ParamNumber'
+import { ParamBoolean } from '@components/ParamBoolean/ParamBoolean'
+import { ParamEnum } from '@components/ParamEnum/ParamEnum'
+import { NodeTypes } from '@engine/store/types'
 import {
   NodeControl,
   NodeControlInner,
   NodeControlMain,
   NodeControlTitle,
-} from '../core/NodeControl/NodeControl'
-import { ParamWithInfo, useActiveSketchParams } from '../hooks/useActiveSketchParams'
-
-import { ParamNumber } from '../ParamNumber/ParamNumber'
-import { ParamBoolean } from '../ParamBoolean/ParamBoolean'
-import { ParamEnum } from '../ParamEnum/ParamEnum'
-import { NodeTypes } from 'src/engine/store/types'
+} from '@components/core/NodeControl/NodeControl'
+import { ControlGrid } from '@components/core/ControlGrid/ControlGrid'
 
 interface ParamProps {
   param: ParamWithInfo

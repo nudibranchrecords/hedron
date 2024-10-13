@@ -1,13 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/react'
 
 import { fn } from '@storybook/test'
-import {
-  Panel,
-  PanelActions,
-  PanelBody,
-  PanelHeader,
-} from '../renderer/components/core/Panel/Panel'
-import { Button } from '../renderer/components/core/Button/Button'
+import { Panel, PanelActions, PanelBody, PanelHeader } from '@components/core/Panel/Panel'
+import { Button } from '@components/core/Button/Button'
 
 const meta = {
   title: 'Panel',

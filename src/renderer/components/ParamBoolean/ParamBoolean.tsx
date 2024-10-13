@@ -1,8 +1,8 @@
 import { useRef } from 'react'
 import { useInterval } from 'usehooks-ts'
-import { useOnNodeValueChange } from '../hooks/useOnNodeValueChange'
-import { BooleanToggle, BooleanToggleHandle } from '../core/BooleanToggle/BooleanToggle'
-import { engineStore } from 'src/renderer/engine'
+import { useOnNodeValueChange } from '@components/hooks/useOnNodeValueChange'
+import { BooleanToggle, BooleanToggleHandle } from '@components/core/BooleanToggle/BooleanToggle'
+import { engineStore } from '@renderer/engine'
 
 interface ParamNumberProps {
   id: string

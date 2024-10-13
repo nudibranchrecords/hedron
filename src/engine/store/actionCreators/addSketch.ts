@@ -1,5 +1,5 @@
-import { SetterCreator, NodeTypes } from '../types'
-import { createUniqueId } from 'src/engine/utils/createUniqueId'
+import { SetterCreator, NodeTypes } from '@engine/store/types'
+import { createUniqueId } from '@engine/utils/createUniqueId'
 
 export const createAddSketch: SetterCreator<'addSketch'> = (setState) => (moduleId: string) => {
   const newSketchId = createUniqueId()

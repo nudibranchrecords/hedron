@@ -3,7 +3,7 @@
  */
 
 import * as THREE from 'three'
-import { AudioData } from './AudioAnalyser'
+import { AudioData } from '@renderer/audio/AudioAnalyser'
 
 export class FreqPreview {
   public canvas: HTMLCanvasElement

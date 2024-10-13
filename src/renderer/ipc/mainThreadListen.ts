@@ -1,6 +1,6 @@
-import { AppMenuEvents, AppMenuEventsItem, SketchEvents } from '../../shared/Events'
-import { engine } from '../engine'
-import { handleLoadProjectDialog, handleSaveProjectDialog } from '../handlers/fileHandlers'
+import { engine } from '@renderer/engine'
+import { handleLoadProjectDialog, handleSaveProjectDialog } from '@renderer/handlers/fileHandlers'
+import { AppMenuEvents, AppMenuEventsItem, SketchEvents } from '@shared/Events'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const listen = (event: string, cb: (info: any) => void): void => {

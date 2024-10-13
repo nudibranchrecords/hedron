@@ -2,10 +2,6 @@ import type { Meta } from '@storybook/react'
 
 import { useState } from 'react'
 import { fn } from '@storybook/test'
-import { Panel, PanelBody, PanelHeader } from '../renderer/components/core/Panel/Panel'
-import { Dialog } from '../renderer/components/core/Dialog/Dialog'
-import { Button } from '../renderer/components/core/Button/Button'
-import { sketchIcon } from '../renderer/components/core/Icon/Icon'
 import {
   Card,
   CardActions,
@@ -14,7 +10,11 @@ import {
   CardDetails,
   CardHeader,
   CardList,
-} from '../renderer/components/core/Card/Card'
+} from '@components/core/Card/Card'
+import { sketchIcon } from '@components/core/Icon/Icon'
+import { Panel, PanelBody, PanelHeader } from '@components/core/Panel/Panel'
+import { Dialog } from '@components/core/Dialog/Dialog'
+import { Button } from '@components/core/Button/Button'
 
 const meta = {
   title: 'Dialog',

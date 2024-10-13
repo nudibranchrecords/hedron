@@ -1,7 +1,7 @@
 import fs from 'fs'
-import { FileWatchEvents, SketchesServerResponse, SketchEvents } from '../shared/Events'
-import { sendToMainWindow } from './mainWindow'
-import { SketchesServer } from './SketchesServer'
+import { FileWatchEvents, SketchesServerResponse, SketchEvents } from '@shared/Events'
+import { sendToMainWindow } from '@main/mainWindow'
+import { SketchesServer } from '@main/SketchesServer'
 
 const getInitialModuleIds = async (dirPath: string): Promise<string[]> => {
   const moduleIds: string[] = []

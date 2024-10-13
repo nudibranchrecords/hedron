@@ -1,8 +1,8 @@
 import { Group } from 'three'
 import { Pass } from 'postprocessing'
-import { SketchModule } from '../store/types'
-import { getDebugScene } from './debugScene'
-import { EngineScene } from './EngineScene'
+import { SketchModule } from '@engine/store/types'
+import { getDebugScene } from '@engine/world/debugScene'
+import { EngineScene } from '@engine/world/EngineScene'
 
 type SketchInstance = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

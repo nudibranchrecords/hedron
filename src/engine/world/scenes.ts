@@ -1,4 +1,4 @@
-import { EngineScene } from './EngineScene'
+import { EngineScene } from '@engine/world/EngineScene'
 
 export const engineScenes = new Map<string, EngineScene>()
 

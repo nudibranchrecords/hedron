@@ -7,8 +7,8 @@ import {
   CardContent,
   CardDetails,
   CardHeader,
-} from '../renderer/components/core/Card/Card'
-import { Button } from '../renderer/components/core/Button/Button'
+} from '@components/core/Card/Card'
+import { Button } from '@components/core/Button/Button'
 
 const meta = {
   title: 'Card',

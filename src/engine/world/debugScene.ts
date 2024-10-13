@@ -1,8 +1,8 @@
 // import { BoxGeometry, Mesh, MeshNormalMaterial } from 'three'
-import { createUniqueId } from '../utils/createUniqueId'
-import { addScene } from './scenes'
-import { EngineScene } from './EngineScene'
-import { Renderer } from './Renderer'
+import { createUniqueId } from '@engine/utils/createUniqueId'
+import { addScene } from '@engine/world/scenes'
+import { EngineScene } from '@engine/world/EngineScene'
+import { Renderer } from '@engine/world/Renderer'
 
 let debugScene: EngineScene | undefined
 

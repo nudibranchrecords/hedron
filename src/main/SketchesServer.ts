@@ -5,9 +5,9 @@ import { getPort } from 'get-port-please'
 import { app } from 'electron'
 import * as esbuild from 'esbuild'
 import { emptyDirSync } from 'fs-extra'
-import { debounceWithId } from '../shared/utils/debounceWithId'
-import { FileWatchEvents } from '../shared/Events'
-import { getEsbuild } from './getUnpackedModules'
+import { getEsbuild } from '@main/getUnpackedModules'
+import { FileWatchEvents } from '@shared/Events'
+import { debounceWithId } from '@shared/utils/debounceWithId'
 
 const HOST = process.platform.startsWith('win') ? 'localhost' : '0.0.0.0'
 

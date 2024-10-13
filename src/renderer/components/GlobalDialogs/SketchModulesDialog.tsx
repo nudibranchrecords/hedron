@@ -1,8 +1,10 @@
 import { useCallback } from 'react'
-import { Dialog } from '../core/Dialog/Dialog'
-import { Panel, PanelBody, PanelHeader } from '../core/Panel/Panel'
-import { useSketchModuleList } from '../hooks/useSketchModuleList'
-import { useSetActiveSketchId } from '../hooks/useSetActiveSketchId'
+import { GlobalDialogProps } from '@components/GlobalDialogs/types'
+import { useEngineStore } from '@renderer/engine'
+import { useSketchModuleList } from '@components/hooks/useSketchModuleList'
+import { useSetActiveSketchId } from '@components/hooks/useSetActiveSketchId'
+import { Dialog } from '@components/core/Dialog/Dialog'
+import { Panel, PanelBody, PanelHeader } from '@components/core/Panel/Panel'
 import {
   Card,
   CardActions,
@@ -11,11 +13,9 @@ import {
   CardDetails,
   CardHeader,
   CardList,
-} from '../core/Card/Card'
-import { Button } from '../core/Button/Button'
-import { GlobalDialogProps } from './types'
-import { useEngineStore } from 'src/renderer/engine'
-import { SketchModuleItem } from 'src/engine/store/types'
+} from '@components/core/Card/Card'
+import { Button } from '@components/core/Button/Button'
+import { SketchModuleItem } from '@engine/store/types'
 
 interface SketchCardProps {
   item: SketchModuleItem

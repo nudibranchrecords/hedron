@@ -1,8 +1,8 @@
 import { useRef } from 'react'
 import { useInterval } from 'usehooks-ts'
-import { FloatSlider, FloatSliderHandle } from '../core/FloatSlider/FloatSlider'
-import { useOnNodeValueChange } from '../hooks/useOnNodeValueChange'
-import { engineStore } from 'src/renderer/engine'
+import { FloatSlider, FloatSliderHandle } from '@components/core/FloatSlider/FloatSlider'
+import { useOnNodeValueChange } from '@components/hooks/useOnNodeValueChange'
+import { engineStore } from '@renderer/engine'
 
 interface ParamNumberProps {
   id: string
