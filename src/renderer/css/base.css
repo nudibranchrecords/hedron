@@ -48,3 +48,7 @@ p {
 .mb-xl {
   margin-bottom: var(--gapXLarge);
 }
+
+.mb-xxl {
+  margin-bottom: var(--gapMega);
+}

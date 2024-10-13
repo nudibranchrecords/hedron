@@ -74,9 +74,11 @@ export const handleSaveProjectDialog = async (options?: { saveAs?: boolean }) =>
   if (response.result === 'success') {
     appState.setCurrentSavePath(response.savePath)
     appState.addToSaveList({
-      date: 'some date here',
+      title: appState.projectTitle,
+      date: Date.now(),
       path: response.savePath,
-      numSketches: 99,
+      numScenes: 1,
+      numSketches: Object.keys(projectData.engine.sketches).length,
     })
   }
 }

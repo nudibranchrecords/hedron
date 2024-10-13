@@ -4,13 +4,16 @@ import { immer } from 'zustand/middleware/immer'
 import type {} from '@redux-devtools/extension' // required for devtools typing
 import { DialogId } from 'src/engine/store/types'
 
-interface SaveItem {
+export interface SaveItem {
+  title: string
   path: string
-  date: string
+  date: number
+  numScenes: number
   numSketches: number
 }
 
 export interface AppState {
+  projectTitle: string
   activeSketchId: string | null
   sketchesDir: string | null
   globalDialogId: DialogId | null
@@ -39,6 +42,7 @@ export const useAppStore = create<AppState>()(
     subscribeWithSelector(
       devtools(
         immer((set) => ({
+          projectTitle: 'Cool Project',
           activeSketchId: null,
           sketchesDir: null,
           globalDialogId: null,
