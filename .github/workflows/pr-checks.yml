@@ -24,10 +24,7 @@ jobs:
 
       - name: Install example project dependencies
         working-directory: ./example-project
-        run: |
-          cd example-project
-          npm install
-          cd ..
+        run: npm install
 
       - name: Run TypeScript
         run: npm run typecheck
