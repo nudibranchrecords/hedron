@@ -27,12 +27,15 @@ export const handleSketchesDialog = async () => {
 }
 
 export const handleLoadProjectDialog = async (projectPath?: string) => {
+  const appState = useAppStore.getState()
+
   const response = await openProjectFileDialog(projectPath)
 
   if (response.result === 'canceled') return
 
   if (response.result === 'error') {
     alert(response.error)
+    if (projectPath) appState.removeFromSaveList(projectPath)
     return
   }
 
@@ -41,8 +44,8 @@ export const handleLoadProjectDialog = async (projectPath?: string) => {
   await startEngineWithSketchesDir(sketchesDirAbsolute)
 
   engineStore.getState().loadProject(projectData.engine)
-  useAppStore.getState().setCurrentSavePath(savePath)
-  useAppStore.getState().setSketchesDir(sketchesDirAbsolute)
+  appState.setCurrentSavePath(savePath)
+  appState.setSketchesDir(sketchesDirAbsolute)
 }
 
 export const handleSaveProjectDialog = async (options?: { saveAs?: boolean }) => {

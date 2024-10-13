@@ -24,6 +24,7 @@ export interface AppState {
   setGlobalDialogId: (id: DialogId | null) => void
   setCurrentSavePath: (path: string) => void
   addToSaveList: (path: SaveItem) => void
+  removeFromSaveList: (path: string) => void
 }
 
 export type SetState = StoreApi<AppState>['setState']
@@ -73,6 +74,13 @@ export const useAppStore = create<AppState>()(
               const arr = state.saveList.filter((item) => item.path !== newItem.path)
               arr.unshift(newItem)
               state.saveList = arr
+            })
+          },
+          removeFromSaveList: (path: string) => {
+            set((state) => {
+              return {
+                saveList: state.saveList.filter((item) => item.path !== path),
+              }
             })
           },
         })),
