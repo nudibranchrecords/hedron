@@ -16,7 +16,12 @@ export const createDebugScene = (renderer: Renderer): EngineScene => {
   const id = createUniqueId()
   const scene = addScene(id)
   scene.setRatio(renderer.aspectRatio)
-  scene.renderer = renderer.composer?.getRenderer()
+
+  if (!renderer.composer) {
+    throw new Error("couldn't get renderer composer")
+  }
+
+  scene.renderer = renderer.composer.getRenderer()
 
   debugScene = scene
 

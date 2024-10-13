@@ -6,8 +6,8 @@
     "src/renderer/**/*.tsx",
     "src/preload/*.d.ts",
     "src/shared/**/*",
-    "src/stories/**/*"
-    , "src/engine/**/*"  ],
+    "src/stories/**/*",
+    "src/engine/**/*"  ],
   "compilerOptions": {
     "strict": true,
     "noImplicitAny": true,

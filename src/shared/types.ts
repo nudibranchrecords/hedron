@@ -1,4 +1,4 @@
-import { EngineData } from 'src/engine/store/types'
+import { EngineData } from '../../src/engine/store/types'
 
 export interface ProjectData {
   version: number

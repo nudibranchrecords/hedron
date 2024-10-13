@@ -1,4 +1,3 @@
-import { EngineData } from 'src/engine/store/types'
 import {
   DialogEvents,
   FileEvents,

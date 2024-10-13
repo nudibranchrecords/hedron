@@ -1,7 +1,7 @@
 import { Display, Menu, ipcMain } from 'electron'
 
 import { AppMenuEvents, AppMenuEventsItem, ScreenEvents } from '../shared/Events'
-import { sendToMainWindow } from './mainWindow'
+import { getMainWindow, sendToMainWindow } from './mainWindow'
 
 const onClick = (menuItemClick: AppMenuEventsItem) => {
   sendToMainWindow(AppMenuEvents.AppMenuClick, menuItemClick)

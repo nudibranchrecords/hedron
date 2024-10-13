@@ -14,6 +14,7 @@ import {
 } from '../shared/Events'
 import { saveProjectFile } from './handlers/saveProjectFile'
 import { openProjectFile } from './handlers/openProjectFile'
+import { ProjectData } from '../shared/types'
 
 const isDevelopment = process.env.NODE_ENV !== 'production'
 
@@ -101,7 +102,7 @@ ipcMain.handle(
 
 ipcMain.handle(
   FileEvents.SaveProject,
-  async (_, projectData: string, savePath?: string | null): Promise<SaveProjectResponse> => {
+  async (_, projectData: ProjectData, savePath: string | null): Promise<SaveProjectResponse> => {
     return await saveProjectFile(projectData, savePath)
   },
 )
