@@ -1,9 +1,5 @@
-import c from './Intro.module.css'
-import { Button } from '../core/Button/Button'
-import { Panel, PanelActions, PanelBody, PanelHeader } from '../core/Panel/Panel'
-import { handleLoadProjectDialog, handleSketchesDialog } from '../../handlers/fileHandlers'
-import { SaveItem, useAppStore } from 'src/renderer/appStore'
 import { formatDistanceToNow } from 'date-fns'
+import { ErrorBoundary } from 'react-error-boundary'
 import {
   Card,
   CardActions,
@@ -13,9 +9,13 @@ import {
   CardHeader,
   CardList,
 } from '../core/Card/Card'
-import { ErrorBoundary } from 'react-error-boundary'
+import { handleLoadProjectDialog, handleSketchesDialog } from '../../handlers/fileHandlers'
+import { Panel, PanelActions, PanelBody, PanelHeader } from '../core/Panel/Panel'
+import { Button } from '../core/Button/Button'
 import { sceneIcon, sketchIcon } from '../core/Icon/Icon'
 import { IconList, IconListItem } from '../core/IconList/IconList'
+import c from './Intro.module.css'
+import { SaveItem, useAppStore } from 'src/renderer/appStore'
 import { pluralize } from 'src/renderer/utils/pluralize'
 
 const RecentProjectItem = ({ item }: { item: SaveItem }) => {

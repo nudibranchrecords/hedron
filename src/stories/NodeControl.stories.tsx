@@ -1,4 +1,7 @@
 import type { Meta } from '@storybook/react'
+import { fn } from '@storybook/test'
+import { useRef, useState } from 'react'
+import { useInterval } from 'usehooks-ts'
 import {
   NodeControl,
   NodeControlMain,
@@ -8,11 +11,7 @@ import {
 
 import { ControlGrid } from '../renderer/components/core/ControlGrid/ControlGrid'
 
-import { fn } from '@storybook/test'
-
 import { FloatSlider, FloatSliderHandle } from '../renderer/components/core/FloatSlider/FloatSlider'
-import { useRef, useState } from 'react'
-import { useInterval } from 'usehooks-ts'
 import {
   BooleanToggle,
   BooleanToggleHandle,

@@ -1,8 +1,9 @@
 import type { Meta } from '@storybook/react'
 
+import { useState } from 'react'
+import { fn } from '@storybook/test'
 import { Panel, PanelBody, PanelHeader } from '../renderer/components/core/Panel/Panel'
 import { Dialog } from '../renderer/components/core/Dialog/Dialog'
-import { useState } from 'react'
 import { Button } from '../renderer/components/core/Button/Button'
 import { sketchIcon } from '../renderer/components/core/Icon/Icon'
 import {
@@ -14,7 +15,6 @@ import {
   CardHeader,
   CardList,
 } from '../renderer/components/core/Card/Card'
-import { fn } from '@storybook/test'
 
 const meta = {
   title: 'Dialog',

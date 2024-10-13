@@ -1,7 +1,7 @@
-import { DialogId } from 'src/engine/store/types'
 import { useGlobalDialog } from './useGlobalDialog'
 import { SketchModulesDialog } from './SketchModulesDialog'
 import { GlobalDialogProps } from './types'
+import { DialogId } from 'src/engine/store/types'
 
 const dialogs: { [key in DialogId]: (props: GlobalDialogProps) => JSX.Element } = {
   sketchModules: SketchModulesDialog,

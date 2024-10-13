@@ -68,6 +68,8 @@
     "electron-builder": "^24.13.3",
     "electron-vite": "^2.3.0",
     "eslint": "^8.57.0",
+    "eslint-import-resolver-typescript": "^3.6.3",
+    "eslint-plugin-import": "^2.31.0",
     "eslint-plugin-react": "^7.34.3",
     "eslint-plugin-react-hooks": "^4.6.2",
     "eslint-plugin-storybook": "^0.8.0",

@@ -1,8 +1,8 @@
-import { dialog } from 'electron'
 import fs from 'fs'
+import path from 'path'
+import { dialog } from 'electron'
 import { SaveProjectResponse } from '../../shared/Events'
 import { ProjectData } from '../../shared/types'
-import path from 'path'
 
 const isSubdirectory = (parentDir: string, directory: string) => {
   const resolvedParentDir = path.resolve(parentDir)

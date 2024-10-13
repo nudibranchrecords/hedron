@@ -1,13 +1,13 @@
 import path from 'path'
-import chokidar, { FSWatcher } from 'chokidar'
 import { EventEmitter } from 'events'
+import chokidar, { FSWatcher } from 'chokidar'
 import { getPort } from 'get-port-please'
 import { app } from 'electron'
-import { getEsbuild } from './getUnpackedModules'
 import * as esbuild from 'esbuild'
+import { emptyDirSync } from 'fs-extra'
 import { debounceWithId } from '../shared/utils/debounceWithId'
 import { FileWatchEvents } from '../shared/Events'
-import { emptyDirSync } from 'fs-extra'
+import { getEsbuild } from './getUnpackedModules'
 
 const HOST = process.platform.startsWith('win') ? 'localhost' : '0.0.0.0'
 

@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
-import { useActiveSketch } from './useActiveSketch'
 import { useEngineStore } from '../../engine'
+import { useActiveSketch } from './useActiveSketch'
 import { Param } from 'src/engine/store/types'
 
 export type ParamWithInfo = Param & { title: string | undefined }

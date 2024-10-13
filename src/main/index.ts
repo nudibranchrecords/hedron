@@ -1,9 +1,5 @@
 import { app, BrowserWindow, dialog, ipcMain, screen, session } from 'electron'
 import { electronApp, optimizer } from '@electron-toolkit/utils'
-import { updateDisplayMenu, updateMenu } from './menu'
-import { createWindow } from './mainWindow'
-import { startSketchesServer } from './handleSketchFiles'
-import { devSettings } from './devSettings'
 import { REDUX_DEVTOOLS, installExtension } from '@tomjs/electron-devtools-installer'
 import {
   DialogEvents,
@@ -12,9 +8,13 @@ import {
   SaveProjectResponse,
   SketchEvents,
 } from '../shared/Events'
+import { ProjectData } from '../shared/types'
+import { updateDisplayMenu, updateMenu } from './menu'
+import { createWindow } from './mainWindow'
+import { startSketchesServer } from './handleSketchFiles'
+import { devSettings } from './devSettings'
 import { saveProjectFile } from './handlers/saveProjectFile'
 import { openProjectFile } from './handlers/openProjectFile'
-import { ProjectData } from '../shared/types'
 
 const isDevelopment = process.env.NODE_ENV !== 'production'
 

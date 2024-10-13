@@ -1,4 +1,5 @@
 import type { Meta } from '@storybook/react'
+import { fn } from '@storybook/test'
 import {
   Card,
   CardActions,
@@ -7,7 +8,6 @@ import {
   CardDetails,
   CardHeader,
 } from '../renderer/components/core/Card/Card'
-import { fn } from '@storybook/test'
 import { Button } from '../renderer/components/core/Button/Button'
 
 const meta = {

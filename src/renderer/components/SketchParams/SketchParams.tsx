@@ -7,10 +7,10 @@ import {
 } from '../core/NodeControl/NodeControl'
 import { ParamWithInfo, useActiveSketchParams } from '../hooks/useActiveSketchParams'
 
-import { NodeTypes } from 'src/engine/store/types'
 import { ParamNumber } from '../ParamNumber/ParamNumber'
 import { ParamBoolean } from '../ParamBoolean/ParamBoolean'
 import { ParamEnum } from '../ParamEnum/ParamEnum'
+import { NodeTypes } from 'src/engine/store/types'
 
 interface ParamProps {
   param: ParamWithInfo

@@ -1,7 +1,7 @@
 import { Group } from 'three'
+import { Pass } from 'postprocessing'
 import { SketchModule } from '../store/types'
 import { getDebugScene } from './debugScene'
-import { Pass } from 'postprocessing'
 import { EngineScene } from './EngineScene'
 
 type SketchInstance = {

@@ -1,6 +1,6 @@
-import { dialog } from 'electron'
 import fs from 'fs'
 import path from 'path'
+import { dialog } from 'electron'
 import { OpenProjectResponse } from '../../shared/Events'
 import { ProjectData } from '../../shared/types'
 
