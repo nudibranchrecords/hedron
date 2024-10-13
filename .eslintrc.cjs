@@ -11,4 +11,9 @@ module.exports = {
   rules: {
     '@typescript-eslint/explicit-function-return-type': 0,
   },
+  settings: {
+    react: {
+      version: 'detect',
+    },
+  },
 }
