@@ -98,6 +98,7 @@ export interface ProjectData {
   sketches: Sketches
   nodes: Nodes
   nodeValues: NodeValues
+  selectedNode: string | null
 }
 
 interface AuxState {
@@ -113,6 +114,7 @@ interface Actions {
   deleteSketch: (instanceId: string) => void
   setSketchModuleItem: (newItem: SketchModuleItem) => void
   updateNodeValue: (nodeId: string, value: NodeValue) => void
+  updateSelectedNode: (nodeId: string) => void
   deleteSketchModule: (moduleId: string) => void
   loadProject: (project: ProjectData) => void
   reset: () => void
