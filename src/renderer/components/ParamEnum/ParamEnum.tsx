@@ -1,8 +1,11 @@
 import { useRef } from 'react'
-import { useOnNodeValueChange } from '../hooks/useOnNodeValueChange'
 import { useInterval } from 'usehooks-ts'
-import { engineStore, useEngineStore } from 'src/renderer/engine'
-import { EnumDropdown, EnumDropdownHandle } from '../core/EnumDropdown/EnumDropdown'
+import { engineStore, useEngineStore } from '@renderer/engine'
+import { useOnNodeValueChange } from '@renderer/components/hooks/useOnNodeValueChange'
+import {
+  EnumDropdown,
+  EnumDropdownHandle,
+} from '@renderer/components/core/EnumDropdown/EnumDropdown'
 
 interface ParamEnumProps {
   id: string

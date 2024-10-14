@@ -1,4 +1,4 @@
-import { useAppStore } from 'src/renderer/appStore'
+import { useAppStore } from '@renderer/appStore'
 
 export const useSetActiveSketchId = () => {
   const setActiveSketchId = useAppStore((state) => state.setActiveSketchId)

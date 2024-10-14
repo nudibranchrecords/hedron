@@ -1,14 +1,15 @@
-import { useAppStore } from '../appStore'
-import { engine, engineStore } from '../engine'
+import path from 'path-browserify'
 import {
   openProjectFileDialog,
   openSketchesDirDialog,
   saveProjectFileDialog,
   startSketchesServer,
-} from '../ipc/mainThreadTalk'
+} from '@renderer/ipc/mainThreadTalk'
+import { engine, engineStore } from '@renderer/engine'
+import { useAppStore } from '@renderer/appStore'
+import { ProjectData } from '@shared/types'
 
 const startEngineWithSketchesDir = async (sketchesDirPath: string) => {
-  useAppStore.getState().setSketchesDir(sketchesDirPath)
   const { moduleIds, url } = await startSketchesServer(sketchesDirPath)
 
   engine.setSketchesUrl(url)
@@ -18,37 +19,56 @@ const startEngineWithSketchesDir = async (sketchesDirPath: string) => {
 }
 
 export const handleSketchesDialog = async () => {
-  const sketchesDirPath = await openSketchesDirDialog()
+  const sketchesDir = await openSketchesDirDialog()
 
-  if (!sketchesDirPath) return
+  if (!sketchesDir) return
 
-  await startEngineWithSketchesDir(sketchesDirPath)
+  useAppStore.getState().setSketchesDir(sketchesDir)
+  await startEngineWithSketchesDir(sketchesDir)
 }
 
-export const handleLoadProjectDialog = async () => {
-  const response = await openProjectFileDialog()
+export const handleLoadProjectDialog = async (projectPath?: string) => {
+  const appState = useAppStore.getState()
+
+  const response = await openProjectFileDialog(projectPath)
 
   if (response.result === 'canceled') return
 
   if (response.result === 'error') {
     alert(response.error)
+    if (projectPath) appState.removeFromSaveList(projectPath)
     return
   }
 
-  const { sketchesDirPath, projectData, savePath } = response
+  const { sketchesDirAbsolute, projectData, savePath } = response
 
-  await startEngineWithSketchesDir(sketchesDirPath)
+  await startEngineWithSketchesDir(sketchesDirAbsolute)
 
-  engineStore.getState().loadProject(projectData)
-  useAppStore.getState().setCurrentSavePath(savePath)
+  engineStore.getState().loadProject(projectData.engine)
+  appState.setCurrentSavePath(savePath)
+  appState.setSketchesDir(sketchesDirAbsolute)
 }
 
 export const handleSaveProjectDialog = async (options?: { saveAs?: boolean }) => {
-  const data = engine.getSaveData()
+  const appState = useAppStore.getState()
+  const sketchesDir = appState.sketchesDir
 
-  const savePath = options?.saveAs ? null : useAppStore.getState().currentSavePath
+  if (!sketchesDir) {
+    throw new Error("Can't save project without sketches dir")
+  }
 
-  const response = await saveProjectFileDialog(data, { savePath })
+  const engineData = engine.getSaveData()
+  const projectData: ProjectData = {
+    version: 0,
+    engine: engineData,
+    app: {
+      sketchesDir,
+    },
+  }
+
+  const savePath = options?.saveAs ? null : appState.currentSavePath
+
+  const response = await saveProjectFileDialog(projectData, { savePath })
 
   if (response.result === 'error') {
     alert(response.error)
@@ -56,6 +76,13 @@ export const handleSaveProjectDialog = async (options?: { saveAs?: boolean }) =>
   }
 
   if (response.result === 'success') {
-    useAppStore.getState().setCurrentSavePath(response.savePath)
+    appState.setCurrentSavePath(response.savePath)
+    appState.addToSaveList({
+      title: path.basename(response.savePath),
+      date: Date.now(),
+      path: response.savePath,
+      numScenes: 1,
+      numSketches: Object.keys(projectData.engine.sketches).length,
+    })
   }
 }

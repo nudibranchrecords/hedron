@@ -1,8 +1,8 @@
 // import { Audio } from '../Audio'
-import { GlobalDialogs } from '../GlobalDialogs/GlobalDialogs'
-import { Viewer } from '../Viewer'
-import { WorkArea } from '../WorkArea/WorkArea'
 import c from './App.module.css'
+import { GlobalDialogs } from '@components/GlobalDialogs/GlobalDialogs'
+import { Viewer } from '@components/Viewer'
+import { WorkArea } from '@components/WorkArea/WorkArea'
 
 export const App = (): JSX.Element => {
   return (

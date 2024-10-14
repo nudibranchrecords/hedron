@@ -22,7 +22,7 @@ export default class Stars {
       particle.velocity = this.vector3InRange(1)
       this.vertices.push(particle)
     }
-    let positions = new Float32Array(
+    const positions = new Float32Array(
       this.vertices.flatMap((particle) => [particle.x, particle.y, particle.z]),
     )
 
@@ -48,9 +48,9 @@ export default class Stars {
     let pCount = this.particleCount
     this.material.opacity = p.opacity
     if (p.opacity) {
-      let positions = this.particles.attributes.position.array
+      const positions = this.particles.attributes.position.array
       while (pCount--) {
-        let index = pCount * 3 // each vertex is represented by 3 values (x, y, z)
+        const index = pCount * 3 // each vertex is represented by 3 values (x, y, z)
         positions[index + 2] += p.speed
         const velocity = this.vertices[pCount].velocity
         positions[index] += velocity.x * p.velocity
@@ -58,7 +58,7 @@ export default class Stars {
         positions[index + 2] += velocity.z * p.velocity
         for (let axis = 0; axis < 3; axis++) {
           positions[index + axis] += this.randomInRange(p.randomWalk)
-          let position = positions[index + axis]
+          const position = positions[index + axis]
           if (position < -this.range / 2) {
             positions[index + axis] = this.range / 2
           } else if (position > this.range / 2) {

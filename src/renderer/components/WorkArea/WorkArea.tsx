@@ -1,6 +1,6 @@
-import { useAppStore } from 'src/renderer/appStore'
-import { Sketches } from '../Sketches/Sketches'
-import { Intro } from '../Intro/Intro'
+import { Intro } from '@components/Intro/Intro'
+import { Sketches } from '@components/Sketches/Sketches'
+import { useAppStore } from '@renderer/appStore'
 
 export const WorkArea = () => {
   const isShowingSketches = useAppStore((state) => state.sketchesDir)

@@ -1,4 +1,4 @@
-import { EngineStore } from './store/engineStore'
+import { EngineStore } from '@engine/store/engineStore'
 
 export const listenToStore = (
   store: EngineStore,

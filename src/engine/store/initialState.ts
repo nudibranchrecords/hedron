@@ -1,4 +1,4 @@
-import { EngineState } from './types'
+import { EngineState } from '@engine/store/types'
 
 export const initialState: EngineState = {
   isSketchModulesReady: false,

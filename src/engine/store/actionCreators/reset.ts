@@ -1,5 +1,5 @@
-import { initialState } from '../initialState'
-import { SetterCreator } from '../types'
+import { initialState } from '@engine/store/initialState'
+import { SetterCreator } from '@engine/store/types'
 
 export const createReset: SetterCreator<'reset'> = (setState) => () => {
   setState(() => initialState)

@@ -1,5 +1,5 @@
-import { Icon, IconName } from '../Icon/Icon'
 import c from './Button.module.css'
+import { Icon, IconName } from '@components/core/Icon/Icon'
 
 export interface ButtonProps extends React.HTMLAttributes<HTMLButtonElement> {
   type?: 'primary' | 'secondary' | 'neutral' | 'danger'

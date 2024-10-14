@@ -1,32 +1,35 @@
-import { dialog } from 'electron'
 import fs from 'fs'
 import path from 'path'
-import { OpenProjectResponse } from '../../shared/Events'
+import { dialog } from 'electron'
+import { OpenProjectResponse } from '@shared/Events'
+import { ProjectData } from '@shared/types'
 
-export const openProjectFile = async (): Promise<OpenProjectResponse> => {
-  const result = await dialog.showOpenDialog({
-    filters: [{ name: 'Project', extensions: ['json'] }],
-  })
+export const openProjectFile = async (projectPath?: string): Promise<OpenProjectResponse> => {
+  if (!projectPath) {
+    const result = await dialog.showOpenDialog({
+      filters: [{ name: 'Project', extensions: ['json'] }],
+    })
 
-  if (result.canceled || result.filePaths.length === 0) {
-    return { result: 'canceled' }
+    if (result.canceled || result.filePaths.length === 0) {
+      return { result: 'canceled' }
+    }
+
+    projectPath = result.filePaths[0]
   }
 
   try {
-    const projectFile = result.filePaths[0]
-
     // Read and parse the JSON from the project file
-    const fileContent = fs.readFileSync(projectFile, { encoding: 'utf8' })
-    const projectData = JSON.parse(fileContent)
+    const fileContent = fs.readFileSync(projectPath, { encoding: 'utf8' })
+    const projectData = JSON.parse(fileContent) as ProjectData
 
     // Get the directory of the project file
-    const projectDir = path.dirname(projectFile)
+    const projectDir = path.dirname(projectPath)
 
-    // Path to the neighboring 'sketches' directory
-    const sketchesDir = path.join(projectDir, 'sketches')
+    // Find sketches dir from project data (will work with rel or abs path)
+    const sketchesDirAbsolute = path.resolve(projectDir, projectData.app.sketchesDir)
 
     try {
-      const stats = fs.statSync(sketchesDir)
+      const stats = fs.statSync(sketchesDirAbsolute)
       if (!stats.isDirectory()) {
         return {
           result: 'error',
@@ -42,8 +45,8 @@ export const openProjectFile = async (): Promise<OpenProjectResponse> => {
     return {
       result: 'success',
       projectData,
-      sketchesDirPath: sketchesDir,
-      savePath: projectFile,
+      sketchesDirAbsolute,
+      savePath: projectPath,
     }
   } catch (err) {
     console.error('Error reading or parsing the project file:', err)

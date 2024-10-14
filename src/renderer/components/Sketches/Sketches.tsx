@@ -1,8 +1,8 @@
 import c from './Sketches.module.css'
-import { SketchTabs } from '../SketchTabs/SketchTabs'
-import { useActiveSketch } from '../hooks/useActiveSketch'
-import { ActiveSketch } from '../ActiveSketch/ActiveSketch'
-import { Panel, PanelBody, PanelHeader } from '../core/Panel/Panel'
+import { useActiveSketch } from '@components/hooks/useActiveSketch'
+import { ActiveSketch } from '@components/ActiveSketch/ActiveSketch'
+import { Panel, PanelBody, PanelHeader } from '@components/core/Panel/Panel'
+import { SketchTabs } from '@components/SketchTabs/SketchTabs'
 
 export const Sketches = () => {
   const activeSketch = useActiveSketch()

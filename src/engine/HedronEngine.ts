@@ -1,12 +1,12 @@
-import { createEngineStore, EngineStore } from './store/engineStore'
-import { getSketchesOfModuleId } from './store/selectors/getSketchesOfModuleId'
-import { listenToStore } from './storeListener'
-import { createDebugScene } from './world/debugScene'
-import { Renderer } from './world/Renderer'
-import { SketchManager } from './world/SketchManager'
-import { importSketchModule } from './importSketchModule'
-import { ProjectData } from './store/types'
-import { stripForSave } from './utils/stripForSave'
+import { createEngineStore, EngineStore } from '@engine/store/engineStore'
+import { getSketchesOfModuleId } from '@engine/store/selectors/getSketchesOfModuleId'
+import { listenToStore } from '@engine/storeListener'
+import { createDebugScene } from '@engine/world/debugScene'
+import { Renderer } from '@engine/world/Renderer'
+import { SketchManager } from '@engine/world/SketchManager'
+import { importSketchModule } from '@engine/importSketchModule'
+import { EngineData } from '@engine/store/types'
+import { stripForSave } from '@engine/utils/stripForSave'
 
 export class HedronEngine {
   private renderer: Renderer
@@ -83,7 +83,7 @@ export class HedronEngine {
     return this.store
   }
 
-  public getSaveData(): ProjectData {
+  public getSaveData(): EngineData {
     return stripForSave(this.store.getState())
   }
 
@@ -95,7 +95,7 @@ export class HedronEngine {
       const sketchInstances = this.sketchManager!.getSketchInstances()
       debugScene.clearPasses()
       Object.values(sketches).forEach((sketch) => {
-        // eslint-disable-next-line
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const paramValues: { [key: string]: any } = {}
 
         sketch.paramIds.forEach((id) => {

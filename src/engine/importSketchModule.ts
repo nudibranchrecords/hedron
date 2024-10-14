@@ -1,5 +1,5 @@
-import { SketchConfig, SketchModule, SketchModuleItem } from './store/types'
-import { createUniqueId } from './utils/createUniqueId'
+import { SketchConfig, SketchModule, SketchModuleItem } from '@engine/store/types'
+import { createUniqueId } from '@engine/utils/createUniqueId'
 
 export const importSketchModule = async (
   baseUrl: string,

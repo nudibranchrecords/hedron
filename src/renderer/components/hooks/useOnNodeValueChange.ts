@@ -1,6 +1,6 @@
 import { useCallback } from 'react'
-import { useUpdateNodeValue } from './useUpdateNodeValue'
-import { NodeValue } from 'src/engine/store/types'
+import { useUpdateNodeValue } from '@components/hooks/useUpdateNodeValue'
+import { NodeValue } from '@engine/store/types'
 
 export const useOnNodeValueChange = (id: string) => {
   const updateNodeValue = useUpdateNodeValue()
