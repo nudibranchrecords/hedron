@@ -1,1 +1,233 @@
-{"sketches":{"c64ceed4673":{"id":"c64ceed4673","moduleId":"solid","title":"Solid","paramIds":["64ceed46737","4ceed467370","ceed467370c","eed467370c5","ed467370c5c","d467370c5cb"]},"5cbd2fda13a":{"id":"5cbd2fda13a","moduleId":"stars","title":"stars","paramIds":["cbd2fda13a6","bd2fda13a6c","d2fda13a6c0","2fda13a6c07"]},"785d72e7c5d3f4a4":{"id":"785d72e7c5d3f4a4","moduleId":"solid","title":"Solid","paramIds":["85d72e7c5d3f4a45","5d72e7c5d3f4a452","d72e7c5d3f4a4522","72e7c5d3f4a45228","2e7c5d3f4a45228b","e7c5d3f4a45228b7"]}},"nodes":{"64ceed46737":{"id":"64ceed46737","key":"rotSpeedX","type":"param","valueType":"number","sketchId":"c64ceed4673"},"4ceed467370":{"id":"4ceed467370","key":"rotSpeedY","type":"param","valueType":"number","sketchId":"c64ceed4673"},"ceed467370c":{"id":"ceed467370c","key":"rotSpeedZ","type":"param","valueType":"number","sketchId":"c64ceed4673"},"eed467370c5":{"id":"eed467370c5","key":"scale","type":"param","valueType":"number","sketchId":"c64ceed4673"},"ed467370c5c":{"id":"ed467370c5c","key":"isWireframe","type":"param","valueType":"boolean","sketchId":"c64ceed4673"},"d467370c5cb":{"id":"d467370c5cb","key":"geomName","type":"param","valueType":"enum","sketchId":"c64ceed4673"},"cbd2fda13a6":{"id":"cbd2fda13a6","key":"opacity","type":"param","valueType":"number","sketchId":"5cbd2fda13a"},"bd2fda13a6c":{"id":"bd2fda13a6c","key":"speed","type":"param","valueType":"number","sketchId":"5cbd2fda13a"},"d2fda13a6c0":{"id":"d2fda13a6c0","key":"velocity","type":"param","valueType":"number","sketchId":"5cbd2fda13a"},"2fda13a6c07":{"id":"2fda13a6c07","key":"randomWalk","type":"param","valueType":"number","sketchId":"5cbd2fda13a"},"85d72e7c5d3f4a45":{"id":"85d72e7c5d3f4a45","key":"rotSpeedX","type":"param","valueType":"number","sketchId":"785d72e7c5d3f4a4"},"5d72e7c5d3f4a452":{"id":"5d72e7c5d3f4a452","key":"rotSpeedY","type":"param","valueType":"number","sketchId":"785d72e7c5d3f4a4"},"d72e7c5d3f4a4522":{"id":"d72e7c5d3f4a4522","key":"rotSpeedZ","type":"param","valueType":"number","sketchId":"785d72e7c5d3f4a4"},"72e7c5d3f4a45228":{"id":"72e7c5d3f4a45228","key":"scale","type":"param","valueType":"number","sketchId":"785d72e7c5d3f4a4"},"2e7c5d3f4a45228b":{"id":"2e7c5d3f4a45228b","key":"isWireframe","type":"param","valueType":"boolean","sketchId":"785d72e7c5d3f4a4"},"e7c5d3f4a45228b7":{"id":"e7c5d3f4a45228b7","key":"geomName","type":"param","valueType":"enum","sketchId":"785d72e7c5d3f4a4"}},"nodeValues":{"64ceed46737":0.5,"4ceed467370":0.5,"ceed467370c":0.5,"eed467370c5":0.5,"ed467370c5c":false,"d467370c5cb":"octa","cbd2fda13a6":1,"bd2fda13a6c":1,"d2fda13a6c0":0,"2fda13a6c07":0,"85d72e7c5d3f4a45":0.5,"5d72e7c5d3f4a452":0.5,"d72e7c5d3f4a4522":0.5,"72e7c5d3f4a45228":1,"2e7c5d3f4a45228b":true,"e7c5d3f4a45228b7":"icosa"}}
+{
+  "version": 0,
+  "engine": {
+    "sketches": {
+      "c64ceed4673": {
+        "id": "c64ceed4673",
+        "moduleId": "solid",
+        "title": "Solid",
+        "paramIds": [
+          "64ceed46737",
+          "4ceed467370",
+          "ceed467370c",
+          "eed467370c5",
+          "ed467370c5c",
+          "d467370c5cb"
+        ]
+      },
+      "5cbd2fda13a": {
+        "id": "5cbd2fda13a",
+        "moduleId": "stars",
+        "title": "stars",
+        "paramIds": ["cbd2fda13a6", "bd2fda13a6c", "d2fda13a6c0", "2fda13a6c07"]
+      },
+      "785d72e7c5d3f4a4": {
+        "id": "785d72e7c5d3f4a4",
+        "moduleId": "solid",
+        "title": "Solid",
+        "paramIds": [
+          "85d72e7c5d3f4a45",
+          "5d72e7c5d3f4a452",
+          "d72e7c5d3f4a4522",
+          "72e7c5d3f4a45228",
+          "2e7c5d3f4a45228b",
+          "e7c5d3f4a45228b7"
+        ]
+      },
+      "1359768f6f5f09f4": {
+        "id": "1359768f6f5f09f4",
+        "moduleId": "solid",
+        "title": "Solid",
+        "paramIds": [
+          "359768f6f5f09f4d",
+          "59768f6f5f09f4db",
+          "9768f6f5f09f4dbf",
+          "768f6f5f09f4dbf5",
+          "68f6f5f09f4dbf57",
+          "8f6f5f09f4dbf57a"
+        ]
+      }
+    },
+    "nodes": {
+      "64ceed46737": {
+        "id": "64ceed46737",
+        "key": "rotSpeedX",
+        "type": "param",
+        "valueType": "number",
+        "sketchId": "c64ceed4673"
+      },
+      "4ceed467370": {
+        "id": "4ceed467370",
+        "key": "rotSpeedY",
+        "type": "param",
+        "valueType": "number",
+        "sketchId": "c64ceed4673"
+      },
+      "ceed467370c": {
+        "id": "ceed467370c",
+        "key": "rotSpeedZ",
+        "type": "param",
+        "valueType": "number",
+        "sketchId": "c64ceed4673"
+      },
+      "eed467370c5": {
+        "id": "eed467370c5",
+        "key": "scale",
+        "type": "param",
+        "valueType": "number",
+        "sketchId": "c64ceed4673"
+      },
+      "ed467370c5c": {
+        "id": "ed467370c5c",
+        "key": "isWireframe",
+        "type": "param",
+        "valueType": "boolean",
+        "sketchId": "c64ceed4673"
+      },
+      "d467370c5cb": {
+        "id": "d467370c5cb",
+        "key": "geomName",
+        "type": "param",
+        "valueType": "enum",
+        "sketchId": "c64ceed4673"
+      },
+      "cbd2fda13a6": {
+        "id": "cbd2fda13a6",
+        "key": "opacity",
+        "type": "param",
+        "valueType": "number",
+        "sketchId": "5cbd2fda13a"
+      },
+      "bd2fda13a6c": {
+        "id": "bd2fda13a6c",
+        "key": "speed",
+        "type": "param",
+        "valueType": "number",
+        "sketchId": "5cbd2fda13a"
+      },
+      "d2fda13a6c0": {
+        "id": "d2fda13a6c0",
+        "key": "velocity",
+        "type": "param",
+        "valueType": "number",
+        "sketchId": "5cbd2fda13a"
+      },
+      "2fda13a6c07": {
+        "id": "2fda13a6c07",
+        "key": "randomWalk",
+        "type": "param",
+        "valueType": "number",
+        "sketchId": "5cbd2fda13a"
+      },
+      "85d72e7c5d3f4a45": {
+        "id": "85d72e7c5d3f4a45",
+        "key": "rotSpeedX",
+        "type": "param",
+        "valueType": "number",
+        "sketchId": "785d72e7c5d3f4a4"
+      },
+      "5d72e7c5d3f4a452": {
+        "id": "5d72e7c5d3f4a452",
+        "key": "rotSpeedY",
+        "type": "param",
+        "valueType": "number",
+        "sketchId": "785d72e7c5d3f4a4"
+      },
+      "d72e7c5d3f4a4522": {
+        "id": "d72e7c5d3f4a4522",
+        "key": "rotSpeedZ",
+        "type": "param",
+        "valueType": "number",
+        "sketchId": "785d72e7c5d3f4a4"
+      },
+      "72e7c5d3f4a45228": {
+        "id": "72e7c5d3f4a45228",
+        "key": "scale",
+        "type": "param",
+        "valueType": "number",
+        "sketchId": "785d72e7c5d3f4a4"
+      },
+      "2e7c5d3f4a45228b": {
+        "id": "2e7c5d3f4a45228b",
+        "key": "isWireframe",
+        "type": "param",
+        "valueType": "boolean",
+        "sketchId": "785d72e7c5d3f4a4"
+      },
+      "e7c5d3f4a45228b7": {
+        "id": "e7c5d3f4a45228b7",
+        "key": "geomName",
+        "type": "param",
+        "valueType": "enum",
+        "sketchId": "785d72e7c5d3f4a4"
+      },
+      "359768f6f5f09f4d": {
+        "id": "359768f6f5f09f4d",
+        "key": "rotSpeedX",
+        "type": "param",
+        "valueType": "number",
+        "sketchId": "1359768f6f5f09f4"
+      },
+      "59768f6f5f09f4db": {
+        "id": "59768f6f5f09f4db",
+        "key": "rotSpeedY",
+        "type": "param",
+        "valueType": "number",
+        "sketchId": "1359768f6f5f09f4"
+      },
+      "9768f6f5f09f4dbf": {
+        "id": "9768f6f5f09f4dbf",
+        "key": "rotSpeedZ",
+        "type": "param",
+        "valueType": "number",
+        "sketchId": "1359768f6f5f09f4"
+      },
+      "768f6f5f09f4dbf5": {
+        "id": "768f6f5f09f4dbf5",
+        "key": "scale",
+        "type": "param",
+        "valueType": "number",
+        "sketchId": "1359768f6f5f09f4"
+      },
+      "68f6f5f09f4dbf57": {
+        "id": "68f6f5f09f4dbf57",
+        "key": "isWireframe",
+        "type": "param",
+        "valueType": "boolean",
+        "sketchId": "1359768f6f5f09f4"
+      },
+      "8f6f5f09f4dbf57a": {
+        "id": "8f6f5f09f4dbf57a",
+        "key": "geomName",
+        "type": "param",
+        "valueType": "enum",
+        "sketchId": "1359768f6f5f09f4"
+      }
+    },
+    "nodeValues": {
+      "64ceed46737": 0.5,
+      "4ceed467370": 0.5,
+      "ceed467370c": 0.5,
+      "eed467370c5": 0.5,
+      "ed467370c5c": false,
+      "d467370c5cb": "octa",
+      "cbd2fda13a6": 1,
+      "bd2fda13a6c": 1,
+      "d2fda13a6c0": 0,
+      "2fda13a6c07": 0,
+      "85d72e7c5d3f4a45": 0.5,
+      "5d72e7c5d3f4a452": 0.5,
+      "d72e7c5d3f4a4522": 0.5,
+      "72e7c5d3f4a45228": 1,
+      "2e7c5d3f4a45228b": true,
+      "e7c5d3f4a45228b7": "icosa",
+      "359768f6f5f09f4d": 0,
+      "59768f6f5f09f4db": 0,
+      "9768f6f5f09f4dbf": 0,
+      "768f6f5f09f4dbf5": 1,
+      "68f6f5f09f4dbf57": true,
+      "8f6f5f09f4dbf57a": "cube"
+    }
+  },
+  "app": { "sketchesDir": "sketches" }
+}

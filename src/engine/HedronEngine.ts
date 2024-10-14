@@ -5,7 +5,7 @@ import { createDebugScene } from './world/debugScene'
 import { Renderer } from './world/Renderer'
 import { SketchManager } from './world/SketchManager'
 import { importSketchModule } from './importSketchModule'
-import { ProjectData } from './store/types'
+import { EngineData } from './store/types'
 import { stripForSave } from './utils/stripForSave'
 
 export class HedronEngine {
@@ -83,7 +83,7 @@ export class HedronEngine {
     return this.store
   }
 
-  public getSaveData(): ProjectData {
+  public getSaveData(): EngineData {
     return stripForSave(this.store.getState())
   }
 
