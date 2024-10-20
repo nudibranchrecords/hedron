@@ -1,9 +1,8 @@
 import { useCallback } from 'react'
-import { useUpdateSelectedNode } from './useUpdateSelectedNode'
-import { useEngineStore } from 'src/renderer/engine'
+import { useAppStore } from 'src/renderer/appStore'
 
 export const useOnSelectNode = (id: string) => {
-  const selectNode = useEngineStore((state) => state.updateSelectedNode)
+  const selectNode = useAppStore((state) => state.setSelectedNode)
 
   const onSelectNode = useCallback(() => {
     selectNode(id)

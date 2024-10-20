@@ -13,6 +13,7 @@ import { ParamBoolean } from '../ParamBoolean/ParamBoolean'
 import { ParamEnum } from '../ParamEnum/ParamEnum'
 import { useOnSelectNode } from '../hooks/useOnSelectNode'
 import { useEngineStore } from 'src/renderer/engine'
+import { useAppStore } from 'src/renderer/appStore'
 
 interface ParamProps {
   param: ParamWithInfo
@@ -33,7 +34,7 @@ const getInputElement = (valueType: NodeTypes, id: string) => {
 
 const ParamItem = ({ param: { key, title, id, valueType } }: ParamProps) => {
   const onSelectNode = useOnSelectNode(id)
-  const selected = useEngineStore((state) => state.selectedNode)
+  const selected = useAppStore((state) => state.selectedNode)
   return (
     <NodeControl key={key} onClick={onSelectNode} isActive={id === selected}>
       <NodeControlMain>
