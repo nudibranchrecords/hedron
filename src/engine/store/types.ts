@@ -94,7 +94,7 @@ export type DialogId = 'sketchModules'
 
 export type EnumOption = { value: string; label: string }
 
-export interface ProjectData {
+export interface EngineData {
   sketches: Sketches
   nodes: Nodes
   nodeValues: NodeValues
@@ -105,7 +105,7 @@ interface AuxState {
   isSketchModulesReady: boolean
 }
 
-export type EngineState = ProjectData & AuxState
+export type EngineState = EngineData & AuxState
 
 interface Actions {
   addSketch: (moduleId: string) => string
@@ -114,11 +114,11 @@ interface Actions {
   setSketchModuleItem: (newItem: SketchModuleItem) => void
   updateNodeValue: (nodeId: string, value: NodeValue) => void
   deleteSketchModule: (moduleId: string) => void
-  loadProject: (project: ProjectData) => void
+  loadProject: (project: EngineData) => void
   reset: () => void
 }
 
-export type EngineStateWithActions = ProjectData & AuxState & Actions
+export type EngineStateWithActions = EngineData & AuxState & Actions
 
 export type SetState = StoreApi<EngineStateWithActions>['setState']
 
