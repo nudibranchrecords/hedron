@@ -6,11 +6,11 @@ import { DialogId } from 'src/engine/store/types'
 
 export interface AppState {
   activeSketchId: string | null
-  selectedNode: string | null
+  selectedNodes: { [key: string]: string }
   sketchesDir: string | null
   globalDialogId: DialogId | null
   currentSavePath: string | null
-  setSelectedNode: (nodeId: string) => void
+  setSelectedNode: (sketchID: string, nodeId: string) => void
   setActiveSketchId: (id: string) => void
   setSketchesDir: (dir: string) => void
   setGlobalDialogId: (id: DialogId | null) => void
@@ -33,13 +33,13 @@ export const useAppStore = create<AppState>()(
     devtools(
       immer((set) => ({
         activeSketchId: null,
-        selectedNode: null,
+        selectedNodes: {},
         sketchesDir: null,
         globalDialogId: null,
         currentSavePath: null,
-        setSelectedNode: (nodeId: string) => {
+        setSelectedNode: (sketchID: string, nodeId: string) => {
           set((state) => {
-            state.selectedNode = nodeId
+            state.selectedNodes[sketchID] = nodeId
           })
         },
         setActiveSketchId: (id: string) => {

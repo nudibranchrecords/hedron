@@ -32,9 +32,9 @@ const getInputElement = (valueType: NodeTypes, id: string) => {
   }
 }
 
-const ParamItem = ({ param: { key, title, id, valueType } }: ParamProps) => {
-  const onSelectNode = useOnSelectNode(id)
-  const selected = useAppStore((state) => state.selectedNode)
+const ParamItem = ({ param: { key, title, id, sketchId, valueType } }: ParamProps) => {
+  const onSelectNode = useOnSelectNode(sketchId, id)
+  const selected = useAppStore((state) => state.selectedNodes[sketchId])
   return (
     <NodeControl key={key} onClick={onSelectNode} isActive={id === selected}>
       <NodeControlMain>
