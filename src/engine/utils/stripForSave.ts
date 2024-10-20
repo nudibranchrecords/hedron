@@ -1,6 +1,6 @@
-import { EngineState, EngineStateWithActions, ProjectData } from '../store/types'
+import { EngineState, EngineStateWithActions, EngineData } from '../store/types'
 
-export const stripForSave = (state: EngineStateWithActions): ProjectData => {
+export const stripForSave = (state: EngineStateWithActions): EngineData => {
   // @ts-expect-error ---
   const withoutActions: EngineState = {}
 

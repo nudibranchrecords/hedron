@@ -1,3 +1,4 @@
+import { ProjectData } from 'src/shared/types'
 import { useAppStore } from '../appStore'
 import { engine, engineStore } from '../engine'
 import {
@@ -8,7 +9,6 @@ import {
 } from '../ipc/mainThreadTalk'
 
 const startEngineWithSketchesDir = async (sketchesDirPath: string) => {
-  useAppStore.getState().setSketchesDir(sketchesDirPath)
   const { moduleIds, url } = await startSketchesServer(sketchesDirPath)
 
   engine.setSketchesUrl(url)
@@ -18,11 +18,12 @@ const startEngineWithSketchesDir = async (sketchesDirPath: string) => {
 }
 
 export const handleSketchesDialog = async () => {
-  const sketchesDirPath = await openSketchesDirDialog()
+  const sketchesDir = await openSketchesDirDialog()
 
-  if (!sketchesDirPath) return
+  if (!sketchesDir) return
 
-  await startEngineWithSketchesDir(sketchesDirPath)
+  useAppStore.getState().setSketchesDir(sketchesDir)
+  await startEngineWithSketchesDir(sketchesDir)
 }
 
 export const handleLoadProjectDialog = async () => {
@@ -35,20 +36,34 @@ export const handleLoadProjectDialog = async () => {
     return
   }
 
-  const { sketchesDirPath, projectData, savePath } = response
+  const { sketchesDirAbsolute, projectData, savePath } = response
 
-  await startEngineWithSketchesDir(sketchesDirPath)
+  await startEngineWithSketchesDir(sketchesDirAbsolute)
 
-  engineStore.getState().loadProject(projectData)
+  engineStore.getState().loadProject(projectData.engine)
   useAppStore.getState().setCurrentSavePath(savePath)
+  useAppStore.getState().setSketchesDir(sketchesDirAbsolute)
 }
 
 export const handleSaveProjectDialog = async (options?: { saveAs?: boolean }) => {
-  const data = engine.getSaveData()
+  const sketchesDir = useAppStore.getState().sketchesDir
+
+  if (!sketchesDir) {
+    throw new Error("Can't save project without sketches dir")
+  }
+
+  const engineData = engine.getSaveData()
+  const projectData: ProjectData = {
+    version: 0,
+    engine: engineData,
+    app: {
+      sketchesDir,
+    },
+  }
 
   const savePath = options?.saveAs ? null : useAppStore.getState().currentSavePath
 
-  const response = await saveProjectFileDialog(data, { savePath })
+  const response = await saveProjectFileDialog(projectData, { savePath })
 
   if (response.result === 'error') {
     alert(response.error)
