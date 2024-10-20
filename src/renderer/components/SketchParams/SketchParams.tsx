@@ -11,7 +11,7 @@ import { NodeTypes } from 'src/engine/store/types'
 import { ParamNumber } from '../ParamNumber/ParamNumber'
 import { ParamBoolean } from '../ParamBoolean/ParamBoolean'
 import { ParamEnum } from '../ParamEnum/ParamEnum'
-//import { useOnSelectNode } from '../hooks/useOnSelectNode'
+import { useOnSelectNode } from '../hooks/useOnSelectNode'
 import { useEngineStore } from 'src/renderer/engine'
 
 interface ParamProps {
@@ -32,8 +32,7 @@ const getInputElement = (valueType: NodeTypes, id: string) => {
 }
 
 const ParamItem = ({ param: { key, title, id, valueType } }: ParamProps) => {
-  //const onSelectNode = useOnSelectNode(id)
-  const onSelectNode = useEngineStore((state) => state.updateSelectedNode).bind(null, id)
+  const onSelectNode = useOnSelectNode(id)
   const selected = useEngineStore((state) => state.selectedNode)
   return (
     <NodeControl key={key} onClick={onSelectNode} isActive={id === selected}>
