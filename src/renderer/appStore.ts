@@ -14,10 +14,12 @@ export interface SaveItem {
 
 export interface AppState {
   activeSketchId: string | null
+  selectedNodes: { [key: string]: string }
   sketchesDir: string | null
   globalDialogId: DialogId | null
   currentSavePath: string | null
   saveList: SaveItem[]
+  setSelectedNode: (sketchID: string, nodeId: string) => void
   setActiveSketchId: (id: string) => void
   setSketchesDir: (dir: string) => void
   setGlobalDialogId: (id: DialogId | null) => void
@@ -46,6 +48,7 @@ export const useAppStore = create<AppState>()(
           sketchesDir: null,
           globalDialogId: null,
           currentSavePath: null,
+          selectedNodes: {},
           saveList: [],
           setActiveSketchId: (id: string) => {
             set((state) => {
@@ -79,6 +82,11 @@ export const useAppStore = create<AppState>()(
               return {
                 saveList: state.saveList.filter((item) => item.path !== path),
               }
+            })
+          },
+          setSelectedNode: (sketchID: string, nodeId: string) => {
+            set((state) => {
+              state.selectedNodes[sketchID] = nodeId
             })
           },
         })),
