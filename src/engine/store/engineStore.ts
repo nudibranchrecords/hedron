@@ -3,16 +3,16 @@ import { devtools, subscribeWithSelector } from 'zustand/middleware'
 import { immer } from 'zustand/middleware/immer'
 
 import type {} from '@redux-devtools/extension' // required for devtools typing
-import { EngineStateWithActions } from './types'
-import { createAddSketch } from './actionCreators/addSketch'
-import { createDeleteSketch } from './actionCreators/deleteSketch'
-import { createSetSketchModuleItem } from './actionCreators/setSketchModuleItem'
-import { createDeleteSketchModule } from './actionCreators/deleteSketchModule'
-import { createUpdateSketchParams } from './actionCreators/updateSketchParams'
-import { createUpdateNodeValue } from './actionCreators/updateNodeValue'
-import { createReset } from './actionCreators/reset'
-import { createLoadProject } from './actionCreators/loadProject'
-import { initialState } from './initialState'
+import { EngineStateWithActions } from '@engine/store/types'
+import { initialState } from '@engine/store/initialState'
+import { createAddSketch } from '@engine/store/actionCreators/addSketch'
+import { createDeleteSketch } from '@engine/store/actionCreators/deleteSketch'
+import { createSetSketchModuleItem } from '@engine/store/actionCreators/setSketchModuleItem'
+import { createDeleteSketchModule } from '@engine/store/actionCreators/deleteSketchModule'
+import { createUpdateSketchParams } from '@engine/store/actionCreators/updateSketchParams'
+import { createUpdateNodeValue } from '@engine/store/actionCreators/updateNodeValue'
+import { createReset } from '@engine/store/actionCreators/reset'
+import { createLoadProject } from '@engine/store/actionCreators/loadProject'
 
 export const createEngineStore = () =>
   createStore<EngineStateWithActions>()(

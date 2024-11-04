@@ -40,8 +40,6 @@ export class AudioAnalyser {
   public maxLevelMinimum: number = 0.001
   public levelBins: number = 0
 
-  constructor() {}
-
   public async init(): Promise<AudioData> {
     const stream: MediaStream = await navigator.mediaDevices.getUserMedia({ audio: true })
     const context = new window.AudioContext()
@@ -129,7 +127,7 @@ export class AudioAnalyser {
       )
       this.fullMaxLevelsData[i] = Math.max(this.fullMaxLevelsData[i], freq)
       this.fullMinLevelsData[i] = Math.min(this.fullMinLevelsData[i], freq)
-      let normalized =
+      const normalized =
         (freq - this.fullMinLevelsData[i]) / (this.fullMaxLevelsData[i] - this.fullMinLevelsData[i])
       freq = this.lerp(freq, normalized, this.normalizeLevels)
       freq = Math.pow(freq, this.levelsPower)

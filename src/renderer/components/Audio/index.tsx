@@ -1,7 +1,7 @@
 import { useCallback } from 'react'
 import c from './styles.module.css'
-import { AudioAnalyser } from 'src/renderer/audio/AudioAnalyser'
-import { FreqPreview } from 'src/renderer/audio/FreqPreview'
+import { AudioAnalyser } from '@renderer/audio/AudioAnalyser'
+import { FreqPreview } from '@renderer/audio/FreqPreview'
 
 export const Audio = (): JSX.Element => {
   const containerRef = useCallback(async (node: HTMLDivElement) => {

@@ -1,6 +1,6 @@
-import { ScreenEvents } from 'src/shared/Events.js'
-import { engine } from './engine'
 import { Display } from 'electron'
+import { engine } from '@renderer/engine'
+import { ScreenEvents } from '@shared/Events'
 
 export const sendOutput = (display: Display): void => {
   const outputWin = window.open('', 'output-canvas')

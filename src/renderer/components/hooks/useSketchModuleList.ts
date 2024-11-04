@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { useEngineStore } from '../../engine'
+import { useEngineStore } from '@renderer/engine'
 
 export const useSketchModuleList = () => {
   const modules = useEngineStore((state) => state.sketchModules)

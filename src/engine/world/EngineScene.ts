@@ -6,7 +6,7 @@ export class EngineScene {
   public camera: PerspectiveCamera
   public passes: Pass[]
   private renderPass: RenderPass
-  public renderer: WebGLRenderer
+  public renderer: WebGLRenderer | null = null
 
   constructor() {
     this.scene = new Scene()
