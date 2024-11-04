@@ -1,13 +1,12 @@
 import { Group } from 'three'
-import { SketchModule } from '../store/types'
-import { getDebugScene } from './debugScene'
 import { Pass } from 'postprocessing'
-import { EngineScene } from './EngineScene'
+import { SketchModule } from '@engine/store/types'
+import { getDebugScene } from '@engine/world/debugScene'
+import { EngineScene } from '@engine/world/EngineScene'
 
 type SketchInstance = {
-  // eslint-disable-next-line -- TODO: Type this!
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   update: any
-  // eslint-disable-next-line
   root?: Group
 
   getPasses?: (engineScene: EngineScene) => Pass[]

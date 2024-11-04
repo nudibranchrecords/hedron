@@ -57,6 +57,7 @@ export default class HSL {
     this.setUniform('u_hsl', new Vector3(params.hue, params.saturation, params.lightness))
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   setUniform(key: string, value: any) {
     if (this.shader.uniforms[key]) {
       this.shader.uniforms[key].value = value

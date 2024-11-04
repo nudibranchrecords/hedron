@@ -6,8 +6,9 @@
     "src/renderer/**/*.tsx",
     "src/preload/*.d.ts",
     "src/shared/**/*",
-    "src/stories/**/*"
-    , "src/engine/**/*"  ],
+    "src/stories/**/*",
+    "src/engine/**/*"
+  ],
   "compilerOptions": {
     "strict": true,
     "noImplicitAny": true,
@@ -15,9 +16,11 @@
     "jsx": "react-jsx",
     "baseUrl": ".",
     "paths": {
-      "@renderer/*": [
-        "src/renderer/src/*"
-      ]
+      "@components/*": ["src/renderer/components/*"],
+      "@css/*": ["src/renderer/css/*"],
+      "@renderer/*": ["src/renderer/*"],
+      "@shared/*": ["src/shared/*"],
+      "@engine/*": ["src/engine/*"]
     },
   },
 }

@@ -1,11 +1,11 @@
 import c from './ActiveSketch.module.css'
-import { Button } from '../core/Button/Button'
-import { useActiveSketch } from '../hooks/useActiveSketch'
-import { SketchParams } from '../SketchParams/SketchParams'
-import { ViewHeader } from '../core/ViewHeader/ViewHeader'
-import { engineStore } from 'src/renderer/engine'
-import { Card, CardActions } from '../core/Card/Card'
-import { Icon } from '../core/Icon/Icon'
+import { SketchParams } from '@components/SketchParams/SketchParams'
+import { engineStore } from '@renderer/engine'
+import { useActiveSketch } from '@components/hooks/useActiveSketch'
+import { Button } from '@components/core/Button/Button'
+import { ViewHeader } from '@components/core/ViewHeader/ViewHeader'
+import { Card, CardActions } from '@components/core/Card/Card'
+import { Icon } from '@components/core/Icon/Icon'
 
 export const ActiveSketch = () => {
   const activeSketch = useActiveSketch()

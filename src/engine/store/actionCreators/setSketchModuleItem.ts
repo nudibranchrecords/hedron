@@ -1,4 +1,4 @@
-import { SetterCreator } from '../types'
+import { SetterCreator } from '@engine/store/types'
 
 export const createSetSketchModuleItem: SetterCreator<'setSketchModuleItem'> =
   (setState) => (newItem) => {

@@ -1,19 +1,20 @@
 import { app, BrowserWindow, dialog, ipcMain, screen, session } from 'electron'
 import { electronApp, optimizer } from '@electron-toolkit/utils'
-import { updateDisplayMenu, updateMenu } from './menu'
-import { createWindow } from './mainWindow'
-import { startSketchesServer } from './handleSketchFiles'
-import { devSettings } from './devSettings'
 import { REDUX_DEVTOOLS, installExtension } from '@tomjs/electron-devtools-installer'
+import { ProjectData } from '@shared/types'
 import {
   DialogEvents,
   FileEvents,
   OpenProjectResponse,
   SaveProjectResponse,
   SketchEvents,
-} from '../shared/Events'
-import { saveProjectFile } from './handlers/saveProjectFile'
-import { openProjectFile } from './handlers/openProjectFile'
+} from '@shared/Events'
+import { updateDisplayMenu, updateMenu } from '@main/menu'
+import { createWindow } from '@main/mainWindow'
+import { startSketchesServer } from '@main/handleSketchFiles'
+import { devSettings } from '@main/devSettings'
+import { saveProjectFile } from '@main/handlers/saveProjectFile'
+import { openProjectFile } from '@main/handlers/openProjectFile'
 
 const isDevelopment = process.env.NODE_ENV !== 'production'
 
@@ -101,7 +102,7 @@ ipcMain.handle(
 
 ipcMain.handle(
   FileEvents.SaveProject,
-  async (_, projectData: string, savePath?: string | null): Promise<SaveProjectResponse> => {
+  async (_, projectData: ProjectData, savePath: string | null): Promise<SaveProjectResponse> => {
     return await saveProjectFile(projectData, savePath)
   },
 )

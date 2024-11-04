@@ -1,6 +1,6 @@
 import { useCallback } from 'react'
-import { DialogId } from 'src/engine/store/types'
-import { useAppStore } from 'src/renderer/appStore'
+import { DialogId } from '@engine/store/types'
+import { useAppStore } from '@renderer/appStore'
 
 export const useGlobalDialog = (id?: DialogId) => {
   const dialogId = useAppStore((state) => state.globalDialogId)
