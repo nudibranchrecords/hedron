@@ -22,14 +22,9 @@ jobs:
       - name: Install dependencies
         run: yarn
 
-      - name: Run TypeScript
+      - name: Run TypeScript, ESLint, and Prettier checks
         working-directory: ./packages/hedron-desktop
-        run: npm run typecheck
-
-      - name: Run ESLint
-        working-directory: ./packages/hedron-desktop
-        run: npm run lint
-
-      - name: Run Prettier
-        working-directory: ./packages/hedron-desktop
-        run: npm run format
+        run: |
+          yarn typecheck
+          yarn lint
+          yarn format
