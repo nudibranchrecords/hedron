@@ -18,8 +18,7 @@ module.exports = {
       {
         patterns: [
           '../*', // Disallow relative imports that go up a directory
-          './*', // Optionally disallow relative imports within the same directory
-          '!./*.module.css', // allow relative import of CSS module files
+          './*/**', // Disallow relative imports that go down a directory
           'src/*', // Disallow absolute imports starting with `src/` and enforce alias usage
         ],
       },

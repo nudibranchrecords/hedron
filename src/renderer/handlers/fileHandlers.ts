@@ -1,13 +1,13 @@
-import { ProjectData } from 'src/shared/types'
-import { useAppStore } from '../appStore'
-import { engine, engineStore } from '../engine'
+import path from 'path-browserify'
+import { useAppStore } from '@renderer/appStore'
+import { engine, engineStore } from '@renderer/engine'
 import {
   openProjectFileDialog,
   openSketchesDirDialog,
   saveProjectFileDialog,
   startSketchesServer,
-} from '../ipc/mainThreadTalk'
-import path from 'path-browserify'
+} from '@renderer/ipc/mainThreadTalk'
+import { ProjectData } from '@shared/types'
 
 const startEngineWithSketchesDir = async (sketchesDirPath: string) => {
   const { moduleIds, url } = await startSketchesServer(sketchesDirPath)

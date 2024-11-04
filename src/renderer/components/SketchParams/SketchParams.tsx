@@ -1,3 +1,4 @@
+import { useOnSelectNode } from '@components/hooks/useOnSelectNode'
 import { ParamWithInfo, useActiveSketchParams } from '@components/hooks/useActiveSketchParams'
 import { ParamNumber } from '@components/ParamNumber/ParamNumber'
 import { ParamBoolean } from '@components/ParamBoolean/ParamBoolean'
@@ -10,8 +11,7 @@ import {
   NodeControlTitle,
 } from '@components/core/NodeControl/NodeControl'
 import { ControlGrid } from '@components/core/ControlGrid/ControlGrid'
-import { useOnSelectNode } from '../hooks/useOnSelectNode'
-import { useAppStore } from 'src/renderer/appStore'
+import { useAppStore } from '@renderer/appStore'
 
 interface ParamProps {
   param: ParamWithInfo

@@ -1,3 +1,4 @@
+import { ProjectData } from '@shared/types'
 import {
   DialogEvents,
   FileEvents,
@@ -5,8 +6,7 @@ import {
   SaveProjectResponse,
   SketchesServerResponse,
   SketchEvents,
-} from 'src/shared/Events'
-import { ProjectData } from '../../shared/types'
+} from '@shared/Events'
 
 export const openSketchesDirDialog = () =>
   new Promise<string | undefined>((resolve) => {

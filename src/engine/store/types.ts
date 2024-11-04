@@ -99,7 +99,6 @@ export interface EngineData {
   sketches: Sketches
   nodes: Nodes
   nodeValues: NodeValues
-  selectedNode: string | null
 }
 
 interface AuxState {

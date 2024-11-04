@@ -12,14 +12,6 @@ export interface SaveItem {
   numSketches: number
 }
 
-export interface SaveItem {
-  title: string
-  path: string
-  date: number
-  numScenes: number
-  numSketches: number
-}
-
 export interface AppState {
   activeSketchId: string | null
   selectedNodes: { [key: string]: string }

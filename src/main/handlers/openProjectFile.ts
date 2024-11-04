@@ -1,8 +1,8 @@
 import fs from 'fs'
 import path from 'path'
-import { OpenProjectResponse } from '../../shared/Events'
 import { dialog } from 'electron'
-import { ProjectData } from '../../shared/types'
+import { ProjectData } from '@shared/types'
+import { OpenProjectResponse } from '@shared/Events'
 
 export const openProjectFile = async (projectPath?: string): Promise<OpenProjectResponse> => {
   if (!projectPath) {
