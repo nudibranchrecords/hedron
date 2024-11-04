@@ -9,18 +9,20 @@
     "src/stories/**/*",
     "src/engine/**/*"
   ],
+  "exclude": ["node_modules"],
   "compilerOptions": {
     "strict": true,
     "noImplicitAny": true,
     "composite": true,
     "jsx": "react-jsx",
     "baseUrl": ".",
+    "skipLibCheck": true,
     "paths": {
       "@components/*": ["src/renderer/components/*"],
       "@css/*": ["src/renderer/css/*"],
       "@renderer/*": ["src/renderer/*"],
       "@shared/*": ["src/shared/*"],
       "@engine/*": ["src/engine/*"]
-    },
-  },
+    }
+  }
 }

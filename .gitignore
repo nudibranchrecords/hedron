@@ -1,10 +1,1 @@
-node_modules
-dist
-out
-.DS_Store
-*.log*
-.sketches-server
-dev-settings.json
-chrome-extensions
-
-*storybook.log
+node_modules/
