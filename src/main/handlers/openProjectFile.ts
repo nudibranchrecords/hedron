@@ -4,24 +4,26 @@ import path from 'path'
 import { OpenProjectResponse } from '../../shared/Events'
 import { ProjectData } from '../../shared/types'
 
-export const openProjectFile = async (): Promise<OpenProjectResponse> => {
-  const result = await dialog.showOpenDialog({
-    filters: [{ name: 'Project', extensions: ['json'] }],
-  })
+export const openProjectFile = async (projectPath?: string): Promise<OpenProjectResponse> => {
+  if (!projectPath) {
+    const result = await dialog.showOpenDialog({
+      filters: [{ name: 'Project', extensions: ['json'] }],
+    })
 
-  if (result.canceled || result.filePaths.length === 0) {
-    return { result: 'canceled' }
+    if (result.canceled || result.filePaths.length === 0) {
+      return { result: 'canceled' }
+    }
+
+    projectPath = result.filePaths[0]
   }
 
   try {
-    const projectFile = result.filePaths[0]
-
     // Read and parse the JSON from the project file
-    const fileContent = fs.readFileSync(projectFile, { encoding: 'utf8' })
+    const fileContent = fs.readFileSync(projectPath, { encoding: 'utf8' })
     const projectData = JSON.parse(fileContent) as ProjectData
 
     // Get the directory of the project file
-    const projectDir = path.dirname(projectFile)
+    const projectDir = path.dirname(projectPath)
 
     // Find sketches dir from project data (will work with rel or abs path)
     const sketchesDirAbsolute = path.resolve(projectDir, projectData.app.sketchesDir)
@@ -44,7 +46,7 @@ export const openProjectFile = async (): Promise<OpenProjectResponse> => {
       result: 'success',
       projectData,
       sketchesDirAbsolute,
-      savePath: projectFile,
+      savePath: projectPath,
     }
   } catch (err) {
     console.error('Error reading or parsing the project file:', err)

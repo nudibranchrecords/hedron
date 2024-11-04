@@ -1,3 +1,9 @@
 .wrapper {
   padding: var(--gapMega);
 }
+
+.projectsTitle {
+  color: var(--textColorLight2);
+  margin-bottom: var(--gapXLarge);
+  font-size: 1rem;
+}

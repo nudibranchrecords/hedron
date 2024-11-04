@@ -7,6 +7,7 @@ import {
   saveProjectFileDialog,
   startSketchesServer,
 } from '../ipc/mainThreadTalk'
+import path from 'path-browserify'
 
 const startEngineWithSketchesDir = async (sketchesDirPath: string) => {
   const { moduleIds, url } = await startSketchesServer(sketchesDirPath)
@@ -26,13 +27,16 @@ export const handleSketchesDialog = async () => {
   await startEngineWithSketchesDir(sketchesDir)
 }
 
-export const handleLoadProjectDialog = async () => {
-  const response = await openProjectFileDialog()
+export const handleLoadProjectDialog = async (projectPath?: string) => {
+  const appState = useAppStore.getState()
+
+  const response = await openProjectFileDialog(projectPath)
 
   if (response.result === 'canceled') return
 
   if (response.result === 'error') {
     alert(response.error)
+    if (projectPath) appState.removeFromSaveList(projectPath)
     return
   }
 
@@ -41,12 +45,13 @@ export const handleLoadProjectDialog = async () => {
   await startEngineWithSketchesDir(sketchesDirAbsolute)
 
   engineStore.getState().loadProject(projectData.engine)
-  useAppStore.getState().setCurrentSavePath(savePath)
-  useAppStore.getState().setSketchesDir(sketchesDirAbsolute)
+  appState.setCurrentSavePath(savePath)
+  appState.setSketchesDir(sketchesDirAbsolute)
 }
 
 export const handleSaveProjectDialog = async (options?: { saveAs?: boolean }) => {
-  const sketchesDir = useAppStore.getState().sketchesDir
+  const appState = useAppStore.getState()
+  const sketchesDir = appState.sketchesDir
 
   if (!sketchesDir) {
     throw new Error("Can't save project without sketches dir")
@@ -61,7 +66,7 @@ export const handleSaveProjectDialog = async (options?: { saveAs?: boolean }) =>
     },
   }
 
-  const savePath = options?.saveAs ? null : useAppStore.getState().currentSavePath
+  const savePath = options?.saveAs ? null : appState.currentSavePath
 
   const response = await saveProjectFileDialog(projectData, { savePath })
 
@@ -71,6 +76,13 @@ export const handleSaveProjectDialog = async (options?: { saveAs?: boolean }) =>
   }
 
   if (response.result === 'success') {
-    useAppStore.getState().setCurrentSavePath(response.savePath)
+    appState.setCurrentSavePath(response.savePath)
+    appState.addToSaveList({
+      title: path.basename(response.savePath),
+      date: Date.now(),
+      path: response.savePath,
+      numScenes: 1,
+      numSketches: Object.keys(projectData.engine.sketches).length,
+    })
   }
 }

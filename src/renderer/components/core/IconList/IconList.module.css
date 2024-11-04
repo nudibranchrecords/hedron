@@ -1,0 +1,15 @@
+.wrapper {
+  display: flex;
+  gap: var(--gapXLarge);
+  align-items: center;
+}
+
+.item {
+  display: flex;
+  gap: var(--gapSmall);
+  align-items: center;
+
+  .icon {
+    font-size: 1rem;
+  }
+}

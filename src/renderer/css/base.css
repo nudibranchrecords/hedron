@@ -44,3 +44,11 @@ p {
   line-height: 1.3rem;
   margin-bottom: 0.8rem;
 }
+
+.mb-xl {
+  margin-bottom: var(--gapXLarge);
+}
+
+.mb-xxl {
+  margin-bottom: var(--gapMega);
+}

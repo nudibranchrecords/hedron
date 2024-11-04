@@ -13,11 +13,14 @@ export type IconName =
   | 'content_copy'
   | 'folder_open'
   | 'file_open'
+  | 'draft'
   | 'description'
   | 'token'
   | 'close'
+  | 'panorama'
 
 export const sketchIcon: IconName = 'token'
+export const sceneIcon: IconName = 'panorama'
 
 export interface IconProps extends React.HTMLAttributes<HTMLSpanElement> {
   name: IconName

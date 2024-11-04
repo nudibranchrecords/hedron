@@ -92,9 +92,12 @@ ipcMain.handle(DialogEvents.OpenSketchesDirDialog, async () => {
   return result.filePaths[0]
 })
 
-ipcMain.handle(DialogEvents.OpenProjectFileDialog, async (): Promise<OpenProjectResponse> => {
-  return await openProjectFile()
-})
+ipcMain.handle(
+  DialogEvents.OpenProjectFileDialog,
+  async (_, projectPath?: string): Promise<OpenProjectResponse> => {
+    return await openProjectFile(projectPath)
+  },
+)
 
 ipcMain.handle(
   FileEvents.SaveProject,
