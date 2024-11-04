@@ -1,4 +1,4 @@
-import { EngineData, SetterCreator } from '@engine/store/types'
+import { EngineData, SetterCreator } from '../types'
 
 export const createLoadProject: SetterCreator<'loadProject'> =
   (setState) => (project: EngineData) =>

@@ -1,5 +1,4 @@
 import { ParamWithInfo, useActiveSketchParams } from '@components/hooks/useActiveSketchParams'
-
 import { ParamNumber } from '@components/ParamNumber/ParamNumber'
 import { ParamBoolean } from '@components/ParamBoolean/ParamBoolean'
 import { ParamEnum } from '@components/ParamEnum/ParamEnum'
@@ -11,6 +10,8 @@ import {
   NodeControlTitle,
 } from '@components/core/NodeControl/NodeControl'
 import { ControlGrid } from '@components/core/ControlGrid/ControlGrid'
+import { useOnSelectNode } from '../hooks/useOnSelectNode'
+import { useAppStore } from 'src/renderer/appStore'
 
 interface ParamProps {
   param: ParamWithInfo
@@ -29,9 +30,11 @@ const getInputElement = (valueType: NodeTypes, id: string) => {
   }
 }
 
-const ParamItem = ({ param: { key, title, id, valueType } }: ParamProps) => {
+const ParamItem = ({ param: { key, title, id, sketchId, valueType } }: ParamProps) => {
+  const onSelectNode = useOnSelectNode(sketchId, id)
+  const selected = useAppStore((state) => state.selectedNodes[sketchId])
   return (
-    <NodeControl key={key}>
+    <NodeControl key={key} onClick={onSelectNode} isActive={id === selected}>
       <NodeControlMain>
         <NodeControlTitle>{title ?? key}</NodeControlTitle>
         <NodeControlInner>{getInputElement(valueType, id)}</NodeControlInner>

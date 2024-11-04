@@ -1,4 +1,5 @@
-import { EngineData } from '@engine/store/types'
+import { EngineData } from 'src/engine/store/types'
+
 export interface ProjectData {
   version: number
   engine: EngineData

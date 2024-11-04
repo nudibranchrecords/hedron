@@ -1,4 +1,4 @@
-import { ProjectData } from '@shared/types'
+import { ProjectData } from './types'
 
 export enum SketchEvents {
   StartSketchesServer = 'start-sketches-server',
