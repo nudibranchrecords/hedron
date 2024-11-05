@@ -15,7 +15,7 @@ import {
   CardList,
 } from '@components/core/Card/Card'
 import { Button } from '@components/core/Button/Button'
-import { SketchModuleItem } from '@engine/store/types'
+import { SketchModuleItem } from 'hedron-engine/store/types'
 
 interface SketchCardProps {
   item: SketchModuleItem

@@ -6,8 +6,7 @@
     "src/renderer/**/*.tsx",
     "src/preload/*.d.ts",
     "src/shared/**/*",
-    "src/stories/**/*",
-    "src/engine/**/*"
+    "src/stories/**/*"
   ],
   "exclude": ["node_modules"],
   "compilerOptions": {
@@ -21,8 +20,7 @@
       "@components/*": ["src/renderer/components/*"],
       "@css/*": ["src/renderer/css/*"],
       "@renderer/*": ["src/renderer/*"],
-      "@shared/*": ["src/shared/*"],
-      "@engine/*": ["src/engine/*"]
+      "@shared/*": ["src/shared/*"]
     }
   }
 }

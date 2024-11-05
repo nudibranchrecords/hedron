@@ -1,4 +1,4 @@
-import { EngineState } from '@engine/store/types'
+import { EngineState } from "hedron-engine/store/types";
 
 export const initialState: EngineState = {
   isSketchModulesReady: false,
@@ -6,4 +6,4 @@ export const initialState: EngineState = {
   nodes: {},
   nodeValues: {},
   sketchModules: {},
-}
+};

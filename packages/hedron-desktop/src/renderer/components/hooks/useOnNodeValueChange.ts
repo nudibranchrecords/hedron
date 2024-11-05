@@ -1,6 +1,6 @@
 import { useCallback } from 'react'
 import { useUpdateNodeValue } from '@components/hooks/useUpdateNodeValue'
-import { NodeValue } from '@engine/store/types'
+import { NodeValue } from 'hedron-engine/store/types'
 
 export const useOnNodeValueChange = (id: string) => {
   const updateNodeValue = useUpdateNodeValue()

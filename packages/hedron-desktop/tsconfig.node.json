@@ -12,8 +12,7 @@
     "paths": {
       "@shared/*": ["src/shared/*"],
       "@main/*": ["src/main/*"],
-      "@resources/*": ["resources/*"],
-      "@engine/*": ["src/engine/*"]
+      "@resources/*": ["resources/*"]
     }
   }
 }
