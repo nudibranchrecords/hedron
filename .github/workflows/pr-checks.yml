@@ -23,7 +23,7 @@ jobs:
         run: yarn
 
       - name: Run TypeScript, ESLint, and Prettier checks
-        working-directory: ./packages/hedron-desktop
+        working-directory: ./packages/desktop
         run: |
           yarn typecheck
           yarn lint
