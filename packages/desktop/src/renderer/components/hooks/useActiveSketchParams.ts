@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
+import { Param } from '@hedron/engine/index'
 import { useActiveSketch } from '@components/hooks/useActiveSketch'
 import { useEngineStore } from '@renderer/engine'
-import { Param } from '@hedron/engine/index'
 
 export type ParamWithInfo = Param & { title: string | undefined }
 
