@@ -1,0 +1,17 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.createEngineStore = void 0;
+const vanilla_1 = require("zustand/vanilla");
+const middleware_1 = require("zustand/middleware");
+const immer_1 = require("zustand/middleware/immer");
+const initialState_1 = require("@hedron/engine/store/initialState");
+const addSketch_1 = require("@hedron/engine/store/actionCreators/addSketch");
+const deleteSketch_1 = require("@hedron/engine/store/actionCreators/deleteSketch");
+const setSketchModuleItem_1 = require("@hedron/engine/store/actionCreators/setSketchModuleItem");
+const deleteSketchModule_1 = require("@hedron/engine/store/actionCreators/deleteSketchModule");
+const updateSketchParams_1 = require("@hedron/engine/store/actionCreators/updateSketchParams");
+const updateNodeValue_1 = require("@hedron/engine/store/actionCreators/updateNodeValue");
+const reset_1 = require("@hedron/engine/store/actionCreators/reset");
+const loadProject_1 = require("@hedron/engine/store/actionCreators/loadProject");
+const createEngineStore = () => (0, vanilla_1.createStore)()((0, middleware_1.subscribeWithSelector)((0, middleware_1.devtools)((0, immer_1.immer)((set) => (Object.assign(Object.assign({}, initialState_1.initialState), { addSketch: (0, addSketch_1.createAddSketch)(set), updateSketchParams: (0, updateSketchParams_1.createUpdateSketchParams)(set), setSketchModuleItem: (0, setSketchModuleItem_1.createSetSketchModuleItem)(set), updateNodeValue: (0, updateNodeValue_1.createUpdateNodeValue)(set), deleteSketch: (0, deleteSketch_1.createDeleteSketch)(set), deleteSketchModule: (0, deleteSketchModule_1.createDeleteSketchModule)(set), reset: (0, reset_1.createReset)(set), loadProject: (0, loadProject_1.createLoadProject)(set) }))))));
+exports.createEngineStore = createEngineStore;

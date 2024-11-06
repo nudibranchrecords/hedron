@@ -10,8 +10,14 @@
       "**vite**"
     ]
   },
+  "scripts": {
+    "typecheck": "lerna run typecheck",
+    "lint": "lerna run lint",
+    "format": "prettier --write ."
+  },
   "dependencies": {},
   "devDependencies": {
+    "@tsconfig/recommended": "^1.0.8",
     "lerna": "^8.1.9"
   }
 }

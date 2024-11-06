@@ -3,6 +3,10 @@
   "version": "0.0.0",
   "description": "Core functionality for Hedron",
   "keywords": [],
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json",
+    "lint": "eslint . --ext .js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/nudibranchrecords/hedron.git"

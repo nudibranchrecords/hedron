@@ -10,7 +10,7 @@ import {
 
 export const openSketchesDirDialog = () =>
   new Promise<string | undefined>((resolve) => {
-    window.electron.ipcRenderer
+    window.Electron.ipcRenderer
       .invoke(DialogEvents.OpenSketchesDirDialog)
       .then((sketchesDirPath) => {
         resolve(sketchesDirPath)
@@ -19,7 +19,7 @@ export const openSketchesDirDialog = () =>
 
 export const openProjectFileDialog = (projectPath?: string | null) =>
   new Promise<OpenProjectResponse>((resolve) => {
-    window.electron.ipcRenderer
+    window.Electron.ipcRenderer
       .invoke(DialogEvents.OpenProjectFileDialog, projectPath)
       .then((response) => {
         resolve(response)
@@ -31,7 +31,7 @@ export const saveProjectFileDialog = (
   options: { savePath: string | null },
 ) =>
   new Promise<SaveProjectResponse>((resolve) => {
-    window.electron.ipcRenderer
+    window.Electron.ipcRenderer
       .invoke(FileEvents.SaveProject, projectData, options.savePath)
       .then((response) => {
         resolve(response)
@@ -40,7 +40,7 @@ export const saveProjectFileDialog = (
 
 export const startSketchesServer = (sketchesDirPath: string) =>
   new Promise<SketchesServerResponse>((resolve) => {
-    window.electron.ipcRenderer
+    window.Electron.ipcRenderer
       .invoke(SketchEvents.StartSketchesServer, sketchesDirPath)
       .then((response) => {
         resolve(response)
