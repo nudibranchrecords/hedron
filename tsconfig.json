@@ -4,6 +4,7 @@
     "strict": true,
     "noImplicitAny": true,
     "skipLibCheck": true,
-    "composite": true
+    "composite": true,
+    "esModuleInterop": true
   }
 }

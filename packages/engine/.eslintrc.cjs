@@ -3,7 +3,7 @@ module.exports = {
   settings: {
     'import/resolver': {
       typescript: {
-        project: ['./tsconfig.web.json', './tsconfig.node.json'],
+        project: './tsconfig.json',
       },
       node: {
         extensions: ['.js', '.jsx', '.ts', '.tsx'],

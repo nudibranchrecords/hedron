@@ -1,12 +1,12 @@
-import { stripForSave } from '@hedron/engine/utils/stripForSave'
-import { Renderer } from '@hedron/engine/world/Renderer'
-import { SketchManager } from '@hedron/engine/world/SketchManager'
-import { createDebugScene } from '@hedron/engine/world/debugScene'
-import { EngineData } from '@hedron/engine/store/types'
-import { getSketchesOfModuleId } from '@hedron/engine/store/selectors/getSketchesOfModuleId'
-import { createEngineStore, EngineStore } from '@hedron/engine/store/engineStore'
 import { importSketchModule } from './importSketchModule'
 import { listenToStore } from './storeListener'
+import { stripForSave } from '@utils/stripForSave'
+import { Renderer } from '@world/Renderer'
+import { SketchManager } from '@world/SketchManager'
+import { createDebugScene } from '@world/debugScene'
+import { EngineData } from '@store/types'
+import { getSketchesOfModuleId } from '@store/selectors/getSketchesOfModuleId'
+import { createEngineStore, EngineStore } from '@store/engineStore'
 
 export class HedronEngine {
   private renderer: Renderer
