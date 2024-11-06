@@ -1,131 +1,125 @@
-import { listenToStore } from "./storeListener";
-import { importSketchModule } from "./importSketchModule";
-import { stripForSave } from "@hedron/engine/utils/stripForSave";
-import { Renderer } from "@hedron/engine/world/Renderer";
-import { SketchManager } from "@hedron/engine/world/SketchManager";
-import { createDebugScene } from "@hedron/engine/world/debugScene";
-import { EngineData } from "@hedron/engine/store/types";
-import { getSketchesOfModuleId } from "@hedron/engine/store/selectors/getSketchesOfModuleId";
-import {
-  createEngineStore,
-  EngineStore,
-} from "@hedron/engine/store/engineStore";
+import { stripForSave } from '@hedron/engine/utils/stripForSave'
+import { Renderer } from '@hedron/engine/world/Renderer'
+import { SketchManager } from '@hedron/engine/world/SketchManager'
+import { createDebugScene } from '@hedron/engine/world/debugScene'
+import { EngineData } from '@hedron/engine/store/types'
+import { getSketchesOfModuleId } from '@hedron/engine/store/selectors/getSketchesOfModuleId'
+import { createEngineStore, EngineStore } from '@hedron/engine/store/engineStore'
+import { importSketchModule } from './importSketchModule'
+import { listenToStore } from './storeListener'
 
 export class HedronEngine {
-  private renderer: Renderer;
-  private store: EngineStore;
-  private sketchesUrl: string | null = null;
-  private sketchManager: SketchManager;
+  private renderer: Renderer
+  private store: EngineStore
+  private sketchesUrl: string | null = null
+  private sketchManager: SketchManager
 
   constructor() {
-    this.store = createEngineStore();
-    this.sketchManager = new SketchManager();
-    this.renderer = new Renderer();
+    this.store = createEngineStore()
+    this.sketchManager = new SketchManager()
+    this.renderer = new Renderer()
   }
 
   public setSketchesUrl(sketchesUrl: string) {
-    this.sketchesUrl = sketchesUrl;
+    this.sketchesUrl = sketchesUrl
 
-    const { removeSketchFromScene } = this.sketchManager;
+    const { removeSketchFromScene } = this.sketchManager
 
     const addSketchToScene = (sketchId: string, moduleId: string) => {
-      const modules = this.store.getState().sketchModules;
-      const module = modules[moduleId].module;
-      this.sketchManager.addSketchToScene(sketchId, module);
-    };
+      const modules = this.store.getState().sketchModules
+      const module = modules[moduleId].module
+      this.sketchManager.addSketchToScene(sketchId, module)
+    }
 
-    listenToStore(this.store, addSketchToScene, removeSketchFromScene);
+    listenToStore(this.store, addSketchToScene, removeSketchFromScene)
   }
 
   public async initiateSketchModules(moduleIds: string[]) {
     for (const moduleId of moduleIds) {
-      await this.addSketchModule(moduleId);
+      await this.addSketchModule(moduleId)
     }
 
-    this.store.setState({ isSketchModulesReady: true });
+    this.store.setState({ isSketchModulesReady: true })
   }
 
   public async addSketchModule(moduleId: string) {
-    if (!this.sketchesUrl) throw new Error("Sketches URL not ready");
+    if (!this.sketchesUrl) throw new Error('Sketches URL not ready')
 
-    const moduleItem = await importSketchModule(this.sketchesUrl, moduleId);
-    this.store.getState().setSketchModuleItem(moduleItem);
+    const moduleItem = await importSketchModule(this.sketchesUrl, moduleId)
+    this.store.getState().setSketchModuleItem(moduleItem)
 
-    return moduleItem;
+    return moduleItem
   }
 
   public removeSketchModule = async (moduleId: string): Promise<void> => {
-    this.store.getState().deleteSketchModule(moduleId);
-  };
+    this.store.getState().deleteSketchModule(moduleId)
+  }
 
   public async reimportSketchModuleAndReloadSketches(moduleId: string) {
-    const moduleItem = await this.addSketchModule(moduleId);
+    const moduleItem = await this.addSketchModule(moduleId)
 
-    const sketchesToRefresh = getSketchesOfModuleId(
-      this.store.getState(),
-      moduleId,
-    );
+    const sketchesToRefresh = getSketchesOfModuleId(this.store.getState(), moduleId)
 
     for (const sketch of sketchesToRefresh) {
-      this.sketchManager.removeSketchFromScene(sketch.id);
-      this.sketchManager.addSketchToScene(sketch.id, moduleItem.module);
-      this.store.getState().updateSketchParams(sketch.id);
+      this.sketchManager.removeSketchFromScene(sketch.id)
+      this.sketchManager.addSketchToScene(sketch.id, moduleItem.module)
+      this.store.getState().updateSketchParams(sketch.id)
     }
   }
 
   public createCanvas(containerEl: HTMLDivElement) {
-    return this.renderer.createCanvas(containerEl);
+    return this.renderer.createCanvas(containerEl)
   }
 
   public setOutput(container: HTMLDivElement) {
-    this.renderer.setOutput(container);
+    this.renderer.setOutput(container)
   }
 
   public stopOutput() {
-    this.renderer.stopOutput();
+    this.renderer.stopOutput()
   }
 
   public getStore() {
-    return this.store;
+    return this.store
   }
 
   public getSaveData(): EngineData {
-    return stripForSave(this.store.getState());
+    return stripForSave(this.store.getState())
   }
 
   run() {
-    const debugScene = createDebugScene(this.renderer);
+    const debugScene = createDebugScene(this.renderer)
 
     const loop = (): void => {
-      const { sketches, nodeValues, nodes } = this.store.getState();
-      const sketchInstances = this.sketchManager!.getSketchInstances();
-      debugScene.clearPasses();
+      const { sketches, nodeValues, nodes } = this.store.getState()
+      const sketchInstances = this.sketchManager!.getSketchInstances()
+      debugScene.clearPasses()
       Object.values(sketches).forEach((sketch) => {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const paramValues: { [key: string]: any } = {};
+        const paramValues: { [key: string]: any } = {}
 
         sketch.paramIds.forEach((id) => {
-          const value = nodeValues[id];
-          const paramKey = nodes[id].key;
-          paramValues[paramKey] = value;
-        });
+          const value = nodeValues[id]
+          const paramKey = nodes[id].key
+          paramValues[paramKey] = value
+        })
 
-        const instance = sketchInstances[sketch.id];
+        const instance = sketchInstances[sketch.id]
 
         if (instance.getPasses) {
           instance.getPasses(debugScene).forEach((pass) => {
-            debugScene.addPass(pass);
-          });
+            debugScene.addPass(pass)
+          })
         }
-        instance.update({ deltaFrame: 1, params: paramValues });
-      });
+        instance.update({ deltaFrame: 1, params: paramValues })
+      })
 
-      requestAnimationFrame(loop);
+      requestAnimationFrame(loop)
       if (debugScene) {
-        this.renderer.render(debugScene);
+        this.renderer.render(debugScene)
       }
-    };
+    }
 
-    loop();
+    loop()
   }
 }

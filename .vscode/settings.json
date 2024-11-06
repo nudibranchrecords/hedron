@@ -12,6 +12,12 @@
   "editor.codeActionsOnSave": {
     "source.fixAll": "always"
   },
+  "eslint.workingDirectories": [
+    { "directory": "packages/desktop", "changeProcessCWD": true },
+    { "directory": "packages/engine", "changeProcessCWD": true },
+    { "directory": "packages/example-project", "changeProcessCWD": true },
+    "./"
+  ],
   "typescript.tsdk": "node_modules/typescript/lib",
   "typescript.preferences.importModuleSpecifier": "non-relative"
 }
