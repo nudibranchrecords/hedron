@@ -1,29 +1,29 @@
 // import { BoxGeometry, Mesh, MeshNormalMaterial } from 'three'
-import { createUniqueId } from "@hedron/engine/utils/createUniqueId";
-import { addScene } from "@hedron/engine/world/scenes";
-import { EngineScene } from "@hedron/engine/world/EngineScene";
-import { Renderer } from "@hedron/engine/world/Renderer";
+import { createUniqueId } from '@hedron/engine/utils/createUniqueId'
+import { addScene } from '@hedron/engine/world/scenes'
+import { EngineScene } from '@hedron/engine/world/EngineScene'
+import { Renderer } from '@hedron/engine/world/Renderer'
 
-let debugScene: EngineScene | undefined;
+let debugScene: EngineScene | undefined
 
 export const getDebugScene = (): EngineScene => {
-  if (!debugScene) throw new Error("No sketches server url");
+  if (!debugScene) throw new Error('No sketches server url')
 
-  return debugScene;
-};
+  return debugScene
+}
 
 export const createDebugScene = (renderer: Renderer): EngineScene => {
-  const id = createUniqueId();
-  const scene = addScene(id);
-  scene.setRatio(renderer.aspectRatio);
+  const id = createUniqueId()
+  const scene = addScene(id)
+  scene.setRatio(renderer.aspectRatio)
 
   if (!renderer.composer) {
-    throw new Error("couldn't get renderer composer");
+    throw new Error("couldn't get renderer composer")
   }
 
-  scene.renderer = renderer.composer.getRenderer();
+  scene.renderer = renderer.composer.getRenderer()
 
-  debugScene = scene;
+  debugScene = scene
 
-  return debugScene;
-};
+  return debugScene
+}

@@ -1,8 +1,8 @@
-import { SetterCreator } from "@hedron/engine/store/types";
+import { SetterCreator } from '@hedron/engine/store/types'
 
-export const createUpdateNodeValue: SetterCreator<"updateNodeValue"> =
+export const createUpdateNodeValue: SetterCreator<'updateNodeValue'> =
   (setState) => (nodeId, value) => {
     setState((state) => {
-      state.nodeValues[nodeId] = value;
-    });
-  };
+      state.nodeValues[nodeId] = value
+    })
+  }

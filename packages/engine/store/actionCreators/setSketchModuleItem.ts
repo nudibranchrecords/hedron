@@ -1,8 +1,8 @@
-import { SetterCreator } from "@hedron/engine/store/types";
+import { SetterCreator } from '@hedron/engine/store/types'
 
-export const createSetSketchModuleItem: SetterCreator<"setSketchModuleItem"> =
+export const createSetSketchModuleItem: SetterCreator<'setSketchModuleItem'> =
   (setState) => (newItem) => {
     setState((state) => {
-      state.sketchModules[newItem.moduleId] = newItem;
-    });
-  };
+      state.sketchModules[newItem.moduleId] = newItem
+    })
+  }

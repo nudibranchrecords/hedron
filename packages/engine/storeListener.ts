@@ -1,4 +1,4 @@
-import { EngineStore } from "@hedron/engine/store/engineStore";
+import { EngineStore } from '@hedron/engine/store/engineStore'
 
 export const listenToStore = (
   store: EngineStore,
@@ -10,14 +10,14 @@ export const listenToStore = (
     (sketches, previousSketches) => {
       Object.keys(previousSketches).forEach((prevId) => {
         if (!sketches[prevId]) {
-          removeSketch(prevId);
+          removeSketch(prevId)
         }
-      });
+      })
 
       Object.keys(sketches).forEach((id) => {
         if (!previousSketches[id]) {
-          addSketch(id, sketches[id].moduleId);
+          addSketch(id, sketches[id].moduleId)
         }
-      });
+      })
     },
-  );
+  )

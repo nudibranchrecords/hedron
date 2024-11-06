@@ -1,13 +1,13 @@
-import { EngineScene } from "@hedron/engine/world/EngineScene";
+import { EngineScene } from '@hedron/engine/world/EngineScene'
 
-export const engineScenes = new Map<string, EngineScene>();
+export const engineScenes = new Map<string, EngineScene>()
 
 export const addScene = (sceneId: string): EngineScene => {
-  const newScene = new EngineScene();
-  engineScenes.set(sceneId, newScene);
+  const newScene = new EngineScene()
+  engineScenes.set(sceneId, newScene)
 
   // renderer.setSize()
   // if (shouldSetPost) renderer.setPostProcessing()
 
-  return newScene;
-};
+  return newScene
+}

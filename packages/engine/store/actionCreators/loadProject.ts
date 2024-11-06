@@ -1,5 +1,5 @@
-import { EngineData, SetterCreator } from "@hedron/engine/store/types";
+import { EngineData, SetterCreator } from '@hedron/engine/store/types'
 
-export const createLoadProject: SetterCreator<"loadProject"> =
+export const createLoadProject: SetterCreator<'loadProject'> =
   (setState) => (project: EngineData) =>
-    setState(() => project);
+    setState(() => project)
