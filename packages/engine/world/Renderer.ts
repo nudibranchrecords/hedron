@@ -1,8 +1,8 @@
 import debounce from 'lodash.debounce'
 import { EffectComposer } from 'postprocessing'
 import { WebGLRenderer } from 'three'
-import { EngineScene } from '@hedron/engine/world/EngineScene'
-import { engineScenes } from '@hedron/engine/world/scenes'
+import { EngineScene } from '@world/EngineScene'
+import { engineScenes } from '@world/scenes'
 
 export class Renderer {
   public composer: EffectComposer | undefined

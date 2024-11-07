@@ -1,4 +1,4 @@
-import { EngineStore } from '@hedron/engine/store/engineStore'
+import { EngineStore } from '@store/engineStore'
 
 export const listenToStore = (
   store: EngineStore,

@@ -1,5 +1,5 @@
-import { SetterCreator, NodeTypes } from '@hedron/engine/store/types'
-import { createUniqueId } from '@hedron/engine/utils/createUniqueId'
+import { SetterCreator, NodeTypes } from '@store/types'
+import { createUniqueId } from '@utils/createUniqueId'
 
 export const createAddSketch: SetterCreator<'addSketch'> = (setState) => (moduleId: string) => {
   const newSketchId = createUniqueId()

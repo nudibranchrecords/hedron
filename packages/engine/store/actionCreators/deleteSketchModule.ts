@@ -1,4 +1,4 @@
-import { SetterCreator } from '@hedron/engine/store/types'
+import { SetterCreator } from '@store/types'
 
 export const createDeleteSketchModule: SetterCreator<'deleteSketchModule'> =
   (setState) => (moduleId) => {

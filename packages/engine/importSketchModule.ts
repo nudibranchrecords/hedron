@@ -1,5 +1,5 @@
-import { SketchConfig, SketchModule, SketchModuleItem } from '@hedron/engine/store/types'
-import { createUniqueId } from '@hedron/engine/utils/createUniqueId'
+import { SketchConfig, SketchModule, SketchModuleItem } from '@store/types'
+import { createUniqueId } from '@utils/createUniqueId'
 
 export const importSketchModule = async (
   baseUrl: string,

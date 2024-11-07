@@ -3,16 +3,16 @@ import { devtools, subscribeWithSelector } from 'zustand/middleware'
 import { immer } from 'zustand/middleware/immer'
 
 import type {} from '@redux-devtools/extension' // required for devtools typing
-import { EngineStateWithActions } from '@hedron/engine/store/types'
-import { initialState } from '@hedron/engine/store/initialState'
-import { createAddSketch } from '@hedron/engine/store/actionCreators/addSketch'
-import { createDeleteSketch } from '@hedron/engine/store/actionCreators/deleteSketch'
-import { createSetSketchModuleItem } from '@hedron/engine/store/actionCreators/setSketchModuleItem'
-import { createDeleteSketchModule } from '@hedron/engine/store/actionCreators/deleteSketchModule'
-import { createUpdateSketchParams } from '@hedron/engine/store/actionCreators/updateSketchParams'
-import { createUpdateNodeValue } from '@hedron/engine/store/actionCreators/updateNodeValue'
-import { createReset } from '@hedron/engine/store/actionCreators/reset'
-import { createLoadProject } from '@hedron/engine/store/actionCreators/loadProject'
+import { EngineStateWithActions } from '@store/types'
+import { initialState } from '@store/initialState'
+import { createAddSketch } from '@store/actionCreators/addSketch'
+import { createDeleteSketch } from '@store/actionCreators/deleteSketch'
+import { createSetSketchModuleItem } from '@store/actionCreators/setSketchModuleItem'
+import { createDeleteSketchModule } from '@store/actionCreators/deleteSketchModule'
+import { createUpdateSketchParams } from '@store/actionCreators/updateSketchParams'
+import { createUpdateNodeValue } from '@store/actionCreators/updateNodeValue'
+import { createReset } from '@store/actionCreators/reset'
+import { createLoadProject } from '@store/actionCreators/loadProject'
 
 export const createEngineStore = () =>
   createStore<EngineStateWithActions>()(

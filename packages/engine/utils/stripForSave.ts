@@ -1,4 +1,4 @@
-import { EngineState, EngineStateWithActions, EngineData } from '@hedron/engine/store/types'
+import { EngineState, EngineStateWithActions, EngineData } from '@store/types'
 
 export const stripForSave = (state: EngineStateWithActions): EngineData => {
   // @ts-expect-error ---

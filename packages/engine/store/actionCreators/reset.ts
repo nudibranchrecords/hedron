@@ -1,5 +1,5 @@
-import { initialState } from '@hedron/engine/store/initialState'
-import { SetterCreator } from '@hedron/engine/store/types'
+import { initialState } from '@store/initialState'
+import { SetterCreator } from '@store/types'
 
 export const createReset: SetterCreator<'reset'> = (setState) => () => {
   setState(() => initialState)

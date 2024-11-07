@@ -1,8 +1,8 @@
 import { Group } from 'three'
 import { Pass } from 'postprocessing'
-import { SketchModule } from '@hedron/engine/store/types'
-import { getDebugScene } from '@hedron/engine/world/debugScene'
-import { EngineScene } from '@hedron/engine/world/EngineScene'
+import { SketchModule } from '@store/types'
+import { getDebugScene } from '@world/debugScene'
+import { EngineScene } from '@world/EngineScene'
 
 type SketchInstance = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
