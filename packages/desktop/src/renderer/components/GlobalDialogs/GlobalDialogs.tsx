@@ -1,7 +1,7 @@
-import { DialogId } from '@hedron/engine'
 import { useGlobalDialog } from '@components/GlobalDialogs/useGlobalDialog'
 import { SketchModulesDialog } from '@components/GlobalDialogs/SketchModulesDialog'
 import { GlobalDialogProps } from '@components/GlobalDialogs/types'
+import { DialogId } from '@renderer/appStore'
 
 const dialogs: { [key in DialogId]: (props: GlobalDialogProps) => JSX.Element } = {
   sketchModules: SketchModulesDialog,

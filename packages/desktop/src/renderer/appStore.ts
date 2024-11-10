@@ -2,7 +2,8 @@ import { create, StoreApi } from 'zustand'
 import { devtools, persist, subscribeWithSelector } from 'zustand/middleware'
 import { immer } from 'zustand/middleware/immer'
 import type {} from '@redux-devtools/extension' // required for devtools typing
-import { DialogId } from '@hedron/engine'
+
+export type DialogId = 'sketchModules'
 
 export interface SaveItem {
   title: string

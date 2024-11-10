@@ -1,6 +1,5 @@
 import { useCallback } from 'react'
-import { DialogId } from '@hedron/engine'
-import { useAppStore } from '@renderer/appStore'
+import { DialogId, useAppStore } from '@renderer/appStore'
 
 export const useGlobalDialog = (id?: DialogId) => {
   const dialogId = useAppStore((state) => state.globalDialogId)
