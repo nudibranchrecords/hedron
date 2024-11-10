@@ -1,4 +1,4 @@
-import { NodeTypes } from '@hedron/engine/store/types'
+import { NodeTypes } from '@hedron/engine'
 import { useOnSelectNode } from '@components/hooks/useOnSelectNode'
 import { ParamWithInfo, useActiveSketchParams } from '@components/hooks/useActiveSketchParams'
 import { ParamNumber } from '@components/ParamNumber/ParamNumber'

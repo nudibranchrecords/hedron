@@ -1,5 +1,5 @@
-import { importSketchModule } from './importSketchModule'
 import { listenToStore } from './storeListener'
+import { importSketchModule } from './importSketchModule'
 import { stripForSave } from '@utils/stripForSave'
 import { Renderer } from '@world/Renderer'
 import { SketchManager } from '@world/SketchManager'

@@ -1,5 +1,5 @@
 import { forwardRef, useCallback, useImperativeHandle, useRef } from 'react'
-import { EnumOption } from '@hedron/engine/store/types'
+import { EnumOption } from '@hedron/engine'
 
 export type EnumDropdownHandle = {
   setValue: (value: string) => void

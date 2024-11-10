@@ -1,11 +1,12 @@
 {
   "extends": ["../../tsconfig.json"],
+  "include": ["src/**/*"],
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "@store/*": ["store/*"],
-      "@utils/*": ["utils/*"],
-      "@world/*": ["world/*"]
+      "@store/*": ["src/store/*"],
+      "@utils/*": ["src/utils/*"],
+      "@world/*": ["src/world/*"]
     }
   }
 }

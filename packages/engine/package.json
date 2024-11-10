@@ -3,8 +3,12 @@
   "version": "0.0.0",
   "description": "Core functionality for Hedron",
   "keywords": [],
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "scripts": {
     "typecheck": "tsc --noEmit -p tsconfig.json",
+    "dev": "tsup --watch",
+    "build": "tsup",
     "lint": "eslint . --ext .js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix"
   },
   "repository": {
@@ -14,5 +18,8 @@
   "bugs": {
     "url": "https://github.com/nudibranchrecords/hedron/issues"
   },
-  "homepage": "https://github.com/nudibranchrecords/hedron#readme"
+  "homepage": "https://github.com/nudibranchrecords/hedron#readme",
+  "devDependencies": {
+    "tsup": "^8.3.5"
+  }
 }

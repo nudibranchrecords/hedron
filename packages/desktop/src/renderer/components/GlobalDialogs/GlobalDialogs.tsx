@@ -1,4 +1,4 @@
-import { DialogId } from '@hedron/engine/store/types'
+import { DialogId } from '@hedron/engine'
 import { useGlobalDialog } from '@components/GlobalDialogs/useGlobalDialog'
 import { SketchModulesDialog } from '@components/GlobalDialogs/SketchModulesDialog'
 import { GlobalDialogProps } from '@components/GlobalDialogs/types'

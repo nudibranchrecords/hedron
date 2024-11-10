@@ -1,5 +1,5 @@
 import { useCallback } from 'react'
-import { SketchModuleItem } from '@hedron/engine/store/types'
+import { SketchModuleItem } from '@hedron/engine'
 import { GlobalDialogProps } from '@components/GlobalDialogs/types'
 import { useEngineStore } from '@renderer/engine'
 import { useSketchModuleList } from '@components/hooks/useSketchModuleList'

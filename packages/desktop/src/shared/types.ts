@@ -1,4 +1,4 @@
-import { EngineData } from '@hedron/engine/store/types'
+import { EngineData } from '@hedron/engine'
 
 export interface ProjectData {
   version: number

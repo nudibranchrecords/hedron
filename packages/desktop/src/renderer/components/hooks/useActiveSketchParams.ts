@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { Param } from '@hedron/engine/index'
+import { Param } from '@hedron/engine'
 import { useActiveSketch } from '@components/hooks/useActiveSketch'
 import { useEngineStore } from '@renderer/engine'
 
