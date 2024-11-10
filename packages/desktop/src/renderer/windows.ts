@@ -24,7 +24,7 @@ export const sendOutput = (display: Display): void => {
   }, 1000)
 }
 
-window.Electron.ipcRenderer.on(ScreenEvents.SendOutput, (_, index) => {
+window.electronApi.ipcRenderer.on(ScreenEvents.SendOutput, (_, index) => {
   sendOutput(index)
 })
 

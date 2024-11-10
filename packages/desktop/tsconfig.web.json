@@ -1,6 +1,6 @@
 {
   "extends": ["@electron-toolkit/tsconfig/tsconfig.web.json", "../../tsconfig.json"],
-  "include": ["src/renderer/**/*", "src/stories/**/*"],
+  "include": ["src/renderer/**/*", "src/stories/**/*", "src/preload/*.d.ts"],
   "compilerOptions": {
     "jsx": "react-jsx",
     "baseUrl": ".",

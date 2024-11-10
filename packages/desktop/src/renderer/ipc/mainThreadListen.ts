@@ -4,7 +4,7 @@ import { AppMenuEvents, AppMenuEventsItem, SketchEvents } from '@shared/Events'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const listen = (event: string, cb: (info: any) => void): void => {
-  window.Electron.ipcRenderer.on(event, (_, info) => {
+  window.electronApi.ipcRenderer.on(event, (_, info) => {
     cb(info)
   })
 }

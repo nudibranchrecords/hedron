@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "description": "Core functionality for Hedron",
   "keywords": [],
-  "main": "./dist/index.js",
+  "main": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
   "scripts": {
     "typecheck": "tsc --noEmit -p tsconfig.json",
