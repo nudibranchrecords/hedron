@@ -24,6 +24,7 @@ jobs:
 
       - name: Run TypeScript, ESLint, and Prettier checks
         run: |
+          yarn build:engine
           yarn typecheck
           yarn lint
           yarn format

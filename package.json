@@ -12,6 +12,7 @@
   },
   "scripts": {
     "dev": "lerna run dev --parallel",
+    "build:engine": "lerna run build --scope @hedron/engine",
     "typecheck": "lerna run typecheck",
     "lint": "lerna run lint",
     "format": "prettier --write ."
