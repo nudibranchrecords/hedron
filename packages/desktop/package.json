@@ -2,6 +2,7 @@
   "name": "@hedron/desktop",
   "version": "1.0.0",
   "description": "Visual app using three.js",
+  "main": "./out/main/index.js",
   "scripts": {
     "lint": "eslint . --ext .js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix",
     "typecheck:node": "tsc --noEmit -p tsconfig.node.json --composite false",
