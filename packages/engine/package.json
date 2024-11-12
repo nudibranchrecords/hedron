@@ -21,5 +21,9 @@
   "homepage": "https://github.com/nudibranchrecords/hedron#readme",
   "devDependencies": {
     "tsup": "^8.3.5"
+  },
+  "dependencies": {
+    "postprocessing": "^6.36.4",
+    "three": "^0.170.0"
   }
 }

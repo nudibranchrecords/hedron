@@ -1,5 +1,6 @@
 import { Pass, ShaderPass } from 'postprocessing'
-import { Uniform, Texture, ShaderMaterial, Vector3 } from 'three'
+const { THREE } = window.HEDRON.dependencies
+const { Uniform, Texture, ShaderMaterial, Vector3 } = THREE
 
 import fragmentShader from './hsl.glsl'
 
@@ -8,9 +9,9 @@ import fragmentShader from './hsl.glsl'
  * While this could be created with existing postprocessing passes, this example demonstrates how to create a custom effect.
  */
 export default class HSL {
-  shader: ShaderMaterial
-  pass: ShaderPass
-  passes: Pass[]
+  shader: typeof ShaderMaterial
+  pass: typeof ShaderPass
+  passes: (typeof Pass)[]
 
   /**
    * Gets the passes for this effect.
