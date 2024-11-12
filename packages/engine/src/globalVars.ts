@@ -1,5 +1,6 @@
 import * as THREE from 'three'
-
+import * as THREE_EXTRAS from 'three-stdlib'
+import * as postprocessing from 'postprocessing'
 // Third party dependencies exposed globally for sketch development
 // Needs to also be exported so can be used by type definition files
 export const dependencies = {
@@ -7,6 +8,8 @@ export const dependencies = {
   // This keeps the library versions matched and also prevents strange things from happening when the library
   // code is being read from different sources
   THREE,
+  THREE_EXTRAS,
+  postprocessing,
 }
 
 // declare global {

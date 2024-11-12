@@ -24,6 +24,7 @@
   },
   "dependencies": {
     "postprocessing": "^6.36.4",
-    "three": "^0.170.0"
+    "three": "^0.170.0",
+    "three-stdlib": "^2.34.0"
   }
 }

@@ -1,8 +1,9 @@
-import { Pass, ShaderPass } from 'postprocessing'
-const { THREE } = window.HEDRON.dependencies
+const { THREE, postprocessing } = window.HEDRON.dependencies
 const { Uniform, Texture, ShaderMaterial, Vector3 } = THREE
 
 import fragmentShader from './hsl.glsl'
+
+const { Pass, ShaderPass } = postprocessing
 
 /**
  * A basic post proicessing effect to adjust the hue, saturation, and lightness of the scene.

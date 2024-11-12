@@ -1,10 +1,9 @@
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
-
 import './test.js'
 import hedronLogoUrl from './hedron-logo.glb'
 import matcapUrl from './matcap.jpg'
 
-const { THREE } = window.HEDRON.dependencies
+const { THREE, THREE_EXTRAS } = window.HEDRON.dependencies
+const { GLTFLoader } = THREE_EXTRAS
 
 const gltfLoader = new GLTFLoader()
 const textureLoader = new THREE.TextureLoader()
