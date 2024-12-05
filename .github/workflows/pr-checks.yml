@@ -20,7 +20,7 @@ jobs:
           node-version: '20'
 
       - name: Install dependencies
-        run: yarn
+        run: yarn install --mode=skip-build
 
       - name: Run TypeScript, ESLint, and Prettier checks
         run: |
