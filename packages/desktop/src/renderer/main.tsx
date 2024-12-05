@@ -4,7 +4,6 @@ import { App } from '@components/App/App'
 import '@css/base.css'
 
 import '@renderer/windows'
-import '@renderer/globalVars'
 import '@renderer/ipc/mainThreadListen'
 import '@renderer/engine'
 

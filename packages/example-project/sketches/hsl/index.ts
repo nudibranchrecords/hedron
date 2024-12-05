@@ -1,16 +1,18 @@
-import { Pass, ShaderPass } from 'postprocessing'
-import { Uniform, Texture, ShaderMaterial, Vector3 } from 'three'
+const { THREE, postprocessing } = window.HEDRON.dependencies
+const { Uniform, Texture, ShaderMaterial, Vector3 } = THREE
 
 import fragmentShader from './hsl.glsl'
+
+const { Pass, ShaderPass } = postprocessing
 
 /**
  * A basic post proicessing effect to adjust the hue, saturation, and lightness of the scene.
  * While this could be created with existing postprocessing passes, this example demonstrates how to create a custom effect.
  */
 export default class HSL {
-  shader: ShaderMaterial
-  pass: ShaderPass
-  passes: Pass[]
+  shader: typeof ShaderMaterial
+  pass: typeof ShaderPass
+  passes: (typeof Pass)[]
 
   /**
    * Gets the passes for this effect.
