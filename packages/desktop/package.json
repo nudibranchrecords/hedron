@@ -38,7 +38,6 @@
     "postprocessing": "^6.36.0",
     "react-error-boundary": "^4.0.13",
     "three": "^0.167.1",
-    "uid": "^2.0.2",
     "usehooks-ts": "^3.1.0",
     "zustand": "^4.5.5"
   },

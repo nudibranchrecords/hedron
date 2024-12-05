@@ -2,8 +2,6 @@ import * as THREE from 'three'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import * as postprocessing from 'postprocessing'
-// import glslify from 'glslify'
-import TWEEN from '@tweenjs/tween.js'
 
 // Third party dependencies exposed globally for sketch development
 // Needs to also be exported so can be used by type definition files
@@ -17,11 +15,8 @@ export const dependencies = {
     GLTFLoader,
     OrbitControls,
   },
-  // No need for any sketch developer to call TWEEN.update() if using this reference
-  TWEEN,
   // Other useful libraries
   postprocessing,
-  // glslify,
 }
 
 declare global {
