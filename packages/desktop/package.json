@@ -35,11 +35,11 @@
     "lodash.debounce": "^4.0.8",
     "material-symbols": "^0.23.0",
     "path-browserify": "^1.0.1",
-    "postprocessing": "^6.36.0",
+    "postprocessing": "^6.36.4",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-error-boundary": "^4.0.13",
-    "three": "^0.167.1",
+    "three": "^0.171.0",
     "usehooks-ts": "^3.1.0",
     "zustand": "^4.5.5"
   },

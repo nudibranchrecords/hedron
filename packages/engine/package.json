@@ -23,10 +23,12 @@
     "@types/lodash.debounce": "^4.0.9",
     "tsup": "^8.3.5"
   },
+  "peerDependencies": {
+    "postprocessing": "*",
+    "three": "*"
+  },
   "dependencies": {
     "lodash.debounce": "^4.0.8",
-    "postprocessing": "^6.36.4",
-    "three": "^0.171.0",
     "three-stdlib": "^2.34.0",
     "uid": "^2.0.2",
     "zustand": "^5.0.2"
