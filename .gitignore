@@ -1,10 +1,6 @@
-node_modules
+.DS_Store
+node_modules/
+*.log*
+*.tsbuildinfo
 dist
 out
-.DS_Store
-*.log*
-.sketches-server
-dev-settings.json
-chrome-extensions
-
-*storybook.log

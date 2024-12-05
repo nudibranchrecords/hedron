@@ -20,17 +20,11 @@ jobs:
           node-version: '20'
 
       - name: Install dependencies
-        run: npm install
+        run: yarn
 
-      - name: Install example project dependencies
-        working-directory: ./example-project
-        run: npm install
-
-      - name: Run TypeScript
-        run: npm run typecheck
-
-      - name: Run ESLint
-        run: npm run lint
-
-      - name: Run Prettier
-        run: npm run format
+      - name: Run TypeScript, ESLint, and Prettier checks
+        run: |
+          yarn build:engine
+          yarn typecheck
+          yarn lint
+          yarn format

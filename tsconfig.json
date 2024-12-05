@@ -1,4 +1,7 @@
 {
-  "files": [],
-  "references": [{ "path": "./tsconfig.node.json" }, { "path": "./tsconfig.web.json" }],
+  "extends": "@tsconfig/recommended/tsconfig.json",
+  "exclude": ["node_modules"],
+  "compilerOptions": {
+    "noImplicitAny": true
+  }
 }

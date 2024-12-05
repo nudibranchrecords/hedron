@@ -13,6 +13,7 @@ module.exports = {
     '@typescript-eslint/explicit-function-return-type': 0,
     'import/no-named-as-default-member': 0,
     'import/order': 'error',
+    'import/no-extraneous-dependencies': 'error',
     'no-restricted-imports': [
       'error',
       {
@@ -27,14 +28,6 @@ module.exports = {
   settings: {
     react: {
       version: 'detect',
-    },
-    'import/resolver': {
-      typescript: {
-        project: ['./tsconfig.web.json', './tsconfig.node.json'],
-      },
-      node: {
-        extensions: ['.js', '.jsx', '.ts', '.tsx'],
-      },
     },
   },
 }
