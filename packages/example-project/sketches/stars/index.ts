@@ -1,6 +1,10 @@
-import { BufferAttribute, BufferGeometry, Group, Points, PointsMaterial, Vector3 } from 'three'
+const { THREE } = window.HEDRON.dependencies
+const { BufferAttribute, BufferGeometry, Group, Points, PointsMaterial, Vector3 } = THREE
 
-type ParticleVert = Vector3 & { velocity: Vector3 }
+interface ParticleVert {
+  position: typeof Vector3
+  velocity: typeof Vector3
+}
 
 export default class Stars {
   range = 1e4
@@ -14,16 +18,19 @@ export default class Stars {
   })
   vertices: ParticleVert[] = []
 
-  particleSystem: Points
+  particleSystem: typeof Points
 
   constructor() {
     for (let p = 0; p < this.particleCount; p++) {
-      const particle = this.vector3InRange(this.range) as ParticleVert
-      particle.velocity = this.vector3InRange(1)
+      const particle = {
+        position: this.vector3InRange(this.range),
+        velocity: this.vector3InRange(1),
+      }
+
       this.vertices.push(particle)
     }
     const positions = new Float32Array(
-      this.vertices.flatMap((particle) => [particle.x, particle.y, particle.z]),
+      this.vertices.flatMap(({ position }) => [position.x, position.y, position.z]),
     )
 
     this.particles.setAttribute('position', new BufferAttribute(positions, 3))
@@ -32,11 +39,11 @@ export default class Stars {
     this.root.add(this.particleSystem)
   }
 
-  randomInRange(range) {
+  randomInRange(range: number) {
     return Math.random() * range - range / 2
   }
 
-  vector3InRange(range) {
+  vector3InRange(range: number) {
     return new Vector3(
       this.randomInRange(range),
       this.randomInRange(range),

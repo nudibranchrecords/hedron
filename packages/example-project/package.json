@@ -2,6 +2,7 @@
   "name": "@hedron/example-project",
   "version": "1.0.0",
   "dependencies": {
-    "is-even": "^1.0.0"
+    "is-even": "^1.0.0",
+    "three-stdlib": "^2.34.0"
   }
 }

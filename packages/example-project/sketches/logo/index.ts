@@ -1,18 +1,19 @@
 import './test.js'
+import { GLTFLoader } from 'three-stdlib'
 import hedronLogoUrl from './hedron-logo.glb'
 import matcapUrl from './matcap.jpg'
 
-const { THREE, TWEEN } = window.HEDRON.dependencies
-const gltfLoader = new THREE.GLTFLoader()
+const { THREE } = window.HEDRON.dependencies
+
+const gltfLoader = new GLTFLoader()
 const textureLoader = new THREE.TextureLoader()
 const matcapMat = new THREE.MeshMatcapMaterial()
+const sphereGeom = new THREE.IcosahedronGeometry(1, 3)
 
 export default class Logo {
   constructor() {
     this.root = new THREE.Group()
-
     // Add inner sphere
-    const sphereGeom = new THREE.IcosahedronGeometry(1, 3)
     this.sphere = new THREE.Mesh(sphereGeom, matcapMat)
     this.root.add(this.sphere)
 
@@ -24,38 +25,12 @@ export default class Logo {
 
       const s = 0.5
       this.model.scale.set(s, s, s)
-      this.resetLogoRot()
 
       textureLoader.load(matcapUrl, (matcap) => {
         matcapMat.matcap = matcap
         matcapMat.needsUpdate = true
       })
     })
-  }
-
-  resetLogoRot() {
-    // Using tween.js to animate the rotation back to default
-    this.isTweeningRot = true
-    const currRot = this.model.rotation
-    this.props = {
-      rotX: currRot.x,
-      rotY: currRot.y,
-      rotZ: currRot.z,
-    }
-    new TWEEN.Tween(this.props)
-      .easing(TWEEN.Easing.Quadratic.InOut)
-      .to(
-        {
-          rotX: 0.15,
-          rotY: 0,
-          rotZ: 0,
-        },
-        1000,
-      )
-      .onComplete(() => {
-        this.isTweeningRot = false
-      })
-      .start()
   }
 
   update({ params: p, deltaFrame: d }) {
