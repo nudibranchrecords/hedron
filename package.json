@@ -19,7 +19,18 @@
   },
   "dependencies": {},
   "devDependencies": {
+    "@electron-toolkit/eslint-config-prettier": "^2.0.0",
+    "@electron-toolkit/eslint-config-ts": "^2.0.0",
+    "@electron-toolkit/tsconfig": "^1.0.1",
     "@tsconfig/recommended": "^1.0.8",
-    "lerna": "^8.1.9"
+    "eslint": "^8.57.0",
+    "eslint-import-resolver-typescript": "^3.6.3",
+    "eslint-plugin-import": "^2.31.0",
+    "eslint-plugin-react": "^7.34.3",
+    "eslint-plugin-react-hooks": "^4.6.2",
+    "eslint-plugin-storybook": "^0.8.0",
+    "lerna": "^8.1.9",
+    "prettier": "^3.3.2",
+    "typescript": "^5.5.2"
   }
 }
