@@ -29,7 +29,6 @@
   },
   "dependencies": {
     "lodash.debounce": "^4.0.8",
-    "three-stdlib": "^2.34.0",
     "uid": "^2.0.2",
     "zustand": "^5.0.2"
   }
