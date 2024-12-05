@@ -124,7 +124,7 @@ export type SetState = StoreApi<EngineStateWithActions>['setState']
 // Matches immer middleware and devtools
 export type CustomSetState = (
   cb: (draft: EngineStateWithActions) => void,
-  replace?: boolean,
+  replace?: false,
   name?: string,
 ) => void
 
