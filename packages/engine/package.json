@@ -1,0 +1,33 @@
+{
+  "name": "@hedron/engine",
+  "version": "0.0.0",
+  "description": "Core functionality for Hedron",
+  "keywords": [],
+  "main": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "dev": "tsup --watch",
+    "build": "tsup",
+    "lint": "eslint . --ext .js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nudibranchrecords/hedron.git"
+  },
+  "bugs": {
+    "url": "https://github.com/nudibranchrecords/hedron/issues"
+  },
+  "homepage": "https://github.com/nudibranchrecords/hedron#readme",
+  "devDependencies": {
+    "@types/lodash.debounce": "^4.0.9",
+    "tsup": "^8.3.5"
+  },
+  "dependencies": {
+    "lodash.debounce": "^4.0.8",
+    "postprocessing": "^6.36.4",
+    "three": "^0.171.0",
+    "uid": "^2.0.2",
+    "zustand": "^5.0.2"
+  }
+}

@@ -1,34 +1,6 @@
-# hedron-vite-temp
+# hedron
 
-An Electron application with React and TypeScript
+## Get started
 
-## Recommended IDE Setup
-
-- [VSCode](https://code.visualstudio.com/) + [ESLint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint) + [Prettier](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)
-
-## Project Setup
-
-### Install
-
-```bash
-$ npm install
-```
-
-### Development
-
-```bash
-$ npm run dev
-```
-
-### Build
-
-```bash
-# For windows
-$ npm run build:win
-
-# For macOS
-$ npm run build:mac
-
-# For Linux
-$ npm run build:linux
-```
+1. Run `yarn` at the top level to install all deps
+2. Run `yarn dev` at the top level to start Hedron. This will watch for changes in both `@hedron/desktop` and `@hedron/engine`
