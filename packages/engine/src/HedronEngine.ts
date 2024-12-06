@@ -49,7 +49,7 @@ export class HedronEngine {
     const result = await importSketchModule(this.sketchesUrl, moduleId)
 
     if (!result.success) {
-      // TODO: check for errors and show UI error
+      // TODO: Show UI error here (engine needs to have some "error" state slice)
       return result
     }
 
