@@ -35,14 +35,21 @@ export class SketchManager {
   }
 
   public removeSketchFromScene = (instanceId: string): void => {
-    const scene = getDebugScene().scene
-    const oldSketch = scene.getObjectByName(instanceId)
+    const engineScene = getDebugScene()
+    const threeScene = engineScene.scene
+    const oldSketch = threeScene.getObjectByName(instanceId)
 
     if (!oldSketch) {
+      const pass = engineScene.getPassesByName(instanceId)
+      if (pass?.length) {
+        pass.forEach((p) => engineScene.removePass(p))
+        delete this.sketchInstances[instanceId]
+        return
+      }
       throw new Error(`couldn't find sketch to remove: ${instanceId}`)
     }
 
-    scene.remove(oldSketch)
+    threeScene.remove(oldSketch)
     delete this.sketchInstances[instanceId]
   }
 

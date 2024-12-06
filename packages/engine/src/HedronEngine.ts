@@ -112,6 +112,7 @@ export class HedronEngine {
 
         if (instance.getPasses) {
           instance.getPasses(debugScene).forEach((pass) => {
+            pass.name = sketch.id
             debugScene.addPass(pass)
           })
         }

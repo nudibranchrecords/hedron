@@ -25,7 +25,15 @@ export class EngineScene {
     this.passes.push(pass)
   }
 
+  removePass(pass: Pass): void {
+    this.passes = this.passes.filter((p) => p !== pass)
+  }
+
   clearPasses(): void {
     this.passes = [this.renderPass]
+  }
+
+  getPassesByName(name: string): Pass[] {
+    return this.passes.filter((pass) => pass.name === name)
   }
 }
