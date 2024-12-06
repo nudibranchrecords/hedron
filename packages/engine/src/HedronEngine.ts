@@ -36,7 +36,11 @@ export class HedronEngine {
 
   public async initiateSketchModules(moduleIds: string[]) {
     for (const moduleId of moduleIds) {
-      await this.addSketchModule(moduleId)
+      try {
+        await this.addSketchModule(moduleId)
+      } catch (error) {
+        console.error('Init error in: ' + moduleId, error)
+      }
     }
 
     this.store.setState({ isSketchModulesReady: true })
