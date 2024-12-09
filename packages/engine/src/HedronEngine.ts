@@ -1,10 +1,11 @@
 import { listenToStore } from './storeListener'
 import { importSketchModule } from './importSketchModule'
+import { Result } from './types'
 import { stripForSave } from '@utils/stripForSave'
 import { Renderer } from '@world/Renderer'
 import { SketchManager } from '@world/SketchManager'
 import { createDebugScene } from '@world/debugScene'
-import { EngineData } from '@store/types'
+import { EngineData, SketchModuleItem } from '@store/types'
 import { getSketchesOfModuleId } from '@store/selectors/getSketchesOfModuleId'
 import { createEngineStore, EngineStore } from '@store/engineStore'
 
@@ -42,21 +43,34 @@ export class HedronEngine {
     this.store.setState({ isSketchModulesReady: true })
   }
 
-  public async addSketchModule(moduleId: string) {
+  public async addSketchModule(moduleId: string): Promise<Result<SketchModuleItem>> {
     if (!this.sketchesUrl) throw new Error('Sketches URL not ready')
 
-    const moduleItem = await importSketchModule(this.sketchesUrl, moduleId)
+    const result = await importSketchModule(this.sketchesUrl, moduleId)
+
+    if (!result.success) {
+      // TODO: Show UI error here (engine needs to have some "error" state slice)
+      return result
+    }
+
+    const moduleItem = result.data
     this.store.getState().setSketchModuleItem(moduleItem)
 
-    return moduleItem
+    return result
   }
 
   public removeSketchModule = async (moduleId: string): Promise<void> => {
     this.store.getState().deleteSketchModule(moduleId)
   }
 
-  public async reimportSketchModuleAndReloadSketches(moduleId: string) {
-    const moduleItem = await this.addSketchModule(moduleId)
+  public async reimportSketchModuleAndReloadSketches(moduleId: string): Promise<void> {
+    const result = await this.addSketchModule(moduleId)
+
+    if (!result.success) {
+      return
+    }
+
+    const moduleItem = result.data
 
     const sketchesToRefresh = getSketchesOfModuleId(this.store.getState(), moduleId)
 
