@@ -16,7 +16,7 @@
     "build": "lerna run build",
     "typecheck": "lerna run typecheck",
     "lint": "lerna run lint",
-    "format": "prettier .",
+    "format": "prettier . --write",
     "dist": "lerna run lint,typecheck,build,dist --sort",
     "version": "yarn install && git stage yarn.lock"
   },
