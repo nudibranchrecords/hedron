@@ -1039,7 +1039,7 @@ __metadata:
     "@chromatic-com/storybook": "npm:^1.8.0"
     "@electron-toolkit/preload": "npm:^3.0.1"
     "@electron-toolkit/utils": "npm:^3.0.0"
-    "@hedron/engine": "npm:*"
+    "@hedron/engine": "npm:^1.0.0-alpha.1"
     "@redux-devtools/extension": "npm:^3.3.0"
     "@storybook/addon-essentials": "npm:^8.2.9"
     "@storybook/addon-interactions": "npm:^8.2.9"
@@ -1083,7 +1083,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@hedron/engine@npm:*, @hedron/engine@workspace:packages/engine":
+"@hedron/engine@npm:^1.0.0-alpha.1, @hedron/engine@workspace:packages/engine":
   version: 0.0.0-use.local
   resolution: "@hedron/engine@workspace:packages/engine"
   dependencies:
