@@ -16,7 +16,8 @@
     "build": "lerna run build",
     "typecheck": "lerna run typecheck",
     "lint": "lerna run lint",
-    "format": "prettier --write ."
+    "format": "prettier .",
+    "dist": "lerna run lint,typecheck,build,dist --sort"
   },
   "devDependencies": {
     "@electron-toolkit/eslint-config-prettier": "^2.0.0",
@@ -30,7 +31,7 @@
     "eslint-plugin-react-hooks": "^4.6.2",
     "eslint-plugin-storybook": "^0.8.0",
     "lerna": "^8.1.9",
-    "prettier": "^3.3.2",
+    "prettier": "^3.4.2",
     "typescript": "^5.5.2"
   },
   "packageManager": "yarn@4.5.3"

@@ -16,7 +16,7 @@
     "build:win": "npm run build && electron-builder --win",
     "build:mac": "electron-vite build && electron-builder --mac",
     "build:linux": "electron-vite build && electron-builder --linux",
-    "build:all": "electron-vite build && electron-builder -mwl",
+    "dist": "electron-vite build && electron-builder -mwl",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build"
   },
