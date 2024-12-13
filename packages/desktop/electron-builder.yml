@@ -15,7 +15,7 @@ asarUnpack:
 win:
   executableName: hedron-alpha
 nsis:
-  artifactName: ${name}-${version}-setup.${ext}
+  artifactName: hedron-${version}-setup.${ext}
   shortcutName: ${productName}
   uninstallDisplayName: ${productName}
   createDesktopShortcut: always
@@ -28,16 +28,14 @@ mac:
     - NSDownloadsFolderUsageDescription: Application requests access to the user's Downloads folder.
   notarize: false
 dmg:
-  artifactName: ${name}-${version}.${ext}
+  artifactName: hedron-${version}.${ext}
 linux:
+  executableName: hedron
+  artifactName: hedron-${version}.${ext}
   target:
     - AppImage
-    - snap
-    - deb
   maintainer: electronjs.org
   category: Utility
-appImage:
-  artifactName: ${name}-${version}.${ext}
 npmRebuild: false
 publish:
   provider: generic
