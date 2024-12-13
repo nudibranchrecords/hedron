@@ -8,3 +8,7 @@
 ## Building for all platforms
 
 Run `yarn dist`. This will go through all checks, builds and then create executables for windows, mac, linux
+
+## Update Hedron version
+
+Run `yarn version-bump`. This bumps all versions across packages.
