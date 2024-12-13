@@ -17,7 +17,8 @@
     "typecheck": "lerna run typecheck",
     "lint": "lerna run lint",
     "format": "prettier .",
-    "dist": "lerna run lint,typecheck,build,dist --sort"
+    "dist": "lerna run lint,typecheck,build,dist --sort",
+    "version-bump": "lerna version"
   },
   "devDependencies": {
     "@electron-toolkit/eslint-config-prettier": "^2.0.0",
