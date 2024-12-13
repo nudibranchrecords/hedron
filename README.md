@@ -11,4 +11,4 @@ Run `yarn dist`. This will go through all checks, builds and then create executa
 
 ## Update Hedron version
 
-Run `yarn version-bump`. This bumps all versions across packages.
+Run `yarn version-bump`. This bumps all versions across packages. While in alpha, we want to choose the "Custom Prerelease" option. This will keep the format of `1.0.0-alpha.x`, where only `x` gets bumped (as major/minor/patch makes no sense).
