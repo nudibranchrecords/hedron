@@ -18,7 +18,7 @@
     "lint": "lerna run lint",
     "format": "prettier .",
     "dist": "lerna run lint,typecheck,build,dist --sort",
-    "version-bump": "lerna version"
+    "version": "yarn install && git stage yarn.lock"
   },
   "devDependencies": {
     "@electron-toolkit/eslint-config-prettier": "^2.0.0",
