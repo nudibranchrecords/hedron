@@ -1,6 +1,6 @@
 {
   "name": "@hedron/desktop",
-  "version": "1.0.0",
+  "version": "1.0.0-alpha.0",
   "description": "Visual app using three.js",
   "main": "./out/main/index.js",
   "scripts": {
@@ -23,7 +23,7 @@
   "dependencies": {
     "@electron-toolkit/preload": "^3.0.1",
     "@electron-toolkit/utils": "^3.0.0",
-    "@hedron/engine": "*",
+    "@hedron/engine": "^1.0.0-alpha.0",
     "@redux-devtools/extension": "^3.3.0",
     "@tomjs/electron-devtools-installer": "^2.3.2",
     "chokidar": "^4.0.0",
