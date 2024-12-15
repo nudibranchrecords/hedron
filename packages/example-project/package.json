@@ -1,6 +1,6 @@
 {
   "name": "@hedron/example-project",
-  "version": "1.0.0",
+  "version": "1.0.0-alpha.1",
   "dependencies": {
     "is-even": "^1.0.0",
     "three-stdlib": "^2.34.0"
