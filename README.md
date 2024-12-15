@@ -7,7 +7,8 @@
 
 ## Building for all platforms
 
-Run `yarn dist`. This will go through all checks, builds and then create executables for windows, mac, linux
+1. Close any instance of Hedron
+2. Run `yarn dist`. This will go through all checks and builds, then create executables for windows, mac, linux
 
 ## Update Hedron version
 
