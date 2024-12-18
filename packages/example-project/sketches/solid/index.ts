@@ -2,9 +2,10 @@ const { THREE } = window.HEDRON.dependencies
 const geomSize = 1
 
 export default class Solid {
+  root = new THREE.Group()
+
   constructor() {
     // All sketches need root property to add things to
-    this.root = new THREE.Group()
 
     this.meshes = {}
 
@@ -38,6 +39,8 @@ export default class Solid {
     this.root.rotation.x += params.rotSpeedX * baseSpeed * deltaFrame
     this.root.rotation.y += params.rotSpeedY * baseSpeed * deltaFrame
     this.root.rotation.z += params.rotSpeedZ * baseSpeed * deltaFrame
+
+    this.root.position.set(...params.position)
 
     // Update scale using params
     this.root.scale.set(params.scale, params.scale, params.scale)

@@ -108,14 +108,25 @@ export class HedronEngine {
       const { sketches, nodeValues, nodes } = this.store.getState()
       const sketchInstances = this.sketchManager!.getSketchInstances()
       debugScene.clearPasses()
+
+      // TODO: abstract this
       Object.values(sketches).forEach((sketch) => {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const paramValues: { [key: string]: any } = {}
 
         sketch.paramIds.forEach((id) => {
-          const value = nodeValues[id]
-          const paramKey = nodes[id].key
-          paramValues[paramKey] = value
+          const { key, valueType } = nodes[id]
+
+          let value
+
+          if (valueType === 'vector3') {
+            const childNodeIds = nodes[id].childNodeIds
+            value = childNodeIds.map((childNodeId) => nodeValues[childNodeId])
+          } else {
+            value = nodeValues[id]
+          }
+
+          paramValues[key] = value
         })
 
         const instance = sketchInstances[sketch.id]

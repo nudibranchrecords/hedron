@@ -3,6 +3,12 @@ export default {
   description: 'Platonic solids! Rotate, scale, wireframe mode.',
   params: [
     {
+      key: 'position',
+      title: 'Position',
+      valueType: 'vector3',
+      defaultValue: [0, 0, 0],
+    },
+    {
       key: 'rotSpeedX',
       title: 'Rotation Speed X',
       defaultValue: 0.5,
