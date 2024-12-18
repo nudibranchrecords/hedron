@@ -34,6 +34,11 @@ export interface NodeParamBase extends NodeBase {
   sketchId: string
 }
 
+export interface NodeParamWithChildren extends NodeParamBase {
+  childNodeIds: string[]
+  valueType: NodeTypeWithChildren
+}
+
 export interface NodeParamNumber extends NodeParamBase {
   valueType: NodeTypes.Number
 }
@@ -46,14 +51,12 @@ export interface NodeParamEnum extends NodeParamBase {
   valueType: NodeTypes.Enum
 }
 
-export interface NodeParamVector3 extends NodeParamBase {
+export interface NodeParamVector3 extends NodeParamWithChildren {
   valueType: NodeTypes.Vector3
-  childNodeIds: [string, string, string]
 }
 
-export interface NodeParamRGB extends NodeParamBase {
+export interface NodeParamRGB extends NodeParamWithChildren {
   valueType: NodeTypes.RGB
-  childNodeIds: [string, string, string]
 }
 
 export type Param =
@@ -74,13 +77,8 @@ export const isNodeTypeWithChildren = (nodeType: NodeTypes): nodeType is NodeTyp
 }
 
 // Utility type guard to check if a node has child nodes
-export const hasChildNodes = (
-  node: Node,
-): node is NodeParamBase & {
-  childNodeIds: [string, string, string]
-  valueType: NodeTypeWithChildren
-} => {
-  return 'childNodeIds' in node && isNodeTypeWithChildren(node.valueType)
+export const hasChildNodes = (node: Node): node is NodeParamWithChildren => {
+  return 'childNodeIds' in node
 }
 
 export interface SketchConfigParamBase {
