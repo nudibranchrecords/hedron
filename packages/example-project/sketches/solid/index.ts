@@ -3,13 +3,13 @@ const geomSize = 1
 
 export default class Solid {
   root = new THREE.Group()
+  color = new THREE.Color()
+  mat = new THREE.MeshBasicMaterial({ wireframe: true })
 
   constructor() {
     // All sketches need root property to add things to
 
     this.meshes = {}
-
-    this.mat = new THREE.MeshBasicMaterial({ wireframe: true, color: 0xffffff })
 
     // Defining 5 geometries (the platonic solids!)
     const geoms = {
@@ -41,6 +41,7 @@ export default class Solid {
     this.root.rotation.z += params.rotSpeedZ * baseSpeed * deltaFrame
 
     this.root.position.set(...params.position)
+    this.mat.color.setRGB(...params.color)
 
     // Update scale using params
     this.root.scale.set(params.scale, params.scale, params.scale)

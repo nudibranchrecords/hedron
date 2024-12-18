@@ -12,8 +12,8 @@ export const getSketchParamValues = (state: EngineState, sketchId: string) => {
 
     let value
 
-    if (valueType === 'vector3') {
-      // Return an array of values for vector3
+    if (valueType === 'vector3' || valueType === 'rgb') {
+      // Return an array of values for vector3 and rgb
       const childNodeIds = nodes[id].childNodeIds
       value = childNodeIds.map((childNodeId) => nodeValues[childNodeId])
     } else {
