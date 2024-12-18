@@ -17,7 +17,7 @@ const SingleSlider = ({ id }: ParamVector3Props) => {
   useInterval(() => {
     const nodeValue = engineStore.getState().nodeValues[id]
     if (typeof nodeValue !== 'number') {
-      throw new Error('VectorComponentSlider value was not a number')
+      throw new Error('SingleSlider value was not a number')
     }
     ref.current?.drawBar(nodeValue)
   }, 100)
