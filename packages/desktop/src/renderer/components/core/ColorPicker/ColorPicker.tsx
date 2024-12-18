@@ -5,7 +5,7 @@ import css from './ColorPicker.module.css'
 
 type RGBColor = [number, number, number]
 
-export type ColorChangeHandle = {
+export type ColorPickerHandle = {
   updateColor: (value: RGBColor) => void
 }
 
@@ -13,7 +13,7 @@ interface ColorPickerProps {
   onValueChange: (value: RGBColor) => void
 }
 
-export const ColorPicker = forwardRef<ColorChangeHandle, ColorPickerProps>(function ColorPicker(
+export const ColorPicker = forwardRef<ColorPickerHandle, ColorPickerProps>(function ColorPicker(
   { onValueChange },
   ref,
 ) {
@@ -35,7 +35,7 @@ export const ColorPicker = forwardRef<ColorChangeHandle, ColorPickerProps>(funct
   const onChange = useCallback(
     (color: ColorResult) => {
       setColor(color.hex)
-      onValueChange([color.rgb.r, color.rgb.g, color.rgb.b])
+      onValueChange([color.rgb.r / 255, color.rgb.g / 255, color.rgb.b / 255])
     },
     [onValueChange],
   )

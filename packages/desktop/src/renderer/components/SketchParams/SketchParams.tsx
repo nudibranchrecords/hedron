@@ -5,7 +5,7 @@ import { ParamNumber } from '@components/ParamNumber/ParamNumber'
 import { ParamBoolean } from '@components/ParamBoolean/ParamBoolean'
 import { ParamEnum } from '@components/ParamEnum/ParamEnum'
 import { ParamVector3 } from '@components/ParamVector3/ParamVector3'
-import { ParamRGB } from '@components/ParamRGB/ParamRGB'
+import { ParamColor } from '@components/ParamColor/ParamColor'
 import {
   NodeControl,
   NodeControlInner,
@@ -30,7 +30,7 @@ const getInputElement = (valueType: NodeTypes, id: string) => {
     case NodeTypes.Vector3:
       return <ParamVector3 id={id} />
     case NodeTypes.RGB:
-      return <ParamRGB id={id} />
+      return <ParamColor id={id} />
     default:
       return <i>Unsupported type {valueType}</i>
   }
