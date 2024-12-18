@@ -1,5 +1,5 @@
 import { addNode } from '@store/shared/addNode'
-import { NodeTypes, SetterCreator } from '@store/types'
+import { hasChildNodes, SetterCreator } from '@store/types'
 import { createUniqueId } from '@utils/createUniqueId'
 
 export const createUpdateSketchParams: SetterCreator<'updateSketchParams'> =
@@ -41,7 +41,7 @@ export const createUpdateSketchParams: SetterCreator<'updateSketchParams'> =
         delete state.nodeValues[oldParamId]
 
         // Remove vector child nodes if they exist
-        if (oldNode.valueType === NodeTypes.Vector3) {
+        if (hasChildNodes(oldNode)) {
           oldNode.childNodeIds.forEach((childNodeId) => {
             delete state.nodes[childNodeId]
             delete state.nodeValues[childNodeId]

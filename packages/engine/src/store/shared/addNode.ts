@@ -1,4 +1,4 @@
-import { EngineState, NodeTypes, SketchConfigParam } from '@store/types'
+import { EngineState, NodeTypes, SketchConfigParam, isNodeTypeWithChildren } from '@store/types'
 import { createUniqueId } from '@utils/createUniqueId'
 
 const vector3Keys = ['x', 'y', 'z']
@@ -10,7 +10,7 @@ export const addNode = (
   sketchId: string,
   { key, valueType = NodeTypes.Number, defaultValue }: SketchConfigParam,
 ) => {
-  if (valueType === NodeTypes.Vector3 || valueType === NodeTypes.RGB) {
+  if (isNodeTypeWithChildren(valueType)) {
     if (!Array.isArray(defaultValue)) {
       throw new Error(`Expected defaultValue to be an array for ${valueType} type`)
     }

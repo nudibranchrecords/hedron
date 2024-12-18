@@ -26,33 +26,32 @@ export enum NodeTypes {
   RGB = 'rgb',
 }
 
+export const NodeTypesWithChildren = [NodeTypes.Vector3, NodeTypes.RGB] as const
+export type NodeTypeWithChildren = (typeof NodeTypesWithChildren)[number]
+
 export interface NodeParamBase extends NodeBase {
+  type: 'param'
   sketchId: string
 }
 
 export interface NodeParamNumber extends NodeParamBase {
-  type: 'param'
   valueType: NodeTypes.Number
 }
 
 export interface NodeParamBoolean extends NodeParamBase {
-  type: 'param'
   valueType: NodeTypes.Boolean
 }
 
 export interface NodeParamEnum extends NodeParamBase {
-  type: 'param'
   valueType: NodeTypes.Enum
 }
 
 export interface NodeParamVector3 extends NodeParamBase {
-  type: 'param'
   valueType: NodeTypes.Vector3
   childNodeIds: [string, string, string]
 }
 
 export interface NodeParamRGB extends NodeParamBase {
-  type: 'param'
   valueType: NodeTypes.RGB
   childNodeIds: [string, string, string]
 }
@@ -69,6 +68,20 @@ export type Nodes = { [key: string]: Node }
 
 export type NodeValue = number | boolean | string
 export type NodeValues = { [key: string]: NodeValue }
+
+export const isNodeTypeWithChildren = (nodeType: NodeTypes): nodeType is NodeTypeWithChildren => {
+  return NodeTypesWithChildren.includes(nodeType as NodeTypeWithChildren)
+}
+
+// Utility type guard to check if a node has child nodes
+export const hasChildNodes = (
+  node: Node,
+): node is NodeParamBase & {
+  childNodeIds: [string, string, string]
+  valueType: NodeTypeWithChildren
+} => {
+  return 'childNodeIds' in node && isNodeTypeWithChildren(node.valueType)
+}
 
 export interface SketchConfigParamBase {
   key: string
