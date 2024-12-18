@@ -1,6 +1,6 @@
 import { listenToStore } from './storeListener'
-import { importSketchModule } from './importSketchModule'
 import { Result } from './types'
+import { importSketchModule } from './importSketchModule'
 import { stripForSave } from '@utils/stripForSave'
 import { Renderer } from '@world/Renderer'
 import { SketchManager } from '@world/SketchManager'
@@ -8,6 +8,7 @@ import { createDebugScene } from '@world/debugScene'
 import { EngineData, SketchModuleItem } from '@store/types'
 import { getSketchesOfModuleId } from '@store/selectors/getSketchesOfModuleId'
 import { createEngineStore, EngineStore } from '@store/engineStore'
+import { getSketchParamValues } from '@store/selectors/getSketchParamValues'
 
 export class HedronEngine {
   private renderer: Renderer
@@ -105,31 +106,14 @@ export class HedronEngine {
     const debugScene = createDebugScene(this.renderer)
 
     const loop = (): void => {
-      const { sketches, nodeValues, nodes } = this.store.getState()
+      const state = this.store.getState()
       const sketchInstances = this.sketchManager!.getSketchInstances()
       debugScene.clearPasses()
 
-      // TODO: abstract this
-      Object.values(sketches).forEach((sketch) => {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const paramValues: { [key: string]: any } = {}
+      Object.keys(state.sketches).forEach((sketchId) => {
+        const paramValues = getSketchParamValues(state, sketchId)
 
-        sketch.paramIds.forEach((id) => {
-          const { key, valueType } = nodes[id]
-
-          let value
-
-          if (valueType === 'vector3') {
-            const childNodeIds = nodes[id].childNodeIds
-            value = childNodeIds.map((childNodeId) => nodeValues[childNodeId])
-          } else {
-            value = nodeValues[id]
-          }
-
-          paramValues[key] = value
-        })
-
-        const instance = sketchInstances[sketch.id]
+        const instance = sketchInstances[sketchId]
 
         if (instance.getPasses) {
           instance.getPasses(debugScene).forEach((pass) => {
