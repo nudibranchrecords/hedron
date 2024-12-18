@@ -23,6 +23,7 @@
   "dependencies": {
     "@electron-toolkit/preload": "^3.0.1",
     "@electron-toolkit/utils": "^3.0.0",
+    "@floating-ui/react-dom": "^2.1.2",
     "@hedron/engine": "^1.0.0-alpha.1",
     "@redux-devtools/extension": "^3.3.0",
     "@tomjs/electron-devtools-installer": "^2.3.2",

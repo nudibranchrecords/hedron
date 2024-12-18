@@ -13,7 +13,5 @@
 }
 
 .picker {
-  position: absolute;
-  top: 2.5rem;
   z-index: 10;
 }

@@ -84,15 +84,17 @@ export const Color = ({ title = 'Color Picker', isActive, onClick }: BasicProps)
 }
 
 const params = [
-  'Fun Param Name',
-  'Another Param',
-  'Color Picker',
-  'Number Thing',
-  'Boolean Thing',
-  'Color Picker',
-  'Number Thing',
-  'Boolean Thing',
-  'Color Picker',
+  ['Fun Param Name', 'number'],
+  ['Another Param', 'boolean'],
+  ['Color Picker', 'color'],
+  ['Color Picker', 'color'],
+  ['Slider', 'number'],
+  ['Toggle', 'boolean'],
+  ['Color Picker', 'color'],
+  ['Slider', 'number'],
+  ['Slider', 'number'],
+  ['Toggle', 'boolean'],
+  ['Color Picker', 'color'],
 ]
 
 export const WithControlGrid = () => {
@@ -100,15 +102,29 @@ export const WithControlGrid = () => {
 
   return (
     <ControlGrid>
-      {params.map((item, i) =>
-        i % 3 == 0 ? (
-          <Number key={i} title={item} isActive={activeId === i} onClick={() => setActiveId(i)} />
-        ) : i % 3 == 1 ? (
-          <Boolean key={i} title={item} isActive={activeId === i} onClick={() => setActiveId(i)} />
-        ) : (
-          <Color key={i} title={item} isActive={activeId === i} onClick={() => setActiveId(i)} />
-        ),
-      )}
+      {params.map(([title, type], i) => (
+        <>
+          {type === 'number' && (
+            <Number
+              key={i}
+              title={title}
+              isActive={activeId === i}
+              onClick={() => setActiveId(i)}
+            />
+          )}
+          {type === 'boolean' && (
+            <Boolean
+              key={i}
+              title={title}
+              isActive={activeId === i}
+              onClick={() => setActiveId(i)}
+            />
+          )}
+          {type === 'color' && (
+            <Color key={i} title={title} isActive={activeId === i} onClick={() => setActiveId(i)} />
+          )}
+        </>
+      ))}
     </ControlGrid>
   )
 }

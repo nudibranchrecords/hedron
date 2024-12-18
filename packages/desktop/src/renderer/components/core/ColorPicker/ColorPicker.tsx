@@ -1,5 +1,6 @@
 import { forwardRef, useCallback, useEffect, useImperativeHandle, useRef, useState } from 'react'
 import { Colorful, ColorResult } from '@uiw/react-color'
+import { useFloating, shift, offset } from '@floating-ui/react-dom'
 import css from './ColorPicker.module.css'
 
 type RGBColor = [number, number, number]
@@ -19,6 +20,9 @@ export const ColorPicker = forwardRef<ColorChangeHandle, ColorPickerProps>(funct
   const colorBoxRef = useRef<HTMLDivElement>(null)
   const [color, setColor] = useState('#ffffff')
   const [isOpen, setIsOpen] = useState(false)
+  const { refs, floatingStyles } = useFloating({
+    middleware: [shift({ padding: 10 }), offset({ mainAxis: 10 })],
+  })
 
   const onBoxClick = useCallback(() => {
     setIsOpen((isOpen) => !isOpen)
@@ -58,7 +62,7 @@ export const ColorPicker = forwardRef<ColorChangeHandle, ColorPickerProps>(funct
   }, [updateColor])
 
   return (
-    <div className={css.container}>
+    <div className={css.container} ref={refs.setReference}>
       <div
         className={css.colorBox}
         style={{ backgroundColor: color }}
@@ -66,7 +70,12 @@ export const ColorPicker = forwardRef<ColorChangeHandle, ColorPickerProps>(funct
         ref={colorBoxRef}
       />
       {isOpen && (
-        <div className={css.picker} onClick={onPickerClick}>
+        <div
+          className={css.picker}
+          ref={refs.setFloating}
+          style={{ ...floatingStyles }}
+          onClick={onPickerClick}
+        >
           <Colorful color={color} onChange={onChange} disableAlpha />
         </div>
       )}
