@@ -20,8 +20,7 @@ export const ColorPicker = forwardRef<ColorChangeHandle, ColorPickerProps>(funct
   const [color, setColor] = useState('#ffffff')
   const [isOpen, setIsOpen] = useState(false)
 
-  const onBoxClick = useCallback((e: React.MouseEvent) => {
-    e.stopPropagation()
+  const onBoxClick = useCallback(() => {
     setIsOpen((isOpen) => !isOpen)
   }, [])
 
@@ -43,7 +42,9 @@ export const ColorPicker = forwardRef<ColorChangeHandle, ColorPickerProps>(funct
   }, [])
 
   useEffect(() => {
-    const handleClick = () => {
+    const handleClick = (e: MouseEvent) => {
+      // do not close the picker if the color box is clicked
+      if (colorBoxRef.current?.contains(e.target as Node)) return
       setIsOpen(false)
     }
     document.body.addEventListener('click', handleClick)

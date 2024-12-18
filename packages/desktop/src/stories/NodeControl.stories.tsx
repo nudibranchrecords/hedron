@@ -84,14 +84,15 @@ export const Color = ({ title = 'Color Picker', isActive, onClick }: BasicProps)
 }
 
 const params = [
-  'Velocity X',
-  'Velocity Y',
-  'Rotation Speed X',
-  'Rotation Speed Y',
-  'some long name x',
-  'some other thing y',
-  'short',
-  'another long param',
+  'Fun Param Name',
+  'Another Param',
+  'Color Picker',
+  'Number Thing',
+  'Boolean Thing',
+  'Color Picker',
+  'Number Thing',
+  'Boolean Thing',
+  'Color Picker',
 ]
 
 export const WithControlGrid = () => {
@@ -100,10 +101,12 @@ export const WithControlGrid = () => {
   return (
     <ControlGrid>
       {params.map((item, i) =>
-        i % 2 == 0 ? (
+        i % 3 == 0 ? (
           <Number key={i} title={item} isActive={activeId === i} onClick={() => setActiveId(i)} />
-        ) : (
+        ) : i % 3 == 1 ? (
           <Boolean key={i} title={item} isActive={activeId === i} onClick={() => setActiveId(i)} />
+        ) : (
+          <Color key={i} title={item} isActive={activeId === i} onClick={() => setActiveId(i)} />
         ),
       )}
     </ControlGrid>
