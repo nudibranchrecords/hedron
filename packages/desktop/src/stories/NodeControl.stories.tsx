@@ -13,6 +13,7 @@ import { ControlGrid } from '@components/core/ControlGrid/ControlGrid'
 
 import { FloatSlider, FloatSliderHandle } from '@components/core/FloatSlider/FloatSlider'
 import { BooleanToggle, BooleanToggleHandle } from '@components/core/BooleanToggle/BooleanToggle'
+import { ColorChangeHandle, ColorPicker } from '@components/core/ColorPicker/ColorPicker'
 
 const meta = {
   title: 'NodeControl',
@@ -57,6 +58,25 @@ export const Boolean = ({ title = 'Boolean Thing', isActive, onClick }: BasicPro
         <NodeControlTitle>{title}</NodeControlTitle>
         <NodeControlInner>
           <BooleanToggle onValueChange={fn()} ref={ref} />
+        </NodeControlInner>
+      </NodeControlMain>
+    </NodeControl>
+  )
+}
+
+export const Color = ({ title = 'Color Picker', isActive, onClick }: BasicProps) => {
+  const ref = useRef<ColorChangeHandle>(null)
+
+  useInterval(() => {
+    ref.current!.updateColor([Math.random(), Math.random(), Math.random()])
+  }, 3000)
+
+  return (
+    <NodeControl isActive={isActive} onClick={onClick}>
+      <NodeControlMain>
+        <NodeControlTitle>{title}</NodeControlTitle>
+        <NodeControlInner>
+          <ColorPicker ref={ref} onValueChange={fn()} />
         </NodeControlInner>
       </NodeControlMain>
     </NodeControl>
