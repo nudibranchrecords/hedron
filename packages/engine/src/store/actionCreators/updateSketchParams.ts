@@ -1,4 +1,4 @@
-import { addNode } from '../shared/addNode'
+import { addNode } from '@store/shared/addNode'
 import { NodeTypes, SetterCreator } from '@store/types'
 import { createUniqueId } from '@utils/createUniqueId'
 
