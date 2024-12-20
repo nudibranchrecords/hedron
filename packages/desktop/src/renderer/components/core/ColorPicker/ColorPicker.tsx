@@ -1,5 +1,5 @@
 import { forwardRef, useCallback, useEffect, useImperativeHandle, useRef, useState } from 'react'
-import { Colorful, ColorResult } from '@uiw/react-color'
+import { Colorful, ColorResult, rgbaToHex } from '@uiw/react-color'
 import { useFloating, shift, offset } from '@floating-ui/react-dom'
 import css from './ColorPicker.module.css'
 
@@ -19,12 +19,14 @@ export const ColorPicker = forwardRef<ColorPickerHandle, ColorPickerProps>(funct
 ) {
   const colorBoxRef = useRef<HTMLDivElement>(null)
   const [color, setColor] = useState('#ffffff')
+  const colorRef = useRef('#ffffff')
   const [isOpen, setIsOpen] = useState(false)
   const { refs, floatingStyles } = useFloating({
     middleware: [shift({ padding: 10 }), offset({ mainAxis: 10 })],
   })
 
   const onBoxClick = useCallback(() => {
+    setColor(colorRef.current)
     setIsOpen((isOpen) => !isOpen)
   }, [])
 
@@ -33,17 +35,12 @@ export const ColorPicker = forwardRef<ColorPickerHandle, ColorPickerProps>(funct
   }, [])
 
   const onChange = useCallback(
-    (color: ColorResult) => {
-      setColor(color.hex)
-      onValueChange([color.rgb.r / 255, color.rgb.g / 255, color.rgb.b / 255])
+    ({ rgb: { r, g, b }, hex }: ColorResult) => {
+      setColor(hex)
+      onValueChange([r / 255, g / 255, b / 255])
     },
     [onValueChange],
   )
-
-  const updateColor = useCallback((rgb: RGBColor) => {
-    const values = rgb.map((v) => v * 255).join(',')
-    colorBoxRef.current?.style.setProperty('background-color', `rgb(${values})`)
-  }, [])
 
   useEffect(() => {
     const handleClick = (e: MouseEvent) => {
@@ -57,9 +54,14 @@ export const ColorPicker = forwardRef<ColorPickerHandle, ColorPickerProps>(funct
     }
   }, [])
 
-  useImperativeHandle(ref, () => {
-    return { updateColor }
-  }, [updateColor])
+  // Avoiding using state to keep external frequent updates performant
+  const updateColor = useCallback(([r, g, b]: RGBColor) => {
+    const hex = rgbaToHex({ r: r * 255, g: g * 255, b: b * 255, a: 1 })
+    colorBoxRef.current?.style.setProperty('background-color', hex)
+    colorRef.current = hex
+  }, [])
+
+  useImperativeHandle(ref, () => ({ updateColor }), [updateColor])
 
   return (
     <div className={css.container} ref={refs.setReference}>
