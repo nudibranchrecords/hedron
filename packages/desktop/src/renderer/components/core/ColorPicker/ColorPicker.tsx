@@ -71,12 +71,12 @@ export const ColorPicker = forwardRef<ColorPickerHandle, ColorPickerProps>(funct
       />
       {isOpen && (
         <div
-          className={css.picker}
+          className={css.pickerContainer}
           ref={refs.setFloating}
           style={{ ...floatingStyles }}
           onClick={onPickerClick}
         >
-          <Colorful color={color} onChange={onChange} disableAlpha />
+          <Colorful className={css.picker} color={color} onChange={onChange} disableAlpha />
         </div>
       )}
     </div>
