@@ -63,7 +63,7 @@ export const SketchModulesDialog = ({ closeDialog }: GlobalDialogProps) => {
 
   return (
     <Dialog onBackgroundClick={closeDialog}>
-      <Panel size="full" style={{ maxWidth: '60rem' }}>
+      <Panel width="full" height="full" style={{ maxWidth: '60rem' }}>
         <PanelHeader iconName="add_circle" buttonOnClick={closeDialog}>
           Add sketch to scene
         </PanelHeader>

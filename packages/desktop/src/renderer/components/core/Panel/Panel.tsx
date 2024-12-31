@@ -4,10 +4,22 @@ import { Button } from '@components/core/Button/Button'
 import { Icon, IconName } from '@components/core/Icon/Icon'
 
 export interface PanelProps extends React.HTMLAttributes<HTMLDivElement> {
-  size?: 'full'
+  width?: 'full'
+  height?: 'full'
+  snugPosition?: 'bottom'
+  spacing?: 'slim'
 }
 
-export const Panel = ({ children, size, className, onClick, ...props }: PanelProps) => {
+export const Panel = ({
+  children,
+  width,
+  height,
+  className,
+  snugPosition,
+  spacing,
+  onClick,
+  ...props
+}: PanelProps) => {
   const onClickHandler = useCallback<MouseEventHandler<HTMLDivElement>>(
     (e) => {
       e.stopPropagation()
@@ -17,7 +29,18 @@ export const Panel = ({ children, size, className, onClick, ...props }: PanelPro
   )
 
   return (
-    <div onClick={onClickHandler} className={`${c.wrapper} ${size} ${className}`} {...props}>
+    <div
+      onClick={onClickHandler}
+      className={`
+        ${c.wrapper}
+        ${className}
+        ${snugPosition}
+        ${width === 'full' && c.widthFull}
+        ${height === 'full' && c.heightFull}
+        ${spacing === 'slim' && c.slim}
+      `}
+      {...props}
+    >
       {children}
     </div>
   )
