@@ -3,13 +3,17 @@ import c from './NodeControl.module.css'
 
 export interface NodeControlProps {
   isActive?: boolean
+  color?: 'light'
   children: React.ReactNode
   onClick?: () => void
 }
 
-export const NodeControl = ({ isActive, children, onClick }: NodeControlProps) => {
+export const NodeControl = ({ isActive, children, color, onClick }: NodeControlProps) => {
   return (
-    <div onClick={onClick} className={`${c.wrapper} ${isActive && 'active'}`}>
+    <div
+      onClick={onClick}
+      className={`${c.wrapper} ${isActive && 'active'} ${color === 'light' && c.colorLight}`}
+    >
       {children}
     </div>
   )
