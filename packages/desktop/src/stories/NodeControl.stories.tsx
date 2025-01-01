@@ -29,14 +29,14 @@ interface BasicProps {
   onClick: () => void
 }
 
-export const Number = ({ title = 'Short Name', color, isActive, onClick }: BasicProps) => {
+export const Number = ({ title = 'Short Name', isActive, onClick }: BasicProps) => {
   const ref = useRef<FloatSliderHandle>(null)
 
   useInterval(() => {
     ref.current!.drawBar(Math.random())
   }, 3000)
   return (
-    <NodeControl isActive={isActive} onClick={onClick} color={color}>
+    <NodeControl isActive={isActive} onClick={onClick}>
       <NodeControlMain>
         <NodeControlTitle>{title}</NodeControlTitle>
         <NodeControlInner>
@@ -47,14 +47,14 @@ export const Number = ({ title = 'Short Name', color, isActive, onClick }: Basic
   )
 }
 
-export const Boolean = ({ title = 'Boolean Thing', isActive, color, onClick }: BasicProps) => {
+export const Boolean = ({ title = 'Boolean Thing', isActive, onClick }: BasicProps) => {
   const ref = useRef<BooleanToggleHandle>(null)
 
   useInterval(() => {
     ref.current!.setChecked(Math.random() > 0.5)
   }, 3000)
   return (
-    <NodeControl isActive={isActive} onClick={onClick} color={color}>
+    <NodeControl isActive={isActive} onClick={onClick}>
       <NodeControlMain>
         <NodeControlTitle>{title}</NodeControlTitle>
         <NodeControlInner>
@@ -76,32 +76,16 @@ const params = [
   'another long param',
 ]
 
-interface GridProps {
-  color?: 'light'
-}
-
-export const WithControlGrid = ({ color }: GridProps) => {
+export const WithControlGrid = () => {
   const [activeId, setActiveId] = useState(0)
 
   return (
     <ControlGrid>
       {params.map((item, i) =>
         i % 2 == 0 ? (
-          <Number
-            key={i}
-            title={item}
-            isActive={activeId === i}
-            onClick={() => setActiveId(i)}
-            color={color}
-          />
+          <Number key={i} title={item} isActive={activeId === i} onClick={() => setActiveId(i)} />
         ) : (
-          <Boolean
-            key={i}
-            title={item}
-            isActive={activeId === i}
-            onClick={() => setActiveId(i)}
-            color={color}
-          />
+          <Boolean key={i} title={item} isActive={activeId === i} onClick={() => setActiveId(i)} />
         ),
       )}
     </ControlGrid>
@@ -112,7 +96,7 @@ export const GridOnPanel = () => (
   <Panel spacing="slim">
     <PanelHeader iconName="power">Foo Bar</PanelHeader>
     <PanelBody>
-      <WithControlGrid color="light" />
+      <WithControlGrid />
     </PanelBody>
   </Panel>
 )

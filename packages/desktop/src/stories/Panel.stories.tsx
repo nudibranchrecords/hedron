@@ -199,7 +199,7 @@ export const BottomPanel: Story = {
           Position X Input
         </PanelHeader>
         <PanelBody>
-          <WithControlGrid color="light" />
+          <WithControlGrid />
         </PanelBody>
       </Panel>
     )

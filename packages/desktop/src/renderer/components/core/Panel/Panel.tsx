@@ -75,13 +75,15 @@ export const PanelHeader = ({
   </div>
 )
 
-export interface PanelBodyProps {
+export interface PanelBodyProps extends React.HTMLAttributes<HTMLDivElement> {
   children: React.ReactNode
   scrollable?: boolean
 }
 
-export const PanelBody = ({ children, scrollable }: PanelBodyProps) => (
-  <div className={`${c.body} ${scrollable && 'scrollable'}`}>{children}</div>
+export const PanelBody = ({ children, scrollable, className }: PanelBodyProps) => (
+  <div className={`themeLevel1 ${c.body} ${scrollable && 'scrollable'} ${className}`}>
+    {children}
+  </div>
 )
 
 export interface PanelActionsProps {
