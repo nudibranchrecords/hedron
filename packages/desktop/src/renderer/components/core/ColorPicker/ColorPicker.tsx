@@ -1,5 +1,21 @@
-import { forwardRef, useCallback, useEffect, useImperativeHandle, useRef, useState } from 'react'
-import { Colorful, ColorResult, rgbaToHex } from '@uiw/react-color'
+import {
+  forwardRef,
+  useCallback,
+  useEffect,
+  useImperativeHandle,
+  useMemo,
+  useRef,
+  useState,
+} from 'react'
+import {
+  Colorful,
+  ColorResult,
+  hexToHsva,
+  HsvaColor,
+  hsvaToHex,
+  rgbaToHex,
+  rgbaToHsva,
+} from '@uiw/react-color'
 import { useFloating, shift, offset } from '@floating-ui/react-dom'
 import css from './ColorPicker.module.css'
 
@@ -13,13 +29,15 @@ interface ColorPickerProps {
   onValueChange: (value: RGBColor) => void
 }
 
+const defaultColor: HsvaColor = hexToHsva('#FFFFFF')
+
 export const ColorPicker = forwardRef<ColorPickerHandle, ColorPickerProps>(function ColorPicker(
   { onValueChange },
   ref,
 ) {
   const colorBoxRef = useRef<HTMLDivElement>(null)
-  const [color, setColor] = useState('#ffffff')
-  const colorRef = useRef('#ffffff')
+  const [color, setColor] = useState<HsvaColor>(defaultColor)
+  const colorRef = useRef<HsvaColor>(defaultColor)
   const [isOpen, setIsOpen] = useState(false)
   const { refs, floatingStyles } = useFloating({
     middleware: [shift({ padding: 10 }), offset({ mainAxis: 10 })],
@@ -35,8 +53,8 @@ export const ColorPicker = forwardRef<ColorPickerHandle, ColorPickerProps>(funct
   }, [])
 
   const onChange = useCallback(
-    ({ rgb: { r, g, b }, hex }: ColorResult) => {
-      setColor(hex)
+    ({ rgb: { r, g, b }, hsva }: ColorResult) => {
+      setColor(hsva)
       onValueChange([r / 255, g / 255, b / 255])
     },
     [onValueChange],
@@ -56,18 +74,21 @@ export const ColorPicker = forwardRef<ColorPickerHandle, ColorPickerProps>(funct
 
   // Avoiding using state to keep external frequent updates performant
   const updateColor = useCallback(([r, g, b]: RGBColor) => {
-    const hex = rgbaToHex({ r: r * 255, g: g * 255, b: b * 255, a: 1 })
-    colorBoxRef.current?.style.setProperty('background-color', hex)
-    colorRef.current = hex
+    const rgba = { r: r * 255, g: g * 255, b: b * 255, a: 1 }
+    const hsva = rgbaToHsva(rgba)
+    colorBoxRef.current?.style.setProperty('background-color', rgbaToHex(rgba))
+    colorRef.current = hsva
   }, [])
 
   useImperativeHandle(ref, () => ({ updateColor }), [updateColor])
+
+  const backgroundColor = useMemo(() => hsvaToHex(color), [color])
 
   return (
     <div className={css.container} ref={refs.setReference}>
       <div
         className={css.colorBox}
-        style={{ backgroundColor: color }}
+        style={{ backgroundColor }}
         onClick={onBoxClick}
         ref={colorBoxRef}
       />
