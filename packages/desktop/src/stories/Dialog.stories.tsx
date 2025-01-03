@@ -92,7 +92,7 @@ export const WithScroll = () => {
       </div>
       {!isHidden && (
         <Dialog>
-          <Panel size="full" style={{ maxWidth: '60rem' }}>
+          <Panel width="full" height="full" style={{ maxWidth: '60rem' }}>
             <PanelHeader iconName={sketchIcon} buttonOnClick={() => setIsHidden(true)}>
               Add Sketch To Scene
             </PanelHeader>

@@ -1,27 +1,30 @@
 import { useMemo } from 'react'
-import { Param } from '@hedron/engine'
+import { ParamWithInfo } from '@hedron/engine'
 import { useActiveSketch } from '@components/hooks/useActiveSketch'
 import { useEngineStore } from '@renderer/engine'
 
-export type ParamWithInfo = Param & { title: string | undefined }
-
 export const useActiveSketchParams = () => {
   const activeSketch = useActiveSketch()
-  const nodes = useEngineStore((state) => state.nodes)
-  const module = useEngineStore(
-    (state) => activeSketch && state.sketchModules[activeSketch.moduleId],
-  )
 
-  const params: ParamWithInfo[] = useMemo(() => {
-    if (activeSketch) {
-      return activeSketch.paramIds.map((id, index) => {
+  if (!activeSketch) {
+    throw new Error('useActiveSketchParams hook: No active sketch found')
+  }
+
+  const [nodes, module] = useEngineStore((state) => [
+    state.nodes,
+    state.sketchModules[activeSketch.moduleId],
+  ])
+
+  const params: ParamWithInfo[] = useMemo(
+    () =>
+      activeSketch.paramIds.map((id, index) => {
         const node = nodes[id]
-        const title = module?.config.params[index]?.title
+        const paramConfig = module?.config.params[index]
+        const title = paramConfig?.title ?? paramConfig?.key
         return { ...node, title }
-      })
-    }
-    return []
-  }, [activeSketch, nodes, module])
+      }),
+    [activeSketch, nodes, module],
+  )
 
   return params
 }

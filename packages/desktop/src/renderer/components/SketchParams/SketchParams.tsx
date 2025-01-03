@@ -1,6 +1,6 @@
-import { NodeTypes } from '@hedron/engine'
+import { NodeTypes, ParamWithInfo } from '@hedron/engine'
 import { useOnSelectNode } from '@components/hooks/useOnSelectNode'
-import { ParamWithInfo, useActiveSketchParams } from '@components/hooks/useActiveSketchParams'
+import { useActiveSketchParams } from '@components/hooks/useActiveSketchParams'
 import { ParamNumber } from '@components/ParamNumber/ParamNumber'
 import { ParamBoolean } from '@components/ParamBoolean/ParamBoolean'
 import { ParamEnum } from '@components/ParamEnum/ParamEnum'
@@ -39,7 +39,7 @@ const ParamItem = ({ param: { key, title, id, sketchId, valueType } }: ParamProp
   return (
     <NodeControl key={key} onClick={onSelectNode} isActive={id === selected}>
       <NodeControlMain>
-        <NodeControlTitle>{title ?? key}</NodeControlTitle>
+        <NodeControlTitle>{title}</NodeControlTitle>
         <NodeControlInner>{getInputElement(valueType, id)}</NodeControlInner>
       </NodeControlMain>
     </NodeControl>

@@ -1,8 +1,16 @@
+:root {
+  --nodeControlBackgroundColor: var(--bgColorDark2);
+}
+
+:global(.themeLevel1) {
+  --nodeControlBackgroundColor: var(--bgColorDark1);
+}
+
 .wrapper {
   border-radius: 3px;
   color: var(--textColorLight1);
   fill: var(--textColorLight1);
-  background-color: var(--bgColorDark2);
+  background-color: var(--nodeControlBackgroundColor);
   padding: var(--gapSmall);
   display: flex;
   flex-direction: column;

@@ -5,7 +5,9 @@ import { useActiveSketch } from '@components/hooks/useActiveSketch'
 import { Button } from '@components/core/Button/Button'
 import { ViewHeader } from '@components/core/ViewHeader/ViewHeader'
 import { Card, CardActions } from '@components/core/Card/Card'
-import { Icon } from '@components/core/Icon/Icon'
+import { Icon, paramIcon } from '@components/core/Icon/Icon'
+import { Panel, PanelBody, PanelHeader } from '@components/core/Panel/Panel'
+import { useSelectedParam } from '@components/hooks/useSelectedParam'
 
 export const ActiveSketch = () => {
   const activeSketch = useActiveSketch()
@@ -13,6 +15,8 @@ export const ActiveSketch = () => {
   if (!activeSketch) {
     throw new Error('ActiveSketch component: No activesketch found')
   }
+
+  const selectedParam = useSelectedParam()
 
   return (
     <>
@@ -33,6 +37,12 @@ export const ActiveSketch = () => {
           </Button>
         </CardActions>
       </Card>
+      {selectedParam && (
+        <Panel snugPosition="bottom" spacing="slim" width="full" className={c.bottomPanel}>
+          <PanelHeader iconName={paramIcon}>{selectedParam.title}</PanelHeader>
+          <PanelBody>:)</PanelBody>
+        </Panel>
+      )}
     </>
   )
 }

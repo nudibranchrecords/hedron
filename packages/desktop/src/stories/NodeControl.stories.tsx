@@ -13,6 +13,7 @@ import { ControlGrid } from '@components/core/ControlGrid/ControlGrid'
 
 import { FloatSlider, FloatSliderHandle } from '@components/core/FloatSlider/FloatSlider'
 import { BooleanToggle, BooleanToggleHandle } from '@components/core/BooleanToggle/BooleanToggle'
+import { Panel, PanelBody, PanelHeader } from '@components/core/Panel/Panel'
 
 const meta = {
   title: 'NodeControl',
@@ -24,6 +25,7 @@ export default meta
 interface BasicProps {
   title: string
   isActive?: boolean
+  color?: 'light'
   onClick: () => void
 }
 
@@ -89,3 +91,12 @@ export const WithControlGrid = () => {
     </ControlGrid>
   )
 }
+
+export const GridOnPanel = () => (
+  <Panel spacing="slim">
+    <PanelHeader iconName="power">Foo Bar</PanelHeader>
+    <PanelBody>
+      <WithControlGrid />
+    </PanelBody>
+  </Panel>
+)
