@@ -18,9 +18,11 @@ export type IconName =
   | 'token'
   | 'close'
   | 'panorama'
+  | 'tune'
 
 export const sketchIcon: IconName = 'token'
 export const sceneIcon: IconName = 'panorama'
+export const paramIcon: IconName = 'tune'
 
 export interface IconProps extends React.HTMLAttributes<HTMLSpanElement> {
   name: IconName

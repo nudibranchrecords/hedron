@@ -5,7 +5,7 @@ import { useActiveSketch } from '@components/hooks/useActiveSketch'
 import { Button } from '@components/core/Button/Button'
 import { ViewHeader } from '@components/core/ViewHeader/ViewHeader'
 import { Card, CardActions } from '@components/core/Card/Card'
-import { Icon } from '@components/core/Icon/Icon'
+import { Icon, paramIcon } from '@components/core/Icon/Icon'
 import { Panel, PanelBody, PanelHeader } from '@components/core/Panel/Panel'
 import { useSelectedParam } from '@components/hooks/useSelectedParam'
 
@@ -38,8 +38,8 @@ export const ActiveSketch = () => {
         </CardActions>
       </Card>
       {selectedParam && (
-        <Panel snugPosition="bottom" spacing="slim" width="full">
-          <PanelHeader iconName="info">{selectedParam.title}</PanelHeader>
+        <Panel snugPosition="bottom" spacing="slim" width="full" className={c.bottomPanel}>
+          <PanelHeader iconName={paramIcon}>{selectedParam.title}</PanelHeader>
           <PanelBody>:)</PanelBody>
         </Panel>
       )}
