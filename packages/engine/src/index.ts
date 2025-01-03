@@ -1,4 +1,5 @@
 export * from './HedronEngine'
 export type * from '@store/types'
 export * from '@store/types'
+export { getParamWithInfo } from '@store/selectors/getParamWithInfo'
 import './globalVars'
