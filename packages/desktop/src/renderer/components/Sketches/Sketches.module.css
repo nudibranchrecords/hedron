@@ -6,6 +6,7 @@
 .main {
   flex: 1;
   padding: var(--gapLarge);
+  position: relative;
 }
 
 .nav {

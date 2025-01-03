@@ -6,10 +6,21 @@
   background-color: var(--bgColorDark2);
   box-shadow: 3px 3px 0 0 black;
 
-  &:global(.full) {
-    width: 100%;
-    height: 100%;
+  &:global(.bottom) {
+    border-radius: 0;
+    box-shadow: none;
+    border-left: 0;
+    border-right: 0;
+    border-bottom: 0;
   }
+}
+
+.heightFull {
+  height: 100%;
+}
+
+.widthFull {
+  width: 100%;
 }
 
 .header {
@@ -42,4 +53,22 @@
 
 .button {
   margin-left: auto;
+}
+
+.slim {
+  .body,
+  .header {
+    padding: var(--gapLarge);
+  }
+
+  .header {
+    .icon {
+      font-size: 1rem;
+      margin-right: var(--gapSmall);
+    }
+
+    h2 {
+      font-size: 1rem;
+    }
+  }
 }
