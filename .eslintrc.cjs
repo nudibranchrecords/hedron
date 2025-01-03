@@ -19,7 +19,6 @@ module.exports = {
       {
         patterns: [
           '../*', // Disallow relative imports that go up a directory
-          './*/**', // Disallow relative imports that go down a directory
           'src/*', // Disallow absolute imports starting with `src/` and enforce alias usage
         ],
       },

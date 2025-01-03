@@ -1,3 +1,4 @@
+import { addNode } from '@store/shared/addNode'
 import { NodeTypes, SetterCreator } from '@store/types'
 import { createUniqueId } from '@utils/createUniqueId'
 
@@ -17,35 +18,15 @@ export const createUpdateSketchParams: SetterCreator<'updateSketchParams'> =
 
       // 1. Add new params that are in the new config but not in the current sketch.
       for (const paramConfig of config.params) {
-        const valueType = paramConfig.valueType ?? NodeTypes.Number
-        const { key, defaultValue } = paramConfig
-
         // Find existing node for this key, if any.
-        let paramId = Array.from(existingParamIds).find((id) => state.nodes[id]?.key === key)
+        let paramId = Array.from(existingParamIds).find(
+          (id) => state.nodes[id]?.key === paramConfig.key,
+        )
 
         // If no existing node, create a new one.
         if (!paramId) {
           paramId = createUniqueId()
-          state.nodes[paramId] = {
-            id: paramId,
-            key,
-            type: 'param' as const,
-            valueType,
-            sketchId,
-          }
-
-          // Set the default value if it matches the valueType.
-          if (
-            (typeof defaultValue === 'number' && valueType === NodeTypes.Number) ||
-            (typeof defaultValue === 'boolean' && valueType === NodeTypes.Boolean) ||
-            (typeof defaultValue === 'string' && valueType === NodeTypes.Enum)
-          ) {
-            state.nodeValues[paramId] = defaultValue
-          } else {
-            throw new Error(
-              `valueType of param ${paramConfig.key} does not match defaultValue for sketch ${moduleId}`,
-            )
-          }
+          addNode(state, paramId, sketchId, paramConfig)
         }
 
         // Add this paramId to the new list.
@@ -55,8 +36,17 @@ export const createUpdateSketchParams: SetterCreator<'updateSketchParams'> =
 
       // 2. Remove params that are no longer in the new config.
       for (const oldParamId of existingParamIds) {
+        const oldNode = state.nodes[oldParamId]
         delete state.nodes[oldParamId]
         delete state.nodeValues[oldParamId]
+
+        // Remove vector child nodes if they exist
+        if (oldNode.valueType === NodeTypes.Vector3) {
+          oldNode.childNodeIds.forEach((childNodeId) => {
+            delete state.nodes[childNodeId]
+            delete state.nodeValues[childNodeId]
+          })
+        }
       }
 
       // 3. Update the sketch with the new list of param IDs.

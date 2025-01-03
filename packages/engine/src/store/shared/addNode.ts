@@ -1,0 +1,63 @@
+import { EngineState, NodeTypes, SketchConfigParam } from '@store/types'
+import { createUniqueId } from '@utils/createUniqueId'
+
+const vector3Keys = ['x', 'y', 'z']
+
+export const addNode = (
+  state: EngineState,
+  paramId: string,
+  sketchId: string,
+  { key, valueType = NodeTypes.Number, defaultValue }: SketchConfigParam,
+) => {
+  if (valueType === NodeTypes.Vector3) {
+    if (!Array.isArray(defaultValue)) {
+      throw new Error(`Expected defaultValue to be an array for Vector3 type`)
+    }
+
+    const childNodeIds = Array.from({ length: 3 }, createUniqueId) as [string, string, string]
+
+    state.nodes[paramId] = {
+      id: paramId,
+      key,
+      type: 'param',
+      valueType,
+      sketchId,
+      childNodeIds,
+    }
+
+    childNodeIds.forEach((childNodeId, index) => {
+      state.nodes[childNodeId] = {
+        id: childNodeId,
+        key: vector3Keys[index],
+        type: 'param',
+        valueType: NodeTypes.Number,
+        sketchId,
+      }
+    })
+
+    defaultValue.forEach((value: number, index: number) => {
+      state.nodeValues[childNodeIds[index]] = value
+    })
+  } else {
+    state.nodes[paramId] = {
+      id: paramId,
+      key,
+      type: 'param' as const,
+      valueType,
+      sketchId,
+    }
+
+    // Set the default value if it matches the valueType.
+    if (
+      (typeof defaultValue === 'number' && valueType === NodeTypes.Number) ||
+      (typeof defaultValue === 'boolean' && valueType === NodeTypes.Boolean) ||
+      (typeof defaultValue === 'string' && valueType === NodeTypes.Enum)
+    ) {
+      state.nodeValues[paramId] = defaultValue
+    } else {
+      throw new Error(
+        `valueType of param ${key} does not match defaultValue for sketch ${sketchId}`,
+      )
+    }
+  }
+}

@@ -1,4 +1,5 @@
-import { SetterCreator, NodeTypes } from '@store/types'
+import { addNode } from '@store/shared/addNode'
+import { SetterCreator } from '@store/types'
 import { createUniqueId } from '@utils/createUniqueId'
 
 export const createAddSketch: SetterCreator<'addSketch'> = (setState) => (moduleId: string) => {
@@ -8,31 +9,9 @@ export const createAddSketch: SetterCreator<'addSketch'> = (setState) => (module
     const paramIds = []
 
     for (const paramConfig of config.params) {
-      const valueType = paramConfig.valueType ?? NodeTypes.Number
-      const { key, defaultValue } = paramConfig
       const id = createUniqueId()
-
       paramIds.push(id)
-
-      state.nodes[id] = {
-        id,
-        key,
-        type: 'param' as const,
-        valueType,
-        sketchId: newSketchId,
-      }
-
-      if (
-        (typeof defaultValue === 'number' && valueType === NodeTypes.Number) ||
-        (typeof defaultValue === 'boolean' && valueType === NodeTypes.Boolean) ||
-        (typeof defaultValue === 'string' && valueType === NodeTypes.Enum)
-      ) {
-        state.nodeValues[id] = defaultValue
-      } else {
-        throw new Error(
-          `valueType of param ${paramConfig.key} does not match defaultValue for sketch ${moduleId}`,
-        )
-      }
+      addNode(state, id, newSketchId, paramConfig)
     }
 
     state.sketches[newSketchId] = {

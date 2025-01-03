@@ -22,6 +22,7 @@ export enum NodeTypes {
   Number = 'number',
   Boolean = 'boolean',
   Enum = 'enum',
+  Vector3 = 'vector3',
 }
 
 export interface NodeParamBase extends NodeBase {
@@ -43,7 +44,13 @@ export interface NodeParamEnum extends NodeParamBase {
   valueType: NodeTypes.Enum
 }
 
-export type Param = NodeParamBoolean | NodeParamNumber | NodeParamEnum
+export interface NodeParamVector3 extends NodeParamBase {
+  type: 'param'
+  valueType: NodeTypes.Vector3
+  childNodeIds: [string, string, string]
+}
+
+export type Param = NodeParamBoolean | NodeParamNumber | NodeParamEnum | NodeParamVector3
 
 export type Node = Param
 export type Nodes = { [key: string]: Node }
@@ -72,10 +79,16 @@ export interface SketchConfigParamEnum extends SketchConfigParamBase {
   options: EnumOption[]
 }
 
+export interface SketchConfigParamVector3 extends SketchConfigParamBase {
+  valueType: NodeTypes.Vector3
+  defaultValue: [number, number, number]
+}
+
 export type SketchConfigParam =
   | SketchConfigParamNumber
   | SketchConfigParamBoolean
   | SketchConfigParamEnum
+  | SketchConfigParamVector3
 
 export interface SketchConfig {
   title: string
