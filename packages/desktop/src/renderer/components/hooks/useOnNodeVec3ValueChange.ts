@@ -1,0 +1,19 @@
+import { useCallback } from 'react'
+import { useOnNodeValueChange } from './useOnNodeValueChange'
+
+export const useOnNodeVec3ValueChange = (id1: string, id2: string, id3: string) => {
+  const onValueChange1 = useOnNodeValueChange(id1)
+  const onValueChange2 = useOnNodeValueChange(id2)
+  const onValueChange3 = useOnNodeValueChange(id3)
+
+  const onVec3ValueChange = useCallback(
+    (value: [number, number, number]) => {
+      onValueChange1(value[0])
+      onValueChange2(value[1])
+      onValueChange3(value[2])
+    },
+    [onValueChange1, onValueChange2, onValueChange3],
+  )
+
+  return onVec3ValueChange
+}

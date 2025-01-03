@@ -13,6 +13,7 @@ import { ControlGrid } from '@components/core/ControlGrid/ControlGrid'
 
 import { FloatSlider, FloatSliderHandle } from '@components/core/FloatSlider/FloatSlider'
 import { BooleanToggle, BooleanToggleHandle } from '@components/core/BooleanToggle/BooleanToggle'
+import { ColorPickerHandle, ColorPicker } from '@components/core/ColorPicker/ColorPicker'
 import { Panel, PanelBody, PanelHeader } from '@components/core/Panel/Panel'
 
 const meta = {
@@ -65,15 +66,37 @@ export const Boolean = ({ title = 'Boolean Thing', isActive, onClick }: BasicPro
   )
 }
 
+export const Color = ({ title = 'Color Picker', isActive, onClick }: BasicProps) => {
+  const ref = useRef<ColorPickerHandle>(null)
+
+  useInterval(() => {
+    ref.current!.updateColor([Math.random(), Math.random(), Math.random()])
+  }, 3000)
+
+  return (
+    <NodeControl isActive={isActive} onClick={onClick}>
+      <NodeControlMain>
+        <NodeControlTitle>{title}</NodeControlTitle>
+        <NodeControlInner>
+          <ColorPicker ref={ref} onValueChange={fn()} />
+        </NodeControlInner>
+      </NodeControlMain>
+    </NodeControl>
+  )
+}
+
 const params = [
-  'Velocity X',
-  'Velocity Y',
-  'Rotation Speed X',
-  'Rotation Speed Y',
-  'some long name x',
-  'some other thing y',
-  'short',
-  'another long param',
+  ['Fun Param Name', 'number'],
+  ['Another Param', 'boolean'],
+  ['Color Picker', 'color'],
+  ['Color Picker', 'color'],
+  ['Slider', 'number'],
+  ['Toggle', 'boolean'],
+  ['Color Picker', 'color'],
+  ['Slider', 'number'],
+  ['Slider', 'number'],
+  ['Toggle', 'boolean'],
+  ['Color Picker', 'color'],
 ]
 
 export const WithControlGrid = () => {
@@ -81,13 +104,29 @@ export const WithControlGrid = () => {
 
   return (
     <ControlGrid>
-      {params.map((item, i) =>
-        i % 2 == 0 ? (
-          <Number key={i} title={item} isActive={activeId === i} onClick={() => setActiveId(i)} />
-        ) : (
-          <Boolean key={i} title={item} isActive={activeId === i} onClick={() => setActiveId(i)} />
-        ),
-      )}
+      {params.map(([title, type], i) => (
+        <>
+          {type === 'number' && (
+            <Number
+              key={i}
+              title={title}
+              isActive={activeId === i}
+              onClick={() => setActiveId(i)}
+            />
+          )}
+          {type === 'boolean' && (
+            <Boolean
+              key={i}
+              title={title}
+              isActive={activeId === i}
+              onClick={() => setActiveId(i)}
+            />
+          )}
+          {type === 'color' && (
+            <Color key={i} title={title} isActive={activeId === i} onClick={() => setActiveId(i)} />
+          )}
+        </>
+      ))}
     </ControlGrid>
   )
 }

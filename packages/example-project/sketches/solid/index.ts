@@ -1,15 +1,17 @@
 const { THREE } = window.HEDRON.dependencies
 const geomSize = 1
 
+const repositionVec = new THREE.Vector3(0.5, 0.5, 0.5)
+
 export default class Solid {
   root = new THREE.Group()
+  color = new THREE.Color()
+  mat = new THREE.MeshBasicMaterial({ wireframe: true })
 
   constructor() {
     // All sketches need root property to add things to
 
     this.meshes = {}
-
-    this.mat = new THREE.MeshBasicMaterial({ wireframe: true, color: 0xffffff })
 
     // Defining 5 geometries (the platonic solids!)
     const geoms = {
@@ -40,7 +42,13 @@ export default class Solid {
     this.root.rotation.y += params.rotSpeedY * baseSpeed * deltaFrame
     this.root.rotation.z += params.rotSpeedZ * baseSpeed * deltaFrame
 
-    this.root.position.set(...params.position)
+    // TODO: Won't need to do this once we have min/max values in the UI
+    this.root.position
+      .set(...params.position)
+      .sub(repositionVec)
+      .multiplyScalar(10)
+
+    this.mat.color.setRGB(...params.color)
 
     // Update scale using params
     this.root.scale.set(params.scale, params.scale, params.scale)
