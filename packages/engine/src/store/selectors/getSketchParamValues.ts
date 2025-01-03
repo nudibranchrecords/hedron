@@ -1,4 +1,4 @@
-import { EngineState } from '@store/types'
+import { EngineState, hasChildNodes } from '@store/types'
 
 // Get the values of the parameters of a sketch, dealing with child nodes
 export const getSketchParamValues = (state: EngineState, sketchId: string) => {
@@ -8,13 +8,14 @@ export const getSketchParamValues = (state: EngineState, sketchId: string) => {
   const sketch = sketches[sketchId]
 
   sketch.paramIds.forEach((id) => {
-    const { key, valueType } = nodes[id]
+    const node = nodes[id]
+    const { key } = node
 
     let value
 
-    if (valueType === 'vector3') {
-      // Return an array of values for vector3
-      const childNodeIds = nodes[id].childNodeIds
+    if (hasChildNodes(node)) {
+      // Return an array of values for nodes with child nodes
+      const childNodeIds = node.childNodeIds
       value = childNodeIds.map((childNodeId) => nodeValues[childNodeId])
     } else {
       value = nodeValues[id]

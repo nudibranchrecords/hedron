@@ -23,40 +23,63 @@ export enum NodeTypes {
   Boolean = 'boolean',
   Enum = 'enum',
   Vector3 = 'vector3',
+  RGB = 'rgb',
 }
 
+export const NodeTypesWithChildren = [NodeTypes.Vector3, NodeTypes.RGB] as const
+export type NodeTypeWithChildren = (typeof NodeTypesWithChildren)[number]
+
 export interface NodeParamBase extends NodeBase {
+  type: 'param'
   sketchId: string
 }
 
+export interface NodeParamWithChildren extends NodeParamBase {
+  childNodeIds: string[]
+  valueType: NodeTypeWithChildren
+}
+
 export interface NodeParamNumber extends NodeParamBase {
-  type: 'param'
   valueType: NodeTypes.Number
 }
 
 export interface NodeParamBoolean extends NodeParamBase {
-  type: 'param'
   valueType: NodeTypes.Boolean
 }
 
 export interface NodeParamEnum extends NodeParamBase {
-  type: 'param'
   valueType: NodeTypes.Enum
 }
 
-export interface NodeParamVector3 extends NodeParamBase {
-  type: 'param'
+export interface NodeParamVector3 extends NodeParamWithChildren {
   valueType: NodeTypes.Vector3
-  childNodeIds: [string, string, string]
 }
 
-export type Param = NodeParamBoolean | NodeParamNumber | NodeParamEnum | NodeParamVector3
+export interface NodeParamRGB extends NodeParamWithChildren {
+  valueType: NodeTypes.RGB
+}
+
+export type Param =
+  | NodeParamBoolean
+  | NodeParamNumber
+  | NodeParamEnum
+  | NodeParamVector3
+  | NodeParamRGB
 
 export type Node = Param
 export type Nodes = { [key: string]: Node }
 
 export type NodeValue = number | boolean | string
 export type NodeValues = { [key: string]: NodeValue }
+
+export const isNodeTypeWithChildren = (nodeType: NodeTypes): nodeType is NodeTypeWithChildren => {
+  return NodeTypesWithChildren.includes(nodeType as NodeTypeWithChildren)
+}
+
+// Utility type guard to check if a node has child nodes
+export const hasChildNodes = (node: Node): node is NodeParamWithChildren => {
+  return 'childNodeIds' in node
+}
 
 export interface SketchConfigParamBase {
   key: string
@@ -84,11 +107,17 @@ export interface SketchConfigParamVector3 extends SketchConfigParamBase {
   defaultValue: [number, number, number]
 }
 
+export interface SketchConfigParamRGB extends SketchConfigParamBase {
+  valueType: NodeTypes.RGB
+  defaultValue: [number, number, number]
+}
+
 export type SketchConfigParam =
   | SketchConfigParamNumber
   | SketchConfigParamBoolean
   | SketchConfigParamEnum
   | SketchConfigParamVector3
+  | SketchConfigParamRGB
 
 export interface SketchConfig {
   title: string

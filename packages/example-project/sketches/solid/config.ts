@@ -9,6 +9,12 @@ export default {
       defaultValue: [0, 0, 0],
     },
     {
+      key: 'color',
+      title: 'Color',
+      valueType: 'rgb',
+      defaultValue: [1, 1, 1],
+    },
+    {
       key: 'rotSpeedX',
       title: 'Rotation Speed X',
       defaultValue: 0.5,
