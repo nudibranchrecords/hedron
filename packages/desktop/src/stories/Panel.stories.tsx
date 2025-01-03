@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react'
 
 import { fn } from '@storybook/test'
+import { WithControlGrid } from './NodeControl.stories'
 import { Panel, PanelActions, PanelBody, PanelHeader } from '@components/core/Panel/Panel'
 import { Button } from '@components/core/Button/Button'
 
@@ -57,7 +58,7 @@ export const Scrollable: Story = {
   ],
   render: () => {
     return (
-      <Panel size="full">
+      <Panel height="full">
         <PanelHeader iconName="info">Welcome to the panel!</PanelHeader>
         <PanelBody scrollable>
           <p>
@@ -112,7 +113,7 @@ export const ScrollableWithoutActions: Story = {
   ],
   render: () => {
     return (
-      <Panel size="full">
+      <Panel height="full">
         <PanelHeader iconName="info">Welcome to the panel!</PanelHeader>
         <PanelBody scrollable>
           <p>
@@ -166,6 +167,39 @@ export const WithCloseButton: Story = {
             voluptatum quidem minus atque, numquam explicabo blanditiis ad corporis eligendi
             delectus, incidunt ipsum harum error. Quidem dolorem exercitationem nostrum dignissimos!
           </p>
+        </PanelBody>
+      </Panel>
+    )
+  },
+}
+
+export const BottomPanel: Story = {
+  parameters: {
+    layout: 'fullscreen',
+  },
+  decorators: [
+    (Story) => {
+      return (
+        <div
+          style={{
+            height: '100vh',
+            display: 'flex',
+            alignItems: 'flex-end',
+          }}
+        >
+          <Story />
+        </div>
+      )
+    },
+  ],
+  render: () => {
+    return (
+      <Panel snugPosition="bottom" spacing="slim" width="full">
+        <PanelHeader iconName="power" buttonOnClick={fn()}>
+          Position X Input
+        </PanelHeader>
+        <PanelBody>
+          <WithControlGrid />
         </PanelBody>
       </Panel>
     )
