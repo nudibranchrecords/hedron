@@ -69,15 +69,17 @@ export const FloatSlider = forwardRef<FloatSliderHandle, FloatSliderProps>(funct
     onResize,
   })
 
-  useElementScrub(canvasRef, (diff: number) => {
-    const newVal = Math.max(0, Math.min(1, currVal.current + diff))
+  const onElementScrub = useCallback(
+    (diff: number) => {
+      const newVal = Math.max(0, Math.min(1, currVal.current + diff))
 
-    drawBar(newVal)
+      drawBar(newVal)
+      onValueChange(newVal)
+    },
+    [drawBar, onValueChange],
+  )
 
-    // currVal.current = newVal
-
-    onValueChange(newVal)
-  })
+  useElementScrub(canvasRef, onElementScrub)
 
   useEffect(() => {
     const canvas = canvasRef.current!
