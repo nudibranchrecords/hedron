@@ -1,6 +1,8 @@
 const { THREE } = window.HEDRON.dependencies
 const geomSize = 1
 
+const repositionVec = new THREE.Vector3(0.5, 0.5, 0.5)
+
 export default class Solid {
   root = new THREE.Group()
   color = new THREE.Color()
@@ -40,7 +42,12 @@ export default class Solid {
     this.root.rotation.y += params.rotSpeedY * baseSpeed * deltaFrame
     this.root.rotation.z += params.rotSpeedZ * baseSpeed * deltaFrame
 
-    this.root.position.set(...params.position)
+    // TODO: Won't need to do this once we have min/max values in the UI
+    this.root.position
+      .set(...params.position)
+      .sub(repositionVec)
+      .multiplyScalar(10)
+
     this.mat.color.setRGB(...params.color)
 
     // Update scale using params
