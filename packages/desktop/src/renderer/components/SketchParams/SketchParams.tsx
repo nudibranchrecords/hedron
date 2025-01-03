@@ -4,6 +4,7 @@ import { ParamWithInfo, useActiveSketchParams } from '@components/hooks/useActiv
 import { ParamNumber } from '@components/ParamNumber/ParamNumber'
 import { ParamBoolean } from '@components/ParamBoolean/ParamBoolean'
 import { ParamEnum } from '@components/ParamEnum/ParamEnum'
+import { ParamVector3 } from '@components/ParamVector3/ParamVector3'
 import {
   NodeControl,
   NodeControlInner,
@@ -25,6 +26,8 @@ const getInputElement = (valueType: NodeTypes, id: string) => {
       return <ParamBoolean id={id} />
     case NodeTypes.Enum:
       return <ParamEnum id={id} />
+    case NodeTypes.Vector3:
+      return <ParamVector3 id={id} />
     default:
       return <i>Unsupported type {valueType}</i>
   }

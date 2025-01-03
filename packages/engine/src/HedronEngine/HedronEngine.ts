@@ -1,6 +1,6 @@
 import { listenToStore } from './storeListener'
-import { importSketchModule } from './importSketchModule'
 import { Result } from './types'
+import { importSketchModule } from './importSketchModule'
 import { stripForSave } from '@utils/stripForSave'
 import { Renderer } from '@world/Renderer'
 import { SketchManager } from '@world/SketchManager'
@@ -8,6 +8,7 @@ import { createDebugScene } from '@world/debugScene'
 import { EngineData, SketchModuleItem } from '@store/types'
 import { getSketchesOfModuleId } from '@store/selectors/getSketchesOfModuleId'
 import { createEngineStore, EngineStore } from '@store/engineStore'
+import { getSketchParamValues } from '@store/selectors/getSketchParamValues'
 
 export class HedronEngine {
   private renderer: Renderer
@@ -105,20 +106,14 @@ export class HedronEngine {
     const debugScene = createDebugScene(this.renderer)
 
     const loop = (): void => {
-      const { sketches, nodeValues, nodes } = this.store.getState()
+      const state = this.store.getState()
       const sketchInstances = this.sketchManager!.getSketchInstances()
       debugScene.clearPasses()
-      Object.values(sketches).forEach((sketch) => {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const paramValues: { [key: string]: any } = {}
 
-        sketch.paramIds.forEach((id) => {
-          const value = nodeValues[id]
-          const paramKey = nodes[id].key
-          paramValues[paramKey] = value
-        })
+      Object.keys(state.sketches).forEach((sketchId) => {
+        const paramValues = getSketchParamValues(state, sketchId)
 
-        const instance = sketchInstances[sketch.id]
+        const instance = sketchInstances[sketchId]
 
         if (instance.getPasses) {
           instance.getPasses(debugScene).forEach((pass) => {
