@@ -1,5 +1,10 @@
-import React, { useCallback, useRef, createContext, useContext, useEffect } from 'react'
+import React, { useCallback } from 'react'
 import c from './NodeControl.module.css'
+import {
+  MouseDownContext,
+  useWasMouseDownOnInnerContext,
+  useMouseDownOnInner,
+} from './wasMouseDownOnInner'
 
 export interface NodeControlProps {
   isActive?: boolean
@@ -7,19 +12,18 @@ export interface NodeControlProps {
   onClick?: () => void
 }
 
-const MouseDownContext = createContext<React.MutableRefObject<boolean> | null>(null)
-
 export const NodeControl = ({ isActive, children, onClick }: NodeControlProps) => {
-  const isMouseDown = useRef(false)
+  const wasMouseDownOnInner = useWasMouseDownOnInnerContext()
 
   const handleClick = useCallback(() => {
-    if (!isMouseDown.current) {
+    // Disable click event if mouse down started on inner
+    if (!wasMouseDownOnInner.current) {
       onClick?.()
     }
-  }, [onClick])
+  }, [wasMouseDownOnInner, onClick])
 
   return (
-    <MouseDownContext.Provider value={isMouseDown}>
+    <MouseDownContext.Provider value={wasMouseDownOnInner}>
       <div onClick={handleClick} className={`${c.wrapper} ${isActive && 'active'}`}>
         {children}
       </div>
@@ -48,35 +52,12 @@ export interface NodeControlInnerProps {
 }
 
 export const NodeControlInner = ({ children }: NodeControlInnerProps) => {
-  const isMouseDown = useContext(MouseDownContext)
-
-  const handleMouseDown = useCallback(() => {
-    if (isMouseDown) {
-      isMouseDown.current = true
-    }
-  }, [isMouseDown])
+  // Register mouse down on inner so click can be disabled if mouse is released outside of this component
+  const handleMouseDown = useMouseDownOnInner()
 
   const handleClick = useCallback((event: React.MouseEvent<HTMLDivElement>) => {
     event.stopPropagation()
   }, [])
-
-  useEffect(() => {
-    const handleDocumentMouseUp = () => {
-      if (isMouseDown) {
-        setTimeout(() => {
-          isMouseDown.current = false
-        }, 0)
-      }
-    }
-
-    // Add global mouseup listener
-    document.addEventListener('mouseup', handleDocumentMouseUp)
-
-    // Cleanup listener on component unmount
-    return () => {
-      document.removeEventListener('mouseup', handleDocumentMouseUp)
-    }
-  }, [isMouseDown])
 
   return (
     <div className={c.inner} onClick={handleClick} onMouseDown={handleMouseDown}>
