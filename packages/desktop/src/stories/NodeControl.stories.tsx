@@ -90,9 +90,9 @@ export const Color = ({ title = 'Color Picker', isActive, onClick }: BasicProps)
 }
 
 const options = [
-  { value: 'option1', label: 'Option 1' },
-  { value: 'option2', label: 'Option 2' },
-  { value: 'option3', label: 'Option 3' },
+  { value: 'option1', label: 'My Crazy Option' },
+  { value: 'option2', label: 'My Extra Long Option Name That Might Break Things' },
+  { value: 'option3', label: 'MyExtraLongOptionNameWithNoSpacesWow' },
 ]
 
 export const Enum = ({ title = 'Enum Dropdown', isActive, onClick }: BasicProps) => {

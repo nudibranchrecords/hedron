@@ -1,5 +1,6 @@
 import { forwardRef, useCallback, useImperativeHandle, useRef } from 'react'
 import { EnumOption } from '@hedron/engine'
+import c from './EnumDropdown.module.css'
 
 export type EnumDropdownHandle = {
   setValue: (value: string) => void
@@ -31,12 +32,14 @@ export const EnumDropdown = forwardRef<EnumDropdownHandle, EnumDropdownProps>(fu
   }, [setValue])
 
   return (
-    <select ref={selectRef} onChange={handleChange}>
-      {values.map((value) => (
-        <option key={value.label} value={value.value}>
-          {value.label}
-        </option>
-      ))}
-    </select>
+    <div className={c.wrapper}>
+      <select ref={selectRef} onChange={handleChange} className={c.wrapper}>
+        {values.map((value) => (
+          <option key={value.label} value={value.value}>
+            {value.label}
+          </option>
+        ))}
+      </select>
+    </div>
   )
 })
