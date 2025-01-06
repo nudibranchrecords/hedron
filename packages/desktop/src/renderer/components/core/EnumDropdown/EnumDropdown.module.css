@@ -25,24 +25,24 @@
   /* style */
   background-color: var(--enumBackgroundColor);
   height: 100%;
-  color: white;
   border-radius: var(--borderRadiusSubtle);
   padding: var(--gapSmall);
   font-weight: 200;
   font-size: 0.7rem;
   position: relative;
+  color: var(--textColorLight1);
 
   &::after {
     content: '';
     width: 0.6rem;
     height: 0.5rem;
-    background-color: white;
+    background-color: var(--textColorLight2);
     /* chevron pointing down */
     clip-path: polygon(100% 40%, 100% 57%, 50% 100%, 0 57%, 0 40%, 50% 80%);
     position: absolute;
     display: block;
     right: var(--gapSmall);
     top: 50%;
-    transform: translateY(-0.3rem);
+    transform: translateY(-0.35rem);
   }
 }
