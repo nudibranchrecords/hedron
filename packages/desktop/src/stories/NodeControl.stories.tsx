@@ -15,6 +15,10 @@ import { FloatSlider, FloatSliderHandle } from '@components/core/FloatSlider/Flo
 import { BooleanToggle, BooleanToggleHandle } from '@components/core/BooleanToggle/BooleanToggle'
 import { ColorPickerHandle, ColorPicker } from '@components/core/ColorPicker/ColorPicker'
 import { Panel, PanelBody, PanelHeader } from '@components/core/Panel/Panel'
+import {
+  EnumDropdown,
+  EnumDropdownHandle,
+} from '@renderer/components/core/EnumDropdown/EnumDropdown'
 
 const meta = {
   title: 'NodeControl',
@@ -85,6 +89,31 @@ export const Color = ({ title = 'Color Picker', isActive, onClick }: BasicProps)
   )
 }
 
+const options = [
+  { value: 'option1', label: 'Option 1' },
+  { value: 'option2', label: 'Option 2' },
+  { value: 'option3', label: 'Option 3' },
+]
+
+export const Enum = ({ title = 'Enum Dropdown', isActive, onClick }: BasicProps) => {
+  const ref = useRef<EnumDropdownHandle>(null)
+
+  useInterval(() => {
+    ref.current!.setValue(options[Math.floor(Math.random() * options.length)].value)
+  }, 3000)
+
+  return (
+    <NodeControl isActive={isActive} onClick={onClick}>
+      <NodeControlMain>
+        <NodeControlTitle>{title}</NodeControlTitle>
+        <NodeControlInner>
+          <EnumDropdown ref={ref} onValueChange={fn()} values={options} />
+        </NodeControlInner>
+      </NodeControlMain>
+    </NodeControl>
+  )
+}
+
 const params = [
   ['Fun Param Name', 'number'],
   ['Another Param', 'boolean'],
@@ -97,6 +126,7 @@ const params = [
   ['Slider', 'number'],
   ['Toggle', 'boolean'],
   ['Color Picker', 'color'],
+  ['Enum Dropdown', 'enum'],
 ]
 
 export const WithControlGrid = () => {
@@ -124,6 +154,9 @@ export const WithControlGrid = () => {
           )}
           {type === 'color' && (
             <Color key={i} title={title} isActive={activeId === i} onClick={() => setActiveId(i)} />
+          )}
+          {type === 'enum' && (
+            <Enum key={i} title={title} isActive={activeId === i} onClick={() => setActiveId(i)} />
           )}
         </>
       ))}
