@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useCallback } from 'react'
 import c from './NodeControl.module.css'
 
 export interface NodeControlProps {
@@ -36,5 +36,13 @@ export interface NodeControlInnerProps {
 }
 
 export const NodeControlInner = ({ children }: NodeControlInnerProps) => {
-  return <div className={c.inner}>{children}</div>
+  const handleClick = useCallback((event: React.MouseEvent<HTMLDivElement>) => {
+    event.stopPropagation()
+  }, [])
+
+  return (
+    <div className={c.inner} onClick={handleClick}>
+      {children}
+    </div>
+  )
 }
