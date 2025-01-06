@@ -1,0 +1,48 @@
+:root {
+  --enumBackgroundColor: var(--bgColorDark4);
+}
+
+:global(.themeLevel1) {
+  --enumBackgroundColor: var(--bgColorDark3);
+}
+
+.wrapper {
+  select {
+    /* reset */
+    appearance: none;
+    background-color: transparent;
+    border: none;
+    margin: 0;
+    width: 100%;
+    font-family: inherit;
+    font-size: inherit;
+    line-height: inherit;
+    z-index: 1;
+    outline: none;
+    padding: 0 1rem 0 0;
+  }
+
+  /* style */
+  background-color: var(--enumBackgroundColor);
+  height: 100%;
+  border-radius: var(--borderRadiusSubtle);
+  padding: var(--gapSmall);
+  font-weight: 200;
+  font-size: 0.7rem;
+  position: relative;
+  color: var(--textColorLight1);
+
+  &::after {
+    content: '';
+    width: 0.6rem;
+    height: 0.5rem;
+    background-color: var(--textColorLight2);
+    /* chevron pointing down */
+    clip-path: polygon(100% 40%, 100% 57%, 50% 100%, 0 57%, 0 40%, 50% 80%);
+    position: absolute;
+    display: block;
+    right: var(--gapSmall);
+    top: 50%;
+    transform: translateY(-0.35rem);
+  }
+}
