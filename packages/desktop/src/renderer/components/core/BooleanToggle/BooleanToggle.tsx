@@ -27,6 +27,11 @@ export const BooleanToggle = forwardRef<BooleanToggleHandle, BooleanToggleProps>
       return { setChecked }
     }, [setChecked])
 
-    return <input type="checkbox" className={css.input} ref={checkboxRef} onChange={handleChange} />
+    return (
+      <div className={css.wrapper}>
+        <input type="checkbox" className={css.input} ref={checkboxRef} onChange={handleChange} />
+        <label className={css.label} />
+      </div>
+    )
   },
 )
