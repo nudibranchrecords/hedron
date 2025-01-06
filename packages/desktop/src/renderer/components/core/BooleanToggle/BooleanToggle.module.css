@@ -30,6 +30,7 @@
     height: 1.3rem;
     display: block;
     opacity: 0.2;
+    pointer-events: none;
   }
 }
 
