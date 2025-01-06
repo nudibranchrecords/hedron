@@ -1,5 +1,10 @@
-import React from 'react'
+import React, { useCallback } from 'react'
 import c from './NodeControl.module.css'
+import {
+  MouseDownContext,
+  useWasMouseDownOnInnerContext,
+  useMouseDownOnInner,
+} from './wasMouseDownOnInner'
 
 export interface NodeControlProps {
   isActive?: boolean
@@ -8,10 +13,21 @@ export interface NodeControlProps {
 }
 
 export const NodeControl = ({ isActive, children, onClick }: NodeControlProps) => {
+  const wasMouseDownOnInner = useWasMouseDownOnInnerContext()
+
+  const handleClick = useCallback(() => {
+    // Disable click event if mouse down started on inner
+    if (!wasMouseDownOnInner.current) {
+      onClick?.()
+    }
+  }, [wasMouseDownOnInner, onClick])
+
   return (
-    <div onClick={onClick} className={`${c.wrapper} ${isActive && 'active'}`}>
-      {children}
-    </div>
+    <MouseDownContext.Provider value={wasMouseDownOnInner}>
+      <div onClick={handleClick} className={`${c.wrapper} ${isActive && 'active'}`}>
+        {children}
+      </div>
+    </MouseDownContext.Provider>
   )
 }
 
@@ -36,5 +52,16 @@ export interface NodeControlInnerProps {
 }
 
 export const NodeControlInner = ({ children }: NodeControlInnerProps) => {
-  return <div className={c.inner}>{children}</div>
+  // Register mouse down on inner so click can be disabled if mouse is released outside of this component
+  const handleMouseDown = useMouseDownOnInner()
+
+  const handleClick = useCallback((event: React.MouseEvent<HTMLDivElement>) => {
+    event.stopPropagation()
+  }, [])
+
+  return (
+    <div className={c.inner} onClick={handleClick} onMouseDown={handleMouseDown}>
+      {children}
+    </div>
+  )
 }
