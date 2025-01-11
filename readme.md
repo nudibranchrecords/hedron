@@ -1,3 +1,8 @@
+# 👋 Hello curious person! Hedron is [back in development](https://github.com/nudibranchrecords/hedron/issues/444) 🥳
+**What you're reading is the readme for the old version (v0.6.0), which still may be the best choice for you** 
+
+However, if you're interested, [find out more about v1.0.0](https://github.com/nudibranchrecords/hedron/issues/444)
+
 # <img src='http://nudibranchrecords.github.io/hedron/title.gif' alt='Hedron' />
 
 Perform live shows with your three.js creations.
