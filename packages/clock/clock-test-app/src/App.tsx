@@ -1,20 +1,28 @@
-import { useState } from 'react'
+import { useEffect, useRef } from 'react'
+// eslint-disable-next-line
+import { Clock } from '../../src/Clock'
+
+const clock = new Clock()
 
 function App() {
-  const [count, setCount] = useState(0)
+  const deltaRef = useRef<HTMLElement>(null)
+  useEffect(() => {
+    const update = () => {
+      deltaRef.current!.textContent = clock.delta.toString()
+      requestAnimationFrame(update)
+    }
+
+    requestAnimationFrame(update)
+  }, [])
 
   return (
-    <>
-      <div></div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>count is {count}</button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
+    <section>
+      <div className="grid">
+        <code ref={deltaRef}>{clock.delta}</code>
+        <button onClick={clock.start}>start</button>
+        <button onClick={clock.stop}>Stop</button>
       </div>
-      <p className="read-the-docs">Click on the Vite and React logos to learn more</p>
-    </>
+    </section>
   )
 }
 
