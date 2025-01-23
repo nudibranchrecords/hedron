@@ -1,0 +1,11 @@
+.arena {
+  background-color: black;
+  height: 300px;
+  position: relative;
+}
+
+.pip {
+  background-color: white;
+  height: 4px;
+  width: 4px;
+}

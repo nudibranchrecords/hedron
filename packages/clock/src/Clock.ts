@@ -4,7 +4,7 @@ export class Clock {
 
   public tick = () => {
     if (this.isRunning) {
-      this.delta++
+      this.delta += 0.1
       requestAnimationFrame(this.tick)
     }
   }
