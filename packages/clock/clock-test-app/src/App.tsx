@@ -8,17 +8,22 @@ const clock = new Clock()
 // arena height - pip height (see custom.css)
 const H = 300 - 4
 
+const TAU = Math.PI * 2
+
 const $y = (id: string, y: number) =>
   (document.querySelector<HTMLDivElement>(`#${id}`)!.style.transform = `translateY(${y}px)`)
 
 function App() {
   useEffect(() => {
     const update = () => {
-      document.querySelector('#clockDigit')!.textContent = clock.delta.toString()
+      const d = clock.getDelta()
 
-      $y('mod', clock.delta % H)
-      $y('sin', Math.sin(clock.delta) * H * 0.5 + H * 0.5)
-      $y('cos', Math.cos(clock.delta) * H * 0.5 + H * 0.5)
+      document.querySelector('#delta')!.textContent = d.toString()
+      document.querySelector('#beat')!.textContent = clock.getBeat().toString()
+
+      $y('mod', d % H)
+      $y('sin', Math.sin(d * TAU) * H * 0.5 + H * 0.5)
+      $y('sinBar', Math.sin((d * TAU) / 4) * H * 0.5 + H * 0.5)
 
       requestAnimationFrame(update)
     }
@@ -30,18 +35,22 @@ function App() {
     <>
       <section>
         <div className="grid">
-          <code id="clockDigit">{clock.delta}</code>
+          <code id="delta">{clock.getDelta()}</code>
           <button onClick={clock.start}>start</button>
-          <button onClick={clock.stop}>Stop</button>
+          <button onClick={clock.stop}>stop</button>
+          <button onClick={clock.reset}>reset</button>
         </div>
       </section>
       <section>
         <div className="arena grid">
           <div id="mod" className="pip"></div>
           <div id="sin" className="pip"></div>
-          <div id="cos" className="pip"></div>
+          <div id="sinBar" className="pip"></div>
         </div>
       </section>
+      <div className="grid">
+        <code id="beat"></code>
+      </div>
     </>
   )
 }
