@@ -21,9 +21,11 @@ function App() {
       document.querySelector('#delta')!.textContent = d.toString()
       document.querySelector('#beat')!.textContent = clock.getBeat().toString()
 
-      $y('mod', d % H)
+      $y('saw', (d * H) % H)
       $y('sin', Math.sin(d * TAU) * H * 0.5 + H * 0.5)
       $y('sinBar', Math.sin((d * TAU) / 4) * H * 0.5 + H * 0.5)
+      $y('square', Math.floor((d % 1) * 2) * H) // TODO: feels off...
+      $y('triangle', Math.abs((d % 1) * 2 - 1) * H)
 
       requestAnimationFrame(update)
     }
@@ -43,9 +45,11 @@ function App() {
       </section>
       <section>
         <div className="arena grid">
-          <div id="mod" className="pip"></div>
+          <div id="saw" className="pip"></div>
           <div id="sin" className="pip"></div>
           <div id="sinBar" className="pip"></div>
+          <div id="square" className="pip"></div>
+          <div id="triangle" className="pip"></div>
         </div>
       </section>
       <div className="grid">
