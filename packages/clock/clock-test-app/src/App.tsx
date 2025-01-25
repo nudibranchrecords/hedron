@@ -16,10 +16,10 @@ const $y = (id: string, y: number) =>
 function App() {
   useEffect(() => {
     const update = () => {
-      const d = clock.getDelta()
+      const d = clock.delta
 
       document.querySelector('#delta')!.textContent = d.toString()
-      document.querySelector('#beat')!.textContent = clock.getBeat().toString()
+      document.querySelector('#beat')!.textContent = clock.beat.toString()
 
       $y('saw', (d * H) % H)
       $y('sin', Math.sin(d * TAU) * H * 0.5 + H * 0.5)
@@ -37,7 +37,7 @@ function App() {
     <>
       <section>
         <div className="grid">
-          <code id="delta">{clock.getDelta()}</code>
+          <code id="delta"></code>
           <button onClick={clock.start}>start</button>
           <button onClick={clock.stop}>stop</button>
           <button onClick={clock.reset}>reset</button>

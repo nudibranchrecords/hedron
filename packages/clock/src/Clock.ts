@@ -5,7 +5,7 @@ const MS_PER_FRAME = 1000 / 60
 const TICK_INTERVAL = MS_PER_FRAME / MS_IN_BEAT
 
 export class Clock {
-  private beatDelta: number = 0 // Increments every frame, at a rate of exactly 1 per beat
+  private beatDelta: number = 0 // Increments fractionally every frame, at a rate of exactly 1 per beat
   private isRunning: boolean = false
   private startTimestamp: number | null = null
   private beatCount: number = 0
@@ -24,9 +24,13 @@ export class Clock {
     }
   }
 
-  public getDelta = () => this.beatDelta
+  get delta() {
+    return this.beatDelta
+  }
 
-  public getBeat = () => this.beatCount
+  get beat() {
+    return this.beatCount
+  }
 
   public stop = () => {
     this.isRunning = false
