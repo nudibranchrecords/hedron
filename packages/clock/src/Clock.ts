@@ -10,7 +10,7 @@ export class Clock {
     this.bpm = bpm
   }
 
-  public tick = (timestamp: number) => {
+  private tick = (timestamp: number) => {
     if (this._isRunning) {
       this._beatDelta += this._beatsPerMs * (timestamp - this._lastTimestamp)
       this._beatCount = Math.floor(this._beatDelta % 4) + 1
