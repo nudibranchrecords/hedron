@@ -50,6 +50,7 @@ function App() {
           <button onClick={clock.start}>start</button>
           <button onClick={clock.stop}>stop</button>
           <button onClick={clock.reset}>reset</button>
+          <button onClick={clock.sendTempoTap}>tap</button>
           <div>
             <code>
               Delta: <span id="delta"></span>
