@@ -1,4 +1,9 @@
+import { calculateTrimmedMean } from './utils'
+
 const MS_IN_MINUTE = 60000
+const MAX_TAPS = 64
+const MAX_TAP_INTERVAL = MS_IN_MINUTE / 20
+const TAP_ARR_TRIM = 0.1
 
 export class Clock {
   private _beatDelta: number = 0 // Increments fractionally every frame, at a rate of exactly 1 per beat
@@ -8,6 +13,7 @@ export class Clock {
   private _bpm: number = 0
   private _lastTimestamp: number | null = null
   private _lastTempoTap: number | null = null
+  private _tapIntervals: number[] = []
 
   constructor(bpm: number = 128) {
     this.bpm = bpm
@@ -62,6 +68,8 @@ export class Clock {
     this._beatDelta = 0
     this._beatCount = 0
     this._lastTimestamp = performance.now()
+    this._lastTempoTap = null
+    this._tapIntervals = []
   }
 
   public sendTempoTap = () => {
@@ -74,7 +82,22 @@ export class Clock {
 
     const delta = now - this._lastTempoTap
 
-    this.bpm = MS_IN_MINUTE / delta
+    if (delta > MAX_TAP_INTERVAL) {
+      this._lastTempoTap = now
+      this._tapIntervals = []
+      return
+    }
+
+    this._tapIntervals.push(delta)
+
+    if (this._tapIntervals.length > MAX_TAPS) {
+      this._tapIntervals.shift()
+    }
+
+    // For tapping, we want to ignore the fastest and slowest taps
+    const averageDelta = calculateTrimmedMean(this._tapIntervals, TAP_ARR_TRIM)
+    this.bpm = Math.round(MS_IN_MINUTE / averageDelta)
+
     this._lastTempoTap = now
   }
 }
