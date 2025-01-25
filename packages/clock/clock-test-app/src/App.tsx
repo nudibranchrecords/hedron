@@ -16,10 +16,10 @@ const $y = (id: string, y: number) =>
 function App() {
   useEffect(() => {
     const update = () => {
-      const d = clock.delta
+      const d = Math.round(clock.beatDelta * 1000) / 1000
 
       document.querySelector('#delta')!.textContent = d.toString()
-      document.querySelector('#beat')!.textContent = clock.beat.toString()
+      document.querySelector('#beat')!.textContent = clock.beatCount.toString()
 
       $y('saw', (d * H) % H)
       $y('sin', Math.sin(d * TAU) * H * 0.5 + H * 0.5)
