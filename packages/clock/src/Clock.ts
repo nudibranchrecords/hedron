@@ -15,9 +15,7 @@ export class Clock {
       this._beatDelta += this._beatsPerMs * (timestamp - this._lastTimestamp)
       this._beatCount = Math.floor(this._beatDelta % 4) + 1
 
-      requestAnimationFrame((t) => {
-        this.tick(t)
-      })
+      requestAnimationFrame(this.tick)
 
       this._lastTimestamp = timestamp
     }
