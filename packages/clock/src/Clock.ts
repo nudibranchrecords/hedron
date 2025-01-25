@@ -1,8 +1,8 @@
 import { calculateTrimmedMean } from './utils'
 
 const MS_IN_MINUTE = 60000
-const MAX_TAPS = 64
 const MAX_TAP_INTERVAL = MS_IN_MINUTE / 20
+const TAP_ARR_MAX_LEN = 64
 const TAP_ARR_TRIM = 0.1
 
 export class Clock {
@@ -90,7 +90,7 @@ export class Clock {
 
     this._tapIntervals.push(delta)
 
-    if (this._tapIntervals.length > MAX_TAPS) {
+    if (this._tapIntervals.length > TAP_ARR_MAX_LEN) {
       this._tapIntervals.shift()
     }
 
