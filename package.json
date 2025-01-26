@@ -6,8 +6,7 @@
       "packages/*"
     ],
     "nohoist": [
-      "**electron**",
-      "**vite**"
+      "**electron**"
     ]
   },
   "scripts": {
