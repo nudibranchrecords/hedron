@@ -1,6 +1,6 @@
 import { FormEvent, useEffect } from 'react'
 // eslint-disable-next-line
-import { Clock } from '../../src/Clock'
+import { Clock } from '@hedron/clock'
 import './custom.css'
 
 const clock = new Clock()

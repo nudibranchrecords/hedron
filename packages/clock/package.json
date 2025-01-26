@@ -1,22 +1,26 @@
 {
-  "name": "clock",
+  "name": "@hedron/clock",
   "version": "1.0.0-alpha.1",
   "description": "Clock Module",
   "author": "Alex Kempton <alex@funwithtriangles.net>",
   "homepage": "https://github.com/nudibranchrecords/hedron#readme",
   "license": "ISC",
-  "main": "lib/clock.js",
-  "directories": {
-    "lib": "lib"
+  "main": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "dev": "tsup --watch",
+    "build": "tsup",
+    "lint": "eslint . --ext .js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix"
   },
-  "files": [
-    "lib"
-  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/nudibranchrecords/hedron.git"
   },
   "bugs": {
     "url": "https://github.com/nudibranchrecords/hedron/issues"
+  },
+  "devDependencies": {
+    "tsup": "^8.3.6"
   }
 }

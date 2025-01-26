@@ -11,7 +11,8 @@
     ]
   },
   "scripts": {
-    "dev": "lerna run dev --parallel",
+    "dev": "lerna run dev --parallel --scope @hedron/engine --scope @hedron/desktop",
+    "dev:clock": "lerna run dev --parallel --scope @hedron/clock --scope @hedron/clock-test-app",
     "storybook": "lerna run storybook --scope @hedron/desktop",
     "build:engine": "lerna run build --scope @hedron/engine",
     "build": "lerna run build",

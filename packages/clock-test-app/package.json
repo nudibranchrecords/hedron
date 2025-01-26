@@ -1,7 +1,6 @@
 {
-  "name": "clock-test-app",
-  "private": true,
-  "version": "0.0.0",
+  "name": "@hedron/clock-test-app",
+  "version": "1.0.0-alpha.1",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -10,6 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@hedron/clock": "^1.0.0-alpha.1",
     "@picocss/pico": "^2.0.6",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
