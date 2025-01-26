@@ -4657,6 +4657,12 @@ __metadata:
   languageName: node
   linkType: hard
 
+"clock@workspace:packages/clock":
+  version: 0.0.0-use.local
+  resolution: "clock@workspace:packages/clock"
+  languageName: unknown
+  linkType: soft
+
 "clone-deep@npm:4.0.1":
   version: 4.0.1
   resolution: "clone-deep@npm:4.0.1"

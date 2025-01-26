@@ -16,7 +16,6 @@
     "type": "git",
     "url": "git+https://github.com/nudibranchrecords/hedron.git"
   },
-  "scripts": {},
   "bugs": {
     "url": "https://github.com/nudibranchrecords/hedron/issues"
   }
