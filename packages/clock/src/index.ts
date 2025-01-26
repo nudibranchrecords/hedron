@@ -114,8 +114,8 @@ export class Clock {
 
     const delta = now - this._lastPulseTimestamp
 
-    const bpm = MS_IN_MINUTE / delta / PPQN
-    this.bpm = Math.round(bpm)
+    const bpm = MS_IN_MINUTE / (delta * PPQN)
+    this.bpm = Math.round(bpm * 100) / 100
 
     this._lastPulseTimestamp = now
   }

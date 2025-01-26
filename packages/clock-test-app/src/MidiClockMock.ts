@@ -2,13 +2,13 @@ const PPQN = 24
 const MS_IN_MINUTE = 60000
 
 export class MidiClockMock {
-  private _bpm: number
+  private _bpm: number = 0
   private pulseCallback: (() => void) | null = null
-  private lastPulseTime: number = 0
+  private interval: number = 0
   public isEnabled = false
 
   constructor(bpm: number) {
-    this._bpm = bpm
+    this.bpm = bpm
     this.startLoop()
   }
 
@@ -18,6 +18,8 @@ export class MidiClockMock {
 
   set bpm(value: number) {
     this._bpm = value
+    this.interval = MS_IN_MINUTE / (this._bpm * PPQN)
+    console.log(this.interval)
   }
 
   onPulse(callback: () => void) {
@@ -25,21 +27,10 @@ export class MidiClockMock {
   }
 
   private startLoop() {
-    const pulse = (timestamp: number) => {
-      const interval = MS_IN_MINUTE / (this.bpm * PPQN)
-
-      if (!this.lastPulseTime) {
-        this.lastPulseTime = timestamp
-      }
-      const elapsed = timestamp - this.lastPulseTime
-      if (elapsed >= interval) {
-        this.lastPulseTime = timestamp
-
-        if (this.isEnabled) this.pulseCallback?.()
-      }
-
-      requestAnimationFrame(pulse)
+    const pulse = () => {
+      if (this.isEnabled) this.pulseCallback?.()
+      setTimeout(pulse, this.interval)
     }
-    requestAnimationFrame(pulse)
+    pulse()
   }
 }
