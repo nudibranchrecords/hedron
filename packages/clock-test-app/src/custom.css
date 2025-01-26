@@ -9,3 +9,9 @@
   height: 4px;
   width: 4px;
 }
+
+.box {
+  border: 1px solid white;
+  border-radius: 10px;
+  padding: var(--pico-block-spacing-vertical);
+}

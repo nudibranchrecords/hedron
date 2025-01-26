@@ -88,6 +88,25 @@ function App() {
           </form>
         </div>
       </section>
+
+      <section className="box">
+        <h2>MIDI Clock Mock</h2>
+        <div className="grid">
+          <div>
+            <label htmlFor="clockenable">Enable</label>
+            <input type="checkbox" id="clockenable" name="clockenable" />
+          </div>
+          <div>
+            BPM
+            <h3 id="clockbpm">100</h3>
+          </div>
+
+          <div>
+            <label htmlFor="clockrange">Set BPM</label>
+            <input type="range" min="0" max="100" id="range" name="range" />
+          </div>
+        </div>
+      </section>
     </>
   )
 }
