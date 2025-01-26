@@ -19,7 +19,6 @@ export class MidiClockMock {
   set bpm(value: number) {
     this._bpm = value
     this.interval = MS_IN_MINUTE / (this._bpm * PPQN)
-    console.log(this.interval)
   }
 
   onPulse(callback: () => void) {

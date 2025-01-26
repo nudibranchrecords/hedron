@@ -112,6 +112,10 @@ function App() {
 
       <section className="box">
         <h2>MIDI Clock Mock</h2>
+        {
+          "This is a mocked up MIDI clock written in JS. It's quite bad because JS doesn't do super accurate timing"
+        }
+        <hr />
         <div className="grid">
           <div>
             <label htmlFor="clockenable">Enable</label>
