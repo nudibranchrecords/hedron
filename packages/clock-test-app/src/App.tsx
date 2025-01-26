@@ -54,7 +54,7 @@ function App() {
     requestAnimationFrame(update)
 
     midiClockMock.onPulse(() => {
-      console.log('pulse')
+      clock.sendTimingClockPulse()
     })
   }, [])
 

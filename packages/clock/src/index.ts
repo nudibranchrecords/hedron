@@ -4,6 +4,7 @@ const MS_IN_MINUTE = 60000
 const MAX_TAP_INTERVAL = MS_IN_MINUTE / 20
 const TAP_ARR_MAX_LEN = 64
 const TAP_ARR_TRIM = 0.1
+const PPQN = 24
 
 export class Clock {
   private _beatDelta: number = 0 // Increments fractionally every frame, at a rate of exactly 1 per beat
@@ -14,6 +15,7 @@ export class Clock {
   private _lastTimestamp: number | null = null
   private _lastTempoTap: number | null = null
   private _tapIntervals: number[] = []
+  private _lastPulseTimestamp: number | null = null
 
   constructor(bpm: number = 128) {
     this.bpm = bpm
@@ -70,6 +72,7 @@ export class Clock {
     this._lastTimestamp = performance.now()
     this._lastTempoTap = null
     this._tapIntervals = []
+    this._lastPulseTimestamp = null
   }
 
   public sendTempoTap = () => {
@@ -99,5 +102,21 @@ export class Clock {
     this.bpm = Math.round(MS_IN_MINUTE / averageDelta)
 
     this._lastTempoTap = now
+  }
+
+  public sendTimingClockPulse = () => {
+    const now = performance.now()
+
+    if (this._lastPulseTimestamp === null) {
+      this._lastPulseTimestamp = now
+      return
+    }
+
+    const delta = now - this._lastPulseTimestamp
+
+    const bpm = MS_IN_MINUTE / delta / PPQN
+    this.bpm = Math.round(bpm)
+
+    this._lastPulseTimestamp = now
   }
 }
