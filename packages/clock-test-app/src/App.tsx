@@ -1,8 +1,12 @@
-import { FormEvent, useEffect } from 'react'
+import { FormEvent, useEffect, useState } from 'react'
 import { Clock } from '@hedron/clock'
 import './custom.css'
+import { MidiClockMock } from './MidiClockMock'
 
-const clock = new Clock()
+const DEFAULT_BPM = 120
+
+const clock = new Clock(DEFAULT_BPM)
+const midiClockMock = new MidiClockMock(DEFAULT_BPM)
 
 // arena height - pip height (see custom.css)
 const H = 300 - 4
@@ -17,6 +21,19 @@ const $y = (id: string, y: number) =>
   (document.querySelector<HTMLDivElement>(`#${id}`)!.style.transform = `translateY(${y}px)`)
 
 function App() {
+  const [mockBpm, setMockBpm] = useState(DEFAULT_BPM)
+
+  const onMockClockRangeChange = (e: FormEvent<HTMLInputElement>) => {
+    const bpm = Number(e.currentTarget.value)
+    setMockBpm(bpm)
+    midiClockMock.bpm = bpm
+    $text('clockbpm', bpm)
+  }
+
+  const onMockClockEnableChange = (e: FormEvent<HTMLInputElement>) => {
+    midiClockMock.isEnabled = e.currentTarget.checked
+  }
+
   useEffect(() => {
     const update = () => {
       const d = Math.round(clock.beatDelta * 1000) / 1000
@@ -35,6 +52,10 @@ function App() {
     }
 
     requestAnimationFrame(update)
+
+    midiClockMock.onPulse(() => {
+      console.log('pulse')
+    })
   }, [])
 
   const onBpmSubmit = (e: FormEvent) => {
@@ -94,16 +115,28 @@ function App() {
         <div className="grid">
           <div>
             <label htmlFor="clockenable">Enable</label>
-            <input type="checkbox" id="clockenable" name="clockenable" />
+            <input
+              type="checkbox"
+              id="clockenable"
+              name="clockenable"
+              onChange={onMockClockEnableChange}
+            />
           </div>
           <div>
             BPM
-            <h3 id="clockbpm">100</h3>
+            <h3 id="clockbpm">{mockBpm}</h3>
           </div>
 
           <div>
             <label htmlFor="clockrange">Set BPM</label>
-            <input type="range" min="0" max="100" id="range" name="range" />
+            <input
+              type="range"
+              min="30"
+              max="220"
+              id="range"
+              name="range"
+              onChange={onMockClockRangeChange}
+            />
           </div>
         </div>
       </section>
