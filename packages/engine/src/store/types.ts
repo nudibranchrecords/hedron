@@ -135,10 +135,19 @@ export type SketchModules = { [key: string]: SketchModuleItem }
 
 export type EnumOption = { value: string; label: string }
 
+export interface Input {
+  id: string
+  type: 'midi' | 'gamepad' | string
+  targetNodeIds: string[]
+}
+
+export type Inputs = { [key: string]: Input }
+
 export interface EngineData {
   sketches: Sketches
   nodes: Nodes
   nodeValues: NodeValues
+  inputs: Inputs
 }
 
 interface AuxState {
@@ -157,6 +166,10 @@ interface Actions {
   deleteSketchModule: (moduleId: string) => void
   loadProject: (project: EngineData) => void
   reset: () => void
+  addInput: (inputId: string, value: Input) => void
+  deleteInputParam: (inputId: string, paramId: string) => void
+  updateInputValues: (inputId: string, value: NodeValue) => void
+  addInputParam: (inputId: string, paramId: string) => void
 }
 
 export type EngineStateWithActions = EngineData & AuxState & Actions

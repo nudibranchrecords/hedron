@@ -8,6 +8,7 @@ import { Card, CardActions } from '@components/core/Card/Card'
 import { Icon, paramIcon } from '@components/core/Icon/Icon'
 import { Panel, PanelBody, PanelHeader } from '@components/core/Panel/Panel'
 import { useSelectedParam } from '@components/hooks/useSelectedParam'
+import { MidiSetting } from '@components/MidiSetting/MidiSetting'
 
 export const ActiveSketch = () => {
   const activeSketch = useActiveSketch()
@@ -40,7 +41,9 @@ export const ActiveSketch = () => {
       {selectedParam && (
         <Panel snugPosition="bottom" spacing="slim" width="full" className={c.bottomPanel}>
           <PanelHeader iconName={paramIcon}>{selectedParam.title}</PanelHeader>
-          <PanelBody>:)</PanelBody>
+          <PanelBody>
+            <MidiSetting param={selectedParam} />
+          </PanelBody>
         </Panel>
       )}
     </>

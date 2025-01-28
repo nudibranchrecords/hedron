@@ -18,6 +18,9 @@ export enum MidiMessageType {
   Unknown = 'Unknown',
 }
 
+/**
+ * A simple type that provides both the device and the message of a MIDI event.
+ */
 export type MIDIEvent = {
   device: MIDIInput
   message: MIDIMessageEvent

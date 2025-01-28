@@ -13,6 +13,12 @@ import { createUpdateSketchParams } from '@store/actionCreators/updateSketchPara
 import { createUpdateNodeValue } from '@store/actionCreators/updateNodeValue'
 import { createReset } from '@store/actionCreators/reset'
 import { createLoadProject } from '@store/actionCreators/loadProject'
+import { createUpdateInputValues } from '@store/actionCreators/createUpdateInputValues'
+import {
+  createAddInput,
+  createAddInputParam,
+  createDeleteInputParam,
+} from '@store/actionCreators/createAddInput'
 
 export const createEngineStore = () =>
   createStore<EngineStateWithActions>()(
@@ -28,6 +34,10 @@ export const createEngineStore = () =>
           deleteSketchModule: createDeleteSketchModule(set),
           reset: createReset(set),
           loadProject: createLoadProject(set),
+          updateInputValues: createUpdateInputValues(set),
+          addInput: createAddInput(set),
+          deleteInputParam: createDeleteInputParam(set),
+          addInputParam: createAddInputParam(set),
         })),
       ),
     ),

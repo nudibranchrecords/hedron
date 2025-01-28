@@ -1,3 +1,4 @@
+import { Midi, MIDIEvent } from '@hedron/midi'
 import { listenToStore } from './storeListener'
 import { Result } from './types'
 import { importSketchModule } from './importSketchModule'
@@ -5,7 +6,7 @@ import { stripForSave } from '@utils/stripForSave'
 import { Renderer } from '@world/Renderer'
 import { SketchManager } from '@world/SketchManager'
 import { createDebugScene } from '@world/debugScene'
-import { EngineData, SketchModuleItem } from '@store/types'
+import { EngineData, Input, SketchModuleItem } from '@store/types'
 import { getSketchesOfModuleId } from '@store/selectors/getSketchesOfModuleId'
 import { createEngineStore, EngineStore } from '@store/engineStore'
 import { getSketchParamValues } from '@store/selectors/getSketchParamValues'
@@ -15,11 +16,49 @@ export class HedronEngine {
   private store: EngineStore
   private sketchesUrl: string | null = null
   private sketchManager: SketchManager
+  private midi: Midi
 
   constructor() {
     this.store = createEngineStore()
     this.sketchManager = new SketchManager()
     this.renderer = new Renderer()
+    this.midi = new Midi()
+    this.midi.onMidiMessage.add((event) => {
+      const id = `${event.device.name} - ${event.message.data?.[1]}`.replace(/ /g, '_')
+      this.store.getState().updateInputValues(id, (event.message.data?.[2] || 0) / 127)
+    }, this)
+  }
+
+  public async awaitNextMidiMessage(): Promise<MIDIEvent | null> {
+    // null response would be canceling the midi learn, but that is not hooked up yet as there is no GUI
+    return new Promise((resolve) => {
+      const listener = (event: MIDIEvent) => {
+        this.midi.onMidiMessage.remove(listener)
+        resolve(event)
+      }
+      this.midi.onMidiMessage.add(listener)
+    })
+  }
+
+  public async midiLearn(paramId: string): Promise<Input> {
+    const event = await this.awaitNextMidiMessage()
+    if (!event) {
+      throw new Error('No MIDI event received')
+    }
+
+    const id = `${event.device.name} - ${event.message.data?.[1]}`.replace(/ /g, '_')
+    let input = this.store.getState().inputs[id]
+    if (!input) {
+      input = {
+        id,
+        type: 'midi',
+        targetNodeIds: [paramId],
+      }
+      this.store.getState().addInput(id, input)
+      return input
+    }
+    this.store.getState().addInputParam(id, paramId)
+    return input
   }
 
   public setSketchesUrl(sketchesUrl: string) {
@@ -100,6 +139,10 @@ export class HedronEngine {
 
   public getSaveData(): EngineData {
     return stripForSave(this.store.getState())
+  }
+
+  public deleteInputParam(inputId: string, nodeId: string) {
+    this.store.getState().deleteInputParam(inputId, nodeId)
   }
 
   run() {

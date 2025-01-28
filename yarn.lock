@@ -1180,6 +1180,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@hedron/engine@workspace:packages/engine"
   dependencies:
+    "@hedron/midi": "npm:^1.0.0-alpha.0"
     "@types/lodash.debounce": "npm:^4.0.9"
     lodash.debounce: "npm:^4.0.8"
     tsup: "npm:^8.3.5"
