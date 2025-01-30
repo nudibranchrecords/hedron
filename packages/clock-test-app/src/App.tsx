@@ -30,6 +30,8 @@ const $text = (id: string, text: string | number) => {
 const $y = (id: string, y: number) =>
   (document.querySelector<HTMLDivElement>(`#${id}`)!.style.transform = `translateY(${y}px)`)
 
+let shouldCirclePulse = true
+
 function App() {
   const [mockBpm, setMockBpm] = useState(DEFAULT_BPM)
 
@@ -44,30 +46,41 @@ function App() {
     midiClockMock.isEnabled = e.currentTarget.checked
   }
 
-  useEffect(() => {
-    const update = () => {
-      const d = Math.round(clock.beatDelta * 1000) / 1000
+  const update = () => {
+    const d = Math.round(clock.beatDelta * 1000) / 1000
 
-      $text('delta', d)
-      $text('bpm', clock.bpm)
-      $text('beat', clock.beatCount)
-      $text('beatPulseOffset', Math.round(clock.beatPulseOffset * 10000) / 10000)
+    if (clock.beatCount === 1 && shouldCirclePulse) {
+      shouldCirclePulse = false
+      const circle = document.querySelector<HTMLDivElement>('.circle')!
 
-      $y('saw', (d * H) % H)
-      $y('sin', Math.sin(d * TAU) * H * 0.5 + H * 0.5)
-      $y('sinBar', Math.sin((d * TAU) / 4) * H * 0.5 + H * 0.5)
-      $y('square', Math.floor((d % 1) * 2) * H) // TODO: feels off...
-      $y('triangle', Math.abs((d % 1) * 2 - 1) * H)
-
-      requestAnimationFrame(update)
+      circle.classList.add('white')
+      requestAnimationFrame(() => {
+        circle.classList.remove('white')
+      })
+    }
+    if (clock.beatCount === 2) {
+      shouldCirclePulse = true
     }
 
-    requestAnimationFrame(update)
+    $text('delta', d)
+    $text('bpm', clock.bpm)
+    $text('beat', clock.beatCount)
+    $text('beatPulseOffset', Math.round(clock.beatPulseOffset * 10000) / 10000)
 
-    midiClockMock.onPulse(() => {
-      clock.sendTimingPulse()
-    })
-  }, [])
+    $y('saw', (d * H) % H)
+    $y('sin', Math.sin(d * TAU) * H * 0.5 + H * 0.5)
+    $y('sinBar', Math.sin((d * TAU) / 4) * H * 0.5 + H * 0.5)
+    $y('square', Math.floor((d % 1) * 2) * H) // TODO: feels off...
+    $y('triangle', Math.abs((d % 1) * 2 - 1) * H)
+
+    requestAnimationFrame(update)
+  }
+
+  requestAnimationFrame(update)
+
+  midiClockMock.onPulse(() => {
+    clock.sendTimingPulse()
+  })
 
   const onBpmSubmit = (e: FormEvent) => {
     e.preventDefault()
@@ -115,7 +128,8 @@ function App() {
           </form>
         </div>
       </section>
-      <section>
+      <section className="grid">
+        <div className="circle"></div>
         <code>
           Delta: <span id="delta"></span>
           <br />

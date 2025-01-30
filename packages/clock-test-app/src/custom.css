@@ -15,3 +15,16 @@
   border-radius: 10px;
   padding: var(--pico-block-spacing-vertical);
 }
+
+.circle {
+  border-radius: 50%;
+  height: 40px;
+  width: 40px;
+  transition-duration: 300ms;
+  transition-delay: 0ms !important;
+}
+
+.white {
+  background: white;
+  transition-duration: 0ms !important;
+}
