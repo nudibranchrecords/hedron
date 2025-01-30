@@ -2,11 +2,21 @@ import { FormEvent, useEffect, useState } from 'react'
 import { Clock } from '@hedron/clock'
 import './custom.css'
 import { MidiClockMock } from './MidiClockMock'
+import { MidiClockListener } from './MidiClockListener'
 
 const DEFAULT_BPM = 120
 
 const clock = new Clock(DEFAULT_BPM)
 const midiClockMock = new MidiClockMock(DEFAULT_BPM)
+
+new MidiClockListener({
+  onPulse: clock.sendTimingPulse,
+  onStart: clock.startOnNextTimingPulse,
+  onStop: () => {
+    clock.stop()
+    clock.reset()
+  },
+})
 
 // arena height - pip height (see custom.css)
 const H = 300 - 4
@@ -41,6 +51,7 @@ function App() {
       $text('delta', d)
       $text('bpm', clock.bpm)
       $text('beat', clock.beatCount)
+      $text('beatPulseOffset', Math.round(clock.beatPulseOffset * 10000) / 10000)
 
       $y('saw', (d * H) % H)
       $y('sin', Math.sin(d * TAU) * H * 0.5 + H * 0.5)
@@ -54,7 +65,7 @@ function App() {
     requestAnimationFrame(update)
 
     midiClockMock.onPulse(() => {
-      clock.sendTimingClockPulse()
+      clock.sendTimingPulse()
     })
   }, [])
 
@@ -71,11 +82,6 @@ function App() {
           <button onClick={clock.stop}>stop</button>
           <button onClick={clock.reset}>reset</button>
           <button onClick={clock.sendTempoTap}>tap</button>
-          <div>
-            <code>
-              Delta: <span id="delta"></span>
-            </code>
-          </div>
         </div>
       </section>
       <section>
@@ -108,6 +114,13 @@ function App() {
             </div>
           </form>
         </div>
+      </section>
+      <section>
+        <code>
+          Delta: <span id="delta"></span>
+          <br />
+          Pulse offset: <span id="beatPulseOffset"></span>
+        </code>
       </section>
 
       <section className="box">

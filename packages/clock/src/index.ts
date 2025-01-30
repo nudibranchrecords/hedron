@@ -16,6 +16,9 @@ export class Clock {
   private _lastTempoTap: number | null = null
   private _tapIntervals: number[] = []
   private _lastPulseTimestamp: number | null = null
+  private _timingPulseCount: number = 0
+  private _shouldStartOnNextTimingPulse: boolean = false
+  private _beatPulseOffset: number = 0
 
   constructor(bpm: number = 128) {
     this.bpm = bpm
@@ -53,6 +56,10 @@ export class Clock {
     return this._beatCount
   }
 
+  get beatPulseOffset() {
+    return this._beatPulseOffset
+  }
+
   public start = () => {
     if (this._isRunning) return false
 
@@ -73,6 +80,11 @@ export class Clock {
     this._lastTempoTap = null
     this._tapIntervals = []
     this._lastPulseTimestamp = null
+    this._shouldStartOnNextTimingPulse = false
+  }
+
+  public startOnNextTimingPulse = () => {
+    this._shouldStartOnNextTimingPulse = true
   }
 
   public sendTempoTap = () => {
@@ -104,8 +116,19 @@ export class Clock {
     this._lastTempoTap = now
   }
 
-  public sendTimingClockPulse = () => {
+  public sendTimingPulse = () => {
     const now = performance.now()
+
+    if (this._shouldStartOnNextTimingPulse) {
+      this.start()
+      this._shouldStartOnNextTimingPulse = false
+    } else {
+      this._timingPulseCount++
+    }
+
+    if (this._timingPulseCount % PPQN === 0) {
+      this._beatPulseOffset = this._timingPulseCount / PPQN - this._beatDelta
+    }
 
     if (this._lastPulseTimestamp === null) {
       this._lastPulseTimestamp = now
