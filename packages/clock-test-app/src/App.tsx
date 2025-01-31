@@ -56,13 +56,9 @@ function App() {
 
       $text('delta', d)
       $text('smoothedBpm', clockRef.current!.smoothedBpm)
-      $text('bpm', clockRef.current!.bpm)
+      $text('bpm', Math.round(clockRef.current!.bpm * 100) / 100)
       $text('beat', clockRef.current!.beatCount)
       $text('beatPulseOffset', Math.round(clockRef.current!.beatPulseOffset * 10000) / 10000)
-      $text(
-        'smoothedBeatPulseOffset',
-        Math.round(clockRef.current!.smoothedBeatPulseOffset * 10000) / 10000,
-      )
 
       $y('saw', (d * H) % H)
       $y('sin', Math.sin(d * TAU) * H * 0.5 + H * 0.5)
@@ -151,8 +147,6 @@ function App() {
           BPM (unsmoothed): <span id="bpm"></span>
           <br />
           Pulse offset: <span id="beatPulseOffset"></span>
-          <br />
-          Smoothed offset: <span id="smoothedBeatPulseOffset"></span>
         </code>
       </section>
     </>

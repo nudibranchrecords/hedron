@@ -23,9 +23,7 @@ export class Clock {
   private _beatPulseOffset: number = 0
   private _smoothedBpm: number = 0
   private _smoothedBeatPulseOffset: number = 0
-  private _bpmHistory: number[] = []
-  private _beatPulseOffsetHistory: number[] = []
-  private readonly SMOOTHING_WINDOW_SIZE = PPQN
+  private _lastBeatTimestamp: number | null = null
 
   constructor(bpm: number = 128) {
     this.bpm = bpm
@@ -81,8 +79,6 @@ export class Clock {
   public start = (withReset = true) => {
     if (this._isRunning) return false
 
-    this._beatPulseOffsetHistory = []
-    this._bpmHistory = []
     this._beatPulseComparisonDelta = 0
     this._timingPulseCount = 0
 
@@ -178,29 +174,23 @@ export class Clock {
 
     // Don't try and adjust the BPM if multiple clock pulses came at the same time
     if (delta !== 0) {
-      const bpm = MS_IN_MINUTE / (delta * PPQN)
-      this._bpmHistory.push(bpm)
-      this.bpm = Math.round(bpm * 100) / 100
+      this.bpm = MS_IN_MINUTE / (delta * PPQN)
     }
 
-    this._beatPulseOffsetHistory.push(this._beatPulseOffset)
-    this.updateSmoothedValues()
+    // Update smoothed BPM once a beat (nice for humans)
+    if (this._timingPulseCount % PPQN === 0) {
+      if (this._lastBeatTimestamp !== null) {
+        const delta = now - this._lastBeatTimestamp
+        this._smoothedBpm = Math.round(MS_IN_MINUTE / delta)
+      }
+      this._lastBeatTimestamp = now
+    }
+
+    if (this._lastPulseTimestamp === null) {
+      this._lastPulseTimestamp = now
+      return
+    }
 
     this._lastPulseTimestamp = now
-  }
-
-  private updateSmoothedValues() {
-    if (this._bpmHistory.length > this.SMOOTHING_WINDOW_SIZE) {
-      this._bpmHistory.shift()
-    }
-    if (this._beatPulseOffsetHistory.length > this.SMOOTHING_WINDOW_SIZE) {
-      this._beatPulseOffsetHistory.shift()
-    }
-
-    this._smoothedBpm = Math.round(
-      this._bpmHistory.reduce((a, b) => a + b, 0) / this._bpmHistory.length,
-    )
-    this._smoothedBeatPulseOffset =
-      this._beatPulseOffsetHistory.reduce((a, b) => a + b, 0) / this._beatPulseOffsetHistory.length
   }
 }
