@@ -34,7 +34,7 @@ function App() {
         clockRef.current!.stop()
       },
       onContinue: () => {
-        clockRef.current!.continue()
+        clockRef.current!.continueOnNextTimingPulse()
       },
     })
 

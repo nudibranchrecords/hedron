@@ -18,6 +18,7 @@ export class Clock {
   private _lastPulseTimestamp: number | null = null
   private _timingPulseCount: number = 0
   private _shouldStartOnNextTimingPulse: boolean = false
+  private _shouldContinueOnNextTimingPulse: boolean = false
   private _beatPulseOffset: number = 0
 
   constructor(bpm: number = 128) {
@@ -95,6 +96,11 @@ export class Clock {
     this._shouldStartOnNextTimingPulse = true
   }
 
+  public continueOnNextTimingPulse = () => {
+    if (this._isRunning) return
+    this._shouldContinueOnNextTimingPulse = true
+  }
+
   public sendTempoTap = () => {
     const now = performance.now()
 
@@ -131,6 +137,10 @@ export class Clock {
       this._shouldStartOnNextTimingPulse = false
 
       this.start()
+    } else if (this._shouldContinueOnNextTimingPulse) {
+      this._shouldContinueOnNextTimingPulse = false
+
+      this.continue()
     } else {
       this._timingPulseCount++
     }
