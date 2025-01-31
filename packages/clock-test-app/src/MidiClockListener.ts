@@ -14,9 +14,12 @@ export type MIDIEvent = {
 export class MidiClockListener {
   private devices: MIDIInput[] = []
   private midiAccess: MIDIAccess | null = null
+  private eventListeners: Map<MIDIInput, (event: MIDIMessageEvent) => void> = new Map()
   private onPulse: () => void = () => {}
   private onStart: () => void = () => {}
   private onStop: () => void = () => {}
+  private devicesAssigned: Promise<void>
+  private resolveDevicesAssigned: () => void = () => {}
 
   constructor({
     onPulse,
@@ -27,6 +30,10 @@ export class MidiClockListener {
     onStart: () => void
     onStop: () => void
   }) {
+    this.devicesAssigned = new Promise((resolve) => {
+      this.resolveDevicesAssigned = resolve
+    })
+
     this.findMidiDevices()
     this.onPulse = onPulse
     this.onStart = onStart
@@ -34,16 +41,23 @@ export class MidiClockListener {
   }
 
   private setDevices = (deviceList: MIDIInput[]): void => {
+    if (
+      this.devices.length === deviceList.length &&
+      this.devices.every((value, index) => value === deviceList[index])
+    ) {
+      return
+    }
+
     this.devices = deviceList
 
     // Add event listeners to new devices
     this.devices.forEach((device: MIDIInput) => {
-      console.log('device connected:', device)
       const listener = (message: MIDIMessageEvent) => {
         if (!message.data) {
           console.error('No data in MIDI message:', message)
           return
         }
+
         const status = message.data[0]
         const messageType = this.getMidiMessageType(status)
 
@@ -53,6 +67,23 @@ export class MidiClockListener {
       }
 
       device.addEventListener('midimessage', listener)
+
+      this.eventListeners.set(device, listener)
+    })
+
+    this.resolveDevicesAssigned()
+  }
+
+  public clearMidiEventListeners = async (): Promise<void> => {
+    await this.devicesAssigned
+
+    this.devices.forEach((device) => {
+      const listener = this.eventListeners.get(device)
+
+      if (listener) {
+        device.removeEventListener('midimessage', listener)
+        this.eventListeners.delete(device)
+      }
     })
   }
 

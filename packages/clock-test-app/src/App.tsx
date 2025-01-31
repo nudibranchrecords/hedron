@@ -1,22 +1,9 @@
-import { FormEvent, useEffect, useState } from 'react'
+import { FormEvent, useEffect, useRef } from 'react'
 import { Clock } from '@hedron/clock'
 import './custom.css'
-import { MidiClockMock } from './MidiClockMock'
 import { MidiClockListener } from './MidiClockListener'
 
 const DEFAULT_BPM = 120
-
-const clock = new Clock(DEFAULT_BPM)
-const midiClockMock = new MidiClockMock(DEFAULT_BPM)
-
-new MidiClockListener({
-  onPulse: clock.sendTimingPulse,
-  onStart: clock.startOnNextTimingPulse,
-  onStop: () => {
-    clock.stop()
-    clock.reset()
-  },
-})
 
 // arena height - pip height (see custom.css)
 const H = 300 - 4
@@ -33,68 +20,86 @@ const $y = (id: string, y: number) =>
 let shouldCirclePulse = true
 
 function App() {
-  const [mockBpm, setMockBpm] = useState(DEFAULT_BPM)
+  const clockRef = useRef<Clock>()
 
-  const onMockClockRangeChange = (e: FormEvent<HTMLInputElement>) => {
-    const bpm = Number(e.currentTarget.value)
-    setMockBpm(bpm)
-    midiClockMock.bpm = bpm
-    $text('clockbpm', bpm)
-  }
+  useEffect(() => {
+    clockRef.current = new Clock(DEFAULT_BPM)
 
-  const onMockClockEnableChange = (e: FormEvent<HTMLInputElement>) => {
-    midiClockMock.isEnabled = e.currentTarget.checked
-  }
+    const midiClockListener = new MidiClockListener({
+      onPulse: clockRef.current.sendTimingPulse,
+      onStart: clockRef.current.startOnNextTimingPulse,
+      onStop: () => {
+        clockRef.current!.stop()
+        clockRef.current!.reset()
+      },
+    })
 
-  const update = () => {
-    const d = Math.round(clock.beatDelta * 1000) / 1000
+    const update = () => {
+      const d = Math.round(clockRef.current!.beatDelta * 1000) / 1000
 
-    if (clock.beatCount === 1 && shouldCirclePulse) {
-      shouldCirclePulse = false
-      const circle = document.querySelector<HTMLDivElement>('.circle')!
+      if (clockRef.current!.beatCount === 1 && shouldCirclePulse) {
+        shouldCirclePulse = false
+        const circle = document.querySelector<HTMLDivElement>('.circle')!
 
-      circle.classList.add('white')
-      requestAnimationFrame(() => {
-        circle.classList.remove('white')
-      })
+        circle.classList.add('white')
+        requestAnimationFrame(() => {
+          circle.classList.remove('white')
+        })
+      }
+      if (clockRef.current!.beatCount === 2) {
+        shouldCirclePulse = true
+      }
+
+      $text('delta', d)
+      $text('bpm', clockRef.current!.bpm)
+      $text('beat', clockRef.current!.beatCount)
+      $text('beatPulseOffset', Math.round(clockRef.current!.beatPulseOffset * 10000) / 10000)
+
+      $y('saw', (d * H) % H)
+      $y('sin', Math.sin(d * TAU) * H * 0.5 + H * 0.5)
+      $y('sinBar', Math.sin((d * TAU) / 4) * H * 0.5 + H * 0.5)
+      $y('square', Math.floor((d % 1) * 2) * H) // TODO: feels off...
+      $y('triangle', Math.abs((d % 1) * 2 - 1) * H)
+
+      requestAnimationFrame(update)
     }
-    if (clock.beatCount === 2) {
-      shouldCirclePulse = true
-    }
-
-    $text('delta', d)
-    $text('bpm', clock.bpm)
-    $text('beat', clock.beatCount)
-    $text('beatPulseOffset', Math.round(clock.beatPulseOffset * 10000) / 10000)
-
-    $y('saw', (d * H) % H)
-    $y('sin', Math.sin(d * TAU) * H * 0.5 + H * 0.5)
-    $y('sinBar', Math.sin((d * TAU) / 4) * H * 0.5 + H * 0.5)
-    $y('square', Math.floor((d % 1) * 2) * H) // TODO: feels off...
-    $y('triangle', Math.abs((d % 1) * 2 - 1) * H)
 
     requestAnimationFrame(update)
-  }
 
-  requestAnimationFrame(update)
-
-  midiClockMock.onPulse(() => {
-    clock.sendTimingPulse()
-  })
+    return () => {
+      midiClockListener.clearMidiEventListeners()
+    }
+  }, [])
 
   const onBpmSubmit = (e: FormEvent) => {
     e.preventDefault()
-    clock.bpm = Number(document.querySelector<HTMLInputElement>('#bpmField')!.value)
+    clockRef.current!.bpm = Number(document.querySelector<HTMLInputElement>('#bpmField')!.value)
+  }
+
+  const onStartClick = () => {
+    clockRef.current?.start()
+  }
+
+  const onStopClick = () => {
+    clockRef.current?.stop()
+  }
+
+  const onResetClick = () => {
+    clockRef.current?.reset()
+  }
+
+  const onTempoTapClick = () => {
+    clockRef.current?.sendTempoTap()
   }
 
   return (
     <>
       <section>
         <div className="grid">
-          <button onClick={clock.start}>start</button>
-          <button onClick={clock.stop}>stop</button>
-          <button onClick={clock.reset}>reset</button>
-          <button onClick={clock.sendTempoTap}>tap</button>
+          <button onClick={onStartClick}>start</button>
+          <button onClick={onStopClick}>stop</button>
+          <button onClick={onResetClick}>reset</button>
+          <button onClick={onTempoTapClick}>tap</button>
         </div>
       </section>
       <section>
@@ -135,41 +140,6 @@ function App() {
           <br />
           Pulse offset: <span id="beatPulseOffset"></span>
         </code>
-      </section>
-
-      <section className="box">
-        <h2>MIDI Clock Mock</h2>
-        {
-          "This is a mocked up MIDI clock written in JS. It's quite bad because JS doesn't do super accurate timing"
-        }
-        <hr />
-        <div className="grid">
-          <div>
-            <label htmlFor="clockenable">Enable</label>
-            <input
-              type="checkbox"
-              id="clockenable"
-              name="clockenable"
-              onChange={onMockClockEnableChange}
-            />
-          </div>
-          <div>
-            BPM
-            <h3 id="clockbpm">{mockBpm}</h3>
-          </div>
-
-          <div>
-            <label htmlFor="clockrange">Set BPM</label>
-            <input
-              type="range"
-              min="30"
-              max="220"
-              id="range"
-              name="range"
-              onChange={onMockClockRangeChange}
-            />
-          </div>
-        </div>
       </section>
     </>
   )

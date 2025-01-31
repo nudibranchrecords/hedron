@@ -127,6 +127,7 @@ export class Clock {
     }
 
     if (this._timingPulseCount % PPQN === 0) {
+      // TODO: Can do this every pulse for faster response
       this._beatPulseOffset = this._timingPulseCount / PPQN - this._beatDelta
     }
 
