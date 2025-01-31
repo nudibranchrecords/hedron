@@ -18,6 +18,7 @@ export class MidiClockListener {
   private onPulse: () => void = () => {}
   private onStart: () => void = () => {}
   private onStop: () => void = () => {}
+  private onContinue: () => void = () => {}
   private devicesAssigned: Promise<void>
   private resolveDevicesAssigned: () => void = () => {}
 
@@ -25,10 +26,12 @@ export class MidiClockListener {
     onPulse,
     onStart,
     onStop,
+    onContinue,
   }: {
     onPulse: () => void
     onStart: () => void
     onStop: () => void
+    onContinue: () => void
   }) {
     this.devicesAssigned = new Promise((resolve) => {
       this.resolveDevicesAssigned = resolve
@@ -38,6 +41,7 @@ export class MidiClockListener {
     this.onPulse = onPulse
     this.onStart = onStart
     this.onStop = onStop
+    this.onContinue = onContinue
   }
 
   private setDevices = (deviceList: MIDIInput[]): void => {
@@ -59,11 +63,25 @@ export class MidiClockListener {
         }
 
         const status = message.data[0]
+
+        // console.log(device)
         const messageType = this.getMidiMessageType(status)
 
-        if (messageType === MidiMessageType.Clock) this.onPulse()
-        if (messageType === MidiMessageType.Start) this.onStart()
-        if (messageType === MidiMessageType.Stop) this.onStop()
+        if (messageType === MidiMessageType.Clock) {
+          this.onPulse()
+        }
+        if (messageType === MidiMessageType.Start) {
+          this.onStart()
+        }
+        if (messageType === MidiMessageType.Stop) {
+          this.onStop()
+        }
+        if (messageType === MidiMessageType.Continue) {
+          this.onContinue()
+        }
+        if (messageType === MidiMessageType.Unknown) {
+          // console.log(message)
+        }
       }
 
       device.addEventListener('midimessage', listener)

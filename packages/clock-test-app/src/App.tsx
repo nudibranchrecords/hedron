@@ -25,12 +25,16 @@ function App() {
   useEffect(() => {
     clockRef.current = new Clock(DEFAULT_BPM)
 
+    let raf = 0
+
     const midiClockListener = new MidiClockListener({
       onPulse: clockRef.current.sendTimingPulse,
       onStart: clockRef.current.startOnNextTimingPulse,
       onStop: () => {
         clockRef.current!.stop()
-        clockRef.current!.reset()
+      },
+      onContinue: () => {
+        clockRef.current!.continue()
       },
     })
 
@@ -61,13 +65,14 @@ function App() {
       $y('square', Math.floor((d % 1) * 2) * H) // TODO: feels off...
       $y('triangle', Math.abs((d % 1) * 2 - 1) * H)
 
-      requestAnimationFrame(update)
+      raf = requestAnimationFrame(update)
     }
 
-    requestAnimationFrame(update)
+    raf = requestAnimationFrame(update)
 
     return () => {
       midiClockListener.clearMidiEventListeners()
+      cancelAnimationFrame(raf)
     }
   }, [])
 

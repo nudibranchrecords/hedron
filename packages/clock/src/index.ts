@@ -31,7 +31,7 @@ export class Clock {
 
     if (this._isRunning) {
       this._beatDelta += this._beatsPerMs * (timestamp - this._lastTimestamp)
-      this._beatCount = Math.floor(this._beatDelta % 4) + 1
+      this._beatCount = Math.floor(this._beatDelta % 4)
 
       requestAnimationFrame(this.tick)
 
@@ -53,20 +53,26 @@ export class Clock {
   }
 
   get beatCount() {
-    return this._beatCount
+    return this._beatCount + 1
   }
 
   get beatPulseOffset() {
     return this._beatPulseOffset
   }
 
-  public start = () => {
+  public start = (withReset = true) => {
     if (this._isRunning) return false
+
+    if (withReset) this.reset()
 
     this._lastTimestamp = performance.now()
     this._isRunning = true
 
     requestAnimationFrame(this.tick)
+  }
+
+  public continue = () => {
+    this.start(false)
   }
 
   public stop = () => {
@@ -81,9 +87,11 @@ export class Clock {
     this._tapIntervals = []
     this._lastPulseTimestamp = null
     this._shouldStartOnNextTimingPulse = false
+    this._timingPulseCount = 0
   }
 
   public startOnNextTimingPulse = () => {
+    if (this._isRunning) return
     this._shouldStartOnNextTimingPulse = true
   }
 
@@ -120,8 +128,9 @@ export class Clock {
     const now = performance.now()
 
     if (this._shouldStartOnNextTimingPulse) {
-      this.start()
       this._shouldStartOnNextTimingPulse = false
+
+      this.start()
     } else {
       this._timingPulseCount++
     }
@@ -138,8 +147,11 @@ export class Clock {
 
     const delta = now - this._lastPulseTimestamp
 
-    const bpm = MS_IN_MINUTE / (delta * PPQN)
-    this.bpm = Math.round(bpm * 100) / 100
+    // Don't try and adjust the BPM if multiple clock pulses came at the same time
+    if (delta !== 0) {
+      const bpm = MS_IN_MINUTE / (delta * PPQN)
+      this.bpm = Math.round(bpm * 100) / 100
+    }
 
     this._lastPulseTimestamp = now
   }
