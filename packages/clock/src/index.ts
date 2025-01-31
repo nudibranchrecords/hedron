@@ -151,7 +151,6 @@ export class Clock {
       this._timingPulseCount++
     }
 
-    // TODO: Can do this every pulse for faster response
     this._beatPulseOffset = this._timingPulseCount / PPQN - this._beatPulseComparisonDelta
 
     if (this._lastPulseTimestamp === null) {
