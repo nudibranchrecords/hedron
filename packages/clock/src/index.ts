@@ -7,7 +7,8 @@ const TAP_ARR_TRIM = 0.1
 const PPQN = 24
 
 export class Clock {
-  private _beatDelta: number = 0 // Increments fractionally every frame, at a rate of exactly 1 per beat
+  private _beatDelta: number = 0 // Increments fractionally every frame, at a rate of exactly 1 per beat, used externally for LFO functions, resets on start events
+  private _beatPulseComparisonDelta: number = 0 // Same as above, but also resets on continue events, used to keep in time with incoming clock pulses
   private _isRunning: boolean = false
   private _beatCount: number = 0
   private _beatsPerMs: number = 0
@@ -16,7 +17,7 @@ export class Clock {
   private _lastTempoTap: number | null = null
   private _tapIntervals: number[] = []
   private _lastPulseTimestamp: number | null = null
-  private _timingPulseCount: number = 0
+  private _timingPulseCount: number = 0 // Increments every pulse, used to calculate beatPulseOffset, resets on start and continue events
   private _shouldStartOnNextTimingPulse: boolean = false
   private _shouldContinueOnNextTimingPulse: boolean = false
   private _beatPulseOffset: number = 0
@@ -31,7 +32,9 @@ export class Clock {
     }
 
     if (this._isRunning) {
-      this._beatDelta += this._beatsPerMs * (timestamp - this._lastTimestamp)
+      const deltaInc = this._beatsPerMs * (timestamp - this._lastTimestamp)
+      this._beatDelta += deltaInc
+      this._beatPulseComparisonDelta += deltaInc
       this._beatCount = Math.floor(this._beatDelta % 4)
 
       requestAnimationFrame(this.tick)
@@ -63,6 +66,9 @@ export class Clock {
 
   public start = (withReset = true) => {
     if (this._isRunning) return false
+
+    this._beatPulseComparisonDelta = 0
+    this._timingPulseCount = 0
 
     if (withReset) this.reset()
 
@@ -146,7 +152,7 @@ export class Clock {
     }
 
     // TODO: Can do this every pulse for faster response
-    this._beatPulseOffset = this._timingPulseCount / PPQN - this._beatDelta
+    this._beatPulseOffset = this._timingPulseCount / PPQN - this._beatPulseComparisonDelta
 
     if (this._lastPulseTimestamp === null) {
       this._lastPulseTimestamp = now
