@@ -55,9 +55,14 @@ function App() {
       }
 
       $text('delta', d)
+      $text('smoothedBpm', clockRef.current!.smoothedBpm)
       $text('bpm', clockRef.current!.bpm)
       $text('beat', clockRef.current!.beatCount)
       $text('beatPulseOffset', Math.round(clockRef.current!.beatPulseOffset * 10000) / 10000)
+      $text(
+        'smoothedBeatPulseOffset',
+        Math.round(clockRef.current!.smoothedBeatPulseOffset * 10000) / 10000,
+      )
 
       $y('saw', (d * H) % H)
       $y('sin', Math.sin(d * TAU) * H * 0.5 + H * 0.5)
@@ -124,7 +129,7 @@ function App() {
         </div>
         <div>
           <div>Current BPM</div>
-          <h3 id="bpm"></h3>
+          <h3 id="smoothedBpm"></h3>
         </div>
         <div>
           <label>Set BPM</label>
@@ -143,7 +148,11 @@ function App() {
         <code>
           Delta: <span id="delta"></span>
           <br />
+          BPM (unsmoothed): <span id="bpm"></span>
+          <br />
           Pulse offset: <span id="beatPulseOffset"></span>
+          <br />
+          Smoothed offset: <span id="smoothedBeatPulseOffset"></span>
         </code>
       </section>
     </>

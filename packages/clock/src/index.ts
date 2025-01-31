@@ -21,6 +21,11 @@ export class Clock {
   private _shouldStartOnNextTimingPulse: boolean = false
   private _shouldContinueOnNextTimingPulse: boolean = false
   private _beatPulseOffset: number = 0
+  private _smoothedBpm: number = 0
+  private _smoothedBeatPulseOffset: number = 0
+  private _bpmHistory: number[] = []
+  private _beatPulseOffsetHistory: number[] = []
+  private readonly SMOOTHING_WINDOW_SIZE = PPQN
 
   constructor(bpm: number = 128) {
     this.bpm = bpm
@@ -32,7 +37,8 @@ export class Clock {
     }
 
     if (this._isRunning) {
-      const deltaInc = this._beatsPerMs * (timestamp - this._lastTimestamp)
+      const deltaInc =
+        this._beatsPerMs * (timestamp - this._lastTimestamp) * (1 + this._beatPulseOffset)
       this._beatDelta += deltaInc
       this._beatPulseComparisonDelta += deltaInc
       this._beatCount = Math.floor(this._beatDelta % 4)
@@ -64,9 +70,19 @@ export class Clock {
     return this._beatPulseOffset
   }
 
+  get smoothedBpm() {
+    return this._smoothedBpm
+  }
+
+  get smoothedBeatPulseOffset() {
+    return this._smoothedBeatPulseOffset
+  }
+
   public start = (withReset = true) => {
     if (this._isRunning) return false
 
+    this._beatPulseOffsetHistory = []
+    this._bpmHistory = []
     this._beatPulseComparisonDelta = 0
     this._timingPulseCount = 0
 
@@ -163,9 +179,28 @@ export class Clock {
     // Don't try and adjust the BPM if multiple clock pulses came at the same time
     if (delta !== 0) {
       const bpm = MS_IN_MINUTE / (delta * PPQN)
+      this._bpmHistory.push(bpm)
       this.bpm = Math.round(bpm * 100) / 100
     }
 
+    this._beatPulseOffsetHistory.push(this._beatPulseOffset)
+    this.updateSmoothedValues()
+
     this._lastPulseTimestamp = now
+  }
+
+  private updateSmoothedValues() {
+    if (this._bpmHistory.length > this.SMOOTHING_WINDOW_SIZE) {
+      this._bpmHistory.shift()
+    }
+    if (this._beatPulseOffsetHistory.length > this.SMOOTHING_WINDOW_SIZE) {
+      this._beatPulseOffsetHistory.shift()
+    }
+
+    this._smoothedBpm = Math.round(
+      this._bpmHistory.reduce((a, b) => a + b, 0) / this._bpmHistory.length,
+    )
+    this._smoothedBeatPulseOffset =
+      this._beatPulseOffsetHistory.reduce((a, b) => a + b, 0) / this._beatPulseOffsetHistory.length
   }
 }
