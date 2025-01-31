@@ -135,10 +135,8 @@ export class Clock {
       this._timingPulseCount++
     }
 
-    if (this._timingPulseCount % PPQN === 0) {
-      // TODO: Can do this every pulse for faster response
-      this._beatPulseOffset = this._timingPulseCount / PPQN - this._beatDelta
-    }
+    // TODO: Can do this every pulse for faster response
+    this._beatPulseOffset = this._timingPulseCount / PPQN - this._beatDelta
 
     if (this._lastPulseTimestamp === null) {
       this._lastPulseTimestamp = now
