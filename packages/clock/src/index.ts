@@ -143,7 +143,8 @@ export class Clock {
 
     // For tapping, we want to ignore the fastest and slowest taps
     const averageDelta = calculateTrimmedMean(this._tapIntervals, TAP_ARR_TRIM)
-    this.bpm = Math.round(MS_IN_MINUTE / averageDelta)
+    this.bpm = MS_IN_MINUTE / averageDelta
+    this._smoothedBpm = Math.round(MS_IN_MINUTE / averageDelta)
 
     this._lastTempoTap = now
   }
