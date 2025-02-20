@@ -18,7 +18,7 @@ You can use Pro Tools to generate an external clock value. Using the Pro Tools p
      It will appear to work fine without doing this, but you will likely have MIDI related issues causing the clock to do all sorts of weird stuff.
 
 2. Make sure you have some way of routing internal MIDI. (e.g. "Audio MIDI Setup" on OSX)
-3. Open `midi-clock-test.ptx`
+3. Open `protools-example/midi-clock-test.ptx`
 4. Run `yarn run dev:clock` from the root of the repo
 5. Follow the URL in the terminal to open up the test app (e.g. http://localhost:5173/)
 6. In Pro Tools, press play (spacebar). It will start a metronome sound and a clock signal, that will speed up and slow down. You can visually see if it all seems in sync in the Clock Test App.
