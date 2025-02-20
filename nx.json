@@ -1,0 +1,53 @@
+{
+  "targetDefaults": {
+    "dev": {
+      "dependsOn": []
+    },
+    "build": {
+      "cache": true,
+      "dependsOn": ["^build"],
+      "outputs": ["{projectRoot}/dist"]
+    },
+    "lint": {
+      "dependsOn": ["^build", "^lint"],
+      "cache": true
+    },
+    "preview": {
+      "dependsOn": []
+    },
+    "typecheck": {
+      "dependsOn": ["^build", "^typecheck"],
+      "cache": true
+    },
+    "typecheck:node": {
+      "dependsOn": []
+    },
+    "typecheck:web": {
+      "dependsOn": []
+    },
+    "start": {
+      "dependsOn": []
+    },
+    "build:unpack": {
+      "dependsOn": []
+    },
+    "build:win": {
+      "dependsOn": []
+    },
+    "build:mac": {
+      "dependsOn": []
+    },
+    "build:linux": {
+      "dependsOn": []
+    },
+    "dist": {
+      "dependsOn": []
+    },
+    "storybook": {
+      "dependsOn": []
+    },
+    "build-storybook": {
+      "dependsOn": []
+    }
+  }
+}

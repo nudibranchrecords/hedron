@@ -1,0 +1,30 @@
+.arena {
+  background-color: black;
+  height: 300px;
+  position: relative;
+}
+
+.pip {
+  background-color: white;
+  height: 4px;
+  width: 4px;
+}
+
+.box {
+  border: 1px solid white;
+  border-radius: 10px;
+  padding: var(--pico-block-spacing-vertical);
+}
+
+.circle {
+  border-radius: 50%;
+  height: 40px;
+  width: 40px;
+  transition-duration: 300ms;
+  transition-delay: 0ms !important;
+}
+
+.white {
+  background: white;
+  transition-duration: 0ms !important;
+}
