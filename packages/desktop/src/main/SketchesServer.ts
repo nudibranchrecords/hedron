@@ -21,7 +21,7 @@ const getSketchIdFromPath = (sketchPath: string): string => {
 
 const watchWithDebounce = (
   watcher: FSWatcher,
-  eventName: string,
+  eventName: FileWatchEvents,
   cb: (path: string, moduleId: string) => void,
 ) => {
   watcher.on(eventName, (path) => {
