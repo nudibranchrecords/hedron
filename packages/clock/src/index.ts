@@ -253,11 +253,6 @@ export class Clock {
       this._lastBeatTimestamp = now
     }
 
-    if (this._lastPulseTimestamp === null) {
-      this._lastPulseTimestamp = now
-      return
-    }
-
     this._lastPulseTimestamp = now
   }
 }
