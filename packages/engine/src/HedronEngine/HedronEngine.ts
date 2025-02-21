@@ -1,5 +1,5 @@
 import { listenToStore } from './storeListener'
-import { Result, PerformanceMonitor } from './types'
+import { Result } from './types'
 import { importSketchModule } from './importSketchModule'
 import { stripForSave } from '@utils/stripForSave'
 import { Renderer } from '@world/Renderer'
@@ -10,19 +10,23 @@ import { getSketchesOfModuleId } from '@store/selectors/getSketchesOfModuleId'
 import { createEngineStore, EngineStore } from '@store/engineStore'
 import { getSketchParamValues } from '@store/selectors/getSketchParamValues'
 
+const EMPTY_FUNC = () => {}
+
 export class HedronEngine {
   private renderer: Renderer
   private store: EngineStore
   private sketchesUrl: string | null = null
   private sketchManager: SketchManager
-  public performanceMonitor?: PerformanceMonitor
+  private onFrameStart: () => void
+  private onFrameEnd: () => void
 
-  constructor(params?: { performanceMonitor?: PerformanceMonitor }) {
+  constructor(params?: { onFrameStart?: () => void; onFrameEnd?: () => void }) {
     this.store = createEngineStore()
     this.sketchManager = new SketchManager()
     this.renderer = new Renderer()
 
-    this.performanceMonitor = params?.performanceMonitor
+    this.onFrameStart = params?.onFrameStart ?? EMPTY_FUNC
+    this.onFrameEnd = params?.onFrameEnd ?? EMPTY_FUNC
   }
 
   public setSketchesUrl(sketchesUrl: string) {
@@ -109,7 +113,7 @@ export class HedronEngine {
     const debugScene = createDebugScene(this.renderer)
 
     const loop = (): void => {
-      this.performanceMonitor?.begin()
+      this.onFrameStart()
 
       const state = this.store.getState()
       const sketchInstances = this.sketchManager!.getSketchInstances()
@@ -133,7 +137,7 @@ export class HedronEngine {
         this.renderer.render(debugScene)
       }
 
-      this.performanceMonitor?.end()
+      this.onFrameEnd()
     }
 
     loop()
