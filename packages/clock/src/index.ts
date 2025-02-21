@@ -6,8 +6,6 @@ const TAP_ARR_MAX_LEN = 64
 const TAP_ARR_TRIM = 0.1
 const PPQN = 24
 
-const EMPTY_FUNC = () => {}
-
 /**
  *  Clock. Maintains a steadily incrementing `beatDelta` value based on the BPM.
  */
@@ -29,9 +27,9 @@ export class Clock {
   private _smoothedBpm: number = 0
   private _smoothedBeatPulseOffset: number = 0
   private _lastBeatTimestamp: number | null = null
-  private _onNewBeat: (beatCount: number) => void = EMPTY_FUNC
-  private _onBpmChange: (bpm: number) => void = EMPTY_FUNC
-  private _onIsRunningChange: (isRunning: boolean) => void = EMPTY_FUNC
+  private _onNewBeat?: (beatCount: number) => void
+  private _onBpmChange?: (bpm: number) => void
+  private _onIsRunningChange?: (isRunning: boolean) => void
 
   /**
    * @param bpm Beats per minute
@@ -60,7 +58,7 @@ export class Clock {
 
       const newBeatCount = Math.floor(this._beatDelta % 4)
       if (newBeatCount !== this._beatCount) {
-        this._onNewBeat(newBeatCount)
+        this._onNewBeat?.(newBeatCount)
         this._beatCount = newBeatCount
       }
 
@@ -132,7 +130,7 @@ export class Clock {
 
   private set smoothedBpm(bpm: number) {
     if (this._smoothedBpm !== bpm) {
-      this._onBpmChange(bpm)
+      this._onBpmChange?.(bpm)
     }
 
     this._smoothedBpm = bpm
@@ -160,7 +158,7 @@ export class Clock {
 
     this._lastTimestamp = performance.now()
     this._isRunning = true
-    this._onIsRunningChange(true)
+    this._onIsRunningChange?.(true)
 
     requestAnimationFrame(this.tick)
   }
@@ -177,7 +175,7 @@ export class Clock {
    */
   public stop = () => {
     this._isRunning = false
-    this._onIsRunningChange(false)
+    this._onIsRunningChange?.(false)
   }
 
   /**
@@ -193,7 +191,7 @@ export class Clock {
     this._shouldStartOnNextTimingPulse = false
     this._timingPulseCount = 0
 
-    this._onNewBeat(0)
+    this._onNewBeat?.(0)
   }
 
   /**
@@ -305,7 +303,7 @@ export class Clock {
     this._onNewBeat(this._beatCount)
 
     return () => {
-      this._onNewBeat = EMPTY_FUNC
+      this._onNewBeat = undefined
     }
   }
 
@@ -319,7 +317,7 @@ export class Clock {
     this._onBpmChange(this._smoothedBpm)
 
     return () => {
-      this._onBpmChange = EMPTY_FUNC
+      this._onBpmChange = undefined
     }
   }
 
@@ -328,7 +326,7 @@ export class Clock {
     this._onIsRunningChange(this._isRunning)
 
     return () => {
-      this._onIsRunningChange = EMPTY_FUNC
+      this._onIsRunningChange = undefined
     }
   }
 }
