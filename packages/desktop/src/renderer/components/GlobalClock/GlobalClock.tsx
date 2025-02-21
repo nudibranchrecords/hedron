@@ -2,6 +2,10 @@ import { useEffect, useState } from 'react'
 import { ClockDisplay } from '@components/core/ClockDisplay/ClockDisplay'
 import { clock } from '@renderer/engine'
 
+const onBpmEdit = (bpm: number) => {
+  clock.bpm = bpm
+}
+
 export const GlobalClock = () => {
   const [bpm, setBpm] = useState<number>(0)
   const [beat, setBeat] = useState<number>(1)
@@ -24,6 +28,7 @@ export const GlobalClock = () => {
       isRunning={isRunning}
       bpm={bpm}
       beat={beat}
+      onBpmEdit={onBpmEdit}
       onStartClick={clock.start}
       onStopClick={clock.stop}
       onTapClick={clock.sendTempoTap}

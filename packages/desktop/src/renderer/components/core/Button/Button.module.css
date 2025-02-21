@@ -28,6 +28,16 @@
   }
 }
 
+.ghost {
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+
+  &:hover {
+    background: var(--bgColorDark4);
+  }
+}
+
 .neutral {
   border: 1px solid var(--lineColor2);
   color: var(--textColorLight1);

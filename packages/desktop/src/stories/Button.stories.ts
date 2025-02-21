@@ -32,6 +32,13 @@ export const Muted: Story = {
   },
 }
 
+export const Ghost: Story = {
+  args: {
+    children: 'Button',
+    type: 'ghost',
+  },
+}
+
 export const Disabled: Story = {
   args: {
     children: 'Button',

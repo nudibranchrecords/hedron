@@ -77,6 +77,8 @@ export class Clock {
   set bpm(bpm: number) {
     this._bpm = bpm
     this._beatsPerMs = bpm / MS_IN_MINUTE
+
+    this.smoothedBpm = bpm
   }
 
   /**
