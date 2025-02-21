@@ -1,5 +1,5 @@
 import { listenToStore } from './storeListener'
-import { Result } from './types'
+import { Result, PerformanceMonitor } from './types'
 import { importSketchModule } from './importSketchModule'
 import { stripForSave } from '@utils/stripForSave'
 import { Renderer } from '@world/Renderer'
@@ -15,11 +15,14 @@ export class HedronEngine {
   private store: EngineStore
   private sketchesUrl: string | null = null
   private sketchManager: SketchManager
+  public performanceMonitor?: PerformanceMonitor
 
-  constructor() {
+  constructor(params?: { performanceMonitor?: PerformanceMonitor }) {
     this.store = createEngineStore()
     this.sketchManager = new SketchManager()
     this.renderer = new Renderer()
+
+    this.performanceMonitor = params?.performanceMonitor
   }
 
   public setSketchesUrl(sketchesUrl: string) {
@@ -106,6 +109,8 @@ export class HedronEngine {
     const debugScene = createDebugScene(this.renderer)
 
     const loop = (): void => {
+      this.performanceMonitor?.begin()
+
       const state = this.store.getState()
       const sketchInstances = this.sketchManager!.getSketchInstances()
       debugScene.clearPasses()
@@ -127,6 +132,8 @@ export class HedronEngine {
       if (debugScene) {
         this.renderer.render(debugScene)
       }
+
+      this.performanceMonitor?.end()
     }
 
     loop()
