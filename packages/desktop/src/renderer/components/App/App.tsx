@@ -1,6 +1,5 @@
 // import { Audio } from '../Audio'
 import c from './App.module.css'
-import { Audio } from '@components/Audio'
 import { GlobalClock } from '@components/GlobalClock/GlobalClock'
 import { GlobalDialogs } from '@components/GlobalDialogs/GlobalDialogs'
 import { PerformanceStats } from '@components/PerformanceStats/PerformanceStats'
