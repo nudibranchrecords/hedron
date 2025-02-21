@@ -4,11 +4,22 @@ import { Button } from '@components/core/Button/Button'
 export interface ClockDisplayProps {
   bpm: number
   beat: number
+  isRunning: boolean
+  onStartClick: () => void
+  onStopClick: () => void
   onTapClick: () => void
   onResetClick: () => void
 }
 
-export const ClockDisplay = ({ bpm, beat, onTapClick, onResetClick }: ClockDisplayProps) => (
+export const ClockDisplay = ({
+  bpm,
+  beat,
+  isRunning,
+  onStartClick,
+  onStopClick,
+  onTapClick,
+  onResetClick,
+}: ClockDisplayProps) => (
   <div className={c.wrapper}>
     <div className={c.left}>
       <div>
@@ -22,10 +33,28 @@ export const ClockDisplay = ({ bpm, beat, onTapClick, onResetClick }: ClockDispl
       </div>
     </div>
     <div className={c.right}>
-      <Button type="neutral" size="xsmall" className={c.tapButton} onClick={onTapClick}>
+      <Button
+        type="neutral"
+        size="xsmall"
+        className={c.button}
+        onClick={onStartClick}
+        disabled={isRunning}
+      >
+        Start
+      </Button>
+      <Button
+        type="neutral"
+        size="xsmall"
+        className={c.button}
+        onClick={onStopClick}
+        disabled={!isRunning}
+      >
+        Stop
+      </Button>
+      <Button type="neutral" size="xsmall" className={c.button} onClick={onTapClick}>
         Tap
       </Button>
-      <Button type="neutral" size="xsmall" className={c.tapButton} onClick={onResetClick}>
+      <Button type="neutral" size="xsmall" className={c.button} onClick={onResetClick}>
         Reset
       </Button>
     </div>

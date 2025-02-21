@@ -39,9 +39,11 @@
 }
 
 .right {
-  flex: 1;
+  display: grid;
+  grid-template-rows: 1fr 1fr;
+  grid-auto-flow: column;
 
-  .tapButton {
+  .button {
     font-size: 0.5rem;
     display: flex;
     align-items: center;

@@ -6,6 +6,8 @@ const TAP_ARR_MAX_LEN = 64
 const TAP_ARR_TRIM = 0.1
 const PPQN = 24
 
+const EMPTY_FUNC = () => {}
+
 /**
  *  Clock. Maintains a steadily incrementing `beatDelta` value based on the BPM.
  */
@@ -27,12 +29,16 @@ export class Clock {
   private _smoothedBpm: number = 0
   private _smoothedBeatPulseOffset: number = 0
   private _lastBeatTimestamp: number | null = null
+  private _onNewBeat: (beatCount: number) => void = EMPTY_FUNC
+  private _onBpmChange: (bpm: number) => void = EMPTY_FUNC
+  private _onIsRunningChange: (isRunning: boolean) => void = EMPTY_FUNC
 
   /**
    * @param bpm Beats per minute
    */
   constructor(bpm: number = 128) {
     this.bpm = bpm
+    this.smoothedBpm = bpm
   }
 
   /**
@@ -51,7 +57,12 @@ export class Clock {
         this._beatsPerMs * (timestamp - this._lastTimestamp) * (1 + this._beatPulseOffset)
       this._beatDelta += deltaInc
       this._beatPulseComparisonDelta += deltaInc
-      this._beatCount = Math.floor(this._beatDelta % 4)
+
+      const newBeatCount = Math.floor(this._beatDelta % 4)
+      if (newBeatCount !== this._beatCount) {
+        this._onNewBeat(newBeatCount)
+        this._beatCount = newBeatCount
+      }
 
       requestAnimationFrame(this.tick)
 
@@ -74,6 +85,14 @@ export class Clock {
    */
   get bpm() {
     return this._bpm
+  }
+
+  /**
+   * Gets whether the clock is currently running.
+   * @returns Whether the clock is currently running.
+   */
+  get isRunning() {
+    return this._isRunning
   }
 
   /**
@@ -109,6 +128,14 @@ export class Clock {
     return this._smoothedBpm
   }
 
+  private set smoothedBpm(bpm: number) {
+    if (this._smoothedBpm !== bpm) {
+      this._onBpmChange(bpm)
+    }
+
+    this._smoothedBpm = bpm
+  }
+
   /**
    * Gets the smoothed beat pulse offset. Only useful for very detailed output of info (e.g. dev stuff)
    * @returns The smoothed beat pulse offset
@@ -131,6 +158,7 @@ export class Clock {
 
     this._lastTimestamp = performance.now()
     this._isRunning = true
+    this._onIsRunningChange(true)
 
     requestAnimationFrame(this.tick)
   }
@@ -147,6 +175,7 @@ export class Clock {
    */
   public stop = () => {
     this._isRunning = false
+    this._onIsRunningChange(false)
   }
 
   /**
@@ -161,6 +190,8 @@ export class Clock {
     this._lastPulseTimestamp = null
     this._shouldStartOnNextTimingPulse = false
     this._timingPulseCount = 0
+
+    this._onNewBeat(0)
   }
 
   /**
@@ -209,7 +240,7 @@ export class Clock {
 
     // lock BPM to whole number because we're just apes tapping without built in oscilators
     this.bpm = Math.round(MS_IN_MINUTE / averageDelta)
-    this._smoothedBpm = this.bpm
+    this.smoothedBpm = this.bpm
 
     this._lastTempoTap = now
   }
@@ -250,11 +281,52 @@ export class Clock {
     if (this._timingPulseCount % PPQN === 0) {
       if (this._lastBeatTimestamp !== null) {
         const delta = now - this._lastBeatTimestamp
-        this._smoothedBpm = Math.round(MS_IN_MINUTE / delta)
+        this.smoothedBpm = Math.round(MS_IN_MINUTE / delta)
       }
       this._lastBeatTimestamp = now
     }
 
     this._lastPulseTimestamp = now
+  }
+
+  /**
+   * Register a callback to be called every time a new beat is detected.
+   * @param callback The callback
+   * @returns A cleanup function to unregister the callback
+   */
+  public onNewBeat = (callback: (beatCount: number) => void) => {
+    this._onNewBeat = (beat: number) => {
+      if (beat >= 0) {
+        callback(beat + 1)
+      }
+    }
+    this._onNewBeat(this._beatCount)
+
+    return () => {
+      this._onNewBeat = EMPTY_FUNC
+    }
+  }
+
+  /**
+   * Register a callback to be called every time smoothed BPM changes.
+   * @param callback The callback
+   * @returns A cleanup function to unregister the callback
+   */
+  public onBpmChange = (callback: (bpm: number) => void) => {
+    this._onBpmChange = callback
+    this._onBpmChange(this._smoothedBpm)
+
+    return () => {
+      this._onBpmChange = EMPTY_FUNC
+    }
+  }
+
+  public onIsRunningChange = (callback: (isRunning: boolean) => void) => {
+    this._onIsRunningChange = callback
+    this._onIsRunningChange(this._isRunning)
+
+    return () => {
+      this._onIsRunningChange = EMPTY_FUNC
+    }
   }
 }

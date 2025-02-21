@@ -25,6 +25,14 @@ function App() {
   useEffect(() => {
     clockRef.current = new Clock(DEFAULT_BPM)
 
+    const unsubscribeBeats = clockRef.current.onNewBeat((beat) => {
+      $text('beat', beat)
+    })
+
+    const unsubscribeBpm = clockRef.current.onBpmChange((bpm) => {
+      $text('smoothedBpm', bpm)
+    })
+
     let raf = 0
 
     const midiClockListener = new MidiClockListener({
@@ -55,9 +63,7 @@ function App() {
       }
 
       $text('delta', d)
-      $text('smoothedBpm', clockRef.current!.smoothedBpm)
       $text('bpm', Math.round(clockRef.current!.bpm * 100) / 100)
-      $text('beat', clockRef.current!.beatCount)
       $text('beatPulseOffset', Math.round(clockRef.current!.beatPulseOffset * 10000) / 10000)
 
       $y('saw', (d * H) % H)
@@ -74,6 +80,8 @@ function App() {
     return () => {
       midiClockListener.clearMidiEventListeners()
       cancelAnimationFrame(raf)
+      unsubscribeBeats()
+      unsubscribeBpm()
     }
   }, [])
 

@@ -17,6 +17,21 @@ export const Primary: Story = {
   args: {
     bpm: 120,
     beat: 1,
+    isRunning: false,
+    onStartClick: fn(),
+    onStopClick: fn(),
+    onTapClick: fn(),
+    onResetClick: fn(),
+  },
+}
+
+export const Running: Story = {
+  args: {
+    bpm: 120,
+    beat: 1,
+    isRunning: true,
+    onStartClick: fn(),
+    onStopClick: fn(),
     onTapClick: fn(),
     onResetClick: fn(),
   },
@@ -26,6 +41,9 @@ export const LowBPM: Story = {
   args: {
     bpm: 60,
     beat: 1,
+    isRunning: false,
+    onStartClick: fn(),
+    onStopClick: fn(),
     onTapClick: fn(),
     onResetClick: fn(),
   },
