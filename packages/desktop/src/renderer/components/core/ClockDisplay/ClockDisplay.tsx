@@ -38,7 +38,6 @@ export const ClockDisplay = ({
           </div>
         </div>
         <div className={c.bottom}>
-          <Button type="ghost" iconName="edit" className={c.editButton} />
           <div className={c.beat}>{beat}</div>
         </div>
       </div>
