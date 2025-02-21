@@ -3,7 +3,7 @@ import { Icon, IconName } from '@components/core/Icon/Icon'
 
 export interface ButtonProps extends React.HTMLAttributes<HTMLButtonElement> {
   type?: 'primary' | 'secondary' | 'neutral' | 'danger'
-  size?: 'slim'
+  size?: 'slim' | 'small' | 'xsmall'
   iconName?: IconName
 }
 
@@ -16,7 +16,11 @@ export const Button = ({
   ...props
 }: ButtonProps) => {
   return (
-    <button type="button" className={`${c.wrapper} ${type} ${size} ${className}`} {...props}>
+    <button
+      type="button"
+      className={`${c.wrapper} ${c[type]} ${size && c[size]} ${className}`}
+      {...props}
+    >
       {iconName && <Icon name={iconName} className={c.icon} />}
       {children}
     </button>

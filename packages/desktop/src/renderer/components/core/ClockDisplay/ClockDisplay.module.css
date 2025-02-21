@@ -1,0 +1,58 @@
+.wrapper {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.left,
+.right {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.bpm {
+  display: flex;
+  gap: 0.25rem;
+  align-items: baseline;
+
+  .number {
+    font-weight: 600;
+    font-size: 1.2rem;
+    width: 1.8em;
+  }
+
+  .label {
+    font-size: 0.7rem;
+  }
+}
+
+.beat {
+  background: var(--bgColorDark4);
+  display: flex;
+  padding: 0.25rem;
+  width: 1rem;
+  height: 1rem;
+  border-radius: var(--borderRadiusSubtle);
+  font-size: 0.6rem;
+  justify-content: center;
+  align-items: center;
+}
+
+.right {
+  flex: 1;
+
+  .tapButton {
+    font-size: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+}
+
+.bottom {
+  display: flex;
+  justify-content: right;
+}
