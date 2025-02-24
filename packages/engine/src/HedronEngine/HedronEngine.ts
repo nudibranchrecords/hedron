@@ -1,4 +1,4 @@
-import { Midi, MIDIEvent } from '@hedron/midi'
+import { Midi } from '@hedron/midi'
 import { listenToStore } from './storeListener'
 import { Result } from './types'
 import { importSketchModule } from './importSketchModule'
