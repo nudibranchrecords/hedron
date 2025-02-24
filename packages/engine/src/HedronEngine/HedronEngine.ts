@@ -24,29 +24,18 @@ export class HedronEngine {
     this.renderer = new Renderer()
     this.midi = new Midi()
     this.midi.onMidiMessage.add((event) => {
-      const id = `${event.device.name} - ${event.message.data?.[1]}`.replace(/ /g, '_')
-      this.store.getState().updateInputValues(id, (event.message.data?.[2] || 0) / 127)
+      this.store.getState().updateInputValues(event.id, (event.value || 0) / 127)
     }, this)
   }
 
-  public async awaitNextMidiMessage(): Promise<MIDIEvent | null> {
-    // null response would be canceling the midi learn, but that is not hooked up yet as there is no GUI
-    return new Promise((resolve) => {
-      const listener = (event: MIDIEvent) => {
-        this.midi.onMidiMessage.remove(listener)
-        resolve(event)
-      }
-      this.midi.onMidiMessage.add(listener)
-    })
-  }
-
-  public async midiLearn(paramId: string): Promise<Input> {
-    const event = await this.awaitNextMidiMessage()
+  public async midiLearn(paramId: string): Promise<Input| undefined> {
+    const event = await this.midi.midiLearn()
     if (!event) {
-      throw new Error('No MIDI event received')
+      console.log('MIDI learn canceled')
+      return;
     }
 
-    const id = `${event.device.name} - ${event.message.data?.[1]}`.replace(/ /g, '_')
+    const id = event.id;
     let input = this.store.getState().inputs[id]
     if (!input) {
       input = {
@@ -59,6 +48,10 @@ export class HedronEngine {
     }
     this.store.getState().addInputParam(id, paramId)
     return input
+  }
+
+  public cancelMidiLearn() {
+    this.midi.cancelMidiLearn()
   }
 
   public setSketchesUrl(sketchesUrl: string) {

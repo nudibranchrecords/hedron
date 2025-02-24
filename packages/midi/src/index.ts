@@ -1,4 +1,4 @@
-import { Signal } from './Signal.ts'
+import { Signal } from './Signal'
 
 /**
  * Common MIDI message types as human readable names.
@@ -23,7 +23,11 @@ export enum MidiMessageType {
  */
 export type MIDIEvent = {
   device: MIDIInput
-  message: MIDIMessageEvent
+  channel: number
+  type: MidiMessageType
+  note: number
+  id: string
+  value?: number
 }
 
 /**
@@ -91,7 +95,12 @@ export class Midi {
     this.devices.forEach((device: MIDIInput) => {
       if (!this.eventListeners.has(device)) {
         const listener = (message: MIDIMessageEvent) => {
-          this.onMidiMessage.dispatch({ device, message })
+          if (!message.data) return
+          const [status, note, value] = message.data
+          const channel = status & 0x0f
+          const type = this.getMidiMessageType(status)
+          const id = `${channel}-${note}`
+          this.onMidiMessage.dispatch({ device, channel, type, note, value, id })
         }
         device.addEventListener('midimessage', listener)
         this.eventListeners.set(device, listener)
@@ -125,6 +134,42 @@ export class Midi {
     } catch (error) {
       console.error('Failed to get MIDI access:', error)
     }
+  }
+
+  private learnPromise: Promise<MIDIEvent | null> | undefined;
+  private learnResolve: ((event: MIDIEvent | null) => void) | undefined;
+  private learnListener: ((event: MIDIEvent) => void) | undefined;
+
+  /**
+   * A function that will wait for and return the next midi message received, or null if the learn is canceled.
+   * @returns A promise that resolves with the next MIDI message received.
+   */
+  public async midiLearn(): Promise<MIDIEvent | null> {
+    if(this.learnPromise) {
+      this.cancelMidiLearn()
+    }
+    this.learnPromise = new Promise((resolve) => {
+      this.learnResolve = resolve
+      this.learnListener = (event: MIDIEvent) => {
+        resolve(event)
+        this.learnResolve = undefined
+        this.cancelMidiLearn()
+      }
+      this.onMidiMessage.add(this.learnListener)
+    })
+    return this.learnPromise;
+  }
+
+  /**
+   * Cancels the current MIDI learn process.
+   */
+  public cancelMidiLearn(): void {
+    if(this.learnListener)
+      this.onMidiMessage.remove(this.learnListener)
+    this.learnResolve?.(null)
+    this.learnPromise = undefined
+    this.learnResolve = undefined
+    this.learnListener = undefined
   }
 
   /**
