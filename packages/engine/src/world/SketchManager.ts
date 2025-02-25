@@ -42,7 +42,7 @@ export class SketchManager {
     if (!oldSketch) {
       const pass = engineScene.getPassesByName(instanceId)
       if (pass?.length) {
-        pass.forEach((p) => engineScene.removePass(p))
+        pass.forEach(engineScene.removePass)
         delete this.sketchInstances[instanceId]
         return
       }
