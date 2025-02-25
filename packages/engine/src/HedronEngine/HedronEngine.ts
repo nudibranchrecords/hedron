@@ -1,4 +1,3 @@
-import { Midi } from '@hedron/midi'
 import { listenToStore } from './storeListener'
 import { Result } from './types'
 import { importSketchModule } from './importSketchModule'
@@ -10,48 +9,24 @@ import { EngineData, Input, SketchModuleItem } from '@store/types'
 import { getSketchesOfModuleId } from '@store/selectors/getSketchesOfModuleId'
 import { createEngineStore, EngineStore } from '@store/engineStore'
 import { getSketchParamValues } from '@store/selectors/getSketchParamValues'
+import { IPlugin } from 'src/plugin/Plugin'
 
 export class HedronEngine {
   private renderer: Renderer
   private store: EngineStore
   private sketchesUrl: string | null = null
   private sketchManager: SketchManager
-  private midi: Midi
+  public plugins: IPlugin[] = []
 
   constructor() {
     this.store = createEngineStore()
     this.sketchManager = new SketchManager()
     this.renderer = new Renderer()
-    this.midi = new Midi()
-    this.midi.onMidiMessage.add((event) => {
-      this.store.getState().updateInputValues(event.id, (event.value || 0) / 127)
-    }, this)
   }
 
-  public async midiLearn(paramId: string): Promise<Input| undefined> {
-    const event = await this.midi.midiLearn()
-    if (!event) {
-      console.log('MIDI learn canceled')
-      return;
-    }
-
-    const id = event.id;
-    let input = this.store.getState().inputs[id]
-    if (!input) {
-      input = {
-        id,
-        type: 'midi',
-        targetNodeIds: [paramId],
-      }
-      this.store.getState().addInput(id, input)
-      return input
-    }
-    this.store.getState().addInputParam(id, paramId)
-    return input
-  }
-
-  public cancelMidiLearn() {
-    this.midi.cancelMidiLearn()
+  public registerPlugin(plugin: IPlugin) {
+    // plugins isn't actually used anywhere yet, but I assume it will be at some point
+    this.plugins.push(plugin)
   }
 
   public setSketchesUrl(sketchesUrl: string) {

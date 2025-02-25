@@ -1,5 +1,6 @@
 import { useStore } from 'zustand'
 import { HedronEngine, EngineStateWithActions } from '@hedron/engine'
+import { Midi } from '@hedron/midi'
 
 export const engine = new HedronEngine()
 
@@ -8,3 +9,4 @@ export const engineStore = engine.getStore()
 export const useEngineStore = <T>(selector?: (state: EngineStateWithActions) => T) => {
   return useStore(engineStore, selector!)
 }
+engine.registerPlugin(new Midi(engine, useEngineStore));

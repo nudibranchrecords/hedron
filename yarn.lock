@@ -1123,7 +1123,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@hedron/desktop@workspace:packages/desktop":
+"@hedron/desktop@npm:^1.0.0-alpha.1, @hedron/desktop@workspace:packages/desktop":
   version: 0.0.0-use.local
   resolution: "@hedron/desktop@workspace:packages/desktop"
   dependencies:
@@ -1132,6 +1132,7 @@ __metadata:
     "@electron-toolkit/utils": "npm:^3.0.0"
     "@floating-ui/react-dom": "npm:^2.1.2"
     "@hedron/engine": "npm:^1.0.0-alpha.1"
+    "@hedron/midi": "npm:^1.0.0-alpha.0"
     "@redux-devtools/extension": "npm:^3.3.0"
     "@storybook/addon-essentials": "npm:^8.2.9"
     "@storybook/addon-interactions": "npm:^8.2.9"
@@ -1180,7 +1181,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@hedron/engine@workspace:packages/engine"
   dependencies:
-    "@hedron/midi": "npm:^1.0.0-alpha.0"
     "@types/lodash.debounce": "npm:^4.0.9"
     lodash.debounce: "npm:^4.0.8"
     tsup: "npm:^8.3.5"
@@ -1223,6 +1223,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@hedron/midi@workspace:packages/midi"
   dependencies:
+    "@hedron/desktop": "npm:^1.0.0-alpha.1"
+    "@hedron/engine": "npm:^1.0.0-alpha.1"
     tsup: "npm:^8.3.6"
   languageName: unknown
   linkType: soft

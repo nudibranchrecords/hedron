@@ -173,6 +173,7 @@ interface Actions {
 }
 
 export type EngineStateWithActions = EngineData & AuxState & Actions
+export type UseEngineStore = <T>(selector?: (state: EngineStateWithActions) => T) => T;
 
 export type SetState = StoreApi<EngineStateWithActions>['setState']
 

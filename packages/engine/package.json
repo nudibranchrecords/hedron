@@ -28,7 +28,6 @@
     "three": "*"
   },
   "dependencies": {
-    "@hedron/midi": "^1.0.0-alpha.0",
     "lodash.debounce": "^4.0.8",
     "uid": "^2.0.2",
     "zustand": "^5.0.2"

@@ -1,4 +1,12 @@
 {
-  "extends": ["../../tsconfig.json"],
-  "include": ["src/**/*"]
+  "extends": [
+    "../../tsconfig.json"
+  ],
+  "include": [
+    "src/**/*"
+  ],
+  "compilerOptions": {
+    // other options
+    "jsx": "react"
+  }
 }
