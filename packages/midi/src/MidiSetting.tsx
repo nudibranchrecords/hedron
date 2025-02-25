@@ -20,8 +20,7 @@ export const MidiSetting = ({ param, engine, useEngineStore }: IProps) => {
 
     // console.log('MidiSetting');
     // console.log(useEngineStore);
-    // const inputs = useInputsWithNode(param.id, useEngineStore)
-    const inputs = engine.getStore().getState().inputs
+    const inputs = useInputsWithNode(param.id, useEngineStore)
     const [isLearning, setIsLearning] = useState(false)
 
     if (param.valueType !== NodeTypes.Number) {
