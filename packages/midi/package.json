@@ -21,7 +21,6 @@
     "url": "https://github.com/nudibranchrecords/hedron/issues"
   },
   "dependencies": {
-    "@hedron/desktop": "^1.0.0-alpha.1",
     "@hedron/engine": "^1.0.0-alpha.1"
   },
   "devDependencies": {
