@@ -34,6 +34,11 @@ button {
   box-sizing: inherit;
 }
 
+*::selection {
+  background: var(--actionColor1);
+  color: white;
+}
+
 h2 {
   font-size: 1.2rem;
   /* text-transform: uppercase; */
@@ -51,4 +56,10 @@ p {
 
 .mb-xxl {
   margin-bottom: var(--gapMega);
+}
+
+input[type='number']::-webkit-inner-spin-button,
+input[type='number']::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
 }

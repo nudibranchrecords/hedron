@@ -33,13 +33,12 @@ export const ClockDisplay = ({
       <div className={c.info}>
         <div className={c.bpm}>
           <span className={c.label}>BPM</span>
-          <span
+          <input
+            type="number"
             className={c.number}
-            contentEditable
-            onBlur={(e) => onBpmEdit(Number(e.currentTarget.textContent))}
-          >
-            {bpm}
-          </span>
+            value={bpm}
+            onChange={(e) => onBpmEdit(Number(e.target.value))}
+          />
         </div>
         <div className={c.beat}>{beat}</div>
       </div>

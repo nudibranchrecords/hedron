@@ -23,6 +23,8 @@
     padding: 0 0.25rem;
     background: var(--bgColorDark4);
     border-radius: var(--borderRadiusSubtle);
+    border: 0;
+    color: white;
 
     &:focus {
       outline: none;
