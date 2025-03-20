@@ -9,17 +9,21 @@ import { EngineData, SketchModuleItem } from '@store/types'
 import { getSketchesOfModuleId } from '@store/selectors/getSketchesOfModuleId'
 import { createEngineStore, EngineStore } from '@store/engineStore'
 import { getSketchParamValues } from '@store/selectors/getSketchParamValues'
-
 export class HedronEngine {
   private renderer: Renderer
   private store: EngineStore
   private sketchesUrl: string | null = null
   private sketchManager: SketchManager
+  private onFrameStart?: () => void
+  private onFrameEnd?: () => void
 
-  constructor() {
+  constructor(params?: { onFrameStart?: () => void; onFrameEnd?: () => void }) {
     this.store = createEngineStore()
     this.sketchManager = new SketchManager()
     this.renderer = new Renderer()
+
+    this.onFrameStart = params?.onFrameStart
+    this.onFrameEnd = params?.onFrameEnd
   }
 
   public setSketchesUrl(sketchesUrl: string) {
@@ -106,6 +110,8 @@ export class HedronEngine {
     const debugScene = createDebugScene(this.renderer)
 
     const loop = (): void => {
+      this.onFrameStart?.()
+
       const state = this.store.getState()
       const sketchInstances = this.sketchManager!.getSketchInstances()
       debugScene.clearPasses()
@@ -127,6 +133,8 @@ export class HedronEngine {
       if (debugScene) {
         this.renderer.render(debugScene)
       }
+
+      this.onFrameEnd?.()
     }
 
     loop()

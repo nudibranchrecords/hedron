@@ -47,6 +47,7 @@
   font-weight: 200;
   z-index: 1;
   overflow: hidden;
+  text-wrap: balance;
 
   &:global(.light) {
     border-color: var(--lineColor2);
