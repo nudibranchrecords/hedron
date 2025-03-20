@@ -1,4 +1,5 @@
 import c from './ClockDisplay.module.css'
+import { IconName } from '@components/core/Icon/Icon'
 import { Button } from '@components/core/Button/Button'
 
 export interface ClockDisplayProps {
@@ -22,45 +23,40 @@ export const ClockDisplay = ({
   onTapClick,
   onResetClick,
 }: ClockDisplayProps) => {
+  const playPauseButton = {
+    iconName: isRunning ? 'pause' : 'play_arrow',
+    onClick: isRunning ? onStopClick : onStartClick,
+  }
+
   return (
     <div className={c.wrapper}>
-      <div className={c.left}>
-        <div>
-          <div className={c.bpm}>
-            <span className={c.label}>BPM</span>
-            <span
-              className={c.number}
-              contentEditable
-              onBlur={(e) => onBpmEdit(Number(e.currentTarget.textContent))}
-            >
-              {bpm}
-            </span>
-          </div>
+      <div className={c.info}>
+        <div className={c.bpm}>
+          <span className={c.label}>BPM</span>
+          <span
+            className={c.number}
+            contentEditable
+            onBlur={(e) => onBpmEdit(Number(e.currentTarget.textContent))}
+          >
+            {bpm}
+          </span>
         </div>
-        <div className={c.bottom}>
-          <div className={c.beat}>{beat}</div>
-        </div>
+        <div className={c.beat}>{beat}</div>
       </div>
-      <div className={c.right}>
+      <div className={c.controls}>
         <Button
           type="neutral"
-          iconName="play_arrow"
-          className={c.button}
-          onClick={onStartClick}
-          disabled={isRunning}
+          iconName={playPauseButton.iconName as IconName}
+          className={c.iconButton}
+          onClick={playPauseButton.onClick}
         />
-        <Button
-          type="neutral"
-          iconName="stop"
-          className={c.button}
-          onClick={onStopClick}
-          disabled={!isRunning}
-        />
-        <Button type="neutral" className={c.button} onClick={onTapClick}>
-          Tap
-        </Button>
+
         <Button type="neutral" className={c.button} onClick={onResetClick}>
           Reset
+        </Button>
+
+        <Button type="neutral" className={c.button} onClick={onTapClick}>
+          Tap
         </Button>
       </div>
     </div>

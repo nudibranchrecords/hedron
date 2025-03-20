@@ -1,12 +1,13 @@
 .wrapper {
   display: flex;
-  gap: 0.5rem;
+  flex-direction: column;
+  gap: 0.25rem;
 }
 
-.left,
-.right {
+.info {
   display: flex;
-  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-end;
   gap: 0.25rem;
 }
 
@@ -45,12 +46,13 @@
   align-items: center;
 }
 
-.right {
-  display: grid;
-  grid-template-rows: 1fr 1fr;
-  grid-auto-flow: column;
+.controls {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.25rem;
 
-  .button {
+  .button,
+  .iconButton {
     font-size: 0.5rem;
     display: flex;
     align-items: center;
@@ -58,9 +60,8 @@
     flex: 1;
     padding: 0 0.25rem;
   }
-}
 
-.bottom {
-  display: flex;
-  justify-content: space-between;
+  .iconButton {
+    font-size: 0.8rem;
+  }
 }
