@@ -10,9 +10,7 @@
   },
   "dependencies": {
     "@hedron/clock": "^1.0.0-alpha.1",
-    "@picocss/pico": "^2.0.6",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1"
+    "@picocss/pico": "^2.0.6"
   },
   "devDependencies": {
     "@eslint/js": "^9.17.0",
@@ -22,5 +20,9 @@
     "globals": "^15.14.0",
     "typescript": "~5.6.2",
     "vite": "^6.0.5"
+  },
+  "peerDependencies": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
   }
 }

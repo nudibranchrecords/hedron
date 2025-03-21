@@ -24,8 +24,12 @@ export const ActiveSketch = () => {
   const selectedParam = useSelectedParam()
 
   const pluginView = engine.plugins.map((plugin) => (
-    <PluginViewWrapper key={`ActiveParam-${plugin.name}`} plugin={plugin} selectedParam={selectedParam} />
-  ));
+    <PluginViewWrapper
+      key={`ActiveParam-${plugin.name}`}
+      plugin={plugin}
+      selectedParam={selectedParam}
+    />
+  ))
 
   return (
     <>
@@ -49,9 +53,7 @@ export const ActiveSketch = () => {
       {selectedParam && (
         <Panel snugPosition="bottom" spacing="slim" width="full" className={c.bottomPanel}>
           <PanelHeader iconName={paramIcon}>{selectedParam.title}</PanelHeader>
-          <PanelBody>
-            {pluginView}
-          </PanelBody>
+          <PanelBody>{pluginView}</PanelBody>
         </Panel>
       )}
     </>
