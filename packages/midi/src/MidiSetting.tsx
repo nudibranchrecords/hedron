@@ -9,6 +9,14 @@ interface IProps {
   midi: Midi
 }
 
+/**
+ * Get the MIDI setting jsx element
+ * @param param The parameter to display the midi setting for
+ * @param engine hedron engine
+ * @param useEngineStore useEngineStore hook
+ * @param midi midi plugin
+ * @returns A JSX Elelemnt that displays connected midi inputs, and allows for midi learning
+ */
 export function getMidiSetting(
   param: ParamWithInfo,
   engine: HedronEngine,
@@ -18,11 +26,20 @@ export function getMidiSetting(
   return <MidiSetting param={param} engine={engine} useEngineStore={useEngineStore} midi={midi} />
 }
 
+/**
+ * Get the inputs that are connected to the node
+ * @param nodeId The node id to get the inputs for
+ * @param useEngineStore useEngineStore hook
+ * @returns The inputs that are connected to the node
+ */
 const useInputsWithNode = (nodeId: string, useEngineStore: UseEngineStore) => {
   const inputs = useEngineStore((state) => state.inputs)
   return Object.values(inputs).filter((input) => input.targetNodeIds.includes(nodeId))
 }
 
+/**
+ * A react component that displays the midi settings for a parameter
+ */
 export const MidiSetting = ({ param, engine, useEngineStore, midi }: IProps) => {
   const inputs = useInputsWithNode(param.id, useEngineStore)
   const [isLearning, setIsLearning] = useState(false)
