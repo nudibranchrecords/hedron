@@ -10,7 +10,7 @@ import { Panel, PanelBody, PanelHeader } from '@components/core/Panel/Panel'
 import { useSelectedParam } from '@components/hooks/useSelectedParam'
 
 const PluginViewWrapper = ({ plugin, selectedParam }) => {
-  const view = plugin.getSelectedParamView(selectedParam)
+  const view = plugin.getSelectedParamView?.(selectedParam)
   return view ? view : null
 }
 
