@@ -17,11 +17,16 @@ export class HedronEngine {
   private sketchesUrl: string | null = null
   private sketchManager: SketchManager
   public plugins: IPlugin[] = []
+  private onFrameStart?: () => void
+  private onFrameEnd?: () => void
 
-  constructor() {
+  constructor(params?: { onFrameStart?: () => void; onFrameEnd?: () => void }) {
     this.store = createEngineStore()
     this.sketchManager = new SketchManager()
     this.renderer = new Renderer()
+
+    this.onFrameStart = params?.onFrameStart
+    this.onFrameEnd = params?.onFrameEnd
   }
 
   public registerPlugin(plugin: IPlugin) {
@@ -117,6 +122,8 @@ export class HedronEngine {
     const debugScene = createDebugScene(this.renderer)
 
     const loop = (): void => {
+      this.onFrameStart?.()
+
       const state = this.store.getState()
       const sketchInstances = this.sketchManager!.getSketchInstances()
       debugScene.clearPasses()
@@ -138,6 +145,8 @@ export class HedronEngine {
       if (debugScene) {
         this.renderer.render(debugScene)
       }
+
+      this.onFrameEnd?.()
     }
 
     loop()

@@ -13,3 +13,12 @@
 .right {
   flex: 1;
 }
+
+.widgetStrip {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.widgetItem {
+  padding: 0.25rem 0;
+}
