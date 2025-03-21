@@ -82,7 +82,7 @@ export class Midi implements IPlugin {
 
   // return a test view
   public getSelectedParamView(param: ParamWithInfo): React.JSX.Element | undefined {
-    return getMidiSetting(param, this.engine, this.useEngineStore)
+    return getMidiSetting(param, this.engine, this.useEngineStore, this)
   }
 
   /**

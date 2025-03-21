@@ -1,25 +1,21 @@
 import React, { useState } from 'react'
-import {
-  EngineStateWithActions,
-  HedronEngine,
-  Input,
-  NodeTypes,
-  ParamWithInfo,
-  UseEngineStore,
-} from '@hedron/engine'
+import { HedronEngine, Input, NodeTypes, ParamWithInfo, UseEngineStore } from '@hedron/engine'
+import { Midi } from '.'
 
 interface IProps {
   param: ParamWithInfo
   engine: HedronEngine
   useEngineStore: UseEngineStore
+  midi: Midi
 }
 
 export function getMidiSetting(
   param: ParamWithInfo,
   engine: HedronEngine,
   useEngineStore: UseEngineStore,
+  midi: Midi,
 ): JSX.Element {
-  return <MidiSetting param={param} engine={engine} useEngineStore={useEngineStore} />
+  return <MidiSetting param={param} engine={engine} useEngineStore={useEngineStore} midi={midi} />
 }
 
 const useInputsWithNode = (nodeId: string, useEngineStore: UseEngineStore) => {
@@ -27,30 +23,41 @@ const useInputsWithNode = (nodeId: string, useEngineStore: UseEngineStore) => {
   return Object.values(inputs).filter((input) => input.targetNodeIds.includes(nodeId))
 }
 
-export const MidiSetting = ({ param, engine, useEngineStore }: IProps) => {
-  // console.log('MidiSetting');
-  // console.log(useEngineStore);
+export const MidiSetting = ({ param, engine, useEngineStore, midi }: IProps) => {
   const inputs = useInputsWithNode(param.id, useEngineStore)
   const [isLearning, setIsLearning] = useState(false)
 
   if (param.valueType !== NodeTypes.Number) {
     return null
   }
+
   return (
     <div>
-      <h1>MidiSetting</h1>
+      <h1>Midi Settings</h1>
+      {isLearning ? (
+        <button onClick={cancelMidiLearn}>Cancel</button>
+      ) : (
+        <button onClick={runMidiLearn}>Midi Learn</button>
+      )}
+      <h3>Inputs:</h3>
+      {inputs.map((input) => (
+        <div key={input.id}>
+          <button onClick={removeMidi(input.id)}>Remove</button>
+          {`\t${getName(input)}`}
+        </div>
+      ))}
     </div>
   )
 
   async function runMidiLearn() {
     setIsLearning(true)
-    engine.midiLearn(param.id).finally(() => {
+    midi.midiLearn(param.id).finally(() => {
       setIsLearning(false)
     })
   }
 
   function cancelMidiLearn() {
-    engine.cancelMidiLearn()
+    midi.cancelMidiLearn()
   }
 
   function removeMidi(id: string) {
