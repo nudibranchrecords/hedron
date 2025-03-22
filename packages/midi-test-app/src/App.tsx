@@ -1,4 +1,5 @@
 // import { FormEvent, useEffect, useState } from 'react'
+import { HedronEngine } from '@hedron/engine'
 import './custom.css'
 import { Midi, MIDIEvent, MidiMessageType } from '@hedron/midi'
 
@@ -11,19 +12,14 @@ function App() {
 
   const midiLogs: string[] = []
 
-  function onMidiMessage({ device, message }: MIDIEvent) {
-    if (!message.data) {
-      console.error('No data in MIDI message:', message)
-      return
-    }
-    const status = message.data[0]
-    const statusType = midi.getMidiMessageType(status)
+  function onMidiMessage(event: MIDIEvent) {
+    const statusType = event.type
     if (statusType === MidiMessageType.Unknown) {
       return // my launch pad was sending unknown non-stop, would imagine some other devices do as well
     }
-    const data1 = message.data[1]
-    const data2 = message.data[2]
-    midiLogs.unshift(`${device.name}: \t${status.toString(16)}(${statusType}): \t${data1} ${data2}`)
+    midiLogs.unshift(
+      `${event.device.name}: \t${statusType}(${statusType}): \t${event.channel} ${event.value}`,
+    )
     if (midiLogs.length > 16) {
       midiLogs.pop()
     }
@@ -34,8 +30,10 @@ function App() {
     $text('devices', getMidiDevices())
   }
 
-  const midi: Midi = new Midi()
-  // onDeviceChange()
+  const engine: HedronEngine = new HedronEngine()
+  const midi: Midi = new Midi(engine, () => {
+    return {} as any
+  })
   midi.onDeviceChange.add(onDeviceChange)
   midi.onMidiMessage.add(onMidiMessage)
 
