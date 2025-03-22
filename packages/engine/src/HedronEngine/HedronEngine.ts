@@ -30,7 +30,6 @@ export class HedronEngine {
   }
 
   public registerPlugin(plugin: IPlugin) {
-    // plugins isn't actually used anywhere yet, but I assume it will be at some point
     this.plugins.push(plugin)
   }
 

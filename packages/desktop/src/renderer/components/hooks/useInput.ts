@@ -1,11 +1,14 @@
 import { useEngineStore } from '@renderer/engine'
+import { useShallow } from 'zustand/react/shallow'
 
 export const useInput = (id: string) => {
-  const inputs = useEngineStore((state) => state.inputs)
-  return inputs[id]
+  return useEngineStore((state) => state.inputs[id])
 }
 
 export const useInputsWithNode = (nodeId: string) => {
-  const inputs = useEngineStore((state) => state.inputs)
-  return Object.values(inputs).filter((input) => input.targetNodeIds.includes(nodeId))
+  return useEngineStore(
+    useShallow((state) =>
+      Object.values(state.inputs).filter((input) => input.targetNodeIds.includes(nodeId)),
+    ),
+  )
 }

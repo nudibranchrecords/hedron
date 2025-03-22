@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { useShallow } from 'zustand/react/shallow'
 import { HedronEngine, Input, NodeTypes, ParamWithInfo, UseEngineStore } from '@hedron/engine'
 import { Midi } from '.'
 
@@ -33,8 +34,11 @@ export function getMidiSetting(
  * @returns The inputs that are connected to the node
  */
 const useInputsWithNode = (nodeId: string, useEngineStore: UseEngineStore) => {
-  const inputs = useEngineStore((state) => state.inputs)
-  return Object.values(inputs).filter((input) => input.targetNodeIds.includes(nodeId))
+  return useEngineStore(
+    useShallow((state) =>
+      Object.values(state.inputs).filter((input) => input.targetNodeIds.includes(nodeId)),
+    ),
+  )
 }
 
 /**

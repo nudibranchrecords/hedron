@@ -8,9 +8,16 @@ import { Card, CardActions } from '@components/core/Card/Card'
 import { Icon, paramIcon } from '@components/core/Icon/Icon'
 import { Panel, PanelBody, PanelHeader } from '@components/core/Panel/Panel'
 import { useSelectedParam } from '@components/hooks/useSelectedParam'
+import { IPlugin, ParamWithInfo } from '@hedron/engine'
 
-const PluginViewWrapper = ({ plugin, selectedParam }) => {
-  const view = plugin.getSelectedParamView?.(selectedParam)
+const PluginViewWrapper = ({
+  plugin,
+  selectedParam,
+}: {
+  plugin: IPlugin
+  selectedParam: ParamWithInfo | null
+}) => {
+  const view = plugin.getSelectedParamView?.(selectedParam!)
   return view ? view : null
 }
 
