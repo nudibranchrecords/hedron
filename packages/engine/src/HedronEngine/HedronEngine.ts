@@ -1,15 +1,15 @@
 import { listenToStore } from './storeListener'
 import { Result } from './types'
 import { importSketchModule } from './importSketchModule'
+import { IPlugin } from '@plugins/Plugin'
 import { stripForSave } from '@utils/stripForSave'
 import { Renderer } from '@world/Renderer'
 import { SketchManager } from '@world/SketchManager'
 import { createDebugScene } from '@world/debugScene'
-import { EngineData, Input, SketchModuleItem } from '@store/types'
+import { EngineData, SketchModuleItem } from '@store/types'
 import { getSketchesOfModuleId } from '@store/selectors/getSketchesOfModuleId'
 import { createEngineStore, EngineStore } from '@store/engineStore'
 import { getSketchParamValues } from '@store/selectors/getSketchParamValues'
-import { IPlugin } from 'src/plugin/Plugin'
 
 export class HedronEngine {
   private renderer: Renderer

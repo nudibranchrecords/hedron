@@ -1,6 +1,6 @@
 export * from './HedronEngine/HedronEngine'
+export * from '@plugins/Plugin'
 export type * from '@store/types'
 export * from '@store/types'
 export { getParamWithInfo, ParamWithInfo } from '@store/selectors/getParamWithInfo'
 import './globalVars'
-export * from './plugin/Plugin'
