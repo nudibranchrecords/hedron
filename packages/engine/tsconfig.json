@@ -6,7 +6,8 @@
     "paths": {
       "@store/*": ["src/store/*"],
       "@utils/*": ["src/utils/*"],
-      "@world/*": ["src/world/*"]
+      "@world/*": ["src/world/*"],
+      "@plugins/*": ["src/plugins/*"]
     }
   }
 }

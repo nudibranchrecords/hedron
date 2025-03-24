@@ -1,6 +1,7 @@
+import { IPlugin, ParamWithInfo } from '@hedron/engine'
 import c from './ActiveSketch.module.css'
 import { SketchParams } from '@components/SketchParams/SketchParams'
-import { engineStore } from '@renderer/engine'
+import { engine, engineStore } from '@renderer/engine'
 import { useActiveSketch } from '@components/hooks/useActiveSketch'
 import { Button } from '@components/core/Button/Button'
 import { ViewHeader } from '@components/core/ViewHeader/ViewHeader'
@@ -8,6 +9,17 @@ import { Card, CardActions } from '@components/core/Card/Card'
 import { Icon, paramIcon } from '@components/core/Icon/Icon'
 import { Panel, PanelBody, PanelHeader } from '@components/core/Panel/Panel'
 import { useSelectedParam } from '@components/hooks/useSelectedParam'
+
+const PluginViewWrapper = ({
+  plugin,
+  selectedParam,
+}: {
+  plugin: IPlugin
+  selectedParam: ParamWithInfo | null
+}) => {
+  const view = plugin.getSelectedParamView?.(selectedParam!)
+  return view ? view : null
+}
 
 export const ActiveSketch = () => {
   const activeSketch = useActiveSketch()
@@ -17,6 +29,14 @@ export const ActiveSketch = () => {
   }
 
   const selectedParam = useSelectedParam()
+
+  const pluginView = engine.plugins.map((plugin) => (
+    <PluginViewWrapper
+      key={`ActiveParam-${plugin.name}`}
+      plugin={plugin}
+      selectedParam={selectedParam}
+    />
+  ))
 
   return (
     <>
@@ -40,7 +60,7 @@ export const ActiveSketch = () => {
       {selectedParam && (
         <Panel snugPosition="bottom" spacing="slim" width="full" className={c.bottomPanel}>
           <PanelHeader iconName={paramIcon}>{selectedParam.title}</PanelHeader>
-          <PanelBody>:)</PanelBody>
+          <PanelBody>{pluginView}</PanelBody>
         </Panel>
       )}
     </>

@@ -10,7 +10,7 @@
     ]
   },
   "scripts": {
-    "dev": "lerna run dev --parallel --scope @hedron/clock --scope @hedron/engine --scope @hedron/desktop",
+    "dev": "lerna run dev --parallel --scope @hedron/clock --scope @hedron/engine --scope @hedron/desktop --scope @hedron/midi",
     "dev:clock": "lerna run dev --parallel --scope @hedron/clock --scope @hedron/clock-test-app",
     "storybook": "lerna run storybook --scope @hedron/desktop",
     "build:engine": "lerna run build --scope @hedron/engine",
@@ -34,6 +34,8 @@
     "eslint-plugin-storybook": "^0.8.0",
     "lerna": "^8.1.9",
     "prettier": "^3.4.2",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
     "typescript": "^5.5.2"
   },
   "packageManager": "yarn@4.5.3"
