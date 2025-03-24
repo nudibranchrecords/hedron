@@ -1208,7 +1208,8 @@ __metadata:
   resolution: "@hedron/midi-test-app@workspace:packages/midi-test-app"
   dependencies:
     "@eslint/js": "npm:^9.17.0"
-    "@hedron/midi": "npm:^1.0.0-alpha.0"
+    "@hedron/engine": "npm:^1.0.0-alpha.1"
+    "@hedron/midi": "npm:^1.0.0-alpha.1"
     "@picocss/pico": "npm:^2.0.6"
     "@types/react": "npm:^18.3.18"
     "@types/react-dom": "npm:^18.3.5"
@@ -1222,7 +1223,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@hedron/midi@npm:^1.0.0-alpha.0, @hedron/midi@workspace:^, @hedron/midi@workspace:packages/midi":
+"@hedron/midi@npm:^1.0.0-alpha.1, @hedron/midi@workspace:^, @hedron/midi@workspace:packages/midi":
   version: 0.0.0-use.local
   resolution: "@hedron/midi@workspace:packages/midi"
   dependencies:
