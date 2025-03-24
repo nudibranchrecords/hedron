@@ -1133,6 +1133,7 @@ __metadata:
     "@floating-ui/react-dom": "npm:^2.1.2"
     "@hedron/clock": "workspace:^"
     "@hedron/engine": "workspace:^"
+    "@hedron/midi": "workspace:^"
     "@redux-devtools/extension": "npm:^3.3.0"
     "@storybook/addon-essentials": "npm:^8.2.9"
     "@storybook/addon-interactions": "npm:^8.2.9"
@@ -1165,8 +1166,6 @@ __metadata:
     material-symbols: "npm:^0.23.0"
     path-browserify: "npm:^1.0.1"
     postprocessing: "npm:^6.36.4"
-    react: "npm:^18.3.1"
-    react-dom: "npm:^18.3.1"
     react-error-boundary: "npm:^4.0.13"
     storybook: "npm:^8.2.9"
     three: "npm:^0.171.0"
@@ -1174,10 +1173,13 @@ __metadata:
     vite: "npm:^5.3.1"
     vite-tsconfig-paths: "npm:^5.1.4"
     zustand: "npm:^4.5.5"
+  peerDependencies:
+    react: ^18.3.1
+    react-dom: ^18.3.1
   languageName: unknown
   linkType: soft
 
-"@hedron/engine@workspace:^, @hedron/engine@workspace:packages/engine":
+"@hedron/engine@npm:^1.0.0-alpha.1, @hedron/engine@workspace:^, @hedron/engine@workspace:packages/engine":
   version: 0.0.0-use.local
   resolution: "@hedron/engine@workspace:packages/engine"
   dependencies:
@@ -1198,6 +1200,39 @@ __metadata:
   dependencies:
     is-even: "npm:^1.0.0"
     three-stdlib: "npm:^2.34.0"
+  languageName: unknown
+  linkType: soft
+
+"@hedron/midi-test-app@workspace:packages/midi-test-app":
+  version: 0.0.0-use.local
+  resolution: "@hedron/midi-test-app@workspace:packages/midi-test-app"
+  dependencies:
+    "@eslint/js": "npm:^9.17.0"
+    "@hedron/engine": "npm:^1.0.0-alpha.1"
+    "@hedron/midi": "npm:^1.0.0-alpha.1"
+    "@picocss/pico": "npm:^2.0.6"
+    "@types/react": "npm:^18.3.18"
+    "@types/react-dom": "npm:^18.3.5"
+    "@vitejs/plugin-react": "npm:^4.3.4"
+    globals: "npm:^15.14.0"
+    react: "npm:^18.3.1"
+    react-dom: "npm:^18.3.1"
+    typescript: "npm:~5.6.2"
+    vite: "npm:^6.0.5"
+    zustand: "npm:^5.0.2"
+  languageName: unknown
+  linkType: soft
+
+"@hedron/midi@npm:^1.0.0-alpha.1, @hedron/midi@workspace:^, @hedron/midi@workspace:packages/midi":
+  version: 0.0.0-use.local
+  resolution: "@hedron/midi@workspace:packages/midi"
+  dependencies:
+    "@hedron/engine": "npm:^1.0.0-alpha.1"
+    tsup: "npm:^8.3.6"
+  peerDependencies:
+    react: ^18.3.1
+    react-dom: ^18.3.1
+    zustand: ^5.0.2
   languageName: unknown
   linkType: soft
 
@@ -11035,6 +11070,8 @@ __metadata:
     eslint-plugin-storybook: "npm:^0.8.0"
     lerna: "npm:^8.1.9"
     prettier: "npm:^3.4.2"
+    react: "npm:^18.3.1"
+    react-dom: "npm:^18.3.1"
     typescript: "npm:^5.5.2"
   languageName: unknown
   linkType: soft

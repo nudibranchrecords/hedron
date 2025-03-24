@@ -1,6 +1,7 @@
 import { listenToStore } from './storeListener'
 import { Result } from './types'
 import { importSketchModule } from './importSketchModule'
+import { IPlugin } from '@plugins/Plugin'
 import { stripForSave } from '@utils/stripForSave'
 import { Renderer } from '@world/Renderer'
 import { SketchManager } from '@world/SketchManager'
@@ -9,11 +10,13 @@ import { EngineData, SketchModuleItem } from '@store/types'
 import { getSketchesOfModuleId } from '@store/selectors/getSketchesOfModuleId'
 import { createEngineStore, EngineStore } from '@store/engineStore'
 import { getSketchParamValues } from '@store/selectors/getSketchParamValues'
+
 export class HedronEngine {
   private renderer: Renderer
   private store: EngineStore
   private sketchesUrl: string | null = null
   private sketchManager: SketchManager
+  public plugins: IPlugin[] = []
   private onFrameStart?: () => void
   private onFrameEnd?: () => void
 
@@ -24,6 +27,10 @@ export class HedronEngine {
 
     this.onFrameStart = params?.onFrameStart
     this.onFrameEnd = params?.onFrameEnd
+  }
+
+  public registerPlugin(plugin: IPlugin) {
+    this.plugins.push(plugin)
   }
 
   public setSketchesUrl(sketchesUrl: string) {
@@ -104,6 +111,10 @@ export class HedronEngine {
 
   public getSaveData(): EngineData {
     return stripForSave(this.store.getState())
+  }
+
+  public deleteInputParam(inputId: string, nodeId: string) {
+    this.store.getState().deleteInputParam(inputId, nodeId)
   }
 
   run() {
