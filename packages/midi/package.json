@@ -1,6 +1,6 @@
 {
   "name": "@hedron/midi",
-  "version": "1.0.0-alpha.0",
+  "version": "1.0.0-alpha.1",
   "description": "MIDI Module",
   "author": "Alex Kempton <alex@funwithtriangles.net>",
   "homepage": "https://github.com/nudibranchrecords/hedron#readme",
