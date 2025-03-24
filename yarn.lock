@@ -1218,6 +1218,7 @@ __metadata:
     react-dom: "npm:^18.3.1"
     typescript: "npm:~5.6.2"
     vite: "npm:^6.0.5"
+    zustand: "npm:^5.0.2"
   languageName: unknown
   linkType: soft
 
@@ -1230,6 +1231,7 @@ __metadata:
   peerDependencies:
     react: ^18.3.1
     react-dom: ^18.3.1
+    zustand: ^5.0.2
   languageName: unknown
   linkType: soft
 

@@ -1,5 +1,4 @@
-/* eslint-disable-next-line */
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { useShallow } from 'zustand/react/shallow'
 import { HedronEngine, Input, NodeTypes, ParamWithInfo, UseEngineStore } from '@hedron/engine'
 import { Midi } from '.'

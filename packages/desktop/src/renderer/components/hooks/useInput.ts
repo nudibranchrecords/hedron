@@ -1,5 +1,5 @@
-import { useEngineStore } from '@renderer/engine'
 import { useShallow } from 'zustand/react/shallow'
+import { useEngineStore } from '@renderer/engine'
 
 export const useInput = (id: string) => {
   return useEngineStore((state) => state.inputs[id])
