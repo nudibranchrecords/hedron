@@ -1,3 +1,4 @@
+import { IPlugin, ParamWithInfo } from '@hedron/engine'
 import c from './ActiveSketch.module.css'
 import { SketchParams } from '@components/SketchParams/SketchParams'
 import { engine, engineStore } from '@renderer/engine'
@@ -8,7 +9,6 @@ import { Card, CardActions } from '@components/core/Card/Card'
 import { Icon, paramIcon } from '@components/core/Icon/Icon'
 import { Panel, PanelBody, PanelHeader } from '@components/core/Panel/Panel'
 import { useSelectedParam } from '@components/hooks/useSelectedParam'
-import { IPlugin, ParamWithInfo } from '@hedron/engine'
 
 const PluginViewWrapper = ({
   plugin,

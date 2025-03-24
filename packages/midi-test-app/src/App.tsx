@@ -1,4 +1,3 @@
-// import { FormEvent, useEffect, useState } from 'react'
 import { HedronEngine } from '@hedron/engine'
 import './custom.css'
 import { Midi, MIDIEvent, MidiMessageType } from '@hedron/midi'
@@ -32,6 +31,7 @@ function App() {
 
   const engine: HedronEngine = new HedronEngine()
   const midi: Midi = new Midi(engine, () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return {} as any
   })
   midi.onDeviceChange.add(onDeviceChange)
