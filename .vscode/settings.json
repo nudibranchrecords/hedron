@@ -15,6 +15,7 @@
   },
   "eslint.workingDirectories": [
     { "directory": "packages/desktop", "changeProcessCWD": true },
+    { "directory": "packages/ui-core", "changeProcessCWD": true },
     { "directory": "packages/engine", "changeProcessCWD": true },
     { "directory": "packages/example-project", "changeProcessCWD": true },
     "./"
