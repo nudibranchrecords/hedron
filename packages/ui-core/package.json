@@ -16,7 +16,8 @@
     },
     "./base.css": "./dist/base.css",
     "./icons.css": "./dist/icons.css",
-    "./fonts.css": "./dist/fonts.css"
+    "./fonts.css": "./dist/fonts.css",
+    "./modules.css": "./dist/index.css"
   },
   "main": "./dist/ui-core.es.js",
   "types": "./dist/index.d.ts",
