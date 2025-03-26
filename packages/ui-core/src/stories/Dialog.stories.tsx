@@ -10,11 +10,11 @@ import {
   CardDetails,
   CardHeader,
   CardList,
-} from '@components/core/Card/Card'
-import { sketchIcon } from '@components/core/Icon/Icon'
-import { Panel, PanelBody, PanelHeader } from '@components/core/Panel/Panel'
-import { Dialog } from '@components/core/Dialog/Dialog'
-import { Button } from '@components/core/Button/Button'
+} from '@components/Card/Card'
+import { sketchIcon } from '@components/Icon/Icon'
+import { Panel, PanelBody, PanelHeader } from '@components/Panel/Panel'
+import { Dialog } from '@components/Dialog/Dialog'
+import { Button } from '@components/Button/Button'
 
 const meta = {
   title: 'Dialog',

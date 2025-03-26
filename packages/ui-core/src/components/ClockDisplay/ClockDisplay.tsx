@@ -1,6 +1,6 @@
 import c from './ClockDisplay.module.css'
-import { IconName } from '@components/core/Icon/Icon'
-import { Button } from '@components/core/Button/Button'
+import { IconName } from '@components/Icon/Icon'
+import { Button } from '@components/Button/Button'
 
 export interface ClockDisplayProps {
   bpm: number

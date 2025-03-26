@@ -1,7 +1,7 @@
 import React, { MouseEventHandler, useCallback } from 'react'
 import c from './Panel.module.css'
-import { Button } from '@components/core/Button/Button'
-import { Icon, IconName } from '@components/core/Icon/Icon'
+import { Button } from '@components/Button/Button'
+import { Icon, IconName } from '@components/Icon/Icon'
 
 export interface PanelProps extends React.HTMLAttributes<HTMLDivElement> {
   width?: 'full'

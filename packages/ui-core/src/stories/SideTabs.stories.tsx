@@ -1,6 +1,6 @@
 import type { Meta } from '@storybook/react'
 import { useState } from 'react'
-import { SideTabs, SideTabsItem } from '@components/core/SideTabs/SideTabs'
+import { SideTabs, SideTabsItem } from '@components/SideTabs/SideTabs'
 
 const meta = {
   title: 'SideTabs',

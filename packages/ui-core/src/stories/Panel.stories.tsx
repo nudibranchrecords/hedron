@@ -2,8 +2,8 @@ import type { Meta, StoryObj } from '@storybook/react'
 
 import { fn } from '@storybook/test'
 import { WithControlGrid } from './NodeControl.stories'
-import { Panel, PanelActions, PanelBody, PanelHeader } from '@components/core/Panel/Panel'
-import { Button } from '@components/core/Button/Button'
+import { Panel, PanelActions, PanelBody, PanelHeader } from '@components/Panel/Panel'
+import { Button } from '@components/Button/Button'
 
 const meta = {
   title: 'Panel',

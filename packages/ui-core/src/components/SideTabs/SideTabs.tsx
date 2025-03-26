@@ -1,5 +1,5 @@
 import c from './SideTabs.module.css'
-import { Icon, IconName } from '@components/core/Icon/Icon'
+import { Icon, IconName } from '@components/Icon/Icon'
 
 export interface SideTabsProps {
   children: React.ReactNode

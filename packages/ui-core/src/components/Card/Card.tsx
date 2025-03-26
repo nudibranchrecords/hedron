@@ -1,5 +1,5 @@
-import { Icon, IconName } from '@components/Icon/Icon'
 import c from './Card.module.css'
+import { Icon, IconName } from '@components/Icon/Icon'
 
 export interface CardProps {
   children: React.ReactNode

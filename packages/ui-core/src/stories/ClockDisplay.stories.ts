@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { fn } from '@storybook/test'
-import { ClockDisplay } from '@components/core/ClockDisplay/ClockDisplay'
+import { ClockDisplay } from '@components/ClockDisplay/ClockDisplay'
 
 const meta = {
   title: 'ClockDisplay',

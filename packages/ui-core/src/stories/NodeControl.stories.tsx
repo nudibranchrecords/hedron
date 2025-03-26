@@ -2,23 +2,20 @@ import type { Meta } from '@storybook/react'
 import { fn } from '@storybook/test'
 import { useRef, useState } from 'react'
 import { useInterval } from 'usehooks-ts'
+import { EnumDropdown, EnumDropdownHandle } from '@components/EnumDropdown/EnumDropdown'
 import {
   NodeControl,
   NodeControlMain,
   NodeControlTitle,
   NodeControlInner,
-} from '@components/core/NodeControl/NodeControl'
+} from '@components/NodeControl/NodeControl'
 
-import { ControlGrid } from '@components/core/ControlGrid/ControlGrid'
+import { ControlGrid } from '@components/ControlGrid/ControlGrid'
 
-import { FloatSlider, FloatSliderHandle } from '@components/core/FloatSlider/FloatSlider'
-import { BooleanToggle, BooleanToggleHandle } from '@components/core/BooleanToggle/BooleanToggle'
-import { ColorPickerHandle, ColorPicker } from '@components/core/ColorPicker/ColorPicker'
-import { Panel, PanelBody, PanelHeader } from '@components/core/Panel/Panel'
-import {
-  EnumDropdown,
-  EnumDropdownHandle,
-} from '@renderer/components/core/EnumDropdown/EnumDropdown'
+import { FloatSlider, FloatSliderHandle } from '@components/FloatSlider/FloatSlider'
+import { BooleanToggle, BooleanToggleHandle } from '@components/BooleanToggle/BooleanToggle'
+import { ColorPickerHandle, ColorPicker } from '@components/ColorPicker/ColorPicker'
+import { Panel, PanelBody, PanelHeader } from '@components/Panel/Panel'
 
 const meta = {
   title: 'NodeControl',

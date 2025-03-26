@@ -1,5 +1,5 @@
 import c from './IconList.module.css'
-import { Icon, IconName } from '@components/core/Icon/Icon'
+import { Icon, IconName } from '@components/Icon/Icon'
 
 export interface IconListProps {
   children: React.ReactNode
