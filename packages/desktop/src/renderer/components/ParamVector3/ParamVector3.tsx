@@ -1,8 +1,9 @@
 import { useRef } from 'react'
 import { useInterval } from 'usehooks-ts'
 import { NodeParamVector3 } from '@hedron/engine'
+import { FloatSlider } from '@hedron/ui-core'
+import type { FloatSliderHandle } from '@hedron/ui-core'
 import c from './ParamVector3.module.css'
-import { FloatSlider, FloatSliderHandle } from '@components/core/FloatSlider/FloatSlider'
 import { useOnNodeValueChange } from '@components/hooks/useOnNodeValueChange'
 import { engineStore, useEngineStore } from '@renderer/engine'
 

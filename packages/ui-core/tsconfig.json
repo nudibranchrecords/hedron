@@ -1,6 +1,6 @@
 {
   "extends": ["../../tsconfig.json"],
-  "include": ["src/**/*"],
+  "include": ["src/**/*", "../desktop/src/renderer/components/hooks/useElementScrub.tsx"],
   "compilerOptions": {
     "jsx": "react-jsx",
     "baseUrl": ".",

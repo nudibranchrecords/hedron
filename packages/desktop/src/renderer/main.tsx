@@ -1,6 +1,9 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
-import '@css/base.css'
+
+import '@hedron/ui-core/icons.css'
+import '@hedron/ui-core/fonts.css'
+import '@hedron/ui-core/base.css'
 
 import { App } from '@components/App/App'
 

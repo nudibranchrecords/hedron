@@ -10,6 +10,16 @@
     "type": "git",
     "url": "git+https://github.com/nudibranchrecords/hedron.git"
   },
+  "exports": {
+    ".": {
+      "import": "./dist/ui-core.es.js"
+    },
+    "./base.css": "./dist/base.css",
+    "./icons.css": "./dist/icons.css",
+    "./fonts.css": "./dist/fonts.css"
+  },
+  "main": "./dist/ui-core.es.js",
+  "types": "./dist/index.d.ts",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
@@ -38,6 +48,7 @@
     "@vitejs/plugin-react": "^4.3.4",
     "storybook": "^8.2.9",
     "vite": "^6.2.3",
+    "vite-plugin-dts": "^4.5.3",
     "vite-tsconfig-paths": "^5.1.4"
   },
   "peerDependencies": {

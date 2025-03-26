@@ -1,7 +1,7 @@
 import { forwardRef, useCallback, useEffect, useImperativeHandle, useRef } from 'react'
 import { useDebounceCallback, useResizeObserver } from 'usehooks-ts'
 import css from './FloatSlider.module.css'
-import { useElementScrub } from '@hooks/useElementScrub'
+import { useElementScrub } from '../../../../desktop/src/renderer/components/hooks/useElementScrub'
 
 type Size = {
   width?: number

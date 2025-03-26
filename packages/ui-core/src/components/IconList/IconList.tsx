@@ -7,12 +7,12 @@ export interface IconListProps {
 
 export const IconList = ({ children }: IconListProps) => <div className={c.wrapper}>{children}</div>
 
-export interface CardHeaderProps {
+export interface IconListItemProps {
   children: React.ReactNode
   iconName: IconName
 }
 
-export const IconListItem = ({ iconName, children }: CardHeaderProps) => (
+export const IconListItem = ({ iconName, children }: IconListItemProps) => (
   <div className={c.item}>
     <Icon name={iconName} className={c.icon} /> {children}
   </div>

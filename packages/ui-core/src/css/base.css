@@ -1,7 +1,5 @@
 @import './reset.css';
 @import './variables.css';
-@import './fonts.css';
-@import 'material-symbols';
 
 .material-symbols-rounded {
   font-variation-settings:

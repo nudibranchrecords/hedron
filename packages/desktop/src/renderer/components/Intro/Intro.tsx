@@ -1,8 +1,15 @@
 import { formatDistanceToNow } from 'date-fns'
 import { ErrorBoundary } from 'react-error-boundary'
-import c from './Intro.module.css'
-import { Button } from '@components/core/Button/Button'
 import {
+  sceneIcon,
+  sketchIcon,
+  IconList,
+  IconListItem,
+  Panel,
+  PanelActions,
+  PanelBody,
+  PanelHeader,
+  Button,
   Card,
   CardActions,
   CardBody,
@@ -10,11 +17,10 @@ import {
   CardDetails,
   CardHeader,
   CardList,
-} from '@components/core/Card/Card'
-import { sceneIcon, sketchIcon } from '@components/core/Icon/Icon'
-import { IconList, IconListItem } from '@components/core/IconList/IconList'
+} from '@hedron/ui-core'
+
+import c from './Intro.module.css'
 import { handleLoadProjectDialog, handleSketchesDialog } from '@renderer/handlers/fileHandlers'
-import { Panel, PanelActions, PanelBody, PanelHeader } from '@components/core/Panel/Panel'
 import { SaveItem, useAppStore } from '@renderer/appStore'
 import { pluralize } from '@renderer/utils/pluralize'
 

@@ -23,6 +23,7 @@
     "@hedron/clock": "workspace:^",
     "@hedron/engine": "workspace:^",
     "@hedron/midi": "workspace:^",
+    "@hedron/ui-core": "workspace:^",
     "@redux-devtools/extension": "^3.3.0",
     "@tomjs/electron-devtools-installer": "^2.3.2",
     "chokidar": "^4.0.0",
@@ -38,6 +39,7 @@
     "postprocessing": "^6.36.4",
     "react-error-boundary": "^4.0.13",
     "three": "^0.171.0",
+    "usehooks-ts": "^3.1.1",
     "zustand": "^4.5.5"
   },
   "devDependencies": {
