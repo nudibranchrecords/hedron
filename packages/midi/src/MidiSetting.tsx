@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useShallow } from 'zustand/react/shallow'
 import { HedronEngine, Input, NodeTypes, ParamWithInfo, UseEngineStore } from '@hedron/engine'
+import { Button } from '@hedron/ui-core'
 import { Midi } from '.'
 
 interface IProps {
@@ -56,14 +57,14 @@ export const MidiSetting = ({ param, engine, useEngineStore, midi }: IProps) => 
     <div>
       <h1>Midi Settings</h1>
       {isLearning ? (
-        <button onClick={cancelMidiLearn}>Cancel</button>
+        <Button onClick={cancelMidiLearn}>Cancel</Button>
       ) : (
-        <button onClick={runMidiLearn}>Midi Learn</button>
+        <Button onClick={runMidiLearn}>Midi Learn</Button>
       )}
       <h3>Inputs:</h3>
       {inputs.map((input) => (
         <div key={input.id}>
-          <button onClick={removeMidi(input.id)}>Remove</button>
+          <Button onClick={removeMidi(input.id)}>Remove</Button>
           {`\t${getName(input)}`}
         </div>
       ))}
