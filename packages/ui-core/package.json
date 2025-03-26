@@ -1,0 +1,36 @@
+{
+  "name": "@hedron/ui-core",
+  "version": "1.0.0-alpha.1",
+  "description": "A collection of components and hooks for Hedron desktop and any plugins/inputs",
+  "author": "Alex Kempton <alex@funwithtriangles.net>",
+  "homepage": "https://github.com/nudibranchrecords/hedron#readme",
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nudibranchrecords/hedron.git"
+  },
+  "scripts": {
+    "lint": "eslint . --ext .js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build"
+  },
+  "bugs": {
+    "url": "https://github.com/nudibranchrecords/hedron/issues"
+  },
+  "devDependencies": {
+    "@chromatic-com/storybook": "^1.8.0",
+    "@storybook/addon-essentials": "^8.2.9",
+    "@storybook/addon-interactions": "^8.2.9",
+    "@storybook/addon-links": "^8.2.9",
+    "@storybook/addon-onboarding": "^8.2.9",
+    "@storybook/blocks": "^8.2.9",
+    "@storybook/react": "^8.2.9",
+    "@storybook/react-vite": "^8.2.9",
+    "@storybook/test": "^8.2.9",
+    "storybook": "^8.2.9"
+  },
+  "peerDependencies": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  }
+}

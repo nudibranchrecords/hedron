@@ -12,7 +12,7 @@
   "scripts": {
     "dev": "lerna run dev --parallel --scope @hedron/clock --scope @hedron/engine --scope @hedron/desktop --scope @hedron/midi",
     "dev:clock": "lerna run dev --parallel --scope @hedron/clock --scope @hedron/clock-test-app",
-    "storybook": "lerna run storybook --scope @hedron/desktop",
+    "storybook": "lerna run storybook --scope @hedron/ui-core",
     "build:engine": "lerna run build --scope @hedron/engine",
     "build": "lerna run build",
     "typecheck": "lerna run typecheck",

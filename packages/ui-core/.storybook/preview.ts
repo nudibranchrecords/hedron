@@ -1,5 +1,5 @@
 import type { Preview } from '@storybook/react'
-import '../src/renderer/css/base.css'
+import '../src/css/base.css'
 
 const preview: Preview = {
   parameters: {

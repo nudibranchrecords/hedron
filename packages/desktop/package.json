@@ -15,9 +15,7 @@
     "build:win": "npm run build && electron-builder --win",
     "build:mac": "electron-vite build && electron-builder --mac",
     "build:linux": "electron-vite build && electron-builder --linux",
-    "dist": "electron-vite build && electron-builder -mwl",
-    "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build"
+    "dist": "electron-vite build && electron-builder -mwl"
   },
   "dependencies": {
     "@electron-toolkit/preload": "^3.0.1",
@@ -46,15 +44,6 @@
     "zustand": "^4.5.5"
   },
   "devDependencies": {
-    "@chromatic-com/storybook": "^1.8.0",
-    "@storybook/addon-essentials": "^8.2.9",
-    "@storybook/addon-interactions": "^8.2.9",
-    "@storybook/addon-links": "^8.2.9",
-    "@storybook/addon-onboarding": "^8.2.9",
-    "@storybook/blocks": "^8.2.9",
-    "@storybook/react": "^8.2.9",
-    "@storybook/react-vite": "^8.2.9",
-    "@storybook/test": "^8.2.9",
     "@types/lodash.debounce": "^4.0.9",
     "@types/node": "^20.14.8",
     "@types/path-browserify": "^1.0.3",
@@ -65,7 +54,6 @@
     "electron": "33.2.1",
     "electron-builder": "26.0.0-alpha.6",
     "electron-vite": "^2.3.0",
-    "storybook": "^8.2.9",
     "vite": "^5.3.1",
     "vite-tsconfig-paths": "^5.1.4"
   },

@@ -1127,7 +1127,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@hedron/desktop@workspace:packages/desktop"
   dependencies:
-    "@chromatic-com/storybook": "npm:^1.8.0"
     "@electron-toolkit/preload": "npm:^3.0.1"
     "@electron-toolkit/utils": "npm:^3.0.0"
     "@floating-ui/react-dom": "npm:^2.1.2"
@@ -1135,14 +1134,6 @@ __metadata:
     "@hedron/engine": "workspace:^"
     "@hedron/midi": "workspace:^"
     "@redux-devtools/extension": "npm:^3.3.0"
-    "@storybook/addon-essentials": "npm:^8.2.9"
-    "@storybook/addon-interactions": "npm:^8.2.9"
-    "@storybook/addon-links": "npm:^8.2.9"
-    "@storybook/addon-onboarding": "npm:^8.2.9"
-    "@storybook/blocks": "npm:^8.2.9"
-    "@storybook/react": "npm:^8.2.9"
-    "@storybook/react-vite": "npm:^8.2.9"
-    "@storybook/test": "npm:^8.2.9"
     "@tomjs/electron-devtools-installer": "npm:^2.3.2"
     "@types/lodash.debounce": "npm:^4.0.9"
     "@types/node": "npm:^20.14.8"
@@ -1167,7 +1158,6 @@ __metadata:
     path-browserify: "npm:^1.0.1"
     postprocessing: "npm:^6.36.4"
     react-error-boundary: "npm:^4.0.13"
-    storybook: "npm:^8.2.9"
     three: "npm:^0.171.0"
     usehooks-ts: "npm:^3.1.0"
     vite: "npm:^5.3.1"
@@ -1233,6 +1223,26 @@ __metadata:
     react: ^18.3.1
     react-dom: ^18.3.1
     zustand: ^5.0.2
+  languageName: unknown
+  linkType: soft
+
+"@hedron/ui-core@workspace:packages/ui-core":
+  version: 0.0.0-use.local
+  resolution: "@hedron/ui-core@workspace:packages/ui-core"
+  dependencies:
+    "@chromatic-com/storybook": "npm:^1.8.0"
+    "@storybook/addon-essentials": "npm:^8.2.9"
+    "@storybook/addon-interactions": "npm:^8.2.9"
+    "@storybook/addon-links": "npm:^8.2.9"
+    "@storybook/addon-onboarding": "npm:^8.2.9"
+    "@storybook/blocks": "npm:^8.2.9"
+    "@storybook/react": "npm:^8.2.9"
+    "@storybook/react-vite": "npm:^8.2.9"
+    "@storybook/test": "npm:^8.2.9"
+    storybook: "npm:^8.2.9"
+  peerDependencies:
+    react: ^18.3.1
+    react-dom: ^18.3.1
   languageName: unknown
   linkType: soft
 
