@@ -15,7 +15,7 @@ module.exports = {
     'import/no-named-as-default-member': 0,
     'import/order': 'error',
     'import/no-extraneous-dependencies': 'error',
-    'react-refresh/only-export-components': 'error',
+    'react-refresh/only-export-components': ['error', { allowConstantExport: true }],
     'no-restricted-imports': [
       'error',
       {
