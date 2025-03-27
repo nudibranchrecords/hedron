@@ -1,12 +1,7 @@
 import { useCallback } from 'react'
 import { SketchModuleItem } from '@hedron/engine'
-import { GlobalDialogProps } from '@components/GlobalDialogs/types'
-import { useEngineStore } from '@renderer/engine'
-import { useSketchModuleList } from '@components/hooks/useSketchModuleList'
-import { useSetActiveSketchId } from '@components/hooks/useSetActiveSketchId'
-import { Dialog } from '@components/core/Dialog/Dialog'
-import { Panel, PanelBody, PanelHeader } from '@components/core/Panel/Panel'
 import {
+  Button,
   Card,
   CardActions,
   CardBody,
@@ -14,8 +9,15 @@ import {
   CardDetails,
   CardHeader,
   CardList,
-} from '@components/core/Card/Card'
-import { Button } from '@components/core/Button/Button'
+  Dialog,
+  Panel,
+  PanelBody,
+  PanelHeader,
+} from '@hedron/ui-core'
+import { GlobalDialogProps } from '@components/GlobalDialogs/types'
+import { useEngineStore } from '@renderer/engine'
+import { useSketchModuleList } from '@components/hooks/useSketchModuleList'
+import { useSetActiveSketchId } from '@components/hooks/useSetActiveSketchId'
 
 interface SketchCardProps {
   item: SketchModuleItem

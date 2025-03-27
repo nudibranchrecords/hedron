@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useShallow } from 'zustand/react/shallow'
 import { HedronEngine, Input, NodeTypes, ParamWithInfo, UseEngineStore } from '@hedron/engine'
+import { Button } from '@hedron/ui-core'
 import { Midi } from '.'
 
 interface IProps {
@@ -8,23 +9,6 @@ interface IProps {
   engine: HedronEngine
   useEngineStore: UseEngineStore
   midi: Midi
-}
-
-/**
- * Get the MIDI setting jsx element
- * @param param The parameter to display the midi setting for
- * @param engine hedron engine
- * @param useEngineStore useEngineStore hook
- * @param midi midi plugin
- * @returns A JSX Elelemnt that displays connected midi inputs, and allows for midi learning
- */
-export function getMidiSetting(
-  param: ParamWithInfo,
-  engine: HedronEngine,
-  useEngineStore: UseEngineStore,
-  midi: Midi,
-): JSX.Element {
-  return <MidiSetting param={param} engine={engine} useEngineStore={useEngineStore} midi={midi} />
 }
 
 /**
@@ -56,14 +40,18 @@ export const MidiSetting = ({ param, engine, useEngineStore, midi }: IProps) => 
     <div>
       <h1>Midi Settings</h1>
       {isLearning ? (
-        <button onClick={cancelMidiLearn}>Cancel</button>
+        <Button type="neutral" onClick={cancelMidiLearn}>
+          Cancel
+        </Button>
       ) : (
-        <button onClick={runMidiLearn}>Midi Learn</button>
+        <Button onClick={runMidiLearn}>Midi Learn</Button>
       )}
       <h3>Inputs:</h3>
       {inputs.map((input) => (
         <div key={input.id}>
-          <button onClick={removeMidi(input.id)}>Remove</button>
+          <Button onClick={removeMidi(input.id)} type="danger">
+            Remove
+          </Button>
           {`\t${getName(input)}`}
         </div>
       ))}
