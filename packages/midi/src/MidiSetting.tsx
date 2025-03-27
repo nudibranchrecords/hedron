@@ -57,14 +57,18 @@ export const MidiSetting = ({ param, engine, useEngineStore, midi }: IProps) => 
     <div>
       <h1>Midi Settings</h1>
       {isLearning ? (
-        <Button onClick={cancelMidiLearn}>Cancel</Button>
+        <Button type="neutral" onClick={cancelMidiLearn}>
+          Cancel
+        </Button>
       ) : (
         <Button onClick={runMidiLearn}>Midi Learn</Button>
       )}
       <h3>Inputs:</h3>
       {inputs.map((input) => (
         <div key={input.id}>
-          <Button onClick={removeMidi(input.id)}>Remove</Button>
+          <Button onClick={removeMidi(input.id)} type="danger">
+            Remove
+          </Button>
           {`\t${getName(input)}`}
         </div>
       ))}
