@@ -1,5 +1,5 @@
 import { useCallback } from 'react'
-import { SideTabs, SideTabsItem } from '@components/core/SideTabs/SideTabs'
+import { SideTabs, SideTabsItem } from '@hedron/ui-core'
 import { useSketchList } from '@components/hooks/useSketchList'
 import { useIsActiveSketch } from '@components/hooks/useIsActiveSketch'
 import { useSetActiveSketchId } from '@components/hooks/useSetActiveSketchId'

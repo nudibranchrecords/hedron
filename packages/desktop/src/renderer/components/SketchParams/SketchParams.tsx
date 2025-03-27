@@ -1,4 +1,11 @@
 import { NodeTypes, ParamWithInfo } from '@hedron/engine'
+import {
+  NodeControl,
+  NodeControlInner,
+  NodeControlMain,
+  NodeControlTitle,
+  ControlGrid,
+} from '@hedron/ui-core'
 import { useOnSelectNode } from '@components/hooks/useOnSelectNode'
 import { useActiveSketchParams } from '@components/hooks/useActiveSketchParams'
 import { ParamNumber } from '@components/ParamNumber/ParamNumber'
@@ -6,13 +13,7 @@ import { ParamBoolean } from '@components/ParamBoolean/ParamBoolean'
 import { ParamEnum } from '@components/ParamEnum/ParamEnum'
 import { ParamVector3 } from '@components/ParamVector3/ParamVector3'
 import { ParamColor } from '@components/ParamColor/ParamColor'
-import {
-  NodeControl,
-  NodeControlInner,
-  NodeControlMain,
-  NodeControlTitle,
-} from '@components/core/NodeControl/NodeControl'
-import { ControlGrid } from '@components/core/ControlGrid/ControlGrid'
+
 import { useAppStore } from '@renderer/appStore'
 
 interface ParamProps {

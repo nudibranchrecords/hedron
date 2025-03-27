@@ -1,7 +1,8 @@
 import { useRef } from 'react'
 import { useInterval } from 'usehooks-ts'
+import { BooleanToggle } from '@hedron/ui-core'
+import type { BooleanToggleHandle } from '@hedron/ui-core'
 import { useOnNodeValueChange } from '@components/hooks/useOnNodeValueChange'
-import { BooleanToggle, BooleanToggleHandle } from '@components/core/BooleanToggle/BooleanToggle'
 import { engineStore } from '@renderer/engine'
 
 interface ParamNumberProps {

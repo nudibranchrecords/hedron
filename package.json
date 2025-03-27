@@ -10,9 +10,9 @@
     ]
   },
   "scripts": {
-    "dev": "lerna run dev --parallel --scope @hedron/clock --scope @hedron/engine --scope @hedron/desktop --scope @hedron/midi",
+    "dev": "lerna run dev --parallel --scope @hedron/clock --scope @hedron/engine --scope @hedron/desktop --scope @hedron/midi --scope @hedron/ui-core",
     "dev:clock": "lerna run dev --parallel --scope @hedron/clock --scope @hedron/clock-test-app",
-    "storybook": "lerna run storybook --scope @hedron/desktop",
+    "storybook": "lerna run storybook --scope @hedron/ui-core",
     "build:engine": "lerna run build --scope @hedron/engine",
     "build": "lerna run build",
     "typecheck": "lerna run typecheck",
@@ -31,6 +31,7 @@
     "eslint-plugin-import": "^2.31.0",
     "eslint-plugin-react": "^7.34.3",
     "eslint-plugin-react-hooks": "^4.6.2",
+    "eslint-plugin-react-refresh": "^0.4.19",
     "eslint-plugin-storybook": "^0.8.0",
     "lerna": "^8.1.9",
     "prettier": "^3.4.2",
