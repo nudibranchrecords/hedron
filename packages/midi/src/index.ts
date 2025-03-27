@@ -1,6 +1,6 @@
 import React from 'react'
 import { HedronEngine, Input, IPlugin, ParamWithInfo, UseEngineStore } from '@hedron/engine'
-import { getMidiSetting } from './MidiSetting'
+import { getMidiSetting } from './getMidiSetting'
 import { Signal } from './Signal'
 
 /**

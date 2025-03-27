@@ -12,23 +12,6 @@ interface IProps {
 }
 
 /**
- * Get the MIDI setting jsx element
- * @param param The parameter to display the midi setting for
- * @param engine hedron engine
- * @param useEngineStore useEngineStore hook
- * @param midi midi plugin
- * @returns A JSX Elelemnt that displays connected midi inputs, and allows for midi learning
- */
-export function getMidiSetting(
-  param: ParamWithInfo,
-  engine: HedronEngine,
-  useEngineStore: UseEngineStore,
-  midi: Midi,
-): JSX.Element {
-  return <MidiSetting param={param} engine={engine} useEngineStore={useEngineStore} midi={midi} />
-}
-
-/**
  * Get the inputs that are connected to the node
  * @param nodeId The node id to get the inputs for
  * @param useEngineStore useEngineStore hook
