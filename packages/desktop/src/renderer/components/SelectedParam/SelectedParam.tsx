@@ -24,6 +24,7 @@ export const SelectedParam = () => {
     )
   }
 
+  // TODO: This should open up a context menu where different types of inputs can be selected
   const onAddClick = useCallback(() => {
     const input = {
       type: 'midi',
