@@ -1,5 +1,5 @@
 {
-  "name": "lfo-input",
+  "name": "@hedron/lfo-input",
   "version": "1.0.0-alpha.1",
   "description": "LFO input for Hedron",
   "author": "Alex Kempton <alex@funwithtriangles.net>",

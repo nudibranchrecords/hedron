@@ -1327,7 +1327,7 @@ __metadata:
     "@electron-toolkit/utils": "npm:^3.0.0"
     "@hedron/clock": "workspace:^"
     "@hedron/engine": "workspace:^"
-    "@hedron/midi": "workspace:^"
+    "@hedron/midi-input": "workspace:^"
     "@hedron/ui-core": "workspace:^"
     "@redux-devtools/extension": "npm:^3.3.0"
     "@tomjs/electron-devtools-installer": "npm:^2.3.2"
@@ -1364,7 +1364,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@hedron/engine@npm:^1.0.0-alpha.1, @hedron/engine@workspace:^, @hedron/engine@workspace:packages/engine":
+"@hedron/engine@workspace:^, @hedron/engine@workspace:packages/engine":
   version: 0.0.0-use.local
   resolution: "@hedron/engine@workspace:packages/engine"
   dependencies:
@@ -1388,12 +1388,35 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@hedron/lfo-input@workspace:packages/lfo-input":
+  version: 0.0.0-use.local
+  resolution: "@hedron/lfo-input@workspace:packages/lfo-input"
+  languageName: unknown
+  linkType: soft
+
+"@hedron/midi-input@workspace:^, @hedron/midi-input@workspace:packages/midi-input":
+  version: 0.0.0-use.local
+  resolution: "@hedron/midi-input@workspace:packages/midi-input"
+  dependencies:
+    "@hedron/engine": "workspace:^"
+    "@hedron/midi": "workspace:^"
+    "@hedron/ui-core": "workspace:^"
+    "@vitejs/plugin-react": "npm:^4.3.4"
+    vite: "npm:^6.2.3"
+    vite-plugin-dts: "npm:^4.5.3"
+    vite-tsconfig-paths: "npm:^5.1.4"
+  peerDependencies:
+    react: ^18.3.1
+    react-dom: ^18.3.1
+    zustand: ^5.0.2
+  languageName: unknown
+  linkType: soft
+
 "@hedron/midi-test-app@workspace:packages/midi-test-app":
   version: 0.0.0-use.local
   resolution: "@hedron/midi-test-app@workspace:packages/midi-test-app"
   dependencies:
     "@eslint/js": "npm:^9.17.0"
-    "@hedron/engine": "npm:^1.0.0-alpha.1"
     "@hedron/midi": "npm:^1.0.0-alpha.1"
     "@picocss/pico": "npm:^2.0.6"
     "@types/react": "npm:^18.3.18"
@@ -1412,13 +1435,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@hedron/midi@workspace:packages/midi"
   dependencies:
-    "@hedron/engine": "npm:^1.0.0-alpha.1"
-    "@hedron/ui-core": "workspace:^"
     tsup: "npm:^8.3.6"
-  peerDependencies:
-    react: ^18.3.1
-    react-dom: ^18.3.1
-    zustand: ^5.0.2
   languageName: unknown
   linkType: soft
 

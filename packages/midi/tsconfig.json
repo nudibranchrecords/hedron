@@ -1,6 +1,6 @@
 {
   "extends": ["../../tsconfig.json"],
-  "include": ["src/**/*"],
+  "include": ["src/**/*", "../midi-input/src/MidiSetting.tsx"],
   "compilerOptions": {
     "jsx": "react-jsx"
   }

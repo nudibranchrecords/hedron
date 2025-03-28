@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useShallow } from 'zustand/react/shallow'
 import { HedronEngine, Input, NodeTypes, ParamWithInfo, UseEngineStore } from '@hedron/engine'
 import { Button } from '@hedron/ui-core'
-import { Midi } from '.'
+import { Midi } from '@hedron/midi'
 
 interface IProps {
   param: ParamWithInfo

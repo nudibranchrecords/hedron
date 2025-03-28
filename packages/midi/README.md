@@ -1,11 +1,3 @@
 # `midi`
 
-> TODO: description
-
-## Usage
-
-```
-const midi = require('midi');
-
-// TODO: DEMONSTRATE API
-```
+Standalone package to handle MIDI events

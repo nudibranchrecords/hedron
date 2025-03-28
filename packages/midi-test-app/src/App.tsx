@@ -1,4 +1,3 @@
-import { HedronEngine } from '@hedron/engine'
 import './custom.css'
 import { Midi, MIDIEvent, MidiMessageType } from '@hedron/midi'
 
@@ -29,11 +28,7 @@ function App() {
     $text('devices', getMidiDevices())
   }
 
-  const engine: HedronEngine = new HedronEngine()
-  const midi: Midi = new Midi(engine, () => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    return {} as any
-  })
+  const midi: Midi = new Midi()
   midi.onDeviceChange.add(onDeviceChange)
   midi.onMidiMessage.add(onMidiMessage)
 

@@ -15,6 +15,7 @@ import { useActiveSketch } from '@components/hooks/useActiveSketch'
 import { engine, engineStore } from '@renderer/engine'
 import { SketchParams } from '@components/SketchParams/SketchParams'
 import { useSelectedParam } from '@components/hooks/useSelectedParam'
+import { SelectedParam } from '@components/SelectedParam/SelectedParam'
 
 const PluginViewWrapper = ({
   plugin,
@@ -66,7 +67,9 @@ export const ActiveSketch = () => {
       {selectedParam && (
         <Panel snugPosition="bottom" spacing="slim" width="full" className={c.bottomPanel}>
           <PanelHeader iconName={paramIcon}>{selectedParam.title}</PanelHeader>
-          <PanelBody>{pluginView}</PanelBody>
+          <PanelBody>
+            <SelectedParam />
+          </PanelBody>
         </Panel>
       )}
     </>

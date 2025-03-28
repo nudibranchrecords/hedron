@@ -1,6 +1,3 @@
-import React from 'react'
-import { HedronEngine, Input, IPlugin, ParamWithInfo, UseEngineStore } from '@hedron/engine'
-import { getMidiSetting } from './getMidiSetting'
 import { Signal } from './Signal'
 
 /**
@@ -36,7 +33,7 @@ export type MIDIEvent = {
 /**
  * A class that handles MIDI input devices and messages.
  */
-export class Midi implements IPlugin {
+export class Midi {
   public readonly name: string = 'MIDI'
   public readonly description: string = 'Handles MIDI input devices and messages.'
   /**
@@ -64,26 +61,21 @@ export class Midi implements IPlugin {
    */
   public onMidiMessage: Signal<MIDIEvent> = new Signal<MIDIEvent>()
 
-  public engine: HedronEngine
-  public useEngineStore: UseEngineStore
-
-  constructor(engine: HedronEngine, useEngineStore: UseEngineStore) {
-    this.engine = engine
-    this.useEngineStore = useEngineStore
+  constructor() {
     // Add a listener to update the input values when a MIDI message is received.
-    this.onMidiMessage.add((event) => {
-      this.engine
-        .getStore()
-        .getState()
-        .updateInputValues(event.id, (event.value || 0) / 127)
-    }, this)
+    // this.onMidiMessage.add((event) => {
+    //   this.engine
+    //     .getStore()
+    //     .getState()
+    //     .updateInputValues(event.id, (event.value || 0) / 127)
+    // }, this)
     this.findMidiDevices()
   }
 
   // return a test view
-  public getSelectedParamView(param: ParamWithInfo): React.JSX.Element | undefined {
-    return getMidiSetting(param, this.engine, this.useEngineStore, this)
-  }
+  // public getSelectedParamView(param: ParamWithInfo): React.JSX.Element | undefined {
+  //   return getMidiSetting(param, this.engine, this.useEngineStore, this)
+  // }
 
   /**
    * Clears all MIDI event listeners from the devices.
@@ -162,27 +154,27 @@ export class Midi implements IPlugin {
   private learnResolve: ((event: MIDIEvent | null) => void) | undefined
   private learnListener: ((event: MIDIEvent) => void) | undefined
 
-  public async midiLearn(paramId: string): Promise<Input | undefined> {
-    const event = await this.beginMidiLearn()
-    if (!event) {
-      console.log('MIDI learn canceled')
-      return
-    }
-    const state = this.engine.getStore().getState()
-    const id = event.id
-    let input = state.inputs[id]
-    if (!input) {
-      input = {
-        id,
-        type: 'midi',
-        targetNodeIds: [paramId],
-      }
-      state.addInput(id, input)
-      return input
-    }
-    state.addInputParam(id, paramId)
-    return input
-  }
+  // public async midiLearn(paramId: string): Promise<Input | undefined> {
+  //   const event = await this.beginMidiLearn()
+  //   if (!event) {
+  //     console.log('MIDI learn canceled')
+  //     return
+  //   }
+  //   const state = this.engine.getStore().getState()
+  //   const id = event.id
+  //   let input = state.inputs[id]
+  //   if (!input) {
+  //     input = {
+  //       id,
+  //       type: 'midi',
+  //       targetNodeIds: [paramId],
+  //     }
+  //     state.addInput(id, input)
+  //     return input
+  //   }
+  //   state.addInputParam(id, paramId)
+  //   return input
+  // }
 
   /**
    * A function that will wait for and return the next midi message received, or null if the learn is canceled.

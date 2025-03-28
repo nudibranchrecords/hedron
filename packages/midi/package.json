@@ -20,16 +20,7 @@
   "bugs": {
     "url": "https://github.com/nudibranchrecords/hedron/issues"
   },
-  "dependencies": {
-    "@hedron/engine": "^1.0.0-alpha.1",
-    "@hedron/ui-core": "workspace:^"
-  },
   "devDependencies": {
     "tsup": "^8.3.6"
-  },
-  "peerDependencies": {
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
-    "zustand": "^5.0.2"
   }
 }

@@ -1,14 +1,19 @@
 import { Input, SetterCreator } from '@store/types'
+import { createUniqueId } from '@utils/createUniqueId'
 
-export const createAddInput: SetterCreator<'addInput'> =
-  (setState) => (inputId: string, value: Input) => {
-    setState((state) => {
-      if (state.inputs[inputId]) {
-        return
-      }
-      state.inputs[inputId] = value
-    })
-  }
+export const createAddInput: SetterCreator<'addInput'> = (setState) => (value) => {
+  setState((state) => {
+    const id = createUniqueId()
+
+    if (state.inputs[id]) {
+      return
+    }
+    state.inputs[id] = {
+      ...value,
+      id,
+    }
+  })
+}
 
 export const createAddInputParam: SetterCreator<'addInputParam'> =
   (setState) => (inputId: string, nodeId: string) => {
