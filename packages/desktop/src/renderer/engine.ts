@@ -2,7 +2,7 @@ import { useStore } from 'zustand'
 import { HedronEngine, EngineStateWithActions } from '@hedron/engine'
 import Stats from 'three/examples/jsm/libs/stats.module.js'
 import { Clock } from '@hedron/clock'
-import { MidiInput } from '@hedron/midi-input'
+import { MidiInput, MidiInputPanel } from '@hedron/midi-input'
 
 export const performanceMonitor = new Stats()
 
@@ -20,3 +20,9 @@ export const useEngineStore = <T>(selector?: (state: EngineStateWithActions) => 
   return useStore(engineStore, selector!)
 }
 engine.registerPlugin(new MidiInput())
+
+export const pluginViews = {
+  'midi-input': {
+    inputPanel: MidiInputPanel,
+  },
+}

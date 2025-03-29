@@ -4,7 +4,10 @@ import { ParamWithInfo } from '@store/selectors/getParamWithInfo'
  * Class type for a Plugin.
  */
 export interface IPlugin {
-  // new(engine: HedronEngine, useEngineStore: UseEngineStore): any;
+  /**
+   * Unique ID for plugin
+   */
+  id: string
 
   /**
    * The name of the plugin.
@@ -15,11 +18,4 @@ export interface IPlugin {
    * The description of the plugin.
    */
   description: string
-
-  /**
-   * Gets the selected parameter view.
-   * @param param - The parameter with info.
-   * @returns The JSX element or undefined if this plugin does not have a visual element.
-   */
-  getSelectedParamView?: (param: ParamWithInfo) => JSX.Element | undefined
 }

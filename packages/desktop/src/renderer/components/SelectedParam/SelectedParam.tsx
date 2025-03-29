@@ -2,8 +2,9 @@ import { useShallow } from 'zustand/react/shallow'
 import { Icon, MiniTabs, MiniTabsItem } from '@hedron/ui-core'
 import { useCallback, useState } from 'react'
 import { useSelectedParam } from '@components/hooks/useSelectedParam'
-import { useEngineStore } from '@renderer/engine'
+import { pluginViews, useEngineStore } from '@renderer/engine'
 
+// TODO: Just select for input id and name, for performance reasons
 const useInputsWithNode = (nodeId: string) => {
   return useEngineStore(
     useShallow((state) =>
@@ -17,6 +18,10 @@ export const SelectedParam = () => {
   const addInput = useEngineStore((state) => state.addInput)
   // TODO: This should be moved into global state, so we can save the selected input
   const [selectedInputId, setSelectedInputId] = useState<string | null>(null)
+
+  const currentInput = useEngineStore((state) =>
+    selectedInputId ? state.inputs[selectedInputId] : null,
+  )
 
   if (!selectedParam) {
     throw new Error(
@@ -36,6 +41,9 @@ export const SelectedParam = () => {
 
   const inputs = useInputsWithNode(selectedParam.id)
 
+  // TODO: "midi-input" should not be hardcoded here
+  const PluginView = currentInput && pluginViews['midi-input'].inputPanel
+
   return (
     <>
       <MiniTabs>
@@ -52,7 +60,7 @@ export const SelectedParam = () => {
           <Icon name="add" onClick={onAddClick} />
         </MiniTabsItem>
       </MiniTabs>
-      <div></div>
+      <div>{PluginView && <PluginView input={currentInput} />}</div>
     </>
   )
 }

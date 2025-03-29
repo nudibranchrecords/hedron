@@ -26,7 +26,6 @@ export type MIDIEvent = {
   channel: number
   type: MidiMessageType
   note: number
-  id: string
   value?: number
 }
 
@@ -113,8 +112,7 @@ export class Midi {
           const [status, note, value] = message.data
           const channel = status & 0x0f
           const type = this.getMidiMessageType(status)
-          const id = `${channel}-${note}`
-          this.onMidiMessage.dispatch({ device, channel, type, note, value, id })
+          this.onMidiMessage.dispatch({ device, channel, type, note, value })
         }
         device.addEventListener('midimessage', listener)
         this.eventListeners.set(device, listener)
@@ -154,27 +152,14 @@ export class Midi {
   private learnResolve: ((event: MIDIEvent | null) => void) | undefined
   private learnListener: ((event: MIDIEvent) => void) | undefined
 
-  // public async midiLearn(paramId: string): Promise<Input | undefined> {
-  //   const event = await this.beginMidiLearn()
-  //   if (!event) {
-  //     console.log('MIDI learn canceled')
-  //     return
-  //   }
-  //   const state = this.engine.getStore().getState()
-  //   const id = event.id
-  //   let input = state.inputs[id]
-  //   if (!input) {
-  //     input = {
-  //       id,
-  //       type: 'midi',
-  //       targetNodeIds: [paramId],
-  //     }
-  //     state.addInput(id, input)
-  //     return input
-  //   }
-  //   state.addInputParam(id, paramId)
-  //   return input
-  // }
+  public async midiLearn(): Promise<MIDIEvent | undefined> {
+    const event = await this.beginMidiLearn()
+    if (!event) {
+      console.log('MIDI learn canceled')
+      return
+    }
+    return event
+  }
 
   /**
    * A function that will wait for and return the next midi message received, or null if the learn is canceled.
