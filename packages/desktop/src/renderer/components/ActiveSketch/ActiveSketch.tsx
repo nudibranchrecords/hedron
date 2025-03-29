@@ -1,4 +1,3 @@
-import { IPlugin, ParamWithInfo } from '@hedron/engine'
 import {
   Button,
   ViewHeader,
@@ -12,21 +11,10 @@ import {
 } from '@hedron/ui-core'
 import c from './ActiveSketch.module.css'
 import { useActiveSketch } from '@components/hooks/useActiveSketch'
-import { engine, engineStore } from '@renderer/engine'
+import { engineStore } from '@renderer/engine'
 import { SketchParams } from '@components/SketchParams/SketchParams'
 import { useSelectedParam } from '@components/hooks/useSelectedParam'
 import { SelectedParam } from '@components/SelectedParam/SelectedParam'
-
-const PluginViewWrapper = ({
-  plugin,
-  selectedParam,
-}: {
-  plugin: IPlugin
-  selectedParam: ParamWithInfo | null
-}) => {
-  const view = plugin.getSelectedParamView?.(selectedParam!)
-  return view ? view : null
-}
 
 export const ActiveSketch = () => {
   const activeSketch = useActiveSketch()
@@ -36,14 +24,6 @@ export const ActiveSketch = () => {
   }
 
   const selectedParam = useSelectedParam()
-
-  const pluginView = engine.plugins.map((plugin) => (
-    <PluginViewWrapper
-      key={`ActiveParam-${plugin.name}`}
-      plugin={plugin}
-      selectedParam={selectedParam}
-    />
-  ))
 
   return (
     <>

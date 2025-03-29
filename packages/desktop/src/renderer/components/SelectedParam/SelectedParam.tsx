@@ -2,7 +2,7 @@ import { useShallow } from 'zustand/react/shallow'
 import { Icon, MiniTabs, MiniTabsItem } from '@hedron/ui-core'
 import { useCallback, useState } from 'react'
 import { useSelectedParam } from '@components/hooks/useSelectedParam'
-import { pluginViews, useEngineStore } from '@renderer/engine'
+import { pluginViews, useEngineStore, engine } from '@renderer/engine'
 
 // TODO: Just select for input id and name, for performance reasons
 const useInputsWithNode = (nodeId: string) => {
@@ -60,7 +60,7 @@ export const SelectedParam = () => {
           <Icon name="add" onClick={onAddClick} />
         </MiniTabsItem>
       </MiniTabs>
-      <div>{PluginView && <PluginView input={currentInput} />}</div>
+      <div>{PluginView && <PluginView input={currentInput} engine={engine} />}</div>
     </>
   )
 }

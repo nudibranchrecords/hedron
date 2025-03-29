@@ -1,11 +1,13 @@
 import { useState } from 'react'
-import { useShallow } from 'zustand/react/shallow'
-import { HedronEngine, Input, NodeTypes, ParamWithInfo, UseEngineStore } from '@hedron/engine'
+import { HedronEngine, Input } from '@hedron/engine'
 import { Button } from '@hedron/ui-core'
-import { Midi } from '@hedron/midi'
+import { MidiInput } from './MidiInput'
 
 interface IProps {
+  // TODO: This can be typed as something like Input<MidiInput>
   input: Input
+  // TODO: This can be typed as something like HedronEngineWithPlugin<MidiInput>
+  engine: HedronEngine
 }
 
 // const getName = (input: Input): string => {
@@ -16,8 +18,12 @@ interface IProps {
 /**
  * A react component that displays the midi settings for a parameter
  */
-export const MidiInputPanel = ({ input }: IProps) => {
+export const MidiInputPanel = ({ input, engine }: IProps) => {
   const [isLearning, setIsLearning] = useState(false)
+
+  // TODO: May not need this "as" if we have HedronEngineWithPlugin<MidiInput>
+  const plugin = engine.plugins['midi-input'] as MidiInput
+  const midi = plugin.midiManager
 
   return (
     <div>
