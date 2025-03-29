@@ -56,8 +56,8 @@ export const SelectedParam = () => {
             {input.id}
           </MiniTabsItem>
         ))}
-        <MiniTabsItem>
-          <Icon name="add" onClick={onAddClick} />
+        <MiniTabsItem onClick={onAddClick}>
+          <Icon name="add" />
         </MiniTabsItem>
       </MiniTabs>
       <div>{PluginView && <PluginView input={currentInput} engine={engine} />}</div>

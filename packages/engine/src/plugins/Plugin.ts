@@ -1,5 +1,3 @@
-import { ParamWithInfo } from '@store/selectors/getParamWithInfo'
-
 /**
  * Class type for a Plugin.
  */
