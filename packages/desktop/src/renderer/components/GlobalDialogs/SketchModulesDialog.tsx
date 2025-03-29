@@ -69,7 +69,7 @@ export const SketchModulesDialog = ({ closeDialog }: GlobalDialogProps) => {
         <PanelHeader iconName="add_circle" buttonOnClick={closeDialog}>
           Add sketch to scene
         </PanelHeader>
-        <PanelBody>
+        <PanelBody scrollable={true}>
           <CardList>
             {sketchModules.map((item) => (
               <SketchCard key={item.moduleId} item={item} closeDialog={closeDialog} />
