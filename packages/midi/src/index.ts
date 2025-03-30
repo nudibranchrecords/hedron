@@ -61,20 +61,8 @@ export class Midi {
   public onMidiMessage: Signal<MIDIEvent> = new Signal<MIDIEvent>()
 
   constructor() {
-    // Add a listener to update the input values when a MIDI message is received.
-    // this.onMidiMessage.add((event) => {
-    //   this.engine
-    //     .getStore()
-    //     .getState()
-    //     .updateInputValues(event.id, (event.value || 0) / 127)
-    // }, this)
     this.findMidiDevices()
   }
-
-  // return a test view
-  // public getSelectedParamView(param: ParamWithInfo): React.JSX.Element | undefined {
-  //   return getMidiSetting(param, this.engine, this.useEngineStore, this)
-  // }
 
   /**
    * Clears all MIDI event listeners from the devices.
