@@ -1,6 +1,7 @@
 import { useRef } from 'react'
 import { useInterval } from 'usehooks-ts'
-import { TextInput, TextInputHandle } from '@hedron/ui-core'
+import { TextInput } from '@hedron/ui-core'
+import type { TextInputHandle } from '@hedron/ui-core'
 import { useOnNodeValueChange } from '@components/hooks/useOnNodeValueChange'
 import { engineStore } from '@renderer/engine'
 
