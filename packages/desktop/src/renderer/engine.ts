@@ -19,7 +19,7 @@ export const engineStore = engine.getStore()
 export const useEngineStore = <T>(selector?: (state: EngineStateWithActions) => T) => {
   return useStore(engineStore, selector!)
 }
-engine.registerPlugin(new MidiInput())
+engine.registerPlugin(new MidiInput(engine))
 
 export const pluginViews = {
   'midi-input': {

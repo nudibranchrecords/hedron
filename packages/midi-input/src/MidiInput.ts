@@ -1,4 +1,4 @@
-import { IPlugin } from '@hedron/engine'
+import { HedronEngine, IPlugin } from '@hedron/engine'
 import { Midi } from '@hedron/midi'
 
 export interface MidiInputOptions {
@@ -15,4 +15,25 @@ export class MidiInput implements IPlugin {
     channel: 0,
     note: 0,
   })
+
+  constructor(engine: HedronEngine) {
+    const store = engine.getStore()
+    this.midiManager.onMidiMessage.add((event) => {
+      const inputs = Object.values(store.getState().inputs)
+
+      // TODO: Not very performant, we might want to cache inputs somehow
+      inputs.forEach((input) => {
+        if (input.type !== 'midi') return
+        const options = input.options as MidiInputOptions | undefined
+        if (
+          options &&
+          event.channel === options.channel &&
+          event.note === options.note &&
+          event.value !== undefined
+        ) {
+          store.getState().updateNodeValue(input.targetNodeIds[0], event.value / 128)
+        }
+      })
+    })
+  }
 }
