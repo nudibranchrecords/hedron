@@ -24,9 +24,8 @@ export class MidiInput implements IPlugin {
       // TODO: Not very performant, we might want to cache inputs somehow
       inputs.forEach((input) => {
         if (input.type !== 'midi') return
-        const options = input.options as MidiInputOptions | undefined
+        const options = input.options as MidiInputOptions
         if (
-          options &&
           event.channel === options.channel &&
           event.note === options.note &&
           event.value !== undefined
