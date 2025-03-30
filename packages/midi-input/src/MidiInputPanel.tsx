@@ -1,19 +1,23 @@
 import { useState } from 'react'
-import { HedronEngine, Input } from '@hedron/engine'
-import { Button } from '@hedron/ui-core'
-import { MidiInput } from './MidiInput'
+import { EnumOption, HedronEngine, Input } from '@hedron/engine'
+import { Button, EnumDropdown } from '@hedron/ui-core'
+import { MidiInput, MidiInputOptions } from './MidiInput'
 
 interface IProps {
-  // TODO: This can be typed as something like Input<MidiInput>
-  input: Input
+  input: Input<MidiInputOptions>
   // TODO: This can be typed as something like HedronEngineWithPlugin<MidiInput>
   engine: HedronEngine
 }
 
-// const getName = (input: Input): string => {
-//   const [channel, note] = input.id.split('-')
-//   return `Ch ${parseInt(channel) + 1} Note ${note}  `
-// }
+const channelOptions: EnumOption[] = []
+for (let i = 0; i <= 15; i++) {
+  channelOptions.push({ label: `Channel ${i}`, value: i })
+}
+
+const noteOptions: EnumOption[] = []
+for (let i = 0; i < 128; i++) {
+  noteOptions.push({ label: `Note ${i}`, value: i })
+}
 
 /**
  * A react component that displays the midi settings for a parameter
@@ -27,7 +31,31 @@ export const MidiInputPanel = ({ input, engine }: IProps) => {
 
   return (
     <div>
-      <h1>{input.id}</h1>
+      <div>
+        <strong>Channel:</strong>
+        {input.options.channel}
+        <EnumDropdown
+          value={input.options.channel}
+          values={channelOptions}
+          onValueChange={(val) => {
+            engine.getStore().getState().updateInputOptions(input.id, {
+              channel: val,
+            })
+          }}
+        />
+      </div>
+      <div>
+        <strong>Note:</strong> {input.options.note}
+        <EnumDropdown
+          value={input.options.note}
+          values={noteOptions}
+          onValueChange={(val) => {
+            engine.getStore().getState().updateInputOptions(input.id, {
+              note: val,
+            })
+          }}
+        />
+      </div>
       {isLearning ? (
         <Button type="neutral" onClick={cancelMidiLearn}>
           Cancel
@@ -43,7 +71,15 @@ export const MidiInputPanel = ({ input, engine }: IProps) => {
     midi
       .midiLearn()
       .then((event) => {
-        console.log(event)
+        if (!event) {
+          setIsLearning(false)
+          return
+        }
+
+        engine.getStore().getState().updateInputOptions(input.id, {
+          channel: event.channel,
+          note: event.note,
+        })
       })
       .finally(() => {
         setIsLearning(false)

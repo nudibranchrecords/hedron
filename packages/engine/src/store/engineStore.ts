@@ -18,7 +18,7 @@ import {
   createAddInput,
   createAddInputParam,
   createDeleteInputParam,
-  createUpdateInput,
+  createUpdateInputOptions,
 } from '@store/actionCreators/createAddInput'
 
 export const createEngineStore = () =>
@@ -39,7 +39,7 @@ export const createEngineStore = () =>
           addInput: createAddInput(set),
           deleteInputParam: createDeleteInputParam(set),
           addInputParam: createAddInputParam(set),
-          updateInput: createUpdateInput(set),
+          updateInputOptions: createUpdateInputOptions(set),
         })),
       ),
     ),

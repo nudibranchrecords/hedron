@@ -1,4 +1,4 @@
-import { Input, SetterCreator } from '@store/types'
+import { SetterCreator } from '@store/types'
 import { createUniqueId } from '@utils/createUniqueId'
 
 export const createAddInput: SetterCreator<'addInput'> = (setState) => (value) => {
@@ -15,12 +15,12 @@ export const createAddInput: SetterCreator<'addInput'> = (setState) => (value) =
   })
 }
 
-export const createUpdateInput: SetterCreator<'updateInput'> =
-  (setState) => (inputId, inputPartial) => {
+export const createUpdateInputOptions: SetterCreator<'updateInputOptions'> =
+  (setState) => (inputId, options) => {
     setState((state) => {
       const input = state.inputs[inputId]
       if (input) {
-        Object.assign(input, inputPartial)
+        Object.assign(input.options, options)
       }
     })
   }
