@@ -167,6 +167,7 @@ interface Actions {
   loadProject: (project: EngineData) => void
   reset: () => void
   addInput: (value: Omit<Input, 'id'>) => void
+  updateInput: (inputId: string, value: Partial<Input>) => void
   deleteInputParam: (inputId: string, paramId: string) => void
   updateInputValues: (inputId: string, value: NodeValue) => void
   addInputParam: (inputId: string, paramId: string) => void

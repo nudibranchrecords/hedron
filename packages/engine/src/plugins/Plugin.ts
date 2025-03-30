@@ -16,4 +16,10 @@ export interface IPlugin {
    * The description of the plugin.
    */
   description: string
+
+  /**
+   * Function to generate input options.
+   */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  generateInputOptions: () => any
 }

@@ -15,8 +15,18 @@ export const createAddInput: SetterCreator<'addInput'> = (setState) => (value) =
   })
 }
 
+export const createUpdateInput: SetterCreator<'updateInput'> =
+  (setState) => (inputId, inputPartial) => {
+    setState((state) => {
+      const input = state.inputs[inputId]
+      if (input) {
+        Object.assign(input, inputPartial)
+      }
+    })
+  }
+
 export const createAddInputParam: SetterCreator<'addInputParam'> =
-  (setState) => (inputId: string, nodeId: string) => {
+  (setState) => (inputId, nodeId) => {
     setState((state) => {
       const input = state.inputs[inputId]
       if (input) {
@@ -26,7 +36,7 @@ export const createAddInputParam: SetterCreator<'addInputParam'> =
   }
 
 export const createDeleteInputParam: SetterCreator<'deleteInputParam'> =
-  (setState) => (inputId: string, nodeId: string) => {
+  (setState) => (inputId, nodeId) => {
     setState((state) => {
       const input = state.inputs[inputId]
       if (input) {
