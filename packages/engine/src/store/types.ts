@@ -21,6 +21,7 @@ export interface NodeBase {
 export enum NodeTypes {
   Number = 'number',
   Boolean = 'boolean',
+  String = 'string',
   Enum = 'enum',
   Vector3 = 'vector3',
   RGB = 'rgb',
@@ -47,6 +48,10 @@ export interface NodeParamBoolean extends NodeParamBase {
   valueType: NodeTypes.Boolean
 }
 
+export interface NodeParamString extends NodeParamBase {
+  valueType: NodeTypes.String
+}
+
 export interface NodeParamEnum extends NodeParamBase {
   valueType: NodeTypes.Enum
 }
@@ -61,6 +66,7 @@ export interface NodeParamRGB extends NodeParamWithChildren {
 
 export type Param =
   | NodeParamBoolean
+  | NodeParamString
   | NodeParamNumber
   | NodeParamEnum
   | NodeParamVector3
@@ -95,6 +101,10 @@ export interface SketchConfigParamBoolean extends SketchConfigParamBase {
   valueType: NodeTypes.Boolean
   defaultValue: boolean
 }
+export interface SketchConfigParamString extends SketchConfigParamBase {
+  valueType: NodeTypes.String
+  defaultValue: string
+}
 
 export interface SketchConfigParamEnum extends SketchConfigParamBase {
   valueType: NodeTypes.Enum
@@ -115,6 +125,7 @@ export interface SketchConfigParamRGB extends SketchConfigParamBase {
 export type SketchConfigParam =
   | SketchConfigParamNumber
   | SketchConfigParamBoolean
+  | SketchConfigParamString
   | SketchConfigParamEnum
   | SketchConfigParamVector3
   | SketchConfigParamRGB

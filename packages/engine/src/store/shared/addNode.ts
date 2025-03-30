@@ -53,6 +53,7 @@ export const addNode = (
     if (
       (typeof defaultValue === 'number' && valueType === NodeTypes.Number) ||
       (typeof defaultValue === 'boolean' && valueType === NodeTypes.Boolean) ||
+      (typeof defaultValue === 'string' && valueType === NodeTypes.String) ||
       (typeof defaultValue === 'string' && valueType === NodeTypes.Enum)
     ) {
       state.nodeValues[paramId] = defaultValue
