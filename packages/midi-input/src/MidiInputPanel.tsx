@@ -1,8 +1,19 @@
 import { useState } from 'react'
 import { EnumOption, HedronEngine, Input } from '@hedron/engine'
-import { Button, EnumDropdown } from '@hedron/ui-core'
+import {
+  Button,
+  ControlGrid,
+  EnumDropdown,
+  NodeControl,
+  NodeControlInner,
+  NodeControlMain,
+  NodeControlTitle,
+} from '@hedron/ui-core'
 import { MidiInput, MidiInputOptions } from './MidiInput'
 
+type Entries<T> = {
+  [K in keyof T]-?: [K, T[K]]
+}[keyof T][]
 interface IProps {
   input: Input<MidiInputOptions>
   // TODO: This can be typed as something like HedronEngineWithPlugin<MidiInput>
@@ -11,12 +22,12 @@ interface IProps {
 
 const channelOptions: EnumOption[] = []
 for (let i = 0; i <= 15; i++) {
-  channelOptions.push({ label: `Channel ${i}`, value: i })
+  channelOptions.push({ label: `${i}`, value: i })
 }
 
 const noteOptions: EnumOption[] = []
 for (let i = 0; i < 128; i++) {
-  noteOptions.push({ label: `Note ${i}`, value: i })
+  noteOptions.push({ label: `${i}`, value: i })
 }
 
 /**
@@ -29,33 +40,37 @@ export const MidiInputPanel = ({ input, engine }: IProps) => {
   const plugin = engine.plugins['midi-input'] as MidiInput
   const midi = plugin.midiManager
 
+  // TODO: Move this into a helper function with the typing etc
+  const opts: [keyof MidiInputOptions, number][] = Object.entries(
+    input.options,
+  ) as Entries<MidiInputOptions>
+
   return (
     <div>
-      <div>
-        <strong>Channel:</strong>
-        {input.options.channel}
-        <EnumDropdown
-          value={input.options.channel}
-          values={channelOptions}
-          onValueChange={(val) => {
-            engine.getStore().getState().updateInputOptions(input.id, {
-              channel: val,
-            })
-          }}
-        />
-      </div>
-      <div>
-        <strong>Note:</strong> {input.options.note}
-        <EnumDropdown
-          value={input.options.note}
-          values={noteOptions}
-          onValueChange={(val) => {
-            engine.getStore().getState().updateInputOptions(input.id, {
-              note: val,
-            })
-          }}
-        />
-      </div>
+      <ControlGrid className="mb-xl">
+        {opts.map(([key, value]) => (
+          <NodeControl key={key}>
+            <NodeControlMain>
+              <NodeControlTitle>{key}</NodeControlTitle>
+              <NodeControlInner>
+                <EnumDropdown
+                  value={value}
+                  values={channelOptions}
+                  onValueChange={(newVal) => {
+                    engine
+                      .getStore()
+                      .getState()
+                      .updateInputOptions(input.id, {
+                        [key]: newVal,
+                      })
+                  }}
+                />
+              </NodeControlInner>
+            </NodeControlMain>
+          </NodeControl>
+        ))}
+      </ControlGrid>
+
       {isLearning ? (
         <Button type="neutral" onClick={cancelMidiLearn}>
           Cancel

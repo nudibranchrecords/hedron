@@ -34,7 +34,7 @@ export const SelectedParam = () => {
     const input = {
       type: 'midi',
       targetNodeIds: [selectedParam.id],
-      options: engine.plugins['midi-input'].generateInputOptions(),
+      options: engine.plugins['midi-input'].generateInitialOptions(),
     }
 
     addInput(input)
@@ -47,7 +47,7 @@ export const SelectedParam = () => {
 
   return (
     <>
-      <MiniTabs>
+      <MiniTabs className="mb-xl">
         {inputs.map((input) => (
           <MiniTabsItem
             key={input.id}

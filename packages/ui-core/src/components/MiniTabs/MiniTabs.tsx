@@ -1,9 +1,10 @@
-import { PropsWithChildren } from 'react'
 import c from './MiniTabs.module.css'
 import { Icon, IconName } from '@components/Icon/Icon'
 
-export const MiniTabs = ({ children }: PropsWithChildren) => {
-  return <nav className={c.wrapper}>{children}</nav>
+interface MiniTabsProps extends React.HTMLAttributes<HTMLDivElement> {}
+
+export const MiniTabs = ({ children, className }: MiniTabsProps) => {
+  return <nav className={`${c.wrapper} ${className}`}>{children}</nav>
 }
 
 export interface MiniTabsItemProps extends React.HtmlHTMLAttributes<HTMLButtonElement> {

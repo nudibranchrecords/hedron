@@ -1,9 +1,7 @@
 import c from './ControlGrid.module.css'
 
-export interface ControlGridProps {
-  children: React.ReactNode
-}
+export interface ControlGridProps extends React.HTMLAttributes<HTMLDivElement> {}
 
-export const ControlGrid = ({ children }: ControlGridProps) => (
-  <div className={c.wrapper}>{children}</div>
+export const ControlGrid = ({ children, className }: ControlGridProps) => (
+  <div className={`${c.wrapper} ${className}`}>{children}</div>
 )
