@@ -22,12 +22,17 @@ interface IProps {
 
 const channelOptions: EnumOption[] = []
 for (let i = 0; i <= 15; i++) {
-  channelOptions.push({ label: `${i}`, value: i })
+  channelOptions.push({ label: `${i + 1}`, value: i })
 }
 
 const noteOptions: EnumOption[] = []
-for (let i = 0; i < 128; i++) {
-  noteOptions.push({ label: `${i}`, value: i })
+for (let i = 0; i < 127; i++) {
+  noteOptions.push({ label: `${i + 1}`, value: i })
+}
+
+const enumOptions = {
+  channel: channelOptions,
+  note: noteOptions,
 }
 
 /**
@@ -41,21 +46,21 @@ export const MidiInputPanel = ({ input, engine }: IProps) => {
   const midi = plugin.midiManager
 
   // TODO: Move this into a helper function with the typing etc
-  const opts: [keyof MidiInputOptions, number][] = Object.entries(
+  const inputOptions: [keyof MidiInputOptions, number][] = Object.entries(
     input.options,
   ) as Entries<MidiInputOptions>
 
   return (
     <div>
       <ControlGrid className="mb-xl">
-        {opts.map(([key, value]) => (
+        {inputOptions.map(([key, value]) => (
           <NodeControl key={key}>
             <NodeControlMain>
               <NodeControlTitle>{key}</NodeControlTitle>
               <NodeControlInner>
                 <EnumDropdown
                   value={value}
-                  values={channelOptions}
+                  values={enumOptions[key]}
                   onValueChange={(newVal) => {
                     engine
                       .getStore()
