@@ -1,4 +1,4 @@
-import { IPlugin, ParamWithInfo } from '@hedron/engine'
+import { IPlugin, NodeWithInfo } from '@hedron/engine'
 import {
   Button,
   ViewHeader,
@@ -11,19 +11,19 @@ import {
   PanelHeader,
 } from '@hedron/ui-core'
 import c from './ActiveSketch.module.css'
+import { useSelectedNode } from '@components/hooks/useSelectedNode'
 import { useActiveSketch } from '@components/hooks/useActiveSketch'
 import { engine, engineStore } from '@renderer/engine'
 import { SketchParams } from '@components/SketchParams/SketchParams'
-import { useSelectedParam } from '@components/hooks/useSelectedParam'
 
 const PluginViewWrapper = ({
   plugin,
   selectedParam,
 }: {
   plugin: IPlugin
-  selectedParam: ParamWithInfo | null
+  selectedParam: NodeWithInfo | null
 }) => {
-  const view = plugin.getSelectedParamView?.(selectedParam!)
+  const view = plugin.getSelectedNodeView?.(selectedParam!)
   return view ? view : null
 }
 
@@ -34,7 +34,7 @@ export const ActiveSketch = () => {
     throw new Error('ActiveSketch component: No activesketch found')
   }
 
-  const selectedParam = useSelectedParam()
+  const selectedParam = useSelectedNode()
 
   const pluginView = engine.plugins.map((plugin) => (
     <PluginViewWrapper

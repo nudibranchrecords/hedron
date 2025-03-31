@@ -1,4 +1,4 @@
-import { addNode } from '@store/shared/addNode'
+import { addParam } from '@store/shared/addParam'
 import { SetterCreator } from '@store/types'
 import { createUniqueId } from '@utils/createUniqueId'
 
@@ -11,7 +11,7 @@ export const createAddSketch: SetterCreator<'addSketch'> = (setState) => (module
     for (const paramConfig of config.params) {
       const id = createUniqueId()
       paramIds.push(id)
-      addNode(state, id, newSketchId, paramConfig)
+      addParam(state, id, newSketchId, paramConfig)
     }
 
     state.sketches[newSketchId] = {

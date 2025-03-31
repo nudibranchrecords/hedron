@@ -4,7 +4,7 @@ import { createUniqueId } from '@utils/createUniqueId'
 const vector3Keys = ['x', 'y', 'z']
 const rgbKeys = ['r', 'g', 'b']
 
-export const addNode = (
+export const addParam = (
   state: EngineState,
   paramId: string,
   sketchId: string,
@@ -18,7 +18,7 @@ export const addNode = (
     const childNodeIds = Array.from({ length: 3 }, createUniqueId) as [string, string, string]
     const keys = valueType === NodeTypes.Vector3 ? vector3Keys : rgbKeys
 
-    state.nodes[paramId] = {
+    state.params[paramId] = {
       id: paramId,
       key,
       type: 'param',
@@ -28,7 +28,7 @@ export const addNode = (
     }
 
     childNodeIds.forEach((childNodeId, index) => {
-      state.nodes[childNodeId] = {
+      state.params[childNodeId] = {
         id: childNodeId,
         key: keys[index],
         type: 'param',
@@ -38,10 +38,10 @@ export const addNode = (
     })
 
     defaultValue.forEach((value: number, index: number) => {
-      state.nodeValues[childNodeIds[index]] = value
+      state.paramValues[childNodeIds[index]] = value
     })
   } else {
-    state.nodes[paramId] = {
+    state.params[paramId] = {
       id: paramId,
       key,
       type: 'param' as const,
@@ -55,7 +55,7 @@ export const addNode = (
       (typeof defaultValue === 'boolean' && valueType === NodeTypes.Boolean) ||
       (typeof defaultValue === 'string' && valueType === NodeTypes.Enum)
     ) {
-      state.nodeValues[paramId] = defaultValue
+      state.paramValues[paramId] = defaultValue
     } else {
       throw new Error(
         `valueType of param ${key} does not match defaultValue for sketch ${sketchId}`,

@@ -12,14 +12,14 @@ interface ParamRGBProps {
 
 export const ParamColor = ({ id }: ParamRGBProps) => {
   const ref = useRef<ColorPickerHandle>(null)
-  const node = useEngineStore((state) => state.nodes[id] as NodeParamRGB)
+  const node = useEngineStore((state) => state.params[id] as NodeParamRGB)
   const { childNodeIds } = node
 
   useInterval(() => {
     const state = engineStore.getState()
-    const nodeValues = node.childNodeIds.map((id) => state.nodeValues[id])
+    const paramValues = node.childNodeIds.map((id) => state.paramValues[id])
 
-    ref.current?.updateColor(nodeValues as [number, number, number])
+    ref.current?.updateColor(paramValues as [number, number, number])
   }, 100)
 
   const onVec3ValueChange = useOnNodeVec3ValueChange(

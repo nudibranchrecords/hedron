@@ -3,7 +3,7 @@ import { useInterval } from 'usehooks-ts'
 import { EnumDropdown } from '@hedron/ui-core'
 import type { EnumDropdownHandle } from '@hedron/ui-core'
 import { engineStore, useEngineStore } from '@renderer/engine'
-import { useOnNodeValueChange } from '@renderer/components/hooks/useOnNodeValueChange'
+import { useOnParamValueChange } from '@components/hooks/useOnParamValueChange'
 
 interface ParamEnumProps {
   id: string
@@ -11,7 +11,7 @@ interface ParamEnumProps {
 
 const useParamEnumOptions = (paramNodeId: string) => {
   const options = useEngineStore((state) => {
-    const node = state.nodes[paramNodeId]
+    const node = state.params[paramNodeId]
     const sketch = state.sketches[node.sketchId]
     const module = state.sketchModules[sketch.moduleId]
 
@@ -29,15 +29,15 @@ const useParamEnumOptions = (paramNodeId: string) => {
 
 export const ParamEnum = ({ id }: ParamEnumProps) => {
   const ref = useRef<EnumDropdownHandle>(null)
-  const onValueChange = useOnNodeValueChange(id)
+  const onValueChange = useOnParamValueChange(id)
   const options = useParamEnumOptions(id)
 
   useInterval(() => {
-    const nodeValue = engineStore.getState().nodeValues[id]
-    if (typeof nodeValue !== 'string') {
+    const paramValue = engineStore.getState().paramValues[id]
+    if (typeof paramValue !== 'string') {
       throw new Error('ParamEnum value was not a string')
     }
-    ref.current?.setValue(nodeValue)
+    ref.current?.setValue(paramValue)
   }, 100)
 
   return <EnumDropdown ref={ref} onValueChange={onValueChange} values={options} />

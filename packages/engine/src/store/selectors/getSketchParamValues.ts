@@ -2,27 +2,28 @@ import { EngineState, hasChildNodes } from '@store/types'
 
 // Get the values of the parameters of a sketch, dealing with child nodes
 export const getSketchParamValues = (state: EngineState, sketchId: string) => {
-  const { sketches, nodeValues, nodes } = state
+  const { sketches, paramValues, params } = state
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const paramValues: { [key: string]: any } = {}
+  const sketchParamValues: { [key: string]: any } = {}
   const sketch = sketches[sketchId]
 
   sketch.paramIds.forEach((id) => {
-    const node = nodes[id]
-    const { key } = node
+    const param = params[id]
+    if (!param) return
+    const { key } = param
 
     let value
 
-    if (hasChildNodes(node)) {
+    if (hasChildNodes(param)) {
       // Return an array of values for nodes with child nodes
-      const childNodeIds = node.childNodeIds
-      value = childNodeIds.map((childNodeId) => nodeValues[childNodeId])
+      const childNodeIds = param.childNodeIds
+      value = childNodeIds.map((childNodeId) => paramValues[childNodeId])
     } else {
-      value = nodeValues[id]
+      value = paramValues[id]
     }
 
-    paramValues[key] = value
+    sketchParamValues[key] = value
   })
 
-  return paramValues
+  return sketchParamValues
 }

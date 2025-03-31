@@ -1,4 +1,4 @@
-import { addNode } from '@store/shared/addNode'
+import { addParam } from '@store/shared/addParam'
 import { hasChildNodes, SetterCreator } from '@store/types'
 import { createUniqueId } from '@utils/createUniqueId'
 
@@ -20,13 +20,13 @@ export const createUpdateSketchParams: SetterCreator<'updateSketchParams'> =
       for (const paramConfig of config.params) {
         // Find existing node for this key, if any.
         let paramId = Array.from(existingParamIds).find(
-          (id) => state.nodes[id]?.key === paramConfig.key,
+          (id) => state.params[id]?.key === paramConfig.key,
         )
 
         // If no existing node, create a new one.
         if (!paramId) {
           paramId = createUniqueId()
-          addNode(state, paramId, sketchId, paramConfig)
+          addParam(state, paramId, sketchId, paramConfig)
         }
 
         // Add this paramId to the new list.
@@ -36,15 +36,15 @@ export const createUpdateSketchParams: SetterCreator<'updateSketchParams'> =
 
       // 2. Remove params that are no longer in the new config.
       for (const oldParamId of existingParamIds) {
-        const oldNode = state.nodes[oldParamId]
-        delete state.nodes[oldParamId]
-        delete state.nodeValues[oldParamId]
+        const oldNode = state.params[oldParamId]
+        delete state.params[oldParamId]
+        delete state.paramValues[oldParamId]
 
         // Remove vector child nodes if they exist
         if (hasChildNodes(oldNode)) {
           oldNode.childNodeIds.forEach((childNodeId) => {
-            delete state.nodes[childNodeId]
-            delete state.nodeValues[childNodeId]
+            delete state.params[childNodeId]
+            delete state.paramValues[childNodeId]
           })
         }
       }

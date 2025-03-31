@@ -3,6 +3,7 @@ import { devtools, subscribeWithSelector } from 'zustand/middleware'
 import { immer } from 'zustand/middleware/immer'
 
 import type {} from '@redux-devtools/extension' // required for devtools typing
+import { createUpdateNodeValues } from '@store/actionCreators/createUpdateNodeValues'
 import { EngineStateWithActions } from '@store/types'
 import { initialState } from '@store/initialState'
 import { createAddSketch } from '@store/actionCreators/addSketch'
@@ -10,10 +11,9 @@ import { createDeleteSketch } from '@store/actionCreators/deleteSketch'
 import { createSetSketchModuleItem } from '@store/actionCreators/setSketchModuleItem'
 import { createDeleteSketchModule } from '@store/actionCreators/deleteSketchModule'
 import { createUpdateSketchParams } from '@store/actionCreators/updateSketchParams'
-import { createUpdateNodeValue } from '@store/actionCreators/updateNodeValue'
+import { createUpdateParamValue } from '@store/actionCreators/updateNodeValue'
 import { createReset } from '@store/actionCreators/reset'
 import { createLoadProject } from '@store/actionCreators/loadProject'
-import { createUpdateInputValues } from '@store/actionCreators/createUpdateInputValues'
 import {
   createAddInput,
   createAddInputParam,
@@ -29,12 +29,12 @@ export const createEngineStore = () =>
           addSketch: createAddSketch(set),
           updateSketchParams: createUpdateSketchParams(set),
           setSketchModuleItem: createSetSketchModuleItem(set),
-          updateNodeValue: createUpdateNodeValue(set),
+          updateParamValue: createUpdateParamValue(set),
           deleteSketch: createDeleteSketch(set),
           deleteSketchModule: createDeleteSketchModule(set),
           reset: createReset(set),
           loadProject: createLoadProject(set),
-          updateInputValues: createUpdateInputValues(set),
+          updateNodeValues: createUpdateNodeValues(set),
           addInput: createAddInput(set),
           deleteInputParam: createDeleteInputParam(set),
           addInputParam: createAddInputParam(set),

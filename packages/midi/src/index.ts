@@ -1,5 +1,5 @@
 import React from 'react'
-import { HedronEngine, Input, IPlugin, ParamWithInfo, UseEngineStore } from '@hedron/engine'
+import { HedronEngine, Input, IPlugin, NodeWithInfo, UseEngineStore } from '@hedron/engine'
 import { getMidiSetting } from './getMidiSetting'
 import { Signal } from './Signal'
 
@@ -75,14 +75,14 @@ export class Midi implements IPlugin {
       this.engine
         .getStore()
         .getState()
-        .updateInputValues(event.id, (event.value || 0) / 127)
+        .updateNodeValues(event.id, (event.value || 0) / 127)
     }, this)
     this.findMidiDevices()
   }
 
   // return a test view
-  public getSelectedParamView(param: ParamWithInfo): React.JSX.Element | undefined {
-    return getMidiSetting(param, this.engine, this.useEngineStore, this)
+  public getSelectedNodeView(node: NodeWithInfo): React.JSX.Element | undefined {
+    return getMidiSetting(node, this.engine, this.useEngineStore, this)
   }
 
   /**

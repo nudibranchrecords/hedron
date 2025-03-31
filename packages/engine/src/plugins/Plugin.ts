@@ -1,4 +1,4 @@
-import { ParamWithInfo } from '@store/selectors/getParamWithInfo'
+import { NodeWithInfo } from '@store/types'
 
 /**
  * Class type for a Plugin.
@@ -18,8 +18,8 @@ export interface IPlugin {
 
   /**
    * Gets the selected parameter view.
-   * @param param - The parameter with info.
+   * @node node - The parameter with info.
    * @returns The JSX element or undefined if this plugin does not have a visual element.
    */
-  getSelectedParamView?: (param: ParamWithInfo) => JSX.Element | undefined
+  getSelectedNodeView?: (node: NodeWithInfo) => JSX.Element | undefined
 }

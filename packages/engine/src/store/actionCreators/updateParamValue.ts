@@ -1,8 +1,8 @@
 import { SetterCreator } from '@store/types'
 
-export const createUpdateNodeValue: SetterCreator<'updateNodeValue'> =
+export const createUpdateParamValue: SetterCreator<'updateParamValue'> =
   (setState) => (nodeId, value) => {
     setState((state) => {
-      state.nodeValues[nodeId] = value
+      state.paramValues[nodeId] = value
     })
   }

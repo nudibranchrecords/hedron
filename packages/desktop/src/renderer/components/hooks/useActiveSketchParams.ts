@@ -10,21 +10,21 @@ export const useActiveSketchParams = () => {
     throw new Error('useActiveSketchParams hook: No active sketch found')
   }
 
-  const [nodes, module] = useEngineStore((state) => [
-    state.nodes,
+  const [params, module] = useEngineStore((state) => [
+    state.params,
     state.sketchModules[activeSketch.moduleId],
   ])
 
-  const params: ParamWithInfo[] = useMemo(
+  const paramWithInfo: ParamWithInfo[] = useMemo(
     () =>
       activeSketch.paramIds.map((id, index) => {
-        const node = nodes[id]
+        const param = params[id]
         const paramConfig = module?.config.params[index]
         const title = paramConfig?.title ?? paramConfig?.key
-        return { ...node, title }
+        return { ...param, title }
       }),
-    [activeSketch, nodes, module],
+    [activeSketch, params, module],
   )
 
-  return params
+  return paramWithInfo
 }

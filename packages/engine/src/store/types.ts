@@ -145,8 +145,8 @@ export type Inputs = { [key: string]: Input }
 
 export interface EngineData {
   sketches: Sketches
-  nodes: Nodes
-  nodeValues: NodeValues
+  params: Params
+  paramValues: ParamValues
   inputs: Inputs
 }
 
@@ -162,13 +162,13 @@ interface Actions {
   updateSketchParams: (instanceId: string) => void
   deleteSketch: (instanceId: string) => void
   setSketchModuleItem: (newItem: SketchModuleItem) => void
-  updateNodeValue: (nodeId: string, value: NodeValue) => void
+  updateParamValue: (nodeId: string, value: ParamValue) => void
   deleteSketchModule: (moduleId: string) => void
   loadProject: (project: EngineData) => void
   reset: () => void
   addInput: (inputId: string, value: Input) => void
   deleteInputParam: (inputId: string, paramId: string) => void
-  updateInputValues: (inputId: string, value: NodeValue) => void
+  updateNodeValues: (inputId: string, value: ParamValue) => void
   addInputParam: (inputId: string, paramId: string) => void
 }
 

@@ -1,11 +1,11 @@
 import { useState } from 'react'
 import { useShallow } from 'zustand/react/shallow'
-import { HedronEngine, Input, NodeTypes, ParamWithInfo, UseEngineStore } from '@hedron/engine'
+import { HedronEngine, Input, NodeTypes, NodeWithInfo, UseEngineStore } from '@hedron/engine'
 import { Button } from '@hedron/ui-core'
 import { Midi } from '.'
 
 interface IProps {
-  param: ParamWithInfo
+  node: NodeWithInfo
   engine: HedronEngine
   useEngineStore: UseEngineStore
   midi: Midi
@@ -28,11 +28,11 @@ const useInputsWithNode = (nodeId: string, useEngineStore: UseEngineStore) => {
 /**
  * A react component that displays the midi settings for a parameter
  */
-export const MidiSetting = ({ param, engine, useEngineStore, midi }: IProps) => {
-  const inputs = useInputsWithNode(param.id, useEngineStore)
+export const MidiSetting = ({ node, engine, useEngineStore, midi }: IProps) => {
+  const inputs = useInputsWithNode(node.id, useEngineStore)
   const [isLearning, setIsLearning] = useState(false)
 
-  if (param.valueType !== NodeTypes.Number) {
+  if (node.type !== 'param' || node.valueType !== NodeTypes.Number) {
     return null
   }
 
@@ -60,7 +60,7 @@ export const MidiSetting = ({ param, engine, useEngineStore, midi }: IProps) => 
 
   async function runMidiLearn() {
     setIsLearning(true)
-    midi.midiLearn(param.id).finally(() => {
+    midi.midiLearn(node.id).finally(() => {
       setIsLearning(false)
     })
   }
@@ -71,7 +71,7 @@ export const MidiSetting = ({ param, engine, useEngineStore, midi }: IProps) => 
 
   function removeMidi(id: string) {
     return () => {
-      engine.deleteInputParam(id, param.id)
+      engine.deleteInputParam(id, node.id)
     }
   }
 

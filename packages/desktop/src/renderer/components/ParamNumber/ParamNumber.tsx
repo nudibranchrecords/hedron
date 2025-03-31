@@ -2,7 +2,7 @@ import { useRef } from 'react'
 import { useInterval } from 'usehooks-ts'
 import { FloatSlider } from '@hedron/ui-core'
 import type { FloatSliderHandle } from '@hedron/ui-core'
-import { useOnNodeValueChange } from '@components/hooks/useOnNodeValueChange'
+import { useOnParamValueChange } from '@components/hooks/useOnParamValueChange'
 import { engineStore } from '@renderer/engine'
 
 interface ParamNumberProps {
@@ -11,14 +11,14 @@ interface ParamNumberProps {
 
 export const ParamNumber = ({ id }: ParamNumberProps) => {
   const ref = useRef<FloatSliderHandle>(null)
-  const onValueChange = useOnNodeValueChange(id)
+  const onValueChange = useOnParamValueChange(id)
 
   useInterval(() => {
-    const nodeValue = engineStore.getState().nodeValues[id]
-    if (typeof nodeValue !== 'number') {
+    const paramValue = engineStore.getState().paramValues[id]
+    if (typeof paramValue !== 'number') {
       throw new Error('ParamNumber value was not a number')
     }
-    ref.current?.drawBar(nodeValue)
+    ref.current?.drawBar(paramValue)
   }, 100)
 
   return <FloatSlider ref={ref} onValueChange={onValueChange} />
