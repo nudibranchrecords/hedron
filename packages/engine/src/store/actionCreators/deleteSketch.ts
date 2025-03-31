@@ -8,5 +8,9 @@ export const createDeleteSketch: SetterCreator<'deleteSketch'> =
         delete state.paramValues[paramId]
       })
 
+      state.sketches[instanceId].shotIds.forEach((shotId) => {
+        delete state.shots[shotId]
+      })
+
       delete state.sketches[instanceId]
     })

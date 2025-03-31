@@ -22,7 +22,7 @@ export class HedronEngine {
 
   constructor(params?: { onFrameStart?: () => void; onFrameEnd?: () => void }) {
     this.store = createEngineStore()
-    this.sketchManager = new SketchManager()
+    this.sketchManager = new SketchManager(this)
     this.renderer = new Renderer()
 
     this.onFrameStart = params?.onFrameStart
@@ -137,7 +137,11 @@ export class HedronEngine {
             debugScene.addPass(pass)
           })
         }
-        instance.update({ deltaFrame: 1, params: paramValues })
+        try {
+          instance.update({ deltaFrame: 1, params: paramValues })
+        } catch (e) {
+          console.error(e)
+        }
       })
 
       requestAnimationFrame(loop)

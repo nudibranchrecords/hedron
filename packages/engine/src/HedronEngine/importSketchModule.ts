@@ -34,6 +34,8 @@ export const importSketchModule = async (
       const configModule = await import(/* @vite-ignore */ configPath)
       config = configModule.default
     }
+    config.params = config.params || []
+    config.shots = config.shots || []
 
     // A config could be missing a title, but it is a required parameter
     if (!config.title) {

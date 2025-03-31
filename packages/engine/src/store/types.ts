@@ -5,6 +5,7 @@ export interface SketchState {
   title: string
   moduleId: string
   paramIds: string[]
+  shotIds: string[]
 }
 
 export type Sketches = { [key: string]: SketchState }
@@ -28,6 +29,11 @@ export enum NodeTypes {
 
 export const NodeTypesWithChildren = [NodeTypes.Vector3, NodeTypes.RGB] as const
 export type NodeTypeWithChildren = (typeof NodeTypesWithChildren)[number]
+
+export interface NodeShotBase extends NodeBase {
+  type: 'shot'
+  sketchId: string
+}
 
 export interface NodeParamBase extends NodeBase {
   type: 'param'
@@ -66,11 +72,18 @@ export type Param =
   | NodeParamVector3
   | NodeParamRGB
 
-export type Node = Param
-export type Nodes = { [key: string]: Node }
+export type Shot = NodeShotBase
+export type Shots = { [key: string]: Shot }
 
-export type NodeValue = number | boolean | string
-export type NodeValues = { [key: string]: NodeValue }
+export type Node = Param | Shot
+export type Params = { [key: string]: Param }
+
+export type ParamValue = number | boolean | string
+export type ParamValues = { [key: string]: ParamValue }
+
+export type ParamWithInfo = Param & { title: string }
+export type ShotWithInfo = Shot & { title: string }
+export type NodeWithInfo = Node & { title: string }
 
 export const isNodeTypeWithChildren = (nodeType: NodeTypes): nodeType is NodeTypeWithChildren => {
   return NodeTypesWithChildren.includes(nodeType as NodeTypeWithChildren)
@@ -119,10 +132,16 @@ export type SketchConfigParam =
   | SketchConfigParamVector3
   | SketchConfigParamRGB
 
+export interface SketchConfigShot {
+  title: string
+  method: string
+}
+
 export interface SketchConfig {
   title: string
   description?: string
   params: SketchConfigParam[]
+  shots: SketchConfigShot[]
 }
 
 export interface SketchModuleItem {
@@ -147,6 +166,7 @@ export interface EngineData {
   sketches: Sketches
   params: Params
   paramValues: ParamValues
+  shots: { [key: string]: NodeShotBase }
   inputs: Inputs
 }
 

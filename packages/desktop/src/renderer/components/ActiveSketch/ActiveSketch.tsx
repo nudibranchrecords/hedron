@@ -13,8 +13,9 @@ import {
 import c from './ActiveSketch.module.css'
 import { useSelectedNode } from '@components/hooks/useSelectedNode'
 import { useActiveSketch } from '@components/hooks/useActiveSketch'
+import { SketchShots } from '@components/SketchNodes/SketchShots'
 import { engine, engineStore } from '@renderer/engine'
-import { SketchParams } from '@components/SketchParams/SketchParams'
+import { SketchParams } from '@components/SketchNodes/SketchParams'
 
 const PluginViewWrapper = ({
   plugin,
@@ -51,6 +52,7 @@ export const ActiveSketch = () => {
       </ViewHeader>
       <div className={c.section}>
         <SketchParams />
+        <SketchShots />
       </div>
       <Card>
         <CardActions>

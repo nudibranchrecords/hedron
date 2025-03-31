@@ -11,7 +11,7 @@ import { createDeleteSketch } from '@store/actionCreators/deleteSketch'
 import { createSetSketchModuleItem } from '@store/actionCreators/setSketchModuleItem'
 import { createDeleteSketchModule } from '@store/actionCreators/deleteSketchModule'
 import { createUpdateSketchParams } from '@store/actionCreators/updateSketchParams'
-import { createUpdateParamValue } from '@store/actionCreators/updateNodeValue'
+import { createUpdateParamValue } from '@store/actionCreators/updateParamValue'
 import { createReset } from '@store/actionCreators/reset'
 import { createLoadProject } from '@store/actionCreators/loadProject'
 import {
