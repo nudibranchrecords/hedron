@@ -75,7 +75,7 @@ export class Midi implements IPlugin {
       this.engine
         .getStore()
         .getState()
-        .updateNodeValues(event.id, (event.value || 0) / 127)
+        .updateInputValues(event.id, (event.value || 0) / 127)
     }, this)
     this.findMidiDevices()
   }

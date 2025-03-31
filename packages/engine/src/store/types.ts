@@ -183,12 +183,13 @@ interface Actions {
   deleteSketch: (instanceId: string) => void
   setSketchModuleItem: (newItem: SketchModuleItem) => void
   updateParamValue: (nodeId: string, value: ParamValue) => void
+  updateParamValues: (sketchId: string, values: { [key: string]: ParamValue }) => void
   deleteSketchModule: (moduleId: string) => void
   loadProject: (project: EngineData) => void
   reset: () => void
   addInput: (inputId: string, value: Input) => void
   deleteInputParam: (inputId: string, paramId: string) => void
-  updateNodeValues: (inputId: string, value: ParamValue) => void
+  updateInputValues: (inputId: string, value: ParamValue) => void
   addInputParam: (inputId: string, paramId: string) => void
 }
 

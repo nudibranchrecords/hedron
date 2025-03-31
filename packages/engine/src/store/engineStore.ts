@@ -3,7 +3,6 @@ import { devtools, subscribeWithSelector } from 'zustand/middleware'
 import { immer } from 'zustand/middleware/immer'
 
 import type {} from '@redux-devtools/extension' // required for devtools typing
-import { createUpdateNodeValues } from '@store/actionCreators/createUpdateNodeValues'
 import { EngineStateWithActions } from '@store/types'
 import { initialState } from '@store/initialState'
 import { createAddSketch } from '@store/actionCreators/addSketch'
@@ -12,6 +11,8 @@ import { createSetSketchModuleItem } from '@store/actionCreators/setSketchModule
 import { createDeleteSketchModule } from '@store/actionCreators/deleteSketchModule'
 import { createUpdateSketchParams } from '@store/actionCreators/updateSketchParams'
 import { createUpdateParamValue } from '@store/actionCreators/updateParamValue'
+import { createUpdateParamValues } from '@store/actionCreators/createUpdateParamValues'
+import { createUpdateInputValues } from '@store/actionCreators/createUpdateInputValues'
 import { createReset } from '@store/actionCreators/reset'
 import { createLoadProject } from '@store/actionCreators/loadProject'
 import {
@@ -30,11 +31,12 @@ export const createEngineStore = () =>
           updateSketchParams: createUpdateSketchParams(set),
           setSketchModuleItem: createSetSketchModuleItem(set),
           updateParamValue: createUpdateParamValue(set),
+          updateParamValues: createUpdateParamValues(set),
           deleteSketch: createDeleteSketch(set),
           deleteSketchModule: createDeleteSketchModule(set),
           reset: createReset(set),
           loadProject: createLoadProject(set),
-          updateNodeValues: createUpdateNodeValues(set),
+          updateInputValues: createUpdateInputValues(set),
           addInput: createAddInput(set),
           deleteInputParam: createDeleteInputParam(set),
           addInputParam: createAddInputParam(set),

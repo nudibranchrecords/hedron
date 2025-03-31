@@ -79,27 +79,6 @@ export class SketchManager {
     }
 
     const state = this.engine.getStore().getState()
-    const storedParams = state.params
-    Object.keys(params).forEach((key) => {
-      const param = params[key]
-      for (const id in storedParams) {
-        const storedParam = storedParams[id]
-        if (storedParam.sketchId !== instanceId || storedParam.key !== key) {
-          continue
-        }
-        if (!Array.isArray(param)) {
-          this.engine.getStore().getState().updateParamValue(storedParam.id, params[key])
-          return
-        }
-        const length = Math.min(
-          param.length,
-          (storedParam as NodeParamWithChildren).childNodeIds.length,
-        )
-        for (let i = 0; i < length; i++) {
-          state.updateParamValue((storedParam as NodeParamWithChildren).childNodeIds[i], param[i])
-        }
-        return
-      }
-    })
+    state.updateParamValues(instanceId, params)
   }
 }

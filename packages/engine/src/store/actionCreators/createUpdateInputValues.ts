@@ -1,7 +1,7 @@
 import { ParamValue, SetterCreator } from '@store/types'
 import { fireShotOnSketch } from '@world/SketchManager'
 
-export const createUpdateNodeValues: SetterCreator<'updateNodeValues'> =
+export const createUpdateInputValues: SetterCreator<'updateInputValues'> =
   (setState) => (inputId: string, value: ParamValue) => {
     setState((state) => {
       const input = state.inputs[inputId]
