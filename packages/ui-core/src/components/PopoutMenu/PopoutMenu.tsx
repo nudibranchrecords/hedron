@@ -17,7 +17,7 @@ export const PopoutMenu = ({ children, items, className, ...props }: PopoutMenuP
   const triggerRef = useRef<HTMLDivElement>(null)
   const [isOpen, setIsOpen] = useState(false)
   const { refs, floatingStyles } = useFloating({
-    middleware: [offset(10), shift()],
+    middleware: [offset(10), shift({ padding: 10 })],
   })
 
   const handleTriggerClick = () => setIsOpen((prev) => !prev)
