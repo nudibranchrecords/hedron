@@ -3,6 +3,7 @@ import { Icon, MiniTabs, MiniTabsItem } from '@hedron/ui-core'
 import { useCallback, useState } from 'react'
 import { useSelectedParam } from '@components/hooks/useSelectedParam'
 import { pluginViews, useEngineStore, engine } from '@renderer/engine'
+import { useAppStore } from '@renderer/appStore'
 
 // TODO: Just select for input id and name, for performance reasons
 const useInputsWithNode = (nodeId: string) => {
@@ -15,19 +16,21 @@ const useInputsWithNode = (nodeId: string) => {
 
 export const SelectedParam = () => {
   const selectedParam = useSelectedParam()
+
+  if (!selectedParam) {
+    throw new Error(
+      'SelectedParam component: selected param not found. This component should only be used when a param is selected',
+    )
+  }
+
   const addInput = useEngineStore((state) => state.addInput)
-  // TODO: This should be moved into global state, so we can save the selected input
-  const [selectedInputId, setSelectedInputId] = useState<string | null>(null)
+
+  const selectedInputId = useAppStore((state) => state.selectedInputs[selectedParam.id])
+  const setSelectedInputId = useAppStore((state) => state.setSelectedInput)
 
   const currentInput = useEngineStore((state) =>
     selectedInputId ? state.inputs[selectedInputId] : null,
   )
-
-  if (!selectedParam) {
-    throw new Error(
-      'SelectedParam component: selected param note found. This component should only be used when a param is selected',
-    )
-  }
 
   // TODO: This should open up a context menu where different types of inputs can be selected
   const onAddClick = useCallback(() => {
@@ -38,8 +41,8 @@ export const SelectedParam = () => {
     }
 
     const id = addInput(input)
-    setSelectedInputId(id)
-  }, [addInput, selectedParam.id])
+    setSelectedInputId(selectedParam.id, id)
+  }, [addInput, selectedParam.id, setSelectedInputId])
 
   const inputs = useInputsWithNode(selectedParam.id)
 
@@ -53,7 +56,7 @@ export const SelectedParam = () => {
           <MiniTabsItem
             key={input.id}
             isActive={selectedInputId === input.id}
-            onClick={() => setSelectedInputId(input.id)}
+            onClick={() => setSelectedInputId(selectedParam.id, input.id)}
           >
             {input.id}
           </MiniTabsItem>
