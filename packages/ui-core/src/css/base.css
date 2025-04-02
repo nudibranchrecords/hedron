@@ -12,7 +12,7 @@
 body {
   user-select: none;
   margin: 0;
-  font-size: 0.8rem;
+  font-size: var(--baseFontSize);
   overflow: hidden;
   font-family: 'Chivo Mono', sans-serif;
   color: var(--textColorLight1);
@@ -56,6 +56,14 @@ p {
 
 .mb-xxl {
   margin-bottom: var(--gapMega);
+}
+
+.ml-auto {
+  margin-left: auto;
+}
+
+.mr-auto {
+  margin-right: auto;
 }
 
 input[type='number']::-webkit-inner-spin-button,

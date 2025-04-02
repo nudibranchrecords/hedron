@@ -22,6 +22,7 @@ export type IconName =
   | 'edit'
   | 'play_arrow'
   | 'pause'
+  | 'menu'
 
 export const sketchIcon: IconName = 'token'
 export const sceneIcon: IconName = 'panorama'
