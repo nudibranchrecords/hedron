@@ -1,13 +1,14 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { useFloating, offset, shift } from '@floating-ui/react-dom'
 import { Menu, MenuItem } from '@components/Menu/Menu'
 
 interface PopoutMenuProps {
-  trigger: React.ReactNode
+  children: React.ReactNode
   items: React.ReactNode[] // Updated to allow dynamic content like icons
 }
 
-export const PopoutMenu = ({ trigger, items }: PopoutMenuProps) => {
+export const PopoutMenu = ({ children, items }: PopoutMenuProps) => {
+  const triggerRef = useRef<HTMLDivElement>(null)
   const [isOpen, setIsOpen] = useState(false)
   const { refs, floatingStyles } = useFloating({
     middleware: [offset(10), shift()],
@@ -15,29 +16,33 @@ export const PopoutMenu = ({ trigger, items }: PopoutMenuProps) => {
 
   const handleTriggerClick = () => setIsOpen((prev) => !prev)
 
-  const handleOutsideClick = (e: MouseEvent) => {
-    if (!refs.reference.current?.contains(e.target as Node)) {
+  const handleOutsideClick = useCallback((e: MouseEvent) => {
+    if (!triggerRef.current?.contains(e.target as Node)) {
       setIsOpen(false)
     }
-  }
+  }, [])
 
   useEffect(() => {
     document.addEventListener('click', handleOutsideClick)
     return () => document.removeEventListener('click', handleOutsideClick)
-  }, [])
+  }, [handleOutsideClick])
+
+  const inner = (
+    <Menu>
+      {items.map((item, index) => (
+        <MenuItem key={index}>{item}</MenuItem>
+      ))}
+    </Menu>
+  )
 
   return (
-    <div>
-      <div ref={refs.setReference} onClick={handleTriggerClick}>
-        {trigger}
+    <div ref={refs.setReference}>
+      <div ref={triggerRef} onClick={handleTriggerClick}>
+        {children}
       </div>
       {isOpen && (
         <div ref={refs.setFloating} style={floatingStyles}>
-          <Menu>
-            {items.map((item, index) => (
-              <MenuItem key={index}>{item}</MenuItem>
-            ))}
-          </Menu>
+          {inner}
         </div>
       )}
     </div>

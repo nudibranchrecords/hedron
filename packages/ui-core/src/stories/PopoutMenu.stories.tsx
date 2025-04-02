@@ -14,6 +14,8 @@ export default meta
 
 export const Default = () => {
   return (
-    <PopoutMenu trigger={<Button>Open Menu</Button>} items={['Option 1', 'Option 2', 'Option 3']} />
+    <PopoutMenu items={['Option 1', 'Option 2', 'Option 3']}>
+      <Button>Open Menu</Button>
+    </PopoutMenu>
   )
 }
