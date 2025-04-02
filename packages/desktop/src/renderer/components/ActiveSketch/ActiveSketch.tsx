@@ -2,13 +2,12 @@ import { IPlugin, ParamWithInfo } from '@hedron/engine'
 import {
   Button,
   ViewHeader,
-  Card,
-  CardActions,
   Icon,
   paramIcon,
   Panel,
   PanelBody,
   PanelHeader,
+  PopoutMenu,
 } from '@hedron/ui-core'
 import c from './ActiveSketch.module.css'
 import { useActiveSketch } from '@components/hooks/useActiveSketch'
@@ -48,21 +47,23 @@ export const ActiveSketch = () => {
     <>
       <ViewHeader>
         <Icon name="token" /> {activeSketch.title}
+        <PopoutMenu
+          className="ml-auto"
+          items={[
+            {
+              label: 'Delete Sketch',
+              icon: 'delete',
+              onClick: () => engineStore.getState().deleteSketch(activeSketch.id),
+            },
+          ]}
+        >
+          <Button type="ghost" iconName="menu" />
+        </PopoutMenu>
       </ViewHeader>
       <div className={c.section}>
         <SketchParams />
       </div>
-      <Card>
-        <CardActions>
-          <Button
-            type="danger"
-            iconName="delete"
-            onClick={() => engineStore.getState().deleteSketch(activeSketch.id)}
-          >
-            Delete Sketch
-          </Button>
-        </CardActions>
-      </Card>
+
       {selectedParam && (
         <Panel snugPosition="bottom" spacing="slim" width="full" className={c.bottomPanel}>
           <PanelHeader iconName={paramIcon}>{selectedParam.title}</PanelHeader>

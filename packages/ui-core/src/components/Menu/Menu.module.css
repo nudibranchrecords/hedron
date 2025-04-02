@@ -4,6 +4,7 @@
   padding: var(--gapSmall);
   background: var(--bgColorDark4);
   border-radius: var(--borderRadiusLarge);
+  font-size: var(--baseFontSize);
 }
 
 .item {
