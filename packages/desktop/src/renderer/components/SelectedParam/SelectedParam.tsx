@@ -43,9 +43,12 @@ export const SelectedParam = () => {
       Object.values(engine.plugins).map((plugin) => ({
         label: plugin.name,
         onClick: () => {
+          const numAlready = inputs.filter((input) => input.type === plugin.inputType).length
+
           const input = {
             type: plugin.inputType,
             targetNodeIds: [selectedParam.id],
+            title: `${plugin.inputType} ${numAlready + 1}`,
             options: plugin.generateInitialOptions(),
           }
 
@@ -53,7 +56,7 @@ export const SelectedParam = () => {
           setSelectedInputId(selectedParam.id, id)
         },
       })),
-    [addInput, selectedParam.id, setSelectedInputId],
+    [addInput, inputs, selectedParam.id, setSelectedInputId],
   )
 
   return (
@@ -65,7 +68,7 @@ export const SelectedParam = () => {
             isActive={selectedInputId === input.id}
             onClick={() => setSelectedInputId(selectedParam.id, input.id)}
           >
-            {input.id}
+            {input.title}
           </MiniTabsItem>
         ))}
         <PopoutMenu items={availableInputs}>
