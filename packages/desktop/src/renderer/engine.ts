@@ -22,7 +22,7 @@ export const useEngineStore = <T>(selector?: (state: EngineStateWithActions) => 
 engine.registerPlugin(new MidiInput(engine))
 
 export const pluginViews = {
-  'midi-input': {
-    inputPanel: MidiInputPanel,
+  inputPanel: {
+    midi: MidiInputPanel,
   },
 }

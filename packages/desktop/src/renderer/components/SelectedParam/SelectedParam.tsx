@@ -34,8 +34,9 @@ export const SelectedParam = () => {
 
   const inputs = useInputsWithNode(selectedParam.id)
 
-  // TODO: "midi-input" should not be hardcoded here
-  const PluginView = currentInput && pluginViews['midi-input'].inputPanel
+  // TODO: Fix types here, maybe we need a "@hedron/plugins" package to handle this sort of thing?
+  // @ts-expect-error -- needs work
+  const PluginView = currentInput && pluginViews.inputPanel[currentInput?.type]
 
   const availableInputs = useMemo(
     () =>
@@ -43,7 +44,7 @@ export const SelectedParam = () => {
         label: plugin.name,
         onClick: () => {
           const input = {
-            type: plugin.id,
+            type: plugin.inputType,
             targetNodeIds: [selectedParam.id],
             options: plugin.generateInitialOptions(),
           }

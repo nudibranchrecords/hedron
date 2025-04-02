@@ -8,6 +8,11 @@ export interface IPlugin {
   id: string
 
   /**
+   * Type of input
+   */
+  inputType: string
+
+  /**
    * The name of the plugin.
    */
   name: string

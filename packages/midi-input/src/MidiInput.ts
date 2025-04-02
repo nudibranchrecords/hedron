@@ -9,6 +9,7 @@ export interface MidiInputOptions {
 export class MidiInput implements IPlugin {
   public readonly id = 'midi-input'
   public readonly name = 'MIDI Input'
+  public readonly inputType = 'midi'
   public readonly description = 'Handles MIDI input devices and messages.'
   public readonly midiManager = new Midi()
   public readonly generateInitialOptions: () => MidiInputOptions = () => ({
