@@ -7,7 +7,7 @@
 }
 
 .item {
-  padding: var(--gapSmall);
+  padding: var(--gapMedium) var(--gapSmall);
   display: flex;
   align-items: center;
   gap: var(--gapSmall);

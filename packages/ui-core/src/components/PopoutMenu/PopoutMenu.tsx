@@ -1,10 +1,17 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { useFloating, offset, shift } from '@floating-ui/react-dom'
 import { Menu, MenuItem } from '@components/Menu/Menu'
+import { Icon, IconName } from '@components/Icon/Icon'
+
+interface MenuItemConfig {
+  label: string
+  onClick: () => void
+  icon?: IconName
+}
 
 interface PopoutMenuProps {
   children: React.ReactNode
-  items: React.ReactNode[] // Updated to allow dynamic content like icons
+  items: MenuItemConfig[]
 }
 
 export const PopoutMenu = ({ children, items }: PopoutMenuProps) => {
@@ -27,14 +34,6 @@ export const PopoutMenu = ({ children, items }: PopoutMenuProps) => {
     return () => document.removeEventListener('click', handleOutsideClick)
   }, [handleOutsideClick])
 
-  const inner = (
-    <Menu>
-      {items.map((item, index) => (
-        <MenuItem key={index}>{item}</MenuItem>
-      ))}
-    </Menu>
-  )
-
   return (
     <div ref={refs.setReference}>
       <div ref={triggerRef} onClick={handleTriggerClick}>
@@ -42,7 +41,14 @@ export const PopoutMenu = ({ children, items }: PopoutMenuProps) => {
       </div>
       {isOpen && (
         <div ref={refs.setFloating} style={floatingStyles}>
-          {inner}
+          <Menu>
+            {items.map(({ label, onClick, icon }, index) => (
+              <MenuItem key={index} onClick={onClick}>
+                {icon && <Icon name={icon} />}
+                {label}
+              </MenuItem>
+            ))}
+          </Menu>
         </div>
       )}
     </div>
