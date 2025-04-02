@@ -170,7 +170,7 @@ interface Actions {
   deleteSketchModule: (moduleId: string) => void
   loadProject: (project: EngineData) => void
   reset: () => void
-  addInput: (value: Omit<Input, 'id'>) => void
+  addInput: (value: Omit<Input, 'id'>) => string
   updateInputOptions: (inputId: string, options: InputOptions) => void
   deleteInputParam: (inputId: string, paramId: string) => void
   updateInputValues: (inputId: string, value: NodeValue) => void

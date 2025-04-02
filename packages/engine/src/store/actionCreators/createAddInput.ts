@@ -2,9 +2,9 @@ import { SetterCreator } from '@store/types'
 import { createUniqueId } from '@utils/createUniqueId'
 
 export const createAddInput: SetterCreator<'addInput'> = (setState) => (value) => {
-  setState((state) => {
-    const id = createUniqueId()
+  const id = createUniqueId()
 
+  setState((state) => {
     if (state.inputs[id]) {
       return
     }
@@ -13,6 +13,8 @@ export const createAddInput: SetterCreator<'addInput'> = (setState) => (value) =
       id,
     }
   })
+
+  return id
 }
 
 export const createUpdateInputOptions: SetterCreator<'updateInputOptions'> =

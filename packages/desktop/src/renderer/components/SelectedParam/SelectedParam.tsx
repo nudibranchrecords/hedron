@@ -37,7 +37,8 @@ export const SelectedParam = () => {
       options: engine.plugins['midi-input'].generateInitialOptions(),
     }
 
-    addInput(input)
+    const id = addInput(input)
+    setSelectedInputId(id)
   }, [addInput, selectedParam.id])
 
   const inputs = useInputsWithNode(selectedParam.id)
