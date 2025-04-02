@@ -1,5 +1,6 @@
 import type { Meta } from '@storybook/react'
 import { Menu, MenuItem } from '@components/Menu/Menu'
+import { Icon } from '@components/Icon/Icon'
 
 const meta = {
   title: 'Menu',
@@ -14,9 +15,15 @@ export default meta
 export const Default = () => {
   return (
     <Menu>
-      <MenuItem>MIDI</MenuItem>
-      <MenuItem>LFO</MenuItem>
-      <MenuItem>Audio</MenuItem>
+      <MenuItem>
+        <Icon name="power" /> MIDI
+      </MenuItem>
+      <MenuItem>
+        <Icon name="power" /> LFO
+      </MenuItem>
+      <MenuItem>
+        <Icon name="power" /> Audio
+      </MenuItem>
     </Menu>
   )
 }

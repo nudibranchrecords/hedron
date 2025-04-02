@@ -12,6 +12,10 @@ export const Menu = ({ children, className, ...props }: MenuProps) => {
 
 export interface MenuItemProps extends React.HTMLAttributes<HTMLDivElement> {}
 
-export const MenuItem = ({ children }: MenuItemProps) => {
-  return <div>{children}</div>
+export const MenuItem = ({ children, className, ...props }: MenuItemProps) => {
+  return (
+    <div className={`${c.item} ${className}`} {...props}>
+      {children}
+    </div>
+  )
 }
