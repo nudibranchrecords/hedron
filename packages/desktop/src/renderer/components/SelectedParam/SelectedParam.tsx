@@ -1,6 +1,6 @@
 import { useShallow } from 'zustand/react/shallow'
-import { Icon, MiniTabs, MiniTabsItem } from '@hedron/ui-core'
-import { useCallback, useState } from 'react'
+import { Icon, MiniTabs, MiniTabsItem, PopoutMenu } from '@hedron/ui-core'
+import { useMemo } from 'react'
 import { useSelectedParam } from '@components/hooks/useSelectedParam'
 import { pluginViews, useEngineStore, engine } from '@renderer/engine'
 import { useAppStore } from '@renderer/appStore'
@@ -32,22 +32,28 @@ export const SelectedParam = () => {
     selectedInputId ? state.inputs[selectedInputId] : null,
   )
 
-  // TODO: This should open up a context menu where different types of inputs can be selected
-  const onAddClick = useCallback(() => {
-    const input = {
-      type: 'midi',
-      targetNodeIds: [selectedParam.id],
-      options: engine.plugins['midi-input'].generateInitialOptions(),
-    }
-
-    const id = addInput(input)
-    setSelectedInputId(selectedParam.id, id)
-  }, [addInput, selectedParam.id, setSelectedInputId])
-
   const inputs = useInputsWithNode(selectedParam.id)
 
   // TODO: "midi-input" should not be hardcoded here
   const PluginView = currentInput && pluginViews['midi-input'].inputPanel
+
+  const availableInputs = useMemo(
+    () =>
+      Object.values(engine.plugins).map((plugin) => ({
+        label: plugin.name,
+        onClick: () => {
+          const input = {
+            type: plugin.id,
+            targetNodeIds: [selectedParam.id],
+            options: plugin.generateInitialOptions(),
+          }
+
+          const id = addInput(input)
+          setSelectedInputId(selectedParam.id, id)
+        },
+      })),
+    [addInput, selectedParam.id, setSelectedInputId],
+  )
 
   return (
     <>
@@ -61,9 +67,11 @@ export const SelectedParam = () => {
             {input.id}
           </MiniTabsItem>
         ))}
-        <MiniTabsItem onClick={onAddClick}>
-          <Icon name="add" />
-        </MiniTabsItem>
+        <PopoutMenu items={availableInputs}>
+          <MiniTabsItem>
+            <Icon name="add" />
+          </MiniTabsItem>
+        </PopoutMenu>
       </MiniTabs>
       <div>{PluginView && <PluginView input={currentInput} engine={engine} />}</div>
     </>
