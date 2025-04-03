@@ -106,6 +106,7 @@ export const MidiInputPanel = ({ input, engine }: IProps) => {
         engine.getStore().getState().updateInputOptions(input.id, {
           channel: event.channel,
           note: event.note,
+          type: event.type,
         })
       })
       .finally(() => {

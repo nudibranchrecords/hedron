@@ -18,13 +18,15 @@ export enum MidiMessageType {
   Unknown = 'Unknown',
 }
 
+export type MidiMessageTypeKey = keyof typeof MidiMessageType
+
 /**
  * A simple type that provides both the device and the message of a MIDI event.
  */
 export type MIDIEvent = {
   device: MIDIInput
   channel: number
-  type: MidiMessageType
+  type: MidiMessageTypeKey
   note: number
   value?: number
 }
@@ -185,39 +187,39 @@ export class Midi {
    * @param status The status byte of a MIDI message.
    * @returns The human readable message type via the MidiMessageType enum.
    */
-  public getMidiMessageType(status: number): MidiMessageType {
+  public getMidiMessageType(status: number): MidiMessageTypeKey {
     const messageType = status & 0xf0 // Mask the lower nibble to get the message type
 
     switch (messageType) {
       case 0xf0:
         switch (status) {
           case 0xf8:
-            return MidiMessageType.Clock
+            return 'Clock'
           case 0xfa:
-            return MidiMessageType.Start
+            return 'Start'
           case 0xfb:
-            return MidiMessageType.Continue
+            return 'Continue'
           case 0xfc:
-            return MidiMessageType.Stop
+            return 'Stop'
           default:
-            return MidiMessageType.Unknown
+            return 'Unknown'
         }
       case 0x80:
-        return MidiMessageType.NoteOff
+        return 'NoteOff'
       case 0x90:
-        return MidiMessageType.NoteOn
+        return 'NoteOn'
       case 0xa0:
-        return MidiMessageType.PolyphonicKeyPressure
+        return 'PolyphonicKeyPressure'
       case 0xb0:
-        return MidiMessageType.ControlChange
+        return 'ControlChange'
       case 0xc0:
-        return MidiMessageType.ProgramChange
+        return 'ProgramChange'
       case 0xd0:
-        return MidiMessageType.ChannelPressure
+        return 'ChannelPressure'
       case 0xe0:
-        return MidiMessageType.PitchBendChange
+        return 'PitchBendChange'
       default:
-        return MidiMessageType.Unknown
+        return 'Unknown'
     }
   }
 }
