@@ -34,6 +34,7 @@ export class MidiInput implements IPlugin {
           event.type === options.type &&
           event.value !== undefined
         ) {
+          // TODO: Different behaviours depending on the node type
           store.getState().updateNodeValue(input.targetNodeIds[0], event.value / 128)
         }
       })
