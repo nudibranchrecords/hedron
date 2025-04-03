@@ -140,8 +140,9 @@ export type InputOptions = any
 
 export interface Input<Options = InputOptions> {
   id: string
+  title: string
   type: 'midi' | 'gamepad' | string
-  targetNodeIds: string[]
+  targetNodeId: string
   options: Options
 }
 
@@ -172,9 +173,7 @@ interface Actions {
   reset: () => void
   addInput: (value: Omit<Input, 'id'>) => string
   updateInputOptions: (inputId: string, options: InputOptions) => void
-  deleteInputParam: (inputId: string, paramId: string) => void
   updateInputValues: (inputId: string, value: NodeValue) => void
-  addInputParam: (inputId: string, paramId: string) => void
 }
 
 export type EngineStateWithActions = EngineData & AuxState & Actions

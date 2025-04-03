@@ -26,23 +26,3 @@ export const createUpdateInputOptions: SetterCreator<'updateInputOptions'> =
       }
     })
   }
-
-export const createAddInputParam: SetterCreator<'addInputParam'> =
-  (setState) => (inputId, nodeId) => {
-    setState((state) => {
-      const input = state.inputs[inputId]
-      if (input) {
-        input.targetNodeIds.push(nodeId)
-      }
-    })
-  }
-
-export const createDeleteInputParam: SetterCreator<'deleteInputParam'> =
-  (setState) => (inputId, nodeId) => {
-    setState((state) => {
-      const input = state.inputs[inputId]
-      if (input) {
-        input.targetNodeIds = input.targetNodeIds.filter((id) => id !== nodeId)
-      }
-    })
-  }

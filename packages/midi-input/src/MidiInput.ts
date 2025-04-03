@@ -1,10 +1,10 @@
 import { HedronEngine, IPlugin } from '@hedron/engine'
-import { Midi, MidiMessageType } from '@hedron/midi'
+import { Midi, MidiMessageTypeKey } from '@hedron/midi'
 
 export interface MidiInputOptions {
   channel: number
   note: number
-  type: keyof typeof MidiMessageType
+  type: MidiMessageTypeKey
 }
 
 export class MidiInput implements IPlugin {
@@ -24,6 +24,8 @@ export class MidiInput implements IPlugin {
     this.midiManager.onMidiMessage.add((event) => {
       const inputs = Object.values(store.getState().inputs)
 
+      // TODO: Filter out clock
+
       // TODO: Not very performant, we might want to cache inputs somehow
       inputs.forEach((input) => {
         if (input.type !== 'midi') return
@@ -35,7 +37,7 @@ export class MidiInput implements IPlugin {
           event.value !== undefined
         ) {
           // TODO: Different behaviours depending on the node type
-          store.getState().updateNodeValue(input.targetNodeIds[0], event.value / 128)
+          store.getState().updateNodeValue(input.targetNodeId, event.value / 128)
         }
       })
     })

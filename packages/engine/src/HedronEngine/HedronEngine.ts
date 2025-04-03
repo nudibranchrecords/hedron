@@ -113,10 +113,6 @@ export class HedronEngine {
     return stripForSave(this.store.getState())
   }
 
-  public deleteInputParam(inputId: string, nodeId: string) {
-    this.store.getState().deleteInputParam(inputId, nodeId)
-  }
-
   run() {
     const debugScene = createDebugScene(this.renderer)
 

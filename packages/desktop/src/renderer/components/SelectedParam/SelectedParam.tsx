@@ -1,18 +1,9 @@
-import { useShallow } from 'zustand/react/shallow'
 import { Icon, MiniTabs, MiniTabsItem, PopoutMenu } from '@hedron/ui-core'
 import { useMemo } from 'react'
 import { useSelectedParam } from '@components/hooks/useSelectedParam'
 import { pluginViews, useEngineStore, engine } from '@renderer/engine'
 import { useAppStore } from '@renderer/appStore'
-
-// TODO: Just select for input id and name, for performance reasons
-const useInputsWithNode = (nodeId: string) => {
-  return useEngineStore(
-    useShallow((state) =>
-      Object.values(state.inputs).filter((input) => input.targetNodeIds.includes(nodeId)),
-    ),
-  )
-}
+import { useInputsWithNode } from '@components/hooks/useInput'
 
 export const SelectedParam = () => {
   const selectedParam = useSelectedParam()
@@ -47,7 +38,7 @@ export const SelectedParam = () => {
 
           const input = {
             type: plugin.inputType,
-            targetNodeIds: [selectedParam.id],
+            targetNodeId: selectedParam.id,
             title: `${plugin.inputType} ${numAlready + 1}`,
             options: plugin.generateInitialOptions(),
           }
