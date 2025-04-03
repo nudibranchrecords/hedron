@@ -22,7 +22,6 @@ export class MidiInput implements IPlugin {
   constructor(engine: HedronEngine) {
     const store = engine.getStore()
     this.midiManager.onMidiMessage.add((event) => {
-      console.log(event)
       const inputs = Object.values(store.getState().inputs)
 
       // TODO: Not very performant, we might want to cache inputs somehow

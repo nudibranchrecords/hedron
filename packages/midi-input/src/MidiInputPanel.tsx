@@ -57,8 +57,6 @@ export const MidiInputPanel = ({ input, engine }: IProps) => {
     input.options,
   ) as Entries<MidiInputOptions>
 
-  console.log(inputOptions)
-
   return (
     <div>
       <ControlGrid className="mb-xl">
