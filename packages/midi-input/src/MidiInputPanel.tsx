@@ -9,6 +9,7 @@ import {
   NodeControlMain,
   NodeControlTitle,
 } from '@hedron/ui-core'
+import { MidiMessageType } from '@hedron/midi'
 import { MidiInput, MidiInputOptions } from './MidiInput'
 
 type Entries<T> = {
@@ -30,9 +31,15 @@ for (let i = 0; i < 127; i++) {
   noteOptions.push({ label: `${i + 1}`, value: i })
 }
 
+const messageTypeOptions = Object.entries(MidiMessageType).map(([value, label]) => ({
+  label,
+  value,
+}))
+
 const enumOptions = {
   channel: channelOptions,
   note: noteOptions,
+  type: messageTypeOptions,
 }
 
 /**
@@ -46,9 +53,11 @@ export const MidiInputPanel = ({ input, engine }: IProps) => {
   const midi = plugin.midiManager
 
   // TODO: Move this into a helper function with the typing etc
-  const inputOptions: [keyof MidiInputOptions, number][] = Object.entries(
+  const inputOptions: [keyof MidiInputOptions, number | string][] = Object.entries(
     input.options,
   ) as Entries<MidiInputOptions>
+
+  console.log(inputOptions)
 
   return (
     <div>

@@ -1,9 +1,10 @@
 import { HedronEngine, IPlugin } from '@hedron/engine'
-import { Midi } from '@hedron/midi'
+import { Midi, MidiMessageType } from '@hedron/midi'
 
 export interface MidiInputOptions {
   channel: number
   note: number
+  type: keyof typeof MidiMessageType
 }
 
 export class MidiInput implements IPlugin {
@@ -13,13 +14,15 @@ export class MidiInput implements IPlugin {
   public readonly description = 'Handles MIDI input devices and messages.'
   public readonly midiManager = new Midi()
   public readonly generateInitialOptions: () => MidiInputOptions = () => ({
-    channel: 0,
-    note: 0,
+    channel: 1,
+    note: 1,
+    type: 'ControlChange',
   })
 
   constructor(engine: HedronEngine) {
     const store = engine.getStore()
     this.midiManager.onMidiMessage.add((event) => {
+      console.log(event)
       const inputs = Object.values(store.getState().inputs)
 
       // TODO: Not very performant, we might want to cache inputs somehow
@@ -29,6 +32,7 @@ export class MidiInput implements IPlugin {
         if (
           event.channel === options.channel &&
           event.note === options.note &&
+          event.type === options.type &&
           event.value !== undefined
         ) {
           store.getState().updateNodeValue(input.targetNodeIds[0], event.value / 128)

@@ -133,7 +133,7 @@ export interface SketchModuleItem {
 
 export type SketchModules = { [key: string]: SketchModuleItem }
 
-export type EnumOption = { value: string; label: string }
+export type EnumOption = { value: string | number; label: string }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type InputOptions = any
