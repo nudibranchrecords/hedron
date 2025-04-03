@@ -24,3 +24,38 @@ export const Simple = () => {
     </MiniTabs>
   )
 }
+
+const lotsOfTabs = [
+  'Audio 1',
+  'Audio 2',
+  'MIDI 1',
+  'LFO 1',
+  'Audio 1',
+  'Audio 2',
+  'MIDI 1',
+  'LFO 1',
+  'Audio 1',
+  'Audio 2',
+  'MIDI 1',
+  'LFO 1',
+]
+
+export const LotsOfTabs = () => {
+  const [activeId, setActiveId] = useState(0)
+  return (
+    <MiniTabs>
+      {lotsOfTabs.map((tab, i) => (
+        <MiniTabsItem key={i} onClick={() => setActiveId(i)} isActive={activeId === i}>
+          {tab}
+        </MiniTabsItem>
+      ))}
+      <MiniTabsItem iconName="add" />
+    </MiniTabs>
+  )
+}
+
+LotsOfTabs.parameters = {
+  viewport: {
+    defaultViewport: 'mobile2', // Use a predefined viewport or define a custom one
+  },
+}

@@ -1,6 +1,8 @@
 .wrapper {
   display: flex;
   gap: var(--gapSmall);
+  /* TODO: flex-wrap: balance might be here soon... */
+  flex-wrap: wrap;
 }
 
 .item {
