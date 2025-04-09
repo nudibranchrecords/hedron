@@ -115,7 +115,13 @@ export class MidiManager {
           const [status, note, value] = message.data
           const channel = status & 0x0f
           const type = this.getMidiMessageType(status)
-          this.onMidiMessage.dispatch({ device, channel, type, note, value })
+          this.onMidiMessage.dispatch({
+            device,
+            channel,
+            type,
+            note,
+            value,
+          })
         }
         device.addEventListener('midimessage', listener)
         this.eventListeners.set(device, listener)

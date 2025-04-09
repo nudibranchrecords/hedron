@@ -12,9 +12,6 @@ import {
 import { midiMessageNames } from '@hedron/midi-manager'
 import { MidiInput, MidiInputOptions } from './MidiInput'
 
-type Entries<T> = {
-  [K in keyof T]-?: [K, T[K]]
-}[keyof T][]
 interface IProps {
   input: Input<MidiInputOptions>
   // TODO: This can be typed as something like HedronEngineWithPlugin<MidiInput>
@@ -40,7 +37,7 @@ const enumOptions = {
   channel: channelOptions,
   note: noteOptions,
   type: messageTypeOptions,
-}
+} as const
 
 /**
  * A react component that displays the midi settings for a parameter
@@ -52,10 +49,11 @@ export const MidiInputPanel = ({ input, engine }: IProps) => {
   const plugin = engine.plugins['midi-input'] as MidiInput
   const midiManager = plugin.midiManager
 
-  // TODO: Move this into a helper function with the typing etc
-  const inputOptions: [keyof MidiInputOptions, number | string][] = Object.entries(
-    input.options,
-  ) as Entries<MidiInputOptions>
+  const inputOptions = [
+    ['channel', input.options.channel],
+    ['note', input.options.note],
+    ['type', input.options.type],
+  ] as const
 
   return (
     <div>
