@@ -34,7 +34,7 @@ export type MIDIEvent = {
 /**
  * A class that handles MIDI input devices and messages.
  */
-export class Midi {
+export class MidiManager {
   public readonly name: string = 'MIDI'
   public readonly description: string = 'Handles MIDI input devices and messages.'
   /**

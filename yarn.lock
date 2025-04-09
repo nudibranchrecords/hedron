@@ -1388,18 +1388,12 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@hedron/lfo-input@workspace:packages/lfo-input":
-  version: 0.0.0-use.local
-  resolution: "@hedron/lfo-input@workspace:packages/lfo-input"
-  languageName: unknown
-  linkType: soft
-
 "@hedron/midi-input@workspace:^, @hedron/midi-input@workspace:packages/midi-input":
   version: 0.0.0-use.local
   resolution: "@hedron/midi-input@workspace:packages/midi-input"
   dependencies:
     "@hedron/engine": "workspace:^"
-    "@hedron/midi": "workspace:^"
+    "@hedron/midi-manager": "workspace:^"
     "@hedron/ui-core": "workspace:^"
     "@vitejs/plugin-react": "npm:^4.3.4"
     vite: "npm:^6.2.3"
@@ -1412,12 +1406,20 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@hedron/midi-manager@npm:^1.0.0-alpha.1, @hedron/midi-manager@workspace:^, @hedron/midi-manager@workspace:packages/midi-manager":
+  version: 0.0.0-use.local
+  resolution: "@hedron/midi-manager@workspace:packages/midi-manager"
+  dependencies:
+    tsup: "npm:^8.3.6"
+  languageName: unknown
+  linkType: soft
+
 "@hedron/midi-test-app@workspace:packages/midi-test-app":
   version: 0.0.0-use.local
   resolution: "@hedron/midi-test-app@workspace:packages/midi-test-app"
   dependencies:
     "@eslint/js": "npm:^9.17.0"
-    "@hedron/midi": "npm:^1.0.0-alpha.1"
+    "@hedron/midi-manager": "npm:^1.0.0-alpha.1"
     "@picocss/pico": "npm:^2.0.6"
     "@types/react": "npm:^18.3.18"
     "@types/react-dom": "npm:^18.3.5"
@@ -1428,14 +1430,6 @@ __metadata:
     typescript: "npm:~5.6.2"
     vite: "npm:^6.0.5"
     zustand: "npm:^5.0.2"
-  languageName: unknown
-  linkType: soft
-
-"@hedron/midi@npm:^1.0.0-alpha.1, @hedron/midi@workspace:^, @hedron/midi@workspace:packages/midi":
-  version: 0.0.0-use.local
-  resolution: "@hedron/midi@workspace:packages/midi"
-  dependencies:
-    tsup: "npm:^8.3.6"
   languageName: unknown
   linkType: soft
 

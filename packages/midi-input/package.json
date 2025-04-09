@@ -32,7 +32,7 @@
   },
   "dependencies": {
     "@hedron/engine": "workspace:^",
-    "@hedron/midi": "workspace:^",
+    "@hedron/midi-manager": "workspace:^",
     "@hedron/ui-core": "workspace:^"
   },
   "peerDependencies": {

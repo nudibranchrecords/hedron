@@ -9,7 +9,7 @@ import {
   NodeControlMain,
   NodeControlTitle,
 } from '@hedron/ui-core'
-import { MidiMessageType } from '@hedron/midi'
+import { MidiMessageType } from '../../midi-manager/dist'
 import { MidiInput, MidiInputOptions } from './MidiInput'
 
 type Entries<T> = {

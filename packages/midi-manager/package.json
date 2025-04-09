@@ -1,5 +1,5 @@
 {
-  "name": "@hedron/midi",
+  "name": "@hedron/midi-manager",
   "version": "1.0.0-alpha.1",
   "description": "MIDI Module",
   "author": "Alex Kempton <alex@funwithtriangles.net>",
