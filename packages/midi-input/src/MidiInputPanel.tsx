@@ -9,7 +9,7 @@ import {
   NodeControlMain,
   NodeControlTitle,
 } from '@hedron/ui-core'
-import { MidiMessageType } from '../../midi-manager/dist'
+import { midiMessageNames } from '@hedron/midi-manager'
 import { MidiInput, MidiInputOptions } from './MidiInput'
 
 type Entries<T> = {
@@ -31,9 +31,9 @@ for (let i = 0; i < 127; i++) {
   noteOptions.push({ label: `${i + 1}`, value: i })
 }
 
-const messageTypeOptions = Object.entries(MidiMessageType).map(([value, label]) => ({
-  label,
-  value,
+const messageTypeOptions = Object.entries(midiMessageNames).map(([key, niceName]) => ({
+  label: niceName,
+  value: key,
 }))
 
 const enumOptions = {
@@ -50,7 +50,7 @@ export const MidiInputPanel = ({ input, engine }: IProps) => {
 
   // TODO: May not need this "as" if we have HedronEngineWithPlugin<MidiInput>
   const plugin = engine.plugins['midi-input'] as MidiInput
-  const midi = plugin.midiManager
+  const midiManager = plugin.midiManager
 
   // TODO: Move this into a helper function with the typing etc
   const inputOptions: [keyof MidiInputOptions, number | string][] = Object.entries(
@@ -99,7 +99,7 @@ export const MidiInputPanel = ({ input, engine }: IProps) => {
 
   async function runMidiLearn() {
     setIsLearning(true)
-    midi
+    midiManager
       .midiLearn()
       .then((event) => {
         if (!event) {
@@ -119,7 +119,7 @@ export const MidiInputPanel = ({ input, engine }: IProps) => {
   }
 
   function cancelMidiLearn() {
-    midi.cancelMidiLearn()
+    midiManager.cancelMidiLearn()
   }
 
   // function removeMidi(id: string) {

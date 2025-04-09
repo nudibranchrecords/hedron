@@ -1,10 +1,10 @@
 import { HedronEngine, IPlugin } from '@hedron/engine'
-import { MidiManager, MidiMessageTypeKey } from '@hedron/midi-manager'
+import { MidiManager, MidiMessageType } from '@hedron/midi-manager'
 
 export interface MidiInputOptions {
   channel: number
   note: number
-  type: MidiMessageTypeKey
+  type: MidiMessageType
 }
 
 export class MidiInput implements IPlugin {
@@ -16,7 +16,7 @@ export class MidiInput implements IPlugin {
   public readonly generateInitialOptions: () => MidiInputOptions = () => ({
     channel: 1,
     note: 1,
-    type: 'ControlChange',
+    type: MidiMessageType.ControlChange,
   })
 
   constructor(engine: HedronEngine) {

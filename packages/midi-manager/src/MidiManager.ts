@@ -1,24 +1,37 @@
 import { Signal } from './Signal'
 
 /**
- * Common MIDI message types as human readable names.
+ * Midi message types, values based on status byte
  */
 export enum MidiMessageType {
-  Clock = 'Clock',
-  Start = 'Start',
-  Continue = 'Continue',
-  Stop = 'Stop',
-  NoteOff = 'Note Off',
-  NoteOn = 'Note On',
-  PolyphonicKeyPressure = 'Polyphonic Key Pressure (Aftertouch)',
-  ControlChange = 'Control Change',
-  ProgramChange = 'Program Change',
-  ChannelPressure = 'Channel Pressure (Aftertouch)',
-  PitchBendChange = 'Pitch Bend Change',
-  Unknown = 'Unknown',
+  // Entire status byte for clock messages (has no channel)
+  Clock = 0xf8,
+  Start = 0xfa,
+  Continue = 0xfb,
+  Stop = 0xfc,
+  // Status byte for messages with channel, with channel nibble masked out
+  NoteOff = 0x80,
+  NoteOn = 0x90,
+  PolyphonicKeyPressure = 0xa0,
+  ControlChange = 0xb0,
+  ProgramChange = 0xc0,
+  ChannelPressure = 0xd0,
+  PitchBendChange = 0xe0,
 }
 
-export type MidiMessageTypeKey = keyof typeof MidiMessageType
+export const midiMessageNames: Record<MidiMessageType, string> = {
+  [MidiMessageType.Clock]: 'Clock',
+  [MidiMessageType.Start]: 'Start',
+  [MidiMessageType.Continue]: 'Continue',
+  [MidiMessageType.Stop]: 'Stop',
+  [MidiMessageType.NoteOff]: 'Note Off',
+  [MidiMessageType.NoteOn]: 'Note On',
+  [MidiMessageType.PolyphonicKeyPressure]: 'Polyphonic Key Pressure (Aftertouch)',
+  [MidiMessageType.ControlChange]: 'Control Change',
+  [MidiMessageType.ProgramChange]: 'Program Change',
+  [MidiMessageType.ChannelPressure]: 'Channel Pressure (Aftertouch)',
+  [MidiMessageType.PitchBendChange]: 'Pitch Bend Change',
+}
 
 /**
  * A simple type that provides both the device and the message of a MIDI event.
@@ -26,7 +39,7 @@ export type MidiMessageTypeKey = keyof typeof MidiMessageType
 export type MIDIEvent = {
   device: MIDIInput
   channel: number
-  type: MidiMessageTypeKey
+  type: MidiMessageType
   note: number
   value?: number
 }
@@ -183,43 +196,18 @@ export class MidiManager {
   }
 
   /**
-   * Converts a MIDI status byte to a human readable message type.
+   * Converts a MIDI status byte to our defined enum format.
    * @param status The status byte of a MIDI message.
-   * @returns The human readable message type via the MidiMessageType enum.
+   * @returns The status byte unnafected, or masked
    */
-  public getMidiMessageType(status: number): MidiMessageTypeKey {
+  public getMidiMessageType(status: number): MidiMessageType {
     const messageType = status & 0xf0 // Mask the lower nibble to get the message type
 
-    switch (messageType) {
-      case 0xf0:
-        switch (status) {
-          case 0xf8:
-            return 'Clock'
-          case 0xfa:
-            return 'Start'
-          case 0xfb:
-            return 'Continue'
-          case 0xfc:
-            return 'Stop'
-          default:
-            return 'Unknown'
-        }
-      case 0x80:
-        return 'NoteOff'
-      case 0x90:
-        return 'NoteOn'
-      case 0xa0:
-        return 'PolyphonicKeyPressure'
-      case 0xb0:
-        return 'ControlChange'
-      case 0xc0:
-        return 'ProgramChange'
-      case 0xd0:
-        return 'ChannelPressure'
-      case 0xe0:
-        return 'PitchBendChange'
-      default:
-        return 'Unknown'
+    if (messageType === 0xf0) {
+      // Return entire status byte for clock
+      return status
     }
+
+    return messageType
   }
 }
