@@ -173,7 +173,6 @@ interface Actions {
   reset: () => void
   addInput: (value: Omit<Input, 'id'>) => string
   updateInputOptions: (inputId: string, options: InputOptions) => void
-  updateInputValues: (inputId: string, value: NodeValue) => void
 }
 
 export type EngineStateWithActions = EngineData & AuxState & Actions
