@@ -31,16 +31,21 @@ export const Basic = () => {
 
   return (
     <>
-      <div style={{ padding: '2rem' }} onClick={() => setIsHidden(false)}>
+      <div style={{ padding: '2rem' }}>
         <p>
           Lorem ipsum dolor sit amet consectetur adipisicing elit. Veniam temporibus corporis
           incidunt quos atque modi quisquam, quis aliquid provident obcaecati exercitationem minima,
           eum nesciunt at, sed iure id libero! Accusamus.
         </p>
-        <Button>Open Dialog</Button>
+        <Button onClick={() => setIsHidden(false)}>Open Dialog</Button>
       </div>
       {!isHidden && (
-        <Dialog>
+        <Dialog
+          onBackgroundClick={() => {
+            setIsHidden(true)
+            console.log('what')
+          }}
+        >
           <Panel>
             <PanelHeader iconName="info" buttonOnClick={() => setIsHidden(true)}>
               This is a popup
@@ -82,16 +87,16 @@ export const WithScroll = () => {
 
   return (
     <>
-      <div style={{ padding: '2rem' }} onClick={() => setIsHidden(false)}>
+      <div style={{ padding: '2rem' }}>
         <p>
           Lorem ipsum dolor sit amet consectetur adipisicing elit. Veniam temporibus corporis
           incidunt quos atque modi quisquam, quis aliquid provident obcaecati exercitationem minima,
           eum nesciunt at, sed iure id libero! Accusamus.
         </p>
-        <Button>Open Dialog</Button>
+        <Button onClick={() => setIsHidden(false)}>Open Dialog</Button>
       </div>
       {!isHidden && (
-        <Dialog>
+        <Dialog onBackgroundClick={() => setIsHidden(true)}>
           <Panel width="full" height="full" style={{ maxWidth: '60rem' }}>
             <PanelHeader iconName={sketchIcon} buttonOnClick={() => setIsHidden(true)}>
               Add Sketch To Scene

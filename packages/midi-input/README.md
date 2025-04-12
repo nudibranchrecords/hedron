@@ -1,11 +1,11 @@
-# `midi`
+# `midi-input`
 
 > TODO: description
 
 ## Usage
 
 ```
-const midi = require('midi');
+const midiInput = require('midi-input');
 
 // TODO: DEMONSTRATE API
 ```
