@@ -16,7 +16,7 @@ export class HedronEngine {
   private store: EngineStore
   private sketchesUrl: string | null = null
   private sketchManager: SketchManager
-  public plugins: IPlugin[] = []
+  public plugins: Record<string, IPlugin> = {}
   private onFrameStart?: () => void
   private onFrameEnd?: () => void
 
@@ -30,7 +30,7 @@ export class HedronEngine {
   }
 
   public registerPlugin(plugin: IPlugin) {
-    this.plugins.push(plugin)
+    this.plugins[plugin.id] = plugin
   }
 
   public setSketchesUrl(sketchesUrl: string) {
@@ -111,10 +111,6 @@ export class HedronEngine {
 
   public getSaveData(): EngineData {
     return stripForSave(this.store.getState())
-  }
-
-  public deleteInputParam(inputId: string, nodeId: string) {
-    this.store.getState().deleteInputParam(inputId, nodeId)
   }
 
   run() {

@@ -8,7 +8,7 @@ export const useInput = (id: string) => {
 export const useInputsWithNode = (nodeId: string) => {
   return useEngineStore(
     useShallow((state) =>
-      Object.values(state.inputs).filter((input) => input.targetNodeIds.includes(nodeId)),
+      Object.values(state.inputs).filter((input) => input.targetNodeId === nodeId),
     ),
   )
 }

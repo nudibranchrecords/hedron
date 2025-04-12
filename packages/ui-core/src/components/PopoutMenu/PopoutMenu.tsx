@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
-import { useFloating, offset, shift } from '@floating-ui/react-dom'
+import { useFloating, offset, shift, autoPlacement } from '@floating-ui/react-dom'
 import c from './PopoutMenu.module.css'
 import { Menu, MenuItem } from '@components/Menu/Menu'
 import { Icon, IconName } from '@components/Icon/Icon'
@@ -17,7 +17,7 @@ export const PopoutMenu = ({ children, items, className, ...props }: PopoutMenuP
   const triggerRef = useRef<HTMLDivElement>(null)
   const [isOpen, setIsOpen] = useState(false)
   const { refs, floatingStyles } = useFloating({
-    middleware: [offset(10), shift({ padding: 10 })],
+    middleware: [offset(10), shift({ padding: 10 }), autoPlacement()],
   })
 
   const handleTriggerClick = () => setIsOpen((prev) => !prev)

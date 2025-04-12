@@ -1,31 +1,28 @@
-import { Input, SetterCreator } from '@store/types'
+import { SetterCreator } from '@store/types'
+import { createUniqueId } from '@utils/createUniqueId'
 
-export const createAddInput: SetterCreator<'addInput'> =
-  (setState) => (inputId: string, value: Input) => {
-    setState((state) => {
-      if (state.inputs[inputId]) {
-        return
-      }
-      state.inputs[inputId] = value
-    })
-  }
+export const createAddInput: SetterCreator<'addInput'> = (setState) => (value) => {
+  const id = createUniqueId()
 
-export const createAddInputParam: SetterCreator<'addInputParam'> =
-  (setState) => (inputId: string, nodeId: string) => {
-    setState((state) => {
-      const input = state.inputs[inputId]
-      if (input) {
-        input.targetNodeIds.push(nodeId)
-      }
-    })
-  }
+  setState((state) => {
+    if (state.inputs[id]) {
+      return
+    }
+    state.inputs[id] = {
+      ...value,
+      id,
+    }
+  })
 
-export const createDeleteInputParam: SetterCreator<'deleteInputParam'> =
-  (setState) => (inputId: string, nodeId: string) => {
+  return id
+}
+
+export const createUpdateInputOptions: SetterCreator<'updateInputOptions'> =
+  (setState) => (inputId, options) => {
     setState((state) => {
       const input = state.inputs[inputId]
       if (input) {
-        input.targetNodeIds = input.targetNodeIds.filter((id) => id !== nodeId)
+        Object.assign(input.options, options)
       }
     })
   }

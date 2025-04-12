@@ -20,7 +20,7 @@ export default defineConfig({
         '@hedron/ui-core/icons.css': path.resolve(__dirname, '../ui-core/src/css/icons.css'),
         '@hedron/ui-core/fonts.css': path.resolve(__dirname, '../ui-core/src/css/fonts.css'),
         '@hedron/ui-core': path.resolve(__dirname, '../ui-core/src'),
-        '@hedron/midi': path.resolve(__dirname, '../midi/src'),
+        '@hedron/midi-input': path.resolve(__dirname, '../midi-input/src'),
       },
     },
   },

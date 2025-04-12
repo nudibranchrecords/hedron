@@ -1,10 +1,16 @@
-import { ParamWithInfo } from '@store/selectors/getParamWithInfo'
-
 /**
  * Class type for a Plugin.
  */
 export interface IPlugin {
-  // new(engine: HedronEngine, useEngineStore: UseEngineStore): any;
+  /**
+   * Unique ID for plugin
+   */
+  id: string
+
+  /**
+   * Type of input
+   */
+  inputType: string
 
   /**
    * The name of the plugin.
@@ -17,9 +23,8 @@ export interface IPlugin {
   description: string
 
   /**
-   * Gets the selected parameter view.
-   * @param param - The parameter with info.
-   * @returns The JSX element or undefined if this plugin does not have a visual element.
+   * Function to generate input options.
    */
-  getSelectedParamView?: (param: ParamWithInfo) => JSX.Element | undefined
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  generateInitialOptions: () => any
 }

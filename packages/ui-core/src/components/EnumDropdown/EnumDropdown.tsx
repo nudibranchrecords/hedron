@@ -5,15 +5,18 @@ export type EnumDropdownHandle = {
   setValue: (value: string) => void
 }
 
-type EnumOption = { value: string; label: string }
+export type EnumValue = string | number
+
+type EnumOption = { value: EnumValue; label: string }
 
 interface EnumDropdownProps {
   values: EnumOption[]
-  onValueChange: (val: string) => void
+  value?: EnumValue
+  onValueChange: (val: EnumValue) => void
 }
 
 export const EnumDropdown = forwardRef<EnumDropdownHandle, EnumDropdownProps>(function EnumDropdown(
-  { values, onValueChange },
+  { value, values, onValueChange },
   ref,
 ) {
   const selectRef = useRef<HTMLSelectElement>(null)
@@ -34,7 +37,7 @@ export const EnumDropdown = forwardRef<EnumDropdownHandle, EnumDropdownProps>(fu
 
   return (
     <div className={c.wrapper}>
-      <select ref={selectRef} onChange={handleChange} className={c.wrapper}>
+      <select ref={selectRef} onChange={handleChange} className={c.wrapper} value={value}>
         {values.map((value) => (
           <option key={value.label} value={value.value}>
             {value.label}

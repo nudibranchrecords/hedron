@@ -1,15 +1,16 @@
 .wrapper {
   display: flex;
-  flex-direction: column;
-  background: var(--bgColorDark3);
-  height: 100%;
+  gap: var(--gapSmall);
+  /* TODO: flex-wrap: balance might be here soon... */
+  flex-wrap: wrap;
 }
 
 .item {
-  --inset: 2px;
-
-  display: block;
-  padding: 0.5rem 0.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.25rem 0.5rem;
+  border-radius: var(--borderRadiusRound);
   font-size: 0.7rem;
   background: var(--bgColorDark3);
   color: white;
@@ -21,18 +22,8 @@
     background: var(--bgColorDark4);
   }
 
-  &:global(.active) {
+  &.active {
     background: var(--actionColor1);
     cursor: default;
-  }
-
-  span {
-    transition: inherit;
-    display: block;
-  }
-
-  .icon {
-    font-size: 1.5em;
-    line-height: 0.8;
   }
 }

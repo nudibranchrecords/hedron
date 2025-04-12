@@ -1,24 +1,36 @@
-import React from 'react'
-import { HedronEngine, Input, IPlugin, ParamWithInfo, UseEngineStore } from '@hedron/engine'
-import { getMidiSetting } from './getMidiSetting'
 import { Signal } from './Signal'
 
 /**
- * Common MIDI message types as human readable names.
+ * Midi message types, values based on status byte
  */
 export enum MidiMessageType {
-  Clock = 'Clock',
-  Start = 'Start',
-  Continue = 'Continue',
-  Stop = 'Stop',
-  NoteOff = 'Note Off',
-  NoteOn = 'Note On',
-  PolyphonicKeyPressure = 'Polyphonic Key Pressure (Aftertouch)',
-  ControlChange = 'Control Change',
-  ProgramChange = 'Program Change',
-  ChannelPressure = 'Channel Pressure (Aftertouch)',
-  PitchBendChange = 'Pitch Bend Change',
-  Unknown = 'Unknown',
+  // Entire status byte for clock messages (has no channel)
+  Clock = 0xf8,
+  Start = 0xfa,
+  Continue = 0xfb,
+  Stop = 0xfc,
+  // Status byte for messages with channel, with channel nibble masked out
+  NoteOff = 0x80,
+  NoteOn = 0x90,
+  PolyphonicKeyPressure = 0xa0,
+  ControlChange = 0xb0,
+  ProgramChange = 0xc0,
+  ChannelPressure = 0xd0,
+  PitchBendChange = 0xe0,
+}
+
+export const midiMessageNames: Record<MidiMessageType, string> = {
+  [MidiMessageType.Clock]: 'Clock',
+  [MidiMessageType.Start]: 'Start',
+  [MidiMessageType.Continue]: 'Continue',
+  [MidiMessageType.Stop]: 'Stop',
+  [MidiMessageType.NoteOff]: 'Note Off',
+  [MidiMessageType.NoteOn]: 'Note On',
+  [MidiMessageType.PolyphonicKeyPressure]: 'Polyphonic Key Pressure (Aftertouch)',
+  [MidiMessageType.ControlChange]: 'Control Change',
+  [MidiMessageType.ProgramChange]: 'Program Change',
+  [MidiMessageType.ChannelPressure]: 'Channel Pressure (Aftertouch)',
+  [MidiMessageType.PitchBendChange]: 'Pitch Bend Change',
 }
 
 /**
@@ -29,14 +41,13 @@ export type MIDIEvent = {
   channel: number
   type: MidiMessageType
   note: number
-  id: string
   value?: number
 }
 
 /**
  * A class that handles MIDI input devices and messages.
  */
-export class Midi implements IPlugin {
+export class MidiManager {
   public readonly name: string = 'MIDI'
   public readonly description: string = 'Handles MIDI input devices and messages.'
   /**
@@ -64,25 +75,8 @@ export class Midi implements IPlugin {
    */
   public onMidiMessage: Signal<MIDIEvent> = new Signal<MIDIEvent>()
 
-  public engine: HedronEngine
-  public useEngineStore: UseEngineStore
-
-  constructor(engine: HedronEngine, useEngineStore: UseEngineStore) {
-    this.engine = engine
-    this.useEngineStore = useEngineStore
-    // Add a listener to update the input values when a MIDI message is received.
-    this.onMidiMessage.add((event) => {
-      this.engine
-        .getStore()
-        .getState()
-        .updateInputValues(event.id, (event.value || 0) / 127)
-    }, this)
+  constructor() {
     this.findMidiDevices()
-  }
-
-  // return a test view
-  public getSelectedParamView(param: ParamWithInfo): React.JSX.Element | undefined {
-    return getMidiSetting(param, this.engine, this.useEngineStore, this)
   }
 
   /**
@@ -121,8 +115,13 @@ export class Midi implements IPlugin {
           const [status, note, value] = message.data
           const channel = status & 0x0f
           const type = this.getMidiMessageType(status)
-          const id = `${channel}-${note}`
-          this.onMidiMessage.dispatch({ device, channel, type, note, value, id })
+          this.onMidiMessage.dispatch({
+            device,
+            channel,
+            type,
+            note,
+            value,
+          })
         }
         device.addEventListener('midimessage', listener)
         this.eventListeners.set(device, listener)
@@ -162,26 +161,13 @@ export class Midi implements IPlugin {
   private learnResolve: ((event: MIDIEvent | null) => void) | undefined
   private learnListener: ((event: MIDIEvent) => void) | undefined
 
-  public async midiLearn(paramId: string): Promise<Input | undefined> {
+  public async midiLearn(): Promise<MIDIEvent | undefined> {
     const event = await this.beginMidiLearn()
     if (!event) {
       console.log('MIDI learn canceled')
       return
     }
-    const state = this.engine.getStore().getState()
-    const id = event.id
-    let input = state.inputs[id]
-    if (!input) {
-      input = {
-        id,
-        type: 'midi',
-        targetNodeIds: [paramId],
-      }
-      state.addInput(id, input)
-      return input
-    }
-    state.addInputParam(id, paramId)
-    return input
+    return event
   }
 
   /**
@@ -216,43 +202,18 @@ export class Midi implements IPlugin {
   }
 
   /**
-   * Converts a MIDI status byte to a human readable message type.
+   * Converts a MIDI status byte to our defined enum format.
    * @param status The status byte of a MIDI message.
-   * @returns The human readable message type via the MidiMessageType enum.
+   * @returns The status byte unnafected, or masked
    */
   public getMidiMessageType(status: number): MidiMessageType {
     const messageType = status & 0xf0 // Mask the lower nibble to get the message type
 
-    switch (messageType) {
-      case 0xf0:
-        switch (status) {
-          case 0xf8:
-            return MidiMessageType.Clock
-          case 0xfa:
-            return MidiMessageType.Start
-          case 0xfb:
-            return MidiMessageType.Continue
-          case 0xfc:
-            return MidiMessageType.Stop
-          default:
-            return MidiMessageType.Unknown
-        }
-      case 0x80:
-        return MidiMessageType.NoteOff
-      case 0x90:
-        return MidiMessageType.NoteOn
-      case 0xa0:
-        return MidiMessageType.PolyphonicKeyPressure
-      case 0xb0:
-        return MidiMessageType.ControlChange
-      case 0xc0:
-        return MidiMessageType.ProgramChange
-      case 0xd0:
-        return MidiMessageType.ChannelPressure
-      case 0xe0:
-        return MidiMessageType.PitchBendChange
-      default:
-        return MidiMessageType.Unknown
+    if (messageType === 0xf0) {
+      // Return entire status byte for clock
+      return status
     }
+
+    return messageType
   }
 }

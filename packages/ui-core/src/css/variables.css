@@ -25,6 +25,7 @@
   --fontWeightHeader: 800;
   --textShadow: 1px 1px black;
   --borderRadiusSubtle: 2px;
+  --borderRadiusRound: 9999px;
   --borderRadiusLarge: 8px;
   --baseFontSize: 0.8rem;
 }

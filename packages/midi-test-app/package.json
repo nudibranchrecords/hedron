@@ -9,8 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@hedron/engine": "^1.0.0-alpha.1",
-    "@hedron/midi": "^1.0.0-alpha.1",
+    "@hedron/midi-manager": "^1.0.0-alpha.1",
     "@picocss/pico": "^2.0.6",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
