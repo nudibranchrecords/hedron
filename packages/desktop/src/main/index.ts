@@ -115,23 +115,33 @@ ipcMain.handle(SketchEvents.StartSketchesServer, async (_, sketchesDir: string) 
 })
 
 // Simple handler for saving frames as PNG files
-ipcMain.handle(FrameEvents.SaveFrame, async (_, base64Data: string): Promise<SaveFrameResponse> => {
-  try {
-    // Save to user's documents folder
-    const documentsPath = app.getPath('documents')
-    const timestamp = new Date().toISOString().replace(/[:.]/g, '-')
-    const filename = `hedron-${timestamp}.png`
-    const filePath = path.join(documentsPath, filename)
-    // Write the file
-    fs.writeFileSync(filePath, base64Data, 'base64')
-    return { success: true, path: filePath }
-  } catch (error) {
-    console.error('Error saving frame:', error)
-    return { success: false, error: String(error) }
-  }
-})
+ipcMain.handle(
+  FrameEvents.SaveFrame,
+  async (_, base64Data: string, name?: string, frameIndex?: number): Promise<SaveFrameResponse> => {
+    try {
+      const documentsPath = app.getPath('documents')
+      let filePath: string
+      if (name !== undefined && frameIndex !== undefined) {
+        const dirPath = path.join(documentsPath, name)
+        if (!existsSync(dirPath)) {
+          mkdirSync(dirPath)
+        }
+        filePath = path.join(dirPath, `${name}-${frameIndex}.png`)
+      } else {
+        const timestamp = new Date().toISOString().replace(/[:.]/g, '-')
+        const filename = `hedron-${timestamp}.png`
+        filePath = path.join(documentsPath, filename)
+      }
+      fs.writeFileSync(filePath, base64Data, 'base64')
+      return { success: true, path: filePath }
+    } catch (error) {
+      console.error('Error saving frame:', error)
+      return { success: false, error: String(error) }
+    }
+  },
+)
 
-// Handler for saving a sequence of frames
+// Handler for saving a sequence of frames or just creating a video
 ipcMain.handle(
   FrameEvents.SaveFrameSequence,
   async (_, base64Array: string[], name: string, video: boolean = false) => {
@@ -141,21 +151,17 @@ ipcMain.handle(
       if (!existsSync(dirPath)) {
         mkdirSync(dirPath)
       }
-      for (let i = 0; i < base64Array.length; i++) {
-        const filename = `${name}-${i}.png`
-        const filePath = path.join(dirPath, filename)
-        fs.writeFileSync(filePath, base64Array[i], 'base64')
+      // Only write images if base64Array is provided and not empty
+      if (base64Array && base64Array.length > 0) {
+        for (let i = 0; i < base64Array.length; i++) {
+          const filename = `${name}-${i}.png`
+          const filePath = path.join(dirPath, filename)
+          fs.writeFileSync(filePath, base64Array[i], 'base64')
+        }
       }
 
       let videoPath: string | undefined = undefined
       if (video) {
-        // ffmpeg command to convert PNG sequence to mp4
-        // -r 30: 30 fps, adjust as needed
-        // -y: overwrite output file if exists
-        // -framerate 30: input framerate
-        // -i: input pattern
-        // -pix_fmt yuv420p: for compatibility
-        // -crf 18: high quality
         videoPath = path.join(dirPath, `${name}.mp4`)
         const ffmpegCmd = `ffmpeg -y -framerate 30 -i "${dirPath}/${name}-%d.png" -c:v libx264 -pix_fmt yuv420p -crf 18 "${videoPath}"`
         await new Promise<void>((resolve, reject) => {

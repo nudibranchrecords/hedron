@@ -38,48 +38,54 @@ window.saveFrame = async () => {
 
 // Implement the render frames function
 window.renderFrames = async (frameCount: number, name: string, video: boolean = false) => {
-  const base64Array: string[] = []
+  const fps = 30
+  const filePaths: string[] = []
 
-  // Helper to wait for next animation frame
-  const nextFrame = () => new Promise<void>((resolve) => requestAnimationFrame(() => resolve()))
-
-  for (let i = 0; i < frameCount; i++) {
-    // Advance engine state
-    if (engine.stepFrame) {
-      engine.stepFrame()
-    } else if (engine.render) {
-      engine.render()
-    }
-
-    // Wait for the next animation frame to ensure rendering is complete
-    await nextFrame()
-
-    // Capture the frame after rendering
-    const dataUrl = engine.captureFrame()
-    if (!dataUrl) {
-      console.error(`Failed to capture frame at index ${i}`)
-      return
-    }
-    base64Array.push(dataUrl.replace(/^data:image\/png;base64,/, ''))
-    // Optionally, show progress
-    if (i % 10 === 0) {
-      console.log(`Captured frame ${i + 1} / ${frameCount}`)
-    }
-  }
-  const result = (await window.electronApi.ipcRenderer.invoke(
-    FrameEvents.SaveFrameSequence,
-    base64Array,
-    name,
-    video,
-  )) as SaveFrameSequenceResponse
-
-  if (result.success) {
-    console.log(`Frame sequence saved to: ${result.path}`)
-    if (video && result.videoPath) {
-      console.log(`Video created at: ${result.videoPath}`)
-    }
+  if (typeof engine.renderFramesSequence === 'function') {
+    await engine.renderFramesSequence(
+      frameCount,
+      fps,
+      async (dataUrl: string, frameIndex: number) => {
+        const base64Data = dataUrl.replace(/^data:image\/png;base64,/, '')
+        // Save each frame immediately
+        const result = await window.electronApi.ipcRenderer.invoke(
+          FrameEvents.SaveFrame,
+          base64Data,
+          name,
+          frameIndex,
+        )
+        if (result.success && result.path) {
+          filePaths.push(result.path)
+        } else {
+          console.error(`Failed to save frame ${frameIndex}: ${result.error}`)
+        }
+        if ((frameIndex + 1) % 10 === 0 || frameIndex === frameCount - 1) {
+          console.log(`Saved frame ${frameIndex + 1} / ${frameCount}`)
+        }
+      },
+    )
   } else {
-    console.error(`Failed to save frame sequence: ${result.error}`)
+    console.error('engine.renderFramesSequence is not available')
+    return
+  }
+
+  console.log(`Frame sequence saved to Documents/${name}/`)
+
+  // After all frames, optionally create video
+  let videoPath: string | undefined = undefined
+  if (video) {
+    const result = await window.electronApi.ipcRenderer.invoke(
+      FrameEvents.SaveFrameSequence,
+      [], // No base64 array needed, just trigger video creation
+      name,
+      true,
+    )
+    if (result.success && result.videoPath) {
+      videoPath = result.videoPath
+      console.log(`Video created at: ${videoPath}`)
+    } else {
+      console.error(`Failed to create video: ${result.error}`)
+    }
   }
 }
 

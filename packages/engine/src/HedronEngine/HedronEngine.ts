@@ -19,6 +19,8 @@ export class HedronEngine {
   public plugins: Record<string, IPlugin> = {}
   private onFrameStart?: () => void
   private onFrameEnd?: () => void
+  private running: boolean = false
+  private paused: boolean = false
 
   constructor(params?: { onFrameStart?: () => void; onFrameEnd?: () => void }) {
     this.store = createEngineStore()
@@ -118,10 +120,24 @@ export class HedronEngine {
   }
 
   run() {
+    if (this.running) return
+    this.running = true
+    this.paused = false
+
     const debugScene = createDebugScene(this.renderer)
+    let lastTime = performance.now()
 
     const loop = (): void => {
+      if (!this.running || this.paused) {
+        requestAnimationFrame(loop)
+        return
+      }
+
       this.onFrameStart?.()
+
+      const now = performance.now()
+      const deltaTime = (now - lastTime) / 1000
+      lastTime = now
 
       const state = this.store.getState()
       const sketchInstances = this.sketchManager!.getSketchInstances()
@@ -129,15 +145,13 @@ export class HedronEngine {
 
       Object.keys(state.sketches).forEach((sketchId) => {
         const paramValues = getSketchParamValues(state, sketchId)
-
         const instance = sketchInstances[sketchId]
-
         if (instance.getPasses) {
           instance.getPasses(debugScene).forEach((pass) => {
             debugScene.addPass(pass)
           })
         }
-        instance.update({ deltaFrame: 1, params: paramValues })
+        instance.update({ deltaFrame: 1, deltaTime, params: paramValues })
       })
 
       requestAnimationFrame(loop)
@@ -149,5 +163,74 @@ export class HedronEngine {
     }
 
     loop()
+  }
+
+  public pause() {
+    this.paused = true
+  }
+
+  public resume() {
+    if (!this.running) {
+      this.run()
+    } else {
+      this.paused = false
+      this.run()
+    }
+  }
+
+  public stop() {
+    this.running = false
+    this.paused = false
+  }
+
+  /**
+   * Render a sequence of frames at a fixed framerate.
+   * Calls onFrame(dataUrl, frameIndex) after each frame.
+   * Does not accumulate any frame data in memory.
+   */
+  public async renderFramesSequence(
+    frameCount: number,
+    fps: number = 30,
+    onFrame: (dataUrl: string, frameIndex: number) => Promise<void> | void,
+  ): Promise<void> {
+    this.paused = true
+
+    const debugScene = createDebugScene(this.renderer)
+    const state = this.store.getState()
+    const sketchInstances = this.sketchManager!.getSketchInstances()
+    const frameDuration = 1 / fps
+
+    for (let i = 0; i < frameCount; i++) {
+      this.onFrameStart?.()
+
+      const deltaTime = frameDuration
+
+      debugScene.clearPasses()
+      Object.keys(state.sketches).forEach((sketchId) => {
+        const paramValues = getSketchParamValues(state, sketchId)
+        const instance = sketchInstances[sketchId]
+        if (instance.getPasses) {
+          instance.getPasses(debugScene).forEach((pass) => {
+            debugScene.addPass(pass)
+          })
+        }
+        instance.update({ deltaFrame: 1, deltaTime, params: paramValues })
+      })
+
+      this.renderer.render(debugScene)
+      this.onFrameEnd?.()
+
+      const dataUrl = this.captureFrame()
+      if (!dataUrl) throw new Error(`Failed to capture frame at index ${i}`)
+
+      await onFrame(dataUrl, i)
+
+      // Simulate fixed framerate by waiting if needed
+      if (i < frameCount - 1) {
+        await new Promise((resolve) => setTimeout(resolve, 1))
+      }
+    }
+
+    this.paused = false
   }
 }
