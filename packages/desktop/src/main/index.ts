@@ -1,5 +1,6 @@
 import path from 'path'
-import fs from 'fs'
+import fs, { mkdirSync, existsSync } from 'fs'
+import { exec } from 'child_process'
 import { app, BrowserWindow, dialog, ipcMain, screen, session } from 'electron'
 import { electronApp, optimizer } from '@electron-toolkit/utils'
 import { REDUX_DEVTOOLS, installExtension } from '@tomjs/electron-devtools-installer'
@@ -129,3 +130,50 @@ ipcMain.handle(FrameEvents.SaveFrame, async (_, base64Data: string): Promise<Sav
     return { success: false, error: String(error) }
   }
 })
+
+// Handler for saving a sequence of frames
+ipcMain.handle(
+  FrameEvents.SaveFrameSequence,
+  async (_, base64Array: string[], name: string, video: boolean = false) => {
+    try {
+      const documentsPath = app.getPath('documents')
+      const dirPath = path.join(documentsPath, name)
+      if (!existsSync(dirPath)) {
+        mkdirSync(dirPath)
+      }
+      for (let i = 0; i < base64Array.length; i++) {
+        const filename = `${name}-${i}.png`
+        const filePath = path.join(dirPath, filename)
+        fs.writeFileSync(filePath, base64Array[i], 'base64')
+      }
+
+      let videoPath: string | undefined = undefined
+      if (video) {
+        // ffmpeg command to convert PNG sequence to mp4
+        // -r 30: 30 fps, adjust as needed
+        // -y: overwrite output file if exists
+        // -framerate 30: input framerate
+        // -i: input pattern
+        // -pix_fmt yuv420p: for compatibility
+        // -crf 18: high quality
+        videoPath = path.join(dirPath, `${name}.mp4`)
+        const ffmpegCmd = `ffmpeg -y -framerate 30 -i "${dirPath}/${name}-%d.png" -c:v libx264 -pix_fmt yuv420p -crf 18 "${videoPath}"`
+        await new Promise<void>((resolve, reject) => {
+          exec(ffmpegCmd, (error, stdout, stderr) => {
+            if (error) {
+              console.error('ffmpeg error:', error, stderr)
+              reject(error)
+            } else {
+              resolve()
+            }
+          })
+        })
+      }
+
+      return { success: true, path: dirPath, videoPath }
+    } catch (error) {
+      console.error('Error saving frame sequence:', error)
+      return { success: false, error: String(error) }
+    }
+  },
+)
