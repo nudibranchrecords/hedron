@@ -22,6 +22,9 @@ export class HedronEngine {
   private running: boolean = false
   private paused: boolean = false
 
+  private extraTime: number = 0 // For time manipulation, e.g. for skipping frames
+  private totalTime: number = 0 // Total time for the engine, used for resetting time
+
   constructor(params?: { onFrameStart?: () => void; onFrameEnd?: () => void }) {
     this.store = createEngineStore()
     this.sketchManager = new SketchManager()
@@ -136,7 +139,12 @@ export class HedronEngine {
       this.onFrameStart?.()
 
       const now = performance.now()
-      const deltaTime = (now - lastTime) / 1000
+      let deltaTime = (now - lastTime) / 1000
+      if (this.extraTime != 0) {
+        deltaTime += this.extraTime
+        this.extraTime = 0
+      }
+      this.totalTime += deltaTime
       lastTime = now
 
       const state = this.store.getState()
@@ -203,7 +211,12 @@ export class HedronEngine {
     for (let i = 0; i < frameCount; i++) {
       this.onFrameStart?.()
 
-      const deltaTime = frameDuration
+      let deltaTime = frameDuration
+      if (this.extraTime != 0) {
+        deltaTime += this.extraTime
+        this.extraTime = 0
+      }
+      this.totalTime += deltaTime
 
       debugScene.clearPasses()
       Object.keys(state.sketches).forEach((sketchId) => {
@@ -232,5 +245,14 @@ export class HedronEngine {
     }
 
     this.paused = false
+  }
+
+  public jumpTime(seconds: number): void {
+    this.extraTime += seconds
+  }
+
+  public resetTime(): void {
+    this.extraTime -= this.totalTime
+    console.log(`Resetting time, extraTime: ${this.extraTime}, totalTime: ${this.totalTime}`)
   }
 }
