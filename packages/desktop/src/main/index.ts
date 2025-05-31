@@ -1,3 +1,5 @@
+import path from 'path'
+import fs from 'fs'
 import { app, BrowserWindow, dialog, ipcMain, screen, session } from 'electron'
 import { electronApp, optimizer } from '@electron-toolkit/utils'
 import { REDUX_DEVTOOLS, installExtension } from '@tomjs/electron-devtools-installer'
@@ -9,13 +11,13 @@ import {
   SaveProjectResponse,
   SketchEvents,
 } from '@shared/Events'
+import { FrameEvents, SaveFrameResponse } from '@shared/FrameEvents'
 import { updateDisplayMenu, updateMenu } from '@main/menu'
 import { createWindow } from '@main/mainWindow'
 import { startSketchesServer } from '@main/handleSketchFiles'
 import { devSettings } from '@main/devSettings'
 import { saveProjectFile } from '@main/handlers/saveProjectFile'
 import { openProjectFile } from '@main/handlers/openProjectFile'
-
 const isDevelopment = process.env.NODE_ENV !== 'production'
 
 // This method will be called when Electron has finished
@@ -109,4 +111,21 @@ ipcMain.handle(
 
 ipcMain.handle(SketchEvents.StartSketchesServer, async (_, sketchesDir: string) => {
   return await startSketchesServer(sketchesDir)
+})
+
+// Simple handler for saving frames as PNG files
+ipcMain.handle(FrameEvents.SaveFrame, async (_, base64Data: string): Promise<SaveFrameResponse> => {
+  try {
+    // Save to user's documents folder
+    const documentsPath = app.getPath('documents')
+    const timestamp = new Date().toISOString().replace(/[:.]/g, '-')
+    const filename = `hedron-${timestamp}.png`
+    const filePath = path.join(documentsPath, filename)
+    // Write the file
+    fs.writeFileSync(filePath, base64Data, 'base64')
+    return { success: true, path: filePath }
+  } catch (error) {
+    console.error('Error saving frame:', error)
+    return { success: false, error: String(error) }
+  }
 })

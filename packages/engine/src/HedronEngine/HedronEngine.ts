@@ -105,6 +105,10 @@ export class HedronEngine {
     this.renderer.stopOutput()
   }
 
+  public captureFrame(): string | null {
+    return this.renderer.captureFrame()
+  }
+
   public getStore() {
     return this.store
   }
