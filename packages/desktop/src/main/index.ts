@@ -1,9 +1,7 @@
-import path from 'path'
-import fs, { mkdirSync, existsSync } from 'fs'
-import { exec } from 'child_process'
 import { app, BrowserWindow, dialog, ipcMain, screen, session } from 'electron'
 import { electronApp, optimizer } from '@electron-toolkit/utils'
 import { REDUX_DEVTOOLS, installExtension } from '@tomjs/electron-devtools-installer'
+import { saveFrameHandler, saveFrameSequenceHandler } from './handlers/frameHandlers'
 import { ProjectData } from '@shared/types'
 import {
   DialogEvents,
@@ -12,7 +10,7 @@ import {
   SaveProjectResponse,
   SketchEvents,
 } from '@shared/Events'
-import { FrameEvents, SaveFrameResponse } from '@shared/FrameEvents'
+import { FrameEvents } from '@shared/FrameEvents'
 import { updateDisplayMenu, updateMenu } from '@main/menu'
 import { createWindow } from '@main/mainWindow'
 import { startSketchesServer } from '@main/handleSketchFiles'
@@ -114,72 +112,6 @@ ipcMain.handle(SketchEvents.StartSketchesServer, async (_, sketchesDir: string) 
   return await startSketchesServer(sketchesDir)
 })
 
-// Simple handler for saving frames as PNG files
-ipcMain.handle(
-  FrameEvents.SaveFrame,
-  async (_, base64Data: string, name?: string, frameIndex?: number): Promise<SaveFrameResponse> => {
-    try {
-      const documentsPath = app.getPath('documents')
-      let filePath: string
-      if (name !== undefined && frameIndex !== undefined) {
-        const dirPath = path.join(documentsPath, name)
-        if (!existsSync(dirPath)) {
-          mkdirSync(dirPath)
-        }
-        filePath = path.join(dirPath, `${name}-${frameIndex}.png`)
-      } else {
-        const timestamp = new Date().toISOString().replace(/[:.]/g, '-')
-        const filename = `hedron-${timestamp}.png`
-        filePath = path.join(documentsPath, filename)
-      }
-      fs.writeFileSync(filePath, base64Data, 'base64')
-      return { success: true, path: filePath }
-    } catch (error) {
-      console.error('Error saving frame:', error)
-      return { success: false, error: String(error) }
-    }
-  },
-)
-
-// Handler for saving a sequence of frames or just creating a video
-ipcMain.handle(
-  FrameEvents.SaveFrameSequence,
-  async (_, base64Array: string[], name: string, video: boolean = false) => {
-    try {
-      const documentsPath = app.getPath('documents')
-      const dirPath = path.join(documentsPath, name)
-      if (!existsSync(dirPath)) {
-        mkdirSync(dirPath)
-      }
-      // Only write images if base64Array is provided and not empty
-      if (base64Array && base64Array.length > 0) {
-        for (let i = 0; i < base64Array.length; i++) {
-          const filename = `${name}-${i}.png`
-          const filePath = path.join(dirPath, filename)
-          fs.writeFileSync(filePath, base64Array[i], 'base64')
-        }
-      }
-
-      let videoPath: string | undefined = undefined
-      if (video) {
-        videoPath = path.join(dirPath, `${name}.mp4`)
-        const ffmpegCmd = `ffmpeg -y -framerate 30 -i "${dirPath}/${name}-%d.png" -c:v libx264 -pix_fmt yuv420p -crf 18 "${videoPath}"`
-        await new Promise<void>((resolve, reject) => {
-          exec(ffmpegCmd, (error, stdout, stderr) => {
-            if (error) {
-              console.error('ffmpeg error:', error, stderr)
-              reject(error)
-            } else {
-              resolve()
-            }
-          })
-        })
-      }
-
-      return { success: true, path: dirPath, videoPath }
-    } catch (error) {
-      console.error('Error saving frame sequence:', error)
-      return { success: false, error: String(error) }
-    }
-  },
-)
+// Replace inline frame handling code with imports from handlers/frameHandlers
+ipcMain.handle(FrameEvents.SaveFrame, saveFrameHandler)
+ipcMain.handle(FrameEvents.SaveFrameSequence, saveFrameSequenceHandler)
