@@ -1,3 +1,4 @@
+import { Pass } from 'postprocessing'
 import { listenToStore } from './storeListener'
 import { Result } from './types'
 import { importSketchModule } from './importSketchModule'
@@ -10,6 +11,7 @@ import { EngineData, SketchModuleItem } from '@store/types'
 import { getSketchesOfModuleId } from '@store/selectors/getSketchesOfModuleId'
 import { createEngineStore, EngineStore } from '@store/engineStore'
 import { getSketchParamValues } from '@store/selectors/getSketchParamValues'
+import { EngineScene } from '@world/EngineScene'
 
 export class HedronEngine {
   private renderer: Renderer
@@ -155,7 +157,7 @@ export class HedronEngine {
    * @param debugScene The debug scene object to update and render.
    * @param deltaTime The time delta (in seconds) to advance this frame.
    */
-  private advanceFrame(debugScene: any, deltaTime: number) {
+  private advanceFrame(debugScene: EngineScene, deltaTime: number) {
     const state = this.store.getState()
     const sketchInstances = this.sketchManager!.getSketchInstances()
     debugScene.clearPasses()
@@ -163,11 +165,11 @@ export class HedronEngine {
       const paramValues = getSketchParamValues(state, sketchId)
       const instance = sketchInstances[sketchId]
       if (instance.getPasses) {
-        instance.getPasses(debugScene).forEach((pass: any) => {
+        instance.getPasses(debugScene).forEach((pass: Pass) => {
           debugScene.addPass(pass)
         })
       }
-      instance.update({ deltaFrame: 1, deltaTime, params: paramValues })
+      instance.update({ deltaFrame: 1, deltaTime, params: paramValues, scene: debugScene })
     })
     this.renderer.render(debugScene)
   }
