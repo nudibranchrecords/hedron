@@ -1,7 +1,7 @@
 // This file adds a simple utility to the window object for saving frames as PNG files
 
 import { engine } from '@renderer/engine'
-import { FrameEvents, SaveFrameResponse, SaveFrameSequenceResponse } from '@shared/FrameEvents'
+import { FrameEvents, SaveFrameResponse } from '@shared/FrameEvents'
 
 // Define the type for the window object extension
 declare global {
@@ -11,6 +11,21 @@ declare global {
     resetEvery: (seconds: number, offset?: number) => void
     cancelReset: () => void
   }
+}
+// Helper to save a frame (base64 or dataUrl) via IPC
+async function saveFrameViaIPC(
+  dataUrl: string,
+  name?: string,
+  frameIndex?: number,
+): Promise<SaveFrameResponse> {
+  const base64Data = dataUrl.replace(/^data:image\/png;base64,/, '')
+  const result = (await window.electronApi.ipcRenderer.invoke(
+    FrameEvents.SaveFrame,
+    base64Data,
+    name,
+    frameIndex,
+  )) as SaveFrameResponse
+  return result
 }
 
 // Implement the save frame function
@@ -22,14 +37,7 @@ window.saveFrame = async () => {
     return
   }
 
-  // Remove data URL header
-  const base64Data = dataUrl.replace(/^data:image\/png;base64,/, '')
-
-  // Use Electron's IPC to save the file in the main process
-  const result = (await window.electronApi.ipcRenderer.invoke(
-    FrameEvents.SaveFrame,
-    base64Data,
-  )) as SaveFrameResponse
+  const result = await saveFrameViaIPC(dataUrl)
 
   if (result.success) {
     console.log(`Frame saved successfully to: ${result.path}`)
@@ -49,14 +57,7 @@ window.renderFrames = async (frameCount: number, name: string, video: boolean = 
       frameCount,
       fps,
       async (dataUrl: string, frameIndex: number) => {
-        const base64Data = dataUrl.replace(/^data:image\/png;base64,/, '')
-        // Save each frame immediately
-        const result = await window.electronApi.ipcRenderer.invoke(
-          FrameEvents.SaveFrame,
-          base64Data,
-          name,
-          frameIndex,
-        )
+        const result = await saveFrameViaIPC(dataUrl, name, frameIndex)
         if (result.success && result.path) {
           filePaths.push(result.path)
         } else {

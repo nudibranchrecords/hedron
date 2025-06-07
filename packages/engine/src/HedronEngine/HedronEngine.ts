@@ -122,7 +122,61 @@ export class HedronEngine {
     return stripForSave(this.store.getState())
   }
 
-  run() {
+  /**
+   * Pauses the engine's main render loop.
+   */
+  public pause() {
+    this.paused = true
+  }
+
+  /**
+   * Resumes the engine's main render loop. If the engine is not running, starts it.
+   */
+  public resume() {
+    if (!this.running) {
+      this.run()
+    } else {
+      this.paused = false
+      this.run()
+    }
+  }
+
+  /**
+   * Stops the engine's main render loop and resets running/paused state.
+   */
+  public stop() {
+    this.running = false
+    this.paused = false
+  }
+
+  /**
+   * Advances the engine state by one frame, updating all sketches and rendering the scene.
+   * Shared by both the real-time loop and fixed-framerate sequence rendering.
+   * @param debugScene The debug scene object to update and render.
+   * @param deltaTime The time delta (in seconds) to advance this frame.
+   */
+  private advanceFrame(debugScene: any, deltaTime: number) {
+    const state = this.store.getState()
+    const sketchInstances = this.sketchManager!.getSketchInstances()
+    debugScene.clearPasses()
+    Object.keys(state.sketches).forEach((sketchId) => {
+      const paramValues = getSketchParamValues(state, sketchId)
+      const instance = sketchInstances[sketchId]
+      if (instance.getPasses) {
+        instance.getPasses(debugScene).forEach((pass: any) => {
+          debugScene.addPass(pass)
+        })
+      }
+      instance.update({ deltaFrame: 1, deltaTime, params: paramValues })
+    })
+    this.renderer.render(debugScene)
+  }
+
+  /**
+   * Starts the engine's main real-time render loop.
+   * This loop runs at the browser's refresh rate using requestAnimationFrame.
+   */
+  public run() {
     if (this.running) return
     this.running = true
     this.paused = false
@@ -131,7 +185,11 @@ export class HedronEngine {
     let lastTime = performance.now()
 
     const loop = (): void => {
-      if (!this.running || this.paused) {
+      if (!this.running) {
+        return
+      }
+
+      if (this.paused) {
         requestAnimationFrame(loop)
         return
       }
@@ -147,54 +205,22 @@ export class HedronEngine {
       this.totalTime += deltaTime
       lastTime = now
 
-      const state = this.store.getState()
-      const sketchInstances = this.sketchManager!.getSketchInstances()
-      debugScene.clearPasses()
-
-      Object.keys(state.sketches).forEach((sketchId) => {
-        const paramValues = getSketchParamValues(state, sketchId)
-        const instance = sketchInstances[sketchId]
-        if (instance.getPasses) {
-          instance.getPasses(debugScene).forEach((pass) => {
-            debugScene.addPass(pass)
-          })
-        }
-        instance.update({ deltaFrame: 1, deltaTime, params: paramValues })
-      })
+      this.advanceFrame(debugScene, deltaTime)
 
       requestAnimationFrame(loop)
-      if (debugScene) {
-        this.renderer.render(debugScene)
-      }
-
       this.onFrameEnd?.()
     }
 
     loop()
   }
 
-  public pause() {
-    this.paused = true
-  }
-
-  public resume() {
-    if (!this.running) {
-      this.run()
-    } else {
-      this.paused = false
-      this.run()
-    }
-  }
-
-  public stop() {
-    this.running = false
-    this.paused = false
-  }
-
   /**
    * Render a sequence of frames at a fixed framerate.
    * Calls onFrame(dataUrl, frameIndex) after each frame.
    * Does not accumulate any frame data in memory.
+   * @param frameCount Number of frames to render
+   * @param fps Frames per second
+   * @param onFrame Callback invoked with the frame's data URL and index after each frame
    */
   public async renderFramesSequence(
     frameCount: number,
@@ -204,8 +230,6 @@ export class HedronEngine {
     this.paused = true
 
     const debugScene = createDebugScene(this.renderer)
-    const state = this.store.getState()
-    const sketchInstances = this.sketchManager!.getSketchInstances()
     const frameDuration = 1 / fps
 
     for (let i = 0; i < frameCount; i++) {
@@ -218,19 +242,7 @@ export class HedronEngine {
       }
       this.totalTime += deltaTime
 
-      debugScene.clearPasses()
-      Object.keys(state.sketches).forEach((sketchId) => {
-        const paramValues = getSketchParamValues(state, sketchId)
-        const instance = sketchInstances[sketchId]
-        if (instance.getPasses) {
-          instance.getPasses(debugScene).forEach((pass) => {
-            debugScene.addPass(pass)
-          })
-        }
-        instance.update({ deltaFrame: 1, deltaTime, params: paramValues })
-      })
-
-      this.renderer.render(debugScene)
+      this.advanceFrame(debugScene, deltaTime)
       this.onFrameEnd?.()
 
       const dataUrl = this.captureFrame()
@@ -247,10 +259,17 @@ export class HedronEngine {
     this.paused = false
   }
 
+  /**
+   * Adds or subtracts time from the engine's timeline, used for time manipulation.
+   * @param seconds Number of seconds to jump forward (positive) or backward (negative)
+   */
   public jumpTime(seconds: number): void {
     this.extraTime += seconds
   }
 
+  /**
+   * Resets the engine's timeline to zero.
+   */
   public resetTime(): void {
     this.extraTime -= this.totalTime
     console.log(`Resetting time, extraTime: ${this.extraTime}, totalTime: ${this.totalTime}`)
