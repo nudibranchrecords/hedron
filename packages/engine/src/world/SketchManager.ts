@@ -7,7 +7,7 @@ import { EngineScene } from '@world/EngineScene'
 type SketchUpdateParams = {
   deltaFrame: number
   deltaTime: number
-  params: { [key: string]: any }
+  params: { [key: string]: unknown }
   scene: EngineScene
 }
 
