@@ -23,6 +23,7 @@ export class HedronEngine {
   private onFrameEnd?: () => void
   private running: boolean = false
   private paused: boolean = false
+  private scene: EngineScene // The main scene for rendering sketches
 
   private extraTime: number = 0 // For time manipulation, e.g. for skipping frames
   private totalTime: number = 0 // Total time for the engine, used for resetting time
@@ -31,6 +32,7 @@ export class HedronEngine {
     this.store = createEngineStore()
     this.sketchManager = new SketchManager()
     this.renderer = new Renderer()
+    this.scene = createDebugScene(this.renderer)
 
     this.onFrameStart = params?.onFrameStart
     this.onFrameEnd = params?.onFrameEnd
@@ -183,7 +185,6 @@ export class HedronEngine {
     this.running = true
     this.paused = false
 
-    const debugScene = createDebugScene(this.renderer)
     let lastTime = performance.now()
 
     const loop = (): void => {
@@ -207,7 +208,7 @@ export class HedronEngine {
       this.totalTime += deltaTime
       lastTime = now
 
-      this.advanceFrame(debugScene, deltaTime)
+      this.advanceFrame(this.scene, deltaTime)
 
       requestAnimationFrame(loop)
       this.onFrameEnd?.()
@@ -231,7 +232,6 @@ export class HedronEngine {
   ): Promise<void> {
     this.paused = true
 
-    const debugScene = createDebugScene(this.renderer)
     const frameDuration = 1 / fps
 
     for (let i = 0; i < frameCount; i++) {
@@ -244,7 +244,7 @@ export class HedronEngine {
       }
       this.totalTime += deltaTime
 
-      this.advanceFrame(debugScene, deltaTime)
+      this.advanceFrame(this.scene, deltaTime)
       this.onFrameEnd?.()
 
       const dataUrl = this.captureFrame()
