@@ -17,3 +17,7 @@ If you're just working on the clock package, use `yarn dev:clock`. This will bui
 ## Update Hedron version
 
 Run `npx lerna version`. This bumps all versions across packages. While in alpha, we want to choose the "Custom Prerelease" option. This will keep the format of `1.0.0-alpha.x`, where only `x` gets bumped (as major/minor/patch makes no sense).
+
+# Experimental Features
+
+Access [Experimental Features](./EXPERIMENTAL_FEATURES.md) via the command line, these are features created during show prep, and are not yet complete in terms of funcationality/UI.
