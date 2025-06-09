@@ -5,7 +5,8 @@ import { EngineScene } from '@world/EngineScene'
 import { engineScenes } from '@world/scenes'
 
 export class Renderer {
-  public composer: EffectComposer | undefined
+  public composer: EffectComposer
+  public renderer: WebGLRenderer
   private rendererHeight: number = 0
   private rendererWidth: number = 0
   private viewerContainer: HTMLDivElement | undefined
@@ -15,6 +16,7 @@ export class Renderer {
   private canvas: HTMLCanvasElement | undefined
   private previewContext: CanvasRenderingContext2D | undefined | null
   public aspectRatio: number = 1
+  private isRendering: boolean = false
 
   private isSendingOutput = false
 
@@ -28,18 +30,36 @@ export class Renderer {
     resizeObserver.observe(el)
   }
 
-  public createCanvas(containerEl: HTMLDivElement): void {
-    const renderer = new WebGLRenderer({
+  constructor() {
+    this.renderer = new WebGLRenderer({
       antialias: false, // Antialiasing should be handled by the composer
+      preserveDrawingBuffer: true, // Required for frame capture to work consistently
     })
-    this.composer = new EffectComposer(renderer)
+    this.composer = new EffectComposer(this.renderer)
+  }
 
-    this.canvas = renderer.domElement
+  public createCanvas(containerEl: HTMLDivElement): void {
+    this.canvas = this.renderer.domElement
     containerEl.innerHTML = ''
     containerEl.appendChild(this.canvas)
     this.viewerContainer = containerEl
-
     this.setResizeObserver(containerEl)
+  }
+
+  // Capture the current frame as a data URL
+  public captureFrame(): string | null {
+    if (!this.canvas) {
+      console.error('Canvas not available for capture')
+      return null
+    }
+
+    if (!this.composer) {
+      console.error('Composer not initialized for rendering')
+      return null
+    }
+
+    const dataUrl = this.canvas.toDataURL('image/png')
+    return dataUrl
   }
 
   public setSize(): void {

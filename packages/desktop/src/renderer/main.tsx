@@ -10,6 +10,7 @@ import { App } from '@components/App/App'
 import '@renderer/windows'
 import '@renderer/ipc/mainThreadListen'
 import '@renderer/engine'
+import '@renderer/utils/frameCapture'
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>

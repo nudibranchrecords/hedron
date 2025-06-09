@@ -1,6 +1,7 @@
 import { app, BrowserWindow, dialog, ipcMain, screen, session } from 'electron'
 import { electronApp, optimizer } from '@electron-toolkit/utils'
 import { REDUX_DEVTOOLS, installExtension } from '@tomjs/electron-devtools-installer'
+import { saveFrameHandler, saveFrameSequenceHandler } from './handlers/frameHandlers'
 import { ProjectData } from '@shared/types'
 import {
   DialogEvents,
@@ -9,13 +10,13 @@ import {
   SaveProjectResponse,
   SketchEvents,
 } from '@shared/Events'
+import { FrameEvents } from '@shared/FrameEvents'
 import { updateDisplayMenu, updateMenu } from '@main/menu'
 import { createWindow } from '@main/mainWindow'
 import { startSketchesServer } from '@main/handleSketchFiles'
 import { devSettings } from '@main/devSettings'
 import { saveProjectFile } from '@main/handlers/saveProjectFile'
 import { openProjectFile } from '@main/handlers/openProjectFile'
-
 const isDevelopment = process.env.NODE_ENV !== 'production'
 
 // This method will be called when Electron has finished
@@ -110,3 +111,7 @@ ipcMain.handle(
 ipcMain.handle(SketchEvents.StartSketchesServer, async (_, sketchesDir: string) => {
   return await startSketchesServer(sketchesDir)
 })
+
+// Replace inline frame handling code with imports from handlers/frameHandlers
+ipcMain.handle(FrameEvents.SaveFrame, saveFrameHandler)
+ipcMain.handle(FrameEvents.SaveFrameSequence, saveFrameSequenceHandler)
