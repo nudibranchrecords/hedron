@@ -1,11 +1,12 @@
 import debounce from 'lodash.debounce'
 import { EffectComposer } from 'postprocessing'
-import { WebGLRenderer } from 'three'
+import { WebGPURenderer } from 'three/webgpu'
 import { EngineScene } from '@world/EngineScene'
 import { engineScenes } from '@world/scenes'
 
 export class Renderer {
   public composer: EffectComposer | undefined
+  public renderer: WebGPURenderer | undefined
   private rendererHeight: number = 0
   private rendererWidth: number = 0
   private viewerContainer: HTMLDivElement | undefined
@@ -29,12 +30,12 @@ export class Renderer {
   }
 
   public createCanvas(containerEl: HTMLDivElement): void {
-    const renderer = new WebGLRenderer({
+    this.renderer = new WebGPURenderer({
       antialias: false, // Antialiasing should be handled by the composer
     })
-    this.composer = new EffectComposer(renderer)
+    // this.composer = new EffectComposer(renderer)
 
-    this.canvas = renderer.domElement
+    this.canvas = this.renderer.domElement
     containerEl.innerHTML = ''
     containerEl.appendChild(this.canvas)
     this.viewerContainer = containerEl
@@ -43,7 +44,7 @@ export class Renderer {
   }
 
   public setSize(): void {
-    if (!this.composer) throw new Error('Renderer not set')
+    if (!this.renderer) throw new Error('Renderer not set')
     if (!this.viewerContainer) throw new Error('viewerEl not set')
 
     const settings = {
@@ -74,7 +75,7 @@ export class Renderer {
     const perc = 100 / ratio
     const height = width / ratio
 
-    this.composer.setSize(width, height)
+    this.renderer.setSize(width, height)
 
     // Set ratios for each scene
     engineScenes.forEach((scene) => {
@@ -140,15 +141,18 @@ export class Renderer {
   }
 
   public render(scene: EngineScene): void {
-    if (!this.composer) return
+    if (!this.renderer) return
 
-    this.composer.removeAllPasses()
-    this.composer.passes = scene.passes
-    for (let i = 0; i < scene.passes.length - 1; i++) {
-      scene.passes[i].renderToScreen = false
-    }
-    scene.passes[scene.passes.length - 1].renderToScreen = true
-    this.composer.render()
+    // TODO: Allow for composer passes if not using webgpu
+    // this.composer.removeAllPasses()
+    // this.composer.passes = scene.passes
+    // for (let i = 0; i < scene.passes.length - 1; i++) {
+    //   scene.passes[i].renderToScreen = false
+    // }
+    // scene.passes[scene.passes.length - 1].renderToScreen = true
+    // this.composer.render()
+
+    this.renderer?.render(scene.scene, scene.camera)
 
     if (this.isSendingOutput) {
       if (!this.previewContext) throw new Error('No preview context')
