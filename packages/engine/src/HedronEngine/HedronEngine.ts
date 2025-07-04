@@ -1,5 +1,6 @@
+import { Clock } from 'three'
 import { listenToStore } from './storeListener'
-import { Result } from './types'
+import { RendererType, Result } from './types'
 import { importSketchModule } from './importSketchModule'
 import { IPlugin } from '@plugins/Plugin'
 import { stripForSave } from '@utils/stripForSave'
@@ -12,15 +13,25 @@ import { createEngineStore, EngineStore } from '@store/engineStore'
 import { getSketchParamValues } from '@store/selectors/getSketchParamValues'
 
 export class HedronEngine {
+  public rendererType: RendererType = 'webgl'
   private renderer: Renderer
   private store: EngineStore
   private sketchesUrl: string | null = null
   private sketchManager: SketchManager
+  private clock: Clock = new Clock()
   public plugins: Record<string, IPlugin> = {}
   private onFrameStart?: () => void
   private onFrameEnd?: () => void
 
-  constructor(params?: { onFrameStart?: () => void; onFrameEnd?: () => void }) {
+  constructor(params?: {
+    onFrameStart?: () => void
+    onFrameEnd?: () => void
+    rendererType?: RendererType
+  }) {
+    if (params?.rendererType) {
+      this.rendererType = params.rendererType
+    }
+
     this.store = createEngineStore()
     this.sketchManager = new SketchManager()
     this.renderer = new Renderer()
@@ -133,7 +144,7 @@ export class HedronEngine {
             debugScene.addPass(pass)
           })
         }
-        instance.update({ deltaFrame: 1, params: paramValues })
+        instance.update({ deltaFrame: 1, params: paramValues, clockDelta: this.clock.getDelta() })
       })
 
       requestAnimationFrame(loop)

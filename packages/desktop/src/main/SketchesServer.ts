@@ -82,6 +82,7 @@ export class SketchesServer extends EventEmitter {
         '.mp4': 'file',
         '.ogg': 'file',
         '.wav': 'file',
+        '.hdr': 'file',
         // text: loaded into sketch as string
         '.glsl': 'text',
         '.isf': 'text',
