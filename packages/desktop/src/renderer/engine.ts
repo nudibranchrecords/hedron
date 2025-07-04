@@ -12,6 +12,7 @@ export const clock = new Clock()
 export const engine = new HedronEngine({
   onFrameStart: performanceMonitor.begin,
   onFrameEnd: performanceMonitor.end,
+  rendererType: 'webgl',
 })
 
 export const engineStore = engine.getStore()

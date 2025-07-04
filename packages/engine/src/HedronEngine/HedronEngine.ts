@@ -13,7 +13,7 @@ import { createEngineStore, EngineStore } from '@store/engineStore'
 import { getSketchParamValues } from '@store/selectors/getSketchParamValues'
 
 export class HedronEngine {
-  public rendererType: RendererType = 'webgl'
+  public rendererType: RendererType
   private renderer: Renderer
   private store: EngineStore
   private sketchesUrl: string | null = null
@@ -23,18 +23,15 @@ export class HedronEngine {
   private onFrameStart?: () => void
   private onFrameEnd?: () => void
 
-  constructor(params?: {
+  constructor(params: {
     onFrameStart?: () => void
     onFrameEnd?: () => void
-    rendererType?: RendererType
+    rendererType: RendererType
   }) {
-    if (params?.rendererType) {
-      this.rendererType = params.rendererType
-    }
-
+    this.rendererType = params.rendererType
     this.store = createEngineStore()
     this.sketchManager = new SketchManager()
-    this.renderer = new Renderer()
+    this.renderer = new Renderer({ rendererType: this.rendererType })
 
     this.onFrameStart = params?.onFrameStart
     this.onFrameEnd = params?.onFrameEnd

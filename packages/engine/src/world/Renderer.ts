@@ -9,7 +9,7 @@ import { engineScenes } from '@world/scenes'
 export class Renderer {
   public composer: EffectComposer | undefined
   public renderer: WebGPURenderer | WebGLRenderer | undefined
-  public rendererType: RendererType = 'webgl'
+  public rendererType: RendererType
   private rendererHeight: number = 0
   private rendererWidth: number = 0
   private viewerContainer: HTMLDivElement | undefined
@@ -22,10 +22,8 @@ export class Renderer {
 
   private isSendingOutput = false
 
-  constructor({ rendererType }: { rendererType?: RendererType } = {}) {
-    if (rendererType) {
-      this.rendererType = rendererType
-    }
+  constructor({ rendererType }: { rendererType: RendererType }) {
+    this.rendererType = rendererType
   }
 
   private setResizeObserver = (el: HTMLDivElement) => {
