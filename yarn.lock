@@ -1351,9 +1351,9 @@ __metadata:
     lodash.debounce: "npm:^4.0.8"
     material-symbols: "npm:^0.23.0"
     path-browserify: "npm:^1.0.1"
-    postprocessing: "npm:^6.36.4"
+    postprocessing: "npm:^6.37.5"
     react-error-boundary: "npm:^4.0.13"
-    three: "npm:^0.171.0"
+    three: "npm:^0.178.0"
     usehooks-ts: "npm:^3.1.1"
     vite: "npm:^5.3.1"
     vite-tsconfig-paths: "npm:^5.1.4"
@@ -1384,7 +1384,7 @@ __metadata:
   resolution: "@hedron/example-project@workspace:packages/example-project"
   dependencies:
     is-even: "npm:^1.0.0"
-    three-stdlib: "npm:^2.34.0"
+    three-stdlib: "npm:^2.36.0"
   languageName: unknown
   linkType: soft
 
@@ -11195,12 +11195,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"postprocessing@npm:^6.36.4":
-  version: 6.36.6
-  resolution: "postprocessing@npm:6.36.6"
+"postprocessing@npm:^6.37.5":
+  version: 6.37.5
+  resolution: "postprocessing@npm:6.37.5"
   peerDependencies:
-    three: ">= 0.157.0 < 0.173.0"
-  checksum: 10c0/cc9638bc87608a34b952f74552ab15e0f0f0fd054be35bf97096582e963a439c08211e3b497220ff1ce9ce0b07ccd0be5be608bc7bdec0402ea90090877b947c
+    three: ">= 0.157.0 < 0.179.0"
+  checksum: 10c0/926c81f8802957f7201ce4fe570ef0e7e2129cc9e5db3dd3fd56f98239fbef451a6d64a806e17fefa6c151d107403a61f2345d215252da37f427c749cf63dc20
   languageName: node
   linkType: hard
 
@@ -12961,9 +12961,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"three-stdlib@npm:^2.34.0":
-  version: 2.35.12
-  resolution: "three-stdlib@npm:2.35.12"
+"three-stdlib@npm:^2.36.0":
+  version: 2.36.0
+  resolution: "three-stdlib@npm:2.36.0"
   dependencies:
     "@types/draco3d": "npm:^1.4.0"
     "@types/offscreencanvas": "npm:^2019.6.4"
@@ -12973,14 +12973,14 @@ __metadata:
     potpack: "npm:^1.0.1"
   peerDependencies:
     three: ">=0.128.0"
-  checksum: 10c0/2b3d66ce242acb1bf4364bd2fe3b9945357f898a4323b4beb91a5aad9482e73dc9bfbd2e74af40ec27e3ab2c6f8a44afcb756a5612f9989393d20c6f3f488f6f
+  checksum: 10c0/cbfd85fa817d0319b051de00dfa968bae7a2c83d96c74706fbae1b0a1b01b7dff2a8ef17d6774063ff7b5a6b92bfea4cd66135fc53019cdbd05f18c4adf596d0
   languageName: node
   linkType: hard
 
-"three@npm:^0.171.0":
-  version: 0.171.0
-  resolution: "three@npm:0.171.0"
-  checksum: 10c0/33a36861c815b914f79dc8546ac30610af40e3f16acc85be851933e6fcab2d90d4227a62c1d3d86bddab672c908103298daaf592615147721e3dbd719619952a
+"three@npm:^0.178.0":
+  version: 0.178.0
+  resolution: "three@npm:0.178.0"
+  checksum: 10c0/00bffd075f2e0fac396c2be121ae0b376508c2f91b97eba19606ace34c53f51b8287047841ef22a3762f6525a83e7b9143728b17639e6d8477e1207d9e9d1866
   languageName: node
   linkType: hard
 
