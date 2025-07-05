@@ -1,12 +1,13 @@
 import { Pass, RenderPass } from 'postprocessing'
-import { PerspectiveCamera, Scene, WebGLRenderer } from 'three'
+import { WebGLRenderer, PerspectiveCamera, Scene } from 'three'
+import { WebGPURenderer } from 'three/webgpu'
 
 export class EngineScene {
   public scene: Scene
   public camera: PerspectiveCamera
   public passes: Pass[]
   private renderPass: RenderPass
-  public renderer: WebGLRenderer | null = null
+  public renderer: WebGLRenderer | WebGPURenderer | null = null
 
   constructor() {
     this.scene = new Scene()

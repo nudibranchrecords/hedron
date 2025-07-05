@@ -14,7 +14,6 @@ import { FrameEvents } from '@shared/FrameEvents'
 import { updateDisplayMenu, updateMenu } from '@main/menu'
 import { createWindow } from '@main/mainWindow'
 import { startSketchesServer } from '@main/handleSketchFiles'
-import { devSettings } from '@main/devSettings'
 import { saveProjectFile } from '@main/handlers/saveProjectFile'
 import { openProjectFile } from '@main/handlers/openProjectFile'
 const isDevelopment = process.env.NODE_ENV !== 'production'
@@ -47,11 +46,13 @@ app.whenReady().then(() => {
   if (isDevelopment) {
     let reduxDevtoolsInstaller: Promise<Electron.Extension>
 
-    if (devSettings.reduxDevtoolsDir) {
+    const reduxDevtoolsPath = process.env.HEDRON_REDUX_DEVTOOLS_PATH
+
+    if (reduxDevtoolsPath) {
       // Override automatic install
       // This is needed if there is some bug with the latest version
       // https://github.com/reduxjs/redux-devtools/issues/1730
-      reduxDevtoolsInstaller = session.defaultSession.loadExtension(devSettings.reduxDevtoolsDir)
+      reduxDevtoolsInstaller = session.defaultSession.loadExtension(reduxDevtoolsPath)
     } else {
       reduxDevtoolsInstaller = installExtension(REDUX_DEVTOOLS)
     }

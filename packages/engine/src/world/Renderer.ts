@@ -1,12 +1,15 @@
 import debounce from 'lodash.debounce'
 import { EffectComposer } from 'postprocessing'
 import { WebGLRenderer } from 'three'
+import { WebGPURenderer } from 'three/webgpu'
+import { RendererType } from '@HedronEngine/types'
 import { EngineScene } from '@world/EngineScene'
 import { engineScenes } from '@world/scenes'
 
 export class Renderer {
-  public composer: EffectComposer
-  public renderer: WebGLRenderer
+  public composer: EffectComposer | undefined
+  public renderer: WebGPURenderer | WebGLRenderer
+  public rendererType: RendererType
   private rendererHeight: number = 0
   private rendererWidth: number = 0
   private viewerContainer: HTMLDivElement | undefined
@@ -20,6 +23,25 @@ export class Renderer {
 
   private isSendingOutput = false
 
+  constructor({ rendererType }: { rendererType: RendererType }) {
+    this.rendererType = rendererType
+
+    switch (this.rendererType) {
+      case 'webgl':
+        this.renderer = new WebGLRenderer({
+          antialias: false, // Antialiasing should be handled by the composer
+          preserveDrawingBuffer: true, // Required for frame capture to work consistently
+        })
+        this.composer = new EffectComposer(this.renderer)
+        break
+      case 'webgpu':
+        this.renderer = new WebGPURenderer()
+        break
+      default:
+        throw new Error(`Unsupported renderer type: ${this.rendererType}`)
+    }
+  }
+
   private setResizeObserver = (el: HTMLDivElement) => {
     const resizeObserver = new ResizeObserver(
       debounce(() => {
@@ -28,14 +50,6 @@ export class Renderer {
     )
 
     resizeObserver.observe(el)
-  }
-
-  constructor() {
-    this.renderer = new WebGLRenderer({
-      antialias: false, // Antialiasing should be handled by the composer
-      preserveDrawingBuffer: true, // Required for frame capture to work consistently
-    })
-    this.composer = new EffectComposer(this.renderer)
   }
 
   public createCanvas(containerEl: HTMLDivElement): void {
@@ -63,7 +77,8 @@ export class Renderer {
   }
 
   public setSize(): void {
-    if (!this.composer) throw new Error('Renderer not set')
+    const composerOrRenderer = this.composer || this.renderer
+    if (!composerOrRenderer) throw new Error('No renderer or composer to set size for')
     if (!this.viewerContainer) throw new Error('viewerEl not set')
 
     const settings = {
@@ -94,7 +109,7 @@ export class Renderer {
     const perc = 100 / ratio
     const height = width / ratio
 
-    this.composer.setSize(width, height)
+    composerOrRenderer.setSize(width, height)
 
     // Set ratios for each scene
     engineScenes.forEach((scene) => {
@@ -160,15 +175,25 @@ export class Renderer {
   }
 
   public render(scene: EngineScene): void {
-    if (!this.composer) return
+    if (!this.renderer) return
 
-    this.composer.removeAllPasses()
-    this.composer.passes = scene.passes
-    for (let i = 0; i < scene.passes.length - 1; i++) {
-      scene.passes[i].renderToScreen = false
+    if (this.composer) {
+      this.composer.removeAllPasses()
+      this.composer.passes = scene.passes
+      for (let i = 0; i < scene.passes.length - 1; i++) {
+        scene.passes[i].renderToScreen = false
+      }
+      scene.passes[scene.passes.length - 1].renderToScreen = true
+      this.composer.render()
     }
-    scene.passes[scene.passes.length - 1].renderToScreen = true
-    this.composer.render()
+
+    if (this.renderer instanceof WebGPURenderer) {
+      this.renderer.renderAsync(scene.scene, scene.camera)
+    } else if (this.renderer instanceof WebGLRenderer) {
+      this.renderer.render(scene.scene, scene.camera)
+    } else {
+      throw new Error(`Unsupported renderer type: ${this.rendererType}`)
+    }
 
     if (this.isSendingOutput) {
       if (!this.previewContext) throw new Error('No preview context')

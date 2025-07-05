@@ -1,6 +1,7 @@
+import { Clock } from 'three'
 import { Pass } from 'postprocessing'
 import { listenToStore } from './storeListener'
-import { Result } from './types'
+import { RendererType, Result } from './types'
 import { importSketchModule } from './importSketchModule'
 import { IPlugin } from '@plugins/Plugin'
 import { stripForSave } from '@utils/stripForSave'
@@ -14,10 +15,12 @@ import { getSketchParamValues } from '@store/selectors/getSketchParamValues'
 import { EngineScene } from '@world/EngineScene'
 
 export class HedronEngine {
+  public rendererType: RendererType
   private renderer: Renderer
   private store: EngineStore
   private sketchesUrl: string | null = null
   private sketchManager: SketchManager
+  private clock: Clock = new Clock()
   public plugins: Record<string, IPlugin> = {}
   private onFrameStart?: () => void
   private onFrameEnd?: () => void
@@ -28,10 +31,15 @@ export class HedronEngine {
   private extraTime: number = 0 // For time manipulation, e.g. for skipping frames
   private totalTime: number = 0 // Total time for the engine, used for resetting time
 
-  constructor(params?: { onFrameStart?: () => void; onFrameEnd?: () => void }) {
+  constructor(params: {
+    onFrameStart?: () => void
+    onFrameEnd?: () => void
+    rendererType: RendererType
+  }) {
+    this.rendererType = params.rendererType
     this.store = createEngineStore()
     this.sketchManager = new SketchManager()
-    this.renderer = new Renderer()
+    this.renderer = new Renderer({ rendererType: this.rendererType })
     this.scene = createDebugScene(this.renderer)
 
     this.onFrameStart = params?.onFrameStart

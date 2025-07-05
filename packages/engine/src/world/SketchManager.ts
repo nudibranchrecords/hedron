@@ -12,7 +12,6 @@ type SketchUpdateParams = {
 }
 
 type SketchInstance = {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   update: (arg: SketchUpdateParams) => void
   root?: Group
 
@@ -23,7 +22,7 @@ export class SketchManager {
   private sketchInstances: { [id: string]: SketchInstance } = {}
 
   private createSketch = (instanceId: string, module: SketchModule): SketchInstance => {
-    const sketch = new module()
+    const sketch = new module(getDebugScene())
     if (sketch.root) {
       sketch.root.name = instanceId
     }

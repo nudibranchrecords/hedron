@@ -25,7 +25,7 @@ export type ColorPickerHandle = {
   updateColor: (value: RGBColor) => void
 }
 
-interface ColorPickerProps {
+export interface ColorPickerProps {
   onValueChange: (value: RGBColor) => void
 }
 

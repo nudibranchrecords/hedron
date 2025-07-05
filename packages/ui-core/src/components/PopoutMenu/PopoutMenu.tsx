@@ -9,7 +9,7 @@ interface MenuItemConfig {
   icon?: IconName
 }
 
-interface PopoutMenuProps extends React.HTMLProps<HTMLDivElement> {
+export interface PopoutMenuProps extends React.HTMLProps<HTMLDivElement> {
   items: MenuItemConfig[]
 }
 
