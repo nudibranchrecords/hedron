@@ -12,7 +12,6 @@ type SketchUpdateParams = {
 }
 
 type SketchInstance = {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   update: (arg: SketchUpdateParams) => void
   root?: Group
 
