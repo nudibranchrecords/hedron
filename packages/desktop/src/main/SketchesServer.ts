@@ -86,6 +86,8 @@ export class SketchesServer extends EventEmitter {
         // text: loaded into sketch as string
         '.glsl': 'text',
         '.isf': 'text',
+        '.frag': 'text',
+        '.vert': 'text',
       },
       assetNames: '[dir]/[name]-[hash]',
       publicPath: `http://${HOST}:${port}`,

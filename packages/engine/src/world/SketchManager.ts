@@ -4,9 +4,16 @@ import { SketchModule } from '@store/types'
 import { getDebugScene } from '@world/debugScene'
 import { EngineScene } from '@world/EngineScene'
 
+type SketchUpdateParams = {
+  deltaFrame: number
+  deltaTime: number
+  params: { [key: string]: unknown }
+  scene: EngineScene
+}
+
 type SketchInstance = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  update: any
+  update: (arg: SketchUpdateParams) => void
   root?: Group
 
   getPasses?: (engineScene: EngineScene) => Pass[]

@@ -8,7 +8,7 @@ import { engineScenes } from '@world/scenes'
 
 export class Renderer {
   public composer: EffectComposer | undefined
-  public renderer: WebGPURenderer | WebGLRenderer | undefined
+  public renderer: WebGPURenderer | WebGLRenderer
   public rendererType: RendererType
   private rendererHeight: number = 0
   private rendererWidth: number = 0
@@ -19,11 +19,27 @@ export class Renderer {
   private canvas: HTMLCanvasElement | undefined
   private previewContext: CanvasRenderingContext2D | undefined | null
   public aspectRatio: number = 1
+  private isRendering: boolean = false
 
   private isSendingOutput = false
 
   constructor({ rendererType }: { rendererType: RendererType }) {
     this.rendererType = rendererType
+
+    switch (this.rendererType) {
+      case 'webgl':
+        this.renderer = new WebGLRenderer({
+          antialias: false, // Antialiasing should be handled by the composer
+          preserveDrawingBuffer: true, // Required for frame capture to work consistently
+        })
+        this.composer = new EffectComposer(this.renderer)
+        break
+      case 'webgpu':
+        this.renderer = new WebGPURenderer()
+        break
+      default:
+        throw new Error(`Unsupported renderer type: ${this.rendererType}`)
+    }
   }
 
   private setResizeObserver = (el: HTMLDivElement) => {
@@ -37,26 +53,27 @@ export class Renderer {
   }
 
   public createCanvas(containerEl: HTMLDivElement): void {
-    switch (this.rendererType) {
-      case 'webgl':
-        this.renderer = new WebGLRenderer({
-          antialias: false, // Antialiasing should be handled by the composer
-        })
-        this.composer = new EffectComposer(this.renderer)
-        break
-      case 'webgpu':
-        this.renderer = new WebGPURenderer()
-        break
-      default:
-        throw new Error(`Unsupported renderer type: ${this.rendererType}`)
-    }
-
     this.canvas = this.renderer.domElement
     containerEl.innerHTML = ''
     containerEl.appendChild(this.canvas)
     this.viewerContainer = containerEl
-
     this.setResizeObserver(containerEl)
+  }
+
+  // Capture the current frame as a data URL
+  public captureFrame(): string | null {
+    if (!this.canvas) {
+      console.error('Canvas not available for capture')
+      return null
+    }
+
+    if (!this.composer) {
+      console.error('Composer not initialized for rendering')
+      return null
+    }
+
+    const dataUrl = this.canvas.toDataURL('image/png')
+    return dataUrl
   }
 
   public setSize(): void {
