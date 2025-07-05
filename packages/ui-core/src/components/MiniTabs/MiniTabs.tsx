@@ -1,7 +1,7 @@
 import c from './MiniTabs.module.css'
 import { Icon, IconName } from '@components/Icon/Icon'
 
-interface MiniTabsProps extends React.HTMLAttributes<HTMLDivElement> {}
+export interface MiniTabsProps extends React.HTMLAttributes<HTMLDivElement> {}
 
 export const MiniTabs = ({ children, className }: MiniTabsProps) => {
   return <nav className={`${c.wrapper} ${className}`}>{children}</nav>

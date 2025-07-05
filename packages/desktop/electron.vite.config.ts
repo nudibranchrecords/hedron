@@ -7,12 +7,14 @@ import react from '@vitejs/plugin-react'
 export default defineConfig({
   main: {
     plugins: [externalizeDepsPlugin(), tsconfigPaths()],
+    envPrefix: 'HEDRON_',
   },
   preload: {
     plugins: [externalizeDepsPlugin(), tsconfigPaths()],
   },
   renderer: {
     plugins: [react(), tsconfigPaths()],
+    envPrefix: 'HEDRON_',
     resolve: {
       alias: {
         // Setting aliases here to allow for hot module reloading

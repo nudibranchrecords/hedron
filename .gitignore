@@ -4,6 +4,7 @@ node_modules/
 *.tsbuildinfo
 dist
 out
+.env
 
 .pnp.*
 **/.yarn/*
@@ -12,8 +13,6 @@ out
 !.yarn/releases
 !.yarn/sdks
 !.yarn/versions
-
-
 
 .nx/cache
 .nx/workspace-data
