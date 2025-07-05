@@ -140,9 +140,9 @@ window.cancelReset = () => {
 }
 
 // Add a log to indicate the function is available
-console.log(
-  '💡 Use window.saveFrame() to save the current frame as a PNG file to your Documents folder',
+console.info(
+  '[HEDRON] 💡 Use window.saveFrame() to save the current frame as a PNG file to your Documents folder',
 )
-console.log(
-  '💡 Use window.renderFrames(frameCount, name, video?) to save a sequence of frames to Documents/<name>/<name>-<frameIndex>.png and optionally create an mp4',
+console.info(
+  '[HEDRON] 💡 Use window.renderFrames(frameCount, name, video?) to save a sequence of frames to Documents/<name>/<name>-<frameIndex>.png and optionally create an mp4',
 )
