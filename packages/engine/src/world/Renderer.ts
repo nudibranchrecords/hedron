@@ -35,6 +35,9 @@ export class Renderer {
         this.composer = new EffectComposer(this.renderer)
         break
       case 'webgpu':
+        console.warn(
+          '[HEDRON] 👽 You are running Hedron in WebGPU mode (set in .env). This is experimental and your sketches may not work if you havent designed them to be compatible.',
+        )
         this.renderer = new WebGPURenderer()
         break
       default:
