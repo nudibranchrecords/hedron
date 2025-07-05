@@ -46,7 +46,7 @@ app.whenReady().then(() => {
   if (isDevelopment) {
     let reduxDevtoolsInstaller: Promise<Electron.Extension>
 
-    const reduxDevtoolsPath = import.meta.env.HEDRON_REDUX_DEVTOOLS_PATH
+    const reduxDevtoolsPath = process.env.HEDRON_REDUX_DEVTOOLS_PATH
 
     if (reduxDevtoolsPath) {
       // Override automatic install
