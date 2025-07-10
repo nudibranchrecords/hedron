@@ -1383,7 +1383,10 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@hedron/example-project@workspace:packages/example-project"
   dependencies:
+    "@types/three": "npm:^0.167.2"
     is-even: "npm:^1.0.0"
+    postprocessing: "npm:^6.37.6"
+    three: "npm:^0.178.0"
     three-stdlib: "npm:^2.36.0"
   languageName: unknown
   linkType: soft
@@ -11201,6 +11204,15 @@ __metadata:
   peerDependencies:
     three: ">= 0.157.0 < 0.179.0"
   checksum: 10c0/926c81f8802957f7201ce4fe570ef0e7e2129cc9e5db3dd3fd56f98239fbef451a6d64a806e17fefa6c151d107403a61f2345d215252da37f427c749cf63dc20
+  languageName: node
+  linkType: hard
+
+"postprocessing@npm:^6.37.6":
+  version: 6.37.6
+  resolution: "postprocessing@npm:6.37.6"
+  peerDependencies:
+    three: ">= 0.157.0 < 0.179.0"
+  checksum: 10c0/81007a5d9ac66e69e810adcf394c3f40169e3fba30a7a3c1619fb5803a1e41e5aa183bcd37d044f34127de2f940dcdd76bbb4eadc533da47495286ee801cdb72
   languageName: node
   linkType: hard
 

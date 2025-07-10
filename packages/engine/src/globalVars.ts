@@ -1,7 +1,7 @@
 import * as THREE from 'three'
 import * as THREE_WEBGPU from 'three/webgpu'
 import * as THREE_TSL from 'three/tsl'
-import * as postprocessing from 'postprocessing'
+import * as POSTPROCESSING from 'postprocessing'
 
 /**
   To prevent duplicate instances of three.js being imported, we have to make sure
@@ -18,7 +18,7 @@ if (typeof window !== 'undefined') {
       THREE,
       THREE_WEBGPU,
       THREE_TSL,
-      postprocessing,
+      POSTPROCESSING,
     },
   }
 }

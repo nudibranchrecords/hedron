@@ -1,31 +1,28 @@
-const { THREE } = window.HEDRON.dependencies
+import * as THREE from 'three'
 const geomSize = 1
 
 const repositionVec = new THREE.Vector3(0.5, 0.5, 0.5)
 
+// Defining 5 geometries (the platonic solids!)
+const geoms = {
+  cube: new THREE.BoxGeometry(geomSize, geomSize, geomSize),
+  tetra: new THREE.TetrahedronGeometry(geomSize),
+  octa: new THREE.OctahedronGeometry(geomSize),
+  icosa: new THREE.IcosahedronGeometry(geomSize),
+  dodeca: new THREE.DodecahedronGeometry(geomSize),
+}
+
+type GeomName = keyof typeof geoms
+
 export default class Solid {
   root = new THREE.Group()
-  color = new THREE.Color()
+  meshes: Record<GeomName, THREE.Mesh> = {} as Record<GeomName, THREE.Mesh>
+  geomNames = Object.keys(geoms) as GeomName[]
   mat = new THREE.MeshBasicMaterial({ wireframe: true })
+  currGeomName = 'cube'
 
   constructor() {
-    // All sketches need root property to add things to
-
-    this.meshes = {}
-
-    // Defining 5 geometries (the platonic solids!)
-    const geoms = {
-      cube: new THREE.BoxGeometry(geomSize, geomSize, geomSize),
-      tetra: new THREE.TetrahedronGeometry(geomSize),
-      octa: new THREE.OctahedronGeometry(geomSize),
-      icosa: new THREE.IcosahedronGeometry(geomSize),
-      dodeca: new THREE.DodecahedronGeometry(geomSize),
-    }
-
-    this.geomNames = Object.keys(geoms)
-
-    // Create all 5 meshes and add to the sketch
-    for (const geomName in geoms) {
+    for (const geomName of this.geomNames) {
       const mesh = new THREE.Mesh(geoms[geomName], this.mat)
       this.meshes[geomName] = mesh
       this.root.add(mesh)
