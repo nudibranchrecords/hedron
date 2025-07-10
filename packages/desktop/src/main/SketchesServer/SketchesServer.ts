@@ -34,8 +34,10 @@ export class SketchesServer extends EventEmitter {
     emptyDirSync(outdir)
 
     /**
-      Here we are generating files such as `THREE.js` that the sketches server will serve up. These are a faked modules that is
-      pointing to the global vars Hedron uses. Esbuild will resolve any imports to point to these files instead.
+      Here we are generating files such as `THREE.js` that the sketches server will serve up. These are a faked modules that are
+      pointing to the same instance of three that Hedron uses.
+      Esbuild will resolve any imports (e.g. `import { BufferGeometry } from 'three'`) to point to these files instead.
+      See `.sketches-server/` for all the generated files.
     */
     const { globalVarsRef } = await import('@hedron/engine')
     await createGlobalVarModuleFiles(outdir, globalVarsRef)
