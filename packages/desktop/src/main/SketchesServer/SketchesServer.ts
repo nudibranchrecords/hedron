@@ -10,9 +10,6 @@ import { generateModuleExportString, watchWithDebounce } from './utils'
 import { getEsbuild } from '@main/getUnpackedModules'
 import { FileWatchEvents } from '@shared/Events'
 
-// import * as THREE from 'three'
-// import * as THREE_TSL from 'three/tsl'
-
 const HOST = process.platform.startsWith('win') ? 'localhost' : '0.0.0.0'
 
 export class SketchesServer extends EventEmitter {
@@ -27,49 +24,20 @@ export class SketchesServer extends EventEmitter {
     const fs = require('fs')
 
     try {
-      const THREE = await import('three')
-      const threeProxy = generateModuleExportString(
-        THREE,
-        'three',
-        'window.HEDRON.dependencies.THREE',
-      )
-      fs.writeFileSync(path.join(outdir, 'three.js'), threeProxy)
+      const { globalVarsRef } = await import('@hedron/engine')
 
-      const THREE_TSL = await import('three/tsl')
-      const threeTslProxy = generateModuleExportString(
-        THREE_TSL,
-        'three/tsl',
-        'window.HEDRON.dependencies.THREE_TSL',
-      )
-      fs.writeFileSync(path.join(outdir, 'three.tsl.js'), threeTslProxy)
-
-      const THREE_WEBGPU = await import('three/webgpu')
-      const threeWebgpuProxy = generateModuleExportString(
-        THREE_WEBGPU,
-        'three/webgpu',
-        'window.HEDRON.dependencies.THREE_WEBGPU',
-      )
-      fs.writeFileSync(path.join(outdir, 'three.webgpu.js'), threeWebgpuProxy)
-
-      this.createImportMap(outdir)
+      for (const { varName, packageName } of globalVarsRef.vars) {
+        const MODULE = await import(packageName)
+        const proxy = generateModuleExportString(
+          MODULE,
+          packageName,
+          `${globalVarsRef.dependenciesRoot}.${varName}`,
+        )
+        fs.writeFileSync(path.join(outdir, `${varName}.js`), proxy)
+      }
     } catch (error) {
       console.error('Failed to create Three.js proxy modules:', error)
     }
-  }
-
-  private createImportMap = (outdir: string): void => {
-    const importMap = {
-      imports: {
-        three: '/three.js',
-        'three/': '/',
-        'three/tsl': '/three.tsl.js',
-        'three/webgpu': '/three.webgpu.js',
-      },
-    }
-
-    const importMapPath = path.join(outdir, 'importmap.json')
-    const fs = require('fs')
-    fs.writeFileSync(importMapPath, JSON.stringify(importMap, null, 2))
   }
 
   init = async (dirPath: string): Promise<esbuild.ServeResult> => {
@@ -132,7 +100,7 @@ export class SketchesServer extends EventEmitter {
             // Resolve 'three' imports to use the served version
             build.onResolve({ filter: /^three$/ }, () => {
               return {
-                path: '/three.js',
+                path: '/THREE.js',
                 external: true,
               }
             })
@@ -144,14 +112,14 @@ export class SketchesServer extends EventEmitter {
               // Handle specific known submodules
               if (submodulePath === 'tsl') {
                 return {
-                  path: '/three.tsl.js',
+                  path: '/THREE_TSL.js',
                   external: true,
                 }
               }
 
               if (submodulePath === 'webgpu') {
                 return {
-                  path: '/three.webgpu.js',
+                  path: '/THREE_WEBGPU.js',
                   external: true,
                 }
               }

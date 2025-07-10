@@ -14,7 +14,35 @@ export const dependencies = {
   postprocessing,
 }
 
-// @ts-expect-error ---
-window.HEDRON = {
-  dependencies,
+if (typeof window !== 'undefined') {
+  // @ts-expect-error ---
+  window.__HEDRON = {
+    dependencies,
+  }
+}
+
+export const globalVarsRef = {
+  dependenciesRoot: 'window.__HEDRON.dependencies',
+  vars: [
+    {
+      packageName: 'three',
+      varName: 'THREE',
+    },
+    {
+      packageName: 'three/webgpu',
+      varName: 'THREE_WEBGPU',
+    },
+    {
+      packageName: 'three/webgpu',
+      varName: 'THREE_WEBGPU',
+    },
+    {
+      packageName: 'three/tsl',
+      varName: 'THREE_TSL',
+    },
+    {
+      packageName: 'postprocessing',
+      varName: 'POSTPROCESSING',
+    },
+  ],
 }
