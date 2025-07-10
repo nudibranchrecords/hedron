@@ -30,6 +30,11 @@ export const watchWithDebounce = (
   })
 }
 
+/**
+ This function is a bit mad! It generates a JS file that re-exports all the named exports
+ from a module, allowing it to be used as a proxy for the original module in a global
+ context. See inside of `.sketches-server` folder for generated files (when running in dev mode).
+ */
 export const generateModuleExportString = (
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   module: any,
