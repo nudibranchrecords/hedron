@@ -5,8 +5,7 @@ import { getPort } from 'get-port-please'
 import { app } from 'electron'
 import * as esbuild from 'esbuild'
 import { emptyDirSync } from 'fs-extra'
-
-import { generateModuleExportString, watchWithDebounce } from './utils'
+import { createGlobalVarModuleFiles, watchWithDebounce } from './utils'
 import { getEsbuild } from '@main/getUnpackedModules'
 import { FileWatchEvents } from '@shared/Events'
 
@@ -18,26 +17,6 @@ export class SketchesServer extends EventEmitter {
   constructor() {
     super()
     this.isFirstBuildComplete = false
-  }
-
-  private copyThreeJsToOutput = async (outdir: string): Promise<void> => {
-    const fs = require('fs')
-
-    try {
-      const { globalVarsRef } = await import('@hedron/engine')
-
-      for (const { varName, packageName } of globalVarsRef.vars) {
-        const MODULE = await import(packageName)
-        const proxy = generateModuleExportString(
-          MODULE,
-          packageName,
-          `${globalVarsRef.dependenciesRoot}.${varName}`,
-        )
-        fs.writeFileSync(path.join(outdir, `${varName}.js`), proxy)
-      }
-    } catch (error) {
-      console.error('Failed to create Three.js proxy modules:', error)
-    }
   }
 
   init = async (dirPath: string): Promise<esbuild.ServeResult> => {
@@ -54,8 +33,12 @@ export class SketchesServer extends EventEmitter {
     // Clear out sketches-server dir
     emptyDirSync(outdir)
 
-    // Copy Three.js to output directory so it can be served
-    await this.copyThreeJsToOutput(outdir)
+    /**
+      Here we are generating files such as `THREE.js` that the sketches server will serve up. These are a faked modules that is
+      pointing to the global vars Hedron uses. Esbuild will resolve any imports to point to these files instead.
+    */
+    const { globalVarsRef } = await import('@hedron/engine')
+    await createGlobalVarModuleFiles(outdir, globalVarsRef)
 
     const ctx = await esbuild.context({
       entryPoints: [
@@ -91,46 +74,20 @@ export class SketchesServer extends EventEmitter {
       publicPath: `http://${HOST}:${port}`,
       bundle: true,
       format: 'esm',
-      // Make three.js external to avoid bundling multiple versions
-      external: ['three', 'three/*'],
+      external: globalVarsRef.vars.map((v) => v.packageName),
       plugins: [
         {
-          name: 'three-js-resolver',
+          name: 'global-var-package-resolver',
           setup: (build): void => {
-            // Resolve 'three' imports to use the served version
-            build.onResolve({ filter: /^three$/ }, () => {
-              return {
-                path: '/THREE.js',
-                external: true,
-              }
-            })
-
-            // Resolve any Three.js submodule imports
-            build.onResolve({ filter: /^three\/.*/ }, (args) => {
-              const submodulePath = args.path.replace('three/', '')
-
-              // Handle specific known submodules
-              if (submodulePath === 'tsl') {
+            // Resolve any package defined in the `@hedron/engine` to point to Hedron's global vars
+            for (const { varName, packageName } of globalVarsRef.vars) {
+              build.onResolve({ filter: new RegExp(`^${packageName}$`) }, () => {
                 return {
-                  path: '/THREE_TSL.js',
+                  path: `/${varName}.js`,
                   external: true,
                 }
-              }
-
-              if (submodulePath === 'webgpu') {
-                return {
-                  path: '/THREE_WEBGPU.js',
-                  external: true,
-                }
-              }
-
-              // For other submodules, fall back to unpkg
-              const fallbackPath = `https://unpkg.com/three@0.178.0/${submodulePath}`
-              return {
-                path: fallbackPath,
-                external: true,
-              }
-            })
+              })
+            }
           },
         },
         {

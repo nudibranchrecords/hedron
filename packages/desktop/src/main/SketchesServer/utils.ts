@@ -1,5 +1,6 @@
 import path from 'path'
 import { FSWatcher } from 'chokidar'
+import { GlobalEngineVarsRef } from '@hedron/engine'
 import { debounceWithId } from '@shared/utils/debounceWithId'
 import { FileWatchEvents } from '@shared/Events'
 
@@ -30,6 +31,7 @@ export const watchWithDebounce = (
 }
 
 export const generateModuleExportString = (
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   module: any,
   moduleName: string,
   globalPath: string,
@@ -57,4 +59,25 @@ export default MODULE;
 // Static named exports
 ${exportLines}
 `.trim()
+}
+
+export const createGlobalVarModuleFiles = async (
+  outdir: string,
+  globalVarsRef: GlobalEngineVarsRef,
+): Promise<void> => {
+  const fs = require('fs')
+
+  try {
+    for (const { varName, packageName } of globalVarsRef.vars) {
+      const MODULE = await import(packageName)
+      const proxy = generateModuleExportString(
+        MODULE,
+        packageName,
+        `${globalVarsRef.dependenciesRoot}.${varName}`,
+      )
+      fs.writeFileSync(path.join(outdir, `${varName}.js`), proxy)
+    }
+  } catch (error) {
+    console.error('Failed to create Three.js proxy modules:', error)
+  }
 }
