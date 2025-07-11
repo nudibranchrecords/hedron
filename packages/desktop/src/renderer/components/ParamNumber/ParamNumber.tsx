@@ -18,7 +18,7 @@ export const ParamNumber = ({ id }: ParamNumberProps) => {
     if (typeof nodeValue !== 'number') {
       throw new Error('ParamNumber value was not a number')
     }
-    ref.current?.drawBar(nodeValue)
+    ref.current?.updateValue(nodeValue)
   }, 100)
 
   return <FloatSlider ref={ref} onValueChange={onValueChange} />

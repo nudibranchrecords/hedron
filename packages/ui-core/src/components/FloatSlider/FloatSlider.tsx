@@ -1,4 +1,4 @@
-import { forwardRef, useCallback, useEffect, useImperativeHandle, useRef } from 'react'
+import { forwardRef, useCallback, useEffect, useImperativeHandle, useMemo, useRef } from 'react'
 import { useDebounceCallback, useResizeObserver } from 'usehooks-ts'
 import css from './FloatSlider.module.css'
 import { useElementScrub } from '@hooks/useElementScrub'
@@ -17,10 +17,12 @@ export type FloatSliderHandle = {
 
 interface FloatSliderProps {
   onValueChange: (val: number) => void
+  min: number
+  max: number
 }
 
 export const FloatSlider = forwardRef<FloatSliderHandle, FloatSliderProps>(function FloatSlider(
-  { onValueChange },
+  { onValueChange, min, max },
   ref,
 ) {
   const containerRef = useRef<HTMLDivElement>(null)
@@ -30,31 +32,37 @@ export const FloatSlider = forwardRef<FloatSliderHandle, FloatSliderProps>(funct
   const size = useRef({ width: 0, height: 0 })
   const numberInput = useRef<HTMLInputElement>(null!)
 
+  const range = useMemo(() => max - min, [max, min])
+
   const updateTextValue = useCallback((value: number) => {
     numberInput.current.value = value.toFixed(2)
   }, [])
 
-  const updateValue = useCallback((value: number) => {
-    const ctx = canvasCtx.current
+  const updateValue = useCallback(
+    (value: number) => {
+      const ctx = canvasCtx.current
 
-    if (!ctx) return
+      if (!ctx) return
 
-    const w = size.current.width - barWidth
-    const h = size.current.height
-    const x = value * w
-    const prevX = currVal.current * w
+      const w = size.current.width - barWidth
+      const h = size.current.height
+      const x = ((value - min) / range) * w
 
-    // Only clear the area from the last position
-    ctx.clearRect(prevX - 1, 0, barWidth + 2, h)
+      const prevX = ((currVal.current - min) / range) * w
 
-    // Draw bar
-    ctx.fillStyle = '#fff'
-    ctx.fillRect(x, 0, barWidth, h)
+      // Only clear the area from the last position
+      ctx.clearRect(prevX - 1, 0, barWidth + 2, h)
 
-    updateTextValue(value)
+      // Draw bar
+      ctx.fillStyle = '#fff'
+      ctx.fillRect(x, 0, barWidth, h)
 
-    currVal.current = value
-  }, [])
+      updateTextValue(value)
+
+      currVal.current = value
+    },
+    [min, range, updateTextValue],
+  )
 
   const onInputSubmit = useCallback(
     (e: React.FormEvent<HTMLFormElement>) => {
@@ -98,13 +106,14 @@ export const FloatSlider = forwardRef<FloatSliderHandle, FloatSliderProps>(funct
   })
 
   const onElementScrub = useCallback(
-    (diff: number) => {
-      const newVal = Math.max(0, Math.min(1, currVal.current + diff))
+    (inc: number) => {
+      const diff = inc * range
+      const newVal = Math.max(min, Math.min(max, currVal.current + diff))
 
       updateValue(newVal)
       onValueChange(newVal)
     },
-    [updateValue, onValueChange],
+    [range, min, max, updateValue, onValueChange],
   )
 
   useElementScrub(canvasRef, onElementScrub)

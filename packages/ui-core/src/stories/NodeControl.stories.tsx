@@ -34,15 +34,46 @@ interface BasicProps {
 export const Number = ({ title = 'Short Name', isActive, onClick }: BasicProps) => {
   const ref = useRef<FloatSliderHandle>(null)
 
+  ref.current?.updateValue(Math.random() * 1)
+
   useInterval(() => {
-    ref.current!.updateValue(Math.random() * 30)
+    ref.current!.updateValue(Math.random() * 1)
   }, 3000)
   return (
     <NodeControl isActive={isActive} onClick={onClick}>
       <NodeControlMain>
         <NodeControlTitle>{title}</NodeControlTitle>
         <NodeControlInner>
-          <FloatSlider onValueChange={fn()} ref={ref} />
+          <FloatSlider min={0} max={1} onValueChange={fn()} ref={ref} />
+        </NodeControlInner>
+      </NodeControlMain>
+    </NodeControl>
+  )
+}
+export const NumberMinMaxPositive = ({ title = 'Short Name', isActive, onClick }: BasicProps) => {
+  const ref = useRef<FloatSliderHandle>(null)
+
+  return (
+    <NodeControl isActive={isActive} onClick={onClick}>
+      <NodeControlMain>
+        <NodeControlTitle>{title}</NodeControlTitle>
+        <NodeControlInner>
+          <FloatSlider min={5} max={20} onValueChange={fn()} ref={ref} />
+        </NodeControlInner>
+      </NodeControlMain>
+    </NodeControl>
+  )
+}
+
+export const NumberMinMaxNegative = ({ title = 'Short Name', isActive, onClick }: BasicProps) => {
+  const ref = useRef<FloatSliderHandle>(null)
+
+  return (
+    <NodeControl isActive={isActive} onClick={onClick}>
+      <NodeControlMain>
+        <NodeControlTitle>{title}</NodeControlTitle>
+        <NodeControlInner>
+          <FloatSlider min={-10} max={10} onValueChange={fn()} ref={ref} />
         </NodeControlInner>
       </NodeControlMain>
     </NodeControl>
