@@ -36,3 +36,11 @@
   text-align: left;
   z-index: 1;
 }
+
+.zeroPip {
+  position: absolute;
+  bottom: 0;
+  width: 1px;
+  height: 3px;
+  background: var(--lineColor2);
+}

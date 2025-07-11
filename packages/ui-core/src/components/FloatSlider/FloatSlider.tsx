@@ -25,12 +25,13 @@ export const FloatSlider = forwardRef<FloatSliderHandle, FloatSliderProps>(funct
   { onValueChange, min, max },
   ref,
 ) {
-  const containerRef = useRef<HTMLDivElement>(null)
-  const canvasRef = useRef<HTMLCanvasElement>(null)
+  const containerRef = useRef<HTMLDivElement>(null!)
+  const canvasRef = useRef<HTMLCanvasElement>(null!)
   const canvasCtx = useRef<CanvasRenderingContext2D | null>(null)
   const currVal = useRef<number>(0)
   const size = useRef({ width: 0, height: 0 })
   const numberInput = useRef<HTMLInputElement>(null!)
+  const zeroPip = useRef<HTMLDivElement>(null!)
 
   const range = useMemo(() => max - min, [max, min])
 
@@ -101,16 +102,30 @@ export const FloatSlider = forwardRef<FloatSliderHandle, FloatSliderProps>(funct
     numberInput.current.select()
   }, [])
 
+  const updateZeroPip = useCallback(() => {
+    if (min >= 0) {
+      zeroPip.current.style.display = 'none'
+    } else {
+      zeroPip.current.style.display = 'block'
+      const w = canvasRef.current.offsetWidth - barWidth / PIXEL_DENSITY
+
+      console.log(size.current.width)
+      const zeroPos = (0 - min) / range
+      console.log(zeroPos)
+      zeroPip.current.style.left = `${zeroPos * w}px`
+    }
+  }, [min, range])
+
   const onResize = useDebounceCallback(({ width, height }: Size) => {
     const canvas = canvasRef.current
-
-    if (!canvas) return
 
     canvas.height = height! * PIXEL_DENSITY
     canvas.width = width! * PIXEL_DENSITY
     size.current.width = width! * PIXEL_DENSITY
     size.current.height = height! * PIXEL_DENSITY
     canvas.setAttribute('style', 'width:' + width + 'px; height:' + height + 'px;')
+
+    updateZeroPip()
   }, 200)
 
   useResizeObserver({
@@ -132,7 +147,7 @@ export const FloatSlider = forwardRef<FloatSliderHandle, FloatSliderProps>(funct
   useElementScrub(canvasRef, onElementScrub)
 
   useEffect(() => {
-    const canvas = canvasRef.current!
+    const canvas = canvasRef.current
     canvasCtx.current = canvas.getContext('2d')
   }, [])
 
@@ -152,6 +167,7 @@ export const FloatSlider = forwardRef<FloatSliderHandle, FloatSliderProps>(funct
         height={0}
         onDoubleClick={onDoubleClick}
       />
+      <div className={css.zeroPip} ref={zeroPip} />
     </div>
   )
 })
