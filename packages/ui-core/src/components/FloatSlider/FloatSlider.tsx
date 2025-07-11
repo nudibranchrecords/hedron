@@ -28,7 +28,11 @@ export const FloatSlider = forwardRef<FloatSliderHandle, FloatSliderProps>(funct
   const canvasCtx = useRef<CanvasRenderingContext2D | null>(null)
   const currVal = useRef<number>(0)
   const size = useRef({ width: 0, height: 0 })
-  const textBox = useRef<HTMLSpanElement>(null)
+  const numberInput = useRef<HTMLInputElement>(null!)
+
+  const updateTextValue = useCallback((value: number) => {
+    numberInput.current.value = value.toFixed(2)
+  }, [])
 
   const updateValue = useCallback((value: number) => {
     const ctx = canvasCtx.current
@@ -47,13 +51,34 @@ export const FloatSlider = forwardRef<FloatSliderHandle, FloatSliderProps>(funct
     ctx.fillStyle = '#fff'
     ctx.fillRect(x, 0, barWidth, h)
 
-    // Update text box
-    if (textBox.current) {
-      textBox.current.textContent = value.toFixed(2)
-    }
+    updateTextValue(value)
 
     currVal.current = value
   }, [])
+
+  const onInputSubmit = useCallback(
+    (e: React.FormEvent<HTMLFormElement>) => {
+      e.preventDefault()
+      const input = numberInput.current
+
+      if (input) {
+        const value = parseFloat(input.value)
+        if (!isNaN(value)) {
+          updateValue(value)
+          onValueChange(value)
+        }
+      }
+    },
+    [updateValue, onValueChange],
+  )
+
+  const onInputFocus = useCallback(() => {
+    numberInput.current.select()
+  }, [])
+
+  const onInputBlur = useCallback(() => {
+    updateTextValue(currVal.current)
+  }, [updateTextValue])
 
   const onResize = useDebounceCallback(({ width, height }: Size) => {
     const canvas = canvasRef.current
@@ -95,7 +120,15 @@ export const FloatSlider = forwardRef<FloatSliderHandle, FloatSliderProps>(funct
 
   return (
     <div className={css.wrapper} ref={containerRef}>
-      <span className={css.textBox} ref={textBox}></span>
+      <form onSubmit={onInputSubmit} noValidate>
+        <input
+          type="number"
+          className={css.textBox}
+          ref={numberInput}
+          onBlur={onInputBlur}
+          onFocus={onInputFocus}
+        />
+      </form>
       <canvas ref={canvasRef} className={css.canvas} width={0} height={0} />
     </div>
   )
