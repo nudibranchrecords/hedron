@@ -39,7 +39,7 @@ export const FloatSlider = forwardRef<FloatSliderHandle, FloatSliderProps>(funct
     numberInput.current.value = value.toFixed(2)
   }, [])
 
-  const updateValue = useCallback(
+  const drawBar = useCallback(
     (value: number) => {
       const ctx = canvasCtx.current
 
@@ -68,14 +68,19 @@ export const FloatSlider = forwardRef<FloatSliderHandle, FloatSliderProps>(funct
       ctx.clearRect(prevX - 1, 0, barWidth + 2, h)
 
       // Draw bar
-
       ctx.fillRect(x, 0, barWidth, h)
+    },
+    [min, max, range],
+  )
 
+  const updateValue = useCallback(
+    (value: number) => {
+      drawBar(value)
       updateTextValue(value)
 
       currVal.current = value
     },
-    [max, min, range, updateTextValue],
+    [drawBar, updateTextValue],
   )
 
   const onInputSubmit = useCallback(
@@ -113,25 +118,27 @@ export const FloatSlider = forwardRef<FloatSliderHandle, FloatSliderProps>(funct
     }
   }, [min, range])
 
-  useEffect(() => {
-    updateZeroPip()
-  }, [updateZeroPip, min, max, range])
+  const onResize = useCallback(
+    ({ width, height }: Size) => {
+      const canvas = canvasRef.current
 
-  const onResize = useDebounceCallback(({ width, height }: Size) => {
-    const canvas = canvasRef.current
+      canvas.height = height! * PIXEL_DENSITY
+      canvas.width = width! * PIXEL_DENSITY
+      size.current.width = width! * PIXEL_DENSITY
+      size.current.height = height! * PIXEL_DENSITY
+      canvas.setAttribute('style', 'width:' + width + 'px; height:' + height + 'px;')
 
-    canvas.height = height! * PIXEL_DENSITY
-    canvas.width = width! * PIXEL_DENSITY
-    size.current.width = width! * PIXEL_DENSITY
-    size.current.height = height! * PIXEL_DENSITY
-    canvas.setAttribute('style', 'width:' + width + 'px; height:' + height + 'px;')
+      drawBar(currVal.current)
+      updateZeroPip()
+    },
+    [drawBar, updateZeroPip],
+  )
 
-    updateZeroPip()
-  }, 200)
+  const onResizeDebounced = useDebounceCallback(onResize, 200)
 
   useResizeObserver({
     ref: containerRef,
-    onResize,
+    onResize: onResizeDebounced,
   })
 
   const onElementScrub = useCallback(
@@ -150,7 +157,11 @@ export const FloatSlider = forwardRef<FloatSliderHandle, FloatSliderProps>(funct
   useEffect(() => {
     const canvas = canvasRef.current
     canvasCtx.current = canvas.getContext('2d')
-  }, [])
+    onResize({
+      width: containerRef.current.offsetWidth,
+      height: containerRef.current.offsetHeight,
+    })
+  }, [onResize])
 
   useImperativeHandle(ref, () => {
     return { updateValue }
