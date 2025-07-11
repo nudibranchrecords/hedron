@@ -112,7 +112,7 @@ export const FloatSlider = forwardRef<FloatSliderHandle, FloatSliderProps>(funct
       zeroPip.current.style.display = 'none'
     } else {
       zeroPip.current.style.display = 'block'
-      const w = canvasRef.current.offsetWidth - barWidth / PIXEL_DENSITY
+      const w = canvasRef.current.offsetWidth - barWidth
       const zeroPos = (0 - min) / range
       zeroPip.current.style.left = `${zeroPos * w}px`
     }

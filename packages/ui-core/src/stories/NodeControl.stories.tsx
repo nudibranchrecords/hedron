@@ -44,7 +44,7 @@ export const Number = ({ title = 'Short Name', isActive, onClick }: BasicProps) 
       <NodeControlMain>
         <NodeControlTitle>{title}</NodeControlTitle>
         <NodeControlInner>
-          <FloatSlider min={0} max={1} onValueChange={fn()} ref={ref} />
+          <FloatSlider min={-1} max={1} onValueChange={fn()} ref={ref} />
         </NodeControlInner>
       </NodeControlMain>
     </NodeControl>
