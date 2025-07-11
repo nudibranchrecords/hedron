@@ -17,12 +17,12 @@ export type FloatSliderHandle = {
 
 interface FloatSliderProps {
   onValueChange: (val: number) => void
-  min: number
-  max: number
+  min?: number
+  max?: number
 }
 
 export const FloatSlider = forwardRef<FloatSliderHandle, FloatSliderProps>(function FloatSlider(
-  { onValueChange, min, max },
+  { onValueChange, min = 0, max = 1 },
   ref,
 ) {
   const containerRef = useRef<HTMLDivElement>(null!)

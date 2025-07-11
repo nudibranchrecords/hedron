@@ -41,6 +41,8 @@ export interface NodeParamWithChildren extends NodeParamBase {
 
 export interface NodeParamNumber extends NodeParamBase {
   valueType: NodeTypes.Number
+  sliderMin?: number
+  sliderMax?: number
 }
 
 export interface NodeParamBoolean extends NodeParamBase {
@@ -94,6 +96,8 @@ export interface SketchConfigParamNumber extends SketchConfigParamBase {
 export interface SketchConfigParamBoolean extends SketchConfigParamBase {
   valueType: NodeTypes.Boolean
   defaultValue: boolean
+  sliderMin?: number
+  sliderMax?: number
 }
 
 export interface SketchConfigParamEnum extends SketchConfigParamBase {

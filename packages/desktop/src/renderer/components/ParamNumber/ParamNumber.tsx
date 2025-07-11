@@ -16,8 +16,9 @@ export const ParamNumber = ({ id }: ParamNumberProps) => {
 
   const onValueChange = useOnNodeValueChange(id)
 
-  // const node = useEngineStore((state) => state.nodes[id] as NodeParamNumber)
+  const node = useEngineStore((state) => state.nodes[id] as NodeParamNumber)
 
+  // TODO: Use subscribe here. Won't need to check for prev value either.
   useInterval(() => {
     const nodeValue = engineStore.getState().nodeValues[id]
     if (nodeValue === prevVal.current) {
@@ -32,8 +33,8 @@ export const ParamNumber = ({ id }: ParamNumberProps) => {
 
   return (
     <FloatSlider
-      // min={node.sliderMin}
-      // max={node.sliderMax}
+      min={node.sliderMin}
+      max={node.sliderMax}
       ref={ref}
       onValueChange={onValueChange}
     />

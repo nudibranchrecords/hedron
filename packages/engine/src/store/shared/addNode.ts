@@ -8,7 +8,7 @@ export const addNode = (
   state: EngineState,
   paramId: string,
   sketchId: string,
-  { key, valueType = NodeTypes.Number, defaultValue }: SketchConfigParam,
+  { key, valueType = NodeTypes.Number, defaultValue, ...config }: SketchConfigParam,
 ) => {
   if (isNodeTypeWithChildren(valueType)) {
     if (!Array.isArray(defaultValue)) {
@@ -47,6 +47,7 @@ export const addNode = (
       type: 'param' as const,
       valueType,
       sketchId,
+      ...config,
     }
 
     // Set the default value if it matches the valueType.
