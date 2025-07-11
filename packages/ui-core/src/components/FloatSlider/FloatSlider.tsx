@@ -46,22 +46,35 @@ export const FloatSlider = forwardRef<FloatSliderHandle, FloatSliderProps>(funct
 
       const w = size.current.width - barWidth
       const h = size.current.height
-      const x = ((value - min) / range) * w
 
-      const prevX = ((currVal.current - min) / range) * w
+      let x
+
+      // Red line if slider is out of bounds
+      ctx.fillStyle = '#fe0000'
+
+      if (value > max) {
+        x = w
+      } else if (value < min) {
+        x = 0
+      } else {
+        ctx.fillStyle = '#fff'
+        x = ((value - min) / range) * w
+      }
+
+      const prevX = Math.min(Math.max(0, ((currVal.current - min) / range) * w), w)
 
       // Only clear the area from the last position
       ctx.clearRect(prevX - 1, 0, barWidth + 2, h)
 
       // Draw bar
-      ctx.fillStyle = '#fff'
+
       ctx.fillRect(x, 0, barWidth, h)
 
       updateTextValue(value)
 
       currVal.current = value
     },
-    [min, range, updateTextValue],
+    [max, min, range, updateTextValue],
   )
 
   const onInputSubmit = useCallback(
