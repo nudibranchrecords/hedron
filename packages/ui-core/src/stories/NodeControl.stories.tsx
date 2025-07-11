@@ -35,7 +35,7 @@ export const Number = ({ title = 'Short Name', isActive, onClick }: BasicProps) 
   const ref = useRef<FloatSliderHandle>(null)
 
   useInterval(() => {
-    ref.current!.drawBar(Math.random())
+    ref.current!.updateValue(Math.random() * 30)
   }, 3000)
   return (
     <NodeControl isActive={isActive} onClick={onClick}>

@@ -12,7 +12,7 @@ const barWidth = 2
 const PIXEL_DENSITY = 2
 
 export type FloatSliderHandle = {
-  drawBar: (value: number) => void
+  updateValue: (value: number) => void
 }
 
 interface FloatSliderProps {
@@ -28,13 +28,11 @@ export const FloatSlider = forwardRef<FloatSliderHandle, FloatSliderProps>(funct
   const canvasCtx = useRef<CanvasRenderingContext2D | null>(null)
   const currVal = useRef<number>(0)
   const size = useRef({ width: 0, height: 0 })
+  const textBox = useRef<HTMLSpanElement>(null)
 
-  const drawBar = useCallback((value: number) => {
+  const updateValue = useCallback((value: number) => {
     const ctx = canvasCtx.current
 
-    if (value > 1 || value < 0) {
-      throw new Error(`drawBar value must be within range 0-1. Value was ${value}`)
-    }
     if (!ctx) return
 
     const w = size.current.width - barWidth
@@ -48,6 +46,11 @@ export const FloatSlider = forwardRef<FloatSliderHandle, FloatSliderProps>(funct
     // Draw bar
     ctx.fillStyle = '#fff'
     ctx.fillRect(x, 0, barWidth, h)
+
+    // Update text box
+    if (textBox.current) {
+      textBox.current.textContent = value.toFixed(2)
+    }
 
     currVal.current = value
   }, [])
@@ -73,10 +76,10 @@ export const FloatSlider = forwardRef<FloatSliderHandle, FloatSliderProps>(funct
     (diff: number) => {
       const newVal = Math.max(0, Math.min(1, currVal.current + diff))
 
-      drawBar(newVal)
+      updateValue(newVal)
       onValueChange(newVal)
     },
-    [drawBar, onValueChange],
+    [updateValue, onValueChange],
   )
 
   useElementScrub(canvasRef, onElementScrub)
@@ -87,11 +90,12 @@ export const FloatSlider = forwardRef<FloatSliderHandle, FloatSliderProps>(funct
   }, [])
 
   useImperativeHandle(ref, () => {
-    return { drawBar }
-  }, [drawBar])
+    return { updateValue }
+  }, [updateValue])
 
   return (
     <div className={css.wrapper} ref={containerRef}>
+      <span className={css.textBox} ref={textBox}></span>
       <canvas ref={canvasRef} className={css.canvas} width={0} height={0} />
     </div>
   )

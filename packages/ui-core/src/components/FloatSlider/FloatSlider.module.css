@@ -21,3 +21,14 @@
   left: 0;
   right: 0;
 }
+
+.textBox {
+  color: var(--textColorLight1);
+  position: absolute;
+  inset: var(--gapSmall);
+  display: flex;
+  align-items: center;
+  text-align: left;
+  pointer-events: none;
+  z-index: 1;
+}
