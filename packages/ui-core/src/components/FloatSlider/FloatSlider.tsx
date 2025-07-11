@@ -108,13 +108,14 @@ export const FloatSlider = forwardRef<FloatSliderHandle, FloatSliderProps>(funct
     } else {
       zeroPip.current.style.display = 'block'
       const w = canvasRef.current.offsetWidth - barWidth / PIXEL_DENSITY
-
-      console.log(size.current.width)
       const zeroPos = (0 - min) / range
-      console.log(zeroPos)
       zeroPip.current.style.left = `${zeroPos * w}px`
     }
   }, [min, range])
+
+  useEffect(() => {
+    updateZeroPip()
+  }, [updateZeroPip, min, max, range])
 
   const onResize = useDebounceCallback(({ width, height }: Size) => {
     const canvas = canvasRef.current
