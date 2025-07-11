@@ -1,41 +1,15 @@
 import path from 'path'
 import { EventEmitter } from 'events'
-import chokidar, { FSWatcher } from 'chokidar'
+import chokidar from 'chokidar'
 import { getPort } from 'get-port-please'
 import { app } from 'electron'
 import * as esbuild from 'esbuild'
 import { emptyDirSync } from 'fs-extra'
+import { createGlobalVarModuleFiles, watchWithDebounce } from './utils'
 import { getEsbuild } from '@main/getUnpackedModules'
 import { FileWatchEvents } from '@shared/Events'
-import { debounceWithId } from '@shared/utils/debounceWithId'
 
 const HOST = process.platform.startsWith('win') ? 'localhost' : '0.0.0.0'
-
-const WATCH_DEBOUNCE_MS = 300
-
-const getSketchIdFromPath = (sketchPath: string): string => {
-  const folderName = path.dirname(sketchPath).split(path.sep).pop()
-  if (!folderName) return sketchPath
-  return folderName
-}
-
-const watchWithDebounce = (
-  watcher: FSWatcher,
-  eventName: FileWatchEvents,
-  cb: (path: string, moduleId: string) => void,
-) => {
-  watcher.on(eventName, (path) => {
-    const id = getSketchIdFromPath(path)
-
-    debounceWithId(
-      () => {
-        cb(path, id)
-      },
-      WATCH_DEBOUNCE_MS,
-      id + eventName,
-    )
-  })
-}
 
 export class SketchesServer extends EventEmitter {
   private isFirstBuildComplete: boolean
@@ -58,6 +32,15 @@ export class SketchesServer extends EventEmitter {
 
     // Clear out sketches-server dir
     emptyDirSync(outdir)
+
+    /**
+      Here we are generating files such as `THREE.js` that the sketches server will serve up. These are a faked modules that are
+      pointing to the same instance of three that Hedron uses.
+      Esbuild will resolve any imports (e.g. `import { BufferGeometry } from 'three'`) to point to these files instead.
+      See `.sketches-server/` for all the generated files.
+    */
+    const { globalVarsRef } = await import('@hedron/engine')
+    await createGlobalVarModuleFiles(outdir, globalVarsRef)
 
     const ctx = await esbuild.context({
       entryPoints: [
@@ -93,7 +76,22 @@ export class SketchesServer extends EventEmitter {
       publicPath: `http://${HOST}:${port}`,
       bundle: true,
       format: 'esm',
+      external: globalVarsRef.vars.map((v) => v.packageName),
       plugins: [
+        {
+          name: 'global-var-package-resolver',
+          setup: (build): void => {
+            // Resolve any package defined in the `@hedron/engine` to point to Hedron's global vars
+            for (const { varName, packageName } of globalVarsRef.vars) {
+              build.onResolve({ filter: new RegExp(`^${packageName}$`) }, () => {
+                return {
+                  path: `/${varName}.js`,
+                  external: true,
+                }
+              })
+            }
+          },
+        },
         {
           name: 'on-end',
           setup: (build): void => {
@@ -109,6 +107,7 @@ export class SketchesServer extends EventEmitter {
     })
 
     console.log(`Starting server... http://${HOST}:${port}`)
+    console.log(`Serving directory: ${outdir}`)
 
     const { host } = await ctx.serve({
       servedir: outdir,
