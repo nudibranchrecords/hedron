@@ -23,12 +23,14 @@
 }
 
 .textBox {
+  pointer-events: none;
   border: 0;
   outline: none;
   background: transparent;
   color: var(--textColorLight1);
   position: absolute;
   inset: var(--gapSmall);
+  overflow: visible;
   display: flex;
   align-items: center;
   text-align: left;

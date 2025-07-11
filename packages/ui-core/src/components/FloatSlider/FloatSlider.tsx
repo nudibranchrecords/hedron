@@ -72,13 +72,13 @@ export const FloatSlider = forwardRef<FloatSliderHandle, FloatSliderProps>(funct
     [updateValue, onValueChange],
   )
 
-  const onInputFocus = useCallback(() => {
-    numberInput.current.select()
-  }, [])
-
   const onInputBlur = useCallback(() => {
     updateTextValue(currVal.current)
   }, [updateTextValue])
+
+  const onDoubleClick = useCallback(() => {
+    numberInput.current.select()
+  }, [])
 
   const onResize = useDebounceCallback(({ width, height }: Size) => {
     const canvas = canvasRef.current
@@ -121,15 +121,15 @@ export const FloatSlider = forwardRef<FloatSliderHandle, FloatSliderProps>(funct
   return (
     <div className={css.wrapper} ref={containerRef}>
       <form onSubmit={onInputSubmit} noValidate>
-        <input
-          type="number"
-          className={css.textBox}
-          ref={numberInput}
-          onBlur={onInputBlur}
-          onFocus={onInputFocus}
-        />
+        <input type="number" className={css.textBox} ref={numberInput} onBlur={onInputBlur} />
       </form>
-      <canvas ref={canvasRef} className={css.canvas} width={0} height={0} />
+      <canvas
+        ref={canvasRef}
+        className={css.canvas}
+        width={0}
+        height={0}
+        onDoubleClick={onDoubleClick}
+      />
     </div>
   )
 })
