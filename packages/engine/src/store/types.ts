@@ -89,15 +89,15 @@ export interface SketchConfigParamBase {
 }
 
 export interface SketchConfigParamNumber extends SketchConfigParamBase {
-  valueType?: NodeTypes.Number
+  valueType: NodeTypes.Number
   defaultValue: number
+  sliderMin?: number
+  sliderMax?: number
 }
 
 export interface SketchConfigParamBoolean extends SketchConfigParamBase {
   valueType: NodeTypes.Boolean
   defaultValue: boolean
-  sliderMin?: number
-  sliderMax?: number
 }
 
 export interface SketchConfigParamEnum extends SketchConfigParamBase {
