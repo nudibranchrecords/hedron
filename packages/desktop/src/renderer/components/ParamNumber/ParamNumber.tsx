@@ -28,3 +28,30 @@ export const ParamNumber = ({ id }: ParamNumberProps) => {
     />
   )
 }
+
+export const ParamNumberOptions = (param: NodeParamNumber) => {
+  return (
+    <div>
+      <div>
+        <label>
+          Slider Min:
+          <input
+            type="number"
+            value={param.sliderMin}
+            // onChange={(e) => param.setSliderMin(Number(e.target.value))}
+          />
+        </label>
+      </div>
+      <div>
+        <label>
+          Slider Max:
+          <input
+            type="number"
+            value={param.sliderMax}
+            // onChange={(e) => param.setSliderMax(Number(e.target.value))}
+          />
+        </label>
+      </div>
+    </div>
+  )
+}
