@@ -26,19 +26,13 @@
   z-index: 1;
 }
 
-.textBox {
-  pointer-events: none;
-  border: 0;
-  outline: none;
+.numberInputContainer {
   background: transparent;
-  color: var(--textColorLight1);
   position: absolute;
-  inset: var(--gapSmall);
-  overflow: visible;
-  display: flex;
-  align-items: center;
-  text-align: left;
-  z-index: 1;
+  top: 0;
+  pointer-events: none;
+  width: 100%;
+  height: 100%;
 }
 
 .zeroPip {

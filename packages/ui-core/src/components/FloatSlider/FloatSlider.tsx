@@ -2,6 +2,7 @@ import { forwardRef, useCallback, useEffect, useImperativeHandle, useMemo, useRe
 import { useDebounceCallback, useResizeObserver } from 'usehooks-ts'
 import css from './FloatSlider.module.css'
 import { useElementScrub } from '@hooks/useElementScrub'
+import { NumberInput, NumberInputHandle } from '@components/NumberInput/NumberInput'
 
 type Size = {
   width?: number
@@ -30,14 +31,10 @@ export const FloatSlider = forwardRef<FloatSliderHandle, FloatSliderProps>(funct
   const canvasCtx = useRef<CanvasRenderingContext2D | null>(null)
   const currVal = useRef<number>(0)
   const size = useRef({ width: 0, height: 0 })
-  const numberInput = useRef<HTMLInputElement>(null!)
+  const numberInput = useRef<NumberInputHandle>(null)
   const zeroPip = useRef<HTMLDivElement>(null!)
 
   const range = useMemo(() => max - min, [max, min])
-
-  const updateTextValue = useCallback((value: number) => {
-    numberInput.current.value = value.toFixed(2)
-  }, [])
 
   const drawBar = useCallback(
     (value: number) => {
@@ -76,35 +73,15 @@ export const FloatSlider = forwardRef<FloatSliderHandle, FloatSliderProps>(funct
   const updateValue = useCallback(
     (value: number) => {
       drawBar(value)
-      updateTextValue(value)
+      numberInput.current?.updateValue(value)
 
       currVal.current = value
     },
-    [drawBar, updateTextValue],
+    [drawBar],
   )
-
-  const onInputSubmit = useCallback(
-    (e: React.FormEvent<HTMLFormElement>) => {
-      e.preventDefault()
-      const input = numberInput.current
-
-      if (input) {
-        const value = parseFloat(input.value)
-        if (!isNaN(value)) {
-          updateValue(value)
-          onValueChange(value)
-        }
-      }
-    },
-    [updateValue, onValueChange],
-  )
-
-  const onInputBlur = useCallback(() => {
-    updateTextValue(currVal.current)
-  }, [updateTextValue])
 
   const onDoubleClick = useCallback(() => {
-    numberInput.current.select()
+    numberInput.current?.focus()
   }, [])
 
   const updateZeroPip = useCallback(() => {
@@ -169,9 +146,11 @@ export const FloatSlider = forwardRef<FloatSliderHandle, FloatSliderProps>(funct
 
   return (
     <div className={css.wrapper} ref={containerRef}>
-      <form onSubmit={onInputSubmit} noValidate>
-        <input type="number" className={css.textBox} ref={numberInput} onBlur={onInputBlur} />
-      </form>
+      <NumberInput
+        onValueChange={onValueChange}
+        ref={numberInput}
+        className={css.numberInputContainer}
+      />
       <canvas
         ref={canvasRef}
         className={css.canvas}

@@ -36,6 +36,7 @@ export const ParamNumberOptions = (param: NodeParamNumber) => {
         <label>
           Slider Min:
           <input
+            className="input"
             type="number"
             value={param.sliderMin}
             // onChange={(e) => param.setSliderMin(Number(e.target.value))}
