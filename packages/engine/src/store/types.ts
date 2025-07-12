@@ -172,6 +172,7 @@ interface Actions {
   deleteSketch: (instanceId: string) => void
   setSketchModuleItem: (newItem: SketchModuleItem) => void
   updateNodeValue: (nodeId: string, value: NodeValue) => void
+  updateMultipleNodeValues: (nodeIds: string[], values: NodeValue[]) => void
   deleteSketchModule: (moduleId: string) => void
   loadProject: (project: EngineData) => void
   reset: () => void

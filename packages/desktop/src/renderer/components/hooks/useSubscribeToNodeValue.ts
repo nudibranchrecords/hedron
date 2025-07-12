@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import { NodeParamWithChildren, NodeValue } from '@hedron/engine'
 import { engineStore, useEngineStore } from '@renderer/engine'
 
@@ -6,11 +6,14 @@ export const useSubscribeToNodeValue = <T extends NodeValue>(
   nodeId: string,
   callback: (value: T) => void,
 ) => {
+  const callbackRef = useRef(callback)
+  callbackRef.current = callback
+
   useEffect(() => {
     const unsubscribe = engineStore.subscribe(
       (state) => state.nodeValues[nodeId],
       (value) => {
-        callback(value as T)
+        callbackRef.current(value as T)
       },
       {
         fireImmediately: true,
@@ -20,7 +23,7 @@ export const useSubscribeToNodeValue = <T extends NodeValue>(
     return () => {
       unsubscribe()
     }
-  }, [nodeId, callback])
+  }, [nodeId])
 }
 
 export const useSubscribeToNodeChildrenValues = <T extends NodeValue>(
@@ -29,26 +32,26 @@ export const useSubscribeToNodeChildrenValues = <T extends NodeValue>(
 ) => {
   const { childNodeIds } = useEngineStore((state) => state.nodes[nodeId] as NodeParamWithChildren)
 
+  const callbackRef = useRef(callback)
+  callbackRef.current = callback
+
   useEffect(() => {
     const unsubscribeFuncs: (() => void)[] = []
 
-    childNodeIds.forEach((childNodeId) => {
-      const unsubscribe = engineStore.subscribe(
-        (state) => state.nodeValues[childNodeId],
-        () => {
-          const state = engineStore.getState()
-          const childValues = childNodeIds.map((id) => state.nodeValues[id]) as T[]
-          callback(childValues)
-        },
-        {
-          fireImmediately: true,
-        },
-      )
-      unsubscribeFuncs.push(unsubscribe)
-    })
+    const unsubscribe = engineStore.subscribe(
+      (state) => childNodeIds.map((id) => state.nodeValues[id]),
+      (childNodeValues) => {
+        callbackRef.current(childNodeValues as T[])
+      },
+      {
+        fireImmediately: true,
+        equalityFn: (prev, next) => prev.every((value, index) => value === next[index]),
+      },
+    )
+    unsubscribeFuncs.push(unsubscribe)
 
     return () => {
-      unsubscribeFuncs.forEach((unsubscribe) => unsubscribe())
+      unsubscribe()
     }
-  }, [childNodeIds, callback, nodeId])
+  }, [childNodeIds, nodeId])
 }

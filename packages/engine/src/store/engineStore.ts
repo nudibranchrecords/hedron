@@ -10,7 +10,10 @@ import { createDeleteSketch } from '@store/actionCreators/deleteSketch'
 import { createSetSketchModuleItem } from '@store/actionCreators/setSketchModuleItem'
 import { createDeleteSketchModule } from '@store/actionCreators/deleteSketchModule'
 import { createUpdateSketchParams } from '@store/actionCreators/updateSketchParams'
-import { createUpdateNodeValue } from '@store/actionCreators/updateNodeValue'
+import {
+  createUpdateMultipleNodeValues,
+  createUpdateNodeValue,
+} from '@store/actionCreators/updateNodeValue'
 import { createReset } from '@store/actionCreators/reset'
 import { createLoadProject } from '@store/actionCreators/loadProject'
 import { createAddInput, createUpdateInputOptions } from '@store/actionCreators/createAddInput'
@@ -25,6 +28,7 @@ export const createEngineStore = () =>
           updateSketchParams: createUpdateSketchParams(set),
           setSketchModuleItem: createSetSketchModuleItem(set),
           updateNodeValue: createUpdateNodeValue(set),
+          updateMultipleNodeValues: createUpdateMultipleNodeValues(set),
           deleteSketch: createDeleteSketch(set),
           deleteSketchModule: createDeleteSketchModule(set),
           reset: createReset(set),
