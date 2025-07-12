@@ -1,4 +1,4 @@
-import { app, BrowserWindow, dialog, ipcMain, screen, session } from 'electron'
+import { app, BrowserWindow, dialog, ipcMain, powerSaveBlocker, screen, session } from 'electron'
 import { electronApp, optimizer } from '@electron-toolkit/utils'
 import { REDUX_DEVTOOLS, installExtension } from '@tomjs/electron-devtools-installer'
 import { saveFrameHandler, saveFrameSequenceHandler } from './handlers/frameHandlers'
@@ -17,6 +17,7 @@ import { startSketchesServer } from '@main/handleSketchFiles'
 import { saveProjectFile } from '@main/handlers/saveProjectFile'
 import { openProjectFile } from '@main/handlers/openProjectFile'
 const isDevelopment = process.env.NODE_ENV !== 'production'
+let powerSaveBlockID: number
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
@@ -33,6 +34,7 @@ app.whenReady().then(() => {
   // see https://github.com/alex8088/electron-toolkit/tree/master/packages/utils
   app.on('browser-window-created', (_, window) => {
     optimizer.watchWindowShortcuts(window)
+    powerSaveBlockID = powerSaveBlocker.start('prevent-display-sleep')
   })
 
   createWindow()
@@ -82,6 +84,7 @@ export const initiateScreens = (): void => {
 // for applications and their menu bar to stay active until the user quits
 // explicitly with Cmd + Q.
 app.on('window-all-closed', () => {
+  powerSaveBlocker.stop(powerSaveBlockID)
   if (process.platform !== 'darwin') {
     app.quit()
   }
