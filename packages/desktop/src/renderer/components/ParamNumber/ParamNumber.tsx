@@ -1,10 +1,11 @@
 import { useRef } from 'react'
-import { FloatSlider } from '@hedron/ui-core'
+import { ControlGrid, FloatSlider } from '@hedron/ui-core'
 import type { FloatSliderHandle } from '@hedron/ui-core'
 import { NodeParamNumber } from '@hedron/engine'
 import { useOnNodeValueChange } from '@components/hooks/useOnNodeValueChange'
 import { useEngineStore } from '@renderer/engine'
 import { useSubscribeToNodeValue } from '@components/hooks/useSubscribeToNodeValue'
+import { OptionNumber } from '@components/OptionNumber/OptionNumber'
 
 interface ParamNumberProps {
   id: string
@@ -13,7 +14,9 @@ interface ParamNumberProps {
 export const ParamNumber = ({ id }: ParamNumberProps) => {
   const ref = useRef<FloatSliderHandle>(null)
   const onValueChange = useOnNodeValueChange(id)
-  const node = useEngineStore((state) => state.nodes[id] as NodeParamNumber)
+
+  const minValue = useEngineStore((state) => state.nodeValues[`${id}-sliderMin`])
+  const maxValue = useEngineStore((state) => state.nodeValues[`${id}-sliderMax`])
 
   useSubscribeToNodeValue<number>(id, (value) => {
     ref.current?.updateValue(value)
@@ -21,8 +24,8 @@ export const ParamNumber = ({ id }: ParamNumberProps) => {
 
   return (
     <FloatSlider
-      min={node.sliderMin}
-      max={node.sliderMax}
+      min={minValue as number}
+      max={maxValue as number}
       ref={ref}
       onValueChange={onValueChange}
     />
@@ -31,28 +34,9 @@ export const ParamNumber = ({ id }: ParamNumberProps) => {
 
 export const ParamNumberOptions = (param: NodeParamNumber) => {
   return (
-    <div>
-      <div>
-        <label>
-          Slider Min:
-          <input
-            className="input"
-            type="number"
-            value={param.sliderMin}
-            // onChange={(e) => param.setSliderMin(Number(e.target.value))}
-          />
-        </label>
-      </div>
-      <div>
-        <label>
-          Slider Max:
-          <input
-            type="number"
-            value={param.sliderMax}
-            // onChange={(e) => param.setSliderMax(Number(e.target.value))}
-          />
-        </label>
-      </div>
-    </div>
+    <ControlGrid>
+      <OptionNumber paramId={param.id} optionKey="sliderMin" optionTitle="Slider Min" />
+      <OptionNumber paramId={param.id} optionKey="sliderMax" optionTitle="Slider Max" />
+    </ControlGrid>
   )
 }

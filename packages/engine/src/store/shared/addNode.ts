@@ -42,6 +42,9 @@ const _addOptionNodeToState = (
   sketchId: string,
   sketchConfigParam: SketchConfigParam,
 ) => {
+  /** TODO: This can probably be tidier, using some sort of config object to generate the option nodes
+   * The same config object could also be used in the component to loop through
+   */
   if (sketchConfigParam.valueType === NodeTypes.Number) {
     _addNodeToState(state, `${paramId}-sliderMin`, sketchId, {
       key: 'sliderMin',
