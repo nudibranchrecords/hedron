@@ -23,8 +23,9 @@ export const importSketchModule = async (
     if ((await fetch(configPath)).status !== 200) {
       // No config file found
       // Try instancing the sketch, and call getConfig() on it
-      const tempModule = new module()
+      const tempModule = new module(undefined)
       config = tempModule.getConfig?.()
+      tempModule.dispose?.()
       if (!config) {
         return Promise.reject(
           `Sketch config not found: ${configPath} and no valid getConfig() function found in sketch`,
