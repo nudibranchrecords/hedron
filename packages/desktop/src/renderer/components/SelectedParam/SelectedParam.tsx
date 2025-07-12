@@ -78,7 +78,7 @@ export const SelectedParam = () => {
         {(() => {
           switch (selectedParam.valueType) {
             case NodeTypes.Number:
-              return <ParamNumberOptions {...selectedParam} />
+              return <ParamNumberOptions id={selectedParam.id} />
             default:
               return <i>No options yet for {selectedParam.valueType}</i>
           }
