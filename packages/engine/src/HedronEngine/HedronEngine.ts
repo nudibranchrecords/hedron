@@ -226,6 +226,23 @@ export class HedronEngine {
   }
 
   /**
+   * Public method to resize the renderer's canvas.
+   */
+  public resizeRenderer(width: number, height: number): void {
+    this.renderer.resize(width, height)
+  }
+
+  /**
+   * Public method to get the renderer's current size.
+   */
+  public getRendererSize(): { width: number; height: number } {
+    return {
+      width: this.renderer.getWidth(),
+      height: this.renderer.getHeight(),
+    }
+  }
+
+  /**
    * Render a sequence of frames at a fixed framerate.
    * Calls onFrame(dataUrl, frameIndex) after each frame.
    * Does not accumulate any frame data in memory.
