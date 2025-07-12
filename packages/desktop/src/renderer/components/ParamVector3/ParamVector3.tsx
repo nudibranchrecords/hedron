@@ -20,7 +20,7 @@ const SingleSlider = ({ id }: ParamVector3Props) => {
     if (typeof nodeValue !== 'number') {
       throw new Error('SingleSlider value was not a number')
     }
-    ref.current?.drawBar(nodeValue)
+    ref.current?.updateValue(nodeValue)
   }, 100)
 
   return <FloatSlider ref={ref} onValueChange={onValueChange} />
