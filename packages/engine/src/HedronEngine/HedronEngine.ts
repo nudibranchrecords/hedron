@@ -249,13 +249,24 @@ export class HedronEngine {
    * @param frameCount Number of frames to render
    * @param fps Frames per second
    * @param onFrame Callback invoked with the frame's data URL and index after each frame
+   * @param width Optional width to resize the renderer
+   * @param height Optional height to resize the renderer
    */
   public async renderFramesSequence(
     frameCount: number,
     fps: number = 30,
     onFrame: (dataUrl: string, frameIndex: number) => Promise<void> | void,
+    width?: number,
+    height?: number,
   ): Promise<void> {
     this.paused = true
+
+    // Store original size if resizing
+    let originalSize: { width: number; height: number } | null = null
+    if (width && height) {
+      originalSize = this.getRendererSize()
+      this.resizeRenderer(width, height)
+    }
 
     const frameDuration = 1 / fps
 
@@ -281,6 +292,11 @@ export class HedronEngine {
       if (i < frameCount - 1) {
         await new Promise((resolve) => setTimeout(resolve, 1))
       }
+    }
+
+    // Restore original size after rendering
+    if (originalSize) {
+      this.resizeRenderer(originalSize.width, originalSize.height)
     }
 
     this.paused = false

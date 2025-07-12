@@ -47,10 +47,24 @@ window.saveFrame = async () => {
 }
 
 // Implement the render frames function
-window.renderFrames = async (frameCount: number, name: string, video: boolean = false) => {
+window.renderFrames = async (
+  frameCount: number,
+  name: string,
+  video: boolean = false,
+  width?: number,
+  height?: number,
+  audioPath?: string,
+) => {
   const fps = 30
   const filePaths: string[] = []
   engine.resetTime() // Reset the engine time before starting
+
+  // Store original size if resizing
+  let originalSize: { width: number; height: number } | null = null
+  if (width && height) {
+    originalSize = engine.getRendererSize()
+    engine.resizeRenderer(width, height)
+  }
 
   if (typeof engine.renderFramesSequence === 'function') {
     await engine.renderFramesSequence(
@@ -67,10 +81,21 @@ window.renderFrames = async (frameCount: number, name: string, video: boolean = 
           console.log(`Saved frame ${frameIndex + 1} / ${frameCount}`)
         }
       },
+      width,
+      height,
     )
   } else {
     console.error('engine.renderFramesSequence is not available')
+    // Restore original size if needed
+    if (originalSize) {
+      engine.resizeRenderer(originalSize.width, originalSize.height)
+    }
     return
+  }
+
+  // Restore original size after rendering
+  if (originalSize) {
+    engine.resizeRenderer(originalSize.width, originalSize.height)
   }
 
   console.log(`Frame sequence saved to Documents/${name}/`)
@@ -83,10 +108,14 @@ window.renderFrames = async (frameCount: number, name: string, video: boolean = 
       [], // No base64 array needed, just trigger video creation
       name,
       true,
+      audioPath, // Pass the audio path to the IPC call
     )
     if (result.success && result.videoPath) {
       videoPath = result.videoPath
       console.log(`Video created at: ${videoPath}`)
+      if (audioPath) {
+        console.log(`Video includes audio from: ${audioPath}`)
+      }
     } else {
       console.error(`Failed to create video: ${result.error}`)
     }
@@ -143,6 +172,6 @@ window.cancelReset = () => {
 console.info(
   '[HEDRON] 💡 Use window.saveFrame() to save the current frame as a PNG file to your Documents folder',
 )
-console.info(
-  '[HEDRON] 💡 Use window.renderFrames(frameCount, name, video?) to save a sequence of frames to Documents/<name>/<name>-<frameIndex>.png and optionally create an mp4',
+console.log(
+  '[HEDRON] 💡 Use window.renderFrames(frameCount, name, video?, width?, height?, audioPath?) to save a sequence of frames to Documents/<name>/<name>-<frameIndex>.png and optionally create an mp4 with audio',
 )
