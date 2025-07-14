@@ -66,8 +66,6 @@ app.whenReady().then(() => {
 const updateDisplays = (): void => {
   const displays = screen.getAllDisplays()
   updateDisplayMenu(displays)
-  // ipcMain.send(ScreenEvents.UpdateDisplays, displays)
-  // store.dispatch(displaysListUpdate(displays))
 }
 
 export const initiateScreens = (): void => {
@@ -113,6 +111,5 @@ ipcMain.handle(SketchEvents.StartSketchesServer, async (_, sketchesDir: string) 
   return await startSketchesServer(sketchesDir)
 })
 
-// Replace inline frame handling code with imports from handlers/frameHandlers
 ipcMain.handle(FrameEvents.SaveFrame, saveFrameHandler)
 ipcMain.handle(FrameEvents.SaveFrameSequence, saveFrameSequenceHandler)
