@@ -1,9 +1,10 @@
 import { Display } from 'electron'
 import { engine } from '@renderer/engine'
 import { ScreenEvents } from '@shared/Events'
+import { OUTPUT_WINDOW_NAME } from '@shared/constants'
 
 export const sendOutput = (display: Display): void => {
-  const outputWin = window.open('', 'output-canvas')
+  const outputWin = window.open('', OUTPUT_WINDOW_NAME)
 
   if (!outputWin) throw new Error("Couldn't open window")
 

@@ -1,9 +1,12 @@
 import { join } from 'path'
-import { BrowserWindow } from 'electron'
+import { BrowserWindow, powerSaveBlocker } from 'electron'
 import { is } from '@electron-toolkit/utils'
 import icon from '@resources/icon.png?asset'
+import { OUTPUT_WINDOW_NAME } from '@shared/constants'
 
 export let mainWindow: BrowserWindow | undefined
+
+let powerSaveBlockID: number
 
 export const getMainWindow = (): BrowserWindow => {
   if (!mainWindow) throw new Error("Can't get main window")
@@ -34,14 +37,21 @@ export const createWindow = (): void => {
   })
 
   mainWindow.webContents.on('did-create-window', (window, { frameName }) => {
-    if (frameName === 'output-canvas') {
+    if (frameName === OUTPUT_WINDOW_NAME) {
       // Wait until window has been moved before setting full screen
       setTimeout(() => {
         window.autoHideMenuBar = true
         window.setMenuBarVisibility(false)
         window.setFullScreen(true)
+        powerSaveBlockID = powerSaveBlocker.start('prevent-display-sleep')
       }, 500)
     }
+
+    window.on('close', () => {
+      if (frameName === OUTPUT_WINDOW_NAME) {
+        powerSaveBlocker.stop(powerSaveBlockID)
+      }
+    })
   })
 
   // HMR for renderer base on electron-vite cli.
