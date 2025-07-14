@@ -1,9 +1,10 @@
 import { useRef } from 'react'
-import { useInterval } from 'usehooks-ts'
-import { FloatSlider } from '@hedron/ui-core'
+import { ControlGrid, FloatSlider } from '@hedron/ui-core'
 import type { FloatSliderHandle } from '@hedron/ui-core'
 import { useOnNodeValueChange } from '@components/hooks/useOnNodeValueChange'
-import { engineStore } from '@renderer/engine'
+import { useEngineStore } from '@renderer/engine'
+import { useSubscribeToNodeValue } from '@components/hooks/useSubscribeToNodeValue'
+import { OptionNumber } from '@components/OptionNumber/OptionNumber'
 
 interface ParamNumberProps {
   id: string
@@ -13,13 +14,28 @@ export const ParamNumber = ({ id }: ParamNumberProps) => {
   const ref = useRef<FloatSliderHandle>(null)
   const onValueChange = useOnNodeValueChange(id)
 
-  useInterval(() => {
-    const nodeValue = engineStore.getState().nodeValues[id]
-    if (typeof nodeValue !== 'number') {
-      throw new Error('ParamNumber value was not a number')
-    }
-    ref.current?.drawBar(nodeValue)
-  }, 100)
+  const minValue = useEngineStore((state) => state.nodeValues[`${id}-sliderMin`])
+  const maxValue = useEngineStore((state) => state.nodeValues[`${id}-sliderMax`])
 
-  return <FloatSlider ref={ref} onValueChange={onValueChange} />
+  useSubscribeToNodeValue<number>(id, (value) => {
+    ref.current?.updateValue(value)
+  })
+
+  return (
+    <FloatSlider
+      min={minValue as number}
+      max={maxValue as number}
+      ref={ref}
+      onValueChange={onValueChange}
+    />
+  )
+}
+
+export const ParamNumberOptions = ({ id }: ParamNumberProps) => {
+  return (
+    <ControlGrid>
+      <OptionNumber paramId={id} optionKey="sliderMin" optionTitle="Slider Min" />
+      <OptionNumber paramId={id} optionKey="sliderMax" optionTitle="Slider Max" />
+    </ControlGrid>
+  )
 }

@@ -1,9 +1,9 @@
 import { useRef } from 'react'
-import { useInterval } from 'usehooks-ts'
 import { EnumDropdown } from '@hedron/ui-core'
 import type { EnumDropdownHandle } from '@hedron/ui-core'
-import { engineStore, useEngineStore } from '@renderer/engine'
+import { useEngineStore } from '@renderer/engine'
 import { useOnNodeValueChange } from '@renderer/components/hooks/useOnNodeValueChange'
+import { useSubscribeToNodeValue } from '@components/hooks/useSubscribeToNodeValue'
 
 interface ParamEnumProps {
   id: string
@@ -32,13 +32,9 @@ export const ParamEnum = ({ id }: ParamEnumProps) => {
   const onValueChange = useOnNodeValueChange(id)
   const options = useParamEnumOptions(id)
 
-  useInterval(() => {
-    const nodeValue = engineStore.getState().nodeValues[id]
-    if (typeof nodeValue !== 'string') {
-      throw new Error('ParamEnum value was not a string')
-    }
-    ref.current?.setValue(nodeValue)
-  }, 100)
+  useSubscribeToNodeValue<string>(id, (value) => {
+    ref.current?.setValue(value)
+  })
 
   return <EnumDropdown ref={ref} onValueChange={onValueChange} values={options} />
 }

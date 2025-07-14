@@ -1,5 +1,5 @@
 import { Result } from './types'
-import { SketchConfig, SketchModule, SketchModuleItem } from '@store/types'
+import { NodeTypes, SketchConfig, SketchModule, SketchModuleItem } from '@store/types'
 import { createUniqueId } from '@utils/createUniqueId'
 
 export const importSketchModule = async (
@@ -38,6 +38,13 @@ export const importSketchModule = async (
     // A config could be missing a title, but it is a required parameter
     if (!config.title) {
       config.title = moduleId
+    }
+
+    for (const param of config.params) {
+      if (!param.valueType) {
+        // @ts-expect-error - valueType is NOT optional in SketchConfigParam, but is optional for users in config.ts
+        param.valueType = NodeTypes.Number
+      }
     }
 
     return {
