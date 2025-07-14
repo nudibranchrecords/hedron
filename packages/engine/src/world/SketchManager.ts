@@ -21,7 +21,7 @@ type SketchInstance = {
    * Called when the sketch is removed from the scene.
    * It should clean up any resources, event listeners, or references it holds.
    */
-  dispose(): () => void
+  dispose(engineScene: EngineScene): () => void
 }
 
 export class SketchManager {
@@ -52,7 +52,8 @@ export class SketchManager {
   }
 
   public removeSketchFromScene = (instanceId: string): void => {
-    const scene = getDebugScene().scene
+    const engineScene = getDebugScene()
+    const scene = engineScene.scene
     const oldSketch = scene.getObjectByName(instanceId)
 
     if (!oldSketch) {
@@ -60,7 +61,7 @@ export class SketchManager {
     }
 
     scene.remove(oldSketch)
-    this.sketchInstances[instanceId]?.dispose?.()
+    this.sketchInstances[instanceId]?.dispose?.(engineScene)
     delete this.sketchInstances[instanceId]
   }
 
