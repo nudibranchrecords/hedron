@@ -1,10 +1,10 @@
 import { NodeParamRGB } from '@hedron/engine'
-import { useInterval } from 'usehooks-ts'
 import { useRef } from 'react'
 import { ColorPicker } from '@hedron/ui-core'
 import type { ColorPickerHandle } from '@hedron/ui-core'
 import { useOnNodeVec3ValueChange } from '@components/hooks/useOnNodeVec3ValueChange'
-import { engineStore, useEngineStore } from '@renderer/engine'
+import { useEngineStore } from '@renderer/engine'
+import { useSubscribeToNodeChildrenValues } from '@components/hooks/useSubscribeToNodeValue'
 
 interface ParamRGBProps {
   id: string
@@ -15,12 +15,9 @@ export const ParamColor = ({ id }: ParamRGBProps) => {
   const node = useEngineStore((state) => state.nodes[id] as NodeParamRGB)
   const { childNodeIds } = node
 
-  useInterval(() => {
-    const state = engineStore.getState()
-    const nodeValues = node.childNodeIds.map((id) => state.nodeValues[id])
-
-    ref.current?.updateColor(nodeValues as [number, number, number])
-  }, 100)
+  useSubscribeToNodeChildrenValues<number>(id, (value) => {
+    ref.current?.updateColor(value as [number, number, number])
+  })
 
   const onVec3ValueChange = useOnNodeVec3ValueChange(
     childNodeIds[0],

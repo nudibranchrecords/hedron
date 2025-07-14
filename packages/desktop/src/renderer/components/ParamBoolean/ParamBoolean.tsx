@@ -1,9 +1,8 @@
 import { useRef } from 'react'
-import { useInterval } from 'usehooks-ts'
 import { BooleanToggle } from '@hedron/ui-core'
 import type { BooleanToggleHandle } from '@hedron/ui-core'
 import { useOnNodeValueChange } from '@components/hooks/useOnNodeValueChange'
-import { engineStore } from '@renderer/engine'
+import { useSubscribeToNodeValue } from '@components/hooks/useSubscribeToNodeValue'
 
 interface ParamNumberProps {
   id: string
@@ -13,13 +12,9 @@ export const ParamBoolean = ({ id }: ParamNumberProps) => {
   const ref = useRef<BooleanToggleHandle>(null)
   const onValueChange = useOnNodeValueChange(id)
 
-  useInterval(() => {
-    const nodeValue = engineStore.getState().nodeValues[id]
-    if (typeof nodeValue !== 'boolean') {
-      throw new Error('BooleanToggle value was not a boolean')
-    }
-    ref.current?.setChecked(nodeValue)
-  }, 100)
+  useSubscribeToNodeValue<boolean>(id, (value) => {
+    ref.current?.setChecked(value)
+  })
 
   return <BooleanToggle ref={ref} onValueChange={onValueChange} />
 }

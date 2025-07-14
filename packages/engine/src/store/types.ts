@@ -41,6 +41,8 @@ export interface NodeParamWithChildren extends NodeParamBase {
 
 export interface NodeParamNumber extends NodeParamBase {
   valueType: NodeTypes.Number
+  sliderMin?: number
+  sliderMax?: number
 }
 
 export interface NodeParamBoolean extends NodeParamBase {
@@ -87,8 +89,10 @@ export interface SketchConfigParamBase {
 }
 
 export interface SketchConfigParamNumber extends SketchConfigParamBase {
-  valueType?: NodeTypes.Number
+  valueType: NodeTypes.Number
   defaultValue: number
+  sliderMin?: number
+  sliderMax?: number
 }
 
 export interface SketchConfigParamBoolean extends SketchConfigParamBase {
@@ -168,6 +172,7 @@ interface Actions {
   deleteSketch: (instanceId: string) => void
   setSketchModuleItem: (newItem: SketchModuleItem) => void
   updateNodeValue: (nodeId: string, value: NodeValue) => void
+  updateMultipleNodeValues: (nodeIds: string[], values: NodeValue[]) => void
   deleteSketchModule: (moduleId: string) => void
   loadProject: (project: EngineData) => void
   reset: () => void

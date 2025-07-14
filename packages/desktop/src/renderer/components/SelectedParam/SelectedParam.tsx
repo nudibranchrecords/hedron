@@ -1,9 +1,11 @@
 import { Icon, MiniTabs, MiniTabsItem, PopoutMenu } from '@hedron/ui-core'
 import { useMemo } from 'react'
+import { NodeTypes } from '@hedron/engine'
 import { useSelectedParam } from '@components/hooks/useSelectedParam'
 import { pluginViews, useEngineStore, engine } from '@renderer/engine'
 import { useAppStore } from '@renderer/appStore'
 import { useInputsWithNode } from '@components/hooks/useInput'
+import { ParamNumberOptions } from '@components/ParamNumber/ParamNumber'
 
 export const SelectedParam = () => {
   const selectedParam = useSelectedParam()
@@ -68,7 +70,20 @@ export const SelectedParam = () => {
           </MiniTabsItem>
         </PopoutMenu>
       </MiniTabs>
-      <div>{PluginView && <PluginView input={currentInput} engine={engine} />}</div>
+      <div className="mb-xl">
+        {PluginView && <PluginView input={currentInput} engine={engine} />}
+      </div>
+      <div>
+        <h3>Param Options: {selectedParam.valueType}</h3>
+        {(() => {
+          switch (selectedParam.valueType) {
+            case NodeTypes.Number:
+              return <ParamNumberOptions id={selectedParam.id} />
+            default:
+              return <i>No options yet for {selectedParam.valueType}</i>
+          }
+        })()}
+      </div>
     </>
   )
 }
