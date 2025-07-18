@@ -7,9 +7,17 @@ import { FrameEvents, SaveFrameResponse } from '@shared/FrameEvents'
 declare global {
   interface Window {
     saveFrame: () => Promise<void>
-    renderFrames: (frameCount: number, name: string, video?: boolean) => Promise<void>
+    renderFrames: (
+      frameCount: number,
+      name: string,
+      video?: boolean,
+      width?: number,
+      height?: number,
+      audioPath?: string,
+    ) => Promise<void>
     resetEvery: (seconds: number, offset?: number) => void
     cancelReset: () => void
+    resetTimeoutId?: NodeJS.Timeout | null
   }
 }
 // Helper to save a frame (base64 or dataUrl) via IPC
@@ -122,7 +130,8 @@ window.renderFrames = async (
   }
 }
 
-let resetTimeoutId: NodeJS.Timeout | null = null
+// Using window.resetTimeoutId so it can be accessed by other components
+window.resetTimeoutId = null
 /**
  * 'Reset' the sketch time every x seconds by applying an offset to the deltaTime pased into sketches.
  * This is useful for testing looping animations.
@@ -135,8 +144,8 @@ let resetTimeoutId: NodeJS.Timeout | null = null
  * window.resetEvery(10, 9) // Resets the time every 10 seconds, but starts at 9 seconds, plays to 10 seconds, then plays from 0 to 1 seconds, before jumping back to 9 and starting again.
  */
 window.resetEvery = (seconds: number, offset?: number) => {
-  if (resetTimeoutId) {
-    clearTimeout(resetTimeoutId)
+  if (window.resetTimeoutId) {
+    clearTimeout(window.resetTimeoutId)
   }
   engine.resetTime() // Ensure the engine time is reset before starting
   let animTime = seconds
@@ -151,19 +160,19 @@ window.resetEvery = (seconds: number, offset?: number) => {
       engine.jumpTime(offset) // Jump to the offset time
     }
     side = !side // Alternate the side for the next jump
-    resetTimeoutId = setTimeout(jump, animTime * 1000)
+    window.resetTimeoutId = setTimeout(jump, animTime * 1000)
   }
-  resetTimeoutId = setTimeout(jump, animTime * 1000)
+  window.resetTimeoutId = setTimeout(jump, animTime * 1000)
 }
 
 /**
  * Cancel the resetEvery function, stopping the time resets.
  */
 window.cancelReset = () => {
-  if (resetTimeoutId) {
+  if (window.resetTimeoutId) {
     engine.resetTime() // Reset the engine time when cancelling
-    clearTimeout(resetTimeoutId)
-    resetTimeoutId = null
+    clearTimeout(window.resetTimeoutId)
+    window.resetTimeoutId = null
     console.log('Time reset cancelled')
   }
 }

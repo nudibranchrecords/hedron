@@ -29,7 +29,7 @@ export class HedronEngine {
   private scene: EngineScene // The main scene for rendering sketches
 
   private extraTime: number = 0 // For time manipulation, e.g. for skipping frames
-  private totalTime: number = 0 // Total time for the engine, used for resetting time
+  public totalTime: number = 0 // Total time for the engine, used for resetting time
 
   constructor(params: {
     onFrameStart?: () => void
