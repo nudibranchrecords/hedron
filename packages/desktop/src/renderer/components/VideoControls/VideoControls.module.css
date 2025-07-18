@@ -37,16 +37,6 @@
   box-shadow: -2px 0 10px rgba(0, 0, 0, 0.2);
 }
 
-.overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: transparent;
-  z-index: 999;
-}
-
 .header {
   display: flex;
   justify-content: space-between;
