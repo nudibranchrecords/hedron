@@ -32,6 +32,7 @@ export type NodeTypeWithChildren = (typeof NodeTypesWithChildren)[number]
 export interface NodeParamBase extends NodeBase {
   type: 'param'
   sketchId: string
+  groupKey?: string
 }
 
 export interface NodeParamWithChildren extends NodeParamBase {
@@ -86,6 +87,7 @@ export const hasChildNodes = (node: Node): node is NodeParamWithChildren => {
 export interface SketchConfigParamBase {
   key: string
   title?: string
+  groupKey?: string // TODO: Differentiate between processed and raw config
 }
 
 export interface SketchConfigParamNumber extends SketchConfigParamBase {
@@ -123,10 +125,23 @@ export type SketchConfigParam =
   | SketchConfigParamVector3
   | SketchConfigParamRGB
 
+export interface SketchConfigGroup {
+  groupTitle?: string
+  groupKey: string
+  params: SketchConfigParam[]
+}
+
+export interface SketchConfigRaw {
+  title: string
+  description?: string
+  params: (SketchConfigParam | SketchConfigGroup)[]
+}
+
 export interface SketchConfig {
   title: string
   description?: string
   params: SketchConfigParam[]
+  groupInfo: { [groupKey: string]: { groupTitle?: string } }
 }
 
 export interface SketchModuleItem {

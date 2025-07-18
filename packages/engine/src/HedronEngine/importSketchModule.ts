@@ -1,6 +1,37 @@
 import { Result } from './types'
-import { NodeTypes, SketchConfig, SketchModule, SketchModuleItem } from '@store/types'
+import {
+  NodeTypes,
+  SketchConfigRaw,
+  SketchConfig,
+  SketchModule,
+  SketchModuleItem,
+} from '@store/types'
 import { createUniqueId } from '@utils/createUniqueId'
+
+const processConfig = (config: SketchConfigRaw): SketchConfig => {
+  const flattenedParams = config.params.flatMap((param) => {
+    if ('params' in param) {
+      return param.params.map((p) => ({ ...p, groupKey: param.groupKey }))
+    }
+    return param
+  })
+
+  const processedConfig: SketchConfig = {
+    ...config,
+    params: flattenedParams,
+    groupInfo: {},
+  }
+
+  for (const item of config.params) {
+    if ('params' in item) {
+      processedConfig.groupInfo[item.groupKey] = {
+        groupTitle: item.groupTitle,
+      }
+    }
+  }
+
+  return processedConfig
+}
 
 export const importSketchModule = async (
   baseUrl: string,
@@ -24,16 +55,20 @@ export const importSketchModule = async (
       // No config file found
       // Try instancing the sketch, and call getConfig() on it
       const tempModule = new module(undefined)
-      config = tempModule.getConfig?.()
+      const unprocessedConfig = tempModule.getConfig?.() as SketchConfigRaw | undefined
+
       tempModule.dispose?.()
-      if (!config) {
+
+      if (unprocessedConfig) {
+        config = processConfig(unprocessedConfig)
+      } else {
         return Promise.reject(
           `Sketch config not found: ${configPath} and no valid getConfig() function found in sketch`,
         )
       }
     } else {
       const configModule = await import(/* @vite-ignore */ configPath)
-      config = configModule.default
+      config = processConfig(configModule.default as SketchConfigRaw)
     }
 
     // A config could be missing a title, but it is a required parameter
