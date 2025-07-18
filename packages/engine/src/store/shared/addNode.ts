@@ -50,12 +50,14 @@ const _addOptionNodeToState = (
       key: 'sliderMin',
       valueType: NodeTypes.Number,
       defaultValue: sketchConfigParam.sliderMin ?? 0,
+      groupKey: null,
     })
 
     _addNodeToState(state, `${paramId}-sliderMax`, sketchId, {
       key: 'sliderMax',
       valueType: NodeTypes.Number,
       defaultValue: sketchConfigParam.sliderMax ?? 1,
+      groupKey: null,
     })
   }
 }
@@ -82,6 +84,7 @@ export const addNode = (
       type: 'param',
       valueType: sketchConfigParam.valueType,
       sketchId,
+      groupKey: sketchConfigParam.groupKey ?? null,
       childNodeIds,
     }
 
@@ -90,6 +93,7 @@ export const addNode = (
         key: keys[index],
         valueType: NodeTypes.Number,
         defaultValue: sketchConfigParam.defaultValue[index],
+        groupKey: null,
       })
       _addOptionNodeToState(state, childNodeId, sketchId, {
         valueType: NodeTypes.Number,

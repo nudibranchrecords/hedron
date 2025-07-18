@@ -25,7 +25,7 @@ const processConfig = (config: SketchConfigRaw): SketchConfig => {
   for (const item of config.params) {
     if ('params' in item) {
       processedConfig.groupInfo[item.groupKey] = {
-        groupTitle: item.groupTitle,
+        groupTitle: item.groupTitle ?? item.groupKey,
       }
     }
   }
