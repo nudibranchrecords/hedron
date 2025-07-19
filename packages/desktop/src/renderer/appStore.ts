@@ -15,14 +15,16 @@ export interface SaveItem {
 
 export interface AppState {
   activeSketchId: string | null
-  selectedNodes: { [key: string]: string }
-  selectedInputs: { [key: string]: string }
+  selectedNodes: { [sketchId: string]: string }
+  selectedInputs: { [inputId: string]: string }
+  openedParamGroups: { [sketchId: string]: Record<number, boolean> }
   sketchesDir: string | null
   globalDialogId: DialogId | null
   currentSavePath: string | null
   saveList: SaveItem[]
   setSelectedNode: (sketchID: string, nodeId: string) => void
   setSelectedInput: (nodeId: string, inputId: string) => void
+  setOpenedParamGroup: (sketchId: string, groupIndex: number, isOpen: boolean) => void
   setActiveSketchId: (id: string) => void
   setSketchesDir: (dir: string) => void
   setGlobalDialogId: (id: DialogId | null) => void
@@ -53,6 +55,7 @@ export const useAppStore = create<AppState>()(
           currentSavePath: null,
           selectedNodes: {},
           selectedInputs: {},
+          openedParamGroups: {},
           saveList: [],
           setActiveSketchId: (id: string) => {
             set((state) => {
@@ -96,6 +99,14 @@ export const useAppStore = create<AppState>()(
           setSelectedInput: (nodeId: string, inputId: string) => {
             set((state) => {
               state.selectedInputs[nodeId] = inputId
+            })
+          },
+          setOpenedParamGroup: (sketchId: string, groupIndex: number, isOpen: boolean) => {
+            set((state) => {
+              if (!state.openedParamGroups[sketchId]) {
+                state.openedParamGroups[sketchId] = {}
+              }
+              state.openedParamGroups[sketchId][groupIndex] = isOpen
             })
           },
         })),

@@ -51,26 +51,38 @@ const ParamItem = ({ param: { key, title, id, sketchId, valueType } }: ParamProp
   )
 }
 
-export const SketchParams = () => {
+interface SketchParamsProps {
+  sketchId: string
+}
+
+export const SketchParams = ({ sketchId }: SketchParamsProps) => {
   const paramGroups = useActiveSketchParams()
+  const openedParamGroups = useAppStore((state) => state.openedParamGroups[sketchId] ?? {})
+  const setOpenedParamGroup = useAppStore((state) => state.setOpenedParamGroup)
 
   return (
     <>
-      {paramGroups.map(({ groupTitle, params }, index) => (
-        <div key={index} className="mb-xl">
-          <Collapsible
-            title={groupTitle}
-            isOpen={true}
-            onToggle={() => {}} // No toggle functionality needed for now
-          >
-            <ControlGrid>
-              {params.map((param) => (
-                <ParamItem key={param.key} param={param} />
-              ))}
-            </ControlGrid>
-          </Collapsible>
-        </div>
-      ))}
+      {paramGroups.map(({ groupTitle, params }, index) => {
+        const isOpen = openedParamGroups[index] ?? false
+        const itemCountText = isOpen ? '' : ` (${params.length})`
+        return (
+          <div key={index} className="mb-xl">
+            <Collapsible
+              title={`${groupTitle}${itemCountText}`}
+              isOpen={isOpen}
+              onToggle={() =>
+                setOpenedParamGroup(sketchId, index, !(openedParamGroups[index] ?? false))
+              }
+            >
+              <ControlGrid>
+                {params.map((param) => (
+                  <ParamItem key={param.key} param={param} />
+                ))}
+              </ControlGrid>
+            </Collapsible>
+          </div>
+        )
+      })}
     </>
   )
 }
