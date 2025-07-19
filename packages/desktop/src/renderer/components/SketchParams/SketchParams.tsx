@@ -70,9 +70,7 @@ export const SketchParams = ({ sketchId }: SketchParamsProps) => {
             <Collapsible
               title={`${groupTitle}${itemCountText}`}
               isOpen={isOpen}
-              onToggle={() =>
-                setOpenedParamGroup(sketchId, index, !(openedParamGroups[index] ?? false))
-              }
+              onToggle={() => setOpenedParamGroup(sketchId, index, !isOpen)}
             >
               <ControlGrid>
                 {params.map((param) => (
