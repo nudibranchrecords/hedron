@@ -3,6 +3,11 @@ import { ParamWithInfo } from '@hedron/engine'
 import { useActiveSketch } from '@components/hooks/useActiveSketch'
 import { useEngineStore } from '@renderer/engine'
 
+type GroupedParams = {
+  groupTitle: string | null
+  params: ParamWithInfo[]
+}
+
 export const useActiveSketchParams = () => {
   const activeSketch = useActiveSketch()
 
@@ -15,16 +20,28 @@ export const useActiveSketchParams = () => {
     state.sketchModules[activeSketch.moduleId],
   ])
 
-  const params: ParamWithInfo[] = useMemo(
-    () =>
-      activeSketch.paramIds.map((id, index) => {
-        const node = nodes[id]
-        const paramConfig = module?.config.params[index]
-        const title = paramConfig?.title ?? paramConfig?.key
-        return { ...node, title }
-      }),
-    [activeSketch, nodes, module],
-  )
+  const groupedParams: GroupedParams[] = useMemo(() => {
+    const groups = [] as GroupedParams[]
 
-  return params
+    activeSketch.paramIds.forEach((id, index) => {
+      const node = nodes[id]
+      const paramConfig = module?.config.params[index]
+      const title = paramConfig?.title ?? paramConfig?.key
+
+      const groupIndex = node.groupIndex ?? module.config.groupInfo.length
+
+      const group =
+        groups[groupIndex] ||
+        (groups[groupIndex] = {
+          groupTitle: module?.config.groupInfo[groupIndex]?.groupTitle ?? null,
+          params: [],
+        })
+
+      group.params.push({ ...node, title })
+    })
+
+    return groups
+  }, [activeSketch, nodes, module])
+
+  return groupedParams
 }

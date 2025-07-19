@@ -32,7 +32,7 @@ export type NodeTypeWithChildren = (typeof NodeTypesWithChildren)[number]
 export interface NodeParamBase extends NodeBase {
   type: 'param'
   sketchId: string
-  groupKey: string | null
+  groupIndex: number | null
 }
 
 export interface NodeParamWithChildren extends NodeParamBase {
@@ -87,7 +87,7 @@ export const hasChildNodes = (node: Node): node is NodeParamWithChildren => {
 export interface SketchConfigParamBase {
   key: string
   title?: string // TODO: This title can also become required, if we process the config
-  groupKey: string | null // TODO: Differentiate between processed and raw config
+  groupIndex: number | null // TODO: Differentiate between processed and raw config
 }
 
 export interface SketchConfigParamNumber extends SketchConfigParamBase {
@@ -127,7 +127,7 @@ export type SketchConfigParam =
 
 export interface SketchConfigGroup {
   groupTitle?: string
-  groupKey: string
+  groupIndex: number // TODO: This is only part of processed config
   params: SketchConfigParam[]
 }
 
@@ -142,7 +142,7 @@ export interface SketchConfig {
   title: string
   description?: string
   params: SketchConfigParam[]
-  groupInfo: { [groupKey: string]: { groupTitle: string } }
+  groupInfo: { groupTitle: string }[]
 }
 
 export interface SketchModuleItem {

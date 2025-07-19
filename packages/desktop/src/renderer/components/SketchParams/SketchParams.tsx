@@ -51,14 +51,13 @@ const ParamItem = ({ param: { key, title, id, sketchId, valueType } }: ParamProp
 }
 
 export const SketchParams = () => {
-  const params = useActiveSketchParams()
-  const groupedParams = Array.from(Map.groupBy(params, ({ groupKey }) => groupKey))
+  const paramGroups = useActiveSketchParams()
 
   return (
     <>
-      {groupedParams.map(([key, params]) => (
-        <div key={key} className="mb-xl">
-          <h3>{key}</h3>
+      {paramGroups.map(({ groupTitle, params }, index) => (
+        <div key={index} className="mb-xl">
+          <h3>{groupTitle}</h3>
           <ControlGrid>
             {params.map((param) => (
               <ParamItem key={param.key} param={param} />

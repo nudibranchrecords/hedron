@@ -9,9 +9,18 @@ import {
 import { createUniqueId } from '@utils/createUniqueId'
 
 const processConfig = (config: SketchConfigRaw): SketchConfig => {
+  const groupInfo: SketchConfig['groupInfo'] = []
+
+  let groupIndex = -1
   const flattenedParams = config.params.flatMap((param) => {
     if ('params' in param) {
-      return param.params.map((p) => ({ ...p, groupKey: param.groupKey }))
+      groupIndex++
+
+      groupInfo[groupIndex] = {
+        groupTitle: param.groupTitle ?? `Group ${groupIndex}`,
+      }
+
+      return param.params.map((p) => ({ ...p, groupIndex }))
     }
     return param
   })
@@ -19,15 +28,7 @@ const processConfig = (config: SketchConfigRaw): SketchConfig => {
   const processedConfig: SketchConfig = {
     ...config,
     params: flattenedParams,
-    groupInfo: {},
-  }
-
-  for (const item of config.params) {
-    if ('params' in item) {
-      processedConfig.groupInfo[item.groupKey] = {
-        groupTitle: item.groupTitle ?? item.groupKey,
-      }
-    }
+    groupInfo,
   }
 
   return processedConfig

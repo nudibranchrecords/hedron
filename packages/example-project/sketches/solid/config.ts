@@ -4,7 +4,6 @@ export default {
   params: [
     {
       groupTitle: 'Mesh',
-      groupKey: 'mesh',
       params: [
         {
           key: 'position',
@@ -73,7 +72,6 @@ export default {
     },
     {
       groupTitle: 'Material',
-      groupKey: 'material',
       params: [
         {
           key: 'color',
