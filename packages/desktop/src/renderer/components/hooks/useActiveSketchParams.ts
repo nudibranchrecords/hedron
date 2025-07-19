@@ -4,7 +4,7 @@ import { useActiveSketch } from '@components/hooks/useActiveSketch'
 import { useEngineStore } from '@renderer/engine'
 
 type GroupedParams = {
-  groupTitle: string | null
+  groupTitle: string
   params: ParamWithInfo[]
 }
 

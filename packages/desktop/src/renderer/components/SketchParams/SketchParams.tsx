@@ -5,6 +5,7 @@ import {
   NodeControlMain,
   NodeControlTitle,
   ControlGrid,
+  Collapsible,
 } from '@hedron/ui-core'
 import { useOnSelectNode } from '@components/hooks/useOnSelectNode'
 import { useActiveSketchParams } from '@components/hooks/useActiveSketchParams'
@@ -57,12 +58,17 @@ export const SketchParams = () => {
     <>
       {paramGroups.map(({ groupTitle, params }, index) => (
         <div key={index} className="mb-xl">
-          <h3>{groupTitle}</h3>
-          <ControlGrid>
-            {params.map((param) => (
-              <ParamItem key={param.key} param={param} />
-            ))}
-          </ControlGrid>
+          <Collapsible
+            title={groupTitle}
+            isOpen={true}
+            onToggle={() => {}} // No toggle functionality needed for now
+          >
+            <ControlGrid>
+              {params.map((param) => (
+                <ParamItem key={param.key} param={param} />
+              ))}
+            </ControlGrid>
+          </Collapsible>
         </div>
       ))}
     </>
