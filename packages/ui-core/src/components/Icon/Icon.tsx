@@ -4,6 +4,7 @@ import c from './Icon.module.css'
 // https://fonts.google.com/icons
 export type IconName =
   | 'add'
+  | 'remove'
   | 'add_circle'
   | 'delete'
   | 'mood'
