@@ -145,7 +145,7 @@ export interface SketchConfigGroupImported extends SketchConfigGroup {
 
 // As the user defines the config, it can be a mix of params and groups
 export interface SketchConfigRaw {
-  title: string
+  title?: string
   description?: string
   params: (SketchConfigParam | SketchConfigGroup)[]
 }

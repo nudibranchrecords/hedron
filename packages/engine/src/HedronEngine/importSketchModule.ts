@@ -25,7 +25,14 @@ const ensureParamImported = (
   } as SketchConfigParamImported
 }
 
-const processConfig = (config: SketchConfigRaw): SketchConfigImported => {
+interface ProcessConfigOptions {
+  fallBackTitle: string
+}
+
+const processConfig = (
+  config: SketchConfigRaw,
+  { fallBackTitle }: ProcessConfigOptions,
+): SketchConfigImported => {
   const groupInfo: SketchConfigImported['groupInfo'] = []
 
   let groupIndex = -1
@@ -47,6 +54,7 @@ const processConfig = (config: SketchConfigRaw): SketchConfigImported => {
 
   const processedConfig: SketchConfigImported = {
     ...config,
+    title: config.title ?? fallBackTitle,
     params: flattenedParams,
     groupInfo,
   }
@@ -69,6 +77,10 @@ export const importSketchModule = async (
     const sketchModule = await import(/* @vite-ignore */ sketchPath)
     const module: SketchModule = sketchModule.default
 
+    const processConfigOptions = {
+      fallBackTitle: moduleId,
+    }
+
     // Get the sketch config
     const configPath = `${baseUrl}/${moduleId}/config.js?${cacheBust}`
     let config: SketchConfigImported
@@ -81,7 +93,7 @@ export const importSketchModule = async (
       tempModule.dispose?.()
 
       if (unprocessedConfig) {
-        config = processConfig(unprocessedConfig)
+        config = processConfig(unprocessedConfig, processConfigOptions)
       } else {
         return Promise.reject(
           `Sketch config not found: ${configPath} and no valid getConfig() function found in sketch`,
@@ -89,12 +101,7 @@ export const importSketchModule = async (
       }
     } else {
       const configModule = await import(/* @vite-ignore */ configPath)
-      config = processConfig(configModule.default as SketchConfigRaw)
-    }
-
-    // A config could be missing a title, but it is a required parameter
-    if (!config.title) {
-      config.title = moduleId
+      config = processConfig(configModule.default as SketchConfigRaw, processConfigOptions)
     }
 
     return {
