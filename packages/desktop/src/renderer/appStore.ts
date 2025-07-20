@@ -2,6 +2,7 @@ import { create, StoreApi } from 'zustand'
 import { devtools, persist, subscribeWithSelector } from 'zustand/middleware'
 import { immer } from 'zustand/middleware/immer'
 import type {} from '@redux-devtools/extension' // required for devtools typing
+import { ProjectData } from '@shared/types'
 
 export type DialogId = 'sketchModules'
 
@@ -14,10 +15,10 @@ export interface SaveItem {
 }
 
 export interface AppState {
-  activeSketchId: string | null
-  selectedNodes: { [sketchId: string]: string }
-  selectedInputs: { [inputId: string]: string }
-  openedParamGroups: { [sketchId: string]: Record<number, boolean> }
+  activeSketchId: string | null // TODO: should be part of ProjectData
+  selectedNodes: ProjectData['app']['selectedNodes']
+  selectedInputs: ProjectData['app']['selectedInputs']
+  openedParamGroups: ProjectData['app']['openedParamGroups']
   sketchesDir: string | null
   globalDialogId: DialogId | null
   currentSavePath: string | null
