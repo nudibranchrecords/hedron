@@ -1,5 +1,6 @@
 import {
   EngineState,
+  EnsureRequiredValueType,
   NodeTypes,
   SketchConfigParam,
   SketchConfigParamImported,
@@ -14,7 +15,7 @@ const _addNodeToState = (
   state: EngineState,
   paramId: string,
   sketchId: string,
-  { key, defaultValue, valueType, ...config }: SketchConfigParam,
+  { key, defaultValue, valueType, ...config }: EnsureRequiredValueType<SketchConfigParam>,
 ) => {
   if (isNodeTypeWithChildren(valueType)) {
     throw new Error(`addNodeAndOptionNodes shouldn't be used with node of valueType: ${valueType}`)

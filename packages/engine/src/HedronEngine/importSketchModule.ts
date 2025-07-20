@@ -6,8 +6,24 @@ import {
   SketchModule,
   SketchModuleItem,
   SketchConfigParamImported,
+  SketchConfigParam,
 } from '@store/types'
 import { createUniqueId } from '@utils/createUniqueId'
+
+const ensureParamImported = (
+  param: SketchConfigParam,
+  groupIndex: number | null,
+): SketchConfigParamImported => {
+  const valueType =
+    'valueType' in param && param.valueType !== undefined ? param.valueType : NodeTypes.Number
+
+  return {
+    ...param,
+    title: param.title ?? param.key,
+    groupIndex,
+    valueType,
+  } as SketchConfigParamImported
+}
 
 const processConfig = (config: SketchConfigRaw): SketchConfigImported => {
   const groupInfo: SketchConfigImported['groupInfo'] = []
@@ -23,15 +39,9 @@ const processConfig = (config: SketchConfigRaw): SketchConfigImported => {
         groupTitle: param.groupTitle ?? `Group ${groupIndex}`,
       }
 
-      flattenedParams.push(
-        ...param.params.map((p) => ({ ...p, title: p.title ?? p.key, groupIndex })),
-      )
+      flattenedParams.push(...param.params.map((p) => ensureParamImported(p, groupIndex)))
     } else {
-      flattenedParams.push({
-        ...param,
-        title: param.title ?? param.key,
-        groupIndex: null,
-      })
+      flattenedParams.push(ensureParamImported(param, null))
     }
   })
 
@@ -85,13 +95,6 @@ export const importSketchModule = async (
     // A config could be missing a title, but it is a required parameter
     if (!config.title) {
       config.title = moduleId
-    }
-
-    for (const param of config.params) {
-      if (!param.valueType) {
-        // @ts-expect-error - valueType is NOT optional in SketchConfigParam, but is optional for users in config.ts
-        param.valueType = NodeTypes.Number
-      }
     }
 
     return {

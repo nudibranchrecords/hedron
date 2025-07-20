@@ -86,11 +86,11 @@ export const hasChildNodes = (node: Node): node is NodeParamWithChildren => {
 
 export interface SketchConfigParamBase {
   key: string
-  title?: string // TODO: This title can also become required, if we process the config
+  title?: string
 }
 
 export interface SketchConfigParamNumber extends SketchConfigParamBase {
-  valueType: NodeTypes.Number
+  valueType?: NodeTypes.Number
   defaultValue: number
   sliderMin?: number
   sliderMax?: number
@@ -124,7 +124,11 @@ export type SketchConfigParam =
   | SketchConfigParamVector3
   | SketchConfigParamRGB
 
-export type SketchConfigParamImported = SketchConfigParam & {
+export type EnsureRequiredValueType<T> = T extends { valueType?: infer V }
+  ? Omit<T, 'valueType'> & { valueType: V }
+  : T
+
+export type SketchConfigParamImported = EnsureRequiredValueType<SketchConfigParam> & {
   groupIndex: number | null
   title: string
 }
