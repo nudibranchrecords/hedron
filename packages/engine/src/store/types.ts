@@ -32,7 +32,6 @@ export type NodeTypeWithChildren = (typeof NodeTypesWithChildren)[number]
 export interface NodeParamBase extends NodeBase {
   type: 'param'
   sketchId: string
-  groupIndex: number | null
 }
 
 export interface NodeParamWithChildren extends NodeParamBase {

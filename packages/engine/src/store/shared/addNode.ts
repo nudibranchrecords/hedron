@@ -27,7 +27,6 @@ const _addNodeToState = (
     type: 'param' as const,
     sketchId,
     valueType,
-    groupIndex: null,
     ...config,
   }
 
@@ -90,7 +89,6 @@ export const addNode = (
       type: 'param',
       valueType: sketchConfigParam.valueType,
       sketchId,
-      groupIndex: sketchConfigParam.groupIndex ?? null,
       childNodeIds,
     }
 

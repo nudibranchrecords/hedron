@@ -36,8 +36,8 @@ export const useActiveSketchParams = () => {
 
       const title = paramConfig?.title ?? paramConfig?.key
 
-      const isUngrouped = node.groupIndex === null
-      const groupIndex = isUngrouped ? module.config.groupInfo.length : node.groupIndex!
+      const isUngrouped = paramConfig.groupIndex === null
+      const groupIndex = isUngrouped ? module.config.groupInfo.length : paramConfig.groupIndex!
 
       const group =
         groups[groupIndex] ||
