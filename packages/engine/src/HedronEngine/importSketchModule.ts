@@ -38,19 +38,21 @@ const processConfig = (
   let groupIndex = -1
   const flattenedParams: SketchConfigParamImported[] = []
 
-  config.params.forEach((param) => {
-    if ('params' in param) {
-      groupIndex++
+  if (config.params) {
+    config.params.forEach((param) => {
+      if ('params' in param) {
+        groupIndex++
 
-      groupInfo[groupIndex] = {
-        groupTitle: param.groupTitle ?? `Group ${groupIndex}`,
+        groupInfo[groupIndex] = {
+          groupTitle: param.groupTitle ?? `Group ${groupIndex}`,
+        }
+
+        flattenedParams.push(...param.params.map((p) => ensureParamImported(p, groupIndex)))
+      } else {
+        flattenedParams.push(ensureParamImported(param, null))
       }
-
-      flattenedParams.push(...param.params.map((p) => ensureParamImported(p, groupIndex)))
-    } else {
-      flattenedParams.push(ensureParamImported(param, null))
-    }
-  })
+    })
+  }
 
   const processedConfig: SketchConfigImported = {
     ...config,

@@ -131,6 +131,7 @@ export type EnsureRequiredValueType<T> = T extends { valueType?: infer V }
 export type SketchConfigParamImported = EnsureRequiredValueType<SketchConfigParam> & {
   groupIndex: number | null
   title: string
+  params: (SketchConfigParam | SketchConfigGroup)[]
 }
 
 export interface SketchConfigGroup {
@@ -147,7 +148,7 @@ export interface SketchConfigGroupImported extends SketchConfigGroup {
 export interface SketchConfigRaw {
   title?: string
   description?: string
-  params: (SketchConfigParam | SketchConfigGroup)[]
+  params?: (SketchConfigParam | SketchConfigGroup)[]
 }
 
 export interface SketchConfigImported {
