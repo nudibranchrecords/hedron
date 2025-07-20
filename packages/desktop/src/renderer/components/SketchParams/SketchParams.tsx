@@ -63,7 +63,7 @@ export const SketchParams = ({ sketchId }: SketchParamsProps) => {
   return (
     <>
       {paramGroups.map(({ groupTitle, params }, index) => {
-        const isOpen = openedParamGroups[index] ?? false
+        const isOpen = openedParamGroups[index] ?? true
         const itemCountText = isOpen ? '' : ` (${params.length})`
         return (
           <div key={index} className="mb-xl">
