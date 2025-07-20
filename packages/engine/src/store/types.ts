@@ -87,7 +87,6 @@ export const hasChildNodes = (node: Node): node is NodeParamWithChildren => {
 export interface SketchConfigParamBase {
   key: string
   title?: string // TODO: This title can also become required, if we process the config
-  groupIndex: number | null // TODO: Differentiate between processed and raw config
 }
 
 export interface SketchConfigParamNumber extends SketchConfigParamBase {
@@ -125,10 +124,19 @@ export type SketchConfigParam =
   | SketchConfigParamVector3
   | SketchConfigParamRGB
 
+export type SketchConfigParamImported = SketchConfigParam & {
+  groupIndex: number | null
+  title: string
+}
+
 export interface SketchConfigGroup {
   groupTitle?: string
-  groupIndex: number // TODO: This is only part of processed config
   params: SketchConfigParam[]
+}
+
+export interface SketchConfigGroupImported extends SketchConfigGroup {
+  groupTitle: string
+  groupIndex: number
 }
 
 // As the user defines the config, it can be a mix of params and groups
@@ -138,16 +146,16 @@ export interface SketchConfigRaw {
   params: (SketchConfigParam | SketchConfigGroup)[]
 }
 
-export interface SketchConfig {
+export interface SketchConfigImported {
   title: string
   description?: string
-  params: SketchConfigParam[]
+  params: SketchConfigParamImported[]
   groupInfo: { groupTitle: string }[]
 }
 
 export interface SketchModuleItem {
   moduleId: string
-  config: SketchConfig
+  config: SketchConfigImported
   module: SketchModule
 }
 

@@ -1,4 +1,10 @@
-import { EngineState, NodeTypes, SketchConfigParam, isNodeTypeWithChildren } from '@store/types'
+import {
+  EngineState,
+  NodeTypes,
+  SketchConfigParam,
+  SketchConfigParamImported,
+  isNodeTypeWithChildren,
+} from '@store/types'
 import { createUniqueId } from '@utils/createUniqueId'
 
 const vector3Keys = ['x', 'y', 'z']
@@ -20,6 +26,7 @@ const _addNodeToState = (
     type: 'param' as const,
     sketchId,
     valueType,
+    groupIndex: null,
     ...config,
   }
 
@@ -50,14 +57,12 @@ const _addOptionNodeToState = (
       key: 'sliderMin',
       valueType: NodeTypes.Number,
       defaultValue: sketchConfigParam.sliderMin ?? 0,
-      groupIndex: null,
     })
 
     _addNodeToState(state, `${paramId}-sliderMax`, sketchId, {
       key: 'sliderMax',
       valueType: NodeTypes.Number,
       defaultValue: sketchConfigParam.sliderMax ?? 1,
-      groupIndex: null,
     })
   }
 }
@@ -66,7 +71,7 @@ export const addNode = (
   state: EngineState,
   paramId: string,
   sketchId: string,
-  sketchConfigParam: SketchConfigParam,
+  sketchConfigParam: SketchConfigParamImported,
 ) => {
   if (isNodeTypeWithChildren(sketchConfigParam.valueType)) {
     if (!Array.isArray(sketchConfigParam.defaultValue)) {
@@ -93,7 +98,6 @@ export const addNode = (
         key: keys[index],
         valueType: NodeTypes.Number,
         defaultValue: sketchConfigParam.defaultValue[index],
-        groupIndex: null,
       })
       _addOptionNodeToState(state, childNodeId, sketchId, {
         valueType: NodeTypes.Number,

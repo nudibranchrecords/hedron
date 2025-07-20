@@ -39,35 +39,6 @@ export default {
           defaultMin: 0.00001,
           defaultMax: 4,
         },
-        {
-          key: 'geomName',
-          title: 'Geometry',
-          valueType: 'enum',
-          defaultValue: 'icosa',
-          options: [
-            {
-              value: 'tetra',
-              label: 'Tetra',
-            },
-            {
-              value: 'octa',
-              label: 'Octa',
-            },
-            {
-              value: 'cube',
-              label: 'Cube',
-            },
-            {
-              value: 'icosa',
-              label: 'Icosa',
-            },
-            // no dodeca until drawn with 5 sided faces
-            // {
-            //   value: 'dodeca',
-            //   label: 'Dodeca',
-            // },
-          ],
-        },
       ],
     },
     {
@@ -86,6 +57,35 @@ export default {
           defaultValue: true,
           valueType: 'boolean',
         },
+      ],
+    },
+    {
+      key: 'geomName',
+      title: 'Geometry',
+      valueType: 'enum',
+      defaultValue: 'icosa',
+      options: [
+        {
+          value: 'tetra',
+          label: 'Tetra',
+        },
+        {
+          value: 'octa',
+          label: 'Octa',
+        },
+        {
+          value: 'cube',
+          label: 'Cube',
+        },
+        {
+          value: 'icosa',
+          label: 'Icosa',
+        },
+        // no dodeca until drawn with 5 sided faces
+        // {
+        //   value: 'dodeca',
+        //   label: 'Dodeca',
+        // },
       ],
     },
   ],

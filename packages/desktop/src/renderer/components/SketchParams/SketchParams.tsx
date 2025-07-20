@@ -62,22 +62,32 @@ export const SketchParams = ({ sketchId }: SketchParamsProps) => {
 
   return (
     <>
-      {paramGroups.map(({ groupTitle, params }, index) => {
-        const isOpen = openedParamGroups[index] ?? true
+      {paramGroups.map(({ groupTitle, groupIndex, params, isUngrouped }) => {
+        const isOpen = openedParamGroups[groupIndex] ?? true
         const itemCountText = isOpen ? '' : ` (${params.length})`
+        const title = isUngrouped ? 'Ungrouped' : groupTitle
+
+        const grid = (
+          <ControlGrid>
+            {params.map((param) => (
+              <ParamItem key={param.key} param={param} />
+            ))}
+          </ControlGrid>
+        )
+
         return (
-          <div key={index} className="mb-xl">
-            <Collapsible
-              title={`${groupTitle}${itemCountText}`}
-              isOpen={isOpen}
-              onToggle={() => setOpenedParamGroup(sketchId, index, !isOpen)}
-            >
-              <ControlGrid>
-                {params.map((param) => (
-                  <ParamItem key={param.key} param={param} />
-                ))}
-              </ControlGrid>
-            </Collapsible>
+          <div key={groupIndex} className="mb-xl">
+            {paramGroups.length === 1 && isUngrouped ? (
+              grid
+            ) : (
+              <Collapsible
+                title={`${title}${itemCountText}`}
+                isOpen={isOpen}
+                onToggle={() => setOpenedParamGroup(sketchId, groupIndex, !isOpen)}
+              >
+                {grid}
+              </Collapsible>
+            )}
           </div>
         )
       })}

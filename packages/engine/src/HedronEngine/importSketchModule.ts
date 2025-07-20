@@ -2,17 +2,20 @@ import { Result } from './types'
 import {
   NodeTypes,
   SketchConfigRaw,
-  SketchConfig,
+  SketchConfigImported,
   SketchModule,
   SketchModuleItem,
+  SketchConfigParamImported,
 } from '@store/types'
 import { createUniqueId } from '@utils/createUniqueId'
 
-const processConfig = (config: SketchConfigRaw): SketchConfig => {
-  const groupInfo: SketchConfig['groupInfo'] = []
+const processConfig = (config: SketchConfigRaw): SketchConfigImported => {
+  const groupInfo: SketchConfigImported['groupInfo'] = []
 
   let groupIndex = -1
-  const flattenedParams = config.params.flatMap((param) => {
+  const flattenedParams: SketchConfigParamImported[] = []
+
+  config.params.forEach((param) => {
     if ('params' in param) {
       groupIndex++
 
@@ -20,12 +23,19 @@ const processConfig = (config: SketchConfigRaw): SketchConfig => {
         groupTitle: param.groupTitle ?? `Group ${groupIndex}`,
       }
 
-      return param.params.map((p) => ({ ...p, groupIndex }))
+      flattenedParams.push(
+        ...param.params.map((p) => ({ ...p, title: p.title ?? p.key, groupIndex })),
+      )
+    } else {
+      flattenedParams.push({
+        ...param,
+        title: param.title ?? param.key,
+        groupIndex: null,
+      })
     }
-    return param
   })
 
-  const processedConfig: SketchConfig = {
+  const processedConfig: SketchConfigImported = {
     ...config,
     params: flattenedParams,
     groupInfo,
@@ -51,7 +61,7 @@ export const importSketchModule = async (
 
     // Get the sketch config
     const configPath = `${baseUrl}/${moduleId}/config.js?${cacheBust}`
-    let config: SketchConfig
+    let config: SketchConfigImported
     if ((await fetch(configPath)).status !== 200) {
       // No config file found
       // Try instancing the sketch, and call getConfig() on it

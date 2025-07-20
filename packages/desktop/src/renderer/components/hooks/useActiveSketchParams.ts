@@ -4,7 +4,9 @@ import { useActiveSketch } from '@components/hooks/useActiveSketch'
 import { useEngineStore } from '@renderer/engine'
 
 type GroupedParams = {
+  isUngrouped?: boolean
   groupTitle: string
+  groupIndex: number
   params: ParamWithInfo[]
 }
 
@@ -23,17 +25,26 @@ export const useActiveSketchParams = () => {
   const groupedParams: GroupedParams[] = useMemo(() => {
     const groups = [] as GroupedParams[]
 
-    activeSketch.paramIds.forEach((id, index) => {
+    activeSketch.paramIds.forEach((id) => {
       const node = nodes[id]
-      const paramConfig = module?.config.params[index]
+      const paramConfig = module?.config.params.find((p) => p.key === node.key)
+
+      if (!paramConfig) {
+        console.warn(`No param config found for node ${id} in sketch ${activeSketch.id}`)
+        return
+      }
+
       const title = paramConfig?.title ?? paramConfig?.key
 
-      const groupIndex = node.groupIndex ?? module.config.groupInfo.length
+      const isUngrouped = node.groupIndex === null
+      const groupIndex = isUngrouped ? module.config.groupInfo.length : node.groupIndex!
 
       const group =
         groups[groupIndex] ||
         (groups[groupIndex] = {
-          groupTitle: module?.config.groupInfo[groupIndex]?.groupTitle ?? null,
+          isUngrouped,
+          groupIndex,
+          groupTitle: module?.config.groupInfo[groupIndex]?.groupTitle,
           params: [],
         })
 
