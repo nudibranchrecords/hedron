@@ -1,4 +1,12 @@
-import { getNextEnumValue, HedronEngine, IPlugin, NodeTypes } from '@hedron/engine'
+import {
+  getNextEnumValue,
+  getParamConfig,
+  HedronEngine,
+  IPlugin,
+  NodeTypes,
+  NodeValue,
+  SketchConfigParamEnum,
+} from '@hedron/engine'
 import { MidiManager, MidiMessageType } from '@hedron/midi-manager'
 
 export interface MidiInputOptions {
@@ -39,15 +47,37 @@ export class MidiInput implements IPlugin {
           event.value !== undefined
         ) {
           const node = storeState.nodes[input.targetNodeId]
+          const nodeVal = storeState.nodeValues[input.targetNodeId]
 
-          let value = null
+          let value: NodeValue | null = null
 
           switch (node.valueType) {
             case NodeTypes.Boolean:
-              value = event.value > 0
+              switch (event.type) {
+                case MidiMessageType.NoteOn:
+                case MidiMessageType.NoteOff:
+                  value = !nodeVal
+                  break
+                default:
+                  value = event.value > 0
+                  break
+              }
               break
             case NodeTypes.Enum: {
-              value = getNextEnumValue(input.targetNodeId)(storeState)
+              switch (event.type) {
+                case MidiMessageType.NoteOn:
+                case MidiMessageType.NoteOff:
+                  value = getNextEnumValue(input.targetNodeId)(storeState)
+                  break
+                default: {
+                  const { options } = getParamConfig(input.targetNodeId)(
+                    storeState,
+                  ) as SketchConfigParamEnum
+
+                  value = options[Math.floor((event.value / 127) * options.length)].value
+                  break
+                }
+              }
               break
             }
             case NodeTypes.Number:
