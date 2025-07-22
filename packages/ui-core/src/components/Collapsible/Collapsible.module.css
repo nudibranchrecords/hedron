@@ -1,0 +1,12 @@
+.header {
+  display: flex;
+  align-items: center;
+  gap: var(--gapLarge);
+  cursor: pointer;
+  padding: var(--gapLarge) 0;
+  margin: 0;
+
+  &:hover {
+    color: white;
+  }
+}

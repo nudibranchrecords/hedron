@@ -5,6 +5,7 @@ import {
   NodeControlMain,
   NodeControlTitle,
   ControlGrid,
+  Collapsible,
 } from '@hedron/ui-core'
 import { useOnSelectNode } from '@components/hooks/useOnSelectNode'
 import { useActiveSketchParams } from '@components/hooks/useActiveSketchParams'
@@ -50,14 +51,46 @@ const ParamItem = ({ param: { key, title, id, sketchId, valueType } }: ParamProp
   )
 }
 
-export const SketchParams = () => {
-  const params = useActiveSketchParams()
+interface SketchParamsProps {
+  sketchId: string
+}
+
+export const SketchParams = ({ sketchId }: SketchParamsProps) => {
+  const paramGroups = useActiveSketchParams()
+  const openedParamGroups = useAppStore((state) => state.openedParamGroups[sketchId] ?? {})
+  const setOpenedParamGroup = useAppStore((state) => state.setOpenedParamGroup)
 
   return (
-    <ControlGrid>
-      {params.map((param) => (
-        <ParamItem key={param.key} param={param} />
-      ))}
-    </ControlGrid>
+    <>
+      {paramGroups.map(({ groupTitle, groupIndex, params, isUngrouped }) => {
+        const isOpen = openedParamGroups[groupIndex] ?? true
+        const itemCountText = isOpen ? '' : ` (${params.length})`
+        const title = isUngrouped ? 'Ungrouped' : groupTitle
+
+        const grid = (
+          <ControlGrid>
+            {params.map((param) => (
+              <ParamItem key={param.key} param={param} />
+            ))}
+          </ControlGrid>
+        )
+
+        return (
+          <div key={groupIndex} className="mb-xl">
+            {paramGroups.length === 1 && isUngrouped ? (
+              grid
+            ) : (
+              <Collapsible
+                title={`${title}${itemCountText}`}
+                isOpen={isOpen}
+                onToggle={() => setOpenedParamGroup(sketchId, groupIndex, !isOpen)}
+              >
+                {grid}
+              </Collapsible>
+            )}
+          </div>
+        )
+      })}
+    </>
   )
 }
