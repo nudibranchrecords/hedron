@@ -42,7 +42,7 @@ export const ActiveSketch = () => {
         </PopoutMenu>
       </ViewHeader>
       <div className={c.section}>
-        <SketchParams />
+        <SketchParams sketchId={activeSketch.id} />
       </div>
 
       {selectedParam && (

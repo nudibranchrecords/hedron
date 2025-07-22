@@ -1,4 +1,11 @@
-import { EngineState, NodeTypes, SketchConfigParam, isNodeTypeWithChildren } from '@store/types'
+import {
+  EngineState,
+  EnsureRequiredValueType,
+  NodeTypes,
+  SketchConfigParam,
+  SketchConfigParamImported,
+  isNodeTypeWithChildren,
+} from '@store/types'
 import { createUniqueId } from '@utils/createUniqueId'
 
 const vector3Keys = ['x', 'y', 'z']
@@ -8,7 +15,7 @@ const _addNodeToState = (
   state: EngineState,
   paramId: string,
   sketchId: string,
-  { key, defaultValue, valueType, ...config }: SketchConfigParam,
+  { key, defaultValue, valueType, ...config }: EnsureRequiredValueType<SketchConfigParam>,
 ) => {
   if (isNodeTypeWithChildren(valueType)) {
     throw new Error(`addNodeAndOptionNodes shouldn't be used with node of valueType: ${valueType}`)
@@ -64,7 +71,7 @@ export const addNode = (
   state: EngineState,
   paramId: string,
   sketchId: string,
-  sketchConfigParam: SketchConfigParam,
+  sketchConfigParam: SketchConfigParamImported,
 ) => {
   if (isNodeTypeWithChildren(sketchConfigParam.valueType)) {
     if (!Array.isArray(sketchConfigParam.defaultValue)) {

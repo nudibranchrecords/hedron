@@ -89,7 +89,7 @@ export interface SketchConfigParamBase {
 }
 
 export interface SketchConfigParamNumber extends SketchConfigParamBase {
-  valueType: NodeTypes.Number
+  valueType?: NodeTypes.Number
   defaultValue: number
   sliderMin?: number
   sliderMax?: number
@@ -123,15 +123,43 @@ export type SketchConfigParam =
   | SketchConfigParamVector3
   | SketchConfigParamRGB
 
-export interface SketchConfig {
+export type EnsureRequiredValueType<T> = T extends { valueType?: infer V }
+  ? Omit<T, 'valueType'> & { valueType: V }
+  : T
+
+export type SketchConfigParamImported = EnsureRequiredValueType<SketchConfigParam> & {
+  groupIndex: number | null
+  title: string
+  params: (SketchConfigParam | SketchConfigGroup)[]
+}
+
+export interface SketchConfigGroup {
+  groupTitle?: string
+  params: SketchConfigParam[]
+}
+
+export interface SketchConfigGroupImported extends SketchConfigGroup {
+  groupTitle: string
+  groupIndex: number
+}
+
+// As the user defines the config, it can be a mix of params and groups
+export interface SketchConfigRaw {
+  title?: string
+  description?: string
+  params?: (SketchConfigParam | SketchConfigGroup)[]
+}
+
+export interface SketchConfigImported {
   title: string
   description?: string
-  params: SketchConfigParam[]
+  params: SketchConfigParamImported[]
+  groupInfo: { groupTitle: string }[]
 }
 
 export interface SketchModuleItem {
   moduleId: string
-  config: SketchConfig
+  config: SketchConfigImported
   module: SketchModule
 }
 
