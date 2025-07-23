@@ -16,6 +16,7 @@ import { ParamVector3 } from '@components/ParamVector3/ParamVector3'
 import { ParamColor } from '@components/ParamColor/ParamColor'
 
 import { useAppStore } from '@renderer/appStore'
+import { ParamString } from '@components/ParamString/ParamString'
 
 interface ParamProps {
   param: ParamWithInfo
@@ -27,6 +28,8 @@ const getInputElement = (valueType: NodeTypes, id: string) => {
       return <ParamNumber id={id} />
     case NodeTypes.Boolean:
       return <ParamBoolean id={id} />
+    case NodeTypes.String:
+      return <ParamString id={id} />
     case NodeTypes.Enum:
       return <ParamEnum id={id} />
     case NodeTypes.Vector3:
