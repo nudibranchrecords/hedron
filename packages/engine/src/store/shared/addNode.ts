@@ -33,7 +33,8 @@ const _addNodeToState = (
   if (
     (typeof defaultValue === 'number' && valueType === NodeTypes.Number) ||
     (typeof defaultValue === 'boolean' && valueType === NodeTypes.Boolean) ||
-    (typeof defaultValue === 'string' && valueType === NodeTypes.Enum)
+    (typeof defaultValue === 'string' && valueType === NodeTypes.Enum) ||
+    (typeof defaultValue === 'string' && valueType === NodeTypes.String)
   ) {
     state.nodeValues[paramId] = defaultValue
   } else {
