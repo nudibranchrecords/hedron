@@ -1,3 +1,4 @@
+import { getParamConfig } from '@store/selectors/getParamConfig'
 import { EngineState, Param } from '@store/types'
 
 export type ParamWithInfo = Param & { title: string }
@@ -8,15 +9,11 @@ export const getParamWithInfo =
     const param = state.nodes[paramId]
     if (!param) return null
 
-    const sketch = state.sketches[param.sketchId]
-    if (!sketch) return null
+    const paramConfig = getParamConfig(paramId)(state)
 
-    const module = state.sketchModules[sketch.moduleId]
-    if (!module) return null
+    if (!paramConfig) return null
 
-    const paramIndex = sketch.paramIds.indexOf(paramId)
-    const paramConfig = module.config.params[paramIndex]
-    const title = paramConfig?.title ?? paramConfig?.key
+    const title = paramConfig.title ?? paramConfig.key
 
     return { ...param, title }
   }
