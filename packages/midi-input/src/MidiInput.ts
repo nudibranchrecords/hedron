@@ -74,14 +74,14 @@ export class MidiInput implements IPlugin {
                     storeState,
                   ) as SketchConfigParamEnum
 
-                  value = options[Math.floor((event.value / 127) * options.length)].value
+                  value = options[Math.floor((event.value / 127) * options.length - 1)].value
                   break
                 }
               }
               break
             }
             case NodeTypes.Number:
-              value = event.value / 128
+              value = event.value / 127
               break
           }
 

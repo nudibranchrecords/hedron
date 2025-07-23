@@ -1,6 +1,4 @@
-import { EngineState, Param, SketchConfigParamImported } from '@store/types'
-
-export type ParamWithInfo = Param & { title: string }
+import { EngineState, SketchConfigParamImported } from '@store/types'
 
 export const getParamConfig =
   (paramId: string) =>
