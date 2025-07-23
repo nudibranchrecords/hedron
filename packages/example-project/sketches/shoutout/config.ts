@@ -9,10 +9,17 @@ export default {
       defaultValue: 'Hello, world!',
     },
     {
-      key: 'position',
-      title: 'Position',
-      valueType: 'vector3',
-      defaultValue: [0, 0, 0],
+      key: 'scrollSpeed',
+      title: 'Scroll Speed',
+      defaultValue: 2,
+      sliderMin: 0,
+      sliderMax: 10,
+    },
+    {
+      key: 'color',
+      title: 'Color',
+      valueType: 'rgb',
+      defaultValue: [1, 1, 1],
     },
   ],
 }
