@@ -74,7 +74,7 @@ export class MidiInput implements IPlugin {
                     storeState,
                   ) as SketchConfigParamEnum
 
-                  value = options[Math.floor((event.value / 127) * options.length - 1)].value
+                  value = options[Math.floor((event.value / 127) * (options.length - 1))].value
                   break
                 }
               }
