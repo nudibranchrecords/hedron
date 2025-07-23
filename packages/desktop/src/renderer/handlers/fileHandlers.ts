@@ -45,13 +45,17 @@ export const handleLoadProjectDialog = async (projectPath?: string) => {
   await startEngineWithSketchesDir(sketchesDirAbsolute)
 
   engineStore.getState().loadProject(projectData.engine)
-  appState.setCurrentSavePath(savePath)
-  appState.setSketchesDir(sketchesDirAbsolute)
+
+  useAppStore.setState((state) => ({
+    ...state,
+    currentSavePath: savePath,
+    ...projectData.app,
+  }))
 }
 
 export const handleSaveProjectDialog = async (options?: { saveAs?: boolean }) => {
   const appState = useAppStore.getState()
-  const sketchesDir = appState.sketchesDir
+  const { sketchesDir, openedParamGroups, selectedNodes, selectedInputs } = appState
 
   if (!sketchesDir) {
     throw new Error("Can't save project without sketches dir")
@@ -63,6 +67,9 @@ export const handleSaveProjectDialog = async (options?: { saveAs?: boolean }) =>
     engine: engineData,
     app: {
       sketchesDir,
+      selectedNodes,
+      selectedInputs,
+      openedParamGroups,
     },
   }
 

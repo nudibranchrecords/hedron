@@ -17,6 +17,7 @@
   --dangerColorHover: rgb(166, 30, 30);
   --transitionTime: 0.2s;
   --gapSmall: 0.3rem;
+  --gapMedium: 0.4rem;
   --gapLarge: 0.5rem;
   --gapXLarge: 0.75rem;
   --gapMega: 2rem;
@@ -24,4 +25,7 @@
   --fontWeightHeader: 800;
   --textShadow: 1px 1px black;
   --borderRadiusSubtle: 2px;
+  --borderRadiusRound: 9999px;
+  --borderRadiusLarge: 8px;
+  --baseFontSize: 0.8rem;
 }

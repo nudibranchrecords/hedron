@@ -4,19 +4,35 @@ import { SketchModule } from '@store/types'
 import { getDebugScene } from '@world/debugScene'
 import { EngineScene } from '@world/EngineScene'
 
+type SketchUpdateParams = {
+  deltaFrame: number
+  deltaTime: number
+  params: { [key: string]: unknown }
+  scene: EngineScene
+}
+
 type SketchInstance = {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  update: any
+  update: (arg: SketchUpdateParams) => void
   root?: Group
 
   getPasses?: (engineScene: EngineScene) => Pass[]
+
+  /**
+   * Called when the sketch is removed from the scene.
+   * It should clean up any resources, event listeners, or references it holds.
+   */
+  dispose(engineScene: EngineScene): () => void
 }
 
 export class SketchManager {
   private sketchInstances: { [id: string]: SketchInstance } = {}
 
-  private createSketch = (instanceId: string, module: SketchModule): SketchInstance => {
-    const sketch = new module()
+  private createSketch = (
+    instanceId: string,
+    module: SketchModule,
+    scene: EngineScene,
+  ): SketchInstance => {
+    const sketch = new module(scene)
     if (sketch.root) {
       sketch.root.name = instanceId
     }
@@ -27,15 +43,17 @@ export class SketchManager {
   }
 
   public addSketchToScene = (instanceId: string, module: SketchModule): void => {
-    const scene = getDebugScene().scene
-    const sketch = this.createSketch(instanceId, module)
+    const engineScene = getDebugScene()
+    const scene = engineScene.scene
+    const sketch = this.createSketch(instanceId, module, engineScene)
     if (sketch.root) {
       scene.add(sketch.root)
     }
   }
 
   public removeSketchFromScene = (instanceId: string): void => {
-    const scene = getDebugScene().scene
+    const engineScene = getDebugScene()
+    const scene = engineScene.scene
     const oldSketch = scene.getObjectByName(instanceId)
 
     if (!oldSketch) {
@@ -43,6 +61,7 @@ export class SketchManager {
     }
 
     scene.remove(oldSketch)
+    this.sketchInstances[instanceId]?.dispose?.(engineScene)
     delete this.sketchInstances[instanceId]
   }
 

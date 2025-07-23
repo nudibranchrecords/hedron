@@ -6,7 +6,8 @@ export interface DialogProps {
 }
 
 export const Dialog = ({ children, onBackgroundClick }: DialogProps) => (
-  <div onClick={onBackgroundClick} className={c.wrapper}>
-    {children}
-  </div>
+  <>
+    <div className={c.background} onClick={onBackgroundClick}></div>
+    <div className={c.wrapper}>{children}</div>
+  </>
 )

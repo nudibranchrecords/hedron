@@ -2,6 +2,7 @@
   "extends": ["@electron-toolkit/tsconfig/tsconfig.web.json", "../../tsconfig.json"],
   "include": ["src/renderer/**/*", "src/stories/**/*", "src/preload/*.d.ts"],
   "compilerOptions": {
+    "module": "esnext",
     "jsx": "react-jsx",
     "baseUrl": ".",
     "paths": {

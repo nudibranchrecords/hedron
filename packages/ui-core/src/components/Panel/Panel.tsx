@@ -1,4 +1,4 @@
-import React, { MouseEventHandler, useCallback } from 'react'
+import React from 'react'
 import c from './Panel.module.css'
 import { Button } from '@components/Button/Button'
 import { Icon, IconName } from '@components/Icon/Icon'
@@ -17,20 +17,10 @@ export const Panel = ({
   className,
   snugPosition,
   spacing,
-  onClick,
   ...props
 }: PanelProps) => {
-  const onClickHandler = useCallback<MouseEventHandler<HTMLDivElement>>(
-    (e) => {
-      e.stopPropagation()
-      onClick?.(e)
-    },
-    [onClick],
-  )
-
   return (
     <div
-      onClick={onClickHandler}
       className={`
         ${c.wrapper}
         ${className}

@@ -14,14 +14,11 @@
   background: var(--bgColorDark3);
   color: white;
   font-weight: 400;
-  text-decoration: none;
   border-bottom: 1px solid var(--lineColor1);
-  cursor: pointer;
   transition: var(--transitionTime);
-  font-family: inherit;
 
   &:hover {
-    background: var(--actionColor1);
+    background: var(--bgColorDark4);
   }
 
   &:global(.active) {

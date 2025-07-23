@@ -1,6 +1,5 @@
-import { HedronEngine } from '@hedron/engine'
 import './custom.css'
-import { Midi, MIDIEvent, MidiMessageType } from '@hedron/midi'
+import { MidiManager, MIDIEvent } from '@hedron/midi-manager'
 
 const $text = (id: string, text: string) => {
   document.querySelector<HTMLDivElement>(`#${id}`)!.textContent = text
@@ -13,7 +12,7 @@ function App() {
 
   function onMidiMessage(event: MIDIEvent) {
     const statusType = event.type
-    if (statusType === MidiMessageType.Unknown) {
+    if (statusType === undefined) {
       return // my launch pad was sending unknown non-stop, would imagine some other devices do as well
     }
     midiLogs.unshift(
@@ -29,11 +28,7 @@ function App() {
     $text('devices', getMidiDevices())
   }
 
-  const engine: HedronEngine = new HedronEngine()
-  const midi: Midi = new Midi(engine, () => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    return {} as any
-  })
+  const midi: MidiManager = new MidiManager()
   midi.onDeviceChange.add(onDeviceChange)
   midi.onMidiMessage.add(onMidiMessage)
 

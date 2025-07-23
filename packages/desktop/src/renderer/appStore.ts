@@ -2,6 +2,7 @@ import { create, StoreApi } from 'zustand'
 import { devtools, persist, subscribeWithSelector } from 'zustand/middleware'
 import { immer } from 'zustand/middleware/immer'
 import type {} from '@redux-devtools/extension' // required for devtools typing
+import { ProjectData } from '@shared/types'
 
 export type DialogId = 'sketchModules'
 
@@ -14,13 +15,17 @@ export interface SaveItem {
 }
 
 export interface AppState {
-  activeSketchId: string | null
-  selectedNodes: { [key: string]: string }
+  activeSketchId: string | null // TODO: should be part of ProjectData
+  selectedNodes: ProjectData['app']['selectedNodes']
+  selectedInputs: ProjectData['app']['selectedInputs']
+  openedParamGroups: ProjectData['app']['openedParamGroups']
   sketchesDir: string | null
   globalDialogId: DialogId | null
   currentSavePath: string | null
   saveList: SaveItem[]
   setSelectedNode: (sketchID: string, nodeId: string) => void
+  setSelectedInput: (nodeId: string, inputId: string) => void
+  setOpenedParamGroup: (sketchId: string, groupIndex: number, isOpen: boolean) => void
   setActiveSketchId: (id: string) => void
   setSketchesDir: (dir: string) => void
   setGlobalDialogId: (id: DialogId | null) => void
@@ -50,6 +55,8 @@ export const useAppStore = create<AppState>()(
           globalDialogId: null,
           currentSavePath: null,
           selectedNodes: {},
+          selectedInputs: {},
+          openedParamGroups: {},
           saveList: [],
           setActiveSketchId: (id: string) => {
             set((state) => {
@@ -88,6 +95,19 @@ export const useAppStore = create<AppState>()(
           setSelectedNode: (sketchID: string, nodeId: string) => {
             set((state) => {
               state.selectedNodes[sketchID] = nodeId
+            })
+          },
+          setSelectedInput: (nodeId: string, inputId: string) => {
+            set((state) => {
+              state.selectedInputs[nodeId] = inputId
+            })
+          },
+          setOpenedParamGroup: (sketchId: string, groupIndex: number, isOpen: boolean) => {
+            set((state) => {
+              if (!state.openedParamGroups[sketchId]) {
+                state.openedParamGroups[sketchId] = {}
+              }
+              state.openedParamGroups[sketchId][groupIndex] = isOpen
             })
           },
         })),

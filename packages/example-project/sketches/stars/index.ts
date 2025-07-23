@@ -1,5 +1,4 @@
-const { THREE } = window.HEDRON.dependencies
-const { BufferAttribute, BufferGeometry, Group, Points, PointsMaterial, Vector3 } = THREE
+import { BufferAttribute, BufferGeometry, Group, Points, PointsMaterial, Vector3 } from 'three'
 
 interface ParticleVert {
   position: typeof Vector3

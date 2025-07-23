@@ -10,15 +10,13 @@ import { createDeleteSketch } from '@store/actionCreators/deleteSketch'
 import { createSetSketchModuleItem } from '@store/actionCreators/setSketchModuleItem'
 import { createDeleteSketchModule } from '@store/actionCreators/deleteSketchModule'
 import { createUpdateSketchParams } from '@store/actionCreators/updateSketchParams'
-import { createUpdateNodeValue } from '@store/actionCreators/updateNodeValue'
+import {
+  createUpdateMultipleNodeValues,
+  createUpdateNodeValue,
+} from '@store/actionCreators/updateNodeValue'
 import { createReset } from '@store/actionCreators/reset'
 import { createLoadProject } from '@store/actionCreators/loadProject'
-import { createUpdateInputValues } from '@store/actionCreators/createUpdateInputValues'
-import {
-  createAddInput,
-  createAddInputParam,
-  createDeleteInputParam,
-} from '@store/actionCreators/createAddInput'
+import { createAddInput, createUpdateInputOptions } from '@store/actionCreators/createAddInput'
 
 export const createEngineStore = () =>
   createStore<EngineStateWithActions>()(
@@ -30,14 +28,13 @@ export const createEngineStore = () =>
           updateSketchParams: createUpdateSketchParams(set),
           setSketchModuleItem: createSetSketchModuleItem(set),
           updateNodeValue: createUpdateNodeValue(set),
+          updateMultipleNodeValues: createUpdateMultipleNodeValues(set),
           deleteSketch: createDeleteSketch(set),
           deleteSketchModule: createDeleteSketchModule(set),
           reset: createReset(set),
           loadProject: createLoadProject(set),
-          updateInputValues: createUpdateInputValues(set),
           addInput: createAddInput(set),
-          deleteInputParam: createDeleteInputParam(set),
-          addInputParam: createAddInputParam(set),
+          updateInputOptions: createUpdateInputOptions(set),
         })),
       ),
     ),

@@ -3,11 +3,14 @@
   "include": ["src/**/*"],
   "compilerOptions": {
     "baseUrl": ".",
+    "module": "preserve",
+    "moduleResolution": "bundler",
     "paths": {
       "@store/*": ["src/store/*"],
       "@utils/*": ["src/utils/*"],
       "@world/*": ["src/world/*"],
-      "@plugins/*": ["src/plugins/*"]
+      "@plugins/*": ["src/plugins/*"],
+      "@HedronEngine/*": ["src/HedronEngine/*"]
     }
   }
 }

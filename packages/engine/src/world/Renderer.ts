@@ -1,11 +1,15 @@
 import debounce from 'lodash.debounce'
 import { EffectComposer } from 'postprocessing'
 import { WebGLRenderer } from 'three'
+import { WebGPURenderer } from 'three/webgpu'
+import { RendererType } from '@HedronEngine/types'
 import { EngineScene } from '@world/EngineScene'
 import { engineScenes } from '@world/scenes'
 
 export class Renderer {
   public composer: EffectComposer | undefined
+  public renderer: WebGPURenderer | WebGLRenderer
+  public rendererType: RendererType
   private rendererHeight: number = 0
   private rendererWidth: number = 0
   private viewerContainer: HTMLDivElement | undefined
@@ -15,8 +19,31 @@ export class Renderer {
   private canvas: HTMLCanvasElement | undefined
   private previewContext: CanvasRenderingContext2D | undefined | null
   public aspectRatio: number = 1
+  private isRendering: boolean = false
 
   private isSendingOutput = false
+
+  constructor({ rendererType }: { rendererType: RendererType }) {
+    this.rendererType = rendererType
+
+    switch (this.rendererType) {
+      case 'webgl':
+        this.renderer = new WebGLRenderer({
+          antialias: false, // Antialiasing should be handled by the composer
+          preserveDrawingBuffer: true, // Required for frame capture to work consistently
+        })
+        this.composer = new EffectComposer(this.renderer)
+        break
+      case 'webgpu':
+        console.warn(
+          '[HEDRON] 👽 You are running Hedron in WebGPU mode (set in .env). This is experimental and your sketches may not work if you havent designed them to be compatible.',
+        )
+        this.renderer = new WebGPURenderer()
+        break
+      default:
+        throw new Error(`Unsupported renderer type: ${this.rendererType}`)
+    }
+  }
 
   private setResizeObserver = (el: HTMLDivElement) => {
     const resizeObserver = new ResizeObserver(
@@ -29,21 +56,32 @@ export class Renderer {
   }
 
   public createCanvas(containerEl: HTMLDivElement): void {
-    const renderer = new WebGLRenderer({
-      antialias: false, // Antialiasing should be handled by the composer
-    })
-    this.composer = new EffectComposer(renderer)
-
-    this.canvas = renderer.domElement
+    this.canvas = this.renderer.domElement
     containerEl.innerHTML = ''
     containerEl.appendChild(this.canvas)
     this.viewerContainer = containerEl
-
     this.setResizeObserver(containerEl)
   }
 
+  // Capture the current frame as a data URL
+  public captureFrame(): string | null {
+    if (!this.canvas) {
+      console.error('Canvas not available for capture')
+      return null
+    }
+
+    if (!this.composer) {
+      console.error('Composer not initialized for rendering')
+      return null
+    }
+
+    const dataUrl = this.canvas.toDataURL('image/png')
+    return dataUrl
+  }
+
   public setSize(): void {
-    if (!this.composer) throw new Error('Renderer not set')
+    const composerOrRenderer = this.composer || this.renderer
+    if (!composerOrRenderer) throw new Error('No renderer or composer to set size for')
     if (!this.viewerContainer) throw new Error('viewerEl not set')
 
     const settings = {
@@ -74,7 +112,7 @@ export class Renderer {
     const perc = 100 / ratio
     const height = width / ratio
 
-    this.composer.setSize(width, height)
+    composerOrRenderer.setSize(width, height)
 
     // Set ratios for each scene
     engineScenes.forEach((scene) => {
@@ -140,15 +178,25 @@ export class Renderer {
   }
 
   public render(scene: EngineScene): void {
-    if (!this.composer) return
+    if (!this.renderer) return
 
-    this.composer.removeAllPasses()
-    this.composer.passes = scene.passes
-    for (let i = 0; i < scene.passes.length - 1; i++) {
-      scene.passes[i].renderToScreen = false
+    if (this.composer) {
+      this.composer.removeAllPasses()
+      this.composer.passes = scene.passes
+      for (let i = 0; i < scene.passes.length - 1; i++) {
+        scene.passes[i].renderToScreen = false
+      }
+      scene.passes[scene.passes.length - 1].renderToScreen = true
+      this.composer.render()
     }
-    scene.passes[scene.passes.length - 1].renderToScreen = true
-    this.composer.render()
+
+    if (this.renderer instanceof WebGPURenderer) {
+      this.renderer.renderAsync(scene.scene, scene.camera)
+    } else if (this.renderer instanceof WebGLRenderer) {
+      this.renderer.render(scene.scene, scene.camera)
+    } else {
+      throw new Error(`Unsupported renderer type: ${this.rendererType}`)
+    }
 
     if (this.isSendingOutput) {
       if (!this.previewContext) throw new Error('No preview context')

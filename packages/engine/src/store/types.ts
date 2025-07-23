@@ -42,6 +42,8 @@ export interface NodeParamWithChildren extends NodeParamBase {
 
 export interface NodeParamNumber extends NodeParamBase {
   valueType: NodeTypes.Number
+  sliderMin?: number
+  sliderMax?: number
 }
 
 export interface NodeParamBoolean extends NodeParamBase {
@@ -95,6 +97,8 @@ export interface SketchConfigParamBase {
 export interface SketchConfigParamNumber extends SketchConfigParamBase {
   valueType?: NodeTypes.Number
   defaultValue: number
+  sliderMin?: number
+  sliderMax?: number
 }
 
 export interface SketchConfigParamBoolean extends SketchConfigParamBase {
@@ -130,26 +134,59 @@ export type SketchConfigParam =
   | SketchConfigParamVector3
   | SketchConfigParamRGB
 
-export interface SketchConfig {
+export type EnsureRequiredValueType<T> = T extends { valueType?: infer V }
+  ? Omit<T, 'valueType'> & { valueType: V }
+  : T
+
+export type SketchConfigParamImported = EnsureRequiredValueType<SketchConfigParam> & {
+  groupIndex: number | null
+  title: string
+  params: (SketchConfigParam | SketchConfigGroup)[]
+}
+
+export interface SketchConfigGroup {
+  groupTitle?: string
+  params: SketchConfigParam[]
+}
+
+export interface SketchConfigGroupImported extends SketchConfigGroup {
+  groupTitle: string
+  groupIndex: number
+}
+
+// As the user defines the config, it can be a mix of params and groups
+export interface SketchConfigRaw {
+  title?: string
+  description?: string
+  params?: (SketchConfigParam | SketchConfigGroup)[]
+}
+
+export interface SketchConfigImported {
   title: string
   description?: string
-  params: SketchConfigParam[]
+  params: SketchConfigParamImported[]
+  groupInfo: { groupTitle: string }[]
 }
 
 export interface SketchModuleItem {
   moduleId: string
-  config: SketchConfig
+  config: SketchConfigImported
   module: SketchModule
 }
 
 export type SketchModules = { [key: string]: SketchModuleItem }
 
-export type EnumOption = { value: string; label: string }
+export type EnumOption = { value: string | number; label: string }
 
-export interface Input {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type InputOptions = any
+
+export interface Input<Options = InputOptions> {
   id: string
+  title: string
   type: 'midi' | 'gamepad' | string
-  targetNodeIds: string[]
+  targetNodeId: string
+  options: Options
 }
 
 export type Inputs = { [key: string]: Input }
@@ -174,13 +211,12 @@ interface Actions {
   deleteSketch: (instanceId: string) => void
   setSketchModuleItem: (newItem: SketchModuleItem) => void
   updateNodeValue: (nodeId: string, value: NodeValue) => void
+  updateMultipleNodeValues: (nodeIds: string[], values: NodeValue[]) => void
   deleteSketchModule: (moduleId: string) => void
   loadProject: (project: EngineData) => void
   reset: () => void
-  addInput: (inputId: string, value: Input) => void
-  deleteInputParam: (inputId: string, paramId: string) => void
-  updateInputValues: (inputId: string, value: NodeValue) => void
-  addInputParam: (inputId: string, paramId: string) => void
+  addInput: (value: Omit<Input, 'id'>) => string
+  updateInputOptions: (inputId: string, options: InputOptions) => void
 }
 
 export type EngineStateWithActions = EngineData & AuxState & Actions

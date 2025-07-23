@@ -1,0 +1,20 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  padding: var(--gapSmall);
+  background: var(--bgColorDark4);
+  border-radius: var(--borderRadiusLarge);
+  font-size: var(--baseFontSize);
+}
+
+.item {
+  padding: var(--gapMedium) var(--gapSmall);
+  display: flex;
+  align-items: center;
+  gap: var(--gapSmall);
+  border-radius: var(--borderRadiusSubtle);
+
+  &:hover {
+    background: var(--bgColorDark2);
+  }
+}

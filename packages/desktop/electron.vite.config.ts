@@ -7,12 +7,14 @@ import react from '@vitejs/plugin-react'
 export default defineConfig({
   main: {
     plugins: [externalizeDepsPlugin(), tsconfigPaths()],
+    envPrefix: 'HEDRON_',
   },
   preload: {
     plugins: [externalizeDepsPlugin(), tsconfigPaths()],
   },
   renderer: {
     plugins: [react(), tsconfigPaths()],
+    envPrefix: 'HEDRON_',
     resolve: {
       alias: {
         // Setting aliases here to allow for hot module reloading
@@ -20,7 +22,7 @@ export default defineConfig({
         '@hedron/ui-core/icons.css': path.resolve(__dirname, '../ui-core/src/css/icons.css'),
         '@hedron/ui-core/fonts.css': path.resolve(__dirname, '../ui-core/src/css/fonts.css'),
         '@hedron/ui-core': path.resolve(__dirname, '../ui-core/src'),
-        '@hedron/midi': path.resolve(__dirname, '../midi/src'),
+        '@hedron/midi-input': path.resolve(__dirname, '../midi-input/src'),
       },
     },
   },

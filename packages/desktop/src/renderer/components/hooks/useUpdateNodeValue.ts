@@ -5,3 +5,9 @@ export const useUpdateNodeValue = () => {
 
   return updateNodeValue
 }
+
+export const useUpdateMultipleNodeValues = () => {
+  const updateMultipleNodeValues = useEngineStore((state) => state.updateMultipleNodeValues)
+
+  return updateMultipleNodeValues
+}

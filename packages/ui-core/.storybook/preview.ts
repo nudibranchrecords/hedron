@@ -1,4 +1,8 @@
 import type { Preview } from '@storybook/react'
+import { INITIAL_VIEWPORTS } from '@storybook/addon-viewport'
+
+import '../src/css/icons.css'
+import '../src/css/fonts.css'
 import '../src/css/base.css'
 
 const preview: Preview = {
@@ -17,6 +21,9 @@ const preview: Preview = {
           value: '#333',
         },
       ],
+    },
+    viewport: {
+      defaultViewport: 'responsive', // Set the global default viewport
     },
   },
 }

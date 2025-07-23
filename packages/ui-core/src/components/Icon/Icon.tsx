@@ -4,6 +4,7 @@ import c from './Icon.module.css'
 // https://fonts.google.com/icons
 export type IconName =
   | 'add'
+  | 'remove'
   | 'add_circle'
   | 'delete'
   | 'mood'
@@ -22,6 +23,7 @@ export type IconName =
   | 'edit'
   | 'play_arrow'
   | 'pause'
+  | 'menu'
 
 export const sketchIcon: IconName = 'token'
 export const sceneIcon: IconName = 'panorama'

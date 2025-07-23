@@ -1,9 +1,8 @@
 import './test.js'
 import { GLTFLoader } from 'three-stdlib'
+import * as THREE from 'three'
 import hedronLogoUrl from './hedron-logo.glb'
 import matcapUrl from './matcap.jpg'
-
-const { THREE } = window.HEDRON.dependencies
 
 const gltfLoader = new GLTFLoader()
 const textureLoader = new THREE.TextureLoader()
@@ -11,15 +10,17 @@ const matcapMat = new THREE.MeshMatcapMaterial()
 const sphereGeom = new THREE.IcosahedronGeometry(1, 3)
 
 export default class Logo {
+  root = new THREE.Group()
+  sphere = new THREE.Mesh(sphereGeom, matcapMat)
+  model?: THREE.Mesh
+
   constructor() {
-    this.root = new THREE.Group()
     // Add inner sphere
-    this.sphere = new THREE.Mesh(sphereGeom, matcapMat)
     this.root.add(this.sphere)
 
     // Load logo model
     gltfLoader.load(hedronLogoUrl, (obj) => {
-      this.model = obj.scene.getObjectByName('Hedron')
+      this.model = obj.scene.getObjectByName('Hedron') as THREE.Mesh
       this.model.material = matcapMat
       this.root.add(this.model)
 
@@ -39,15 +40,9 @@ export default class Logo {
     let s
 
     // Logo Rotation
-    if (this.isTweeningRot) {
-      this.model.rotation.x = this.props.rotX
-      this.model.rotation.y = this.props.rotY
-      this.model.rotation.z = this.props.rotZ
-    } else {
-      this.model.rotation.x += p.logoRotSpeedX * d * 0.3
-      this.model.rotation.y += p.logoRotSpeedY * d * 0.3
-      this.model.rotation.z += p.logoRotSpeedZ * d * 0.3
-    }
+    this.model.rotation.x += p.logoRotSpeedX * d * 0.3
+    this.model.rotation.y += p.logoRotSpeedY * d * 0.3
+    this.model.rotation.z += p.logoRotSpeedZ * d * 0.3
 
     // Logo Scale
     s = p.logoScale

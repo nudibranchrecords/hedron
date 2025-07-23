@@ -1,0 +1,29 @@
+.wrapper {
+  display: flex;
+  gap: var(--gapSmall);
+  /* TODO: flex-wrap: balance might be here soon... */
+  flex-wrap: wrap;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.25rem 0.5rem;
+  border-radius: var(--borderRadiusRound);
+  font-size: 0.7rem;
+  background: var(--bgColorDark3);
+  color: white;
+  font-weight: 400;
+  border-bottom: 1px solid var(--lineColor1);
+  transition: var(--transitionTime);
+
+  &:hover {
+    background: var(--bgColorDark4);
+  }
+
+  &.active {
+    background: var(--actionColor1);
+    cursor: default;
+  }
+}
