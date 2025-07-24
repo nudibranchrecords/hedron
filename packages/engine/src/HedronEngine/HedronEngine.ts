@@ -62,7 +62,7 @@ export class HedronEngine {
       const module = modules[moduleId].module
       const sketch = this.sketchManager.addSketchToScene(sketchId, module)
 
-      this.renderer.handleWebGPUPass(sketch)
+      this.renderer.addSketchWebGPUPass(sketch)
     }
 
     listenToStore(this.store, addSketchToScene, removeSketchFromScene)
@@ -111,7 +111,7 @@ export class HedronEngine {
     for (const sketch of sketchesToRefresh) {
       this.sketchManager.removeSketchFromScene(sketch.id)
       const sketchInstance = this.sketchManager.addSketchToScene(sketch.id, moduleItem.module)
-      this.renderer.handleWebGPUPass(sketchInstance)
+      this.renderer.addSketchWebGPUPass(sketchInstance)
       this.store.getState().updateSketchParams(sketch.id)
     }
   }

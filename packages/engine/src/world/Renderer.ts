@@ -22,7 +22,7 @@ export class Renderer {
   private outputCanvas: HTMLCanvasElement | undefined
   private canvas: HTMLCanvasElement | undefined
   private previewContext: CanvasRenderingContext2D | undefined | null
-  private mainScenePass: ShaderNodeObject<PassNode> | undefined
+  private mainSceneWebGPUPass: ShaderNodeObject<PassNode> | undefined
   public aspectRatio: number = 1
   private isSendingOutput = false
 
@@ -190,8 +190,8 @@ export class Renderer {
     if (this.rendererType !== 'webgpu') {
       return
     }
-    this.mainScenePass = pass(scene, camera)
-    this.webGPUCurrentPass = this.mainScenePass
+    this.mainSceneWebGPUPass = pass(scene, camera)
+    this.webGPUCurrentPass = this.mainSceneWebGPUPass
     this.postprocessing!.needsUpdate = true
   }
 
@@ -199,7 +199,7 @@ export class Renderer {
    * Clears the current WebGPU passes and resets to the main scene pass.
    */
   public clearWebGPUPasses() {
-    this.webGPUCurrentPass = this.mainScenePass
+    this.webGPUCurrentPass = this.mainSceneWebGPUPass
     this.postprocessing!.needsUpdate = true
   }
 
@@ -207,7 +207,7 @@ export class Renderer {
    * Handle WebGPU post-processing pass for a sketch instance.
    * @param sketchInstance The sketch instance to handle WebGPU pass for.
    */
-  public handleWebGPUPass(sketchInstance: SketchInstance) {
+  public addSketchWebGPUPass(sketchInstance: SketchInstance) {
     if (sketchInstance.getWebGPUPass) {
       if (this.rendererType !== 'webgpu') {
         console.warn('[HEDRON] ⚠️ WebGPU pass handling is only available in WebGPU mode.')
