@@ -27,7 +27,6 @@ export class HedronEngine {
   private running: boolean = false
   private paused: boolean = false
   private scene: EngineScene // The main scene for rendering sketches
-  private scenePass: ShaderNodeObject<PassNode> | undefined
 
   private extraTime: number = 0 // For time manipulation, e.g. for skipping frames
   private totalTime: number = 0 // Total time for the engine, used for resetting time
