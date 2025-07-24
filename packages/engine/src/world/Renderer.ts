@@ -1,10 +1,12 @@
 import debounce from 'lodash.debounce'
 import { EffectComposer } from 'postprocessing'
-import { WebGLRenderer } from 'three'
+import { Camera, Scene, WebGLRenderer } from 'three'
+import { pass } from 'three/tsl'
 import { PassNode, PostProcessing, type ShaderNodeObject, WebGPURenderer } from 'three/webgpu'
 import { RendererType } from '@HedronEngine/types'
 import { EngineScene } from '@world/EngineScene'
 import { engineScenes } from '@world/scenes'
+import { SketchInstance } from '@world/SketchManager'
 
 export class Renderer {
   public composer: EffectComposer | undefined
@@ -20,6 +22,7 @@ export class Renderer {
   private outputCanvas: HTMLCanvasElement | undefined
   private canvas: HTMLCanvasElement | undefined
   private previewContext: CanvasRenderingContext2D | undefined | null
+  private mainScenePass: ShaderNodeObject<PassNode> | undefined
   public aspectRatio: number = 1
   private isSendingOutput = false
 
@@ -176,6 +179,45 @@ export class Renderer {
     this.isSendingOutput = false
 
     this.setSize()
+  }
+
+  /**
+   * Sets the main scene for initial WebGPU render pass
+   * @param scene three.js scene to set as the main scene for WebGPU rendering.
+   * @param camera three.js camera to use for WebGPU rendering.
+   */
+  public setMainSceneWebGPUPass(scene: Scene, camera: Camera) {
+    if (this.rendererType !== 'webgpu') {
+      return
+    }
+    this.mainScenePass = pass(scene, camera)
+    this.webGPUCurrentPass = this.mainScenePass
+    this.postprocessing!.needsUpdate = true
+  }
+
+  /**
+   * Clears the current WebGPU passes and resets to the main scene pass.
+   */
+  public clearWebGPUPasses() {
+    this.webGPUCurrentPass = this.mainScenePass
+    this.postprocessing!.needsUpdate = true
+  }
+
+  /**
+   * Handle WebGPU post-processing pass for a sketch instance.
+   * @param sketchInstance The sketch instance to handle WebGPU pass for.
+   */
+  public handleWebGPUPass(sketchInstance: SketchInstance) {
+    if (sketchInstance.getWebGPUPass) {
+      if (this.rendererType !== 'webgpu') {
+        console.warn('[HEDRON] ⚠️ WebGPU pass handling is only available in WebGPU mode.')
+        return
+      }
+
+      const nextPass = sketchInstance.getWebGPUPass(this.webGPUCurrentPass!)
+      this.postprocessing!.outputNode = this.webGPUCurrentPass = nextPass
+      this.postprocessing!.needsUpdate = true
+    }
   }
 
   public render(scene: EngineScene): void {

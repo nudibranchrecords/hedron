@@ -1,12 +1,12 @@
 import { Pass } from 'postprocessing'
-import { pass, type PassNode, type ShaderNodeObject } from 'three/tsl'
+import { type PassNode, type ShaderNodeObject } from 'three/tsl'
 import { listenToStore } from './storeListener'
 import { RendererType, Result } from './types'
 import { importSketchModule } from './importSketchModule'
 import { IPlugin } from '@plugins/Plugin'
 import { stripForSave } from '@utils/stripForSave'
 import { Renderer } from '@world/Renderer'
-import { SketchInstance, SketchManager } from '@world/SketchManager'
+import { SketchManager } from '@world/SketchManager'
 import { createDebugScene } from '@world/debugScene'
 import { EngineData, SketchModuleItem } from '@store/types'
 import { getSketchesOfModuleId } from '@store/selectors/getSketchesOfModuleId'
@@ -45,10 +45,7 @@ export class HedronEngine {
     this.onFrameStart = params?.onFrameStart
     this.onFrameEnd = params?.onFrameEnd
 
-    if (this.rendererType === 'webgpu') {
-      this.scenePass = pass(this.scene.scene, this.scene.camera)
-      this.renderer.webGPUCurrentPass = this.scenePass
-    }
+    this.renderer.setMainSceneWebGPUPass(this.scene.scene, this.scene.camera)
   }
 
   public registerPlugin(plugin: IPlugin) {
@@ -65,7 +62,7 @@ export class HedronEngine {
       const module = modules[moduleId].module
       const sketch = this.sketchManager.addSketchToScene(sketchId, module)
 
-      this.handleWebGPUPass(sketch)
+      this.renderer.handleWebGPUPass(sketch)
     }
 
     listenToStore(this.store, addSketchToScene, removeSketchFromScene)
@@ -109,12 +106,12 @@ export class HedronEngine {
     const moduleItem = result.data
     const sketchesToRefresh = getSketchesOfModuleId(this.store.getState(), moduleId)
 
-    this.renderer.webGPUCurrentPass = this.scenePass
+    this.renderer.clearWebGPUPasses()
 
     for (const sketch of sketchesToRefresh) {
       this.sketchManager.removeSketchFromScene(sketch.id)
       const sketchInstance = this.sketchManager.addSketchToScene(sketch.id, moduleItem.module)
-      this.handleWebGPUPass(sketchInstance)
+      this.renderer.handleWebGPUPass(sketchInstance)
       this.store.getState().updateSketchParams(sketch.id)
     }
   }
@@ -191,23 +188,6 @@ export class HedronEngine {
       instance.update({ deltaFrame: 1, deltaTime, params: paramValues, scene: debugScene })
     })
     this.renderer.render(debugScene)
-  }
-
-  /**
-   * Handle WebGPU post-processing pass for a sketch instance.
-   * @param sketchInstance The sketch instance to handle WebGPU pass for.
-   */
-  private handleWebGPUPass(sketchInstance: SketchInstance) {
-    if (sketchInstance.getWebGPUPass) {
-      if (this.rendererType !== 'webgpu') {
-        console.warn('[HEDRON] ⚠️ WebGPU pass handling is only available in WebGPU mode.')
-        return
-      }
-
-      const nextPass = sketchInstance.getWebGPUPass(this.renderer.webGPUCurrentPass!)
-      this.renderer.postprocessing!.outputNode = this.renderer.webGPUCurrentPass = nextPass
-      this.renderer.postprocessing!.needsUpdate = true
-    }
   }
 
   /**
