@@ -1,6 +1,7 @@
 import { Group } from 'three'
 import { Pass } from 'postprocessing'
-import { PassNode, type ShaderNodeObject } from 'three/webgpu'
+import { PassNode } from 'three/webgpu'
+import { type ShaderNodeObject } from 'three/tsl'
 import { SketchModule } from '@store/types'
 import { getDebugScene } from '@world/debugScene'
 import { EngineScene } from '@world/EngineScene'
