@@ -1,7 +1,7 @@
 import debounce from 'lodash.debounce'
 import { EffectComposer } from 'postprocessing'
 import { WebGLRenderer } from 'three'
-import { WebGPURenderer } from 'three/webgpu'
+import { PassNode, PostProcessing, type ShaderNodeObject, WebGPURenderer } from 'three/webgpu'
 import { RendererType } from '@HedronEngine/types'
 import { EngineScene } from '@world/EngineScene'
 import { engineScenes } from '@world/scenes'
@@ -9,7 +9,9 @@ import { engineScenes } from '@world/scenes'
 export class Renderer {
   public composer: EffectComposer | undefined
   public renderer: WebGPURenderer | WebGLRenderer
+  public postprocessing: PostProcessing | undefined
   public rendererType: RendererType
+  public webGPUCurrentPass: ShaderNodeObject<PassNode> | undefined
   private rendererHeight: number = 0
   private rendererWidth: number = 0
   private viewerContainer: HTMLDivElement | undefined
@@ -19,8 +21,6 @@ export class Renderer {
   private canvas: HTMLCanvasElement | undefined
   private previewContext: CanvasRenderingContext2D | undefined | null
   public aspectRatio: number = 1
-  private isRendering: boolean = false
-
   private isSendingOutput = false
 
   constructor({ rendererType }: { rendererType: RendererType }) {
@@ -39,6 +39,7 @@ export class Renderer {
           '[HEDRON] 👽 You are running Hedron in WebGPU mode (set in .env). This is experimental and your sketches may not work if you havent designed them to be compatible.',
         )
         this.renderer = new WebGPURenderer()
+        this.postprocessing = new PostProcessing(this.renderer)
         break
       default:
         throw new Error(`Unsupported renderer type: ${this.rendererType}`)
@@ -191,7 +192,7 @@ export class Renderer {
     }
 
     if (this.renderer instanceof WebGPURenderer) {
-      this.renderer.renderAsync(scene.scene, scene.camera)
+      this.postprocessing!.render()
     } else if (this.renderer instanceof WebGLRenderer) {
       this.renderer.render(scene.scene, scene.camera)
     } else {

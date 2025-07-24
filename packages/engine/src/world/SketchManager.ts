@@ -1,5 +1,6 @@
 import { Group } from 'three'
 import { Pass } from 'postprocessing'
+import { Node } from 'three/webgpu'
 import { SketchModule } from '@store/types'
 import { getDebugScene } from '@world/debugScene'
 import { EngineScene } from '@world/EngineScene'
@@ -16,6 +17,8 @@ type SketchInstance = {
   root?: Group
 
   getPasses?: (engineScene: EngineScene) => Pass[]
+
+  getWebGPUOutputNode?: (inputNode: Node) => Node
 
   /**
    * Called when the sketch is removed from the scene.
@@ -42,13 +45,14 @@ export class SketchManager {
     return sketch
   }
 
-  public addSketchToScene = (instanceId: string, module: SketchModule): void => {
+  public addSketchToScene = (instanceId: string, module: SketchModule): SketchInstance => {
     const engineScene = getDebugScene()
     const scene = engineScene.scene
     const sketch = this.createSketch(instanceId, module, engineScene)
     if (sketch.root) {
       scene.add(sketch.root)
     }
+    return sketch
   }
 
   public removeSketchFromScene = (instanceId: string): void => {

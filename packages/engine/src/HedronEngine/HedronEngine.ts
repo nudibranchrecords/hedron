@@ -1,5 +1,6 @@
-import { Clock } from 'three'
 import { Pass } from 'postprocessing'
+import { pass, renderOutput } from 'three/tsl'
+import { dotScreen } from 'three/addons/tsl/display/DotScreenNode.js'
 import { listenToStore } from './storeListener'
 import { RendererType, Result } from './types'
 import { importSketchModule } from './importSketchModule'
@@ -20,7 +21,6 @@ export class HedronEngine {
   private store: EngineStore
   private sketchesUrl: string | null = null
   private sketchManager: SketchManager
-  private clock: Clock = new Clock()
   public plugins: Record<string, IPlugin> = {}
   private onFrameStart?: () => void
   private onFrameEnd?: () => void
@@ -44,6 +44,11 @@ export class HedronEngine {
 
     this.onFrameStart = params?.onFrameStart
     this.onFrameEnd = params?.onFrameEnd
+
+    if (this.rendererType === 'webgpu') {
+      const scenePass = pass(this.scene.scene, this.scene.camera)
+      this.renderer.webGPUCurrentPass = scenePass
+    }
   }
 
   public registerPlugin(plugin: IPlugin) {
@@ -58,7 +63,15 @@ export class HedronEngine {
     const addSketchToScene = (sketchId: string, moduleId: string) => {
       const modules = this.store.getState().sketchModules
       const module = modules[moduleId].module
-      this.sketchManager.addSketchToScene(sketchId, module)
+      const sketch = this.sketchManager.addSketchToScene(sketchId, module)
+
+      if (moduleId === 'shoutout') {
+        console.log(moduleId)
+        const dotScreenPass = dotScreen(this.renderer.webGPUCurrentPass!.getTextureNode())
+        dotScreenPass.scale.value = 0.3
+        this.renderer.postprocessing!.outputNode = dotScreenPass
+        this.renderer.postprocessing!.needsUpdate = true
+      }
     }
 
     listenToStore(this.store, addSketchToScene, removeSketchFromScene)
