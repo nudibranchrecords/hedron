@@ -1,5 +1,6 @@
 import { Pass } from 'postprocessing'
-import { type PassNode, type ShaderNodeObject } from 'three/tsl'
+import { type ShaderNodeObject } from 'three/tsl'
+import { PassNode } from 'three/webgpu'
 import { listenToStore } from './storeListener'
 import { RendererType, Result } from './types'
 import { importSketchModule } from './importSketchModule'

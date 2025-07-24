@@ -1,10 +1,19 @@
-import { PassNode, ShaderNodeObject } from 'three/webgpu'
+import { Node } from 'three/webgpu'
+import { hue, uniform, type ShaderNodeObject, saturation } from 'three/tsl'
 
 export default class HSL {
-  getWebGPUPass(prevPass: ShaderNodeObject<PassNode>): ShaderNodeObject<PassNode> {
-    // const dotScreenPass = dotScreen(prevPass.getTextureNode())
-    return prevPass.mul(1)
+  hue = uniform(0.0)
+  saturation = uniform(1)
+  luminance = uniform(1.0)
+
+  getWebGPUPass(prevPass: ShaderNodeObject<Node>): ShaderNodeObject<Node> {
+    return hue(saturation(prevPass, this.saturation), this.hue).mul(this.luminance)
   }
 
-  update() {}
+  update({ params }: { params: { saturation: number; hue: number; luminance: number } }) {
+    console.log(params)
+    this.hue.value = params.hue
+    this.saturation.value = params.saturation
+    this.luminance.value = params.luminance
+  }
 }

@@ -2,6 +2,9 @@
   "extends": "@tsconfig/recommended/tsconfig.json",
   "exclude": ["node_modules"],
   "compilerOptions": {
-    "noImplicitAny": true
+    "noImplicitAny": true,
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "allowSyntheticDefaultImports": true
   }
 }
