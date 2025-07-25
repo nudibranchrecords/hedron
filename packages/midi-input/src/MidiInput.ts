@@ -87,7 +87,7 @@ export class MidiInput implements IPlugin {
 
           if (value === null) {
             console.warn(
-              `MIDI Input: Unsupported value type for node ${input.targetNodeId}. Value: ${event.value}`,
+              `MIDI Input: Unsupported value type for node ${input.targetNodeId}. Value: ${event.value}, Type: ${node.valueType}`,
             )
             return
           }

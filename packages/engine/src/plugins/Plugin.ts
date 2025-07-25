@@ -1,3 +1,6 @@
+import { ParamWithInfo } from '@store/selectors/getParamWithInfo'
+import { InputOptions } from '@store/types'
+
 /**
  * Class type for a Plugin.
  */
@@ -25,6 +28,5 @@ export interface IPlugin {
   /**
    * Function to generate input options.
    */
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  generateInitialOptions: () => any
+  generateInitialOptions: (param: ParamWithInfo) => InputOptions
 }
