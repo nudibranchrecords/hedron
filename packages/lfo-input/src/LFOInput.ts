@@ -84,13 +84,17 @@ export class LFOInput implements IPlugin {
                     lerp(options.min, options.max, (Math.sin(delta) + 1) / 2) * options.amplitude
                   break
                 case 'square':
-                  value = Math.sign(Math.sin(delta)) * options.amplitude
+                  value =
+                    lerp(options.min, options.max, (Math.sign(Math.sin(delta)) + 1) / 2) *
+                    options.amplitude
                   break
                 case 'sawtooth':
-                  value = ((delta % TAU) / TAU) * options.amplitude
+                  value = lerp(options.min, options.max, (delta % TAU) / TAU) * options.amplitude
                   break
                 case 'triangle':
-                  value = 1 - Math.abs(((delta % TAU) / TAU) * 2 - 1) * options.amplitude
+                  value =
+                    lerp(options.min, options.max, 1 - Math.abs(((delta % TAU) / TAU) * 2 - 1)) *
+                    options.amplitude
                   break
               }
           }
