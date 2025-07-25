@@ -16,6 +16,8 @@ export interface LFOInputOptions {
   phase: number
 }
 
+const TAU = Math.PI * 2
+
 export class LFOInput implements IPlugin {
   public readonly id = 'lfo-input'
   public readonly name = 'LFO Input'
@@ -30,11 +32,37 @@ export class LFOInput implements IPlugin {
   })
 
   constructor(engine: HedronEngine) {
-    const store = engine.getStore()
     const clock = engine.clock
 
     if (!clock) {
       throw new Error('Clock plugin is required for LFOInput to function.')
     }
+
+    const store = engine.getStore()
+
+    const tick = () => {
+      requestAnimationFrame(() => {
+        const d = clock.beatDelta
+        const storeState = store.getState()
+        const inputs = Object.values(storeState.inputs)
+
+        // TODO: Not very performant, we might want to cache inputs somehow
+        inputs.forEach((input) => {
+          if (input.type !== 'lfo') return
+
+          const options = input.options as LFOInputOptions
+          // const node = storeState.nodes[input.targetNodeId]
+          // const nodeVal = storeState.nodeValues[input.targetNodeId]
+
+          const value = Math.sin(d * TAU)
+
+          store.getState().updateNodeValue(input.targetNodeId, value)
+        })
+
+        tick()
+      })
+    }
+
+    tick()
   }
 }

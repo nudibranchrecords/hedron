@@ -17,7 +17,7 @@ export const LFOInputPanel = ({ input, engine }: IProps) => {
 
   return (
     <div>
-      LFO!
+      LFO!!
       <ControlGrid className="mb-xl"></ControlGrid>
     </div>
   )

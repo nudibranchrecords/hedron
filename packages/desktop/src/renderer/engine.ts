@@ -3,7 +3,7 @@ import { HedronEngine, EngineStateWithActions } from '@hedron/engine'
 import Stats from 'three/examples/jsm/libs/stats.module.js'
 import { Clock } from '@hedron/clock'
 import { MidiInput, MidiInputPanel } from '@hedron/midi-input'
-import { LFOInput } from '@hedron/lfo-input'
+import { LFOInput, LFOInputPanel } from '@hedron/lfo-input'
 
 export const performanceMonitor = new Stats()
 
@@ -28,5 +28,6 @@ engine.registerPlugin(new LFOInput(engine))
 export const pluginViews = {
   inputPanel: {
     midi: MidiInputPanel,
+    lfo: LFOInputPanel,
   },
 }
