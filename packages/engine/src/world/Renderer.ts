@@ -1,19 +1,16 @@
 import debounce from 'lodash.debounce'
 import { EffectComposer } from 'postprocessing'
-import { Camera, Scene, WebGLRenderer } from 'three'
-import { pass, type ShaderNodeObject } from 'three/tsl'
-import { PassNode, PostProcessing, WebGPURenderer } from 'three/webgpu'
+import { WebGLRenderer } from 'three'
+import { PostProcessing, WebGPURenderer } from 'three/webgpu'
 import { RendererType } from '@HedronEngine/types'
 import { EngineScene } from '@world/EngineScene'
 import { engineScenes } from '@world/scenes'
-import { SketchInstance } from '@world/SketchManager'
 
 export class Renderer {
   public composer: EffectComposer | undefined
   public renderer: WebGPURenderer | WebGLRenderer
   public postprocessing: PostProcessing | undefined
   public rendererType: RendererType
-  public webGPUCurrentPass: ShaderNodeObject<PassNode> | undefined
   private rendererHeight: number = 0
   private rendererWidth: number = 0
   private viewerContainer: HTMLDivElement | undefined
@@ -22,8 +19,8 @@ export class Renderer {
   private outputCanvas: HTMLCanvasElement | undefined
   private canvas: HTMLCanvasElement | undefined
   private previewContext: CanvasRenderingContext2D | undefined | null
-  private mainSceneWebGPUPass: ShaderNodeObject<PassNode> | undefined
   public aspectRatio: number = 1
+  public passesNeedUpdate_webGPU: boolean = true
   private isSendingOutput = false
 
   constructor({ rendererType }: { rendererType: RendererType }) {
@@ -181,61 +178,27 @@ export class Renderer {
     this.setSize()
   }
 
-  /**
-   * Sets the main scene for initial WebGPU render pass
-   * @param scene three.js scene to set as the main scene for WebGPU rendering.
-   * @param camera three.js camera to use for WebGPU rendering.
-   */
-  public setMainSceneWebGPUPass(scene: Scene, camera: Camera) {
-    if (this.rendererType !== 'webgpu') {
-      return
-    }
-    this.mainSceneWebGPUPass = pass(scene, camera)
-    this.webGPUCurrentPass = this.mainSceneWebGPUPass
-    this.postprocessing!.needsUpdate = true
-  }
-
-  /**
-   * Clears the current WebGPU passes and resets to the main scene pass.
-   */
-  public clearWebGPUPasses() {
-    this.webGPUCurrentPass = this.mainSceneWebGPUPass
-    this.postprocessing!.needsUpdate = true
-  }
-
-  /**
-   * Handle WebGPU post-processing pass for a sketch instance.
-   * @param sketchInstance The sketch instance to handle WebGPU pass for.
-   */
-  public addSketchWebGPUPass(sketchInstance: SketchInstance) {
-    if (sketchInstance.getWebGPUPass) {
-      if (this.rendererType !== 'webgpu') {
-        console.warn('[HEDRON] ⚠️ WebGPU pass handling is only available in WebGPU mode.')
-        return
-      }
-
-      const nextPass = sketchInstance.getWebGPUPass(this.webGPUCurrentPass!)
-      this.postprocessing!.outputNode = this.webGPUCurrentPass = nextPass
-      this.postprocessing!.needsUpdate = true
-    }
-  }
-
   public render(scene: EngineScene): void {
     if (!this.renderer) return
 
-    if (this.composer) {
-      this.composer.removeAllPasses()
-      this.composer.passes = scene.passes
-      for (let i = 0; i < scene.passes.length - 1; i++) {
-        scene.passes[i].renderToScreen = false
-      }
-      scene.passes[scene.passes.length - 1].renderToScreen = true
-      this.composer.render()
-    }
-
     if (this.renderer instanceof WebGPURenderer) {
+      if (this.passesNeedUpdate_webGPU) {
+        scene.updateWebGPUPasses(scene.sketches, this.postprocessing!)
+        this.passesNeedUpdate_webGPU = false
+      }
+
       this.postprocessing!.render()
     } else if (this.renderer instanceof WebGLRenderer) {
+      if (this.composer && scene.passes) {
+        this.composer.removeAllPasses()
+        this.composer.passes = scene.passes
+        for (let i = 0; i < scene.passes.length - 1; i++) {
+          scene.passes[i].renderToScreen = false
+        }
+        scene.passes[scene.passes.length - 1].renderToScreen = true
+        this.composer.render()
+      }
+
       this.renderer.render(scene.scene, scene.camera)
     } else {
       throw new Error(`Unsupported renderer type: ${this.rendererType}`)

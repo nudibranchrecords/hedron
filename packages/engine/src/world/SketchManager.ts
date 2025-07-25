@@ -46,14 +46,13 @@ export class SketchManager {
     return sketch
   }
 
-  public addSketchToScene = (instanceId: string, module: SketchModule): SketchInstance => {
+  public addSketchToScene = (instanceId: string, module: SketchModule) => {
     const engineScene = getDebugScene()
     const scene = engineScene.scene
     const sketch = this.createSketch(instanceId, module, engineScene)
     if (sketch.root) {
       scene.add(sketch.root)
     }
-    return sketch
   }
 
   public removeSketchFromScene = (instanceId: string): void => {

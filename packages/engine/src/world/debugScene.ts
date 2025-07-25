@@ -14,16 +14,10 @@ export const getDebugScene = (): EngineScene => {
 
 export const createDebugScene = (renderer: Renderer): EngineScene => {
   const id = createUniqueId()
-  const scene = addScene(id)
+  const scene = addScene(id, renderer.rendererType)
   scene.setRatio(renderer.aspectRatio)
-
-  if (!renderer.renderer) {
-    throw new Error("couldn't get renderer")
-  }
-
-  scene.renderer = renderer.renderer
 
   debugScene = scene
 
-  return debugScene
+  return scene
 }

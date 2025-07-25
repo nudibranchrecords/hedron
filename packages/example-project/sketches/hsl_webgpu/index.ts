@@ -11,7 +11,6 @@ export default class HSL {
   }
 
   update({ params }: { params: { saturation: number; hue: number; luminance: number } }) {
-    console.log(params)
     this.hue.value = params.hue
     this.saturation.value = params.saturation
     this.luminance.value = params.luminance

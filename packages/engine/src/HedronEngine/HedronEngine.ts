@@ -42,36 +42,30 @@ export class HedronEngine {
 
     this.onFrameStart = params?.onFrameStart
     this.onFrameEnd = params?.onFrameEnd
-
-    this.renderer.setMainSceneWebGPUPass(this.scene.scene, this.scene.camera)
   }
 
   public registerPlugin(plugin: IPlugin) {
     this.plugins[plugin.id] = plugin
   }
 
-  public setSketchesUrl(sketchesUrl: string) {
+  public async initiateSketchModules(sketchesUrl: string, moduleIds: string[]) {
     this.sketchesUrl = sketchesUrl
+
+    for (const moduleId of moduleIds) {
+      await this.addSketchModule(moduleId)
+    }
 
     const { removeSketchFromScene } = this.sketchManager
 
     const addSketchToScene = (sketchId: string, moduleId: string) => {
       const modules = this.store.getState().sketchModules
       const module = modules[moduleId].module
-      const sketch = this.sketchManager.addSketchToScene(sketchId, module)
+      this.sketchManager.addSketchToScene(sketchId, module)
 
-      this.renderer.addSketchWebGPUPass(sketch)
+      this.renderer.passesNeedUpdate_webGPU = true
     }
 
     listenToStore(this.store, addSketchToScene, removeSketchFromScene)
-  }
-
-  public async initiateSketchModules(moduleIds: string[]) {
-    for (const moduleId of moduleIds) {
-      await this.addSketchModule(moduleId)
-    }
-
-    this.store.setState({ isSketchModulesReady: true })
   }
 
   public async addSketchModule(moduleId: string): Promise<Result<SketchModuleItem>> {
@@ -80,6 +74,7 @@ export class HedronEngine {
     const result = await importSketchModule(this.sketchesUrl, moduleId)
 
     if (!result.success) {
+      console.error(`Failed to import sketch module ${moduleId}:`, result.error)
       // TODO: Show UI error here (engine needs to have some "error" state slice)
       return result
     }
@@ -104,14 +99,13 @@ export class HedronEngine {
     const moduleItem = result.data
     const sketchesToRefresh = getSketchesOfModuleId(this.store.getState(), moduleId)
 
-    this.renderer.clearWebGPUPasses()
-
     for (const sketch of sketchesToRefresh) {
       this.sketchManager.removeSketchFromScene(sketch.id)
-      const sketchInstance = this.sketchManager.addSketchToScene(sketch.id, moduleItem.module)
-      this.renderer.addSketchWebGPUPass(sketchInstance)
+      this.sketchManager.addSketchToScene(sketch.id, moduleItem.module)
       this.store.getState().updateSketchParams(sketch.id)
     }
+
+    this.renderer.passesNeedUpdate_webGPU = true
   }
 
   public createCanvas(containerEl: HTMLDivElement) {
@@ -168,24 +162,31 @@ export class HedronEngine {
   /**
    * Advances the engine state by one frame, updating all sketches and rendering the scene.
    * Shared by both the real-time loop and fixed-framerate sequence rendering.
-   * @param debugScene The debug scene object to update and render.
+   * @param engineScene The scene object to update and render.
    * @param deltaTime The time delta (in seconds) to advance this frame.
    */
-  private advanceFrame(debugScene: EngineScene, deltaTime: number) {
+  private advanceFrame(engineScene: EngineScene, deltaTime: number) {
     const state = this.store.getState()
     const sketchInstances = this.sketchManager!.getSketchInstances()
-    debugScene.clearPasses()
+
+    // TODO: When we have scenes, sketches should be added to the scene earlier on
+    engineScene.sketches = Object.values(sketchInstances)
+
+    if (this.renderer.rendererType === 'webgl') {
+      engineScene.clearPasses()
+    }
+
     Object.keys(state.sketches).forEach((sketchId) => {
       const paramValues = getSketchParamValues(state, sketchId)
       const instance = sketchInstances[sketchId]
       if (instance.getPasses) {
-        instance.getPasses(debugScene).forEach((pass: Pass) => {
-          debugScene.addPass(pass)
+        instance.getPasses(engineScene).forEach((pass: Pass) => {
+          engineScene.addPass(pass)
         })
       }
-      instance.update({ deltaFrame: 1, deltaTime, params: paramValues, scene: debugScene })
+      instance.update({ deltaFrame: 1, deltaTime, params: paramValues, scene: engineScene })
     })
-    this.renderer.render(debugScene)
+    this.renderer.render(engineScene)
   }
 
   /**
