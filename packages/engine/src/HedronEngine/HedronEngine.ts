@@ -1,5 +1,5 @@
-import { Clock } from 'three'
 import { Pass } from 'postprocessing'
+import { type Clock } from '@hedron/clock'
 import { listenToStore } from './storeListener'
 import { RendererType, Result } from './types'
 import { importSketchModule } from './importSketchModule'
@@ -13,17 +13,16 @@ import { getSketchesOfModuleId } from '@store/selectors/getSketchesOfModuleId'
 import { createEngineStore, EngineStore } from '@store/engineStore'
 import { getSketchParamValues } from '@store/selectors/getSketchParamValues'
 import { EngineScene } from '@world/EngineScene'
-
 export class HedronEngine {
   public rendererType: RendererType
   private renderer: Renderer
   private store: EngineStore
   private sketchesUrl: string | null = null
   private sketchManager: SketchManager
-  private clock: Clock = new Clock()
   public plugins: Record<string, IPlugin> = {}
   private onFrameStart?: () => void
   private onFrameEnd?: () => void
+  public clock?: Clock
   private running: boolean = false
   private paused: boolean = false
   private scene: EngineScene // The main scene for rendering sketches
@@ -35,6 +34,7 @@ export class HedronEngine {
     onFrameStart?: () => void
     onFrameEnd?: () => void
     rendererType: RendererType
+    clock?: Clock
   }) {
     this.rendererType = params.rendererType
     this.store = createEngineStore()
@@ -44,6 +44,10 @@ export class HedronEngine {
 
     this.onFrameStart = params?.onFrameStart
     this.onFrameEnd = params?.onFrameEnd
+
+    if (params.clock) {
+      this.clock = params.clock
+    }
   }
 
   public registerPlugin(plugin: IPlugin) {

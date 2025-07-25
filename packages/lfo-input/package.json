@@ -1,12 +1,12 @@
 {
-  "name": "@hedron/midi-input",
+  "name": "@hedron/lfo-input",
   "version": "1.0.0-alpha.1",
-  "description": "MIDI input for Hedron",
+  "description": "LFO input for Hedron",
   "author": "Alex Kempton <alex@funwithtriangles.net>",
   "homepage": "https://github.com/nudibranchrecords/hedron#readme",
   "type": "module",
   "license": "ISC",
-  "main": "./dist/midi-input.es.js",
+  "main": "./dist/lfo-input.es.js",
   "types": "./dist/index.d.ts",
   "directories": {
     "lib": "lib",
@@ -21,7 +21,6 @@
   },
   "scripts": {
     "dev": "vite build --watch",
-    "typecheck": "tsc --noEmit -p tsconfig.json",
     "build": "vite build",
     "lint": "eslint . --ext .js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix"
   },
@@ -33,7 +32,6 @@
   },
   "dependencies": {
     "@hedron/engine": "workspace:^",
-    "@hedron/midi-manager": "workspace:^",
     "@hedron/ui-core": "workspace:^"
   },
   "peerDependencies": {

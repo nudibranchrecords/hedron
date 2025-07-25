@@ -22,6 +22,7 @@
     "@electron-toolkit/utils": "^3.0.0",
     "@hedron/clock": "workspace:^",
     "@hedron/engine": "workspace:^",
+    "@hedron/lfo-input": "workspace:^",
     "@hedron/midi-input": "workspace:^",
     "@hedron/ui-core": "workspace:^",
     "@redux-devtools/extension": "^3.3.0",
