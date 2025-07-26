@@ -26,22 +26,23 @@ export const ActiveSketch = () => {
 
   return (
     <>
-      <ViewHeader>
-        <Icon name="token" /> {activeSketch.title}
-        <PopoutMenu
-          className="ml-auto"
-          items={[
-            {
-              label: 'Delete Sketch',
-              icon: 'delete',
-              onClick: () => engineStore.getState().deleteSketch(activeSketch.id),
-            },
-          ]}
-        >
-          <Button type="ghost" iconName="menu" />
-        </PopoutMenu>
-      </ViewHeader>
       <div className={c.wrapper}>
+        <ViewHeader>
+          <Icon name="token" /> {activeSketch.title}
+          <PopoutMenu
+            className="ml-auto"
+            items={[
+              {
+                label: 'Delete Sketch',
+                icon: 'delete',
+                onClick: () => engineStore.getState().deleteSketch(activeSketch.id),
+              },
+            ]}
+          >
+            <Button type="ghost" iconName="menu" />
+          </PopoutMenu>
+        </ViewHeader>
+
         <div className={c.scrollSection}>
           {/* key prop is important here! remounts the component to prevent cross-talk between params with the same key in different sketches */}
           <SketchParams sketchId={activeSketch.id} key={activeSketch.id} />
