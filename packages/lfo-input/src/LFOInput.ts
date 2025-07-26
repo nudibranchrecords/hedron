@@ -56,6 +56,13 @@ export class LFOInput implements IPlugin {
           const delta = clock.beatDelta * options.frequency * TAU + options.phase
 
           const node = storeState.nodes[input.targetNodeId]
+
+          if (!node) {
+            // Node may not exist if deleting a sketch/param didn't clean up properly
+            // TODO: special log level for checking this
+            return
+          }
+
           // const nodeVal = storeState.nodeValues[input.targetNodeId]
 
           let value: number | boolean | string | null = null
@@ -106,6 +113,7 @@ export class LFOInput implements IPlugin {
             return
           }
 
+          console.log(value)
           store.getState().updateNodeValue(input.targetNodeId, value)
         })
 
