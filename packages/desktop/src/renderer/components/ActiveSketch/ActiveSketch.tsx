@@ -42,7 +42,8 @@ export const ActiveSketch = () => {
         </PopoutMenu>
       </ViewHeader>
       <div className={c.section}>
-        <SketchParams sketchId={activeSketch.id} />
+        {/* key prop is important here! remounts the component to prevent cross-talk between params with the same key in different sketches */}
+        <SketchParams sketchId={activeSketch.id} key={activeSketch.id} />
       </div>
 
       {selectedParam && (
