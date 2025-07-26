@@ -41,19 +41,21 @@ export const ActiveSketch = () => {
           <Button type="ghost" iconName="menu" />
         </PopoutMenu>
       </ViewHeader>
-      <div className={c.section}>
-        {/* key prop is important here! remounts the component to prevent cross-talk between params with the same key in different sketches */}
-        <SketchParams sketchId={activeSketch.id} key={activeSketch.id} />
-      </div>
+      <div className={c.wrapper}>
+        <div className={c.scrollSection}>
+          {/* key prop is important here! remounts the component to prevent cross-talk between params with the same key in different sketches */}
+          <SketchParams sketchId={activeSketch.id} key={activeSketch.id} />
+        </div>
 
-      {selectedParam && (
-        <Panel snugPosition="bottom" spacing="slim" width="full" className={c.bottomPanel}>
-          <PanelHeader iconName={paramIcon}>{selectedParam.title}</PanelHeader>
-          <PanelBody>
-            <SelectedParam />
-          </PanelBody>
-        </Panel>
-      )}
+        {selectedParam && (
+          <Panel snugPosition="bottom" spacing="slim" width="full" className={c.bottomPanel}>
+            <PanelHeader iconName={paramIcon}>{selectedParam.title}</PanelHeader>
+            <PanelBody>
+              <SelectedParam />
+            </PanelBody>
+          </Panel>
+        )}
+      </div>
     </>
   )
 }

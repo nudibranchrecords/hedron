@@ -1,10 +1,16 @@
-.section {
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.scrollSection {
   margin-bottom: var(--gapXLarge);
+  flex: 1 1 0;
+  overflow: auto;
+  min-height: 0;
 }
 
 .bottomPanel {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
+  flex: 0 0 auto;
 }
