@@ -113,7 +113,6 @@ export class LFOInput implements IPlugin {
             return
           }
 
-          console.log(value)
           store.getState().updateNodeValue(input.targetNodeId, value)
         })
 
