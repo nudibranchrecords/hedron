@@ -47,6 +47,8 @@ export class MidiInput implements IPlugin {
           event.value !== undefined
         ) {
           const node = storeState.nodes[input.targetNodeId]
+          const min = storeState.nodeValues[`${input.targetNodeId}-sliderMin`] ?? 0
+          const max = storeState.nodeValues[`${input.targetNodeId}-sliderMax`] ?? 1
           const nodeVal = storeState.nodeValues[input.targetNodeId]
 
           let value: NodeValue | null = null
@@ -80,16 +82,10 @@ export class MidiInput implements IPlugin {
               }
               break
             }
-            case NodeTypes.Number:
-              value = event.value / 127
+            case NodeTypes.Number: {
+              value = (event.value / 127) * (max - min) + min
               break
-          }
-
-          if (value === null) {
-            console.warn(
-              `MIDI Input: Unsupported value type for node ${input.targetNodeId}. Value: ${event.value}, Type: ${node.valueType}`,
-            )
-            return
+            }
           }
 
           store.getState().updateNodeValue(input.targetNodeId, value)

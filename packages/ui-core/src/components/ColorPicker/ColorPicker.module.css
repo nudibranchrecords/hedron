@@ -13,7 +13,7 @@
 }
 
 .pickerContainer {
-  z-index: 10;
+  z-index: 1000;
   position: relative;
 }
 

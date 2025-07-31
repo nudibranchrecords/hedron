@@ -1,6 +1,6 @@
 import debounce from 'lodash.debounce'
 import { EffectComposer } from 'postprocessing'
-import { WebGLRenderer } from 'three'
+import { BasicShadowMap, WebGLRenderer } from 'three'
 import { PostProcessing, WebGPURenderer } from 'three/webgpu'
 import { RendererType } from '@HedronEngine/types'
 import { EngineScene } from '@world/EngineScene'
@@ -40,6 +40,8 @@ export class Renderer {
         )
         this.renderer = new WebGPURenderer()
         this.postprocessing = new PostProcessing(this.renderer)
+        this.renderer.shadowMap.enabled = true
+        this.renderer.shadowMap.type = BasicShadowMap
         break
       default:
         throw new Error(`Unsupported renderer type: ${this.rendererType}`)
