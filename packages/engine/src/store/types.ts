@@ -21,6 +21,7 @@ export interface NodeBase {
 export enum NodeTypes {
   Number = 'number',
   Boolean = 'boolean',
+  String = 'string',
   Enum = 'enum',
   Vector3 = 'vector3',
   RGB = 'rgb',
@@ -41,10 +42,16 @@ export interface NodeParamWithChildren extends NodeParamBase {
 
 export interface NodeParamNumber extends NodeParamBase {
   valueType: NodeTypes.Number
+  sliderMin?: number
+  sliderMax?: number
 }
 
 export interface NodeParamBoolean extends NodeParamBase {
   valueType: NodeTypes.Boolean
+}
+
+export interface NodeParamString extends NodeParamBase {
+  valueType: NodeTypes.String
 }
 
 export interface NodeParamEnum extends NodeParamBase {
@@ -61,6 +68,7 @@ export interface NodeParamRGB extends NodeParamWithChildren {
 
 export type Param =
   | NodeParamBoolean
+  | NodeParamString
   | NodeParamNumber
   | NodeParamEnum
   | NodeParamVector3
@@ -89,11 +97,17 @@ export interface SketchConfigParamBase {
 export interface SketchConfigParamNumber extends SketchConfigParamBase {
   valueType?: NodeTypes.Number
   defaultValue: number
+  sliderMin?: number
+  sliderMax?: number
 }
 
 export interface SketchConfigParamBoolean extends SketchConfigParamBase {
   valueType: NodeTypes.Boolean
   defaultValue: boolean
+}
+export interface SketchConfigParamString extends SketchConfigParamBase {
+  valueType: NodeTypes.String
+  defaultValue: string
 }
 
 export interface SketchConfigParamEnum extends SketchConfigParamBase {
@@ -115,19 +129,48 @@ export interface SketchConfigParamRGB extends SketchConfigParamBase {
 export type SketchConfigParam =
   | SketchConfigParamNumber
   | SketchConfigParamBoolean
+  | SketchConfigParamString
   | SketchConfigParamEnum
   | SketchConfigParamVector3
   | SketchConfigParamRGB
 
-export interface SketchConfig {
+export type EnsureRequiredValueType<T> = T extends { valueType?: infer V }
+  ? Omit<T, 'valueType'> & { valueType: V }
+  : T
+
+export type SketchConfigParamImported = EnsureRequiredValueType<SketchConfigParam> & {
+  groupIndex: number | null
+  title: string
+  params: (SketchConfigParam | SketchConfigGroup)[]
+}
+
+export interface SketchConfigGroup {
+  groupTitle?: string
+  params: SketchConfigParam[]
+}
+
+export interface SketchConfigGroupImported extends SketchConfigGroup {
+  groupTitle: string
+  groupIndex: number
+}
+
+// As the user defines the config, it can be a mix of params and groups
+export interface SketchConfigRaw {
+  title?: string
+  description?: string
+  params?: (SketchConfigParam | SketchConfigGroup)[]
+}
+
+export interface SketchConfigImported {
   title: string
   description?: string
-  params: SketchConfigParam[]
+  params: SketchConfigParamImported[]
+  groupInfo: { groupTitle: string }[]
 }
 
 export interface SketchModuleItem {
   moduleId: string
-  config: SketchConfig
+  config: SketchConfigImported
   module: SketchModule
 }
 
@@ -168,6 +211,7 @@ interface Actions {
   deleteSketch: (instanceId: string) => void
   setSketchModuleItem: (newItem: SketchModuleItem) => void
   updateNodeValue: (nodeId: string, value: NodeValue) => void
+  updateMultipleNodeValues: (nodeIds: string[], values: NodeValue[]) => void
   deleteSketchModule: (moduleId: string) => void
   loadProject: (project: EngineData) => void
   reset: () => void

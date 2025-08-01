@@ -41,8 +41,13 @@ button {
 
 h2 {
   font-size: 1.2rem;
-  /* text-transform: uppercase; */
   font-weight: 500;
+}
+
+h3 {
+  font-size: 0.8rem;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
 }
 
 p {
@@ -70,4 +75,15 @@ input[type='number']::-webkit-inner-spin-button,
 input[type='number']::-webkit-outer-spin-button {
   -webkit-appearance: none;
   margin: 0;
+}
+
+.input {
+  width: 100%;
+  padding: 0.5rem;
+  border: none;
+  border-radius: var(--borderRadius);
+  background: var(--bgColorDark4);
+  color: var(--textColorLight1);
+  font-size: var(--baseFontSize);
+  box-shadow: var(--boxShadow);
 }

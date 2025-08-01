@@ -1,6 +1,6 @@
 import type { Meta } from '@storybook/react'
 import { fn } from '@storybook/test'
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useInterval } from 'usehooks-ts'
 import { EnumDropdown, EnumDropdownHandle } from '@components/EnumDropdown/EnumDropdown'
 import {
@@ -16,6 +16,7 @@ import { FloatSlider, FloatSliderHandle } from '@components/FloatSlider/FloatSli
 import { BooleanToggle, BooleanToggleHandle } from '@components/BooleanToggle/BooleanToggle'
 import { ColorPickerHandle, ColorPicker } from '@components/ColorPicker/ColorPicker'
 import { Panel, PanelBody, PanelHeader } from '@components/Panel/Panel'
+import { NumberInput, NumberInputHandle } from '@components/NumberInput/NumberInput'
 
 const meta = {
   title: 'NodeControl',
@@ -34,15 +35,80 @@ interface BasicProps {
 export const Number = ({ title = 'Short Name', isActive, onClick }: BasicProps) => {
   const ref = useRef<FloatSliderHandle>(null)
 
+  useEffect(() => {
+    ref.current?.updateValue(Math.random() * 1)
+  }, [])
+
   useInterval(() => {
-    ref.current!.drawBar(Math.random())
+    ref.current!.updateValue(Math.random() * 1)
   }, 3000)
   return (
     <NodeControl isActive={isActive} onClick={onClick}>
       <NodeControlMain>
         <NodeControlTitle>{title}</NodeControlTitle>
         <NodeControlInner>
-          <FloatSlider onValueChange={fn()} ref={ref} />
+          <FloatSlider min={-1} max={1} onValueChange={fn()} ref={ref} />
+        </NodeControlInner>
+      </NodeControlMain>
+    </NodeControl>
+  )
+}
+
+export const NumberMinMaxPositive = ({ title = 'Short Name', isActive, onClick }: BasicProps) => {
+  const ref = useRef<FloatSliderHandle>(null)
+
+  useEffect(() => {
+    ref.current?.updateValue(Math.random() * 1)
+  }, [])
+
+  return (
+    <NodeControl isActive={isActive} onClick={onClick}>
+      <NodeControlMain>
+        <NodeControlTitle>{title}</NodeControlTitle>
+        <NodeControlInner>
+          <FloatSlider min={5} max={20} onValueChange={fn()} ref={ref} />
+        </NodeControlInner>
+      </NodeControlMain>
+    </NodeControl>
+  )
+}
+
+export const NumberMinMaxNegative = ({ title = 'Short Name', isActive, onClick }: BasicProps) => {
+  const ref = useRef<FloatSliderHandle>(null)
+
+  useEffect(() => {
+    ref.current?.updateValue(Math.random() * 1)
+  }, [])
+
+  return (
+    <NodeControl isActive={isActive} onClick={onClick}>
+      <NodeControlMain>
+        <NodeControlTitle>{title}</NodeControlTitle>
+        <NodeControlInner>
+          <FloatSlider min={-10} max={10} onValueChange={fn()} ref={ref} />
+        </NodeControlInner>
+      </NodeControlMain>
+    </NodeControl>
+  )
+}
+
+export const NumberTextOnly = ({ title = 'Short Name', isActive, onClick }: BasicProps) => {
+  const ref = useRef<NumberInputHandle>(null)
+
+  useEffect(() => {
+    ref.current?.updateValue(Math.random() * 1)
+  }, [])
+
+  useInterval(() => {
+    ref.current!.updateValue(Math.random() * 1)
+  }, 3000)
+
+  return (
+    <NodeControl isActive={isActive} onClick={onClick}>
+      <NodeControlMain>
+        <NodeControlTitle>{title}</NodeControlTitle>
+        <NodeControlInner>
+          <NumberInput onValueChange={fn()} ref={ref} />
         </NodeControlInner>
       </NodeControlMain>
     </NodeControl>

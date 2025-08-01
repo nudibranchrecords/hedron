@@ -1,6 +1,9 @@
-import { useCallback } from 'react'
+import { useCallback, useRef } from 'react'
 import { NodeValue } from '@hedron/engine'
-import { useUpdateNodeValue } from '@components/hooks/useUpdateNodeValue'
+import {
+  useUpdateMultipleNodeValues,
+  useUpdateNodeValue,
+} from '@components/hooks/useUpdateNodeValue'
 
 export const useOnNodeValueChange = (id: string) => {
   const updateNodeValue = useUpdateNodeValue()
@@ -13,4 +16,18 @@ export const useOnNodeValueChange = (id: string) => {
   )
 
   return onValueChange
+}
+
+export const useOnMultipleNodeValuesChange = (ids: string[]) => {
+  const stableIds = useRef(ids)
+  const updateMultipleNodeValues = useUpdateMultipleNodeValues()
+
+  const onValuesChange = useCallback(
+    (values: NodeValue[]) => {
+      updateMultipleNodeValues(stableIds.current, values)
+    },
+    [updateMultipleNodeValues],
+  )
+
+  return onValuesChange
 }

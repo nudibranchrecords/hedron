@@ -1,4 +1,12 @@
-import { HedronEngine, IPlugin } from '@hedron/engine'
+import {
+  getNextEnumValue,
+  getParamConfig,
+  HedronEngine,
+  IPlugin,
+  NodeTypes,
+  NodeValue,
+  SketchConfigParamEnum,
+} from '@hedron/engine'
 import { MidiManager, MidiMessageType } from '@hedron/midi-manager'
 
 export interface MidiInputOptions {
@@ -21,8 +29,10 @@ export class MidiInput implements IPlugin {
 
   constructor(engine: HedronEngine) {
     const store = engine.getStore()
+
     this.midiManager.onMidiMessage.add((event) => {
-      const inputs = Object.values(store.getState().inputs)
+      const storeState = store.getState()
+      const inputs = Object.values(storeState.inputs)
 
       // TODO: Filter out clock
 
@@ -36,8 +46,53 @@ export class MidiInput implements IPlugin {
           event.type === options.type &&
           event.value !== undefined
         ) {
-          // TODO: Different behaviours depending on the node type
-          store.getState().updateNodeValue(input.targetNodeId, event.value / 128)
+          const node = storeState.nodes[input.targetNodeId]
+          const nodeVal = storeState.nodeValues[input.targetNodeId]
+
+          let value: NodeValue | null = null
+
+          switch (node.valueType) {
+            case NodeTypes.Boolean:
+              switch (event.type) {
+                case MidiMessageType.NoteOn:
+                case MidiMessageType.NoteOff:
+                  value = !nodeVal
+                  break
+                default:
+                  value = event.value > 0
+                  break
+              }
+              break
+            case NodeTypes.Enum: {
+              switch (event.type) {
+                case MidiMessageType.NoteOn:
+                case MidiMessageType.NoteOff:
+                  value = getNextEnumValue(input.targetNodeId)(storeState)
+                  break
+                default: {
+                  const { options } = getParamConfig(input.targetNodeId)(
+                    storeState,
+                  ) as SketchConfigParamEnum
+
+                  value = options[Math.floor((event.value / 127) * (options.length - 1))].value
+                  break
+                }
+              }
+              break
+            }
+            case NodeTypes.Number:
+              value = event.value / 127
+              break
+          }
+
+          if (value === null) {
+            console.warn(
+              `MIDI Input: Unsupported value type for node ${input.targetNodeId}. Value: ${event.value}`,
+            )
+            return
+          }
+
+          store.getState().updateNodeValue(input.targetNodeId, value)
         }
       })
     })
