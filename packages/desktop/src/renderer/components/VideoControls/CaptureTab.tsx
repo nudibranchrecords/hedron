@@ -1,25 +1,10 @@
-import c from './VideoControls.module.css'
+import { Button } from '@hedron/ui-core'
 
 // Include the global type definitions
 declare global {
   interface Window {
     saveFrame: () => Promise<void>
-    renderFrames: (
-      frameCount: number,
-      name: string,
-      video?: boolean,
-      width?: number,
-      height?: number,
-      audioPath?: string,
-    ) => Promise<void>
-    resetEvery: (seconds: number, offset?: number) => void
-    cancelReset: () => void
-    resetTimeoutId?: NodeJS.Timeout | null
   }
-}
-
-interface CaptureTabProps {
-  // No props needed
 }
 
 export function CaptureTab(): JSX.Element {
@@ -28,15 +13,15 @@ export function CaptureTab(): JSX.Element {
     window.saveFrame()
   }
   return (
-    <div className={c.form}>
+    <div>
       <p>
         Capture the current canvas frame as a PNG file. The file will be saved to your Documents
         folder with a timestamped filename.
       </p>
-      <div className={c.buttonRow}>
-        <button className={`${c.actionButton} ${c.primaryButton}`} onClick={handleCapture}>
+      <div>
+        <Button type="secondary" onClick={handleCapture}>
           Capture Frame
-        </button>
+        </Button>
       </div>
     </div>
   )

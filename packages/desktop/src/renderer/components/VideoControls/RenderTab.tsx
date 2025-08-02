@@ -1,10 +1,10 @@
 import { useState } from 'react'
+import { Button } from '@hedron/ui-core'
 import c from './VideoControls.module.css'
 
 // Include the global type definitions
 declare global {
   interface Window {
-    saveFrame: () => Promise<void>
     renderFrames: (
       frameCount: number,
       name: string,
@@ -13,9 +13,6 @@ declare global {
       height?: number,
       audioPath?: string,
     ) => Promise<void>
-    resetEvery: (seconds: number, offset?: number) => void
-    cancelReset: () => void
-    resetTimeoutId?: NodeJS.Timeout | null
   }
 }
 
@@ -112,36 +109,33 @@ export function RenderTab({ renderSettings, setRenderSettings }: RenderTabProps)
 
   return (
     <div className={c.form}>
-      <div className={c.formGroup}>
-        <label className={c.label} htmlFor="name">
+      <div className={c.formGroupRow} style={{ alignItems: 'flex-start' }}>
+        <div style={{ flex: 2 }}>
           Output Name
-        </label>
-        <input
-          className={c.input}
-          type="text"
-          id="name"
-          name="name"
-          value={renderSettings.name}
-          onChange={handleRenderSettingChange}
-          disabled={isRendering}
-        />
-      </div>
-
-      <div className={c.formGroup}>
-        <label className={c.label} htmlFor="frameCount">
+          <input
+            className={c.input}
+            type="text"
+            id="name"
+            name="name"
+            value={renderSettings.name}
+            onChange={handleRenderSettingChange}
+            disabled={isRendering}
+          />
+        </div>
+        <div style={{ flex: 1 }}>
           Frame Count (at 30fps)
-        </label>
-        <input
-          className={c.input}
-          type="number"
-          id="frameCount"
-          name="frameCount"
-          value={renderSettings.frameCount}
-          onChange={handleRenderSettingChange}
-          min="1"
-          disabled={isRendering}
-        />
-        <small>{Math.round((renderSettings.frameCount / 30) * 10) / 10} seconds at 30fps</small>
+          <input
+            className={c.input}
+            type="number"
+            id="frameCount"
+            name="frameCount"
+            value={renderSettings.frameCount}
+            onChange={handleRenderSettingChange}
+            min="1"
+            disabled={isRendering}
+          />
+          {Math.round((renderSettings.frameCount / 30) * 10) / 10} seconds at 30fps
+        </div>
       </div>
 
       <div className={c.formGroupRow}>
@@ -154,13 +148,11 @@ export function RenderTab({ renderSettings, setRenderSettings }: RenderTabProps)
           onChange={handleRenderSettingChange}
           disabled={isRendering}
         />
-        <label htmlFor="createVideo">Create Video (requires ffmpeg)</label>
+        Create Video (requires ffmpeg)
       </div>
 
       <div className={c.formGroup}>
-        <label className={c.label} htmlFor="audioPath">
-          Audio File Path (optional, relative to Documents)
-        </label>
+        Audio File Path (optional, relative to Documents)
         <input
           className={c.input}
           type="text"
@@ -174,7 +166,7 @@ export function RenderTab({ renderSettings, setRenderSettings }: RenderTabProps)
       </div>
 
       <div className={c.formGroup}>
-        <label className={c.label}>Resolution (optional)</label>
+        Resolution (optional)
         <div className={c.formGroupRow}>
           <input
             className={c.input}
@@ -211,14 +203,10 @@ export function RenderTab({ renderSettings, setRenderSettings }: RenderTabProps)
         </div>
       )}
 
-      <div className={c.buttonRow}>
-        <button
-          className={`${c.actionButton} ${c.primaryButton}`}
-          onClick={handleRender}
-          disabled={isRendering}
-        >
+      <div>
+        <Button type="secondary" onClick={handleRender} disabled={isRendering}>
           {isRendering ? 'Rendering...' : 'Render'}
-        </button>
+        </Button>
       </div>
     </div>
   )

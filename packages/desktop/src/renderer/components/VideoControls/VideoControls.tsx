@@ -1,12 +1,9 @@
 import { useState, useEffect } from 'react'
+import { Button, Icon, MiniTabs, MiniTabsItem } from '@hedron/ui-core'
 import c from './VideoControls.module.css'
 import { CaptureTab } from './CaptureTab'
 import { LoopTab, type LoopSettings } from './LoopTab'
 import { RenderTab, type RenderSettings } from './RenderTab'
-
-interface VideoControlsProps {
-  className?: string
-}
 
 // Initialize with default settings
 const defaultRenderSettings: RenderSettings = {
@@ -26,7 +23,7 @@ const defaultLoopSettings: LoopSettings = {
 // Tabs
 type TabType = 'render' | 'capture' | 'loop'
 
-export function VideoControls({ className }: VideoControlsProps): JSX.Element {
+export function VideoControls(): JSX.Element {
   const [isOpen, setIsOpen] = useState(false)
   const [activeTab, setActiveTab] = useState<TabType>('render')
   const [renderSettings, setRenderSettings] = useState<RenderSettings>(defaultRenderSettings)
@@ -56,54 +53,49 @@ export function VideoControls({ className }: VideoControlsProps): JSX.Element {
 
   return (
     <>
-      <button className={`${c.button} ${className}`} onClick={() => setIsOpen(true)}>
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        >
-          <polygon points="23 7 16 12 23 17 23 7"></polygon>
-          <rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect>
-        </svg>
-        Video
-      </button>
+      <Button onClick={() => setIsOpen(true)}>
+        <Icon name="panorama"></Icon>Video
+      </Button>
+
+      <Button size="short" type="neutral" onClick={() => window.saveFrame()}>
+        <Icon name="photo_camera_back"></Icon>Capture
+      </Button>
 
       {isOpen && (
         <>
           <div className={c.popup}>
             <div className={c.header}>
-              <h2 className={c.title}>Video Controls</h2>
-              <button className={c.closeButton} onClick={() => setIsOpen(false)}>
-                ✕
-              </button>
+              <h2>Video Controls</h2>
+              <Button onClick={() => setIsOpen(false)}>✕</Button>
             </div>
 
-            <div className={c.tabsContainer}>
-              <div className={c.tabs}>
-                <div
-                  className={`${c.tab} ${activeTab === 'render' ? c.tabActive : ''}`}
-                  onClick={() => setActiveTab('render')}
-                >
-                  Render Video
-                </div>
-                <div
-                  className={`${c.tab} ${activeTab === 'capture' ? c.tabActive : ''}`}
-                  onClick={() => setActiveTab('capture')}
-                >
-                  Capture Frame
-                </div>
-                <div
-                  className={`${c.tab} ${activeTab === 'loop' ? c.tabActive : ''}`}
-                  onClick={() => setActiveTab('loop')}
-                >
-                  Test Loop
-                </div>
-              </div>
+            <MiniTabs>
+              <MiniTabsItem
+                isActive={activeTab === 'render'}
+                iconName="video_camera_back"
+                onClick={() => setActiveTab('render')}
+              >
+                Render Video
+              </MiniTabsItem>
 
+              <MiniTabsItem
+                isActive={activeTab === 'capture'}
+                iconName="photo_camera_back"
+                onClick={() => setActiveTab('capture')}
+              >
+                Capture Frame
+              </MiniTabsItem>
+
+              <MiniTabsItem
+                isActive={activeTab === 'loop'}
+                iconName="360"
+                onClick={() => setActiveTab('loop')}
+              >
+                Test Loop
+              </MiniTabsItem>
+            </MiniTabs>
+
+            <div className={c.content}>
               {activeTab === 'render' && (
                 <RenderTab renderSettings={renderSettings} setRenderSettings={setRenderSettings} />
               )}

@@ -1,19 +1,11 @@
 import { useState, useEffect } from 'react'
+import { Button } from '@hedron/ui-core'
 import c from './VideoControls.module.css'
 import { engine } from '@renderer/engine'
 
 // Include the global type definitions
 declare global {
   interface Window {
-    saveFrame: () => Promise<void>
-    renderFrames: (
-      frameCount: number,
-      name: string,
-      video?: boolean,
-      width?: number,
-      height?: number,
-      audioPath?: string,
-    ) => Promise<void>
     resetEvery: (seconds: number, offset?: number) => void
     cancelReset: () => void
     resetTimeoutId?: NodeJS.Timeout | null
@@ -81,52 +73,55 @@ export function LoopTab({ loopSettings, setLoopSettings }: LoopTabProps): JSX.El
 
   return (
     <div className={c.form}>
-      <p>
-        Test animation loops by resetting the time at regular intervals. Useful for previewing
-        seamless loops before rendering.
-      </p>
-
+      Test animation loops by resetting the time at regular intervals.
+      <br />
+      Useful for previewing seamless loops before rendering.
       <div className={c.formGroup}>
-        <label className={c.label} htmlFor="seconds">
-          Loop Duration (seconds)
-        </label>
-        <input
-          className={c.input}
-          type="number"
-          id="seconds"
-          name="seconds"
-          value={loopSettings.seconds}
-          onChange={handleLoopSettingChange}
-          min="0.1"
-          step="0.1"
-          disabled={loopActive}
-        />
+        <div className={c.formGroupRow}>
+          <div>
+            Loop Duration (seconds)
+            <input
+              className={c.input}
+              type="number"
+              id="seconds"
+              name="seconds"
+              value={loopSettings.seconds}
+              onChange={handleLoopSettingChange}
+              min="0.1"
+              step="0.1"
+              disabled={loopActive}
+            />
+          </div>
+          <div>
+            Start Offset (optional)
+            <input
+              className={c.input}
+              type="number"
+              id="offset"
+              name="offset"
+              value={loopSettings.offset === null ? '' : loopSettings.offset}
+              onChange={handleLoopSettingChange}
+              min="0"
+              step="0.1"
+              placeholder="0"
+              disabled={loopActive}
+            />
+          </div>
+        </div>
+        <div>
+          Offset lets you test the end of a perfect loop video.
+          <br />
+          The player will play from offset seconds, to the end of the loop, and then the first
+          (duration-offset) seconds of the loop.
+        </div>
       </div>
-
-      <div className={c.formGroup}>
-        <label className={c.label} htmlFor="offset">
-          Start Offset (optional)
-        </label>
-        <input
-          className={c.input}
-          type="number"
-          id="offset"
-          name="offset"
-          value={loopSettings.offset === null ? '' : loopSettings.offset}
-          onChange={handleLoopSettingChange}
-          min="0"
-          step="0.1"
-          placeholder="0"
-          disabled={loopActive}
-        />
-        <small>
-          Offset lets you test specific parts of your loop. For example, with a 10s loop and 9s
-          offset, you&apos;ll see the transition from the end back to the beginning.
-        </small>
+      <div>
+        <Button type={loopActive ? 'primary' : 'secondary'} onClick={toggleLoop}>
+          {loopActive ? 'Stop Loop Test' : 'Start Loop Test'}
+        </Button>
       </div>
-
       {loopActive && (
-        <div className={c.timelineContainer}>
+        <div>
           <div className={c.timelinePreview}>
             <div
               className={c.timelineMarker}
@@ -163,15 +158,6 @@ export function LoopTab({ loopSettings, setLoopSettings }: LoopTabProps): JSX.El
           </div>
         </div>
       )}
-
-      <div className={c.buttonRow}>
-        <button
-          className={`${c.actionButton} ${loopActive ? '' : c.primaryButton}`}
-          onClick={toggleLoop}
-        >
-          {loopActive ? 'Stop Loop Test' : 'Start Loop Test'}
-        </button>
-      </div>
     </div>
   )
 }
