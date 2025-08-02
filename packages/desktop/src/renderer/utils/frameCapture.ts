@@ -24,7 +24,7 @@ declare global {
 async function saveFrameViaIPC(
   dataUrl: string,
   name?: string,
-  frameIndex?: number,
+  frameIndex?: number | string,
 ): Promise<SaveFrameResponse> {
   const base64Data = dataUrl.replace(/^data:image\/png;base64,/, '')
   const result = (await window.electronApi.ipcRenderer.invoke(
@@ -78,16 +78,20 @@ window.renderFrames = async (
     await engine.renderFramesSequence(
       frameCount,
       fps,
-      async (dataUrl: string, frameIndex: number) => {
+      async (dataUrl: string, frameIndex: number | string) => {
         const result = await saveFrameViaIPC(dataUrl, name, frameIndex)
         if (result.success && result.path) {
           filePaths.push(result.path)
         } else {
           console.error(`Failed to save frame ${frameIndex}: ${result.error}`)
         }
-        if ((frameIndex + 1) % 10 === 0 || frameIndex === frameCount - 1) {
-          console.log(`Saved frame ${frameIndex + 1} / ${frameCount}`)
+        const frameNum = Number(frameIndex)
+        if (isNaN(frameNum)) {
+          console.log(`Saved frame ${frameCount} / ${frameNum}`)
+        } else if ((frameNum + 1) % 10 === 0 || frameNum === frameCount - 1) {
+          console.log(`Saved frame ${frameNum + 1} / ${frameNum}`)
         }
+        console.warn(frameNum)
       },
       width,
       height,

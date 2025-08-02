@@ -255,7 +255,7 @@ export class HedronEngine {
   public async renderFramesSequence(
     frameCount: number,
     fps: number = 30,
-    onFrame: (dataUrl: string, frameIndex: number) => Promise<void> | void,
+    onFrame: (dataUrl: string, frameIndex: number | string) => Promise<void> | void,
     width?: number,
     height?: number,
   ): Promise<void> {
@@ -269,6 +269,7 @@ export class HedronEngine {
     }
 
     const frameDuration = 1 / fps
+    const padCount = frameCount.toString().length // Zero-pad index based on frame count
 
     for (let i = 0; i < frameCount; i++) {
       this.onFrameStart?.()
@@ -286,7 +287,8 @@ export class HedronEngine {
       const dataUrl = this.captureFrame()
       if (!dataUrl) throw new Error(`Failed to capture frame at index ${i}`)
 
-      await onFrame(dataUrl, i)
+      const prefixedIndex = i.toString().padStart(padCount, '0') // Zero-pad index for consistency
+      await onFrame(dataUrl, prefixedIndex)
 
       // Simulate fixed framerate by waiting if needed
       if (i < frameCount - 1) {

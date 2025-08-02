@@ -20,7 +20,7 @@ function getFrameDirPath(name: string) {
   return dirPath
 }
 
-function getFrameFilePath(name: string, frameIndex: number) {
+function getFrameFilePath(name: string, frameIndex: number | string) {
   return path.join(getFrameDirPath(name), `${name}-${frameIndex}.png`)
 }
 
@@ -35,7 +35,7 @@ export async function saveFrameHandler(
   _: unknown,
   base64Data: string,
   name?: string,
-  frameIndex?: number,
+  frameIndex?: number | string,
 ): Promise<SaveFrameResponse> {
   try {
     let filePath: string
