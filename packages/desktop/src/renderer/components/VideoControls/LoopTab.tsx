@@ -49,6 +49,11 @@ export function LoopTab({ loopSettings, setLoopSettings }: LoopTabProps): JSX.El
         }
       }
     }
+    return () => {
+      if (interval) {
+        clearInterval(interval)
+      }
+    }
   }, [loopActive, loopSettings.seconds])
 
   // Function to toggle loop
