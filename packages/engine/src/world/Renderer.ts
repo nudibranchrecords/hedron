@@ -177,6 +177,33 @@ export class Renderer {
     this.setSize()
   }
 
+  /**
+   * Resize the renderer's canvas to the given width and height.
+   */
+  public resize(width: number, height: number): void {
+    if (!this.composer) throw new Error('Renderer not set')
+    this.composer.setSize(width, height)
+    this.rendererWidth = width
+    this.rendererHeight = height
+    if (this.viewerContainer) {
+      this.viewerContainer.style.paddingBottom = (100 * height) / width + '%'
+    }
+  }
+
+  /**
+   * Get the current width of the renderer's canvas.
+   */
+  public getWidth(): number {
+    return this.rendererWidth
+  }
+
+  /**
+   * Get the current height of the renderer's canvas.
+   */
+  public getHeight(): number {
+    return this.rendererHeight
+  }
+
   public render(scene: EngineScene): void {
     if (!this.renderer) return
 

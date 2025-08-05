@@ -4,7 +4,7 @@ import { Icon, IconName } from '@components/Icon/Icon'
 
 export interface ButtonProps extends React.HTMLAttributes<HTMLButtonElement> {
   type?: 'primary' | 'secondary' | 'neutral' | 'ghost' | 'danger'
-  size?: 'slim'
+  size?: 'slim' | 'short'
   disabled?: boolean
   iconName?: IconName
 }

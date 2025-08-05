@@ -10,12 +10,12 @@ import {
   SaveProjectResponse,
   SketchEvents,
 } from '@shared/Events'
-import { FrameEvents } from '@shared/FrameEvents'
 import { updateDisplayMenu, updateMenu } from '@main/menu'
 import { createWindow } from '@main/mainWindow'
 import { startSketchesServer } from '@main/handleSketchFiles'
 import { saveProjectFile } from '@main/handlers/saveProjectFile'
 import { openProjectFile } from '@main/handlers/openProjectFile'
+import { FrameEvents } from '@shared/FrameEvents'
 const isDevelopment = process.env.NODE_ENV !== 'production'
 
 // This method will be called when Electron has finished

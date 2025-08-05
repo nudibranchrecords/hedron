@@ -1,0 +1,128 @@
+.content {
+  padding-top: 16px;
+}
+
+.popup {
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  top: 50%;
+  right: 50%;
+  background-color: var(--bgColorDark1);
+  border-left: 1px solid var(--lineColor1);
+  padding: 16px;
+  z-index: 1000;
+  overflow-y: auto;
+  box-shadow: -2px 0 10px rgba(0, 0, 0, 0.2);
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.formGroupRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.input {
+  background-color: var(--bgColorDark2);
+  border: 1px solid var(--lineColor2);
+  border-radius: 4px;
+  color: var(--textColorLight1);
+  font-size: 12px;
+  padding: 4px 8px;
+  width: 100%;
+}
+
+.checkbox {
+  margin-right: 8px;
+}
+
+.progressContainer {
+  margin-top: 16px;
+  text-align: center;
+}
+
+.progressBar {
+  width: 100%;
+  height: 8px;
+  background-color: var(--bgColorDark2);
+  border-radius: 4px;
+  overflow: hidden;
+  margin-top: 8px;
+}
+
+.progressFill {
+  height: 100%;
+  background-color: var(--bgColorDark3);
+  transition: width 0.3s ease;
+}
+
+.status {
+  margin-top: 8px;
+  font-size: 12px;
+}
+
+.timelinePreview {
+  position: relative;
+  width: 100%;
+  height: 16px;
+  background-color: var(--bgColorDark2);
+  border-radius: 4px;
+  margin-bottom: 8px;
+  overflow: hidden;
+  border: 1px solid var(--lineColor1);
+}
+
+.timelineMarker {
+  position: absolute;
+  width: 2px;
+  height: 100%;
+  background-color: var(--lineColor2);
+  top: 0;
+}
+
+.timelineLabels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  color: var(--textColorMid);
+}
+
+.loopPoint {
+  position: absolute;
+  top: 0;
+  width: 2px;
+  height: 100%;
+  background-color: rgba(255, 255, 255, 0.4);
+}
+
+.timelineTooltip {
+  position: absolute;
+  background-color: #FF00FF;
+  border: 1px solid #FF0000;
+  border-radius: 4px;
+  padding: 4px 8px;
+  font-size: 11px;
+  bottom: 100%;
+  transform: translateX(-50%);
+  margin-bottom: 4px;
+  white-space: nowrap;
+}
