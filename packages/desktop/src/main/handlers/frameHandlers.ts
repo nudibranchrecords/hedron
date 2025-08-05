@@ -20,7 +20,7 @@ function getFrameDirPath(name: string) {
   return dirPath
 }
 
-function getFrameFilePath(name: string, frameIndex: number) {
+function getFrameFilePath(name: string, frameIndex: number | string) {
   return path.join(getFrameDirPath(name), `${name}-${frameIndex}.png`)
 }
 
@@ -35,7 +35,7 @@ export async function saveFrameHandler(
   _: unknown,
   base64Data: string,
   name?: string,
-  frameIndex?: number,
+  frameIndex?: number | string,
 ): Promise<SaveFrameResponse> {
   try {
     let filePath: string
@@ -57,6 +57,7 @@ export async function saveFrameSequenceHandler(
   base64Array: string[],
   name: string,
   video: boolean = false,
+  audioPath?: string,
 ) {
   try {
     const dirPath = getFrameDirPath(name)
@@ -66,20 +67,74 @@ export async function saveFrameSequenceHandler(
         fs.writeFileSync(filePath, base64Array[i], 'base64')
       }
     }
+
     let videoPath: string | undefined = undefined
     if (video) {
+      // Count the number of PNG files to determine frame count
+      const files = fs.readdirSync(dirPath).filter((f) => f.endsWith('.png'))
+      const frameCount = files.length
+      const frameRate = 30
+      const videoDuration = frameCount / frameRate
+
+      console.log(`Creating video with duration: ${videoDuration} seconds`)
       videoPath = path.join(dirPath, `${name}.mp4`)
-      const ffmpegCmd = `ffmpeg -y -framerate 30 -i "${dirPath}/${name}-%d.png" -c:v libx264 -pix_fmt yuv420p -crf 18 "${videoPath}"`
-      await new Promise<void>((resolve, reject) => {
-        exec(ffmpegCmd, (error, _stdout, stderr) => {
-          if (error) {
-            console.error('ffmpeg error:', error, stderr)
-            reject(error)
-          } else {
-            resolve()
-          }
+
+      let ffmpegCmd: string
+      if (!audioPath) {
+        ffmpegCmd = `ffmpeg -y -framerate ${frameRate} -i "${dirPath}/${name}-%d.png" -c:v libx264 -pix_fmt yuv420p -crf 18 "${videoPath}"`
+      } else {
+        const tempAudio = path.join(dirPath, `${name}-temp.wav`)
+
+        // First create a temporary audio file trimmed to exact length
+        await new Promise<void>((resolve, reject) => {
+          // Convert to WAV and trim to exact duration, adding fade in/out
+          const audioCmd = `ffmpeg -y -i "${path.join(getDocumentsPath(), audioPath)}" -t ${videoDuration} -af "afade=t=in:st=0:d=0.5,afade=t=out:st=${videoDuration - 0.5}:d=0.5" -ar 48000 -ac 2 "${tempAudio}"`
+          exec(audioCmd, (error, _stdout, stderr) => {
+            if (error) {
+              console.error('ffmpeg audio error:', error, stderr)
+              reject(error)
+            } else {
+              resolve()
+            }
+          })
         })
-      })
+
+        // Then combine video and trimmed audio
+        ffmpegCmd = `ffmpeg -y -framerate ${frameRate} -i "${dirPath}/${name}-%d.png" -i "${tempAudio}" -map 0:v -map 1:a -c:v libx264 -pix_fmt yuv420p -crf 18 -c:a pcm_s16le "${videoPath}"`
+        console.log('FFmpeg command:', ffmpegCmd)
+
+        // Execute the video creation command
+        await new Promise<void>((resolve, reject) => {
+          exec(ffmpegCmd, (error, _stdout, stderr) => {
+            if (error) {
+              console.error('ffmpeg error:', error, stderr)
+              reject(error)
+            } else {
+              resolve()
+            }
+          })
+        })
+
+        // Clean up temp file
+        try {
+          // fs.unlinkSync(tempAudio)
+        } catch (e) {
+          console.error('Error cleaning up temp audio file:', e)
+        }
+      }
+
+      if (!audioPath) {
+        await new Promise<void>((resolve, reject) => {
+          exec(ffmpegCmd, (error, _stdout, stderr) => {
+            if (error) {
+              console.error('ffmpeg error:', error, stderr)
+              reject(error)
+            } else {
+              resolve()
+            }
+          })
+        })
+      }
     }
     return { success: true, path: dirPath, videoPath }
   } catch (error) {

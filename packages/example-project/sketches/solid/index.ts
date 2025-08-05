@@ -30,14 +30,14 @@ export default class Solid {
     }
   }
 
-  update({ params, deltaFrame }) {
-    const baseSpeed = 0.15
+  update({ params, deltaFrame, deltaTime }) {
+    const baseSpeed = 3.1415
 
     // Update rotation using params
     // Multipying by deltaFrame to keep the speed consistent, even if frames are skipped
-    this.root.rotation.x += params.rotSpeedX * baseSpeed * deltaFrame
-    this.root.rotation.y += params.rotSpeedY * baseSpeed * deltaFrame
-    this.root.rotation.z += params.rotSpeedZ * baseSpeed * deltaFrame
+    this.root.rotation.x += params.rotSpeedX * baseSpeed * deltaTime
+    this.root.rotation.y += params.rotSpeedY * baseSpeed * deltaTime
+    this.root.rotation.z += params.rotSpeedZ * baseSpeed * deltaTime
 
     // TODO: Won't need to do this once we have min/max values in the UI
     this.root.position
