@@ -1,14 +1,6 @@
 {
   "name": "root",
   "private": true,
-  "workspaces": {
-    "packages": [
-      "packages/*"
-    ],
-    "nohoist": [
-      "**electron**"
-    ]
-  },
   "scripts": {
     "dev": "lerna run dev --parallel --scope @hedron/clock --scope @hedron/engine --scope @hedron/desktop --scope @hedron/midi-manager --scope @hedron/midi-input --scope @hedron/ui-core",
     "dev:clock": "lerna run dev --parallel --scope @hedron/clock --scope @hedron/clock-test-app",
@@ -19,7 +11,7 @@
     "lint": "lerna run lint",
     "format": "prettier . --write",
     "dist": "lerna run lint,typecheck,build,dist --sort",
-    "version": "yarn install && git stage yarn.lock"
+    "version": "pnpm install && git stage pnpm-lock.yaml"
   },
   "devDependencies": {
     "@electron-toolkit/eslint-config-prettier": "^2.0.0",
@@ -39,5 +31,5 @@
     "react-dom": "^18.3.1",
     "typescript": "^5.5.2"
   },
-  "packageManager": "yarn@4.5.3"
+  "packageManager": "pnpm@9.0.0"
 }

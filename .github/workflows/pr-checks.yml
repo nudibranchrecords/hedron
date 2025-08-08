@@ -19,12 +19,17 @@ jobs:
         with:
           node-version: '20'
 
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 9
+
       - name: Install dependencies
-        run: yarn install --mode=skip-build
+        run: pnpm install
 
       - name: Run TypeScript, ESLint, and Prettier checks
         run: |
-          yarn build:engine
-          yarn typecheck
-          yarn lint
-          yarn format
+          pnpm build:engine
+          pnpm typecheck
+          pnpm lint
+          pnpm format

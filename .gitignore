@@ -7,12 +7,6 @@ out
 .env
 
 .pnp.*
-**/.yarn/*
-!.yarn/patches
-!.yarn/plugins
-!.yarn/releases
-!.yarn/sdks
-!.yarn/versions
 
 .nx/cache
 .nx/workspace-data
