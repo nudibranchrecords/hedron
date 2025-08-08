@@ -22,11 +22,13 @@
   "devDependencies": {
     "@redux-devtools/extension": "^3.3.0",
     "@types/lodash.debounce": "^4.0.9",
+    "@types/three": "^0.178.0",
     "tsup": "^8.3.5"
   },
   "peerDependencies": {
+    "@types/three": "^0.178.0",
     "postprocessing": "*",
-    "three": "*"
+    "three": "^0.178.0"
   },
   "dependencies": {
     "immer": "^10.1.1",

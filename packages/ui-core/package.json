@@ -47,6 +47,8 @@
     "@storybook/react": "^8.2.9",
     "@storybook/react-vite": "^8.2.9",
     "@storybook/test": "^8.2.9",
+    "@types/react": "^18.3.1",
+    "@types/react-dom": "^18.3.1",
     "@vitejs/plugin-react": "^4.3.4",
     "storybook": "^8.2.9",
     "vite": "^6.2.3",
@@ -54,6 +56,8 @@
     "vite-tsconfig-paths": "^5.1.4"
   },
   "peerDependencies": {
+    "@types/react": "^18.3.1",
+    "@types/react-dom": "^18.3.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
   }
