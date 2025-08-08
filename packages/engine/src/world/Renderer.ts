@@ -71,7 +71,9 @@ export class Renderer {
       return null
     }
 
-    if (!this.composer) {
+    // TODO: This type guarding is shaky because there is no real connection between `composer` and rendererType.
+    // Ideally, we should have a more robust way to type composer/postprocessing or just unify them
+    if (this.rendererType === 'webgl' && !this.composer) {
       console.error('Composer not initialized for rendering')
       return null
     }
