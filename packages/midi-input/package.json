@@ -25,9 +25,6 @@
     "lint": "eslint . --ext .js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix"
   },
   "devDependencies": {
-    "vite": "^6.2.3",
-    "vite-plugin-dts": "^4.5.3",
-    "vite-tsconfig-paths": "^5.1.4"
   },
   "dependencies": {
     "@hedron/engine": "workspace:^",
