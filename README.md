@@ -3,7 +3,7 @@
 ## Get started
 
 1. Run `pnpm install` at the top level to install all deps
-2. Run `pnpm dev` at the top level to start Hedron. This will watch for changes in both `@hedron/desktop` and `@hedron/engine`
+2. Run `pnpm dev` at the top level to start Hedron. This will watch for changes in all relevant packages for the main app
 
 ## Working on isolated packages
 
