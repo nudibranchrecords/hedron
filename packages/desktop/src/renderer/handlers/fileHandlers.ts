@@ -12,8 +12,7 @@ import { ProjectData } from '@shared/types'
 const startEngineWithSketchesDir = async (sketchesDirPath: string) => {
   const { moduleIds, url } = await startSketchesServer(sketchesDirPath)
 
-  engine.setSketchesUrl(url)
-  await engine.initiateSketchModules(moduleIds)
+  await engine.initiateSketchModules(url, moduleIds)
 
   engine.run()
 }

@@ -1,5 +1,7 @@
 import { Group } from 'three'
 import { Pass } from 'postprocessing'
+import { PassNode } from 'three/webgpu'
+import { type ShaderNodeObject } from 'three/tsl'
 import { SketchModule } from '@store/types'
 import { getDebugScene } from '@world/debugScene'
 import { EngineScene } from '@world/EngineScene'
@@ -11,11 +13,13 @@ type SketchUpdateParams = {
   scene: EngineScene
 }
 
-type SketchInstance = {
+export type SketchInstance = {
   update: (arg: SketchUpdateParams) => void
   root?: Group
 
   getPasses?: (engineScene: EngineScene) => Pass[]
+
+  getWebGPUPass?: (prevPass: ShaderNodeObject<PassNode>) => ShaderNodeObject<PassNode>
 
   /**
    * Called when the sketch is removed from the scene.
@@ -42,7 +46,7 @@ export class SketchManager {
     return sketch
   }
 
-  public addSketchToScene = (instanceId: string, module: SketchModule): void => {
+  public addSketchToScene = (instanceId: string, module: SketchModule) => {
     const engineScene = getDebugScene()
     const scene = engineScene.scene
     const sketch = this.createSketch(instanceId, module, engineScene)
@@ -54,13 +58,14 @@ export class SketchManager {
   public removeSketchFromScene = (instanceId: string): void => {
     const engineScene = getDebugScene()
     const scene = engineScene.scene
-    const oldSketch = scene.getObjectByName(instanceId)
+    const oldSketchRoot = scene.getObjectByName(instanceId)
 
-    if (!oldSketch) {
-      throw new Error(`couldn't find sketch to remove: ${instanceId}`)
+    if (!oldSketchRoot) {
+      return
+    } else {
+      scene.remove(oldSketchRoot)
     }
 
-    scene.remove(oldSketch)
     this.sketchInstances[instanceId]?.dispose?.(engineScene)
     delete this.sketchInstances[instanceId]
   }
