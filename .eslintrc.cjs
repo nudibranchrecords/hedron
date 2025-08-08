@@ -14,7 +14,14 @@ module.exports = {
     '@typescript-eslint/explicit-function-return-type': 0,
     'import/no-named-as-default-member': 0,
     'import/order': 'error',
-    'import/no-extraneous-dependencies': 'error',
+    'import/no-extraneous-dependencies': [
+      'error',
+      {
+        includeInternal: false,
+        includeTypes: false,
+        packageDir: ['.', '../..'], // Allow imports from the root package.json
+      },
+    ],
     'react-refresh/only-export-components': ['error', { allowConstantExport: true }],
     'no-restricted-imports': [
       'error',
