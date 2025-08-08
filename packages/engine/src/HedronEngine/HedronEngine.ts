@@ -27,7 +27,7 @@ export class HedronEngine {
   private scene: EngineScene // The main scene for rendering sketches
 
   private extraTime: number = 0 // For time manipulation, e.g. for skipping frames
-  private totalTime: number = 0 // Total time for the engine, used for resetting time
+  public totalTime: number = 0 // Total time for the engine, used for resetting time
 
   constructor(params: {
     onFrameStart?: () => void
@@ -231,21 +231,50 @@ export class HedronEngine {
   }
 
   /**
+   * Public method to resize the renderer's canvas.
+   */
+  public resizeRenderer(width: number, height: number): void {
+    this.renderer.resize(width, height)
+  }
+
+  /**
+   * Public method to get the renderer's current size.
+   */
+  public getRendererSize(): { width: number; height: number } {
+    return {
+      width: this.renderer.getWidth(),
+      height: this.renderer.getHeight(),
+    }
+  }
+
+  /**
    * Render a sequence of frames at a fixed framerate.
    * Calls onFrame(dataUrl, frameIndex) after each frame.
    * Does not accumulate any frame data in memory.
    * @param frameCount Number of frames to render
    * @param fps Frames per second
    * @param onFrame Callback invoked with the frame's data URL and index after each frame
+   * @param width Optional width to resize the renderer
+   * @param height Optional height to resize the renderer
    */
   public async renderFramesSequence(
     frameCount: number,
     fps: number = 30,
-    onFrame: (dataUrl: string, frameIndex: number) => Promise<void> | void,
+    onFrame: (dataUrl: string, frameIndex: number | string) => Promise<void> | void,
+    width?: number,
+    height?: number,
   ): Promise<void> {
     this.paused = true
 
+    // Store original size if resizing
+    let originalSize: { width: number; height: number } | null = null
+    if (width && height) {
+      originalSize = this.getRendererSize()
+      this.resizeRenderer(width, height)
+    }
+
     const frameDuration = 1 / fps
+    const padCount = frameCount.toString().length // Zero-pad index based on frame count
 
     for (let i = 0; i < frameCount; i++) {
       this.onFrameStart?.()
@@ -263,12 +292,18 @@ export class HedronEngine {
       const dataUrl = this.captureFrame()
       if (!dataUrl) throw new Error(`Failed to capture frame at index ${i}`)
 
-      await onFrame(dataUrl, i)
+      const prefixedIndex = i.toString().padStart(padCount, '0') // Zero-pad index for consistency
+      await onFrame(dataUrl, prefixedIndex)
 
       // Simulate fixed framerate by waiting if needed
       if (i < frameCount - 1) {
         await new Promise((resolve) => setTimeout(resolve, 1))
       }
+    }
+
+    // Restore original size after rendering
+    if (originalSize) {
+      this.resizeRenderer(originalSize.width, originalSize.height)
     }
 
     this.paused = false

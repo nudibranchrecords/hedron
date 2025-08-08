@@ -61,6 +61,12 @@
   padding: 0.25rem;
 }
 
+.short {
+    font-size: 0.5rem;
+    align-items: center;
+    justify-content: center;
+}
+
 .icon {
   font-size: 1.1em;
   line-height: 1.1;

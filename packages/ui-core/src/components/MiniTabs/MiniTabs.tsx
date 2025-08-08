@@ -24,7 +24,12 @@ export const MiniTabsItem = ({
 }: MiniTabsItemProps) => {
   return (
     <button className={`${c.item} ${isActive && c.active} ${className}`} {...props}>
-      {iconName && <Icon name={iconName} className={c.icon} />}
+      {iconName && (
+        <div>
+          <Icon name={iconName} className={c.icon} />
+          &nbsp;
+        </div>
+      )}
       <span>{children}</span>
     </button>
   )
