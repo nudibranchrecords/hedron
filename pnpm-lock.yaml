@@ -20,6 +20,15 @@ importers:
       '@tsconfig/recommended':
         specifier: ^1.0.8
         version: 1.0.10
+      '@types/react':
+        specifier: ^18.3.1
+        version: 18.3.23
+      '@types/react-dom':
+        specifier: ^18.3.1
+        version: 18.3.7(@types/react@18.3.23)
+      '@vitejs/plugin-react':
+        specifier: ^4.3.4
+        version: 4.7.0(vite@6.3.5(@types/node@20.19.10)(yaml@2.8.1))
       eslint:
         specifier: ^8.57.0
         version: 8.57.1
@@ -71,28 +80,25 @@ importers:
       '@picocss/pico':
         specifier: ^2.0.6
         version: 2.1.1
-    devDependencies:
-      '@eslint/js':
-        specifier: ^9.17.0
-        version: 9.33.0
       '@types/react':
-        specifier: ^18.3.18
+        specifier: ^18.3.1
         version: 18.3.23
       '@types/react-dom':
-        specifier: ^18.3.5
+        specifier: ^18.3.1
         version: 18.3.7(@types/react@18.3.23)
-      '@vitejs/plugin-react':
-        specifier: ^4.3.4
-        version: 4.7.0(vite@6.3.5(@types/node@20.19.10)(yaml@2.8.1))
-      globals:
-        specifier: ^15.14.0
-        version: 15.15.0
       react:
         specifier: ^18.3.1
         version: 18.3.1
       react-dom:
         specifier: ^18.3.1
         version: 18.3.1(react@18.3.1)
+    devDependencies:
+      '@eslint/js':
+        specifier: ^9.17.0
+        version: 9.33.0
+      globals:
+        specifier: ^15.14.0
+        version: 15.15.0
       typescript:
         specifier: ~5.6.2
         version: 5.6.3
@@ -187,18 +193,9 @@ importers:
       '@types/path-browserify':
         specifier: ^1.0.3
         version: 1.0.3
-      '@types/react':
-        specifier: ^18.3.1
-        version: 18.3.23
-      '@types/react-dom':
-        specifier: ^18.3.1
-        version: 18.3.7(@types/react@18.3.23)
       '@types/three':
         specifier: ^0.178.0
         version: 0.178.1
-      '@vitejs/plugin-react':
-        specifier: ^4.3.1
-        version: 4.7.0(vite@5.4.19(@types/node@20.19.10))
       electron:
         specifier: 33.2.1
         version: 33.2.1
@@ -295,9 +292,6 @@ importers:
         specifier: ^5.0.2
         version: 5.0.7(@types/react@18.3.23)(immer@10.1.1)(react@18.3.1)(use-sync-external-store@1.5.0(react@18.3.1))
     devDependencies:
-      '@vitejs/plugin-react':
-        specifier: ^4.3.4
-        version: 4.7.0(vite@6.3.5(@types/node@20.19.10)(yaml@2.8.1))
       vite:
         specifier: ^6.2.3
         version: 6.3.5(@types/node@20.19.10)(yaml@2.8.1)
@@ -322,6 +316,12 @@ importers:
       '@picocss/pico':
         specifier: ^2.0.6
         version: 2.1.1
+      '@types/react':
+        specifier: ^18.3.1
+        version: 18.3.23
+      '@types/react-dom':
+        specifier: ^18.3.1
+        version: 18.3.7(@types/react@18.3.23)
       react:
         specifier: ^18.3.1
         version: 18.3.1
@@ -335,15 +335,6 @@ importers:
       '@eslint/js':
         specifier: ^9.17.0
         version: 9.33.0
-      '@types/react':
-        specifier: ^18.3.18
-        version: 18.3.23
-      '@types/react-dom':
-        specifier: ^18.3.5
-        version: 18.3.7(@types/react@18.3.23)
-      '@vitejs/plugin-react':
-        specifier: ^4.3.4
-        version: 4.7.0(vite@6.3.5(@types/node@20.19.10)(yaml@2.8.1))
       globals:
         specifier: ^15.14.0
         version: 15.15.0
@@ -359,6 +350,12 @@ importers:
       '@floating-ui/react-dom':
         specifier: ^2.1.2
         version: 2.1.5(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      '@types/react':
+        specifier: ^18.3.1
+        version: 18.3.23
+      '@types/react-dom':
+        specifier: ^18.3.1
+        version: 18.3.7(@types/react@18.3.23)
       '@uiw/react-color':
         specifier: ^2.3.4
         version: 2.7.3(@babel/runtime@7.28.2)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -402,15 +399,6 @@ importers:
       '@storybook/test':
         specifier: ^8.2.9
         version: 8.6.14(storybook@8.6.14(prettier@3.6.2))
-      '@types/react':
-        specifier: ^18.3.1
-        version: 18.3.23
-      '@types/react-dom':
-        specifier: ^18.3.1
-        version: 18.3.7(@types/react@18.3.23)
-      '@vitejs/plugin-react':
-        specifier: ^4.3.4
-        version: 4.7.0(vite@6.3.5(@types/node@20.19.10)(yaml@2.8.1))
       storybook:
         specifier: ^8.2.9
         version: 8.6.14(prettier@3.6.2)
@@ -8193,18 +8181,6 @@ snapshots:
 
   '@unrs/resolver-binding-win32-x64-msvc@1.11.1':
     optional: true
-
-  '@vitejs/plugin-react@4.7.0(vite@5.4.19(@types/node@20.19.10))':
-    dependencies:
-      '@babel/core': 7.28.0
-      '@babel/plugin-transform-react-jsx-self': 7.27.1(@babel/core@7.28.0)
-      '@babel/plugin-transform-react-jsx-source': 7.27.1(@babel/core@7.28.0)
-      '@rolldown/pluginutils': 1.0.0-beta.27
-      '@types/babel__core': 7.20.5
-      react-refresh: 0.17.0
-      vite: 5.4.19(@types/node@20.19.10)
-    transitivePeerDependencies:
-      - supports-color
 
   '@vitejs/plugin-react@4.7.0(vite@6.3.5(@types/node@20.19.10)(yaml@2.8.1))':
     dependencies:
