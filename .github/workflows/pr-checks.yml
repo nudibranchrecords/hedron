@@ -17,7 +17,6 @@ jobs:
       - name: Install pnpm
         uses: pnpm/action-setup@v4
         with:
-          version: 9
           run_install: false
 
       - name: Set up Node.js
@@ -31,7 +30,6 @@ jobs:
 
       - name: Run TypeScript, ESLint, and Prettier checks
         run: |
-          pnpm build:engine
           pnpm typecheck
           pnpm lint
           pnpm format
