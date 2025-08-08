@@ -1,13 +1,11 @@
+import { RendererType } from '@HedronEngine/types'
 import { EngineScene } from '@world/EngineScene'
 
 export const engineScenes = new Map<string, EngineScene>()
 
-export const addScene = (sceneId: string): EngineScene => {
-  const newScene = new EngineScene()
+export const addScene = (sceneId: string, rendererType: RendererType): EngineScene => {
+  const newScene = new EngineScene({ rendererType })
   engineScenes.set(sceneId, newScene)
-
-  // renderer.setSize()
-  // if (shouldSetPost) renderer.setPostProcessing()
 
   return newScene
 }
