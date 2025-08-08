@@ -89,18 +89,6 @@ importers:
       '@picocss/pico':
         specifier: ^2.0.6
         version: 2.1.1
-      '@types/react':
-        specifier: ^18.3.1
-        version: 18.3.23
-      '@types/react-dom':
-        specifier: ^18.3.1
-        version: 18.3.7(@types/react@18.3.23)
-      react:
-        specifier: ^18.3.1
-        version: 18.3.1
-      react-dom:
-        specifier: ^18.3.1
-        version: 18.3.1(react@18.3.1)
     devDependencies:
       '@eslint/js':
         specifier: ^9.17.0
@@ -168,12 +156,6 @@ importers:
       postprocessing:
         specifier: ^6.37.5
         version: 6.37.7(three@0.178.0)
-      react:
-        specifier: ^18.3.1
-        version: 18.3.1
-      react-dom:
-        specifier: ^18.3.1
-        version: 18.3.1(react@18.3.1)
       react-error-boundary:
         specifier: ^4.0.13
         version: 4.1.2(react@18.3.1)
@@ -276,21 +258,6 @@ importers:
       '@hedron/ui-core':
         specifier: workspace:^
         version: link:../ui-core
-      '@types/react':
-        specifier: ^18.3.1
-        version: 18.3.23
-      '@types/react-dom':
-        specifier: ^18.3.1
-        version: 18.3.7(@types/react@18.3.23)
-      react:
-        specifier: ^18.3.1
-        version: 18.3.1
-      react-dom:
-        specifier: ^18.3.1
-        version: 18.3.1(react@18.3.1)
-      zustand:
-        specifier: ^5.0.2
-        version: 5.0.7(@types/react@18.3.23)(immer@10.1.1)(react@18.3.1)(use-sync-external-store@1.5.0(react@18.3.1))
 
   packages/midi-manager:
     devDependencies:
@@ -306,18 +273,6 @@ importers:
       '@picocss/pico':
         specifier: ^2.0.6
         version: 2.1.1
-      '@types/react':
-        specifier: ^18.3.1
-        version: 18.3.23
-      '@types/react-dom':
-        specifier: ^18.3.1
-        version: 18.3.7(@types/react@18.3.23)
-      react:
-        specifier: ^18.3.1
-        version: 18.3.1
-      react-dom:
-        specifier: ^18.3.1
-        version: 18.3.1(react@18.3.1)
       zustand:
         specifier: ^5.0.2
         version: 5.0.7(@types/react@18.3.23)(immer@10.1.1)(react@18.3.1)(use-sync-external-store@1.5.0(react@18.3.1))
@@ -337,24 +292,12 @@ importers:
       '@floating-ui/react-dom':
         specifier: ^2.1.2
         version: 2.1.5(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      '@types/react':
-        specifier: ^18.3.1
-        version: 18.3.23
-      '@types/react-dom':
-        specifier: ^18.3.1
-        version: 18.3.7(@types/react@18.3.23)
       '@uiw/react-color':
         specifier: ^2.3.4
         version: 2.7.3(@babel/runtime@7.28.2)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       material-symbols:
         specifier: ^0.23.0
         version: 0.23.0
-      react:
-        specifier: ^18.3.1
-        version: 18.3.1
-      react-dom:
-        specifier: ^18.3.1
-        version: 18.3.1(react@18.3.1)
       usehooks-ts:
         specifier: ^3.1.0
         version: 3.1.1(react@18.3.1)
