@@ -2,6 +2,7 @@
   "extends": "@tsconfig/recommended/tsconfig.json",
   "exclude": ["node_modules"],
   "compilerOptions": {
+    "jsx": "react-jsx",
     "noImplicitAny": true,
     "lib": ["ES2023", "DOM", "DOM.Iterable"],
     "target": "ES2022"
