@@ -33,3 +33,4 @@ jobs:
           pnpm typecheck
           pnpm lint
           pnpm format
+          pnpm build
