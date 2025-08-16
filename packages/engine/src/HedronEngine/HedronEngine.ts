@@ -179,12 +179,12 @@ export class HedronEngine {
     Object.keys(state.sketches).forEach((sketchId) => {
       const paramValues = getSketchParamValues(state, sketchId)
       const instance = sketchInstances[sketchId]
-      if (instance.getPasses) {
+      if (instance?.getPasses) {
         instance.getPasses(engineScene).forEach((pass: Pass) => {
           engineScene.addPass(pass)
         })
       }
-      instance.update({ deltaFrame: 1, deltaTime, params: paramValues, scene: engineScene })
+      instance?.update({ deltaFrame: 1, deltaTime, params: paramValues, scene: engineScene })
     })
     this.renderer.render(engineScene)
   }

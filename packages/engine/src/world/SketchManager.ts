@@ -35,22 +35,27 @@ export class SketchManager {
     instanceId: string,
     module: SketchModule,
     scene: EngineScene,
-  ): SketchInstance => {
-    const sketch = new module(scene)
-    if (sketch.root) {
-      sketch.root.name = instanceId
+  ): SketchInstance | undefined => {
+    try {
+      const sketch = new module(scene)
+      if (sketch.root) {
+        sketch.root.name = instanceId
+      }
+
+      this.sketchInstances[instanceId] = sketch
+
+      return sketch
+    } catch (error) {
+      // TODO: error toast
+      console.error('Failed to create sketch:', error)
     }
-
-    this.sketchInstances[instanceId] = sketch
-
-    return sketch
   }
 
   public addSketchToScene = (instanceId: string, module: SketchModule) => {
     const engineScene = getDebugScene()
     const scene = engineScene.scene
     const sketch = this.createSketch(instanceId, module, engineScene)
-    if (sketch.root) {
+    if (sketch?.root) {
       scene.add(sketch.root)
     }
   }

@@ -4,6 +4,7 @@
   "compilerOptions": {
     "jsx": "react-jsx",
     "noImplicitAny": true,
+    "noUncheckedIndexedAccess": true,
     "lib": ["ES2023", "DOM", "DOM.Iterable"],
     "target": "ES2022"
   }
