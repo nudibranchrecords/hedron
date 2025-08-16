@@ -36,8 +36,10 @@ export type SketchInstance = {
   dispose(engineScene: EngineScene): () => void
 }
 
+export type SketchInstanceMap = Map<string, SketchInstance>
+
 export class SketchManager {
-  private sketchInstances: { [id: string]: SketchInstance | undefined } = {}
+  private sketchInstances: SketchInstanceMap = new Map()
   private onError: SketchManagerErrorHandler
 
   constructor({ onError }: { onError: SketchManagerErrorHandler }) {
@@ -57,7 +59,7 @@ export class SketchManager {
         sketchInstance.root.name = instanceId
       }
 
-      this.sketchInstances[instanceId] = sketchInstance
+      this.sketchInstances.set(instanceId, sketchInstance)
 
       return sketchInstance
     } catch (error) {
@@ -92,13 +94,13 @@ export class SketchManager {
     }
 
     try {
-      this.sketchInstances[instanceId]?.dispose?.(engineScene)
+      this.sketchInstances.get(instanceId)?.dispose?.(engineScene)
     } catch (error) {
       console.error(`Error disposing sketch instance ${instanceId}:`, error)
       this.onError(instanceId, SketchManagerErrorType.Dispose)
     }
 
-    delete this.sketchInstances[instanceId]
+    this.sketchInstances.delete(instanceId)
   }
 
   public getSketchInstances = () => {

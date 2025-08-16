@@ -5,7 +5,7 @@ import { importSketchModule } from './importSketchModule'
 import { IPlugin } from '@plugins/Plugin'
 import { stripForSave } from '@utils/stripForSave'
 import { Renderer } from '@world/Renderer'
-import { SketchInstance, SketchManager } from '@world/SketchManager'
+import { SketchManager } from '@world/SketchManager'
 import { createDebugScene } from '@world/debugScene'
 import { EngineData, SketchModuleItem } from '@store/types'
 import { getSketchesOfModuleId } from '@store/selectors/getSketchesOfModuleId'
@@ -189,10 +189,9 @@ export class HedronEngine {
    */
   private advanceFrame(engineScene: EngineScene, deltaTime: number) {
     const state = this.store.getState()
-    const sketchInstances = this.sketchManager!.getSketchInstances()
-
-    // TODO: When we have scenes, sketches should be added to the scene earlier on
-    engineScene.sketches = Object.values(sketchInstances) as SketchInstance[]
+    const sketchInstances =
+      // TODO: When we have scenes, sketches should be added to the scene earlier on
+      (engineScene.sketches = this.sketchManager!.getSketchInstances())
 
     if (this.renderer.rendererType === 'webgl') {
       engineScene.clearPasses()
@@ -200,7 +199,7 @@ export class HedronEngine {
 
     Object.keys(state.sketches).forEach((sketchId) => {
       const paramValues = getSketchParamValues(state, sketchId)
-      const instance = sketchInstances[sketchId]
+      const instance = sketchInstances.get(sketchId)
       if (instance?.getPasses) {
         try {
           instance.getPasses(engineScene).forEach((pass: Pass) => {
