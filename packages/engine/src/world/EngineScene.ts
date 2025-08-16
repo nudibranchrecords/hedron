@@ -60,8 +60,12 @@ export class EngineScene {
 
     sketchInstances.forEach((sketchInstance) => {
       if (sketchInstance.getWebGPUPass) {
-        const nextPass = sketchInstance.getWebGPUPass(prevPass)
-        prevPass = nextPass
+        try {
+          const nextPass = sketchInstance.getWebGPUPass(prevPass)
+          prevPass = nextPass
+        } catch (error) {
+          console.error(`Error getting WebGPU pass for sketch instance ${sketchInstance.id}`, error)
+        }
       }
     })
 

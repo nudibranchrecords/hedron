@@ -180,11 +180,21 @@ export class HedronEngine {
       const paramValues = getSketchParamValues(state, sketchId)
       const instance = sketchInstances[sketchId]
       if (instance?.getPasses) {
-        instance.getPasses(engineScene).forEach((pass: Pass) => {
-          engineScene.addPass(pass)
-        })
+        try {
+          instance.getPasses(engineScene).forEach((pass: Pass) => {
+            engineScene.addPass(pass)
+          })
+        } catch (error) {
+          console.error(`Error getting passes for sketch ${sketchId}:`, error)
+          this.sketchManager.removeSketchFromScene(sketchId)
+        }
       }
-      instance?.update({ deltaFrame: 1, deltaTime, params: paramValues, scene: engineScene })
+      try {
+        instance?.update({ deltaFrame: 1, deltaTime, params: paramValues, scene: engineScene })
+      } catch (error) {
+        console.error(`Error updating sketch ${sketchId}:`, error)
+        this.sketchManager.removeSketchFromScene(sketchId)
+      }
     })
     this.renderer.render(engineScene)
   }

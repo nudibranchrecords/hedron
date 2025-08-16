@@ -14,6 +14,7 @@ type SketchUpdateParams = {
 }
 
 export type SketchInstance = {
+  id: string
   update: (arg: SketchUpdateParams) => void
   root?: Group
 
@@ -37,7 +38,9 @@ export class SketchManager {
     scene: EngineScene,
   ): SketchInstance | undefined => {
     try {
-      const sketch = new module(scene)
+      const sketch = new module(scene) as SketchInstance
+      sketch.id = instanceId
+
       if (sketch.root) {
         sketch.root.name = instanceId
       }
