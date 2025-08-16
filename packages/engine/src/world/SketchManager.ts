@@ -29,7 +29,7 @@ export type SketchInstance = {
 }
 
 export class SketchManager {
-  private sketchInstances: { [id: string]: SketchInstance } = {}
+  private sketchInstances: { [id: string]: SketchInstance | undefined } = {}
 
   private createSketch = (
     instanceId: string,

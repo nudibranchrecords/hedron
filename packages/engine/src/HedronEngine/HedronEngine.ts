@@ -5,7 +5,7 @@ import { importSketchModule } from './importSketchModule'
 import { IPlugin } from '@plugins/Plugin'
 import { stripForSave } from '@utils/stripForSave'
 import { Renderer } from '@world/Renderer'
-import { SketchManager } from '@world/SketchManager'
+import { SketchInstance, SketchManager } from '@world/SketchManager'
 import { createDebugScene } from '@world/debugScene'
 import { EngineData, SketchModuleItem } from '@store/types'
 import { getSketchesOfModuleId } from '@store/selectors/getSketchesOfModuleId'
@@ -170,7 +170,7 @@ export class HedronEngine {
     const sketchInstances = this.sketchManager!.getSketchInstances()
 
     // TODO: When we have scenes, sketches should be added to the scene earlier on
-    engineScene.sketches = Object.values(sketchInstances)
+    engineScene.sketches = Object.values(sketchInstances) as SketchInstance[]
 
     if (this.renderer.rendererType === 'webgl') {
       engineScene.clearPasses()
