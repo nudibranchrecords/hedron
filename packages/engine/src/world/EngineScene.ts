@@ -2,7 +2,7 @@ import { Pass, RenderPass } from 'postprocessing'
 import { PerspectiveCamera, Scene } from 'three'
 import { pass, type ShaderNodeObject } from 'three/tsl'
 import { PassNode, PostProcessing } from 'three/webgpu'
-import { SketchInstanceMap } from '@world/SketchManager'
+import { SketchInstanceError, SketchInstanceMap } from '@world/SketchManager'
 import { RendererType } from '@HedronEngine/types'
 
 export class EngineScene {
@@ -13,9 +13,17 @@ export class EngineScene {
   private renderPass: RenderPass | undefined
   private renderPass_webGPU: ShaderNodeObject<PassNode> | undefined
   public rendererType: RendererType
+  private onSketchInstanceError: SketchInstanceError
 
-  constructor({ rendererType }: { rendererType: RendererType }) {
+  constructor({
+    rendererType,
+    onSketchInstanceError,
+  }: {
+    rendererType: RendererType
+    onSketchInstanceError: SketchInstanceError
+  }) {
     this.rendererType = rendererType
+    this.onSketchInstanceError = onSketchInstanceError
     this.scene = new Scene()
     this.camera = new PerspectiveCamera(75, undefined, 0.1, 100000)
     this.camera.position.z = 5
@@ -64,6 +72,7 @@ export class EngineScene {
           const nextPass = sketchInstance.getWebGPUPass(prevPass)
           prevPass = nextPass
         } catch (error) {
+          this.onSketchInstanceError(sketchInstance.id)
           console.error(`Error getting WebGPU pass for sketch instance ${sketchInstance.id}`, error)
         }
       }

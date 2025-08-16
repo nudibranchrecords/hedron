@@ -13,12 +13,12 @@ type SketchUpdateParams = {
   scene: EngineScene
 }
 
-enum SketchManagerErrorType {
+enum SketchErrorType {
   Create = 'Create',
   Dispose = 'Dispose',
 }
 
-type SketchManagerErrorHandler = (sketchInstanceId: string, type: SketchManagerErrorType) => void
+type SketchManagerErrorHandler = (sketchInstanceId: string, type?: SketchErrorType) => void
 
 export type SketchInstance = {
   id: string
@@ -37,6 +37,8 @@ export type SketchInstance = {
 }
 
 export type SketchInstanceMap = Map<string, SketchInstance>
+
+export type SketchInstanceError = (sketchInstanceId: string, errorType?: SketchErrorType) => void
 
 export class SketchManager {
   private sketchInstances: SketchInstanceMap = new Map()
@@ -64,7 +66,7 @@ export class SketchManager {
       return sketchInstance
     } catch (error) {
       console.error('Failed to create sketch:', error)
-      this.onError(instanceId, SketchManagerErrorType.Create)
+      this.onError(instanceId, SketchErrorType.Create)
     }
   }
 
@@ -97,7 +99,7 @@ export class SketchManager {
       this.sketchInstances.get(instanceId)?.dispose?.(engineScene)
     } catch (error) {
       console.error(`Error disposing sketch instance ${instanceId}:`, error)
-      this.onError(instanceId, SketchManagerErrorType.Dispose)
+      this.onError(instanceId, SketchErrorType.Dispose)
     }
 
     this.sketchInstances.delete(instanceId)
