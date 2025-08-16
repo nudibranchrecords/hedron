@@ -61,7 +61,6 @@ export class SketchManager {
 
       return sketchInstance
     } catch (error) {
-      // TODO: error toast
       console.error('Failed to create sketch:', error)
       this.onError(instanceId, SketchManagerErrorType.Create)
     }
