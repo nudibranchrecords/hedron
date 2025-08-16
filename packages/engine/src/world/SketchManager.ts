@@ -13,6 +13,13 @@ type SketchUpdateParams = {
   scene: EngineScene
 }
 
+enum SketchManagerErrorType {
+  Create = 'Create',
+  Dispose = 'Dispose',
+}
+
+type SketchManagerErrorHandler = (sketchInstanceId: string, type: SketchManagerErrorType) => void
+
 export type SketchInstance = {
   id: string
   update: (arg: SketchUpdateParams) => void
@@ -31,6 +38,11 @@ export type SketchInstance = {
 
 export class SketchManager {
   private sketchInstances: { [id: string]: SketchInstance | undefined } = {}
+  private onError: SketchManagerErrorHandler
+
+  constructor({ onError }: { onError: SketchManagerErrorHandler }) {
+    this.onError = onError
+  }
 
   private createSketch = (
     instanceId: string,
@@ -38,19 +50,20 @@ export class SketchManager {
     scene: EngineScene,
   ): SketchInstance | undefined => {
     try {
-      const sketch = new module(scene) as SketchInstance
-      sketch.id = instanceId
+      const sketchInstance = new module(scene) as SketchInstance
+      sketchInstance.id = instanceId
 
-      if (sketch.root) {
-        sketch.root.name = instanceId
+      if (sketchInstance.root) {
+        sketchInstance.root.name = instanceId
       }
 
-      this.sketchInstances[instanceId] = sketch
+      this.sketchInstances[instanceId] = sketchInstance
 
-      return sketch
+      return sketchInstance
     } catch (error) {
       // TODO: error toast
       console.error('Failed to create sketch:', error)
+      this.onError(instanceId, SketchManagerErrorType.Create)
     }
   }
 
@@ -78,6 +91,7 @@ export class SketchManager {
       this.sketchInstances[instanceId]?.dispose?.(engineScene)
     } catch (error) {
       console.error(`Error disposing sketch instance ${instanceId}:`, error)
+      this.onError(instanceId, SketchManagerErrorType.Dispose)
     }
 
     delete this.sketchInstances[instanceId]

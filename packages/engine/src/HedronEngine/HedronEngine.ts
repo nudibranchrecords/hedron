@@ -25,6 +25,7 @@ export class HedronEngine {
   private running: boolean = false
   private paused: boolean = false
   private scene: EngineScene // The main scene for rendering sketches
+  private _onError: (sketchInstanceId: string, type: string) => void
 
   private extraTime: number = 0 // For time manipulation, e.g. for skipping frames
   public totalTime: number = 0 // Total time for the engine, used for resetting time
@@ -32,11 +33,18 @@ export class HedronEngine {
   constructor(params: {
     onFrameStart?: () => void
     onFrameEnd?: () => void
+    onError?: (SketchInstanceId: string, type: string) => void
     rendererType: RendererType
   }) {
     this.rendererType = params.rendererType
     this.store = createEngineStore()
-    this.sketchManager = new SketchManager()
+
+    this._onError = (sketchInstanceId: string, type: string) => {
+      params.onError?.(sketchInstanceId, type)
+      this.store.getState().updateSketch(sketchInstanceId, { isBroken: true })
+    }
+
+    this.sketchManager = new SketchManager({ onError: this._onError })
     this.renderer = new Renderer({ rendererType: this.rendererType })
     this.scene = createDebugScene(this.renderer)
 

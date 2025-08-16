@@ -8,9 +8,10 @@ import { useGlobalDialog } from '@components/GlobalDialogs/useGlobalDialog'
 interface ItemProps {
   children: React.ReactNode
   id: string
+  isBroken?: boolean
 }
 
-const Item = ({ id, children }: ItemProps) => {
+const Item = ({ id, children, isBroken }: ItemProps) => {
   const isActive = useIsActiveSketch(id)
   const setActiveSketchId = useSetActiveSketchId()
 
@@ -19,7 +20,7 @@ const Item = ({ id, children }: ItemProps) => {
   }, [id, setActiveSketchId])
 
   return (
-    <SideTabsItem isActive={isActive} onClick={onClick}>
+    <SideTabsItem isActive={isActive} showErrorIcon={isBroken} onClick={onClick}>
       {children}
     </SideTabsItem>
   )
@@ -31,8 +32,8 @@ export const SketchTabs = () => {
 
   return (
     <SideTabs>
-      {sketches.map(({ title, id }) => (
-        <Item key={id} id={id}>
+      {sketches.map(({ title, id, isBroken }) => (
+        <Item key={id} id={id} isBroken={isBroken}>
           {title}
         </Item>
       ))}
