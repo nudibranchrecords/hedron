@@ -1,16 +1,8 @@
 {
   "name": "root",
   "private": true,
-  "workspaces": {
-    "packages": [
-      "packages/*"
-    ],
-    "nohoist": [
-      "**electron**"
-    ]
-  },
   "scripts": {
-    "dev": "lerna run dev --parallel --scope @hedron/clock --scope @hedron/engine --scope @hedron/desktop --scope @hedron/midi-manager --scope @hedron/midi-input --scope @hedron/ui-core",
+    "dev": "lerna run dev --parallel --ignore @hedron/example-project --ignore @hedron/midi-test-app --ignore @hedron/clock-test-app",
     "dev:clock": "lerna run dev --parallel --scope @hedron/clock --scope @hedron/clock-test-app",
     "storybook": "lerna run storybook --scope @hedron/ui-core",
     "build:engine": "lerna run build --scope @hedron/engine",
@@ -19,13 +11,17 @@
     "lint": "lerna run lint",
     "format": "prettier . --write",
     "dist": "lerna run lint,typecheck,build,dist --sort",
-    "version": "yarn install && git stage yarn.lock"
+    "version": "pnpm install && git stage pnpm-lock.yaml"
   },
   "devDependencies": {
     "@electron-toolkit/eslint-config-prettier": "^2.0.0",
     "@electron-toolkit/eslint-config-ts": "^2.0.0",
     "@electron-toolkit/tsconfig": "^1.0.1",
+    "@eslint/js": "^9.17.0",
     "@tsconfig/recommended": "^1.0.8",
+    "@types/react": "^18.3.1",
+    "@types/react-dom": "^18.3.1",
+    "@vitejs/plugin-react": "^4.3.4",
     "eslint": "^8.57.0",
     "eslint-import-resolver-typescript": "^3.6.3",
     "eslint-plugin-import": "^2.31.0",
@@ -33,11 +29,16 @@
     "eslint-plugin-react-hooks": "^4.6.2",
     "eslint-plugin-react-refresh": "^0.4.19",
     "eslint-plugin-storybook": "^0.8.0",
+    "globals": "^15.14.0",
     "lerna": "^8.1.9",
     "prettier": "^3.4.2",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "typescript": "^5.5.2"
+    "tsup": "^8.3.6",
+    "typescript": "^5.6.2",
+    "vite": "^6.2.3",
+    "vite-plugin-dts": "^4.5.3",
+    "vite-tsconfig-paths": "^5.1.4"
   },
-  "packageManager": "yarn@4.5.3"
+  "packageManager": "pnpm@9.0.0"
 }
