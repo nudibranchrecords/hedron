@@ -74,7 +74,12 @@ export class SketchManager {
       scene.remove(oldSketchRoot)
     }
 
-    this.sketchInstances[instanceId]?.dispose?.(engineScene)
+    try {
+      this.sketchInstances[instanceId]?.dispose?.(engineScene)
+    } catch (error) {
+      console.error(`Error disposing sketch instance ${instanceId}:`, error)
+    }
+
     delete this.sketchInstances[instanceId]
   }
 
