@@ -41,7 +41,7 @@ export class HedronEngine {
 
     this._onError = (sketchInstanceId: string, type: string) => {
       params.onError?.(sketchInstanceId, type)
-      this.store.getState().updateSketch(sketchInstanceId, { isBroken: true })
+      this.setIsSketchBroken(sketchInstanceId, true)
     }
 
     this.sketchManager = new SketchManager({ onError: this._onError })
@@ -50,6 +50,10 @@ export class HedronEngine {
 
     this.onFrameStart = params?.onFrameStart
     this.onFrameEnd = params?.onFrameEnd
+  }
+
+  private setIsSketchBroken(sketchInstanceId: string, isBroken: boolean) {
+    this.store.getState().updateSketch(sketchInstanceId, { isBroken })
   }
 
   public registerPlugin(plugin: IPlugin) {
@@ -65,10 +69,15 @@ export class HedronEngine {
 
     const { removeSketchFromScene } = this.sketchManager
 
-    const addSketchToScene = (sketchId: string, moduleId: string) => {
+    const addSketchToScene = (sketchInstanceId: string, moduleId: string) => {
       const modules = this.store.getState().sketchModules
       const module = modules[moduleId].module
-      this.sketchManager.addSketchToScene(sketchId, module)
+
+      const sketchInstance = this.sketchManager.addSketchToScene(sketchInstanceId, module)
+
+      if (sketchInstance) {
+        this.setIsSketchBroken(sketchInstance.id, false)
+      }
 
       this.renderer.passesNeedUpdate_webGPU = true
     }
@@ -109,7 +118,12 @@ export class HedronEngine {
 
     for (const sketch of sketchesToRefresh) {
       this.sketchManager.removeSketchFromScene(sketch.id)
-      this.sketchManager.addSketchToScene(sketch.id, moduleItem.module)
+      const sketchInstance = this.sketchManager.addSketchToScene(sketch.id, moduleItem.module)
+
+      if (sketchInstance) {
+        this.setIsSketchBroken(sketchInstance.id, false)
+      }
+
       this.store.getState().updateSketchParams(sketch.id)
     }
 
