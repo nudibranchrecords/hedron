@@ -208,6 +208,7 @@ export class HedronEngine {
         } catch (error) {
           console.error(`Error getting passes for sketch ${sketchId}:`, error)
           this.sketchManager.removeSketchFromScene(sketchId)
+          this.setIsSketchBroken(sketchId, true)
         }
       }
       try {
@@ -215,6 +216,7 @@ export class HedronEngine {
       } catch (error) {
         console.error(`Error updating sketch ${sketchId}:`, error)
         this.sketchManager.removeSketchFromScene(sketchId)
+        this.setIsSketchBroken(sketchId, true)
       }
     })
     this.renderer.render(engineScene)
