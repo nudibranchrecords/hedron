@@ -19,8 +19,5 @@
   },
   "bugs": {
     "url": "https://github.com/nudibranchrecords/hedron/issues"
-  },
-  "devDependencies": {
-    "tsup": "^8.3.6"
   }
 }

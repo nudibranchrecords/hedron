@@ -2,7 +2,7 @@ import { PropsWithChildren, useCallback } from 'react'
 import c from './Collapsible.module.css'
 import { Icon } from '@components/Icon/Icon'
 
-interface CollapsibleProps extends PropsWithChildren {
+export interface CollapsibleProps extends PropsWithChildren {
   title: string
   isOpen: boolean
   onToggle: (isOpen: boolean) => void

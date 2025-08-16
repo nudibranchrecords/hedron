@@ -14,17 +14,23 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          run_install: false
+
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '20'
+          cache: 'pnpm'
 
       - name: Install dependencies
-        run: yarn install --mode=skip-build
+        run: pnpm install --frozen-lockfile
 
       - name: Run TypeScript, ESLint, and Prettier checks
         run: |
-          yarn build:engine
-          yarn typecheck
-          yarn lint
-          yarn format
+          pnpm typecheck
+          pnpm lint
+          pnpm format
+          pnpm build
