@@ -103,6 +103,9 @@ importers:
       '@electron-toolkit/utils':
         specifier: ^3.0.0
         version: 3.0.0(electron@37.3.0)
+      '@esbuild/darwin-arm64':
+        specifier: ^0.23.1
+        version: 0.23.1
       '@hedron/clock':
         specifier: workspace:^
         version: link:../clock
@@ -6517,8 +6520,7 @@ snapshots:
   '@esbuild/android-x64@0.25.9':
     optional: true
 
-  '@esbuild/darwin-arm64@0.23.1':
-    optional: true
+  '@esbuild/darwin-arm64@0.23.1': {}
 
   '@esbuild/darwin-arm64@0.25.8':
     optional: true

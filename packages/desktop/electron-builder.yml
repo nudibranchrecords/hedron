@@ -12,6 +12,7 @@ files:
 asarUnpack:
   - resources/**
   - node_modules/esbuild
+  - node_modules/@esbuild/**
 win:
   executableName: hedron-alpha
 nsis:
