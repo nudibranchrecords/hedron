@@ -43,6 +43,7 @@
   "dependencies": {
     "@floating-ui/react-dom": "^2.1.2",
     "@uiw/react-color": "^2.3.4",
+    "material-symbols": "^0.23.0",
     "usehooks-ts": "^3.1.0"
   },
   "devDependencies": {
@@ -50,20 +51,10 @@
     "@storybook/addon-essentials": "^8.2.9",
     "@storybook/addon-interactions": "^8.2.9",
     "@storybook/addon-links": "^8.2.9",
-    "@storybook/addon-onboarding": "^8.2.9",
     "@storybook/blocks": "^8.2.9",
     "@storybook/react": "^8.2.9",
     "@storybook/react-vite": "^8.2.9",
     "@storybook/test": "^8.2.9",
-    "@vitejs/plugin-react": "^4.3.4",
-    "storybook": "^8.2.9",
-    "typescript": "^5.5.2",
-    "vite": "^6.2.3",
-    "vite-plugin-dts": "^4.5.3",
-    "vite-tsconfig-paths": "^5.1.4"
-  },
-  "peerDependencies": {
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1"
+    "storybook": "^8.2.9"
   }
 }

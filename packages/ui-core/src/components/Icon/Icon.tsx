@@ -24,6 +24,11 @@ export type IconName =
   | 'play_arrow'
   | 'pause'
   | 'menu'
+  | 'fullscreen'
+  | 'video_camera_back'
+  | 'photo_camera_back'
+  | '360'
+  | 'error'
 
 export const sketchIcon: IconName = 'token'
 export const sceneIcon: IconName = 'panorama'

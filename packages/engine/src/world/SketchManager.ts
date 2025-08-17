@@ -1,5 +1,7 @@
 import { Group } from 'three'
 import { Pass } from 'postprocessing'
+import { PassNode } from 'three/webgpu'
+import { type ShaderNodeObject } from 'three/tsl'
 import { SketchModule } from '@store/types'
 import { getDebugScene } from '@world/debugScene'
 import { EngineScene } from '@world/EngineScene'
@@ -11,11 +13,21 @@ type SketchUpdateParams = {
   scene: EngineScene
 }
 
-type SketchInstance = {
+enum SketchErrorType {
+  Create = 'Create',
+  Dispose = 'Dispose',
+}
+
+type SketchManagerErrorHandler = (sketchInstanceId: string, type?: SketchErrorType) => void
+
+export type SketchInstance = {
+  id: string
   update: (arg: SketchUpdateParams) => void
   root?: Group
 
   getPasses?: (engineScene: EngineScene) => Pass[]
+
+  getWebGPUPass?: (prevPass: ShaderNodeObject<PassNode>) => ShaderNodeObject<PassNode>
 
   /**
    * Called when the sketch is removed from the scene.
@@ -24,45 +36,73 @@ type SketchInstance = {
   dispose(engineScene: EngineScene): () => void
 }
 
+export type SketchInstanceMap = Map<string, SketchInstance>
+
+export type SketchInstanceError = (sketchInstanceId: string, errorType?: SketchErrorType) => void
+
 export class SketchManager {
-  private sketchInstances: { [id: string]: SketchInstance } = {}
+  private sketchInstances: SketchInstanceMap = new Map()
+  private onError: SketchManagerErrorHandler
+
+  constructor({ onError }: { onError: SketchManagerErrorHandler }) {
+    this.onError = onError
+  }
 
   private createSketch = (
     instanceId: string,
     module: SketchModule,
     scene: EngineScene,
-  ): SketchInstance => {
-    const sketch = new module(scene)
-    if (sketch.root) {
-      sketch.root.name = instanceId
+  ): SketchInstance | undefined => {
+    try {
+      const sketchInstance = new module(scene) as SketchInstance
+      sketchInstance.id = instanceId
+
+      if (sketchInstance.root) {
+        sketchInstance.root.name = instanceId
+      }
+
+      this.sketchInstances.set(instanceId, sketchInstance)
+
+      return sketchInstance
+    } catch (error) {
+      console.error('Failed to create sketch:', error)
+      this.onError(instanceId, SketchErrorType.Create)
     }
-
-    this.sketchInstances[instanceId] = sketch
-
-    return sketch
   }
 
-  public addSketchToScene = (instanceId: string, module: SketchModule): void => {
+  public addSketchToScene = (
+    instanceId: string,
+    module: SketchModule,
+  ): SketchInstance | undefined => {
     const engineScene = getDebugScene()
     const scene = engineScene.scene
     const sketch = this.createSketch(instanceId, module, engineScene)
-    if (sketch.root) {
+    if (sketch?.root) {
       scene.add(sketch.root)
     }
+
+    return sketch
   }
 
   public removeSketchFromScene = (instanceId: string): void => {
     const engineScene = getDebugScene()
     const scene = engineScene.scene
-    const oldSketch = scene.getObjectByName(instanceId)
+    const oldSketchRoot = scene.getObjectByName(instanceId)
 
-    if (!oldSketch) {
-      throw new Error(`couldn't find sketch to remove: ${instanceId}`)
+    if (!oldSketchRoot) {
+      return
+    } else {
+      scene.remove(oldSketchRoot)
     }
 
-    scene.remove(oldSketch)
-    this.sketchInstances[instanceId]?.dispose?.(engineScene)
-    delete this.sketchInstances[instanceId]
+    try {
+      this.sketchInstances.get(instanceId)?.dispose?.(engineScene)
+    } catch (error) {
+      console.error(`Error disposing sketch instance ${instanceId}:`, error)
+      this.onError(instanceId, SketchErrorType.Dispose)
+    }
+
+    this.sketchInstances.delete(instanceId)
   }
 
   public getSketchInstances = () => {

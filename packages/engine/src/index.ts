@@ -1,7 +1,6 @@
 export * from './HedronEngine/HedronEngine'
 export type * from './HedronEngine/types'
 export * from '@plugins/Plugin'
-export type * from '@store/types'
 export * from '@store/types'
 export { getParamWithInfo, ParamWithInfo } from '@store/selectors/getParamWithInfo'
 export { getParamConfig } from '@store/selectors/getParamConfig'

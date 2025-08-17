@@ -1,7 +1,7 @@
 import debounce from 'lodash.debounce'
 import { EffectComposer } from 'postprocessing'
 import { WebGLRenderer } from 'three'
-import { WebGPURenderer } from 'three/webgpu'
+import { PostProcessing, WebGPURenderer } from 'three/webgpu'
 import { RendererType } from '@HedronEngine/types'
 import { EngineScene } from '@world/EngineScene'
 import { engineScenes } from '@world/scenes'
@@ -9,6 +9,7 @@ import { engineScenes } from '@world/scenes'
 export class Renderer {
   public composer: EffectComposer | undefined
   public renderer: WebGPURenderer | WebGLRenderer
+  public postprocessing: PostProcessing | undefined
   public rendererType: RendererType
   private rendererHeight: number = 0
   private rendererWidth: number = 0
@@ -19,8 +20,7 @@ export class Renderer {
   private canvas: HTMLCanvasElement | undefined
   private previewContext: CanvasRenderingContext2D | undefined | null
   public aspectRatio: number = 1
-  private isRendering: boolean = false
-
+  public passesNeedUpdate_webGPU: boolean = true
   private isSendingOutput = false
 
   constructor({ rendererType }: { rendererType: RendererType }) {
@@ -39,6 +39,7 @@ export class Renderer {
           '[HEDRON] 👽 You are running Hedron in WebGPU mode (set in .env). This is experimental and your sketches may not work if you havent designed them to be compatible.',
         )
         this.renderer = new WebGPURenderer()
+        this.postprocessing = new PostProcessing(this.renderer)
         break
       default:
         throw new Error(`Unsupported renderer type: ${this.rendererType}`)
@@ -70,7 +71,9 @@ export class Renderer {
       return null
     }
 
-    if (!this.composer) {
+    // TODO: This type guarding is shaky because there is no real connection between `composer` and rendererType.
+    // Ideally, we should have a more robust way to type composer/postprocessing or just unify them
+    if (this.rendererType === 'webgl' && !this.composer) {
       console.error('Composer not initialized for rendering')
       return null
     }
@@ -177,22 +180,54 @@ export class Renderer {
     this.setSize()
   }
 
+  /**
+   * Resize the renderer's canvas to the given width and height.
+   */
+  public resize(width: number, height: number): void {
+    if (!this.composer) throw new Error('Renderer not set')
+    this.composer.setSize(width, height)
+    this.rendererWidth = width
+    this.rendererHeight = height
+    if (this.viewerContainer) {
+      this.viewerContainer.style.paddingBottom = (100 * height) / width + '%'
+    }
+  }
+
+  /**
+   * Get the current width of the renderer's canvas.
+   */
+  public getWidth(): number {
+    return this.rendererWidth
+  }
+
+  /**
+   * Get the current height of the renderer's canvas.
+   */
+  public getHeight(): number {
+    return this.rendererHeight
+  }
+
   public render(scene: EngineScene): void {
     if (!this.renderer) return
 
-    if (this.composer) {
-      this.composer.removeAllPasses()
-      this.composer.passes = scene.passes
-      for (let i = 0; i < scene.passes.length - 1; i++) {
-        scene.passes[i].renderToScreen = false
-      }
-      scene.passes[scene.passes.length - 1].renderToScreen = true
-      this.composer.render()
-    }
-
     if (this.renderer instanceof WebGPURenderer) {
-      this.renderer.renderAsync(scene.scene, scene.camera)
+      if (this.passesNeedUpdate_webGPU) {
+        scene.updateWebGPUPasses(scene.sketches, this.postprocessing!)
+        this.passesNeedUpdate_webGPU = false
+      }
+
+      this.postprocessing!.render()
     } else if (this.renderer instanceof WebGLRenderer) {
+      if (this.composer && scene.passes) {
+        this.composer.removeAllPasses()
+        this.composer.passes = scene.passes
+        for (let i = 0; i < scene.passes.length - 1; i++) {
+          scene.passes[i].renderToScreen = false
+        }
+        scene.passes[scene.passes.length - 1].renderToScreen = true
+        this.composer.render()
+      }
+
       this.renderer.render(scene.scene, scene.camera)
     } else {
       throw new Error(`Unsupported renderer type: ${this.rendererType}`)
