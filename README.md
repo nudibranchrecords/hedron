@@ -20,9 +20,10 @@ Run `npx lerna version`. This bumps all versions across packages. While in alpha
 
 ## Configuration
 
-You can configure the renderer type by creating a `.env` file in this directory:
+You can configure the renderer type by creating a `.env` file in `packages/desktop`:
 
 ```bash
+cd packages/desktop
 # Copy the example file
 cp .env.example .env
 ```
