@@ -17,6 +17,7 @@ import { BooleanToggle, BooleanToggleHandle } from '@components/BooleanToggle/Bo
 import { ColorPickerHandle, ColorPicker } from '@components/ColorPicker/ColorPicker'
 import { Panel, PanelBody, PanelHeader } from '@components/Panel/Panel'
 import { NumberInput, NumberInputHandle } from '@components/NumberInput/NumberInput'
+import { Button } from '@components/Button/Button'
 
 const meta = {
   title: 'NodeControl',
@@ -30,18 +31,26 @@ interface BasicProps {
   isActive?: boolean
   color?: 'light'
   onClick: () => void
+  dev_autoUpdate?: boolean
 }
 
-export const Number = ({ title = 'Short Name', isActive, onClick }: BasicProps) => {
+export const Number = ({
+  title = 'Short Name',
+  isActive,
+  onClick,
+  dev_autoUpdate = true,
+}: BasicProps) => {
   const ref = useRef<FloatSliderHandle>(null)
 
   useEffect(() => {
     ref.current?.updateValue(Math.random() * 1)
-  }, [])
+  }, [dev_autoUpdate])
 
   useInterval(() => {
+    if (!dev_autoUpdate) return
     ref.current!.updateValue(Math.random() * 1)
   }, 3000)
+
   return (
     <NodeControl isActive={isActive} onClick={onClick}>
       <NodeControlMain>
@@ -92,7 +101,12 @@ export const NumberMinMaxNegative = ({ title = 'Short Name', isActive, onClick }
   )
 }
 
-export const NumberTextOnly = ({ title = 'Short Name', isActive, onClick }: BasicProps) => {
+export const NumberTextOnly = ({
+  title = 'Short Name',
+  isActive,
+  onClick,
+  dev_autoUpdate = true,
+}: BasicProps) => {
   const ref = useRef<NumberInputHandle>(null)
 
   useEffect(() => {
@@ -100,6 +114,7 @@ export const NumberTextOnly = ({ title = 'Short Name', isActive, onClick }: Basi
   }, [])
 
   useInterval(() => {
+    if (!dev_autoUpdate) return
     ref.current!.updateValue(Math.random() * 1)
   }, 3000)
 
@@ -115,10 +130,16 @@ export const NumberTextOnly = ({ title = 'Short Name', isActive, onClick }: Basi
   )
 }
 
-export const Boolean = ({ title = 'Boolean Thing', isActive, onClick }: BasicProps) => {
+export const Boolean = ({
+  title = 'Boolean Thing',
+  isActive,
+  onClick,
+  dev_autoUpdate = true,
+}: BasicProps) => {
   const ref = useRef<BooleanToggleHandle>(null)
 
   useInterval(() => {
+    if (!dev_autoUpdate) return
     ref.current!.setChecked(Math.random() > 0.5)
   }, 3000)
   return (
@@ -133,10 +154,16 @@ export const Boolean = ({ title = 'Boolean Thing', isActive, onClick }: BasicPro
   )
 }
 
-export const Color = ({ title = 'Color Picker', isActive, onClick }: BasicProps) => {
+export const Color = ({
+  title = 'Color Picker',
+  isActive,
+  onClick,
+  dev_autoUpdate = true,
+}: BasicProps) => {
   const ref = useRef<ColorPickerHandle>(null)
 
   useInterval(() => {
+    if (!dev_autoUpdate) return
     ref.current!.updateColor([Math.random(), Math.random(), Math.random()])
   }, 3000)
 
@@ -158,10 +185,16 @@ const options = [
   { value: 'option3', label: 'MyExtraLongOptionNameWithNoSpacesWow' },
 ]
 
-export const Enum = ({ title = 'Enum Dropdown', isActive, onClick }: BasicProps) => {
+export const Enum = ({
+  title = 'Enum Dropdown',
+  isActive,
+  onClick,
+  dev_autoUpdate,
+}: BasicProps) => {
   const ref = useRef<EnumDropdownHandle>(null)
 
   useInterval(() => {
+    if (!dev_autoUpdate) return
     ref.current!.setValue(options[Math.floor(Math.random() * options.length)].value)
   }, 3000)
 
@@ -196,34 +229,46 @@ export const WithControlGrid = () => {
   const [activeId, setActiveId] = useState(0)
 
   return (
-    <ControlGrid>
-      {params.map(([title, type], i) => (
-        <>
-          {type === 'number' && (
-            <Number
-              key={i}
-              title={title}
-              isActive={activeId === i}
-              onClick={() => setActiveId(i)}
-            />
-          )}
-          {type === 'boolean' && (
-            <Boolean
-              key={i}
-              title={title}
-              isActive={activeId === i}
-              onClick={() => setActiveId(i)}
-            />
-          )}
-          {type === 'color' && (
-            <Color key={i} title={title} isActive={activeId === i} onClick={() => setActiveId(i)} />
-          )}
-          {type === 'enum' && (
-            <Enum key={i} title={title} isActive={activeId === i} onClick={() => setActiveId(i)} />
-          )}
-        </>
-      ))}
-    </ControlGrid>
+    <>
+      <ControlGrid>
+        {params.map(([title, type], i) => (
+          <>
+            {type === 'number' && (
+              <Number
+                key={i}
+                title={title}
+                isActive={activeId === i}
+                onClick={() => setActiveId(i)}
+              />
+            )}
+            {type === 'boolean' && (
+              <Boolean
+                key={i}
+                title={title}
+                isActive={activeId === i}
+                onClick={() => setActiveId(i)}
+              />
+            )}
+            {type === 'color' && (
+              <Color
+                key={i}
+                title={title}
+                isActive={activeId === i}
+                onClick={() => setActiveId(i)}
+              />
+            )}
+            {type === 'enum' && (
+              <Enum
+                key={i}
+                title={title}
+                isActive={activeId === i}
+                onClick={() => setActiveId(i)}
+              />
+            )}
+          </>
+        ))}
+      </ControlGrid>
+    </>
   )
 }
 
@@ -235,3 +280,107 @@ export const GridOnPanel = () => (
     </PanelBody>
   </Panel>
 )
+
+const lotsOfParams = [
+  ['Fun Param Name', 'number'],
+  ['Another Param', 'boolean'],
+  ['Color Picker', 'color'],
+  ['Color Picker', 'color'],
+  ['Slider', 'number'],
+  ['Toggle', 'boolean'],
+  ['Color Picker', 'color'],
+  ['Slider', 'number'],
+  ['Slider', 'number'],
+  ['Toggle', 'boolean'],
+  ['Color Picker', 'color'],
+  ['Enum Dropdown', 'enum'],
+  ['Fun Param Name', 'number'],
+  ['Another Param', 'boolean'],
+  ['Color Picker', 'color'],
+  ['Color Picker', 'color'],
+  ['Slider', 'number'],
+  ['Toggle', 'boolean'],
+  ['Color Picker', 'color'],
+  ['Slider', 'number'],
+  ['Slider', 'number'],
+  ['Toggle', 'boolean'],
+  ['Color Picker', 'color'],
+  ['Enum Dropdown', 'enum'],
+  ['Fun Param Name', 'number'],
+  ['Another Param', 'boolean'],
+  ['Color Picker', 'color'],
+  ['Color Picker', 'color'],
+  ['Slider', 'number'],
+  ['Toggle', 'boolean'],
+  ['Color Picker', 'color'],
+  ['Slider', 'number'],
+  ['Slider', 'number'],
+  ['Toggle', 'boolean'],
+  ['Color Picker', 'color'],
+  ['Enum Dropdown', 'enum'],
+  ['Fun Param Name', 'number'],
+  ['Another Param', 'boolean'],
+  ['Color Picker', 'color'],
+  ['Color Picker', 'color'],
+  ['Slider', 'number'],
+  ['Toggle', 'boolean'],
+  ['Color Picker', 'color'],
+  ['Slider', 'number'],
+  ['Slider', 'number'],
+  ['Toggle', 'boolean'],
+  ['Color Picker', 'color'],
+  ['Enum Dropdown', 'enum'],
+]
+
+export const PerfTest = () => {
+  const [activeId, setActiveId] = useState(0)
+  const [renderKey, setRenderKey] = useState(0)
+
+  return (
+    <>
+      <Button onClick={() => setRenderKey((prev) => prev + 1)}>Force re-render</Button>
+      <ControlGrid key={renderKey}>
+        {lotsOfParams.map(([title, type], i) => (
+          <>
+            {type === 'number' && (
+              <Number
+                key={i}
+                title={title}
+                isActive={activeId === i}
+                onClick={() => setActiveId(i)}
+                dev_autoUpdate={false}
+              />
+            )}
+            {type === 'boolean' && (
+              <Boolean
+                key={i}
+                title={title}
+                isActive={activeId === i}
+                onClick={() => setActiveId(i)}
+                dev_autoUpdate={false}
+              />
+            )}
+            {type === 'color' && (
+              <Color
+                key={i}
+                title={title}
+                isActive={activeId === i}
+                onClick={() => setActiveId(i)}
+                dev_autoUpdate={false}
+              />
+            )}
+            {type === 'enum' && (
+              <Enum
+                key={i}
+                title={title}
+                isActive={activeId === i}
+                onClick={() => setActiveId(i)}
+                dev_autoUpdate={false}
+              />
+            )}
+          </>
+        ))}
+      </ControlGrid>
+    </>
+  )
+}
