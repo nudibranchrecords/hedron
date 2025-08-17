@@ -10,3 +10,7 @@ out
 
 .nx/cache
 .nx/workspace-data
+
+.sketches-server
+dev-settings.json
+chrome-extensions

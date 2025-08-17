@@ -5,9 +5,11 @@ This document lists and describes experimental features available in Hedron. The
 ## Rendering
 
 ### Saving an image
+
 `saveFrame()` - Save a timestamped image.
 
 ### Saving an image sequence
+
 - `renderFrames(count: number, name: string, ffmpeg?: boolean)`
   - Save a series of images.
   - Images will be saved to the Documents folder, in a folder named `name`.
@@ -17,6 +19,7 @@ This document lists and describes experimental features available in Hedron. The
   - ffmpeg command: `ffmpeg -y -framerate 30 -i "${dirPath}/${name}-%d.png" -c:v libx264 -pix_fmt yuv420p -crf 18 "${videoPath}"`
 
 ### Testing a video loop
+
 - `resetEvery(seconds: number, jumpTo?: number)`
   - Loop after a given time
   - `jumpTo` is used to test the 'loop point' of a video.
@@ -25,4 +28,4 @@ This document lists and describes experimental features available in Hedron. The
   - The way the video loops work is by passing large/negative `deltaTime` values to the sketches.
   - `deltaTime` is a new top-level property that was added to the object passed on sketch `update`.
 - `cancelReset()`
-  -  Stop the looping.
+  - Stop the looping.
