@@ -8,8 +8,11 @@
 .item {
   --inset: 2px;
 
+  position: relative;
   display: block;
   padding: 0.5rem 0.25rem;
+  border-left: 2px solid transparent;
+  border-right: 2px solid transparent;
   font-size: 0.7rem;
   background: var(--bgColorDark3);
   color: white;
@@ -26,6 +29,10 @@
     cursor: default;
   }
 
+  &:global(.isBroken) {
+    border-left-color: var(--dangerColor);
+  }
+
   span {
     transition: inherit;
     display: block;
@@ -35,4 +42,16 @@
     font-size: 1.5em;
     line-height: 0.8;
   }
+}
+
+.errorIcon {
+  color: var(--dangerColor);
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5em;
 }

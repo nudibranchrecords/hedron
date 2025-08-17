@@ -5,7 +5,7 @@ import { importSketchModule } from './importSketchModule'
 import { IPlugin } from '@plugins/Plugin'
 import { stripForSave } from '@utils/stripForSave'
 import { Renderer } from '@world/Renderer'
-import { SketchManager } from '@world/SketchManager'
+import { SketchInstanceError, SketchManager } from '@world/SketchManager'
 import { createDebugScene } from '@world/debugScene'
 import { EngineData, SketchModuleItem } from '@store/types'
 import { getSketchesOfModuleId } from '@store/selectors/getSketchesOfModuleId'
@@ -25,6 +25,7 @@ export class HedronEngine {
   private running: boolean = false
   private paused: boolean = false
   private scene: EngineScene // The main scene for rendering sketches
+  private _onError: SketchInstanceError
 
   private extraTime: number = 0 // For time manipulation, e.g. for skipping frames
   public totalTime: number = 0 // Total time for the engine, used for resetting time
@@ -32,16 +33,27 @@ export class HedronEngine {
   constructor(params: {
     onFrameStart?: () => void
     onFrameEnd?: () => void
+    onError?: SketchInstanceError
     rendererType: RendererType
   }) {
     this.rendererType = params.rendererType
     this.store = createEngineStore()
-    this.sketchManager = new SketchManager()
+
+    this._onError = (sketchInstanceId, type) => {
+      params.onError?.(sketchInstanceId, type)
+      this.setIsSketchBroken(sketchInstanceId, true)
+    }
+
+    this.sketchManager = new SketchManager({ onError: this._onError })
     this.renderer = new Renderer({ rendererType: this.rendererType })
-    this.scene = createDebugScene(this.renderer)
+    this.scene = createDebugScene(this.renderer, this._onError)
 
     this.onFrameStart = params?.onFrameStart
     this.onFrameEnd = params?.onFrameEnd
+  }
+
+  private setIsSketchBroken(sketchInstanceId: string, isBroken: boolean) {
+    this.store.getState().updateSketch(sketchInstanceId, { isBroken })
   }
 
   public registerPlugin(plugin: IPlugin) {
@@ -57,10 +69,15 @@ export class HedronEngine {
 
     const { removeSketchFromScene } = this.sketchManager
 
-    const addSketchToScene = (sketchId: string, moduleId: string) => {
+    const addSketchToScene = (sketchInstanceId: string, moduleId: string) => {
       const modules = this.store.getState().sketchModules
       const module = modules[moduleId].module
-      this.sketchManager.addSketchToScene(sketchId, module)
+
+      const sketchInstance = this.sketchManager.addSketchToScene(sketchInstanceId, module)
+
+      if (sketchInstance) {
+        this.setIsSketchBroken(sketchInstance.id, false)
+      }
 
       this.renderer.passesNeedUpdate_webGPU = true
     }
@@ -101,7 +118,12 @@ export class HedronEngine {
 
     for (const sketch of sketchesToRefresh) {
       this.sketchManager.removeSketchFromScene(sketch.id)
-      this.sketchManager.addSketchToScene(sketch.id, moduleItem.module)
+      const sketchInstance = this.sketchManager.addSketchToScene(sketch.id, moduleItem.module)
+
+      if (sketchInstance) {
+        this.setIsSketchBroken(sketchInstance.id, false)
+      }
+
       this.store.getState().updateSketchParams(sketch.id)
     }
 
@@ -167,10 +189,9 @@ export class HedronEngine {
    */
   private advanceFrame(engineScene: EngineScene, deltaTime: number) {
     const state = this.store.getState()
-    const sketchInstances = this.sketchManager!.getSketchInstances()
-
-    // TODO: When we have scenes, sketches should be added to the scene earlier on
-    engineScene.sketches = Object.values(sketchInstances)
+    const sketchInstances =
+      // TODO: When we have scenes, sketches should be added to the scene earlier on
+      (engineScene.sketches = this.sketchManager!.getSketchInstances())
 
     if (this.renderer.rendererType === 'webgl') {
       engineScene.clearPasses()
@@ -178,13 +199,25 @@ export class HedronEngine {
 
     Object.keys(state.sketches).forEach((sketchId) => {
       const paramValues = getSketchParamValues(state, sketchId)
-      const instance = sketchInstances[sketchId]
-      if (instance.getPasses) {
-        instance.getPasses(engineScene).forEach((pass: Pass) => {
-          engineScene.addPass(pass)
-        })
+      const instance = sketchInstances.get(sketchId)
+      if (instance?.getPasses) {
+        try {
+          instance.getPasses(engineScene).forEach((pass: Pass) => {
+            engineScene.addPass(pass)
+          })
+        } catch (error) {
+          console.error(`Error getting passes for sketch ${sketchId}:`, error)
+          this.sketchManager.removeSketchFromScene(sketchId)
+          this.setIsSketchBroken(sketchId, true)
+        }
       }
-      instance.update({ deltaFrame: 1, deltaTime, params: paramValues, scene: engineScene })
+      try {
+        instance?.update({ deltaFrame: 1, deltaTime, params: paramValues, scene: engineScene })
+      } catch (error) {
+        console.error(`Error updating sketch ${sketchId}:`, error)
+        this.sketchManager.removeSketchFromScene(sketchId)
+        this.setIsSketchBroken(sketchId, true)
+      }
     })
     this.renderer.render(engineScene)
   }

@@ -2,20 +2,28 @@ import { Pass, RenderPass } from 'postprocessing'
 import { PerspectiveCamera, Scene } from 'three'
 import { pass, type ShaderNodeObject } from 'three/tsl'
 import { PassNode, PostProcessing } from 'three/webgpu'
-import { SketchInstance } from '@world/SketchManager'
+import { SketchInstanceError, SketchInstanceMap } from '@world/SketchManager'
 import { RendererType } from '@HedronEngine/types'
 
 export class EngineScene {
   public scene: Scene
   public camera: PerspectiveCamera
   public passes: Pass[] | undefined
-  public sketches: SketchInstance[] = []
+  public sketches: SketchInstanceMap = new Map()
   private renderPass: RenderPass | undefined
   private renderPass_webGPU: ShaderNodeObject<PassNode> | undefined
   public rendererType: RendererType
+  private onSketchInstanceError: SketchInstanceError
 
-  constructor({ rendererType }: { rendererType: RendererType }) {
+  constructor({
+    rendererType,
+    onSketchInstanceError,
+  }: {
+    rendererType: RendererType
+    onSketchInstanceError: SketchInstanceError
+  }) {
     this.rendererType = rendererType
+    this.onSketchInstanceError = onSketchInstanceError
     this.scene = new Scene()
     this.camera = new PerspectiveCamera(75, undefined, 0.1, 100000)
     this.camera.position.z = 5
@@ -50,7 +58,7 @@ export class EngineScene {
     this.passes = [this.renderPass]
   }
 
-  updateWebGPUPasses(sketchInstances: SketchInstance[], postProcessing: PostProcessing): void {
+  updateWebGPUPasses(sketchInstances: SketchInstanceMap, postProcessing: PostProcessing): void {
     if (this.rendererType !== 'webgpu') {
       console.warn('[HEDRON] ⚠️ WebGPU pass handling is only available in WebGPU mode.')
       return
@@ -60,8 +68,13 @@ export class EngineScene {
 
     sketchInstances.forEach((sketchInstance) => {
       if (sketchInstance.getWebGPUPass) {
-        const nextPass = sketchInstance.getWebGPUPass(prevPass)
-        prevPass = nextPass
+        try {
+          const nextPass = sketchInstance.getWebGPUPass(prevPass)
+          prevPass = nextPass
+        } catch (error) {
+          this.onSketchInstanceError(sketchInstance.id)
+          console.error(`Error getting WebGPU pass for sketch instance ${sketchInstance.id}`, error)
+        }
       }
     })
 

@@ -17,6 +17,7 @@ import {
 import { createReset } from '@store/actionCreators/reset'
 import { createLoadProject } from '@store/actionCreators/loadProject'
 import { createAddInput, createUpdateInputOptions } from '@store/actionCreators/createAddInput'
+import { createUpdateSketch } from '@store/actionCreators/updateSketch'
 
 export const createEngineStore = () =>
   createStore<EngineStateWithActions>()(
@@ -25,6 +26,7 @@ export const createEngineStore = () =>
         immer((set) => ({
           ...initialState,
           addSketch: createAddSketch(set),
+          updateSketch: createUpdateSketch(set),
           updateSketchParams: createUpdateSketchParams(set),
           setSketchModuleItem: createSetSketchModuleItem(set),
           updateNodeValue: createUpdateNodeValue(set),

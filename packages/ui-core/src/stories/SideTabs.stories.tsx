@@ -36,3 +36,22 @@ export const Simple = () => {
     </SideTabs>
   )
 }
+
+export const HasBrokenItem = () => {
+  const [activeId, setActiveId] = useState(0)
+  return (
+    <SideTabs>
+      {tabs.map((tab, i) => (
+        <SideTabsItem
+          showErrorIcon={i === 2}
+          key={i}
+          onClick={() => setActiveId(i)}
+          isActive={activeId === i}
+        >
+          {tab}
+        </SideTabsItem>
+      ))}
+      <SideTabsItem iconName="add_circle" />
+    </SideTabs>
+  )
+}

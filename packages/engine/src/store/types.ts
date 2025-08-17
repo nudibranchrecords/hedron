@@ -5,6 +5,7 @@ export interface SketchState {
   title: string
   moduleId: string
   paramIds: string[]
+  isBroken?: boolean
 }
 
 export type Sketches = { [key: string]: SketchState }
@@ -207,6 +208,7 @@ export type EngineState = EngineData & AuxState
 
 interface Actions {
   addSketch: (moduleId: string) => string
+  updateSketch: (instanceId: string, sketchState: Partial<SketchState>) => void
   updateSketchParams: (instanceId: string) => void
   deleteSketch: (instanceId: string) => void
   setSketchModuleItem: (newItem: SketchModuleItem) => void

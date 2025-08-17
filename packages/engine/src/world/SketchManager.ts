@@ -13,7 +13,15 @@ type SketchUpdateParams = {
   scene: EngineScene
 }
 
+enum SketchErrorType {
+  Create = 'Create',
+  Dispose = 'Dispose',
+}
+
+type SketchManagerErrorHandler = (sketchInstanceId: string, type?: SketchErrorType) => void
+
 export type SketchInstance = {
+  id: string
   update: (arg: SketchUpdateParams) => void
   root?: Group
 
@@ -28,31 +36,52 @@ export type SketchInstance = {
   dispose(engineScene: EngineScene): () => void
 }
 
+export type SketchInstanceMap = Map<string, SketchInstance>
+
+export type SketchInstanceError = (sketchInstanceId: string, errorType?: SketchErrorType) => void
+
 export class SketchManager {
-  private sketchInstances: { [id: string]: SketchInstance } = {}
+  private sketchInstances: SketchInstanceMap = new Map()
+  private onError: SketchManagerErrorHandler
+
+  constructor({ onError }: { onError: SketchManagerErrorHandler }) {
+    this.onError = onError
+  }
 
   private createSketch = (
     instanceId: string,
     module: SketchModule,
     scene: EngineScene,
-  ): SketchInstance => {
-    const sketch = new module(scene)
-    if (sketch.root) {
-      sketch.root.name = instanceId
+  ): SketchInstance | undefined => {
+    try {
+      const sketchInstance = new module(scene) as SketchInstance
+      sketchInstance.id = instanceId
+
+      if (sketchInstance.root) {
+        sketchInstance.root.name = instanceId
+      }
+
+      this.sketchInstances.set(instanceId, sketchInstance)
+
+      return sketchInstance
+    } catch (error) {
+      console.error('Failed to create sketch:', error)
+      this.onError(instanceId, SketchErrorType.Create)
     }
-
-    this.sketchInstances[instanceId] = sketch
-
-    return sketch
   }
 
-  public addSketchToScene = (instanceId: string, module: SketchModule) => {
+  public addSketchToScene = (
+    instanceId: string,
+    module: SketchModule,
+  ): SketchInstance | undefined => {
     const engineScene = getDebugScene()
     const scene = engineScene.scene
     const sketch = this.createSketch(instanceId, module, engineScene)
-    if (sketch.root) {
+    if (sketch?.root) {
       scene.add(sketch.root)
     }
+
+    return sketch
   }
 
   public removeSketchFromScene = (instanceId: string): void => {
@@ -66,8 +95,14 @@ export class SketchManager {
       scene.remove(oldSketchRoot)
     }
 
-    this.sketchInstances[instanceId]?.dispose?.(engineScene)
-    delete this.sketchInstances[instanceId]
+    try {
+      this.sketchInstances.get(instanceId)?.dispose?.(engineScene)
+    } catch (error) {
+      console.error(`Error disposing sketch instance ${instanceId}:`, error)
+      this.onError(instanceId, SketchErrorType.Dispose)
+    }
+
+    this.sketchInstances.delete(instanceId)
   }
 
   public getSketchInstances = () => {
