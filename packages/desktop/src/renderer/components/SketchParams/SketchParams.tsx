@@ -73,7 +73,8 @@ export const SketchParams = ({ sketchId }: SketchParamsProps) => {
         const grid = (
           <ControlGrid>
             {params.map((param) => (
-              <ParamItem key={param.key} param={param} />
+              /* unique is important here! otherwise can get cross talk between params with the same key in different sketches */
+              <ParamItem key={`${param.key}${sketchId}`} param={param} />
             ))}
           </ControlGrid>
         )
