@@ -15,6 +15,7 @@ export interface SideTabsItemProps extends React.HtmlHTMLAttributes<HTMLButtonEl
   isActive?: boolean
   isSeparate?: boolean
   iconName?: IconName
+  showErrorIcon?: boolean
 }
 
 export const SideTabsItem = ({
@@ -22,12 +23,21 @@ export const SideTabsItem = ({
   isActive,
   className,
   iconName,
+  showErrorIcon,
   ...props
 }: SideTabsItemProps) => {
   return (
-    <button className={`${c.item} ${isActive && 'active'} ${className}`} {...props}>
+    <button
+      className={`${c.item} ${isActive && 'active'} ${showErrorIcon && 'isBroken'} ${className}`}
+      {...props}
+    >
       {iconName && <Icon name={iconName} className={c.icon} />}
       <span>{children}</span>
+      {showErrorIcon && (
+        <div className={c.errorIcon}>
+          <Icon name="error" />
+        </div>
+      )}
     </button>
   )
 }
