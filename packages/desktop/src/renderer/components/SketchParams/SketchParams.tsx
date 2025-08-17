@@ -7,6 +7,7 @@ import {
   ControlGrid,
   Collapsible,
 } from '@hedron/ui-core'
+import c from './SketchParams.module.css'
 import { useOnSelectNode } from '@components/hooks/useOnSelectNode'
 import { useActiveSketchParams } from '@components/hooks/useActiveSketchParams'
 import { ParamNumber } from '@components/ParamNumber/ParamNumber'
@@ -64,7 +65,7 @@ export const SketchParams = ({ sketchId }: SketchParamsProps) => {
   const setOpenedParamGroup = useAppStore((state) => state.setOpenedParamGroup)
 
   return (
-    <>
+    <div className={c.wrapper}>
       {paramGroups.map(({ groupTitle, groupIndex, params, isUngrouped }) => {
         const isOpen = openedParamGroups[groupIndex] ?? true
         const itemCountText = isOpen ? '' : ` (${params.length})`
@@ -95,6 +96,6 @@ export const SketchParams = ({ sketchId }: SketchParamsProps) => {
           </div>
         )
       })}
-    </>
+    </div>
   )
 }

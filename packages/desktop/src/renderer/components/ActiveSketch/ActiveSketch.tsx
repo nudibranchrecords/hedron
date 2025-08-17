@@ -25,7 +25,7 @@ export const ActiveSketch = () => {
   const selectedParam = useSelectedParam()
 
   return (
-    <>
+    <div className={c.container}>
       <ViewHeader>
         <Icon name="token" /> {activeSketch.title}
         <PopoutMenu
@@ -53,6 +53,6 @@ export const ActiveSketch = () => {
           </PanelBody>
         </Panel>
       )}
-    </>
+    </div>
   )
 }
