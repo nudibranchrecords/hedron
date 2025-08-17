@@ -13,7 +13,6 @@ Get both the test app and the clock module building (and watching) with this com
 You can use Pro Tools to generate an external clock value. Using the Pro Tools project in this repo, you can even have the clock speed up and slow down to really put it through its paces! 😈
 
 1. Download [Pro Tools Intro](https://www.avid.com/pro-tools/intro) (it's free and enough for testing needs)
-
    - ⚠️ **WARNING** ⚠️ If you are using a new Mac with Apple Silicon (e.g. M1), **run Pro Tools with Rosetta enabled**.
      It will appear to work fine without doing this, but you will likely have MIDI related issues causing the clock to do all sorts of weird stuff.
 
