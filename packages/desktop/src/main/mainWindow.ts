@@ -29,6 +29,9 @@ export const createWindow = (): void => {
     webPreferences: {
       preload: join(__dirname, '../preload/index.js'),
       sandbox: false,
+      // * backgroundThrottling:false important for Hedron! *
+      // When `true`, the frame loop can pause if the main window is hidden
+      // which is catastrophic for live shows when sending to an external display
       backgroundThrottling: false,
     },
   })
