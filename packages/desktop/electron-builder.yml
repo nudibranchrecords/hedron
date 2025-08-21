@@ -5,16 +5,27 @@ directories:
 files:
   - '!**/.vscode/*'
   - '!src/*'
+  - '!dist/*'
   - '!electron.vite.config.{js,ts,mjs,cjs}'
   - '!{.eslintignore,.eslintrc.cjs,.prettierignore,.prettierrc.yaml,dev-app-update.yml,CHANGELOG.md,README.md}'
   - '!{.env,.env.*,.npmrc,pnpm-lock.yaml}'
   - '!{tsconfig.json,tsconfig.node.json,tsconfig.web.json}'
 asarUnpack:
   - resources/**
-  - node_modules/esbuild
-  - node_modules/@esbuild/**
 win:
   executableName: hedron-alpha
+  files:
+    - '!node_modules/@esbuild/darwin-*/**'
+    - '!node_modules/@esbuild/linux-*/**'
+  target:
+    - target: 'nsis'
+      arch:
+        - x64
+        - ia32
+  asarUnpack:
+    - resources/**
+    - node_modules/esbuild/**
+    - node_modules/@esbuild/win32-*/**
 nsis:
   artifactName: hedron-${version}-setup.${ext}
   shortcutName: ${productName}
@@ -22,6 +33,9 @@ nsis:
   createDesktopShortcut: always
 mac:
   entitlementsInherit: build/entitlements.mac.plist
+  files:
+    - '!node_modules/@esbuild/win32-*/**'
+    - '!node_modules/@esbuild/linux-*/**'
   extendInfo:
     - NSCameraUsageDescription: Application requests access to the device's camera.
     - NSMicrophoneUsageDescription: Application requests access to the device's microphone.
@@ -33,16 +47,27 @@ mac:
       arch:
         - x64
         - arm64
+  asarUnpack:
+    - resources/**
+    - node_modules/esbuild/**
+    - node_modules/@esbuild/darwin-*/**
 dmg:
   artifactName: hedron-${version}-${arch}.${ext}
 
 linux:
   executableName: hedron
   artifactName: hedron-${version}.${ext}
+  files:
+    - '!node_modules/@esbuild/darwin-*/**'
+    - '!node_modules/@esbuild/win32-*/**'
   target:
     - AppImage
   maintainer: electronjs.org
   category: Utility
+  asarUnpack:
+    - resources/**
+    - node_modules/esbuild/**
+    - node_modules/@esbuild/linux-*/**
 npmRebuild: false
 publish:
   provider: generic
