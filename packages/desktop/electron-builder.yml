@@ -11,10 +11,22 @@ files:
   - '!{tsconfig.json,tsconfig.node.json,tsconfig.web.json}'
 asarUnpack:
   - resources/**
-  - node_modules/esbuild
+  - node_modules/esbuild/**
   - node_modules/@esbuild/**
 win:
   executableName: hedron-alpha
+  target:
+    - target: 'nsis'
+      arch:
+        - x64
+        - ia32
+  extraFiles:
+    - from: 'node_modules/@esbuild'
+      to: 'node_modules/@esbuild'
+      filter: '**/*'
+    - from: 'node_modules/esbuild'
+      to: 'node_modules/esbuild'
+      filter: '**/*'
 nsis:
   artifactName: hedron-${version}-setup.${ext}
   shortcutName: ${productName}
