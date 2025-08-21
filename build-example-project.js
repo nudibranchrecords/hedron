@@ -39,13 +39,6 @@ process.chdir(buildDir)
 try {
   execSync('npm install --production', { stdio: 'inherit' })
 
-  // console.log('Removing three.js src directory...')
-  // const threeSrcDir = path.join(buildDir, 'node_modules', 'three', 'src')
-  // if (fs.existsSync(threeSrcDir)) {
-  //   fs.rmSync(threeSrcDir, { recursive: true })
-  //   console.log('Removed three/src directory')
-  // }
-
   console.log('Creating zip archive...')
 
   // Change back to dist directory to create zip
