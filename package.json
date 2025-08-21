@@ -11,7 +11,7 @@
     "typecheck": "lerna run typecheck",
     "lint": "lerna run lint",
     "format": "prettier . --write",
-    "dist": "lerna run lint,typecheck,build,dist --sort && pnpm build:example",
+    "dist": "pnpm build:example && lerna run lint,typecheck,build,dist --sort",
     "version": "pnpm install && git stage pnpm-lock.yaml"
   },
   "devDependencies": {
