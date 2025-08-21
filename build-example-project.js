@@ -53,6 +53,7 @@ try {
 
   // Create zip file
   // we use -0 to "store" (no compression) so that it unzips quickly
+  // TODO: Should use cross platform approach here, zip may not exist on some machines
   execSync('zip -1 -r hedron-example-project.zip example-project', { stdio: 'inherit' })
 
   console.log('✅ Standalone example-project built successfully!')
