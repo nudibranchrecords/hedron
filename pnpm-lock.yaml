@@ -106,6 +106,18 @@ importers:
       '@esbuild/darwin-arm64':
         specifier: ^0.23.1
         version: 0.23.1
+      '@esbuild/darwin-x64':
+        specifier: ^0.23.1
+        version: 0.23.1
+      '@esbuild/linux-x64':
+        specifier: ^0.23.1
+        version: 0.23.1
+      '@esbuild/win32-ia32':
+        specifier: ^0.23.1
+        version: 0.23.1
+      '@esbuild/win32-x64':
+        specifier: ^0.23.1
+        version: 0.23.1
       '@hedron/clock':
         specifier: workspace:^
         version: link:../clock
@@ -6528,8 +6540,7 @@ snapshots:
   '@esbuild/darwin-arm64@0.25.9':
     optional: true
 
-  '@esbuild/darwin-x64@0.23.1':
-    optional: true
+  '@esbuild/darwin-x64@0.23.1': {}
 
   '@esbuild/darwin-x64@0.25.8':
     optional: true
@@ -6627,8 +6638,7 @@ snapshots:
   '@esbuild/linux-s390x@0.25.9':
     optional: true
 
-  '@esbuild/linux-x64@0.23.1':
-    optional: true
+  '@esbuild/linux-x64@0.23.1': {}
 
   '@esbuild/linux-x64@0.25.8':
     optional: true
@@ -6693,8 +6703,7 @@ snapshots:
   '@esbuild/win32-arm64@0.25.9':
     optional: true
 
-  '@esbuild/win32-ia32@0.23.1':
-    optional: true
+  '@esbuild/win32-ia32@0.23.1': {}
 
   '@esbuild/win32-ia32@0.25.8':
     optional: true
@@ -6702,8 +6711,7 @@ snapshots:
   '@esbuild/win32-ia32@0.25.9':
     optional: true
 
-  '@esbuild/win32-x64@0.23.1':
-    optional: true
+  '@esbuild/win32-x64@0.23.1': {}
 
   '@esbuild/win32-x64@0.25.8':
     optional: true

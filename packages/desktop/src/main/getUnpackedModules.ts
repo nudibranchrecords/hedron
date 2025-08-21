@@ -5,6 +5,7 @@
  */
 
 import path from 'path'
+import { pathToFileURL } from 'url'
 import { app } from 'electron'
 import * as _esbuild from 'esbuild'
 
@@ -15,7 +16,9 @@ let importedEsbuild: typeof _esbuild | null = null
 const esbuildPath = app.isPackaged ? path.normalize(`${basePath}/esbuild/lib/main.js`) : 'esbuild'
 
 const importPackages = async () => {
-  importedEsbuild = await import(esbuildPath)
+  // Convert Windows paths to proper file:// URLs for ESM imports
+  const importPath = app.isPackaged ? pathToFileURL(esbuildPath).href : esbuildPath
+  importedEsbuild = await import(importPath)
 }
 
 importPackages()

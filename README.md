@@ -14,6 +14,12 @@ If you're just working on the clock package, use `pnpm dev:clock`. This will bui
 1. Close any instance of Hedron
 2. Run `pnpm dist`. This will go through all checks and builds, then create executables for windows, mac, linux
 
+## Using example project
+
+If you're running this repo using `pnpm dev`, you can happily point Hedron to the example project and it will be fine. If you're sending the project elsewhere (e.g. for distribution as part of app version), the project needs to be built differently. This is because `pnpm` uses symlinks in `node_modules`.
+
+Build and zip the example project with `pnpm build:example` and it will be created at `dist` in the root of this repo. This will also happen automatically with `pnpm dist`
+
 ## Update Hedron version
 
 Run `npx lerna version`. This bumps all versions across packages. While in alpha, we want to choose the "Custom Prerelease" option. This will keep the format of `1.0.0-alpha.x`, where only `x` gets bumped (as major/minor/patch makes no sense).
