@@ -21,7 +21,7 @@ export class MidiInput implements IPlugin {
   public readonly inputType = 'midi'
   public readonly description = 'Handles MIDI input devices and messages.'
   public readonly midiManager = new MidiManager()
-  public readonly generateInitialOptions: () => MidiInputOptions = () => ({
+  public readonly getOptionNodesConfig: () => MidiInputOptions = () => ({
     channel: 1,
     note: 1,
     type: MidiMessageType.ControlChange,

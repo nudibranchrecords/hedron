@@ -1,5 +1,5 @@
 import { ParamWithInfo } from '@store/selectors/getParamWithInfo'
-import { InputOptions } from '@store/types'
+import { InputOptionNodesConfig } from '@store/types'
 
 /**
  * Class type for a Plugin.
@@ -28,5 +28,5 @@ export interface IPlugin {
   /**
    * Function to generate input options.
    */
-  generateInitialOptions: (param: ParamWithInfo) => InputOptions
+  getOptionNodesConfig: (param: ParamWithInfo) => InputOptionNodesConfig
 }

@@ -66,18 +66,18 @@ export const MidiInputPanel = ({ input, engine }: IProps) => {
                 <EnumDropdown
                   value={value}
                   values={enumOptions[key]}
-                  onValueChange={(newVal) => {
-                    // TODO: Hacky. Soon we'll use nodes for options so no need to fix this up
-                    if (key !== 'type') {
-                      newVal = parseInt(newVal as string)
-                    }
-                    engine
-                      .getStore()
-                      .getState()
-                      .updateInputOptions(input.id, {
-                        [key]: newVal,
-                      })
-                  }}
+                  // onValueChange={(newVal) => {
+                  //   // TODO: Hacky. Soon we'll use nodes for options so no need to fix this up
+                  //   if (key !== 'type') {
+                  //     newVal = parseInt(newVal as string)
+                  //   }
+                  //   engine
+                  //     .getStore()
+                  //     .getState()
+                  //     .updateInputOptions(input.id, {
+                  //       [key]: newVal,
+                  //     })
+                  // }}
                 />
               </NodeControlInner>
             </NodeControlMain>

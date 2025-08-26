@@ -179,15 +179,14 @@ export type SketchModules = { [key: string]: SketchModuleItem }
 
 export type EnumOption = { value: string | number; label: string }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type InputOptions = any
+export type InputOptionNodesConfig = readonly SketchConfigParam[]
 
-export interface Input<Options = InputOptions> {
+export interface Input {
   id: string
   title: string
   type: 'midi' | 'gamepad' | string
   targetNodeId: string
-  options: Options
+  optionNodeIds: string[]
 }
 
 export type Inputs = { [key: string]: Input }
@@ -217,8 +216,10 @@ interface Actions {
   deleteSketchModule: (moduleId: string) => void
   loadProject: (project: EngineData) => void
   reset: () => void
-  addInput: (value: Omit<Input, 'id'>) => string
-  updateInputOptions: (inputId: string, options: InputOptions) => void
+  addInput: (
+    inputConfig: Omit<Input, 'id' | 'optionNodeIds'>,
+    optionsNodeConfig: InputOptionNodesConfig,
+  ) => string
 }
 
 export type EngineStateWithActions = EngineData & AuxState & Actions

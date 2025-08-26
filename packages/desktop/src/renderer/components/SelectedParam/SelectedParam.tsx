@@ -42,10 +42,9 @@ export const SelectedParam = () => {
             type: plugin.inputType,
             targetNodeId: selectedParam.id,
             title: `${plugin.inputType} ${numAlready + 1}`,
-            options: plugin.generateInitialOptions(selectedParam),
           }
 
-          const id = addInput(input)
+          const id = addInput(input, plugin.getOptionNodesConfig(selectedParam))
           setSelectedInputId(selectedParam.id, id)
         },
       })),
