@@ -1,14 +1,14 @@
 import { useRef } from 'react'
+
+import { useOnNodeValueChange } from '@hooks/useOnNodeValueChange'
+import { useSubscribeToNodeValue } from '@hooks/useSubscribeToNodeValue'
+import { NumberInput, NumberInputHandle } from '@components/NumberInput/NumberInput'
 import {
   NodeControl,
   NodeControlInner,
   NodeControlMain,
   NodeControlTitle,
-  NumberInput,
-} from '@hedron/ui-core'
-import type { NumberInputHandle } from '@hedron/ui-core'
-import { useOnNodeValueChange } from '@hooks/useOnNodeValueChange'
-import { useSubscribeToNodeValue } from '@hooks/useSubscribeToNodeValue'
+} from '@components/NodeControl/NodeControl'
 
 interface ParamNumberProps {
   paramId: string

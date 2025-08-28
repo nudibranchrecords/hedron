@@ -9,12 +9,12 @@ export const createAddInput: SetterCreator<'addInput'> =
     const nodeValues: NodeValues = {}
 
     // TODO: Use something like `addNode` rather than doing it inside here, as we have to handle all sorts of node types
-    for (const [key, cfg] of Object.entries(optionsNodeConfig)) {
+    for (const cfg of optionsNodeConfig) {
       const optionId = createUniqueId()
       optionNodes[optionId] = {
         valueType: cfg.valueType,
         id: optionId,
-        key,
+        key: cfg.key,
       }
       nodeValues[optionId] = cfg.defaultValue
     }

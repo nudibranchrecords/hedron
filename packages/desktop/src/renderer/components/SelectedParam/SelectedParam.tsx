@@ -51,7 +51,7 @@ export const SelectedParam = () => {
             title: `${plugin.inputType} ${numAlready + 1}`,
           }
 
-          const id = addInput(input, plugin.getOptionNodesConfig(selectedParam))
+          const id = addInput(input, plugin.optionNodesConfig)
           setSelectedInputId(selectedParam.id, id)
         },
       })),

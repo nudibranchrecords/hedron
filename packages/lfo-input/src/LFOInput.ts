@@ -10,34 +10,34 @@ export class LFOInput implements IPlugin {
   public readonly description =
     'Generates LFO waves (e.g. sin, square, sawtooth) as inputs for params.'
   // TODO: Fix the types here, something to do with the fact its an array?
-  public readonly getOptionNodesConfig = (param: ParamWithInfo) =>
-    [
-      // {
-      //   key: 'frequency',
-      //   valueType: 'enum' as const,
-      //   defaultValue: 1,
-      //   options: [
-      //     { value: 1, label: 'TODO1' },
-      //     { value: 2, label: 'TODO2' },
-      //   ],
-      // },
-      // {
-      //   key: 'waveType',
-      //   valueType: 'enum' as const,
-      //   defaultValue: 'sine',
-      //   options: [
-      //     { value: 'sine', label: 'Sine' },
-      //     { value: 'square', label: 'Square' },
-      //     { value: 'sawtooth', label: 'Sawtooth' },
-      //     { value: 'triangle', label: 'Triangle' },
-      //   ],
-      // },
-      {
-        key: 'amplitude',
-        valueType: 'number' as const,
-        defaultValue: 1,
-      },
-    ] as const
+
+  public optionNodesConfig = [
+    // {
+    //   key: 'frequency',
+    //   valueType: 'enum' as const,
+    //   defaultValue: 1,
+    //   options: [
+    //     { value: 1, label: 'TODO1' },
+    //     { value: 2, label: 'TODO2' },
+    //   ],
+    // },
+    // {
+    //   key: 'waveType',
+    //   valueType: 'enum' as const,
+    //   defaultValue: 'sine',
+    //   options: [
+    //     { value: 'sine', label: 'Sine' },
+    //     { value: 'square', label: 'Square' },
+    //     { value: 'sawtooth', label: 'Sawtooth' },
+    //     { value: 'triangle', label: 'Triangle' },
+    //   ],
+    // },
+    {
+      key: 'amplitude',
+      valueType: 'number' as const,
+      defaultValue: 1,
+    },
+  ]
 
   // TODO: Implement all node options
   // waveType: 'sine',

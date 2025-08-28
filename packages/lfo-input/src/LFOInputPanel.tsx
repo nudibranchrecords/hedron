@@ -8,7 +8,9 @@ import {
   Param,
   useAppStore,
   useEngineStore,
+  useEngineStoreWithContext,
 } from '@hedron/ui-core'
+import { LFOInput } from 'src/LFOInput'
 
 interface IProps {
   input: Input
@@ -16,23 +18,36 @@ interface IProps {
   engine: HedronEngine
 }
 
-const Item = ({ nodeId }: { nodeId: string }) => {
+const Item = ({
+  nodeId,
+  optionNodesConfig,
+}: {
+  nodeId: string
+  optionNodesConfig: LFOInput['optionNodesConfig']
+}) => {
   const param = useEngineStore((state) => state.nodes[nodeId])
 
-  return <Param param={param} />
+  console.log(optionNodesConfig, param)
+  const cfg = optionNodesConfig.find((opt) => opt.key === param.key)
+  const title = cfg?.title ?? cfg?.key
+
+  console.log(cfg)
+
+  return <Param param={{ ...param, title }} />
 }
 
 /**
  * A react component that displays the lfo settings for a parameter
  */
-export const LFOInputPanel = ({ input }: IProps) => {
+export const LFOInputPanel = ({ engine, input }: IProps) => {
+  const plugin = engine.plugins['lfo-input']
   return (
     <div>
       LFO!!
       <ControlGrid className="mb-xl">
         {/* TODO: Generic container component for nodes (see SketchParams...) */}
         {input.optionNodeIds.map((id) => (
-          <Item key={id} nodeId={id} />
+          <Item key={id} nodeId={id} optionNodesConfig={plugin.optionNodesConfig} />
         ))}
       </ControlGrid>
     </div>

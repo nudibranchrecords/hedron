@@ -26,7 +26,7 @@ export interface IPlugin {
   description: string
 
   /**
-   * Function to generate input options.
+   * Config to generate option nodes
    */
-  getOptionNodesConfig: (param: ParamWithInfo) => InputOptionNodesConfig
+  optionNodesConfig: InputOptionNodesConfig
 }
