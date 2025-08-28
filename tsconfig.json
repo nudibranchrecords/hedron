@@ -5,6 +5,10 @@
     "jsx": "react-jsx",
     "noImplicitAny": true,
     "lib": ["ES2023", "DOM", "DOM.Iterable"],
-    "target": "ES2022"
+    "target": "ES2022",
+    "module": "es2022",
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": false,
+    "allowSyntheticDefaultImports": true
   }
 }

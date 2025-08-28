@@ -34,10 +34,6 @@ export const FloatSlider = forwardRef<FloatSliderHandle, FloatSliderProps>(funct
   const numberInput = useRef<NumberInputHandle>(null)
   const zeroPip = useRef<HTMLDivElement>(null!)
 
-  useEffect(() => {
-    console.log('mt')
-  }, [])
-
   const range = useMemo(() => max - min, [max, min])
 
   const drawBar = useCallback(

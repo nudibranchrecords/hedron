@@ -5,6 +5,9 @@ import {
   NodeControlInner,
   NodeControlMain,
   NodeControlTitle,
+  Param,
+  useAppStore,
+  useEngineStore,
 } from '@hedron/ui-core'
 
 interface IProps {
@@ -13,22 +16,23 @@ interface IProps {
   engine: HedronEngine
 }
 
+const Item = ({ nodeId }: { nodeId: string }) => {
+  const param = useEngineStore((state) => state.nodes[nodeId])
+
+  return <Param param={param} />
+}
+
 /**
  * A react component that displays the lfo settings for a parameter
  */
-export const LFOInputPanel = ({ input, engine }: IProps) => {
+export const LFOInputPanel = ({ input }: IProps) => {
   return (
     <div>
       LFO!!
       <ControlGrid className="mb-xl">
         {/* TODO: Generic container component for nodes (see SketchParams...) */}
         {input.optionNodeIds.map((id) => (
-          <NodeControl key={id}>
-            <NodeControlMain>
-              <NodeControlTitle>{id}</NodeControlTitle>
-              <NodeControlInner>TODO!</NodeControlInner>
-            </NodeControlMain>
-          </NodeControl>
+          <Item key={id} nodeId={id} />
         ))}
       </ControlGrid>
     </div>

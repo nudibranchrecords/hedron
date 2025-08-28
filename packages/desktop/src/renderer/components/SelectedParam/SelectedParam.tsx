@@ -1,11 +1,18 @@
-import { Icon, MiniTabs, MiniTabsItem, PopoutMenu } from '@hedron/ui-core'
+import {
+  AppStoreProvider,
+  EngineStoreProvider,
+  Icon,
+  MiniTabs,
+  MiniTabsItem,
+  PopoutMenu,
+} from '@hedron/ui-core'
 import { useMemo } from 'react'
 import { NodeTypes } from '@hedron/engine'
 import { useSelectedParam } from '@components/hooks/useSelectedParam'
-import { pluginViews, useEngineStore, engine } from '@renderer/engine'
-import { useAppStore } from '@renderer/appStore'
+import { pluginViews, useEngineStore, engine, engineStore } from '@renderer/engine'
+import { appStore, useAppStore } from '@renderer/appStore'
 import { useInputsWithNode } from '@components/hooks/useInput'
-import { ParamNumberOptions } from '@components/ParamNumber/ParamNumber'
+import { ParamNumberOptions } from '@components/Param/ParamNumber/ParamNumber'
 
 export const SelectedParam = () => {
   const selectedParam = useSelectedParam()
@@ -70,7 +77,11 @@ export const SelectedParam = () => {
         </PopoutMenu>
       </MiniTabs>
       <div className="mb-xl">
-        {PluginView && <PluginView input={currentInput} engine={engine} />}
+        <AppStoreProvider value={appStore}>
+          <EngineStoreProvider value={engineStore}>
+            {PluginView && <PluginView input={currentInput} engine={engine} />}
+          </EngineStoreProvider>
+        </AppStoreProvider>
       </div>
       <div>
         <h3>Param Options: {selectedParam.valueType}</h3>

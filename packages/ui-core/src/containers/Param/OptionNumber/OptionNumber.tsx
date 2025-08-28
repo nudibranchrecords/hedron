@@ -7,8 +7,8 @@ import {
   NumberInput,
 } from '@hedron/ui-core'
 import type { NumberInputHandle } from '@hedron/ui-core'
-import { useOnNodeValueChange } from '@components/hooks/useOnNodeValueChange'
-import { useSubscribeToNodeValue } from '@components/hooks/useSubscribeToNodeValue'
+import { useOnNodeValueChange } from '@hooks/useOnNodeValueChange'
+import { useSubscribeToNodeValue } from '@hooks/useSubscribeToNodeValue'
 
 interface ParamNumberProps {
   paramId: string

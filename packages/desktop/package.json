@@ -3,14 +3,28 @@
   "version": "1.0.0-alpha.2",
   "description": "Visual app using three.js",
   "main": "./out/main/index.js",
+  "types": "./dist/types/index.d.ts",
+  "files": [
+    "dist/types/**/*"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/types/index.d.ts",
+      "default": "./out/main/index.js"
+    },
+    "./types": {
+      "types": "./dist/types/index.d.ts"
+    }
+  },
   "scripts": {
     "lint": "eslint . --ext .js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix",
     "typecheck:node": "tsc --noEmit -p tsconfig.node.json --composite false",
     "typecheck:web": "tsc --noEmit -p tsconfig.web.json --composite false",
     "typecheck": "pnpm run typecheck:node && pnpm run typecheck:web",
+    "build:types": "tsc --project tsconfig.types.json",
     "start": "electron-vite preview",
     "dev": "electron-vite dev",
-    "build": "electron-vite build",
+    "build": "pnpm run build:types && electron-vite build",
     "build:unpack": "pnpm run build && electron-builder --dir",
     "build:win": "pnpm run build && electron-builder --win",
     "build:mac": "electron-vite build && electron-builder --mac",

@@ -1,4 +1,5 @@
-import { create, StoreApi } from 'zustand'
+import { createStore } from 'zustand/vanilla'
+import { StoreApi, useStore } from 'zustand'
 import { devtools, persist, subscribeWithSelector } from 'zustand/middleware'
 import { immer } from 'zustand/middleware/immer'
 import type {} from '@redux-devtools/extension' // required for devtools typing
@@ -45,7 +46,7 @@ export type CustomSetState = (
 
 export type SetterCreator<K extends keyof AppState> = (setState: CustomSetState) => AppState[K]
 
-export const useAppStore = create<AppState>()(
+export const appStore = createStore<AppState>()(
   persist(
     subscribeWithSelector(
       devtools(
@@ -119,3 +120,9 @@ export const useAppStore = create<AppState>()(
     },
   ),
 )
+
+export const useAppStore = <T>(selector?: (state: AppState) => T) => {
+  return useStore(appStore, selector!)
+}
+
+export type AppStore = typeof appStore

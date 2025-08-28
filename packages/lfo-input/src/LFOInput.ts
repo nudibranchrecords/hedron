@@ -12,26 +12,26 @@ export class LFOInput implements IPlugin {
   // TODO: Fix the types here, something to do with the fact its an array?
   public readonly getOptionNodesConfig = (param: ParamWithInfo) =>
     [
-      {
-        key: 'frequency',
-        valueType: 'enum' as const,
-        defaultValue: 1,
-        options: [
-          { value: 1, label: 'TODO1' },
-          { value: 2, label: 'TODO2' },
-        ],
-      },
-      {
-        key: 'waveType',
-        valueType: 'enum' as const,
-        defaultValue: 'sine',
-        options: [
-          { value: 'sine', label: 'Sine' },
-          { value: 'square', label: 'Square' },
-          { value: 'sawtooth', label: 'Sawtooth' },
-          { value: 'triangle', label: 'Triangle' },
-        ],
-      },
+      // {
+      //   key: 'frequency',
+      //   valueType: 'enum' as const,
+      //   defaultValue: 1,
+      //   options: [
+      //     { value: 1, label: 'TODO1' },
+      //     { value: 2, label: 'TODO2' },
+      //   ],
+      // },
+      // {
+      //   key: 'waveType',
+      //   valueType: 'enum' as const,
+      //   defaultValue: 'sine',
+      //   options: [
+      //     { value: 'sine', label: 'Sine' },
+      //     { value: 'square', label: 'Square' },
+      //     { value: 'sawtooth', label: 'Sawtooth' },
+      //     { value: 'triangle', label: 'Triangle' },
+      //   ],
+      // },
       {
         key: 'amplitude',
         valueType: 'number' as const,

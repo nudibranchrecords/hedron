@@ -3,8 +3,31 @@
   "version": "1.0.0-alpha.2",
   "description": "Core functionality for Hedron",
   "keywords": [],
-  "main": "./dist/index.mjs",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.mts",
+        "default": "./dist/index.mjs"
+      },
+      "require": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      }
+    },
+    "./react": {
+      "import": {
+        "types": "./dist/react.d.mts",
+        "default": "./dist/react.mjs"
+      },
+      "require": {
+        "types": "./dist/react.d.ts",
+        "default": "./dist/react.js"
+      }
+    }
+  },
   "scripts": {
     "typecheck": "tsc --noEmit -p tsconfig.json",
     "dev": "tsup --watch",
@@ -19,6 +42,12 @@
     "url": "https://github.com/nudibranchrecords/hedron/issues"
   },
   "homepage": "https://github.com/nudibranchrecords/hedron#readme",
+  "dependencies": {
+    "immer": "^10.1.1",
+    "lodash.debounce": "^4.0.8",
+    "uid": "^2.0.2",
+    "zustand": "^5.0.2"
+  },
   "devDependencies": {
     "@hedron/clock": "workspace:^",
     "@redux-devtools/extension": "^3.3.0",
@@ -26,14 +55,18 @@
     "@types/three": "^0.178.0"
   },
   "peerDependencies": {
+    "@types/react": ">=18.0.0",
     "@types/three": "^0.178.0",
     "postprocessing": "*",
+    "react": ">=18.0.0",
     "three": "^0.178.0"
   },
-  "dependencies": {
-    "immer": "^10.1.1",
-    "lodash.debounce": "^4.0.8",
-    "uid": "^2.0.2",
-    "zustand": "^5.0.2"
+  "peerDependenciesMeta": {
+    "@types/react": {
+      "optional": true
+    },
+    "react": {
+      "optional": true
+    }
   }
 }

@@ -209,6 +209,9 @@ importers:
 
   packages/engine:
     dependencies:
+      '@types/react':
+        specifier: '>=18.0.0'
+        version: 18.3.23
       immer:
         specifier: ^10.1.1
         version: 10.1.1
@@ -218,6 +221,9 @@ importers:
       postprocessing:
         specifier: '*'
         version: 6.37.7(three@0.178.0)
+      react:
+        specifier: '>=18.0.0'
+        version: 18.3.1
       three:
         specifier: ^0.178.0
         version: 0.178.0
@@ -331,10 +337,19 @@ importers:
       usehooks-ts:
         specifier: ^3.1.0
         version: 3.1.1(react@18.3.1)
+      zustand:
+        specifier: ^5.0.8
+        version: 5.0.8(@types/react@19.1.10)(immer@10.1.1)(react@18.3.1)(use-sync-external-store@1.5.0(react@18.3.1))
     devDependencies:
       '@chromatic-com/storybook':
         specifier: ^1.8.0
         version: 1.9.0(react@18.3.1)
+      '@hedron/desktop':
+        specifier: workspace:^
+        version: link:../desktop
+      '@hedron/engine':
+        specifier: workspace:^
+        version: link:../engine
       '@storybook/addon-essentials':
         specifier: ^8.2.9
         version: 8.6.14(@types/react@19.1.10)(storybook@8.6.14(prettier@3.6.2))
@@ -6186,6 +6201,24 @@ packages:
 
   zustand@5.0.7:
     resolution: {integrity: sha512-Ot6uqHDW/O2VdYsKLLU8GQu8sCOM1LcoE8RwvLv9uuRT9s6SOHCKs0ZEOhxg+I1Ld+A1Q5lwx+UlKXXUoCZITg==}
+    engines: {node: '>=12.20.0'}
+    peerDependencies:
+      '@types/react': '>=18.0.0'
+      immer: '>=9.0.6'
+      react: '>=18.0.0'
+      use-sync-external-store: '>=1.2.0'
+    peerDependenciesMeta:
+      '@types/react':
+        optional: true
+      immer:
+        optional: true
+      react:
+        optional: true
+      use-sync-external-store:
+        optional: true
+
+  zustand@5.0.8:
+    resolution: {integrity: sha512-gyPKpIaxY9XcO2vSMrLbiER7QMAMGOQZVRdJ6Zi782jkbzZygq5GI9nG8g+sMgitRtndwaBSl7uiqC49o1SSiw==}
     engines: {node: '>=12.20.0'}
     peerDependencies:
       '@types/react': '>=18.0.0'
@@ -12902,6 +12935,13 @@ snapshots:
   zustand@5.0.7(@types/react@18.3.23)(immer@10.1.1)(react@18.3.1)(use-sync-external-store@1.5.0(react@18.3.1)):
     optionalDependencies:
       '@types/react': 18.3.23
+      immer: 10.1.1
+      react: 18.3.1
+      use-sync-external-store: 1.5.0(react@18.3.1)
+
+  zustand@5.0.8(@types/react@19.1.10)(immer@10.1.1)(react@18.3.1)(use-sync-external-store@1.5.0(react@18.3.1)):
+    optionalDependencies:
+      '@types/react': 19.1.10
       immer: 10.1.1
       react: 18.3.1
       use-sync-external-store: 1.5.0(react@18.3.1)
