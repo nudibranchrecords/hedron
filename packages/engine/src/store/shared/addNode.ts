@@ -1,10 +1,11 @@
 import {
   EngineState,
   EnsureRequiredValueType,
+  NodeParamWithChildren,
   NodeTypes,
-  SketchConfigParam,
   SketchConfigParamImported,
   isNodeTypeWithChildren,
+  Param,
 } from '@store/types'
 import { createUniqueId } from '@utils/createUniqueId'
 
@@ -14,20 +15,21 @@ const rgbKeys = ['r', 'g', 'b']
 const _addNodeToState = (
   state: EngineState,
   paramId: string,
-  config: EnsureRequiredValueType<SketchConfigParam>,
+  config: EnsureRequiredValueType<SketchConfigParamImported>,
 ) => {
   const { defaultValue, valueType, key } = config
 
   if (isNodeTypeWithChildren(valueType)) {
-    throw new Error(`addNodeAndOptionNodes shouldn't be used with node of valueType: ${valueType}`)
+    throw new Error(`_addNodeToState shouldn't be used with node of valueType: ${valueType}`)
   }
 
   state.nodes[paramId] = {
     ...config,
+    valueType,
     id: paramId,
     type: 'param' as const,
     title: config.title ?? config.key,
-  }
+  } as Param
 
   if (
     (typeof defaultValue === 'number' && valueType === NodeTypes.Number) ||
@@ -49,7 +51,7 @@ const _addNodeToState = (
 const _addOptionNodeToState = (
   state: EngineState,
   paramId: string,
-  sketchConfigParam: SketchConfigParam,
+  sketchConfigParam: { valueType: NodeTypes },
 ) => {
   /** TODO: This can probably be tidier, using some sort of config object to generate the option nodes
    * The same config object could also be used in the component to loop through
@@ -58,13 +60,19 @@ const _addOptionNodeToState = (
     _addNodeToState(state, `${paramId}-sliderMin`, {
       key: 'sliderMin',
       valueType: NodeTypes.Number,
-      defaultValue: sketchConfigParam.sliderMin ?? 0,
+      defaultValue: 0,
+      groupIndex: null,
+      params: [], // TODO: Bad typing means we have to do this
+      title: 'Slider Min',
     })
 
     _addNodeToState(state, `${paramId}-sliderMax`, {
       key: 'sliderMax',
       valueType: NodeTypes.Number,
-      defaultValue: sketchConfigParam.sliderMax ?? 1,
+      defaultValue: 1,
+      groupIndex: null,
+      params: [], // TODO: Bad typing means we have to do this
+      title: 'Slider Max',
     })
   }
 }
@@ -84,17 +92,20 @@ export const addNode = (state: EngineState, paramId: string, config: SketchConfi
       type: 'param',
       title: config.title ?? config.key,
       childNodeIds,
-    }
+    } as NodeParamWithChildren
 
     for (const [index, childNodeId] of childNodeIds.entries()) {
       _addNodeToState(state, childNodeId, {
+        groupIndex: null,
+        title: keys[index],
         key: keys[index],
         valueType: NodeTypes.Number,
         defaultValue: config.defaultValue[index],
+        params: [], // TODO: Bad typing means we have to do this
       })
       _addOptionNodeToState(state, childNodeId, {
         valueType: NodeTypes.Number,
-      } as SketchConfigParam)
+      })
     }
   } else {
     _addNodeToState(state, paramId, config)
