@@ -3,7 +3,7 @@ import { StoreApi } from 'zustand'
 import { devtools, persist, subscribeWithSelector } from 'zustand/middleware'
 import { immer } from 'zustand/middleware/immer'
 import type {} from '@redux-devtools/extension' // required for devtools typing
-import { ProjectData } from './types'
+import { EngineData } from '@hedron/engine'
 
 export type DialogId = 'sketchModules'
 
@@ -13,6 +13,20 @@ export interface SaveItem {
   date: number
   numScenes: number
   numSketches: number
+}
+
+export interface ProjectData {
+  version: number
+  engine: EngineData
+  app: {
+    sketchesDir: string
+    // TODO: activeSketchId should be part of the save state
+    // but causing errors when Hedron opens directly on a sketch
+    // activeSketchId: string | null
+    selectedNodes: { [sketchId: string]: string }
+    selectedInputs: { [inputId: string]: string }
+    openedParamGroups: { [sketchId: string]: Record<number, boolean> }
+  }
 }
 
 export interface AppState {
