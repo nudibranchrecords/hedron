@@ -1,16 +1,14 @@
 import {
-  AppStoreProvider,
-  EngineStoreProvider,
   Icon,
   MiniTabs,
   MiniTabsItem,
   PopoutMenu,
+  useEngineStore,
+  useAppStore,
 } from '@hedron/ui-core'
 import { useMemo } from 'react'
-import { NodeTypes } from '@hedron/engine'
 import { useSelectedParam } from '@components/hooks/useSelectedParam'
-import { pluginViews, useEngineStore, engine, engineStore } from '@renderer/engine'
-import { appStore, useAppStore } from '@renderer/appStore'
+import { pluginViews, engine } from '@renderer/engine'
 import { useInputsWithNode } from '@components/hooks/useInput'
 
 export const SelectedParam = () => {

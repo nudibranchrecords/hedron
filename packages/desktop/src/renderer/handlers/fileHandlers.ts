@@ -1,4 +1,5 @@
 import path from 'path-browserify'
+import { ProjectData } from '@hedron/app-store'
 import { appStore, useAppStore } from '@renderer/appStore'
 import { engine, engineStore } from '@renderer/engine'
 import {
@@ -7,7 +8,6 @@ import {
   saveProjectFileDialog,
   startSketchesServer,
 } from '@renderer/ipc/mainThreadTalk'
-import { ProjectData } from '@shared/types'
 
 const startEngineWithSketchesDir = async (sketchesDirPath: string) => {
   const { moduleIds, url } = await startSketchesServer(sketchesDirPath)

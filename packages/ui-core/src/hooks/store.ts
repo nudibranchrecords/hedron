@@ -1,7 +1,6 @@
 import { createContext, useContext } from 'react'
 import { useStore } from 'zustand'
-// TODO: We need to move app store to separate package
-import { AppStore, AppState } from '@hedron/desktop'
+import { AppStore, AppState } from '@hedron/app-store'
 import { EngineStore, EngineStateWithActions } from '@hedron/engine'
 
 export const AppStoreContext = createContext<AppStore | null>(null)

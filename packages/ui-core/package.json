@@ -42,6 +42,7 @@
   },
   "dependencies": {
     "@floating-ui/react-dom": "^2.1.2",
+    "@hedron/app-store": "workspace:^",
     "@uiw/react-color": "^2.3.4",
     "material-symbols": "^0.23.0",
     "usehooks-ts": "^3.1.0",
@@ -49,7 +50,6 @@
   },
   "devDependencies": {
     "@chromatic-com/storybook": "^1.8.0",
-    "@hedron/desktop": "workspace:^",
     "@hedron/engine": "workspace:^",
     "@storybook/addon-essentials": "^8.2.9",
     "@storybook/addon-interactions": "^8.2.9",

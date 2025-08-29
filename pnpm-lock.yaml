@@ -84,6 +84,31 @@ importers:
         specifier: ^5.1.4
         version: 5.1.4(typescript@5.8.2)(vite@7.1.2(@types/node@24.3.0)(yaml@2.8.1))
 
+  packages/app-store:
+    dependencies:
+      '@hedron/engine':
+        specifier: workspace:^
+        version: link:../engine
+      '@redux-devtools/extension':
+        specifier: ^3.3.0
+        version: 3.3.0(redux@5.0.1)
+      immer:
+        specifier: ^10.1.1
+        version: 10.1.1
+      zustand:
+        specifier: ^4.5.7
+        version: 4.5.7(@types/react@18.3.23)(immer@10.1.1)(react@19.1.1)
+    devDependencies:
+      '@types/node':
+        specifier: ^24.3.0
+        version: 24.3.0
+      tsup:
+        specifier: ^8.0.0
+        version: 8.5.0(@microsoft/api-extractor@7.52.10(@types/node@24.3.0))(postcss@8.5.6)(typescript@5.9.2)(yaml@2.8.1)
+      typescript:
+        specifier: ^5.0.0
+        version: 5.9.2
+
   packages/clock: {}
 
   packages/clock-test-app:
@@ -118,6 +143,9 @@ importers:
       '@esbuild/win32-x64':
         specifier: ^0.23.1
         version: 0.23.1
+      '@hedron/app-store':
+        specifier: workspace:^
+        version: link:../app-store
       '@hedron/clock':
         specifier: workspace:^
         version: link:../clock
@@ -133,9 +161,6 @@ importers:
       '@hedron/ui-core':
         specifier: workspace:^
         version: link:../ui-core
-      '@redux-devtools/extension':
-        specifier: ^3.3.0
-        version: 3.3.0(redux@5.0.1)
       '@tomjs/electron-devtools-installer':
         specifier: ^2.4.0
         version: 2.4.0(electron@37.3.0)
@@ -157,9 +182,6 @@ importers:
       get-port-please:
         specifier: ^3.2.0
         version: 3.2.0
-      immer:
-        specifier: ^10.1.1
-        version: 10.1.1
       lodash.debounce:
         specifier: ^4.0.8
         version: 4.0.8
@@ -328,6 +350,9 @@ importers:
       '@floating-ui/react-dom':
         specifier: ^2.1.2
         version: 2.1.5(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      '@hedron/app-store':
+        specifier: workspace:^
+        version: link:../app-store
       '@uiw/react-color':
         specifier: ^2.3.4
         version: 2.7.3(@babel/runtime@7.28.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -344,9 +369,6 @@ importers:
       '@chromatic-com/storybook':
         specifier: ^1.8.0
         version: 1.9.0(react@18.3.1)
-      '@hedron/desktop':
-        specifier: workspace:^
-        version: link:../desktop
       '@hedron/engine':
         specifier: workspace:^
         version: link:../engine
@@ -12454,6 +12476,35 @@ snapshots:
       '@microsoft/api-extractor': 7.52.10(@types/node@24.3.0)
       postcss: 8.5.6
       typescript: 5.8.2
+    transitivePeerDependencies:
+      - jiti
+      - supports-color
+      - tsx
+      - yaml
+
+  tsup@8.5.0(@microsoft/api-extractor@7.52.10(@types/node@24.3.0))(postcss@8.5.6)(typescript@5.9.2)(yaml@2.8.1):
+    dependencies:
+      bundle-require: 5.1.0(esbuild@0.25.8)
+      cac: 6.7.14
+      chokidar: 4.0.3
+      consola: 3.4.2
+      debug: 4.4.1
+      esbuild: 0.25.8
+      fix-dts-default-cjs-exports: 1.0.1
+      joycon: 3.1.1
+      picocolors: 1.1.1
+      postcss-load-config: 6.0.1(postcss@8.5.6)(yaml@2.8.1)
+      resolve-from: 5.0.0
+      rollup: 4.46.2
+      source-map: 0.8.0-beta.0
+      sucrase: 3.35.0
+      tinyexec: 0.3.2
+      tinyglobby: 0.2.14
+      tree-kill: 1.2.2
+    optionalDependencies:
+      '@microsoft/api-extractor': 7.52.10(@types/node@24.3.0)
+      postcss: 8.5.6
+      typescript: 5.9.2
     transitivePeerDependencies:
       - jiti
       - supports-color

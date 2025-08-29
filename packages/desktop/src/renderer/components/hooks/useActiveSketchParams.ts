@@ -1,13 +1,13 @@
 import { useMemo } from 'react'
-import { ParamWithInfo } from '@hedron/engine'
+import { useEngineStore } from '@hedron/ui-core'
+import { Param } from '@hedron/engine'
 import { useActiveSketch } from '@components/hooks/useActiveSketch'
-import { useEngineStore } from '@renderer/engine'
 
 type GroupedParams = {
   isUngrouped?: boolean
   groupTitle: string
   groupIndex: number
-  params: ParamWithInfo[]
+  params: Param[]
 }
 
 export const useActiveSketchParams = () => {
