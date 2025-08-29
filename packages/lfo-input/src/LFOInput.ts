@@ -1,4 +1,4 @@
-import { getNextEnumValue, HedronEngine, IPlugin, NodeTypes, ParamWithInfo } from '@hedron/engine'
+import { getNextEnumValue, HedronEngine, IPlugin } from '@hedron/engine'
 
 const TAU = Math.PI * 2
 const lerp = (v0: number, v1: number, t: number) => (1 - t) * v0 + t * v1
@@ -9,9 +9,14 @@ export class LFOInput implements IPlugin {
   public readonly inputType = 'lfo'
   public readonly description =
     'Generates LFO waves (e.g. sin, square, sawtooth) as inputs for params.'
-  // TODO: Fix the types here, something to do with the fact its an array?
 
+  // TODO: Fix the types here, something to do with the fact its an array?
   public optionNodesConfig = [
+    {
+      key: 'isEnabled',
+      valueType: 'boolean' as const,
+      defaultValue: true,
+    },
     {
       key: 'frequency',
       valueType: 'enum' as const,
@@ -37,16 +42,22 @@ export class LFOInput implements IPlugin {
       valueType: 'number' as const,
       defaultValue: 1,
     },
+    {
+      key: 'phase',
+      valueType: 'number' as const,
+      defaultValue: 0,
+    },
+    {
+      key: 'min',
+      valueType: 'number' as const,
+      defaultValue: 0,
+    },
+    {
+      key: 'max',
+      valueType: 'number' as const,
+      defaultValue: 1,
+    },
   ]
-
-  // TODO: Implement all node options
-  // waveType: 'sine',
-  // frequency: 1,
-  // amplitude: 1,
-  // phase: 0,
-  // min: 'sliderMin' in param && param.sliderMin !== undefined ? param.sliderMin : 0,
-  // max: 'sliderMax' in param && param.sliderMax !== undefined ? param.sliderMax : 1,
-  // isEnabled: true,
 
   private inputLatches: Record<string, boolean> = {}
 
@@ -65,68 +76,85 @@ export class LFOInput implements IPlugin {
         const inputs = Object.values(storeState.inputs)
 
         // TODO: Not very performant, we might want to cache inputs somehow
-        // inputs.forEach((input) => {
-        //   if (input.type !== 'lfo') return
+        inputs.forEach((input) => {
+          if (input.type !== 'lfo') return
 
-        //   const options = input.options as LFOInputOptions
+          let isEnabledId: string | undefined
 
-        //   if (!options.isEnabled) return
+          const options: Record<string, any> = {}
 
-        //   const delta = clock.beatDelta * options.frequency * TAU + options.phase
+          input.optionNodeIds.forEach((id) => {
+            const node = storeState.nodes[id]
+            if (node.key === 'isEnabled') {
+              isEnabledId = id
+            }
+            options[node.key] = storeState.nodeValues[id]
+          })
 
-        //   const node = storeState.nodes[input.targetNodeId]
-        //   // const nodeVal = storeState.nodeValues[input.targetNodeId]
+          if (!isEnabledId) {
+            console.warn(`LFO Input: isEnabled node not found for input ${input.id}`)
+            return
+          }
 
-        //   let value: number | boolean | string | null = null
+          const isEnabled = storeState.nodeValues[isEnabledId]
 
-        //   switch (node.valueType) {
-        //     case 'enum':
-        //       if (Math.sin(delta) > 0) {
-        //         if (this.inputLatches[input.id]) {
-        //           return
-        //         }
-        //         value = getNextEnumValue(input.targetNodeId)(storeState)
-        //         this.inputLatches[input.id] = true
-        //       } else {
-        //         this.inputLatches[input.id] = false
-        //         return
-        //       }
+          if (!isEnabled) return
 
-        //       break
-        //     case 'boolean':
-        //       value = Math.sin(delta) > 0
-        //       break
-        //     case 'number':
-        //       switch (options.waveType) {
-        //         case 'sine':
-        //           value =
-        //             lerp(options.min, options.max, (Math.sin(delta) + 1) / 2) * options.amplitude
-        //           break
-        //         case 'square':
-        //           value =
-        //             lerp(options.min, options.max, (Math.sign(Math.sin(delta)) + 1) / 2) *
-        //             options.amplitude
-        //           break
-        //         case 'sawtooth':
-        //           value = lerp(options.min, options.max, (delta % TAU) / TAU) * options.amplitude
-        //           break
-        //         case 'triangle':
-        //           value =
-        //             lerp(options.min, options.max, 1 - Math.abs(((delta % TAU) / TAU) * 2 - 1)) *
-        //             options.amplitude
-        //           break
-        //       }
-        //   }
+          const delta = clock.beatDelta * options.frequency * TAU + options.phase
 
-        //   if (value === null) {
-        //     console.warn(
-        //       `LFO Input: Unsupported value type for node ${input.targetNodeId}. Type: ${node.valueType}`,
-        //     )
-        //     return
-        //   }
+          const node = storeState.nodes[input.targetNodeId]
+          // const nodeVal = storeState.nodeValues[input.targetNodeId]
 
-        //   store.getState().updateNodeValue(input.targetNodeId, value)
-        // })
+          let value: number | boolean | string | null = null
+
+          switch (node.valueType) {
+            case 'enum':
+              if (Math.sin(delta) > 0) {
+                if (this.inputLatches[input.id]) {
+                  return
+                }
+                value = getNextEnumValue(input.targetNodeId)(storeState)
+                this.inputLatches[input.id] = true
+              } else {
+                this.inputLatches[input.id] = false
+                return
+              }
+
+              break
+            case 'boolean':
+              value = Math.sin(delta) > 0
+              break
+            case 'number':
+              switch (options.waveType) {
+                case 'sine':
+                  value =
+                    lerp(options.min, options.max, (Math.sin(delta) + 1) / 2) * options.amplitude
+                  break
+                case 'square':
+                  value =
+                    lerp(options.min, options.max, (Math.sign(Math.sin(delta)) + 1) / 2) *
+                    options.amplitude
+                  break
+                case 'sawtooth':
+                  value = lerp(options.min, options.max, (delta % TAU) / TAU) * options.amplitude
+                  break
+                case 'triangle':
+                  value =
+                    lerp(options.min, options.max, 1 - Math.abs(((delta % TAU) / TAU) * 2 - 1)) *
+                    options.amplitude
+                  break
+              }
+          }
+
+          if (value === null) {
+            console.warn(
+              `LFO Input: Unsupported value type for node ${input.targetNodeId}. Type: ${node.valueType}`,
+            )
+            return
+          }
+
+          store.getState().updateNodeValue(input.targetNodeId, value)
+        })
 
         tick()
       })
