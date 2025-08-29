@@ -77,11 +77,7 @@ export const SelectedParam = () => {
         </PopoutMenu>
       </MiniTabs>
       <div className="mb-xl">
-        <AppStoreProvider value={appStore}>
-          <EngineStoreProvider value={engineStore}>
-            {PluginView && <PluginView input={currentInput} engine={engine} />}
-          </EngineStoreProvider>
-        </AppStoreProvider>
+        {PluginView && <PluginView input={currentInput} engine={engine} />}
       </div>
       <div>
         <h3>Param Options: {selectedParam.valueType}</h3>

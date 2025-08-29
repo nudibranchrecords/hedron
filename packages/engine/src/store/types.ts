@@ -33,38 +33,47 @@ export type NodeTypeWithChildren = (typeof NodeTypesWithChildren)[number]
 
 export interface NodeParamBase extends NodeBase {
   type: 'param'
-  sketchId: string
+  title: string
+  groupIndex: number | null
 }
 
 export interface NodeParamWithChildren extends NodeParamBase {
   childNodeIds: string[]
   valueType: NodeTypeWithChildren
+  defaultValue: [number, number, number]
 }
 
 export interface NodeParamNumber extends NodeParamBase {
   valueType: NodeTypes.Number
+  defaultValue: number
   sliderMin?: number
   sliderMax?: number
 }
 
 export interface NodeParamBoolean extends NodeParamBase {
   valueType: NodeTypes.Boolean
+  defaultValue: boolean
 }
 
 export interface NodeParamString extends NodeParamBase {
   valueType: NodeTypes.String
+  defaultValue: string
 }
 
 export interface NodeParamEnum extends NodeParamBase {
   valueType: NodeTypes.Enum
+  defaultValue: string | number
+  options: EnumOption[]
 }
 
 export interface NodeParamVector3 extends NodeParamWithChildren {
   valueType: NodeTypes.Vector3
+  defaultValue: [number, number, number]
 }
 
 export interface NodeParamRGB extends NodeParamWithChildren {
   valueType: NodeTypes.RGB
+  defaultValue: [number, number, number]
 }
 
 export type Param =

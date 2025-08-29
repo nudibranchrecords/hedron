@@ -19,7 +19,6 @@ const ensureParamImported = (
 
   return {
     ...param,
-    title: param.title ?? param.key,
     groupIndex,
     valueType,
   } as SketchConfigParamImported

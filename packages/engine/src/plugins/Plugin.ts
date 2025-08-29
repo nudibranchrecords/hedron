@@ -1,4 +1,3 @@
-import { ParamWithInfo } from '@store/selectors/getParamWithInfo'
 import { InputOptionNodesConfig } from '@store/types'
 
 /**

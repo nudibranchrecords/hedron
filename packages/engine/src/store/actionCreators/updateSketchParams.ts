@@ -26,7 +26,7 @@ export const createUpdateSketchParams: SetterCreator<'updateSketchParams'> =
         // If no existing node, create a new one.
         if (!paramId) {
           paramId = createUniqueId()
-          addNode(state, paramId, sketchId, paramConfig)
+          addNode(state, paramId, paramConfig)
         }
 
         // Add this paramId to the new list.

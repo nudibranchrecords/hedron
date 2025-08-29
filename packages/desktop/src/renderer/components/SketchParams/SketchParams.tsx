@@ -1,9 +1,8 @@
-import { ControlGrid, Collapsible } from '@hedron/ui-core'
+import { ControlGrid, Collapsible, Param } from '@hedron/ui-core'
 import c from './SketchParams.module.css'
 import { useActiveSketchParams } from '@components/hooks/useActiveSketchParams'
 
 import { useAppStore } from '@renderer/appStore'
-import { Param } from '@components/Param'
 
 interface SketchParamsProps {
   sketchId: string

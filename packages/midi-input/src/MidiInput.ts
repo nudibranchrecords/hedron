@@ -1,11 +1,10 @@
 import {
   getNextEnumValue,
-  getParamConfig,
   HedronEngine,
+  InputOptionNodesConfig,
   IPlugin,
   NodeTypes,
   NodeValue,
-  SketchConfigParamEnum,
 } from '@hedron/engine'
 import { MidiManager, MidiMessageType } from '@hedron/midi-manager'
 
@@ -70,11 +69,8 @@ export class MidiInput implements IPlugin {
                   value = getNextEnumValue(input.targetNodeId)(storeState)
                   break
                 default: {
-                  const { options } = getParamConfig(input.targetNodeId)(
-                    storeState,
-                  ) as SketchConfigParamEnum
-
-                  value = options[Math.floor((event.value / 127) * (options.length - 1))].value
+                  value =
+                    node.options[Math.floor((event.value / 127) * (node.options.length - 1))].value
                   break
                 }
               }
@@ -97,4 +93,5 @@ export class MidiInput implements IPlugin {
       })
     })
   }
+  optionNodesConfig: InputOptionNodesConfig
 }
