@@ -1,10 +1,9 @@
-import { ControlGrid, Collapsible, Param } from '@hedron/ui-core'
+import { ControlGrid, Collapsible, Param, useOnSelectNode } from '@hedron/ui-core'
 import { Param as ParamType } from '@hedron/engine'
 import c from './SketchParams.module.css'
 import { useActiveSketchParams } from '@components/hooks/useActiveSketchParams'
 
 import { useAppStore } from '@renderer/appStore'
-import { useOnSelectNode } from '@components/hooks/useOnSelectNode'
 
 interface SketchParamsProps {
   sketchId: string

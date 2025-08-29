@@ -24,7 +24,7 @@ export interface AppState {
   globalDialogId: DialogId | null
   currentSavePath: string | null
   saveList: SaveItem[]
-  setSelectedNode: (sketchID: string, nodeId: string) => void
+  setSelectedNode: (sketchID: string | null, nodeId: string) => void
   setSelectedInput: (nodeId: string, inputId: string) => void
   setOpenedParamGroup: (sketchId: string, groupIndex: number, isOpen: boolean) => void
   setActiveSketchId: (id: string) => void
@@ -93,9 +93,15 @@ export const appStore = createStore<AppState>()(
               }
             })
           },
-          setSelectedNode: (sketchID: string, nodeId: string) => {
+          setSelectedNode: (sketchID, nodeId) => {
             set((state) => {
-              state.selectedNodes[sketchID] = nodeId
+              let catId = sketchID
+              if (!catId) {
+                // Some nodes wont have a relevant sketch ID, for now we store them under "aux"
+                catId = 'aux'
+              }
+
+              state.selectedNodes[catId] = nodeId
             })
           },
           setSelectedInput: (nodeId: string, inputId: string) => {

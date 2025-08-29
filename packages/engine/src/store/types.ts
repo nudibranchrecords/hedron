@@ -196,6 +196,8 @@ export interface Input {
   type: 'midi' | 'gamepad' | string
   targetNodeId: string
   optionNodeIds: string[]
+  // sketchID is optional because not all inputs relate to sketches
+  sketchId?: string
 }
 
 export type Inputs = { [key: string]: Input }

@@ -23,6 +23,7 @@ export const createAddInput: SetterCreator<'addInput'> =
         ...inputConfig,
         optionNodeIds,
         id,
+        // TODO: Give inputs an (optional) sketchId so option nodes can be selected and displayed in bottom sketch panel
       }
     })
 
