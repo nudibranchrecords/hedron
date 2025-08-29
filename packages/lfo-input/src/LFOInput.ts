@@ -1,4 +1,4 @@
-import { getNextEnumValue, HedronEngine, IPlugin } from '@hedron/engine'
+import { getNextEnumValue, HedronEngine, IPlugin, NodeTypes } from '@hedron/engine'
 
 const TAU = Math.PI * 2
 const lerp = (v0: number, v1: number, t: number) => (1 - t) * v0 + t * v1
@@ -14,21 +14,63 @@ export class LFOInput implements IPlugin {
   public optionNodesConfig = [
     {
       key: 'isEnabled',
-      valueType: 'boolean' as const,
+      valueType: NodeTypes.Boolean,
       defaultValue: true,
     },
     {
       key: 'frequency',
-      valueType: 'enum' as const,
+      valueType: NodeTypes.Enum,
       defaultValue: 1,
       options: [
-        { value: 1, label: 'TODO1' },
-        { value: 2, label: 'TODO2' },
+        {
+          value: 32,
+          label: '32',
+        },
+        {
+          value: 16,
+          label: '16',
+        },
+        {
+          value: 8,
+          label: '8',
+        },
+        {
+          value: 4,
+          label: '4',
+        },
+        {
+          value: 2,
+          label: '2',
+        },
+        {
+          value: 1,
+          label: '1',
+        },
+        {
+          value: 1 / 2,
+          label: '1/2',
+        },
+        {
+          value: 1 / 4,
+          label: '1/4',
+        },
+        {
+          value: 1 / 8,
+          label: '1/8',
+        },
+        {
+          value: 1 / 16,
+          label: '1/16',
+        },
+        {
+          value: 1 / 32,
+          label: '1/32',
+        },
       ],
     },
     {
       key: 'waveType',
-      valueType: 'enum' as const,
+      valueType: NodeTypes.Enum,
       defaultValue: 'sine',
       options: [
         { value: 'sine', label: 'Sine' },
@@ -39,22 +81,22 @@ export class LFOInput implements IPlugin {
     },
     {
       key: 'amplitude',
-      valueType: 'number' as const,
+      valueType: NodeTypes.Number,
       defaultValue: 1,
     },
     {
       key: 'phase',
-      valueType: 'number' as const,
+      valueType: NodeTypes.Number,
       defaultValue: 0,
     },
     {
       key: 'min',
-      valueType: 'number' as const,
+      valueType: NodeTypes.Number,
       defaultValue: 0,
     },
     {
       key: 'max',
-      valueType: 'number' as const,
+      valueType: NodeTypes.Number,
       defaultValue: 1,
     },
   ]
@@ -81,6 +123,7 @@ export class LFOInput implements IPlugin {
 
           let isEnabledId: string | undefined
 
+          // TODO: would need nice types based on options config above
           const options: Record<string, any> = {}
 
           input.optionNodeIds.forEach((id) => {
@@ -103,7 +146,6 @@ export class LFOInput implements IPlugin {
           const delta = clock.beatDelta * options.frequency * TAU + options.phase
 
           const node = storeState.nodes[input.targetNodeId]
-          // const nodeVal = storeState.nodeValues[input.targetNodeId]
 
           let value: number | boolean | string | null = null
 
