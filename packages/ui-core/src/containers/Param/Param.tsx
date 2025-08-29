@@ -1,12 +1,12 @@
 import { NodeTypes, Param as ParamType } from '@hedron/engine'
+import { useCallback } from 'react'
 import { ParamNumber } from './ParamNumber/ParamNumber'
 import { ParamBoolean } from './ParamBoolean/ParamBoolean'
 import { ParamEnum } from './ParamEnum/ParamEnum'
 import { ParamVector3 } from './ParamVector3/ParamVector3'
 import { ParamColor } from './ParamColor/ParamColor'
 import { ParamString } from './ParamString/ParamString'
-import { useOnSelectNode } from '@hooks/useOnSelectNode'
-import { useAppStore } from '@hooks/store'
+
 import {
   NodeControl,
   NodeControlInner,
@@ -33,11 +33,20 @@ const getInputElement = (valueType: NodeTypes, id: string) => {
   }
 }
 
-export const Param = ({ param: { key, title, id, sketchId, valueType } }: ParamType) => {
-  const onSelectNode = useOnSelectNode(sketchId, id)
-  const selected = useAppStore((state) => state.selectedNodes[sketchId])
+export const Param = ({
+  onClick,
+  isActive,
+  param: { key, title, id, valueType },
+}: {
+  onClick: (nodeId: string) => void
+  isActive: boolean
+  param: ParamType
+}) => {
+  const _onClick = useCallback(() => {
+    onClick(id)
+  }, [id, onClick])
   return (
-    <NodeControl key={key} onClick={onSelectNode} isActive={id === selected}>
+    <NodeControl key={key} onClick={_onClick} isActive={isActive}>
       <NodeControlMain>
         <NodeControlTitle>{title}</NodeControlTitle>
         <NodeControlInner>{getInputElement(valueType, id)}</NodeControlInner>

@@ -12,7 +12,6 @@ import { useSelectedParam } from '@components/hooks/useSelectedParam'
 import { pluginViews, useEngineStore, engine, engineStore } from '@renderer/engine'
 import { appStore, useAppStore } from '@renderer/appStore'
 import { useInputsWithNode } from '@components/hooks/useInput'
-import { ParamNumberOptions } from '@components/Param/ParamNumber/ParamNumber'
 
 export const SelectedParam = () => {
   const selectedParam = useSelectedParam()
@@ -81,14 +80,15 @@ export const SelectedParam = () => {
       </div>
       <div>
         <h3>Param Options: {selectedParam.valueType}</h3>
-        {(() => {
+        TODO: Fix this regression!
+        {/* {(() => {
           switch (selectedParam.valueType) {
             case NodeTypes.Number:
               return <ParamNumberOptions id={selectedParam.id} />
             default:
               return <i>No options yet for {selectedParam.valueType}</i>
           }
-        })()}
+        })()} */}
       </div>
     </>
   )

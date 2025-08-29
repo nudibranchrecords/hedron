@@ -1,11 +1,20 @@
 import { ControlGrid, Collapsible, Param } from '@hedron/ui-core'
+import { Param as ParamType } from '@hedron/engine'
 import c from './SketchParams.module.css'
 import { useActiveSketchParams } from '@components/hooks/useActiveSketchParams'
 
 import { useAppStore } from '@renderer/appStore'
+import { useOnSelectNode } from '@components/hooks/useOnSelectNode'
 
 interface SketchParamsProps {
   sketchId: string
+}
+
+const ParamItem = ({ param, sketchId }: { param: ParamType; sketchId: string }) => {
+  const isActive = useAppStore((state) => state.selectedNodes[sketchId] === param.id)
+  const onSelectNode = useOnSelectNode(sketchId, param.id)
+
+  return <Param key={param.key} onClick={onSelectNode} param={param} isActive={isActive} />
 }
 
 export const SketchParams = ({ sketchId }: SketchParamsProps) => {
@@ -24,7 +33,7 @@ export const SketchParams = ({ sketchId }: SketchParamsProps) => {
           <ControlGrid>
             {params.map((param) => (
               /* unique is important here! otherwise can get cross talk between params with the same key in different sketches */
-              <Param key={`${param.key}${sketchId}`} param={param} />
+              <ParamItem key={`${param.key}${sketchId}`} param={param} sketchId={sketchId} />
             ))}
           </ControlGrid>
         )

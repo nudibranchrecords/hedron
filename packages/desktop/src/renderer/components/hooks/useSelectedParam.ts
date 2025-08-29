@@ -1,9 +1,9 @@
-import { ParamWithInfo } from '@hedron/engine'
+import { Param } from '@hedron/engine'
 import { useAppStore } from '@renderer/appStore'
 import { useActiveSketch } from '@components/hooks/useActiveSketch'
 import { useEngineStore } from '@renderer/engine'
 
-export const useSelectedParam = (): ParamWithInfo | null => {
+export const useSelectedParam = (): Param | null => {
   const activeSketch = useActiveSketch()
 
   if (!activeSketch) {
