@@ -1,10 +1,4 @@
-import {
-  getNextEnumValue,
-  HedronEngine,
-  InputOptionNodesConfig,
-  IPlugin,
-  NodeTypes,
-} from '@hedron/engine'
+import { getNextEnumValue, HedronEngine, InputOptionNodesConfig, IPlugin } from '@hedron/engine'
 
 const TAU = Math.PI * 2
 const lerp = (v0: number, v1: number, t: number) => (1 - t) * v0 + t * v1
@@ -20,12 +14,12 @@ export class LFOInput implements IPlugin {
   public readonly optionNodesConfig = [
     {
       key: 'isEnabled',
-      valueType: NodeTypes.Boolean,
+      valueType: 'boolean',
       defaultValue: true,
     },
     {
       key: 'frequency',
-      valueType: NodeTypes.Enum,
+      valueType: 'enum',
       defaultValue: 1,
       options: [
         {
@@ -76,7 +70,7 @@ export class LFOInput implements IPlugin {
     },
     {
       key: 'waveType',
-      valueType: NodeTypes.Enum,
+      valueType: 'enum',
       defaultValue: 'sine',
       options: [
         { value: 'sine', label: 'Sine' },
@@ -87,22 +81,22 @@ export class LFOInput implements IPlugin {
     },
     {
       key: 'amplitude',
-      valueType: NodeTypes.Number,
+      valueType: 'number',
       defaultValue: 1,
     },
     {
       key: 'phase',
-      valueType: NodeTypes.Number,
+      valueType: 'number',
       defaultValue: 0,
     },
     {
       key: 'min',
-      valueType: NodeTypes.Number,
+      valueType: 'number',
       defaultValue: 0,
     },
     {
       key: 'max',
-      valueType: NodeTypes.Number,
+      valueType: 'number',
       defaultValue: 1,
     },
   ] as const satisfies InputOptionNodesConfig
@@ -113,14 +107,14 @@ export class LFOInput implements IPlugin {
     // TODO: Move this to some general place where other plugins can use it
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     type ConfigToOptionsType<T extends readonly any[]> = {
-      [K in T[number] as K['key']]: K['valueType'] extends typeof NodeTypes.Enum
+      [K in T[number] as K['key']]: K['valueType'] extends 'enum'
         ? // eslint-disable-next-line @typescript-eslint/no-explicit-any
           K['options'] extends readonly any[]
           ? K['options'][number]['value']
           : K['defaultValue']
-        : K['valueType'] extends typeof NodeTypes.Number
+        : K['valueType'] extends 'number'
           ? number
-          : K['valueType'] extends typeof NodeTypes.Boolean
+          : K['valueType'] extends 'boolean'
             ? boolean
             : K['defaultValue']
     }

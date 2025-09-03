@@ -3,7 +3,6 @@ import {
   HedronEngine,
   InputOptionNodesConfig,
   IPlugin,
-  NodeTypes,
   NodeValue,
 } from '@hedron/engine'
 import { MidiManager, MidiMessageType } from '@hedron/midi-manager'
@@ -51,7 +50,7 @@ export class MidiInput implements IPlugin {
           let value: NodeValue | null = null
 
           switch (node.valueType) {
-            case NodeTypes.Boolean:
+            case 'boolean':
               switch (event.type) {
                 case MidiMessageType.NoteOn:
                 case MidiMessageType.NoteOff:
@@ -62,7 +61,7 @@ export class MidiInput implements IPlugin {
                   break
               }
               break
-            case NodeTypes.Enum: {
+            case 'enum': {
               switch (event.type) {
                 case MidiMessageType.NoteOn:
                 case MidiMessageType.NoteOff:
@@ -76,7 +75,7 @@ export class MidiInput implements IPlugin {
               }
               break
             }
-            case NodeTypes.Number:
+            case 'number':
               value = event.value / 127
               break
           }

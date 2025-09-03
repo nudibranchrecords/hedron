@@ -2,9 +2,9 @@ import {
   EngineState,
   EnsureRequiredValueType,
   NodeParamWithChildren,
-  NodeTypes,
   SketchConfigParamImported,
   isNodeTypeWithChildren,
+  NodeValueType,
   Param,
 } from '@store/types'
 import { createUniqueId } from '@utils/createUniqueId'
@@ -32,11 +32,11 @@ const _addNodeToState = (
   } as Param
 
   if (
-    (typeof defaultValue === 'number' && valueType === NodeTypes.Number) ||
-    (typeof defaultValue === 'boolean' && valueType === NodeTypes.Boolean) ||
-    (typeof defaultValue === 'string' && valueType === NodeTypes.Enum) ||
-    (typeof defaultValue === 'number' && valueType === NodeTypes.Enum) ||
-    (typeof defaultValue === 'string' && valueType === NodeTypes.String)
+    (valueType === 'number' && typeof defaultValue === 'number') ||
+    (valueType === 'boolean' && typeof defaultValue === 'boolean') ||
+    (valueType === 'enum' &&
+      (typeof defaultValue === 'string' || typeof defaultValue === 'number')) ||
+    (valueType === 'string' && typeof defaultValue === 'string')
   ) {
     state.nodeValues[paramId] = defaultValue
   } else {
@@ -51,15 +51,15 @@ const _addNodeToState = (
 const _addOptionNodeToState = (
   state: EngineState,
   paramId: string,
-  sketchConfigParam: { valueType: NodeTypes },
+  sketchConfigParam: { valueType: NodeValueType },
 ) => {
   /** TODO: This can probably be tidier, using some sort of config object to generate the option nodes
    * The same config object could also be used in the component to loop through
    */
-  if (sketchConfigParam.valueType === NodeTypes.Number) {
+  if (sketchConfigParam.valueType === 'number') {
     _addNodeToState(state, `${paramId}-sliderMin`, {
       key: 'sliderMin',
-      valueType: NodeTypes.Number,
+      valueType: 'number',
       defaultValue: 0,
       groupIndex: null,
       params: [], // TODO: Bad typing means we have to do this
@@ -68,7 +68,7 @@ const _addOptionNodeToState = (
 
     _addNodeToState(state, `${paramId}-sliderMax`, {
       key: 'sliderMax',
-      valueType: NodeTypes.Number,
+      valueType: 'number',
       defaultValue: 1,
       groupIndex: null,
       params: [], // TODO: Bad typing means we have to do this
@@ -84,7 +84,7 @@ export const addNode = (state: EngineState, paramId: string, config: SketchConfi
     }
 
     const childNodeIds = Array.from({ length: 3 }, createUniqueId) as [string, string, string]
-    const keys = config.valueType === NodeTypes.Vector3 ? vector3Keys : rgbKeys
+    const keys = config.valueType === 'vector3' ? vector3Keys : rgbKeys
 
     state.nodes[paramId] = {
       ...config,
@@ -99,12 +99,12 @@ export const addNode = (state: EngineState, paramId: string, config: SketchConfi
         groupIndex: null,
         title: keys[index],
         key: keys[index],
-        valueType: NodeTypes.Number,
+        valueType: 'number',
         defaultValue: config.defaultValue[index],
         params: [], // TODO: Bad typing means we have to do this
       })
       _addOptionNodeToState(state, childNodeId, {
-        valueType: NodeTypes.Number,
+        valueType: 'number',
       })
     }
   } else {

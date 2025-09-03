@@ -81,7 +81,7 @@ export const SelectedParam = () => {
         TODO: Fix this regression!
         {/* {(() => {
           switch (selectedParam.valueType) {
-            case NodeTypes.Number:
+            case 'number':
               return <ParamNumberOptions id={selectedParam.id} />
             default:
               return <i>No options yet for {selectedParam.valueType}</i>

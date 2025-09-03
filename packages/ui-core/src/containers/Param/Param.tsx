@@ -1,4 +1,4 @@
-import { NodeTypes, Param as ParamType } from '@hedron/engine'
+import { NodeValueType, Param as ParamType } from '@hedron/engine'
 import { useCallback } from 'react'
 import { ParamNumber } from './ParamNumber/ParamNumber'
 import { ParamBoolean } from './ParamBoolean/ParamBoolean'
@@ -14,19 +14,19 @@ import {
   NodeControlTitle,
 } from '@components/NodeControl/NodeControl'
 
-const getInputElement = (valueType: NodeTypes, id: string) => {
+const getInputElement = (valueType: NodeValueType, id: string) => {
   switch (valueType) {
-    case NodeTypes.Number:
+    case 'number':
       return <ParamNumber id={id} />
-    case NodeTypes.Boolean:
+    case 'boolean':
       return <ParamBoolean id={id} />
-    case NodeTypes.String:
+    case 'string':
       return <ParamString id={id} />
-    case NodeTypes.Enum:
+    case 'enum':
       return <ParamEnum id={id} />
-    case NodeTypes.Vector3:
+    case 'vector3':
       return <ParamVector3 id={id} />
-    case NodeTypes.RGB:
+    case 'rgb':
       return <ParamColor id={id} />
     default:
       return <i>Unsupported type {valueType}</i>
