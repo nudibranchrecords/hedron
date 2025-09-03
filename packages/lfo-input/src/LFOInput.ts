@@ -9,8 +9,6 @@ export class LFOInput implements IPlugin {
   public readonly inputType = 'lfo'
   public readonly description =
     'Generates LFO waves (e.g. sin, square, sawtooth) as inputs for params.'
-
-  // TODO: Fix the types here, something to do with the fact its an array?
   public readonly optionNodesConfig = [
     {
       key: 'isEnabled',
