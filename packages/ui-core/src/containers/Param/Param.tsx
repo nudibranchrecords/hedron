@@ -38,12 +38,12 @@ export const Param = ({
   isActive,
   param: { key, title, id, valueType },
 }: {
-  onClick: (nodeId: string) => void
-  isActive: boolean
+  onClick?: (nodeId: string) => void
+  isActive?: boolean
   param: ParamType
 }) => {
   const _onClick = useCallback(() => {
-    onClick(id)
+    onClick?.(id)
   }, [id, onClick])
   return (
     <NodeControl key={key} onClick={_onClick} isActive={isActive}>

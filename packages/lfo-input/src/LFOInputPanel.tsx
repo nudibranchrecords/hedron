@@ -1,11 +1,5 @@
 import { HedronEngine, Input } from '@hedron/engine'
-import {
-  ControlGrid,
-  Param,
-  useEngineStore,
-  useOnSelectNode,
-  useSelectedNode,
-} from '@hedron/ui-core'
+import { ControlGrid, Param, useEngineStore } from '@hedron/ui-core'
 
 interface IProps {
   input: Input
@@ -15,13 +9,8 @@ interface IProps {
 
 const Item = ({ nodeId, input }: { nodeId: string; input: Input }) => {
   const param = useEngineStore((state) => state.nodes[nodeId])
-  const selectedParamId = useSelectedNode(param.id)
 
-  const onSelectNode = useOnSelectNode(input.sketchId, param.id)
-
-  return (
-    <Param onClick={onSelectNode} param={{ ...param }} isActive={selectedParamId === param.id} />
-  )
+  return <Param param={param} />
 }
 
 /**
