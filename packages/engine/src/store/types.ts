@@ -122,7 +122,7 @@ export interface SketchConfigParamString extends SketchConfigParamBase {
 
 export interface SketchConfigParamEnum extends SketchConfigParamBase {
   valueType: NodeTypes.Enum
-  defaultValue: string
+  defaultValue: string | number
   options: EnumOption[]
 }
 

@@ -1,4 +1,10 @@
-import { getNextEnumValue, HedronEngine, IPlugin, NodeTypes } from '@hedron/engine'
+import {
+  getNextEnumValue,
+  HedronEngine,
+  InputOptionNodesConfig,
+  IPlugin,
+  NodeTypes,
+} from '@hedron/engine'
 
 const TAU = Math.PI * 2
 const lerp = (v0: number, v1: number, t: number) => (1 - t) * v0 + t * v1
@@ -11,7 +17,7 @@ export class LFOInput implements IPlugin {
     'Generates LFO waves (e.g. sin, square, sawtooth) as inputs for params.'
 
   // TODO: Fix the types here, something to do with the fact its an array?
-  public optionNodesConfig = [
+  public readonly optionNodesConfig = [
     {
       key: 'isEnabled',
       valueType: NodeTypes.Boolean,
@@ -99,7 +105,7 @@ export class LFOInput implements IPlugin {
       valueType: NodeTypes.Number,
       defaultValue: 1,
     },
-  ]
+  ] satisfies InputOptionNodesConfig
 
   private inputLatches: Record<string, boolean> = {}
 
