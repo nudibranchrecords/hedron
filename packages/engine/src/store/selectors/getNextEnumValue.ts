@@ -1,4 +1,4 @@
-import { EngineState, NodeParamEnum } from '@store/types'
+import { EngineState, NodeEnumValue, NodeParamEnum } from '@store/types'
 
 export const getNextEnumValue = (targetNodeId: string) => (state: EngineState) => {
   const paramVal = state.nodeValues[targetNodeId]
@@ -9,7 +9,7 @@ export const getNextEnumValue = (targetNodeId: string) => (state: EngineState) =
     return paramVal
   }
 
-  const options = param.options as { value: string | number }[]
+  const options = param.options as { value: NodeEnumValue }[]
   const currentIndex = options.findIndex((option) => option.value === paramVal)
 
   if (currentIndex === -1) {

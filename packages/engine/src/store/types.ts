@@ -62,7 +62,7 @@ export interface NodeParamString extends NodeParamBase {
 
 export interface NodeParamEnum extends NodeParamBase {
   valueType: NodeTypes.Enum
-  defaultValue: string | number
+  defaultValue: NodeEnumValue
   options: EnumOption[]
 }
 
@@ -120,9 +120,11 @@ export interface SketchConfigParamString extends SketchConfigParamBase {
   defaultValue: string
 }
 
+export type NodeEnumValue = string | number
+
 export interface SketchConfigParamEnum extends SketchConfigParamBase {
   valueType: NodeTypes.Enum
-  defaultValue: string | number
+  defaultValue: NodeEnumValue
   options: EnumOption[]
 }
 
@@ -186,7 +188,7 @@ export interface SketchModuleItem {
 
 export type SketchModules = { [key: string]: SketchModuleItem }
 
-export type EnumOption = { value: string | number; label: string }
+export type EnumOption = { value: NodeEnumValue; label: string }
 
 export type InputOptionNodesConfig = readonly SketchConfigParam[]
 

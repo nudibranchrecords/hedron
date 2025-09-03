@@ -105,11 +105,27 @@ export class LFOInput implements IPlugin {
       valueType: NodeTypes.Number,
       defaultValue: 1,
     },
-  ] satisfies InputOptionNodesConfig
+  ] as const satisfies InputOptionNodesConfig
 
   private inputLatches: Record<string, boolean> = {}
 
   constructor(engine: HedronEngine) {
+    // TODO: Move this to some general place where other plugins can use it
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    type ConfigToOptionsType<T extends readonly any[]> = {
+      [K in T[number] as K['key']]: K['valueType'] extends typeof NodeTypes.Enum
+        ? // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          K['options'] extends readonly any[]
+          ? K['options'][number]['value']
+          : K['defaultValue']
+        : K['valueType'] extends typeof NodeTypes.Number
+          ? number
+          : K['valueType'] extends typeof NodeTypes.Boolean
+            ? boolean
+            : K['defaultValue']
+    }
+    type OptionsType = ConfigToOptionsType<typeof this.optionNodesConfig>
+
     const clock = engine.clock
 
     if (!clock) {
@@ -129,15 +145,14 @@ export class LFOInput implements IPlugin {
 
           let isEnabledId: string | undefined
 
-          // TODO: would need nice types based on options config above
-          const options: Record<string, any> = {}
+          const options = {} as OptionsType
 
           input.optionNodeIds.forEach((id) => {
             const node = storeState.nodes[id]
             if (node.key === 'isEnabled') {
               isEnabledId = id
             }
-            options[node.key] = storeState.nodeValues[id]
+            ;(options as Record<string, unknown>)[node.key] = storeState.nodeValues[id]
           })
 
           if (!isEnabledId) {
