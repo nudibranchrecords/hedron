@@ -7,7 +7,7 @@ interface IProps {
   engine: HedronEngine
 }
 
-const Item = ({ nodeId, input }: { nodeId: string; input: Input }) => {
+const Item = ({ nodeId }: { nodeId: string }) => {
   const param = useEngineStore((state) => state.nodes[nodeId])
 
   return <Param param={param} />
@@ -21,7 +21,7 @@ export const LFOInputPanel = ({ input }: IProps) => {
     <div>
       <ControlGrid className="mb-xl">
         {input.optionNodeIds.map((id) => (
-          <Item key={id} nodeId={id} input={input} />
+          <Item key={id} nodeId={id} />
         ))}
       </ControlGrid>
     </div>
