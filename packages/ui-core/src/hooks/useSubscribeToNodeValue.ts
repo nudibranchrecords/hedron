@@ -24,7 +24,7 @@ export const useSubscribeToNodeValue = <T extends NodeValue>(
     return () => {
       unsubscribe()
     }
-  }, [nodeId])
+  }, [engineStore, nodeId])
 }
 
 export const useSubscribeToNodeChildrenValues = <T extends NodeValue>(
@@ -55,5 +55,5 @@ export const useSubscribeToNodeChildrenValues = <T extends NodeValue>(
     return () => {
       unsubscribe()
     }
-  }, [childNodeIds, nodeId])
+  }, [childNodeIds, engineStore, nodeId])
 }

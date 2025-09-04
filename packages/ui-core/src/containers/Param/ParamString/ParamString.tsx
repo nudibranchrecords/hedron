@@ -11,9 +11,9 @@ interface ParamNumberProps {
 export const ParamString = ({ id }: ParamNumberProps) => {
   const ref = useRef<TextInputHandle>(null)
   const onValueChange = useOnNodeValueChange(id)
+  const engineStore = useEngineStoreWithContext()
 
   useInterval(() => {
-    const engineStore = useEngineStoreWithContext()
     const nodeValue = engineStore.getState().nodeValues[id]
     if (typeof nodeValue !== 'string') {
       throw new Error('TextInput value was not a string')
