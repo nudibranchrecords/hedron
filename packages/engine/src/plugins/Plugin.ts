@@ -32,7 +32,7 @@ export interface IPlugin {
   description: string
 
   /**
-   * Config to generate option nodes
+   * Config to generate option nodes. Follows same structure as sketch params config.
    */
   optionNodesConfig: InputOptionNodesConfig
 }
