@@ -8,6 +8,16 @@ import {
 } from '@hedron/engine'
 import { MidiManager, MidiMessageType } from '@hedron/midi-manager'
 
+const noteLetters = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B']
+
+const midiNotes: string[] = new Array(128)
+
+for (let i = 0; i < 128; i++) {
+  const letter = noteLetters[i % noteLetters.length]
+  const octave = Math.floor(i / noteLetters.length) - 1
+  midiNotes[i] = `${i} - ${letter} (${octave})`
+}
+
 export class MidiInput implements IPlugin {
   public readonly id = 'midi-input'
   public readonly name = 'MIDI Input'
@@ -17,12 +27,14 @@ export class MidiInput implements IPlugin {
   public readonly optionNodesConfig = [
     {
       key: 'channel',
-      valueType: 'number',
+      valueType: 'enum',
+      options: Array.from({ length: 16 }, (_, i) => ({ value: i, label: `${i + 1}` })),
       defaultValue: 1,
     },
     {
       key: 'note',
-      valueType: 'number',
+      valueType: 'enum',
+      options: midiNotes.map((label, i) => ({ value: i, label })),
       defaultValue: 1,
     },
     {
