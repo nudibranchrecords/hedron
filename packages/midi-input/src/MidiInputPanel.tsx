@@ -1,87 +1,85 @@
-import { useState } from 'react'
-import { EnumOption, HedronEngine, Input } from '@hedron/engine'
-import {
-  Button,
-  ControlGrid,
-  EnumDropdown,
-  NodeControl,
-  NodeControlInner,
-  NodeControlMain,
-  NodeControlTitle,
-} from '@hedron/ui-core'
-import { midiMessageNames } from '@hedron/midi-manager'
-import { MidiInput, MidiInputOptions } from './MidiInput'
+import { useCallback, useState } from 'react'
+import { HedronEngine, Input } from '@hedron/engine'
+import { Button, ControlGrid, Param, useEngineStore } from '@hedron/ui-core'
+import { MidiInput } from './MidiInput'
 
 interface IProps {
-  input: Input<MidiInputOptions>
+  input: Input
   // TODO: This can be typed as something like HedronEngineWithPlugin<MidiInput>
   engine: HedronEngine
 }
 
-const channelOptions: EnumOption[] = []
-for (let i = 0; i <= 15; i++) {
-  channelOptions.push({ label: `${i + 1}`, value: i })
-}
-
-const noteOptions: EnumOption[] = []
-for (let i = 0; i < 127; i++) {
-  noteOptions.push({ label: `${i + 1}`, value: i })
-}
-
-const messageTypeOptions = Object.entries(midiMessageNames).map(([key, niceName]) => ({
-  label: niceName,
-  value: key,
-}))
-
-const enumOptions = {
-  channel: channelOptions,
-  note: noteOptions,
-  type: messageTypeOptions,
-} as const
-
-/**
- * A react component that displays the midi settings for a parameter
- */
-export const MidiInputPanel = ({ input, engine }: IProps) => {
+const useMidiLearn = (input: Input, engine: HedronEngine) => {
   const [isLearning, setIsLearning] = useState(false)
 
   // TODO: May not need this "as" if we have HedronEngineWithPlugin<MidiInput>
   const plugin = engine.plugins['midi-input'] as MidiInput
   const midiManager = plugin.midiManager
 
-  const inputOptions = [
-    ['channel', input.options.channel],
-    ['note', input.options.note],
-    ['type', input.options.type],
-  ] as const
+  const runMidiLearn = useCallback(async () => {
+    setIsLearning(true)
+    midiManager
+      .midiLearn()
+      .then((event) => {
+        if (!event) {
+          setIsLearning(false)
+          return
+        }
+
+        const store = engine.getStore()
+        const state = store.getState()
+
+        // Update each option node with the learned values
+        input.optionNodeIds.forEach((nodeId) => {
+          const node = state.nodes[nodeId]
+          if (!node) return
+
+          switch (node.key) {
+            case 'channel':
+              state.updateNodeValue(nodeId, event.channel)
+              break
+            case 'note':
+              state.updateNodeValue(nodeId, event.note)
+              break
+            case 'type':
+              state.updateNodeValue(nodeId, event.type)
+              break
+          }
+        })
+      })
+      .finally(() => {
+        setIsLearning(false)
+      })
+  }, [engine, input.optionNodeIds, midiManager])
+
+  const cancelMidiLearn = useCallback(() => {
+    midiManager.cancelMidiLearn()
+  }, [midiManager])
+
+  return {
+    isLearning,
+    runMidiLearn,
+    cancelMidiLearn,
+  }
+}
+
+const Item = ({ nodeId }: { nodeId: string }) => {
+  const param = useEngineStore((state) => state.nodes[nodeId])
+
+  return <Param param={param} />
+}
+
+/**
+ * A react component that displays the midi settings for a parameter
+ */
+export const MidiInputPanel = ({ input, engine }: IProps) => {
+  const { isLearning, runMidiLearn, cancelMidiLearn } = useMidiLearn(input, engine)
 
   return (
     <div>
       <ControlGrid className="mb-xl">
-        {inputOptions.map(([key, value]) => (
-          <NodeControl key={key}>
-            <NodeControlMain>
-              <NodeControlTitle>{key}</NodeControlTitle>
-              <NodeControlInner>
-                <EnumDropdown
-                  value={value}
-                  values={enumOptions[key]}
-                  // onValueChange={(newVal) => {
-                  //   // TODO: Hacky. Soon we'll use nodes for options so no need to fix this up
-                  //   if (key !== 'type') {
-                  //     newVal = parseInt(newVal as string)
-                  //   }
-                  //   engine
-                  //     .getStore()
-                  //     .getState()
-                  //     .updateInputOptions(input.id, {
-                  //       [key]: newVal,
-                  //     })
-                  // }}
-                />
-              </NodeControlInner>
-            </NodeControlMain>
-          </NodeControl>
+        {input.optionNodeIds.map((id) => (
+          <Item key={id} nodeId={id} />
         ))}
       </ControlGrid>
 
@@ -94,35 +92,4 @@ export const MidiInputPanel = ({ input, engine }: IProps) => {
       )}
     </div>
   )
-
-  async function runMidiLearn() {
-    setIsLearning(true)
-    midiManager
-      .midiLearn()
-      .then((event) => {
-        if (!event) {
-          setIsLearning(false)
-          return
-        }
-
-        engine.getStore().getState().updateInputOptions(input.id, {
-          channel: event.channel,
-          note: event.note,
-          type: event.type,
-        })
-      })
-      .finally(() => {
-        setIsLearning(false)
-      })
-  }
-
-  function cancelMidiLearn() {
-    midiManager.cancelMidiLearn()
-  }
-
-  // function removeMidi(id: string) {
-  //   return () => {
-  //     engine.deleteInputParam(id, param.id)
-  //   }
-  // }
 }

@@ -3,15 +3,10 @@ import {
   HedronEngine,
   InputOptionNodesConfig,
   IPlugin,
+  getOptionNodesFromIds,
   NodeValue,
 } from '@hedron/engine'
 import { MidiManager, MidiMessageType } from '@hedron/midi-manager'
-
-export interface MidiInputOptions {
-  channel: number
-  note: number
-  type: MidiMessageType
-}
 
 export class MidiInput implements IPlugin {
   public readonly id = 'midi-input'
@@ -19,11 +14,28 @@ export class MidiInput implements IPlugin {
   public readonly inputType = 'midi'
   public readonly description = 'Handles MIDI input devices and messages.'
   public readonly midiManager = new MidiManager()
-  public readonly getOptionNodesConfig: () => MidiInputOptions = () => ({
-    channel: 1,
-    note: 1,
-    type: MidiMessageType.ControlChange,
-  })
+  public readonly optionNodesConfig = [
+    {
+      key: 'channel',
+      valueType: 'number',
+      defaultValue: 1,
+    },
+    {
+      key: 'note',
+      valueType: 'number',
+      defaultValue: 1,
+    },
+    {
+      key: 'type',
+      valueType: 'enum',
+      defaultValue: MidiMessageType.ControlChange,
+      options: [
+        { value: MidiMessageType.NoteOn, label: 'Note On' },
+        { value: MidiMessageType.NoteOff, label: 'Note Off' },
+        { value: MidiMessageType.ControlChange, label: 'Control Change' },
+      ],
+    },
+  ] as const satisfies InputOptionNodesConfig
 
   constructor(engine: HedronEngine) {
     const store = engine.getStore()
@@ -37,7 +49,12 @@ export class MidiInput implements IPlugin {
       // TODO: Not very performant, we might want to cache inputs somehow
       inputs.forEach((input) => {
         if (input.type !== 'midi') return
-        const options = input.options as MidiInputOptions
+
+        const options = getOptionNodesFromIds<typeof this.optionNodesConfig>(
+          storeState,
+          input.optionNodeIds,
+        )
+
         if (
           event.channel === options.channel &&
           event.note === options.note &&
@@ -92,5 +109,4 @@ export class MidiInput implements IPlugin {
       })
     })
   }
-  optionNodesConfig: InputOptionNodesConfig
 }
