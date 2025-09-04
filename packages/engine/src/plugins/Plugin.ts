@@ -51,6 +51,12 @@ type ConfigToOptionsType<T extends readonly any[]> = {
         : K['defaultValue']
 }
 
+/**
+ * Get option nodes from state by their IDs.
+ * @param state The engine state.
+ * @param ids The IDs of the option nodes.
+ * @returns The option nodes.
+ */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const getOptionNodesFromIds = <T extends readonly any[]>(
   state: EngineState,
@@ -66,6 +72,13 @@ export const getOptionNodesFromIds = <T extends readonly any[]>(
   return options
 }
 
+/**
+ * Plugin helper that loops through all inputs and handles those of a specific type.
+ * Gets and hands back option nodes, the target node for the input, and its value.
+ * @param storeState The engine store state.
+ * @param inputType The type of input to handle (e.g. "midi")
+ * @param callback The callback to execute for each input of the specified type.
+ */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const handleEachInput = <T extends readonly any[]>(
   storeState: EngineStateWithActions,
