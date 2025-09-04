@@ -1,4 +1,11 @@
-import { getNextEnumValue, HedronEngine, InputOptionNodesConfig, IPlugin } from '@hedron/engine'
+import {
+  getNextEnumValue,
+  HedronEngine,
+  InputOptionNodesConfig,
+  IPlugin,
+  getOptionNodesFromIds,
+  NodeValue,
+} from '@hedron/engine'
 
 const TAU = Math.PI * 2
 const lerp = (v0: number, v1: number, t: number) => (1 - t) * v0 + t * v1
@@ -102,22 +109,6 @@ export class LFOInput implements IPlugin {
   private inputLatches: Record<string, boolean> = {}
 
   constructor(engine: HedronEngine) {
-    // TODO: Move this to some general place where other plugins can use it
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    type ConfigToOptionsType<T extends readonly any[]> = {
-      [K in T[number] as K['key']]: K['valueType'] extends 'enum'
-        ? // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          K['options'] extends readonly any[]
-          ? K['options'][number]['value']
-          : K['defaultValue']
-        : K['valueType'] extends 'number'
-          ? number
-          : K['valueType'] extends 'boolean'
-            ? boolean
-            : K['defaultValue']
-    }
-    type OptionsType = ConfigToOptionsType<typeof this.optionNodesConfig>
-
     const clock = engine.clock
 
     if (!clock) {
@@ -132,35 +123,22 @@ export class LFOInput implements IPlugin {
         const inputs = Object.values(storeState.inputs)
 
         // TODO: Not very performant, we might want to cache inputs somehow
+        // Could have some method that does this for us (and passes down option node IDs?)
         inputs.forEach((input) => {
           if (input.type !== 'lfo') return
 
-          let isEnabledId: string | undefined
+          const options = getOptionNodesFromIds<typeof this.optionNodesConfig>(
+            storeState,
+            input.optionNodeIds,
+          )
 
-          const options = {} as OptionsType
-
-          input.optionNodeIds.forEach((id) => {
-            const node = storeState.nodes[id]
-            if (node.key === 'isEnabled') {
-              isEnabledId = id
-            }
-            ;(options as Record<string, unknown>)[node.key] = storeState.nodeValues[id]
-          })
-
-          if (!isEnabledId) {
-            console.warn(`LFO Input: isEnabled node not found for input ${input.id}`)
-            return
-          }
-
-          const isEnabled = storeState.nodeValues[isEnabledId]
-
-          if (!isEnabled) return
+          if (!options.isEnabled) return
 
           const delta = clock.beatDelta * options.frequency * TAU + options.phase
 
           const node = storeState.nodes[input.targetNodeId]
 
-          let value: number | boolean | string | null = null
+          let value: NodeValue | null = null
 
           switch (node.valueType) {
             case 'enum':
@@ -208,7 +186,7 @@ export class LFOInput implements IPlugin {
             return
           }
 
-          store.getState().updateNodeValue(input.targetNodeId, value)
+          storeState.updateNodeValue(input.targetNodeId, value)
         })
 
         tick()
