@@ -15,9 +15,9 @@ export const useAppStoreWithContext = () => {
   return appStore
 }
 
-export const useAppStore = <T>(selector?: (state: AppState) => T) => {
+export const useAppStore = <T>(selector: (state: AppState) => T) => {
   const appStore = useAppStoreWithContext()
-  return useStore(appStore, selector!)
+  return useStore(appStore, selector)
 }
 
 export const AppStoreProvider = AppStoreContext.Provider
@@ -34,10 +34,10 @@ export const useEngineStoreWithContext = () => {
   return engineStore
 }
 
-export const useEngineStore = <T>(selector?: (state: EngineStateWithActions) => T) => {
+export const useEngineStore = <T>(selector: (state: EngineStateWithActions) => T) => {
   const engineStore = useEngineStoreWithContext()
 
-  return useStore(engineStore, selector!)
+  return useStore(engineStore, selector)
 }
 
 export const EngineStoreProvider = EngineStoreContext.Provider
