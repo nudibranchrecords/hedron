@@ -1,6 +1,6 @@
 import path from 'path-browserify'
 import { ProjectData } from '@hedron/app-store'
-import { appStore, useAppStore } from '@renderer/appStore'
+import { appStore } from '@renderer/appStore'
 import { engine, engineStore } from '@renderer/engine'
 import {
   openProjectFileDialog,
