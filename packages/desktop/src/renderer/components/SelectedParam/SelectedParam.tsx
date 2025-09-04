@@ -53,7 +53,7 @@ export const SelectedParam = () => {
           setSelectedInputId(selectedParam.id, id)
         },
       })),
-    [addInput, inputs, selectedParam, setSelectedInputId],
+    [addInput, inputs, selectedParam.id, setSelectedInputId],
   )
 
   return (
