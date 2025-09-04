@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react'
 import { NodeParamWithChildren, NodeValue } from '@hedron/engine'
-import { useEngineStore, useEngineStoreWithContext } from '@hooks/useStores'
+import { useEngineStore, useEngineStoreWithContext } from '@hooks/storeHooks'
 
 export const useSubscribeToNodeValue = <T extends NodeValue>(
   nodeId: string,

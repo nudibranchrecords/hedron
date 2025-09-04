@@ -4,7 +4,7 @@ import c from './ParamVector3.module.css'
 import { FloatSlider, FloatSliderHandle } from '@components/FloatSlider/FloatSlider'
 import { useOnNodeValueChange } from '@hooks/useOnNodeValueChange'
 import { useSubscribeToNodeValue } from '@hooks/useSubscribeToNodeValue'
-import { useEngineStore } from '@hooks/useStores'
+import { useEngineStore } from '@hooks/storeHooks'
 
 interface ParamVector3Props {
   id: string

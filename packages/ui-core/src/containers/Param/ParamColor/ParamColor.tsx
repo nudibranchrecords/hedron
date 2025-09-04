@@ -1,7 +1,7 @@
 import { NodeParamRGB } from '@hedron/engine'
 import { useRef } from 'react'
 import { useSubscribeToNodeChildrenValues } from '@hooks/useSubscribeToNodeValue'
-import { useEngineStore } from '@hooks/useStores'
+import { useEngineStore } from '@hooks/storeHooks'
 import { ColorPicker, ColorPickerHandle } from '@components/ColorPicker/ColorPicker'
 import { useOnNodeVec3ValueChange } from '@hooks/useOnNodeVec3ValueChange'
 
