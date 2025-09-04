@@ -1,11 +1,3 @@
-# `lfo-input`
+# `midi-input`
 
-> TODO: description
-
-## Usage
-
-```
-const midiInput = require('lfo-input');
-
-// TODO: DEMONSTRATE API
-```
+Hedron plugin that adds LFO inputs to the app (e.g. sine, square, sawtooth)
