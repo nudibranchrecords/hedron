@@ -5,6 +5,7 @@ import {
   PopoutMenu,
   useEngineStore,
   useAppStore,
+  ParamNumberOptions,
 } from '@hedron/ui-core'
 import { useMemo } from 'react'
 import { useSelectedParam } from '@components/hooks/useSelectedParam'
@@ -78,15 +79,14 @@ export const SelectedParam = () => {
       </div>
       <div>
         <h3>Param Options: {selectedParam.valueType}</h3>
-        TODO: Fix this regression!
-        {/* {(() => {
+        {(() => {
           switch (selectedParam.valueType) {
             case 'number':
               return <ParamNumberOptions id={selectedParam.id} />
             default:
               return <i>No options yet for {selectedParam.valueType}</i>
           }
-        })()} */}
+        })()}
       </div>
     </>
   )
