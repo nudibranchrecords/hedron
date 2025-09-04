@@ -1,4 +1,3 @@
-import './test.js'
 import { GLTFLoader } from 'three-stdlib'
 import * as THREE from 'three'
 import hedronLogoUrl from './hedron-logo.glb'
