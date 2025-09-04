@@ -1,9 +1,8 @@
-import { HedronEngine, EngineStateWithActions } from '@hedron/engine'
+import { HedronEngine } from '@hedron/engine'
 import Stats from 'three/examples/jsm/libs/stats.module.js'
 import { Clock } from '@hedron/clock'
 import { MidiInput, MidiInputPanel } from '@hedron/midi-input'
 import { LFOInput, LFOInputPanel } from '@hedron/lfo-input'
-import { useStore } from 'zustand'
 
 export const performanceMonitor = new Stats()
 
@@ -18,11 +17,6 @@ export const engine = new HedronEngine({
 })
 
 export const engineStore = engine.getStore()
-
-// Create a useEngineStore hook for this specific store instance
-export const useEngineStore = <T>(selector?: (state: EngineStateWithActions) => T) => {
-  return useStore(engineStore, selector!)
-}
 
 engine.registerPlugin(new MidiInput(engine))
 engine.registerPlugin(new LFOInput(engine))
