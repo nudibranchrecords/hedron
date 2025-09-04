@@ -1,4 +1,11 @@
-import { EngineState, InputOptionNodesConfig } from '@store/types'
+import {
+  EngineState,
+  EngineStateWithActions,
+  Input,
+  InputOptionNodesConfig,
+  Node,
+  NodeValue,
+} from '@store/types'
 
 /**
  * Class type for a Plugin.
@@ -57,4 +64,40 @@ export const getOptionNodesFromIds = <T extends readonly any[]>(
     ;(options as Record<string, unknown>)[node.key] = state.nodeValues[id]
   })
   return options
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const handleEachInput = <T extends readonly any[]>(
+  storeState: EngineStateWithActions,
+  inputType: string,
+  callback: ({
+    input,
+    optionNodes,
+  }: {
+    input: Input
+    optionNodes: ConfigToOptionsType<T>
+    targetNode: Node
+    targetNodeValue: NodeValue
+  }) => void,
+) => {
+  const inputs = Object.values(storeState.inputs)
+
+  // TODO: Not very performant, we might want to cache inputs somehow
+  inputs.forEach((input) => {
+    if (input.type !== inputType) return
+
+    const targetNode = storeState.nodes[input.targetNodeId]
+
+    if (!targetNode) {
+      // Node may not exist if deleting a sketch/param didn't clean up properly
+      // TODO: special log level for checking this
+      return
+    }
+
+    const targetNodeValue = storeState.nodeValues[input.targetNodeId]
+
+    const optionNodes = getOptionNodesFromIds<T>(storeState, input.optionNodeIds)
+
+    callback({ input, optionNodes, targetNode, targetNodeValue })
+  })
 }

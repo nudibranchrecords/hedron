@@ -1,9 +1,9 @@
 import {
   getNextEnumValue,
+  handleEachInput,
   HedronEngine,
   InputOptionNodesConfig,
   IPlugin,
-  getOptionNodesFromIds,
   NodeValue,
 } from '@hedron/engine'
 
@@ -120,74 +120,65 @@ export class LFOInput implements IPlugin {
     const tick = () => {
       requestAnimationFrame(() => {
         const storeState = store.getState()
-        const inputs = Object.values(storeState.inputs)
+        handleEachInput<typeof this.optionNodesConfig>(
+          storeState,
+          'lfo',
+          ({ input, optionNodes: opts, targetNode }) => {
+            // TODO: This can be handled by `onInput` once we have `isEnabled` as a generic option
+            if (!opts.isEnabled) return
 
-        // TODO: Not very performant, we might want to cache inputs somehow
-        // Could have some method that does this for us (and passes down option node IDs?)
-        inputs.forEach((input) => {
-          if (input.type !== 'lfo') return
+            const delta = clock.beatDelta * opts.frequency * TAU + opts.phase
 
-          const options = getOptionNodesFromIds<typeof this.optionNodesConfig>(
-            storeState,
-            input.optionNodeIds,
-          )
+            let value: NodeValue | null = null
 
-          if (!options.isEnabled) return
-
-          const delta = clock.beatDelta * options.frequency * TAU + options.phase
-
-          const node = storeState.nodes[input.targetNodeId]
-
-          let value: NodeValue | null = null
-
-          switch (node.valueType) {
-            case 'enum':
-              if (Math.sin(delta) > 0) {
-                if (this.inputLatches[input.id]) {
+            switch (targetNode.valueType) {
+              case 'enum':
+                if (Math.sin(delta) > 0) {
+                  if (this.inputLatches[input.id]) {
+                    return
+                  }
+                  value = getNextEnumValue(input.targetNodeId)(storeState)
+                  this.inputLatches[input.id] = true
+                } else {
+                  this.inputLatches[input.id] = false
                   return
                 }
-                value = getNextEnumValue(input.targetNodeId)(storeState)
-                this.inputLatches[input.id] = true
-              } else {
-                this.inputLatches[input.id] = false
-                return
-              }
 
-              break
-            case 'boolean':
-              value = Math.sin(delta) > 0
-              break
-            case 'number':
-              switch (options.waveType) {
-                case 'sine':
-                  value =
-                    lerp(options.min, options.max, (Math.sin(delta) + 1) / 2) * options.amplitude
-                  break
-                case 'square':
-                  value =
-                    lerp(options.min, options.max, (Math.sign(Math.sin(delta)) + 1) / 2) *
-                    options.amplitude
-                  break
-                case 'sawtooth':
-                  value = lerp(options.min, options.max, (delta % TAU) / TAU) * options.amplitude
-                  break
-                case 'triangle':
-                  value =
-                    lerp(options.min, options.max, 1 - Math.abs(((delta % TAU) / TAU) * 2 - 1)) *
-                    options.amplitude
-                  break
-              }
-          }
+                break
+              case 'boolean':
+                value = Math.sin(delta) > 0
+                break
+              case 'number':
+                switch (opts.waveType) {
+                  case 'sine':
+                    value = lerp(opts.min, opts.max, (Math.sin(delta) + 1) / 2) * opts.amplitude
+                    break
+                  case 'square':
+                    value =
+                      lerp(opts.min, opts.max, (Math.sign(Math.sin(delta)) + 1) / 2) *
+                      opts.amplitude
+                    break
+                  case 'sawtooth':
+                    value = lerp(opts.min, opts.max, (delta % TAU) / TAU) * opts.amplitude
+                    break
+                  case 'triangle':
+                    value =
+                      lerp(opts.min, opts.max, 1 - Math.abs(((delta % TAU) / TAU) * 2 - 1)) *
+                      opts.amplitude
+                    break
+                }
+            }
 
-          if (value === null) {
-            console.warn(
-              `LFO Input: Unsupported value type for node ${input.targetNodeId}. Type: ${node.valueType}`,
-            )
-            return
-          }
+            if (value === null) {
+              console.warn(
+                `LFO Input: Unsupported value type for node ${input.targetNodeId}. Type: ${targetNode.valueType}`,
+              )
+              return
+            }
 
-          storeState.updateNodeValue(input.targetNodeId, value)
-        })
+            storeState.updateNodeValue(input.targetNodeId, value)
+          },
+        )
 
         tick()
       })

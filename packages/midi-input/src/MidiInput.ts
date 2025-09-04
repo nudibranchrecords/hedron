@@ -3,8 +3,8 @@ import {
   HedronEngine,
   InputOptionNodesConfig,
   IPlugin,
-  getOptionNodesFromIds,
   NodeValue,
+  handleEachInput,
 } from '@hedron/engine'
 import { MidiManager, MidiMessageType } from '@hedron/midi-manager'
 
@@ -54,71 +54,73 @@ export class MidiInput implements IPlugin {
 
     this.midiManager.onMidiMessage.add((event) => {
       const storeState = store.getState()
-      const inputs = Object.values(storeState.inputs)
 
       // TODO: Filter out clock
 
-      // TODO: Not very performant, we might want to cache inputs somehow
-      inputs.forEach((input) => {
-        if (input.type !== 'midi') return
+      handleEachInput<typeof this.optionNodesConfig>(
+        storeState,
+        'midi',
+        ({ input, optionNodes: opts, targetNode, targetNodeValue }) => {
+          if (input.type !== 'midi') return
 
-        const options = getOptionNodesFromIds<typeof this.optionNodesConfig>(
-          storeState,
-          input.optionNodeIds,
-        )
+          if (
+            event.channel === opts.channel &&
+            event.note === opts.note &&
+            event.type === opts.type &&
+            event.value !== undefined
+          ) {
+            const sliderMin =
+              (storeState.nodeValues[`${input.targetNodeId}-sliderMin`] as number) ?? 0
+            const sliderMax =
+              (storeState.nodeValues[`${input.targetNodeId}-sliderMax`] as number) ?? 1
 
-        if (
-          event.channel === options.channel &&
-          event.note === options.note &&
-          event.type === options.type &&
-          event.value !== undefined
-        ) {
-          const node = storeState.nodes[input.targetNodeId]
-          const nodeVal = storeState.nodeValues[input.targetNodeId]
+            let value: NodeValue | null = null
 
-          let value: NodeValue | null = null
-
-          switch (node.valueType) {
-            case 'boolean':
-              switch (event.type) {
-                case MidiMessageType.NoteOn:
-                case MidiMessageType.NoteOff:
-                  value = !nodeVal
-                  break
-                default:
-                  value = event.value > 0
-                  break
-              }
-              break
-            case 'enum': {
-              switch (event.type) {
-                case MidiMessageType.NoteOn:
-                case MidiMessageType.NoteOff:
-                  value = getNextEnumValue(input.targetNodeId)(storeState)
-                  break
-                default: {
-                  value =
-                    node.options[Math.floor((event.value / 127) * (node.options.length - 1))].value
-                  break
+            switch (targetNode.valueType) {
+              case 'boolean':
+                switch (event.type) {
+                  case MidiMessageType.NoteOn:
+                  case MidiMessageType.NoteOff:
+                    value = !targetNodeValue
+                    break
+                  default:
+                    value = event.value > 0
+                    break
                 }
+                break
+              case 'enum': {
+                switch (event.type) {
+                  case MidiMessageType.NoteOn:
+                  case MidiMessageType.NoteOff:
+                    value = getNextEnumValue(input.targetNodeId)(storeState)
+                    break
+                  default: {
+                    value =
+                      targetNode.options[
+                        Math.floor((event.value / 127) * (targetNode.options.length - 1))
+                      ].value
+                    break
+                  }
+                }
+                break
               }
-              break
+              case 'number': {
+                value = (event.value / 127) * (sliderMax - sliderMin) + sliderMin
+                break
+              }
             }
-            case 'number':
-              value = event.value / 127
-              break
-          }
 
-          if (value === null) {
-            console.warn(
-              `MIDI Input: Unsupported value type for node ${input.targetNodeId}. Value: ${event.value}, Type: ${node.valueType}`,
-            )
-            return
-          }
+            if (value === null) {
+              console.warn(
+                `MIDI Input: Unsupported value type for node ${input.targetNodeId}. Value: ${event.value}, Type: ${targetNode.valueType}`,
+              )
+              return
+            }
 
-          store.getState().updateNodeValue(input.targetNodeId, value)
-        }
-      })
+            storeState.updateNodeValue(input.targetNodeId, value)
+          }
+        },
+      )
     })
   }
 }
