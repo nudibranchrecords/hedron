@@ -1,4 +1,4 @@
-import { useEngineStore } from '@hooks/store'
+import { useEngineStore } from '@hooks/useStores'
 
 export const useUpdateNodeValue = () => {
   const updateNodeValue = useEngineStore((state) => state.updateNodeValue)

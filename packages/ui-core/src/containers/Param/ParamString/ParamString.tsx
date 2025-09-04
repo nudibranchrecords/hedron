@@ -1,7 +1,7 @@
 import { useRef } from 'react'
 import { useInterval } from 'usehooks-ts'
 import { useOnNodeValueChange } from '@hooks/useOnNodeValueChange'
-import { useEngineStoreWithContext } from '@hooks/store'
+import { useEngineStoreWithContext } from '@hooks/useStores'
 import { TextInput, TextInputHandle } from '@components/TextInput/TextInput'
 
 interface ParamNumberProps {

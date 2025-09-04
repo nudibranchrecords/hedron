@@ -1,6 +1,6 @@
 import { useRef } from 'react'
 import { useOnNodeValueChange } from '@hooks/useOnNodeValueChange'
-import { useEngineStore } from '@hooks/store'
+import { useEngineStore } from '@hooks/useStores'
 import { useSubscribeToNodeValue } from '@hooks/useSubscribeToNodeValue'
 import { OptionNumber } from '@containers/Param/OptionNumber/OptionNumber'
 import { FloatSlider, FloatSliderHandle } from '@components/FloatSlider/FloatSlider'
