@@ -13,8 +13,8 @@ export class Renderer {
   public rendererType: RendererType
   private rendererHeight: number = 0
   private rendererWidth: number = 0
-  private viewerContainer: HTMLDivElement | undefined
-  private outputContainer: HTMLDivElement | undefined | null
+  private viewerContainer: HTMLElement | undefined
+  private outputContainer: HTMLElement | undefined | null
   private previewCanvas: HTMLCanvasElement | undefined
   private outputCanvas: HTMLCanvasElement | undefined
   private canvas: HTMLCanvasElement | undefined
@@ -46,7 +46,7 @@ export class Renderer {
     }
   }
 
-  private setResizeObserver = (el: HTMLDivElement) => {
+  private setResizeObserver = (el: HTMLElement) => {
     const resizeObserver = new ResizeObserver(
       debounce(() => {
         this.setSize()
@@ -56,7 +56,11 @@ export class Renderer {
     resizeObserver.observe(el)
   }
 
-  public createCanvas(containerEl: HTMLDivElement): void {
+  /**
+   * Creates a canvas element for the renderer and attaches it to the specified container.
+   * @param containerEl The HTML element to contain the renderer's canvas.
+   */
+  public createCanvas(containerEl: HTMLElement): void {
     this.canvas = this.renderer.domElement
     containerEl.innerHTML = ''
     containerEl.appendChild(this.canvas)
@@ -132,7 +136,7 @@ export class Renderer {
   }
 
   // Set the output to a second canvas (e.g. a separate window for making full screen)
-  public setOutput(container: HTMLDivElement): void {
+  public setOutput(container: HTMLElement): void {
     this.stopOutput()
     this.outputContainer = container
 

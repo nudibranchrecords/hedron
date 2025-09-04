@@ -136,11 +136,15 @@ export class HedronEngine {
     this.renderer.passesNeedUpdate_webGPU = true
   }
 
-  public createCanvas(containerEl: HTMLDivElement) {
+  /**
+   * Creates a canvas element for the engine and attaches it to the specified container.
+   * @param containerEl The HTML element to contain the engine's canvas.
+   */
+  public createCanvas(containerEl: HTMLElement) {
     return this.renderer.createCanvas(containerEl)
   }
 
-  public setOutput(container: HTMLDivElement) {
+  public setOutput(container: HTMLElement) {
     this.renderer.setOutput(container)
   }
 

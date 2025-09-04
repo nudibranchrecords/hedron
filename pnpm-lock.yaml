@@ -397,6 +397,12 @@ importers:
         specifier: ^8.2.9
         version: 8.6.14(prettier@3.6.2)
 
+  packages/web-example:
+    dependencies:
+      '@hedron/engine':
+        specifier: workspace:^
+        version: link:../engine
+
 packages:
 
   7zip-bin@5.2.0:
