@@ -19,7 +19,7 @@ export default class Solid {
   meshes: Record<GeomName, THREE.Mesh> = {} as Record<GeomName, THREE.Mesh>
   geomNames = Object.keys(geoms) as GeomName[]
   mat = new THREE.MeshBasicMaterial({ wireframe: true })
-  currGeomName = 'cube'
+  currGeomName = null
 
   constructor() {
     for (const geomName of this.geomNames) {

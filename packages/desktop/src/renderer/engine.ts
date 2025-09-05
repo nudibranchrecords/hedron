@@ -13,6 +13,7 @@ export const engine = new HedronEngine({
   onFrameStart: performanceMonitor.begin,
   onFrameEnd: performanceMonitor.end,
   rendererType: import.meta.env.HEDRON_RENDERER_TYPE ?? 'webgl',
+  canvasSizeMode: 'fixedAspectRatio',
   clock,
 })
 

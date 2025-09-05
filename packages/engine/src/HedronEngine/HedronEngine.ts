@@ -1,7 +1,7 @@
 import { Pass } from 'postprocessing'
 import { type Clock } from '@hedron/clock'
 import { listenToStore } from './storeListener'
-import { RendererType, Result } from './types'
+import { CanvasSizeMode, RendererType, Result } from './types'
 import { importSketchModule } from './importSketchModule'
 import { IPlugin } from '@plugins/Plugin'
 import { stripForSave } from '@utils/stripForSave'
@@ -36,6 +36,7 @@ export class HedronEngine {
     onFrameEnd?: () => void
     onError?: SketchInstanceError
     rendererType: RendererType
+    canvasSizeMode: CanvasSizeMode
     clock?: Clock
   }) {
     this.rendererType = params.rendererType
@@ -47,7 +48,10 @@ export class HedronEngine {
     }
 
     this.sketchManager = new SketchManager({ onError: this._onError })
-    this.renderer = new Renderer({ rendererType: this.rendererType })
+    this.renderer = new Renderer({
+      rendererType: this.rendererType,
+      canvasSizeMode: params.canvasSizeMode,
+    })
     this.scene = createDebugScene(this.renderer, this._onError)
 
     this.onFrameStart = params?.onFrameStart

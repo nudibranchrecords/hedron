@@ -9,6 +9,7 @@ const engineData = projectData.engine as unknown as EngineData
 
 const engine = new HedronEngine({
   rendererType: 'webgl',
+  canvasSizeMode: 'fillContainer',
 })
 
 const engineStore = engine.getStore()
