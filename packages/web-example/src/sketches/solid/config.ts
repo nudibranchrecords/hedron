@@ -1,4 +1,6 @@
-export default {
+import { SketchConfigRaw } from '@hedron/engine'
+
+const config: SketchConfigRaw = {
   title: 'Solid',
   description: 'Platonic solids! Rotate, scale, wireframe mode.',
   params: [
@@ -15,29 +17,29 @@ export default {
           key: 'rotSpeedX',
           title: 'Rotation Speed X',
           defaultValue: 0.5,
-          defaultMin: -1,
-          defaultMax: 1,
+          sliderMin: -1,
+          sliderMax: 1,
         },
         {
           key: 'rotSpeedY',
           title: 'Rotation Speed Y',
           defaultValue: 0.5,
-          defaultMin: -1,
-          defaultMax: 1,
+          sliderMin: -1,
+          sliderMax: 1,
         },
         {
           key: 'rotSpeedZ',
           title: 'Rotation Speed Z',
           defaultValue: 0.5,
-          defaultMin: -1,
-          defaultMax: 1,
+          sliderMin: -1,
+          sliderMax: 1,
         },
         {
           key: 'scale',
           title: 'Scale',
           defaultValue: 0.5,
-          defaultMin: 0.00001,
-          defaultMax: 4,
+          sliderMin: 0.00001,
+          sliderMax: 4,
         },
         {
           key: 'geomName',
@@ -88,10 +90,12 @@ export default {
       ],
     },
   ],
-  shots: [
-    {
-      method: 'randomGeom',
-      title: 'Random Geom',
-    },
-  ],
+  // shots: [
+  //   {
+  //     method: 'randomGeom',
+  //     title: 'Random Geom',
+  //   },
+  // ],
 }
+
+export default config
