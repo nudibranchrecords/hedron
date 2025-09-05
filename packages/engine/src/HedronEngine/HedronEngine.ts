@@ -74,7 +74,6 @@ export class HedronEngine {
     const { removeSketchFromScene } = this.sketchManager
 
     const addSketchToScene = (sketchInstanceId: string, moduleId: string) => {
-      console.log('Adding sketch to scene:', sketchInstanceId, moduleId)
       const modules = this.store.getState().sketchModules
       const module = modules[moduleId].module
 
@@ -120,7 +119,6 @@ export class HedronEngine {
   }
 
   public async reimportSketchModuleAndReloadSketches(moduleId: string): Promise<void> {
-    console.log('reimportSketchModuleAndReloadSketches', moduleId)
     const result = await this.importSketchModule(moduleId)
 
     if (!result.success) {
