@@ -1,34 +1,32 @@
-import { EngineData, HedronEngine } from '@hedron/engine'
-import { Clock } from '@hedron/clock'
-import { LFOInput } from '@hedron/lfo-input'
-import projectData from './project.json'
-import '@fontsource/chivo-mono'
-import './style.css'
-import { getSketchModuleItems } from './utils'
+import { engineStore } from './engine'
 
-const engineData = projectData.engine as unknown as EngineData
+const lfoInputEnabledNodeId = '40fed25628e9750c'
+const saturationNodeId = 'bff7540d69fbd802'
+const sphereScaleNodeId = '0434cc9f5cc59b70'
 
-const clock = new Clock()
+const satMinNodeId = `${saturationNodeId}-sliderMin`
+const satMaxNodeId = `${saturationNodeId}-sliderMax`
+const sphereScaleMinNodeId = `${sphereScaleNodeId}-sliderMin`
+const sphereScaleMaxNodeId = `${sphereScaleNodeId}-sliderMax`
 
-clock.start()
+document.addEventListener('click', () => {
+  const state = engineStore.getState()
+  const nodeVal = state.nodeValues[lfoInputEnabledNodeId] as boolean
 
-const engine = new HedronEngine({
-  rendererType: 'webgl',
-  canvasSizeMode: 'fillContainer',
-  clock,
+  state.updateNodeValue(lfoInputEnabledNodeId, !nodeVal)
 })
 
-engine.registerPlugin(new LFOInput(engine))
+document.addEventListener('mousemove', (e) => {
+  const state = engineStore.getState()
+  const satMin = state.nodeValues[satMinNodeId] as number
+  const satMax = state.nodeValues[satMaxNodeId] as number
+  const saturation = (e.clientX / window.innerWidth) * (satMax - satMin) + satMin
 
-const engineStore = engine.getStore()
-const { setSketchModuleItem, loadProject } = engineStore.getState()
+  const sphereScaleMin = state.nodeValues[sphereScaleMinNodeId] as number
+  const sphereScaleMax = state.nodeValues[sphereScaleMaxNodeId] as number
+  const sphereScale =
+    (e.clientY / window.innerHeight) * (sphereScaleMax - sphereScaleMin) + sphereScaleMin
 
-engine.createCanvas(document.getElementById('root') as HTMLElement)
-
-const sketchModules = getSketchModuleItems()
-
-sketchModules.forEach(setSketchModuleItem)
-
-engine.startStoreListener()
-engine.run()
-loadProject(engineData)
+  state.updateNodeValue(sphereScaleNodeId, sphereScale)
+  state.updateNodeValue(saturationNodeId, saturation)
+})
