@@ -4,7 +4,7 @@ import { Pass, ShaderPass } from 'postprocessing'
 import fragmentShader from './hsl.glsl?raw'
 
 /**
- * A basic post proicessing effect to adjust the hue, saturation, and lightness of the scene.
+ * A basic post processing effect to adjust the hue, saturation, and lightness of the scene.
  * While this could be created with existing postprocessing passes, this example demonstrates how to create a custom effect.
  */
 export default class HSL {
