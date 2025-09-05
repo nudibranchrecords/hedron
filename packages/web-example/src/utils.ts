@@ -2,6 +2,7 @@ import { processConfig } from '@hedron/engine'
 
 // TODO: This file should be exported as a helper package somewhere (vite plugin?)
 
+// This is a special vite syntax that allows us to statically import multiple files based on a glob pattern
 const sketchModules = import.meta.glob('./sketches/*/index.ts', { eager: true })
 const sketchConfigs = import.meta.glob('./sketches/*/config.ts', { eager: true })
 

@@ -6,6 +6,7 @@ import '@fontsource/chivo-mono'
 import './style.css'
 import { getSketchModuleItems } from './utils'
 
+// Imported from the Hedron project save file (JSON)
 const engineData = projectData.engine as unknown as EngineData
 
 // Because the project uses LFOs, we need a clock
