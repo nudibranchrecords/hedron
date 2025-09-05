@@ -1,9 +1,8 @@
-import { EngineData, HedronEngine, processConfig } from '@hedron/engine'
-import module from './sketches/solid'
-import config from './sketches/solid/config'
+import { EngineData, HedronEngine } from '@hedron/engine'
 import projectData from './project.json'
-
+import '@fontsource/chivo-mono'
 import './style.css'
+import { getSketchModuleItems } from './utils'
 
 const engineData = projectData.engine as unknown as EngineData
 
@@ -17,13 +16,10 @@ const { setSketchModuleItem, loadProject } = engineStore.getState()
 
 engine.createCanvas(document.getElementById('root') as HTMLElement)
 
-const moduleItem = {
-  moduleId: 'solid',
-  config: processConfig(config, { fallBackTitle: 'Solid' }),
-  module,
-}
+const sketchModules = getSketchModuleItems()
 
-setSketchModuleItem(moduleItem)
-engine.initiateSketchModules()
+sketchModules.forEach(setSketchModuleItem)
+
+engine.startStoreListener()
 engine.run()
 loadProject(engineData)

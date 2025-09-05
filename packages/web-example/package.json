@@ -7,6 +7,7 @@
     "lint": "eslint . --ext .js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix"
   },
   "dependencies": {
+    "@fontsource/chivo-mono": "^5.2.6",
     "@hedron/engine": "workspace:^"
   }
 }

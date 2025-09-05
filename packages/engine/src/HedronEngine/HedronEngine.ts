@@ -74,20 +74,27 @@ export class HedronEngine {
    * Sets up listeners to the engine store to handle adding/removing sketches from the scene.
    * Should be called after setting sketch modules (e.g. importSketchModulesFromIds or manually with setSketchModuleItem)
    */
-  public initiateSketchModules() {
+  public startStoreListener() {
     const { removeSketchFromScene } = this.sketchManager
 
     const addSketchToScene = (sketchInstanceId: string, moduleId: string) => {
-      const modules = this.store.getState().sketchModules
-      const module = modules[moduleId].module
+      try {
+        const modules = this.store.getState().sketchModules
+        const module = modules[moduleId].module
 
-      const sketchInstance = this.sketchManager.addSketchToScene(sketchInstanceId, module)
+        const sketchInstance = this.sketchManager.addSketchToScene(sketchInstanceId, module)
 
-      if (sketchInstance) {
-        this.setIsSketchBroken(sketchInstance.id, false)
+        if (sketchInstance) {
+          this.setIsSketchBroken(sketchInstance.id, false)
+        }
+
+        this.renderer.passesNeedUpdate_webGPU = true
+      } catch {
+        console.error(
+          `Failed to add sketch ${sketchInstanceId} of module ${moduleId} to scene. Is the module in your sketch folder? Web projects: Have you imported the module?`,
+        )
+        this.setIsSketchBroken(sketchInstanceId, true)
       }
-
-      this.renderer.passesNeedUpdate_webGPU = true
     }
 
     listenToStore(this.store, addSketchToScene, removeSketchFromScene)
