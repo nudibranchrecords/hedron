@@ -50,6 +50,7 @@ export class SketchesServer extends EventEmitter {
         `${entryBase}/**/config.ts`,
       ],
       outdir,
+      outbase: entryBase,
       loader: {
         // https://esbuild.github.io/content-types/
         // file: loaded into sketch as path
