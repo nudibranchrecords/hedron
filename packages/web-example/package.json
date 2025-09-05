@@ -8,6 +8,10 @@
   },
   "dependencies": {
     "@fontsource/chivo-mono": "^5.2.6",
-    "@hedron/engine": "workspace:^"
+    "@hedron/clock": "workspace:^",
+    "@hedron/engine": "workspace:^",
+    "@hedron/lfo-input": "workspace:^",
+    "three": "^0.178.0",
+    "three-stdlib": "^2.36.0"
   }
 }

@@ -399,15 +399,24 @@ importers:
 
   packages/web-example:
     dependencies:
-      '@fontsource-variable/chivo-mono':
-        specifier: ^5.2.6
-        version: 5.2.6
       '@fontsource/chivo-mono':
         specifier: ^5.2.6
         version: 5.2.6
+      '@hedron/clock':
+        specifier: workspace:^
+        version: link:../clock
       '@hedron/engine':
         specifier: workspace:^
         version: link:../engine
+      '@hedron/lfo-input':
+        specifier: workspace:^
+        version: link:../lfo-input
+      three:
+        specifier: ^0.178.0
+        version: 0.178.0
+      three-stdlib:
+        specifier: ^2.36.0
+        version: 2.36.0(three@0.178.0)
 
 packages:
 
@@ -1134,9 +1143,6 @@ packages:
 
   '@floating-ui/utils@0.2.10':
     resolution: {integrity: sha512-aGTxbpbg8/b5JfU1HXSrbH3wXZuLPJcNEcZQFMxLs3oSzgtVu6nFPkbbGGUvBcUjKV2YyB9Wxxabo+HEH9tcRQ==}
-
-  '@fontsource-variable/chivo-mono@5.2.6':
-    resolution: {integrity: sha512-lVhz41iZ3NonIQRLRdoGdgMZO+f3d0V5cjDxJeliGLNLfw26/r8FCQ8KghlMBwo8BPSfSWe6dt/Dxe+6d0UmYA==}
 
   '@fontsource/chivo-mono@5.2.6':
     resolution: {integrity: sha512-fs0bzPlzpatWrnEtEbXt49p5Jvb1SO6JMz+om8C6ImYLA7QUe4iF8Yt3cVWB4yNNIHPj9h3ylql05gXOScyiJw==}
@@ -6912,8 +6918,6 @@ snapshots:
       react-dom: 18.3.1(react@18.3.1)
 
   '@floating-ui/utils@0.2.10': {}
-
-  '@fontsource-variable/chivo-mono@5.2.6': {}
 
   '@fontsource/chivo-mono@5.2.6': {}
 
