@@ -12,7 +12,8 @@ import {
 const startEngineWithSketchesDir = async (sketchesDirPath: string) => {
   const { moduleIds, url } = await startSketchesServer(sketchesDirPath)
 
-  await engine.initiateSketchModules(url, moduleIds)
+  await engine.importSketchModulesFromIds(url, moduleIds)
+  engine.initiateSketchModules()
 
   engine.run()
 }

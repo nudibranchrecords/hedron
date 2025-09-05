@@ -207,7 +207,6 @@ export interface EngineData {
 
 interface AuxState {
   sketchModules: SketchModules
-  isSketchModulesReady: boolean
 }
 
 export type EngineState = EngineData & AuxState

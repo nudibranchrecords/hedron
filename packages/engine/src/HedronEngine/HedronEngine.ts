@@ -66,16 +66,15 @@ export class HedronEngine {
     this.plugins[plugin.id] = plugin
   }
 
-  public async initiateSketchModules(sketchesUrl: string, moduleIds: string[]) {
-    this.sketchesUrl = sketchesUrl
-
-    for (const moduleId of moduleIds) {
-      await this.addSketchModule(moduleId)
-    }
-
+  /**
+   * Sets up listeners to the engine store to handle adding/removing sketches from the scene.
+   * Should be called after setting sketch modules (e.g. importSketchModulesFromIds or manually with setSketchModuleItem)
+   */
+  public initiateSketchModules() {
     const { removeSketchFromScene } = this.sketchManager
 
     const addSketchToScene = (sketchInstanceId: string, moduleId: string) => {
+      console.log('Adding sketch to scene:', sketchInstanceId, moduleId)
       const modules = this.store.getState().sketchModules
       const module = modules[moduleId].module
 
@@ -91,7 +90,15 @@ export class HedronEngine {
     listenToStore(this.store, addSketchToScene, removeSketchFromScene)
   }
 
-  public async addSketchModule(moduleId: string): Promise<Result<SketchModuleItem>> {
+  public async importSketchModulesFromIds(sketchesUrl: string, moduleIds: string[]) {
+    this.sketchesUrl = sketchesUrl
+
+    for (const moduleId of moduleIds) {
+      await this.importSketchModule(moduleId)
+    }
+  }
+
+  public async importSketchModule(moduleId: string): Promise<Result<SketchModuleItem>> {
     if (!this.sketchesUrl) throw new Error('Sketches URL not ready')
 
     const result = await importSketchModule(this.sketchesUrl, moduleId)
@@ -113,7 +120,8 @@ export class HedronEngine {
   }
 
   public async reimportSketchModuleAndReloadSketches(moduleId: string): Promise<void> {
-    const result = await this.addSketchModule(moduleId)
+    console.log('reimportSketchModuleAndReloadSketches', moduleId)
+    const result = await this.importSketchModule(moduleId)
 
     if (!result.success) {
       return
