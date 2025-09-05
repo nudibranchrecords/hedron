@@ -50,6 +50,7 @@ export class SketchesServer extends EventEmitter {
         `${entryBase}/**/config.ts`,
       ],
       outdir,
+      // `outbase` is needed to preserve sketches folder structure in the outdir
       outbase: entryBase,
       loader: {
         // https://esbuild.github.io/content-types/
