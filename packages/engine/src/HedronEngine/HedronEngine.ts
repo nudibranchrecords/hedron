@@ -3,6 +3,7 @@ import { type Clock } from '@hedron/clock'
 import { listenToStore } from './storeListener'
 import { CanvasSizeMode, RendererType, Result } from './types'
 import { importSketchModule } from './importSketchModule'
+import { initializeGlobalVars } from '@globalVars'
 import { IPlugin } from '@plugins/Plugin'
 import { stripForSave } from '@utils/stripForSave'
 import { Renderer } from '@world/Renderer'
@@ -39,6 +40,9 @@ export class HedronEngine {
     canvasSizeMode: CanvasSizeMode
     clock?: Clock
   }) {
+    // Initialize global variables for sketches
+    initializeGlobalVars()
+
     this.rendererType = params.rendererType
     this.store = createEngineStore()
 
