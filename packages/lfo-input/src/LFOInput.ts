@@ -122,7 +122,7 @@ export class LFOInput implements IPlugin {
         const storeState = store.getState()
         handleEachInput<typeof this.optionNodesConfig>(
           storeState,
-          'lfo',
+          this.inputType,
           ({ input, optionNodes: opts, targetNode }) => {
             // TODO: This can be handled by `onInput` once we have `isEnabled` as a generic option
             if (!opts.isEnabled) return
