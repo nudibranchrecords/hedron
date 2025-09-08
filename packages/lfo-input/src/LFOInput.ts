@@ -127,7 +127,7 @@ export class LFOInput implements IPlugin {
             // TODO: This can be handled by `onInput` once we have `isEnabled` as a generic option
             if (!opts.isEnabled) return
 
-            const delta = clock.beatDelta * opts.frequency * TAU + opts.phase
+            const delta = (clock.beatDelta * opts.frequency + opts.phase) * TAU
 
             let value: NodeValue | null = null
 
