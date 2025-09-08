@@ -1,16 +1,10 @@
 import { HedronEngine, Input } from '@hedron/engine'
-import { ControlGrid, Param, useEngineStore } from '@hedron/ui-core'
+import { ControlGrid, Param } from '@hedron/ui-core'
 
 interface IProps {
   input: Input
   // TODO: This can be typed as something like HedronEngineWithPlugin<MidiInput>
   engine: HedronEngine
-}
-
-const Item = ({ nodeId }: { nodeId: string }) => {
-  const param = useEngineStore((state) => state.nodes[nodeId])
-
-  return <Param param={param} />
 }
 
 /**
@@ -21,7 +15,7 @@ export const LFOInputPanel = ({ input }: IProps) => {
     <div>
       <ControlGrid className="mb-xl">
         {input.optionNodeIds.map((id) => (
-          <Item key={id} nodeId={id} />
+          <Param key={id} paramId={id} />
         ))}
       </ControlGrid>
     </div>

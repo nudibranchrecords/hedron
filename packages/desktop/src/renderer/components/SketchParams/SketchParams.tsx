@@ -1,5 +1,4 @@
 import { ControlGrid, Collapsible, Param, useOnSelectNode } from '@hedron/ui-core'
-import { Param as ParamType } from '@hedron/engine'
 import c from './SketchParams.module.css'
 import { useActiveSketchParams } from '@components/hooks/useActiveSketchParams'
 
@@ -9,11 +8,11 @@ interface SketchParamsProps {
   sketchId: string
 }
 
-const ParamItem = ({ param, sketchId }: { param: ParamType; sketchId: string }) => {
-  const isActive = useAppStore((state) => state.selectedNodes[sketchId] === param.id)
-  const onSelectNode = useOnSelectNode(sketchId, param.id)
+const ParamItem = ({ paramId, sketchId }: { paramId: string; sketchId: string }) => {
+  const isActive = useAppStore((state) => state.selectedNodes[sketchId] === paramId)
+  const onSelectNode = useOnSelectNode(sketchId, paramId)
 
-  return <Param key={param.key} onClick={onSelectNode} param={param} isActive={isActive} />
+  return <Param onClick={onSelectNode} paramId={paramId} isActive={isActive} />
 }
 
 export const SketchParams = ({ sketchId }: SketchParamsProps) => {
@@ -31,8 +30,8 @@ export const SketchParams = ({ sketchId }: SketchParamsProps) => {
         const grid = (
           <ControlGrid>
             {params.map((param) => (
-              /* unique is important here! otherwise can get cross talk between params with the same key in different sketches */
-              <ParamItem key={`${param.key}${sketchId}`} param={param} sketchId={sketchId} />
+              /* unique key is important here! otherwise can get cross talk between params with the same key in different sketches */
+              <ParamItem key={`${param.key}${sketchId}`} paramId={param.id} sketchId={sketchId} />
             ))}
           </ControlGrid>
         )
