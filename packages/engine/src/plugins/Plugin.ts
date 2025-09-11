@@ -38,7 +38,7 @@ export interface IPlugin {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-type ConfigToOptionsType<T extends readonly any[]> = {
+export type ConfigToOptionsType<T extends readonly any[]> = {
   [K in T[number] as K['key']]: K['valueType'] extends 'enum'
     ? // eslint-disable-next-line @typescript-eslint/no-explicit-any
       K['options'] extends readonly any[]

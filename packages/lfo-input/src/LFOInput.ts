@@ -1,14 +1,26 @@
 import {
+  ConfigToOptionsType,
+  EngineState,
   getNextEnumValue,
   handleEachInput,
   HedronEngine,
+  Input,
   InputOptionNodesConfig,
   IPlugin,
+  Node,
   NodeValue,
 } from '@hedron/engine'
 
 const TAU = Math.PI * 2
 const lerp = (v0: number, v1: number, t: number) => (1 - t) * v0 + t * v1
+
+type ValueHander = (params: {
+  delta: number
+  input: Input
+  storeState: EngineState
+  optionNodes: ConfigToOptionsType<typeof LFOInput.prototype.optionNodesConfig>
+  targetNode: Node
+}) => NodeValue | null
 
 export class LFOInput implements IPlugin {
   public readonly id = 'lfo-input'
@@ -108,6 +120,42 @@ export class LFOInput implements IPlugin {
 
   private inputLatches: Record<string, boolean> = {}
 
+  private handleEnum: ValueHander = ({ delta, input, storeState }) => {
+    if (Math.sin(delta) > 0) {
+      if (this.inputLatches[input.id]) {
+        return null
+      }
+
+      this.inputLatches[input.id] = true
+      return getNextEnumValue(input.targetNodeId)(storeState)
+    } else {
+      this.inputLatches[input.id] = false
+      return null
+    }
+  }
+
+  private handleBoolean: ValueHander = ({ delta }) => {
+    return Math.sin(delta) > 0
+  }
+
+  private handleNumber: ValueHander = ({ delta, optionNodes: opts }) => {
+    return {
+      sine: () => lerp(opts.min, opts.max, (Math.sin(delta) + 1) / 2) * opts.amplitude,
+      square: () => lerp(opts.min, opts.max, (Math.sign(Math.sin(delta)) + 1) / 2) * opts.amplitude,
+      sawtooth: () => lerp(opts.min, opts.max, (delta % TAU) / TAU) * opts.amplitude,
+      triangle: () =>
+        lerp(opts.min, opts.max, 1 - Math.abs(((delta % TAU) / TAU) * 2 - 1)) * opts.amplitude,
+    }[opts.waveType]()
+  }
+
+  private handleUnsupported: ValueHander = ({ input, targetNode }) => {
+    console.warn(
+      `LFO Input: Unsupported value type for node ${input.targetNodeId}. Type: ${targetNode.valueType}`,
+    )
+
+    return null
+  }
+
   constructor(engine: HedronEngine) {
     const clock = engine.clock
 
@@ -123,56 +171,28 @@ export class LFOInput implements IPlugin {
         handleEachInput<typeof this.optionNodesConfig>(
           storeState,
           this.inputType,
-          ({ input, optionNodes: opts, targetNode }) => {
+          ({ input, optionNodes, targetNode }) => {
             // TODO: This can be handled by `onInput` once we have `isEnabled` as a generic option
-            if (!opts.isEnabled) return
+            if (!optionNodes.isEnabled) return
 
-            const delta = (clock.beatDelta * opts.frequency + opts.phase) * TAU
+            const delta = (clock.beatDelta * optionNodes.frequency + optionNodes.phase) * TAU
 
-            let value: NodeValue | null = null
-
-            switch (targetNode.valueType) {
-              case 'enum':
-                if (Math.sin(delta) > 0) {
-                  if (this.inputLatches[input.id]) {
-                    return
-                  }
-                  value = getNextEnumValue(input.targetNodeId)(storeState)
-                  this.inputLatches[input.id] = true
-                } else {
-                  this.inputLatches[input.id] = false
-                  return
-                }
-
-                break
-              case 'boolean':
-                value = Math.sin(delta) > 0
-                break
-              case 'number':
-                switch (opts.waveType) {
-                  case 'sine':
-                    value = lerp(opts.min, opts.max, (Math.sin(delta) + 1) / 2) * opts.amplitude
-                    break
-                  case 'square':
-                    value =
-                      lerp(opts.min, opts.max, (Math.sign(Math.sin(delta)) + 1) / 2) *
-                      opts.amplitude
-                    break
-                  case 'sawtooth':
-                    value = lerp(opts.min, opts.max, (delta % TAU) / TAU) * opts.amplitude
-                    break
-                  case 'triangle':
-                    value =
-                      lerp(opts.min, opts.max, 1 - Math.abs(((delta % TAU) / TAU) * 2 - 1)) *
-                      opts.amplitude
-                    break
-                }
-            }
+            const value = {
+              enum: this.handleEnum,
+              boolean: this.handleBoolean,
+              number: this.handleNumber,
+              string: this.handleUnsupported,
+              rgb: this.handleUnsupported,
+              vector3: this.handleUnsupported,
+            }[targetNode.valueType]({
+              delta,
+              input,
+              storeState,
+              optionNodes,
+              targetNode,
+            })
 
             if (value === null) {
-              console.warn(
-                `LFO Input: Unsupported value type for node ${input.targetNodeId}. Type: ${targetNode.valueType}`,
-              )
               return
             }
 
