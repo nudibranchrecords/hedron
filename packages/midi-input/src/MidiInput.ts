@@ -135,10 +135,11 @@ export class MidiInput implements IPlugin {
               rgb: this.handleUnsupported,
               vector3: this.handleUnsupported,
             }[targetNode.valueType]({
-              midiEvent: event,
+              midiEvent: event as MIDIEventWithValue,
               input,
               storeState,
               optionNodes,
+              // @ts-expect-error -- TS isn't smart enough to infer the correct node type
               targetNode,
               targetNodeValue,
             })
