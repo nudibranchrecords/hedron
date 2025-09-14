@@ -1,8 +1,8 @@
-import { useStore } from 'zustand'
-import { HedronEngine, EngineStateWithActions } from '@hedron/engine'
+import { HedronEngine } from '@hedron/engine'
 import Stats from 'three/examples/jsm/libs/stats.module.js'
 import { Clock } from '@hedron/clock'
 import { MidiInput, MidiInputPanel } from '@hedron/midi-input'
+import { LFOInput, LFOInputPanel } from '@hedron/lfo-input'
 
 export const performanceMonitor = new Stats()
 
@@ -13,17 +13,17 @@ export const engine = new HedronEngine({
   onFrameStart: performanceMonitor.begin,
   onFrameEnd: performanceMonitor.end,
   rendererType: import.meta.env.HEDRON_RENDERER_TYPE ?? 'webgl',
+  clock,
 })
 
 export const engineStore = engine.getStore()
 
-export const useEngineStore = <T>(selector?: (state: EngineStateWithActions) => T) => {
-  return useStore(engineStore, selector!)
-}
 engine.registerPlugin(new MidiInput(engine))
+engine.registerPlugin(new LFOInput(engine))
 
 export const pluginViews = {
   inputPanel: {
     midi: MidiInputPanel,
+    lfo: LFOInputPanel,
   },
 }

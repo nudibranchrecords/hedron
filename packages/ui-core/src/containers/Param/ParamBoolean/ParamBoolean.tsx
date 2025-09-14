@@ -1,8 +1,7 @@
 import { useRef } from 'react'
-import { BooleanToggle } from '@hedron/ui-core'
-import type { BooleanToggleHandle } from '@hedron/ui-core'
-import { useOnNodeValueChange } from '@components/hooks/useOnNodeValueChange'
-import { useSubscribeToNodeValue } from '@components/hooks/useSubscribeToNodeValue'
+import { useOnNodeValueChange } from '@hooks/useOnNodeValueChange'
+import { useSubscribeToNodeValue } from '@hooks/useSubscribeToNodeValue'
+import { BooleanToggle, BooleanToggleHandle } from '@components/BooleanToggle/BooleanToggle'
 
 interface ParamNumberProps {
   id: string

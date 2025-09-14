@@ -12,18 +12,27 @@
   },
   "exports": {
     ".": {
-      "import": "./dist/ui-core.es.js"
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/ui-core.es.js"
+      },
+      "require": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/ui-core.cjs.js"
+      }
     },
     "./base.css": "./dist/base.css",
     "./icons.css": "./dist/icons.css",
     "./fonts.css": "./dist/fonts.css",
     "./modules.css": "./dist/index.css"
   },
-  "main": "./dist/ui-core.es.js",
+  "main": "./dist/ui-core.cjs.js",
+  "module": "./dist/ui-core.es.js",
   "types": "./dist/index.d.ts",
   "scripts": {
     "dev": "vite build --watch",
     "build": "vite build",
+    "typecheck": "tsc --noEmit -p tsconfig.json",
     "lint": "eslint . --ext .js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build"
@@ -33,16 +42,18 @@
   },
   "dependencies": {
     "@floating-ui/react-dom": "^2.1.2",
+    "@hedron/app-store": "workspace:^",
     "@uiw/react-color": "^2.3.4",
     "material-symbols": "^0.23.0",
-    "usehooks-ts": "^3.1.0"
+    "usehooks-ts": "^3.1.0",
+    "zustand": "^5.0.8"
   },
   "devDependencies": {
     "@chromatic-com/storybook": "^1.8.0",
+    "@hedron/engine": "workspace:^",
     "@storybook/addon-essentials": "^8.2.9",
     "@storybook/addon-interactions": "^8.2.9",
     "@storybook/addon-links": "^8.2.9",
-    "@storybook/addon-onboarding": "^8.2.9",
     "@storybook/blocks": "^8.2.9",
     "@storybook/react": "^8.2.9",
     "@storybook/react-vite": "^8.2.9",

@@ -1,11 +1,16 @@
-import { Icon, MiniTabs, MiniTabsItem, PopoutMenu } from '@hedron/ui-core'
+import {
+  Icon,
+  MiniTabs,
+  MiniTabsItem,
+  PopoutMenu,
+  useEngineStore,
+  useAppStore,
+  ParamNumberOptions,
+} from '@hedron/ui-core'
 import { useMemo } from 'react'
-import { NodeTypes } from '@hedron/engine'
 import { useSelectedParam } from '@components/hooks/useSelectedParam'
-import { pluginViews, useEngineStore, engine } from '@renderer/engine'
-import { useAppStore } from '@renderer/appStore'
+import { pluginViews, engine } from '@renderer/engine'
 import { useInputsWithNode } from '@components/hooks/useInput'
-import { ParamNumberOptions } from '@components/ParamNumber/ParamNumber'
 
 export const SelectedParam = () => {
   const selectedParam = useSelectedParam()
@@ -42,10 +47,9 @@ export const SelectedParam = () => {
             type: plugin.inputType,
             targetNodeId: selectedParam.id,
             title: `${plugin.inputType} ${numAlready + 1}`,
-            options: plugin.generateInitialOptions(),
           }
 
-          const id = addInput(input)
+          const id = addInput(input, plugin.optionNodesConfig)
           setSelectedInputId(selectedParam.id, id)
         },
       })),
@@ -77,7 +81,7 @@ export const SelectedParam = () => {
         <h3>Param Options: {selectedParam.valueType}</h3>
         {(() => {
           switch (selectedParam.valueType) {
-            case NodeTypes.Number:
+            case 'number':
               return <ParamNumberOptions id={selectedParam.id} />
             default:
               return <i>No options yet for {selectedParam.valueType}</i>

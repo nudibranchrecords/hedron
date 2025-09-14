@@ -1,18 +1,17 @@
 import { forwardRef, useCallback, useImperativeHandle, useRef } from 'react'
+import { NodeEnumValue } from '@hedron/engine'
 import c from './EnumDropdown.module.css'
 
 export type EnumDropdownHandle = {
   setValue: (value: string) => void
 }
 
-export type EnumValue = string | number
-
-type EnumOption = { value: EnumValue; label: string }
+type EnumOption = { value: NodeEnumValue; label: string }
 
 interface EnumDropdownProps {
   values: EnumOption[]
-  value?: EnumValue
-  onValueChange: (val: EnumValue) => void
+  value?: NodeEnumValue
+  onValueChange: (val: NodeEnumValue) => void
 }
 
 export const EnumDropdown = forwardRef<EnumDropdownHandle, EnumDropdownProps>(function EnumDropdown(

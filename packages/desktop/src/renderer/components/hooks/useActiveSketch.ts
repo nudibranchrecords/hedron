@@ -1,4 +1,4 @@
-import { useEngineStore } from '@renderer/engine'
+import { useEngineStore } from '@hedron/ui-core'
 import { useAppStore } from '@renderer/appStore'
 
 export const useActiveSketch = () => {

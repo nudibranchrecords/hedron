@@ -1,16 +1,15 @@
-import { getParamConfig } from '@store/selectors/getParamConfig'
-import { EngineState, SketchConfigParamEnum } from '@store/types'
+import { EngineState, NodeEnumValue, NodeParamEnum } from '@store/types'
 
 export const getNextEnumValue = (targetNodeId: string) => (state: EngineState) => {
   const paramVal = state.nodeValues[targetNodeId]
-  const paramConfig = getParamConfig(targetNodeId)(state) as SketchConfigParamEnum | null
+  const param = state.nodes[targetNodeId] as NodeParamEnum | undefined
 
-  if (!paramConfig) {
-    console.warn(`No param config found for node ${targetNodeId}`)
+  if (!param) {
+    console.warn(`No param found for node ${targetNodeId}`)
     return paramVal
   }
 
-  const options = paramConfig.options as { value: string | number }[]
+  const options = param.options as { value: NodeEnumValue }[]
   const currentIndex = options.findIndex((option) => option.value === paramVal)
 
   if (currentIndex === -1) {

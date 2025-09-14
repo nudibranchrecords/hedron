@@ -1,10 +1,9 @@
-import { getParamWithInfo, ParamWithInfo } from '@hedron/engine'
-import { useShallow } from 'zustand/react/shallow'
+import { Param } from '@hedron/engine'
+import { useEngineStore } from '@hedron/ui-core'
 import { useAppStore } from '@renderer/appStore'
 import { useActiveSketch } from '@components/hooks/useActiveSketch'
-import { useEngineStore } from '@renderer/engine'
 
-export const useSelectedParam = (): ParamWithInfo | null => {
+export const useSelectedParam = (): Param | null => {
   const activeSketch = useActiveSketch()
 
   if (!activeSketch) {
@@ -12,5 +11,5 @@ export const useSelectedParam = (): ParamWithInfo | null => {
   }
 
   const selectedNodeId = useAppStore((state) => state.selectedNodes[activeSketch.id])
-  return useEngineStore(useShallow(getParamWithInfo(selectedNodeId)))
+  return useEngineStore((state) => state.nodes[selectedNodeId])
 }

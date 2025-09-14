@@ -1,5 +1,5 @@
 import { addNode } from '@store/shared/addNode'
-import { hasChildNodes, SetterCreator } from '@store/types'
+import { hasChildNodes, Param, SetterCreator } from '@store/types'
 import { createUniqueId } from '@utils/createUniqueId'
 
 export const createUpdateSketchParams: SetterCreator<'updateSketchParams'> =
@@ -26,7 +26,13 @@ export const createUpdateSketchParams: SetterCreator<'updateSketchParams'> =
         // If no existing node, create a new one.
         if (!paramId) {
           paramId = createUniqueId()
-          addNode(state, paramId, sketchId, paramConfig)
+          addNode(state, paramId, paramConfig)
+        } else if (state.nodes[paramId]) {
+          // Update the existing node with any changes from the config.
+          state.nodes[paramId] = {
+            ...state.nodes[paramId],
+            ...paramConfig,
+          } as Param
         }
 
         // Add this paramId to the new list.

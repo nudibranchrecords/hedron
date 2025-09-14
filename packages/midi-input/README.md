@@ -1,11 +1,3 @@
 # `midi-input`
 
-> TODO: description
-
-## Usage
-
-```
-const midiInput = require('midi-input');
-
-// TODO: DEMONSTRATE API
-```
+Hedron plugin that adds MIDI inputs to the app

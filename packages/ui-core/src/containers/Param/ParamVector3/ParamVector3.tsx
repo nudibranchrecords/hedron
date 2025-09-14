@@ -1,11 +1,10 @@
 import { useRef } from 'react'
 import { NodeParamVector3 } from '@hedron/engine'
-import { FloatSlider } from '@hedron/ui-core'
-import type { FloatSliderHandle } from '@hedron/ui-core'
 import c from './ParamVector3.module.css'
-import { useOnNodeValueChange } from '@components/hooks/useOnNodeValueChange'
-import { useEngineStore } from '@renderer/engine'
-import { useSubscribeToNodeValue } from '@components/hooks/useSubscribeToNodeValue'
+import { FloatSlider, FloatSliderHandle } from '@components/FloatSlider/FloatSlider'
+import { useOnNodeValueChange } from '@hooks/useOnNodeValueChange'
+import { useSubscribeToNodeValue } from '@hooks/useSubscribeToNodeValue'
+import { useEngineStore } from '@hooks/storeHooks'
 
 interface ParamVector3Props {
   id: string

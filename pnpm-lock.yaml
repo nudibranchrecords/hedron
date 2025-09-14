@@ -84,6 +84,31 @@ importers:
         specifier: ^5.1.4
         version: 5.1.4(typescript@5.8.2)(vite@7.1.2(@types/node@24.3.0)(yaml@2.8.1))
 
+  packages/app-store:
+    dependencies:
+      '@hedron/engine':
+        specifier: workspace:^
+        version: link:../engine
+      '@redux-devtools/extension':
+        specifier: ^3.3.0
+        version: 3.3.0(redux@5.0.1)
+      immer:
+        specifier: ^10.1.1
+        version: 10.1.1
+      zustand:
+        specifier: ^4.5.7
+        version: 4.5.7(@types/react@18.3.23)(immer@10.1.1)(react@19.1.1)
+    devDependencies:
+      '@types/node':
+        specifier: ^24.3.0
+        version: 24.3.0
+      tsup:
+        specifier: ^8.0.0
+        version: 8.5.0(@microsoft/api-extractor@7.52.10(@types/node@24.3.0))(postcss@8.5.6)(typescript@5.9.2)(yaml@2.8.1)
+      typescript:
+        specifier: ^5.0.0
+        version: 5.9.2
+
   packages/clock: {}
 
   packages/clock-test-app:
@@ -118,21 +143,24 @@ importers:
       '@esbuild/win32-x64':
         specifier: ^0.23.1
         version: 0.23.1
+      '@hedron/app-store':
+        specifier: workspace:^
+        version: link:../app-store
       '@hedron/clock':
         specifier: workspace:^
         version: link:../clock
       '@hedron/engine':
         specifier: workspace:^
         version: link:../engine
+      '@hedron/lfo-input':
+        specifier: workspace:^
+        version: link:../lfo-input
       '@hedron/midi-input':
         specifier: workspace:^
         version: link:../midi-input
       '@hedron/ui-core':
         specifier: workspace:^
         version: link:../ui-core
-      '@redux-devtools/extension':
-        specifier: ^3.3.0
-        version: 3.3.0(redux@5.0.1)
       '@tomjs/electron-devtools-installer':
         specifier: ^2.4.0
         version: 2.4.0(electron@37.3.0)
@@ -154,9 +182,6 @@ importers:
       get-port-please:
         specifier: ^3.2.0
         version: 3.2.0
-      immer:
-        specifier: ^10.1.1
-        version: 10.1.1
       lodash.debounce:
         specifier: ^4.0.8
         version: 4.0.8
@@ -206,6 +231,9 @@ importers:
 
   packages/engine:
     dependencies:
+      '@types/react':
+        specifier: '>=18.0.0'
+        version: 18.3.23
       immer:
         specifier: ^10.1.1
         version: 10.1.1
@@ -215,6 +243,9 @@ importers:
       postprocessing:
         specifier: '*'
         version: 6.37.7(three@0.178.0)
+      react:
+        specifier: '>=18.0.0'
+        version: 18.3.1
       three:
         specifier: ^0.178.0
         version: 0.178.0
@@ -225,6 +256,9 @@ importers:
         specifier: ^5.0.2
         version: 5.0.7(@types/react@18.3.23)(immer@10.1.1)(react@18.3.1)(use-sync-external-store@1.5.0(react@18.3.1))
     devDependencies:
+      '@hedron/clock':
+        specifier: workspace:^
+        version: link:../clock
       '@redux-devtools/extension':
         specifier: ^3.3.0
         version: 3.3.0(redux@5.0.1)
@@ -253,6 +287,37 @@ importers:
       '@types/three':
         specifier: ^0.178.1
         version: 0.178.1
+
+  packages/lfo-input:
+    dependencies:
+      '@hedron/engine':
+        specifier: workspace:^
+        version: link:../engine
+      '@hedron/ui-core':
+        specifier: workspace:^
+        version: link:../ui-core
+      react:
+        specifier: ^18.3.1
+        version: 18.3.1
+      react-dom:
+        specifier: ^18.3.1
+        version: 18.3.1(react@18.3.1)
+      zustand:
+        specifier: ^5.0.2
+        version: 5.0.7(@types/react@18.3.23)(immer@10.1.1)(react@18.3.1)(use-sync-external-store@1.5.0(react@18.3.1))
+    devDependencies:
+      '@vitejs/plugin-react':
+        specifier: ^4.3.4
+        version: 4.7.0(vite@6.3.5(@types/node@24.3.0)(yaml@2.8.1))
+      vite:
+        specifier: ^6.2.3
+        version: 6.3.5(@types/node@24.3.0)(yaml@2.8.1)
+      vite-plugin-dts:
+        specifier: ^4.5.3
+        version: 4.5.4(@types/node@24.3.0)(rollup@4.46.2)(typescript@5.9.2)(vite@6.3.5(@types/node@24.3.0)(yaml@2.8.1))
+      vite-tsconfig-paths:
+        specifier: ^5.1.4
+        version: 5.1.4(typescript@5.9.2)(vite@6.3.5(@types/node@24.3.0)(yaml@2.8.1))
 
   packages/midi-input:
     dependencies:
@@ -285,6 +350,9 @@ importers:
       '@floating-ui/react-dom':
         specifier: ^2.1.2
         version: 2.1.5(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      '@hedron/app-store':
+        specifier: workspace:^
+        version: link:../app-store
       '@uiw/react-color':
         specifier: ^2.3.4
         version: 2.7.3(@babel/runtime@7.28.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -294,10 +362,16 @@ importers:
       usehooks-ts:
         specifier: ^3.1.0
         version: 3.1.1(react@18.3.1)
+      zustand:
+        specifier: ^5.0.8
+        version: 5.0.8(@types/react@19.1.10)(immer@10.1.1)(react@18.3.1)(use-sync-external-store@1.5.0(react@18.3.1))
     devDependencies:
       '@chromatic-com/storybook':
         specifier: ^1.8.0
         version: 1.9.0(react@18.3.1)
+      '@hedron/engine':
+        specifier: workspace:^
+        version: link:../engine
       '@storybook/addon-essentials':
         specifier: ^8.2.9
         version: 8.6.14(@types/react@19.1.10)(storybook@8.6.14(prettier@3.6.2))
@@ -307,9 +381,6 @@ importers:
       '@storybook/addon-links':
         specifier: ^8.2.9
         version: 8.6.14(react@18.3.1)(storybook@8.6.14(prettier@3.6.2))
-      '@storybook/addon-onboarding':
-        specifier: ^8.2.9
-        version: 8.6.14(storybook@8.6.14(prettier@3.6.2))
       '@storybook/blocks':
         specifier: ^8.2.9
         version: 8.6.14(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(storybook@8.6.14(prettier@3.6.2))
@@ -1596,11 +1667,6 @@ packages:
 
   '@storybook/addon-measure@8.6.14':
     resolution: {integrity: sha512-1Tlyb72NX8aAqm6I6OICsUuGOP6hgnXcuFlXucyhKomPa6j3Eu2vKu561t/f0oGtAK2nO93Z70kVaEh5X+vaGw==}
-    peerDependencies:
-      storybook: ^8.6.14
-
-  '@storybook/addon-onboarding@8.6.14':
-    resolution: {integrity: sha512-bHdHiGJFigVcSzMIsNLHY5IODZHr+nKwyz5/QOZLMkLcGH2IaUbOJfm4RyGOaTTPsUtAKbdsVXNEG3Otf+qO9A==}
     peerDependencies:
       storybook: ^8.6.14
 
@@ -5912,6 +5978,46 @@ packages:
       vite:
         optional: true
 
+  vite@6.3.5:
+    resolution: {integrity: sha512-cZn6NDFE7wdTpINgs++ZJ4N49W2vRp8LCKrn3Ob1kYNtOo21vfDoaV5GzBfLU4MovSAB8uNRm4jgzVQZ+mBzPQ==}
+    engines: {node: ^18.0.0 || ^20.0.0 || >=22.0.0}
+    hasBin: true
+    peerDependencies:
+      '@types/node': ^18.0.0 || ^20.0.0 || >=22.0.0
+      jiti: '>=1.21.0'
+      less: '*'
+      lightningcss: ^1.21.0
+      sass: '*'
+      sass-embedded: '*'
+      stylus: '*'
+      sugarss: '*'
+      terser: ^5.16.0
+      tsx: ^4.8.1
+      yaml: ^2.4.2
+    peerDependenciesMeta:
+      '@types/node':
+        optional: true
+      jiti:
+        optional: true
+      less:
+        optional: true
+      lightningcss:
+        optional: true
+      sass:
+        optional: true
+      sass-embedded:
+        optional: true
+      stylus:
+        optional: true
+      sugarss:
+        optional: true
+      terser:
+        optional: true
+      tsx:
+        optional: true
+      yaml:
+        optional: true
+
   vite@7.1.2:
     resolution: {integrity: sha512-J0SQBPlQiEXAF7tajiH+rUooJPo0l8KQgyg4/aMunNtrOa7bwuZJsJbDWzeljqQpgftxuq5yNJxQ91O9ts29UQ==}
     engines: {node: ^20.19.0 || >=22.12.0}
@@ -6133,6 +6239,24 @@ packages:
       use-sync-external-store:
         optional: true
 
+  zustand@5.0.8:
+    resolution: {integrity: sha512-gyPKpIaxY9XcO2vSMrLbiER7QMAMGOQZVRdJ6Zi782jkbzZygq5GI9nG8g+sMgitRtndwaBSl7uiqC49o1SSiw==}
+    engines: {node: '>=12.20.0'}
+    peerDependencies:
+      '@types/react': '>=18.0.0'
+      immer: '>=9.0.6'
+      react: '>=18.0.0'
+      use-sync-external-store: '>=1.2.0'
+    peerDependenciesMeta:
+      '@types/react':
+        optional: true
+      immer:
+        optional: true
+      react:
+        optional: true
+      use-sync-external-store:
+        optional: true
+
 snapshots:
 
   7zip-bin@5.2.0: {}
@@ -6279,9 +6403,19 @@ snapshots:
       '@babel/core': 7.28.0
       '@babel/helper-plugin-utils': 7.27.1
 
+  '@babel/plugin-transform-react-jsx-self@7.27.1(@babel/core@7.28.3)':
+    dependencies:
+      '@babel/core': 7.28.3
+      '@babel/helper-plugin-utils': 7.27.1
+
   '@babel/plugin-transform-react-jsx-source@7.27.1(@babel/core@7.28.0)':
     dependencies:
       '@babel/core': 7.28.0
+      '@babel/helper-plugin-utils': 7.27.1
+
+  '@babel/plugin-transform-react-jsx-source@7.27.1(@babel/core@7.28.3)':
+    dependencies:
+      '@babel/core': 7.28.3
       '@babel/helper-plugin-utils': 7.27.1
 
   '@babel/runtime@7.28.2': {}
@@ -7480,10 +7614,6 @@ snapshots:
       storybook: 8.6.14(prettier@3.6.2)
       tiny-invariant: 1.3.3
 
-  '@storybook/addon-onboarding@8.6.14(storybook@8.6.14(prettier@3.6.2))':
-    dependencies:
-      storybook: 8.6.14(prettier@3.6.2)
-
   '@storybook/addon-outline@8.6.14(storybook@8.6.14(prettier@3.6.2))':
     dependencies:
       '@storybook/global': 5.0.0
@@ -8218,6 +8348,18 @@ snapshots:
   '@unrs/resolver-binding-win32-x64-msvc@1.11.1':
     optional: true
 
+  '@vitejs/plugin-react@4.7.0(vite@6.3.5(@types/node@24.3.0)(yaml@2.8.1))':
+    dependencies:
+      '@babel/core': 7.28.3
+      '@babel/plugin-transform-react-jsx-self': 7.27.1(@babel/core@7.28.3)
+      '@babel/plugin-transform-react-jsx-source': 7.27.1(@babel/core@7.28.3)
+      '@rolldown/pluginutils': 1.0.0-beta.27
+      '@types/babel__core': 7.20.5
+      react-refresh: 0.17.0
+      vite: 6.3.5(@types/node@24.3.0)(yaml@2.8.1)
+    transitivePeerDependencies:
+      - supports-color
+
   '@vitejs/plugin-react@4.7.0(vite@7.1.2(@types/node@24.3.0)(yaml@2.8.1))':
     dependencies:
       '@babel/core': 7.28.0
@@ -8304,6 +8446,19 @@ snapshots:
       path-browserify: 1.0.1
     optionalDependencies:
       typescript: 5.8.2
+
+  '@vue/language-core@2.2.0(typescript@5.9.2)':
+    dependencies:
+      '@volar/language-core': 2.4.23
+      '@vue/compiler-dom': 3.5.18
+      '@vue/compiler-vue2': 2.7.16
+      '@vue/shared': 3.5.18
+      alien-signals: 0.4.14
+      minimatch: 9.0.5
+      muggle-string: 0.4.1
+      path-browserify: 1.0.1
+    optionalDependencies:
+      typescript: 5.9.2
 
   '@vue/shared@3.5.18': {}
 
@@ -12277,6 +12432,10 @@ snapshots:
     optionalDependencies:
       typescript: 5.8.2
 
+  tsconfck@3.1.6(typescript@5.9.2):
+    optionalDependencies:
+      typescript: 5.9.2
+
   tsconfig-paths@3.15.0:
     dependencies:
       '@types/json5': 0.0.29
@@ -12317,6 +12476,35 @@ snapshots:
       '@microsoft/api-extractor': 7.52.10(@types/node@24.3.0)
       postcss: 8.5.6
       typescript: 5.8.2
+    transitivePeerDependencies:
+      - jiti
+      - supports-color
+      - tsx
+      - yaml
+
+  tsup@8.5.0(@microsoft/api-extractor@7.52.10(@types/node@24.3.0))(postcss@8.5.6)(typescript@5.9.2)(yaml@2.8.1):
+    dependencies:
+      bundle-require: 5.1.0(esbuild@0.25.8)
+      cac: 6.7.14
+      chokidar: 4.0.3
+      consola: 3.4.2
+      debug: 4.4.1
+      esbuild: 0.25.8
+      fix-dts-default-cjs-exports: 1.0.1
+      joycon: 3.1.1
+      picocolors: 1.1.1
+      postcss-load-config: 6.0.1(postcss@8.5.6)(yaml@2.8.1)
+      resolve-from: 5.0.0
+      rollup: 4.46.2
+      source-map: 0.8.0-beta.0
+      sucrase: 3.35.0
+      tinyexec: 0.3.2
+      tinyglobby: 0.2.14
+      tree-kill: 1.2.2
+    optionalDependencies:
+      '@microsoft/api-extractor': 7.52.10(@types/node@24.3.0)
+      postcss: 8.5.6
+      typescript: 5.9.2
     transitivePeerDependencies:
       - jiti
       - supports-color
@@ -12547,6 +12735,25 @@ snapshots:
       - rollup
       - supports-color
 
+  vite-plugin-dts@4.5.4(@types/node@24.3.0)(rollup@4.46.2)(typescript@5.9.2)(vite@6.3.5(@types/node@24.3.0)(yaml@2.8.1)):
+    dependencies:
+      '@microsoft/api-extractor': 7.52.10(@types/node@24.3.0)
+      '@rollup/pluginutils': 5.2.0(rollup@4.46.2)
+      '@volar/typescript': 2.4.23
+      '@vue/language-core': 2.2.0(typescript@5.9.2)
+      compare-versions: 6.1.1
+      debug: 4.4.1
+      kolorist: 1.8.0
+      local-pkg: 1.1.1
+      magic-string: 0.30.17
+      typescript: 5.9.2
+    optionalDependencies:
+      vite: 6.3.5(@types/node@24.3.0)(yaml@2.8.1)
+    transitivePeerDependencies:
+      - '@types/node'
+      - rollup
+      - supports-color
+
   vite-tsconfig-paths@5.1.4(typescript@5.8.2)(vite@7.1.2(@types/node@24.3.0)(yaml@2.8.1)):
     dependencies:
       debug: 4.4.1
@@ -12557,6 +12764,30 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
       - typescript
+
+  vite-tsconfig-paths@5.1.4(typescript@5.9.2)(vite@6.3.5(@types/node@24.3.0)(yaml@2.8.1)):
+    dependencies:
+      debug: 4.4.1
+      globrex: 0.1.2
+      tsconfck: 3.1.6(typescript@5.9.2)
+    optionalDependencies:
+      vite: 6.3.5(@types/node@24.3.0)(yaml@2.8.1)
+    transitivePeerDependencies:
+      - supports-color
+      - typescript
+
+  vite@6.3.5(@types/node@24.3.0)(yaml@2.8.1):
+    dependencies:
+      esbuild: 0.25.9
+      fdir: 6.5.0(picomatch@4.0.3)
+      picomatch: 4.0.3
+      postcss: 8.5.6
+      rollup: 4.46.2
+      tinyglobby: 0.2.14
+    optionalDependencies:
+      '@types/node': 24.3.0
+      fsevents: 2.3.3
+      yaml: 2.8.1
 
   vite@7.1.2(@types/node@24.3.0)(yaml@2.8.1):
     dependencies:
@@ -12755,6 +12986,13 @@ snapshots:
   zustand@5.0.7(@types/react@18.3.23)(immer@10.1.1)(react@18.3.1)(use-sync-external-store@1.5.0(react@18.3.1)):
     optionalDependencies:
       '@types/react': 18.3.23
+      immer: 10.1.1
+      react: 18.3.1
+      use-sync-external-store: 1.5.0(react@18.3.1)
+
+  zustand@5.0.8(@types/react@19.1.10)(immer@10.1.1)(react@18.3.1)(use-sync-external-store@1.5.0(react@18.3.1)):
+    optionalDependencies:
+      '@types/react': 19.1.10
       immer: 10.1.1
       react: 18.3.1
       use-sync-external-store: 1.5.0(react@18.3.1)

@@ -16,7 +16,7 @@ import {
 } from '@store/actionCreators/updateNodeValue'
 import { createReset } from '@store/actionCreators/reset'
 import { createLoadProject } from '@store/actionCreators/loadProject'
-import { createAddInput, createUpdateInputOptions } from '@store/actionCreators/createAddInput'
+import { createAddInput } from '@store/actionCreators/createAddInput'
 import { createUpdateSketch } from '@store/actionCreators/updateSketch'
 
 export const createEngineStore = () =>
@@ -36,7 +36,6 @@ export const createEngineStore = () =>
           reset: createReset(set),
           loadProject: createLoadProject(set),
           addInput: createAddInput(set),
-          updateInputOptions: createUpdateInputOptions(set),
         })),
       ),
     ),

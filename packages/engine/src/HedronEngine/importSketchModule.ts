@@ -1,6 +1,5 @@
 import { Result } from './types'
 import {
-  NodeTypes,
   SketchConfigRaw,
   SketchConfigImported,
   SketchModule,
@@ -15,11 +14,10 @@ const ensureParamImported = (
   groupIndex: number | null,
 ): SketchConfigParamImported => {
   const valueType =
-    'valueType' in param && param.valueType !== undefined ? param.valueType : NodeTypes.Number
+    'valueType' in param && param.valueType !== undefined ? param.valueType : 'number'
 
   return {
     ...param,
-    title: param.title ?? param.key,
     groupIndex,
     valueType,
   } as SketchConfigParamImported
