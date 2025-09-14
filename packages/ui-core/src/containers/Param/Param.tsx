@@ -1,4 +1,4 @@
-import { NodeValueType, Param as ParamType } from '@hedron/engine'
+import { NodeValueType } from '@hedron/engine'
 import { useCallback } from 'react'
 import { ParamNumber } from './ParamNumber/ParamNumber'
 import { ParamBoolean } from './ParamBoolean/ParamBoolean'
@@ -13,6 +13,7 @@ import {
   NodeControlMain,
   NodeControlTitle,
 } from '@components/NodeControl/NodeControl'
+import { useEngineStore } from '@hooks/storeHooks'
 
 const getInputElement = (valueType: NodeValueType, id: string) => {
   switch (valueType) {
@@ -36,15 +37,17 @@ const getInputElement = (valueType: NodeValueType, id: string) => {
 export const Param = ({
   onClick,
   isActive,
-  param: { key, title, id, valueType },
+  paramId,
 }: {
   onClick?: (nodeId: string) => void
   isActive?: boolean
-  param: ParamType
+  paramId: string
 }) => {
+  const { key, title, id, valueType } = useEngineStore((state) => state.nodes[paramId])
+
   const _onClick = useCallback(() => {
-    onClick?.(id)
-  }, [id, onClick])
+    onClick?.(paramId)
+  }, [paramId, onClick])
   return (
     <NodeControl key={key} onClick={_onClick} isActive={isActive}>
       <NodeControlMain>
@@ -54,3 +57,5 @@ export const Param = ({
     </NodeControl>
   )
 }
+
+export const NodeParam = Param

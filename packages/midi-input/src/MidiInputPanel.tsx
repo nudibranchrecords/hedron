@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react'
 import { HedronEngine, Input } from '@hedron/engine'
-import { Button, ControlGrid, Param, useEngineStore } from '@hedron/ui-core'
+import { Button, ControlGrid, Param } from '@hedron/ui-core'
 import { MidiInput } from './MidiInput'
 
 interface IProps {
@@ -63,12 +63,6 @@ const useMidiLearn = (input: Input, engine: HedronEngine) => {
   }
 }
 
-const Item = ({ nodeId }: { nodeId: string }) => {
-  const param = useEngineStore((state) => state.nodes[nodeId])
-
-  return <Param param={param} />
-}
-
 /**
  * A react component that displays the midi settings for a parameter
  */
@@ -79,7 +73,7 @@ export const MidiInputPanel = ({ input, engine }: IProps) => {
     <div>
       <ControlGrid className="mb-xl">
         {input.optionNodeIds.map((id) => (
-          <Item key={id} nodeId={id} />
+          <Param key={id} paramId={id} />
         ))}
       </ControlGrid>
 

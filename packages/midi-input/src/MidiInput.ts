@@ -5,8 +5,13 @@ import {
   IPlugin,
   NodeValue,
   handleEachInput,
+  EngineState,
+  Input,
+  ConfigToOptionsType,
+  Param,
 } from '@hedron/engine'
-import { MidiManager, MidiMessageType } from '@hedron/midi-manager'
+import { MIDIEvent, MidiManager, MidiMessageType } from '@hedron/midi-manager'
+import { NodeParamEnum } from 'node_modules/@hedron/engine/dist'
 
 const noteLetters = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B']
 
@@ -17,6 +22,17 @@ for (let i = 0; i < 128; i++) {
   const octave = Math.floor(i / noteLetters.length) - 1
   midiNotes[i] = `${i} - ${letter} (${octave})`
 }
+
+type MIDIEventWithValue = Omit<MIDIEvent, 'value'> & { value: number }
+
+type ValueHander<T = Param> = (params: {
+  midiEvent: MIDIEventWithValue
+  input: Input
+  storeState: EngineState
+  optionNodes: ConfigToOptionsType<typeof MidiInput.prototype.optionNodesConfig>
+  targetNode: T
+  targetNodeValue: NodeValue
+}) => NodeValue | null
 
 export class MidiInput implements IPlugin {
   public readonly id = 'midi-input'
@@ -49,6 +65,49 @@ export class MidiInput implements IPlugin {
     },
   ] as const satisfies InputOptionNodesConfig
 
+  private handleEnum: ValueHander<NodeParamEnum> = ({
+    midiEvent,
+    input,
+    storeState,
+    targetNode,
+  }) => {
+    switch (midiEvent.type) {
+      case MidiMessageType.NoteOn:
+      case MidiMessageType.NoteOff:
+        return getNextEnumValue(input.targetNodeId)(storeState)
+      default: {
+        return targetNode.options[
+          Math.floor((midiEvent.value / 127) * (targetNode.options.length - 1))
+        ].value
+      }
+    }
+  }
+
+  private handleBoolean: ValueHander = ({ midiEvent, targetNodeValue }) => {
+    switch (midiEvent.type) {
+      case MidiMessageType.NoteOn:
+      case MidiMessageType.NoteOff:
+        return !targetNodeValue
+      default:
+        return midiEvent.value > 0
+    }
+  }
+
+  private handleNumber: ValueHander = ({ midiEvent, storeState, input }) => {
+    const sliderMin = (storeState.nodeValues[`${input.targetNodeId}-sliderMin`] as number) ?? 0
+    const sliderMax = (storeState.nodeValues[`${input.targetNodeId}-sliderMax`] as number) ?? 1
+
+    return (midiEvent.value / 127) * (sliderMax - sliderMin) + sliderMin
+  }
+
+  private handleUnsupported: ValueHander = ({ input, targetNode, midiEvent }) => {
+    console.warn(
+      `MIDI Input: Unsupported value type for node ${input.targetNodeId}. Value: ${midiEvent.value}, Type: ${targetNode.valueType}`,
+    )
+
+    return null
+  }
+
   constructor(engine: HedronEngine) {
     const store = engine.getStore()
 
@@ -60,60 +119,31 @@ export class MidiInput implements IPlugin {
       handleEachInput<typeof this.optionNodesConfig>(
         storeState,
         'midi',
-        ({ input, optionNodes: opts, targetNode, targetNodeValue }) => {
-          if (input.type !== 'midi') return
-
+        ({ input, optionNodes, targetNode, targetNodeValue }) => {
           if (
-            event.channel === opts.channel &&
-            event.note === opts.note &&
-            event.type === opts.type &&
+            event.channel === optionNodes.channel &&
+            event.note === optionNodes.note &&
+            event.type === optionNodes.type &&
             event.value !== undefined
           ) {
-            const sliderMin =
-              (storeState.nodeValues[`${input.targetNodeId}-sliderMin`] as number) ?? 0
-            const sliderMax =
-              (storeState.nodeValues[`${input.targetNodeId}-sliderMax`] as number) ?? 1
-
-            let value: NodeValue | null = null
-
-            switch (targetNode.valueType) {
-              case 'boolean':
-                switch (event.type) {
-                  case MidiMessageType.NoteOn:
-                  case MidiMessageType.NoteOff:
-                    value = !targetNodeValue
-                    break
-                  default:
-                    value = event.value > 0
-                    break
-                }
-                break
-              case 'enum': {
-                switch (event.type) {
-                  case MidiMessageType.NoteOn:
-                  case MidiMessageType.NoteOff:
-                    value = getNextEnumValue(input.targetNodeId)(storeState)
-                    break
-                  default: {
-                    value =
-                      targetNode.options[
-                        Math.floor((event.value / 127) * (targetNode.options.length - 1))
-                      ].value
-                    break
-                  }
-                }
-                break
-              }
-              case 'number': {
-                value = (event.value / 127) * (sliderMax - sliderMin) + sliderMin
-                break
-              }
-            }
+            const value = {
+              enum: this.handleEnum,
+              boolean: this.handleBoolean,
+              number: this.handleNumber,
+              string: this.handleUnsupported,
+              rgb: this.handleUnsupported,
+              vector3: this.handleUnsupported,
+            }[targetNode.valueType]({
+              midiEvent: event as MIDIEventWithValue,
+              input,
+              storeState,
+              optionNodes,
+              // @ts-expect-error -- TS isn't smart enough to infer the correct node type
+              targetNode,
+              targetNodeValue,
+            })
 
             if (value === null) {
-              console.warn(
-                `MIDI Input: Unsupported value type for node ${input.targetNodeId}. Value: ${event.value}, Type: ${targetNode.valueType}`,
-              )
               return
             }
 
