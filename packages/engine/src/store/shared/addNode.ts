@@ -6,6 +6,7 @@ import {
   isNodeTypeWithChildren,
   NodeValueType,
   Param,
+  SketchConfigParam,
 } from '@store/types'
 import { createUniqueId } from '@utils/createUniqueId'
 
@@ -51,7 +52,7 @@ const _addNodeToState = (
 const _addOptionNodeToState = (
   state: EngineState,
   paramId: string,
-  sketchConfigParam: { valueType: NodeValueType },
+  sketchConfigParam: SketchConfigParam,
 ) => {
   /** TODO: This can probably be tidier, using some sort of config object to generate the option nodes
    * The same config object could also be used in the component to loop through
@@ -60,7 +61,7 @@ const _addOptionNodeToState = (
     _addNodeToState(state, `${paramId}-sliderMin`, {
       key: 'sliderMin',
       valueType: 'number',
-      defaultValue: 0,
+      defaultValue: sketchConfigParam.sliderMin ?? 0,
       groupIndex: null,
       params: [], // TODO: Bad typing means we have to do this
       title: 'Slider Min',
@@ -69,7 +70,7 @@ const _addOptionNodeToState = (
     _addNodeToState(state, `${paramId}-sliderMax`, {
       key: 'sliderMax',
       valueType: 'number',
-      defaultValue: 1,
+      defaultValue: sketchConfigParam.sliderMax ?? 1,
       groupIndex: null,
       params: [], // TODO: Bad typing means we have to do this
       title: 'Slider Max',
