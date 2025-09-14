@@ -1,10 +1,9 @@
 import { NodeParamRGB } from '@hedron/engine'
 import { useRef } from 'react'
-import { ColorPicker } from '@hedron/ui-core'
-import type { ColorPickerHandle } from '@hedron/ui-core'
-import { useOnNodeVec3ValueChange } from '@components/hooks/useOnNodeVec3ValueChange'
-import { useEngineStore } from '@renderer/engine'
-import { useSubscribeToNodeChildrenValues } from '@components/hooks/useSubscribeToNodeValue'
+import { useSubscribeToNodeChildrenValues } from '@hooks/useSubscribeToNodeValue'
+import { useEngineStore } from '@hooks/storeHooks'
+import { ColorPicker, ColorPickerHandle } from '@components/ColorPicker/ColorPicker'
+import { useOnNodeVec3ValueChange } from '@hooks/useOnNodeVec3ValueChange'
 
 interface ParamRGBProps {
   id: string

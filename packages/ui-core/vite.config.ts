@@ -10,7 +10,13 @@ export default defineConfig({
     lib: {
       entry: ['src/index.ts', 'src/css/base.css', 'src/css/fonts.css', 'src/css/icons.css'],
       name: 'ui-core',
-      fileName: (format) => `ui-core.${format}.js`,
+      fileName: (format, entryName) => {
+        if (entryName !== 'index') {
+          return `${entryName}.${format === 'es' ? 'js' : 'cjs'}`
+        }
+        return `ui-core.${format === 'es' ? 'es' : 'cjs'}.js`
+      },
+      formats: ['es', 'cjs'],
     },
     rollupOptions: {
       external: ['react', 'react-dom'],

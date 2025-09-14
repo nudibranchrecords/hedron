@@ -1,10 +1,10 @@
 import { useRef } from 'react'
-import { ControlGrid, FloatSlider } from '@hedron/ui-core'
-import type { FloatSliderHandle } from '@hedron/ui-core'
-import { useOnNodeValueChange } from '@components/hooks/useOnNodeValueChange'
-import { useEngineStore } from '@renderer/engine'
-import { useSubscribeToNodeValue } from '@components/hooks/useSubscribeToNodeValue'
-import { OptionNumber } from '@components/OptionNumber/OptionNumber'
+import { useOnNodeValueChange } from '@hooks/useOnNodeValueChange'
+import { useEngineStore } from '@hooks/storeHooks'
+import { useSubscribeToNodeValue } from '@hooks/useSubscribeToNodeValue'
+import { OptionNumber } from '@containers/Param/OptionNumber/OptionNumber'
+import { FloatSlider, FloatSliderHandle } from '@components/FloatSlider/FloatSlider'
+import { ControlGrid } from '@components/ControlGrid/ControlGrid'
 
 interface ParamNumberProps {
   id: string

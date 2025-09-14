@@ -1,11 +1,12 @@
 import { useEffect, useRef } from 'react'
 import { NodeParamWithChildren, NodeValue } from '@hedron/engine'
-import { engineStore, useEngineStore } from '@renderer/engine'
+import { useEngineStore, useEngineStoreWithContext } from '@hooks/storeHooks'
 
 export const useSubscribeToNodeValue = <T extends NodeValue>(
   nodeId: string,
   callback: (value: T) => void,
 ) => {
+  const engineStore = useEngineStoreWithContext()
   const callbackRef = useRef(callback)
   callbackRef.current = callback
 
@@ -23,13 +24,14 @@ export const useSubscribeToNodeValue = <T extends NodeValue>(
     return () => {
       unsubscribe()
     }
-  }, [nodeId])
+  }, [engineStore, nodeId])
 }
 
 export const useSubscribeToNodeChildrenValues = <T extends NodeValue>(
   nodeId: string,
   callback: (value: T[]) => void,
 ) => {
+  const engineStore = useEngineStoreWithContext()
   const { childNodeIds } = useEngineStore((state) => state.nodes[nodeId] as NodeParamWithChildren)
 
   const callbackRef = useRef(callback)
@@ -53,5 +55,5 @@ export const useSubscribeToNodeChildrenValues = <T extends NodeValue>(
     return () => {
       unsubscribe()
     }
-  }, [childNodeIds, nodeId])
+  }, [childNodeIds, engineStore, nodeId])
 }

@@ -1,9 +1,8 @@
 import { useRef } from 'react'
 import { useInterval } from 'usehooks-ts'
-import { TextInput } from '@hedron/ui-core'
-import type { TextInputHandle } from '@hedron/ui-core'
-import { useOnNodeValueChange } from '@components/hooks/useOnNodeValueChange'
-import { engineStore } from '@renderer/engine'
+import { useOnNodeValueChange } from '@hooks/useOnNodeValueChange'
+import { useEngineStoreWithContext } from '@hooks/storeHooks'
+import { TextInput, TextInputHandle } from '@components/TextInput/TextInput'
 
 interface ParamNumberProps {
   id: string
@@ -12,6 +11,7 @@ interface ParamNumberProps {
 export const ParamString = ({ id }: ParamNumberProps) => {
   const ref = useRef<TextInputHandle>(null)
   const onValueChange = useOnNodeValueChange(id)
+  const engineStore = useEngineStoreWithContext()
 
   useInterval(() => {
     const nodeValue = engineStore.getState().nodeValues[id]

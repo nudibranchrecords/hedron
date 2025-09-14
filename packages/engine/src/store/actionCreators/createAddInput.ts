@@ -1,28 +1,38 @@
-import { SetterCreator } from '@store/types'
+import { addNode } from '@store/shared/addNode'
+import { SetterCreator, SketchConfigParamImported } from '@store/types'
 import { createUniqueId } from '@utils/createUniqueId'
 
-export const createAddInput: SetterCreator<'addInput'> = (setState) => (value) => {
-  const id = createUniqueId()
+export const createAddInput: SetterCreator<'addInput'> =
+  (setState) => (inputConfig, optionsNodeConfig) => {
+    const id = createUniqueId()
 
-  setState((state) => {
-    if (state.inputs[id]) {
-      return
-    }
-    state.inputs[id] = {
-      ...value,
-      id,
-    }
-  })
+    const optionNodeIds: string[] = []
 
-  return id
-}
-
-export const createUpdateInputOptions: SetterCreator<'updateInputOptions'> =
-  (setState) => (inputId, options) => {
     setState((state) => {
-      const input = state.inputs[inputId]
-      if (input) {
-        Object.assign(input.options, options)
+      for (const cfg of optionsNodeConfig) {
+        const optionNodeId = createUniqueId()
+        optionNodeIds.push(optionNodeId)
+
+        const cfgImported = {
+          ...cfg,
+          valueType: cfg.valueType ?? 'number',
+          groupIndex: null,
+          title: cfg.title ?? cfg.key,
+        } as SketchConfigParamImported
+
+        addNode(state, optionNodeId, cfgImported)
+      }
+
+      if (state.inputs[id]) {
+        return
+      }
+      state.inputs[id] = {
+        ...inputConfig,
+        optionNodeIds,
+        id,
+        // TODO: Give inputs an (optional) sketchId so option nodes can be selected and displayed in bottom sketch panel
       }
     })
+
+    return id
   }

@@ -19,52 +19,52 @@ export interface NodeBase {
   key: string
 }
 
-export enum NodeTypes {
-  Number = 'number',
-  Boolean = 'boolean',
-  String = 'string',
-  Enum = 'enum',
-  Vector3 = 'vector3',
-  RGB = 'rgb',
-}
-
-export const NodeTypesWithChildren = [NodeTypes.Vector3, NodeTypes.RGB] as const
+export const NodeTypesWithChildren = ['vector3', 'rgb'] as const
 export type NodeTypeWithChildren = (typeof NodeTypesWithChildren)[number]
 
 export interface NodeParamBase extends NodeBase {
   type: 'param'
-  sketchId: string
+  title: string
+  groupIndex: number | null
 }
 
 export interface NodeParamWithChildren extends NodeParamBase {
   childNodeIds: string[]
   valueType: NodeTypeWithChildren
+  defaultValue: [number, number, number]
 }
 
 export interface NodeParamNumber extends NodeParamBase {
-  valueType: NodeTypes.Number
+  valueType: 'number'
+  defaultValue: number
   sliderMin?: number
   sliderMax?: number
 }
 
 export interface NodeParamBoolean extends NodeParamBase {
-  valueType: NodeTypes.Boolean
+  valueType: 'boolean'
+  defaultValue: boolean
 }
 
 export interface NodeParamString extends NodeParamBase {
-  valueType: NodeTypes.String
+  valueType: 'string'
+  defaultValue: string
 }
 
 export interface NodeParamEnum extends NodeParamBase {
-  valueType: NodeTypes.Enum
+  valueType: 'enum'
+  defaultValue: NodeEnumValue
+  options: EnumOption[]
 }
 
 export interface NodeParamVector3 extends NodeParamWithChildren {
-  valueType: NodeTypes.Vector3
+  valueType: 'vector3'
+  defaultValue: [number, number, number]
 }
 
 export interface NodeParamRGB extends NodeParamWithChildren {
-  valueType: NodeTypes.RGB
+  valueType: 'rgb'
+  defaultValue: [number, number, number]
 }
 
 export type Param =
@@ -80,9 +80,12 @@ export type Nodes = { [key: string]: Node }
 
 export type NodeValue = number | boolean | string
 export type NodeValues = { [key: string]: NodeValue }
+export type NodeValueType = Node['valueType']
 
-export const isNodeTypeWithChildren = (nodeType: NodeTypes): nodeType is NodeTypeWithChildren => {
-  return NodeTypesWithChildren.includes(nodeType as NodeTypeWithChildren)
+export const isNodeTypeWithChildren = (
+  nodeValueType: NodeValueType,
+): nodeValueType is NodeTypeWithChildren => {
+  return NodeTypesWithChildren.includes(nodeValueType as NodeTypeWithChildren)
 }
 
 // Utility type guard to check if a node has child nodes
@@ -96,34 +99,36 @@ export interface SketchConfigParamBase {
 }
 
 export interface SketchConfigParamNumber extends SketchConfigParamBase {
-  valueType?: NodeTypes.Number
+  valueType?: 'number'
   defaultValue: number
   sliderMin?: number
   sliderMax?: number
 }
 
 export interface SketchConfigParamBoolean extends SketchConfigParamBase {
-  valueType: NodeTypes.Boolean
+  valueType: 'boolean'
   defaultValue: boolean
 }
 export interface SketchConfigParamString extends SketchConfigParamBase {
-  valueType: NodeTypes.String
+  valueType: 'string'
   defaultValue: string
 }
 
+export type NodeEnumValue = string | number
+
 export interface SketchConfigParamEnum extends SketchConfigParamBase {
-  valueType: NodeTypes.Enum
-  defaultValue: string
+  valueType: 'enum'
+  defaultValue: NodeEnumValue
   options: EnumOption[]
 }
 
 export interface SketchConfigParamVector3 extends SketchConfigParamBase {
-  valueType: NodeTypes.Vector3
+  valueType: 'vector3'
   defaultValue: [number, number, number]
 }
 
 export interface SketchConfigParamRGB extends SketchConfigParamBase {
-  valueType: NodeTypes.RGB
+  valueType: 'rgb'
   defaultValue: [number, number, number]
 }
 
@@ -177,17 +182,18 @@ export interface SketchModuleItem {
 
 export type SketchModules = { [key: string]: SketchModuleItem }
 
-export type EnumOption = { value: string | number; label: string }
+export type EnumOption = { value: NodeEnumValue; label: string }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type InputOptions = any
+export type InputOptionNodesConfig = readonly SketchConfigParam[]
 
-export interface Input<Options = InputOptions> {
+export interface Input {
   id: string
   title: string
   type: 'midi' | 'gamepad' | string
   targetNodeId: string
-  options: Options
+  optionNodeIds: string[]
+  // sketchID is optional because not all inputs relate to sketches
+  sketchId?: string
 }
 
 export type Inputs = { [key: string]: Input }
@@ -217,8 +223,10 @@ interface Actions {
   deleteSketchModule: (moduleId: string) => void
   loadProject: (project: EngineData) => void
   reset: () => void
-  addInput: (value: Omit<Input, 'id'>) => string
-  updateInputOptions: (inputId: string, options: InputOptions) => void
+  addInput: (
+    inputConfig: Omit<Input, 'id' | 'optionNodeIds'>,
+    optionsNodeConfig: InputOptionNodesConfig,
+  ) => string
 }
 
 export type EngineStateWithActions = EngineData & AuxState & Actions

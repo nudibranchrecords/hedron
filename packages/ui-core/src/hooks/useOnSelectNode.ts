@@ -1,5 +1,5 @@
 import { useCallback } from 'react'
-import { useAppStore } from '@renderer/appStore'
+import { useAppStore } from '@hooks/storeHooks'
 
 export const useOnSelectNode = (sketchId: string, nodeId: string) => {
   const selectNode = useAppStore((state) => state.setSelectedNode)

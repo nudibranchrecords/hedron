@@ -13,9 +13,9 @@ import {
   Panel,
   PanelBody,
   PanelHeader,
+  useEngineStore,
 } from '@hedron/ui-core'
 import { GlobalDialogProps } from '@components/GlobalDialogs/types'
-import { useEngineStore } from '@renderer/engine'
 import { useSketchModuleList } from '@components/hooks/useSketchModuleList'
 import { useSetActiveSketchId } from '@components/hooks/useSetActiveSketchId'
 

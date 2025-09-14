@@ -1,5 +1,6 @@
 import path from 'path-browserify'
-import { useAppStore } from '@renderer/appStore'
+import { ProjectData } from '@hedron/app-store'
+import { appStore } from '@renderer/appStore'
 import { engine, engineStore } from '@renderer/engine'
 import {
   openProjectFileDialog,
@@ -7,7 +8,6 @@ import {
   saveProjectFileDialog,
   startSketchesServer,
 } from '@renderer/ipc/mainThreadTalk'
-import { ProjectData } from '@shared/types'
 
 const startEngineWithSketchesDir = async (sketchesDirPath: string) => {
   const { moduleIds, url } = await startSketchesServer(sketchesDirPath)
@@ -22,12 +22,12 @@ export const handleSketchesDialog = async () => {
 
   if (!sketchesDir) return
 
-  useAppStore.getState().setSketchesDir(sketchesDir)
+  appStore.getState().setSketchesDir(sketchesDir)
   await startEngineWithSketchesDir(sketchesDir)
 }
 
 export const handleLoadProjectDialog = async (projectPath?: string) => {
-  const appState = useAppStore.getState()
+  const appState = appStore.getState()
 
   const response = await openProjectFileDialog(projectPath)
 
@@ -45,7 +45,7 @@ export const handleLoadProjectDialog = async (projectPath?: string) => {
 
   engineStore.getState().loadProject(projectData.engine)
 
-  useAppStore.setState((state) => ({
+  appStore.setState((state) => ({
     ...state,
     currentSavePath: savePath,
     ...projectData.app,
@@ -53,7 +53,7 @@ export const handleLoadProjectDialog = async (projectPath?: string) => {
 }
 
 export const handleSaveProjectDialog = async (options?: { saveAs?: boolean }) => {
-  const appState = useAppStore.getState()
+  const appState = appStore.getState()
   const { sketchesDir, openedParamGroups, selectedNodes, selectedInputs } = appState
 
   if (!sketchesDir) {

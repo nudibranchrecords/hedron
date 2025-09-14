@@ -1,0 +1,48 @@
+{
+  "name": "@hedron/app-store",
+  "version": "1.0.0-alpha.2",
+  "description": "Zustand-based application state store for Hedron",
+  "author": "Alex Kempton <alex@funwithtriangles.net>",
+  "homepage": "https://github.com/nudibranchrecords/hedron#readme",
+  "license": "ISC",
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nudibranchrecords/hedron.git"
+  },
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "require": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.cjs"
+      }
+    }
+  },
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "dev": "tsup --watch",
+    "build": "tsup",
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "lint": "eslint . --ext .js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix"
+  },
+  "bugs": {
+    "url": "https://github.com/nudibranchrecords/hedron/issues"
+  },
+  "dependencies": {
+    "@hedron/engine": "workspace:^",
+    "@redux-devtools/extension": "^3.3.0",
+    "immer": "^10.1.1",
+    "zustand": "^4.5.7"
+  },
+  "devDependencies": {
+    "@types/node": "^24.3.0",
+    "tsup": "^8.0.0",
+    "typescript": "^5.0.0"
+  }
+}
