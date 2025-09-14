@@ -6,7 +6,6 @@ import {
   isNodeTypeWithChildren,
   NodeValueType,
   Param,
-  SketchConfigParam,
 } from '@store/types'
 import { createUniqueId } from '@utils/createUniqueId'
 
