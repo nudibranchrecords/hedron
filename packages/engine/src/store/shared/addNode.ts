@@ -49,10 +49,10 @@ const _addNodeToState = (
   return state.nodes[paramId]
 }
 
-const _addOptionNodeToState = (
+const _addSliderMinAndMaxNodesToState = (
   state: EngineState,
   paramId: string,
-  sketchConfigParam: SketchConfigParam,
+  sketchConfigParam: { sliderMin?: number; sliderMax?: number; valueType: NodeValueType },
 ) => {
   /** TODO: This can probably be tidier, using some sort of config object to generate the option nodes
    * The same config object could also be used in the component to loop through
@@ -104,12 +104,12 @@ export const addNode = (state: EngineState, paramId: string, config: SketchConfi
         defaultValue: config.defaultValue[index],
         params: [], // TODO: Bad typing means we have to do this
       })
-      _addOptionNodeToState(state, childNodeId, {
+      _addSliderMinAndMaxNodesToState(state, childNodeId, {
         valueType: 'number',
       })
     }
   } else {
     _addNodeToState(state, paramId, config)
-    _addOptionNodeToState(state, paramId, config)
+    _addSliderMinAndMaxNodesToState(state, paramId, config)
   }
 }
