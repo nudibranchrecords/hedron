@@ -5,7 +5,7 @@
     "dev": "lerna run dev --parallel --ignore @hedron/example-project --ignore @hedron/midi-test-app --ignore @hedron/clock-test-app",
     "prebuild:win": "lerna run build --sort",
     "dev:win": "lerna run dev --scope @hedron/desktop --scope @hedron/engine --scope @hedron/ui-core --scope @hedron/app-store --scope @hedron/clock --scope @hedron/lfo-input --scope @hedron/midi-input --no-bail",
-    "dev:win-alt": "concurrently \"cd packages/engine && pnpm run dev\" \"cd packages/desktop && pnpm run dev\" \"cd packages/ui-core && pnpm run dev\" \"cd packages/app-store && pnpm run dev\" \"cd packages/clock && pnpm run dev\" \"cd packages/lfo-input && pnpm run dev\" \"cd packages/midi-input && pnpm run dev\"",
+    "dev:win-alt": "concurrently \"cd packages/engine && pnpm run dev\" \"cd packages/desktop && pnpm run dev\" \"cd packages/ui-core && pnpm run dev\" \"cd packages/app-store && pnpm run dev\" \"cd packages/clock && pnpm run dev\" \"cd packages/lfo-input && pnpm run dev\" \"cd packages/audio-input && pnpm run dev\" \"cd packages/midi-input && pnpm run dev\"",
     "dev:clock": "lerna run dev --parallel --scope @hedron/clock --scope @hedron/clock-test-app",
     "storybook": "lerna run storybook --scope @hedron/ui-core",
     "build:engine": "lerna run build --scope @hedron/engine",

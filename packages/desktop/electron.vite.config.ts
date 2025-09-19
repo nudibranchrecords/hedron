@@ -24,6 +24,7 @@ export default defineConfig({
         '@hedron/ui-core': path.resolve(__dirname, '../ui-core/src'),
         '@hedron/midi-input': path.resolve(__dirname, '../midi-input/src'),
         '@hedron/lfo-input': path.resolve(__dirname, '../lfo-input/src'),
+        '@hedron/audio-input': path.resolve(__dirname, '../audio-input/src'),
       },
     },
   },
