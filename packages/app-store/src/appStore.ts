@@ -60,6 +60,32 @@ export type CustomSetState = (
 
 export type SetterCreator<K extends keyof AppState> = (setState: CustomSetState) => AppState[K]
 
+/**
+ * Cleans up title field in save list items by extracting the filename without extension
+ * when the title is actually a full path
+ */
+const cleanupSaveListTitles = (saveList: SaveItem[]): SaveItem[] => {
+  let cleanedList = saveList.map((item) => {
+    // Check if the title looks like a path
+    if (item.title && (item.title.includes('/') || item.title.includes('\\'))) {
+      // Extract filename without extension from the path
+      const filename = item.title.split(/[\/\\]/).pop() || item.title
+      // Remove extension if present
+      const titleWithoutExt = filename.replace(/\.[^/.]+$/, '')
+      return { ...item, title: titleWithoutExt }
+    }
+    return item
+  })
+  // remove paths that do not exist anymore
+  // this doesn't actually work yet, because I couldn't figure out how to get fs on the global object before the store is created
+  const fs = window['__HEDRON'].fs
+  if (fs) {
+    cleanedList = cleanedList.filter((item) => fs.existsSync(item.path))
+  }
+
+  return cleanedList
+}
+
 // Factory function to create the app store
 export const createAppStore = () =>
   createStore<AppState>()(
@@ -139,6 +165,12 @@ export const createAppStore = () =>
       {
         name: 'app-storage',
         partialize: (state) => ({ saveList: state.saveList }),
+        onRehydrateStorage: () => (state) => {
+          if (state && state.saveList) {
+            // Clean up any bad data in the saveList when the store is rehydrated
+            state.saveList = cleanupSaveListTitles(state.saveList)
+          }
+        },
       },
     ),
   )
