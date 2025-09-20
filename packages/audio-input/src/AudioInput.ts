@@ -4,20 +4,6 @@ import * as THREE from 'three'
 import { AudioDeviceManager } from './AudioDeviceManager'
 
 /**
- * Settings for audio analysis configuration
- */
-export type AudioSettings = {
-  /**
-   * Whether to compute the full frequency spectrum
-   */
-  computeFullSpectrum: boolean
-  /**
-   * Whether to generate a texture from audio data for visualization
-   */
-  generateAudioTexture: boolean
-}
-
-/**
  * Represents a frequency band with center frequency and Q factor
  */
 export interface FrequencyBand {
@@ -132,6 +118,11 @@ export class AudioInput implements IPlugin {
       defaultValue: 1,
     },
   ] as const satisfies InputOptionNodesConfig
+
+  /**
+   * Whether to generate a texture from audio data for visualization
+   */
+  public generateAudioTexture: boolean = true
 
   /**
    * Audio data containing the analyzer and visualization resources
@@ -283,9 +274,7 @@ export class AudioInput implements IPlugin {
       .then(() => {
         console.log('[AudioInput] Audio system successfully initialized')
         // Start the update loop when audio is ready
-        window.requestAnimationFrame(() =>
-          this.update({ computeFullSpectrum: true, generateAudioTexture: true }),
-        )
+        window.requestAnimationFrame(() => this.update())
       })
       .catch((error) => {
         console.error('[AudioInput] Failed to initialize audio system:', error)
@@ -566,7 +555,7 @@ export class AudioInput implements IPlugin {
    * @param settings Configuration for audio processing
    * @returns The current levels data array
    */
-  public update(settings: AudioSettings) {
+  public update() {
     if (!this.audioData) return
 
     // Get latest frequency data from analyzer - using any to work around type issues with Uint8Array
@@ -575,10 +564,7 @@ export class AudioInput implements IPlugin {
     // Process the frequency bands
     this.processBands()
 
-    // Process full spectrum if requested
-    if (settings.computeFullSpectrum) {
-      this.processFullSpectrum(settings)
-    }
+    this.processFullSpectrum()
 
     // Debug frequency data periodically
     if (AudioInput.ENABLE_LOGGING) {
@@ -588,7 +574,7 @@ export class AudioInput implements IPlugin {
     this.updateInputNodes()
 
     // Schedule next update
-    window.requestAnimationFrame(() => this.update(settings))
+    window.requestAnimationFrame(() => this.update())
 
     return this.levelsData
   }
@@ -697,7 +683,7 @@ export class AudioInput implements IPlugin {
    * Processes the full frequency spectrum for visualization
    * @param settings Audio processing configuration
    */
-  private processFullSpectrum(settings: AudioSettings) {
+  private processFullSpectrum() {
     if (!this.audioData) return
 
     // Process each frequency in the spectrum
@@ -738,7 +724,7 @@ export class AudioInput implements IPlugin {
     }
 
     // Update visualization texture if requested
-    if (settings.generateAudioTexture) {
+    if (this.generateAudioTexture) {
       for (let i = 0; i < this.audioData.freqs.length; i++) {
         this.audioData.textureData[i] = Math.floor(this.fullLevelsData[i] * 256)
       }
