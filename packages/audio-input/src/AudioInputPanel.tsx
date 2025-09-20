@@ -466,7 +466,7 @@ export const AudioInputPanel = ({ input, engine }: IProps) => {
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center' }}>
                   <select
-                    value={audioPlugin.currentDeviceId}
+                    value={audioPlugin.deviceManager.currentDeviceId}
                     onChange={async (e) => {
                       if (!audioPlugin) return
 
@@ -503,7 +503,7 @@ export const AudioInputPanel = ({ input, engine }: IProps) => {
                     disabled={isChangingDevice || isRefreshingDevices}
                   >
                     <option value="default">System Default</option>
-                    {audioPlugin.availableInputDevices.map((device) => (
+                    {audioPlugin.deviceManager.availableInputDevices.map((device) => (
                       <option key={device.deviceId} value={device.deviceId}>
                         {device.label || `Device (${device.deviceId.slice(0, 8)}...)`}
                       </option>

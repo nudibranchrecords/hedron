@@ -1,6 +1,7 @@
 export * from './AudioInput'
 export * from './AudioInputPanel'
 export * from './AudioDebugPanel'
+export * from './AudioDeviceManager'
 
 // Export test utilities
 export { getAudioDiagnostics, testAudioInputCapture } from './AudioTestUtils'

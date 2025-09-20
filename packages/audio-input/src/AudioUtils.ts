@@ -214,3 +214,29 @@ export function yToQ(y: number, height: number): number {
   const normalizedQ = 1 - y / height
   return Math.pow(10, normalizedQ * 2 - 1)
 }
+
+/**
+ * Linear interpolation between two values
+ * @param v0 Starting value
+ * @param v1 End value
+ * @param t Interpolation factor (0-1)
+ * @returns Interpolated value
+ */
+export function lerp(v0: number, v1: number, t: number) {
+  return (1 - t) * v0 + t * v1
+}
+
+/**
+ * Standard bell curve (Gaussian) function for band-pass filtering
+ * @param x Input value (frequency)
+ * @param center Center frequency
+ * @param q Q factor (higher values = narrower band)
+ * @returns Weight between 0 and 1
+ */
+export function bellCurve(x: number, center: number, q: number): number {
+  // Convert Q to standard deviation (sigma)
+  // In a bell curve, higher Q = narrower curve = smaller sigma
+  const sigma = center / (q * 10)
+  const exponent = -Math.pow(x - center, 2) / (2 * sigma * sigma)
+  return Math.exp(exponent)
+}

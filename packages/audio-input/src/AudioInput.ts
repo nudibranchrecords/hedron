@@ -1,41 +1,7 @@
 import { handleEachInput, HedronEngine, InputOptionNodesConfig, IPlugin } from '@hedron/engine'
+import { bellCurve, clamp, lerp } from 'src/AudioUtils'
 import * as THREE from 'three'
-
-const TAU = Math.PI * 2
-/**
- * Linear interpolation between two values
- * @param v0 Starting value
- * @param v1 End value
- * @param t Interpolation factor (0-1)
- * @returns Interpolated value
- */
-const lerp = (v0: number, v1: number, t: number) => (1 - t) * v0 + t * v1
-
-/**
- * Clamps a value between min and max
- * @param value Value to clamp
- * @param min Minimum value
- * @param max Maximum value
- * @returns Clamped value
- */
-const clamp = (value: number, min: number, max: number): number => {
-  return Math.max(min, Math.min(max, value))
-}
-
-/**
- * Standard bell curve (Gaussian) function for band-pass filtering
- * @param x Input value (frequency)
- * @param center Center frequency
- * @param q Q factor (higher values = narrower band)
- * @returns Weight between 0 and 1
- */
-const bellCurve = (x: number, center: number, q: number): number => {
-  // Convert Q to standard deviation (sigma)
-  // In a bell curve, higher Q = narrower curve = smaller sigma
-  const sigma = center / (q * 10)
-  const exponent = -Math.pow(x - center, 2) / (2 * sigma * sigma)
-  return Math.exp(exponent)
-}
+import { AudioDeviceManager } from './AudioDeviceManager'
 
 /**
  * Settings for audio analysis configuration
@@ -173,19 +139,9 @@ export class AudioInput implements IPlugin {
   public audioData: AudioData | undefined
 
   /**
-   * Current audio stream
+   * Audio device manager that handles device selection and management
    */
-  public currentStream: MediaStream | undefined
-
-  /**
-   * List of available audio input devices
-   */
-  public availableInputDevices: MediaDeviceInfo[] = []
-
-  /**
-   * Currently selected audio input device ID
-   */
-  public currentDeviceId: string = 'default'
+  public deviceManager: AudioDeviceManager
 
   /**
    * Number of frequency bands to analyze
@@ -295,12 +251,32 @@ export class AudioInput implements IPlugin {
    */
   public bandsModified: boolean = false
 
+  /**
+   * Reference to the engine's state store
+   */
+  private _store
+
+  /**
+   * The last time debug information was logged
+   */
+  private _lastDebugTime: number = 0
+
+  /**
+   * Interval in milliseconds between debug logs
+   */
+  private _debugInterval: number = 2000 // Log every 2 seconds
+
   constructor(engine: HedronEngine) {
     console.log('[AudioInput] Plugin initializing...')
-    const store = engine.getStore()
+    this._store = engine.getStore()
+
+    // Initialize audio device manager
+    this.deviceManager = new AudioDeviceManager()
+    AudioDeviceManager.ENABLE_LOGGING = AudioInput.ENABLE_LOGGING
 
     // Initialize audio capture
-    this.updateInputDeviceList()
+    this.deviceManager
+      .updateInputDeviceList()
       .then(() => {
         return this.initAudio()
       })
@@ -314,43 +290,6 @@ export class AudioInput implements IPlugin {
       .catch((error) => {
         console.error('[AudioInput] Failed to initialize audio system:', error)
       })
-
-    // Engine update tick
-    const tick = () => {
-      requestAnimationFrame(() => {
-        const storeState = store.getState()
-        handleEachInput<typeof this.optionNodesConfig>(
-          storeState,
-          this.inputType,
-          ({ input, optionNodes, targetNode }) => {
-            // TODO: This can be handled by `onInput` once we have `isEnabled` as a generic option
-            if (!optionNodes.isEnabled) return
-            if (targetNode.valueType !== 'number') return
-
-            // If audio data is available, use the appropriate frequency band based on the option
-            if (this.audioData && this.levelsData.length > 0) {
-              const bandIndex = Math.min(optionNodes.frequency, this.bandsCount - 1)
-              const audioValue = this.levelsData[bandIndex] || 0
-
-              // Map the audio value to the configured min/max range
-              storeState.updateNodeValue(
-                input.targetNodeId,
-                lerp(optionNodes.min, optionNodes.max, audioValue),
-              )
-            } else {
-              // Fallback behavior when audio isn't initialized yet
-              storeState.updateNodeValue(
-                input.targetNodeId,
-                lerp(optionNodes.min, optionNodes.max, optionNodes.frequency * 0.25),
-              )
-            }
-          },
-        )
-
-        tick()
-      })
-    }
-    tick()
   }
 
   /**
@@ -387,27 +326,7 @@ export class AudioInput implements IPlugin {
    * @returns Promise with array of input devices
    */
   public async updateInputDeviceList(): Promise<MediaDeviceInfo[]> {
-    try {
-      const devices = await navigator.mediaDevices.enumerateDevices()
-      this.availableInputDevices = devices.filter((device) => device.kind === 'audioinput')
-
-      if (AudioInput.ENABLE_LOGGING) {
-        console.log('[AudioInput] Available audio input devices:')
-        this.availableInputDevices.forEach((device, index) => {
-          console.log(`  ${index + 1}. ${device.label || 'Unnamed device'} (${device.deviceId})`)
-        })
-      }
-
-      if (this.availableInputDevices.length === 0) {
-        console.warn('[AudioInput] No audio input devices detected!')
-      }
-
-      return this.availableInputDevices
-    } catch (deviceError) {
-      console.warn('[AudioInput] Could not enumerate audio devices:', deviceError)
-      this.availableInputDevices = []
-      return []
-    }
+    return await this.deviceManager.updateInputDeviceList()
   }
 
   /**
@@ -417,19 +336,14 @@ export class AudioInput implements IPlugin {
    */
   public async changeAudioInputDevice(deviceId: string): Promise<boolean> {
     try {
-      if (AudioInput.ENABLE_LOGGING)
-        console.log(`[AudioInput] Changing audio input device to: ${deviceId}`)
+      const result = await this.deviceManager.changeAudioInputDevice(deviceId)
 
-      // Store the new device ID
-      this.currentDeviceId = deviceId
-
-      // Close existing stream if it exists
-      if (this.currentStream) {
-        this.currentStream.getTracks().forEach((track) => track.stop())
+      if (result) {
+        // Create a new audio stream with the selected device
+        return await this.reinitializeAudio()
       }
 
-      // Create a new audio stream with the selected device
-      return await this.reinitializeAudio()
+      return false
     } catch (error) {
       console.error(`[AudioInput] Failed to change audio input device:`, error)
       return false
@@ -481,34 +395,10 @@ export class AudioInput implements IPlugin {
       // Update device list
       await this.updateInputDeviceList()
 
-      // Request microphone access with specific device if set
-      if (AudioInput.ENABLE_LOGGING)
-        console.log(`[AudioInput] Requesting microphone access for device: ${this.currentDeviceId}`)
-      const constraints = {
-        audio:
-          this.currentDeviceId !== 'default' ? { deviceId: { exact: this.currentDeviceId } } : true,
-      }
+      // Get an audio stream using the device manager
+      const stream = await this.deviceManager.getAudioStream()
 
-      this.currentStream = await navigator.mediaDevices.getUserMedia(constraints)
-
-      // Log information about the audio tracks that were captured
-      const audioTracks = this.currentStream.getAudioTracks()
-      if (AudioInput.ENABLE_LOGGING) {
-        console.log(
-          `[AudioInput] Audio access granted. Captured ${audioTracks.length} audio track(s):`,
-        )
-        audioTracks.forEach((track, index) => {
-          console.log(`  Track ${index + 1}: ${track.label}`)
-          console.log(`    - Enabled: ${track.enabled}`)
-          console.log(`    - Muted: ${track.muted}`)
-          console.log(`    - ReadyState: ${track.readyState}`)
-
-          // Log track constraints and settings
-          const settings = track.getSettings()
-          console.log('    - Settings:', settings)
-        })
-      }
-
+      // Create audio context
       const context = new window.AudioContext()
       if (AudioInput.ENABLE_LOGGING) {
         console.log(
@@ -516,7 +406,8 @@ export class AudioInput implements IPlugin {
         )
       }
 
-      const source = context.createMediaStreamSource(this.currentStream)
+      // Create media stream source and analyzer
+      const source = context.createMediaStreamSource(stream)
       const analyser = context.createAnalyser()
 
       // Log analyzer configuration
@@ -675,10 +566,6 @@ export class AudioInput implements IPlugin {
    * @param settings Configuration for audio processing
    * @returns The current levels data array
    */
-  // Debug properties
-  private lastDebugTime: number = 0
-  private debugInterval: number = 2000 // Log every 2 seconds
-
   public update(settings: AudioSettings) {
     if (!this.audioData) return
 
@@ -694,72 +581,116 @@ export class AudioInput implements IPlugin {
     }
 
     // Debug frequency data periodically
-    const currentTime = Date.now()
-    if (AudioInput.ENABLE_LOGGING && currentTime - this.lastDebugTime > this.debugInterval) {
-      this.lastDebugTime = currentTime
-
-      // Log the levels data for each frequency band
-      const bandsDebug = this.bands.map((band, i) => {
-        const level = this.levelsData[i]?.toFixed(3) || 'N/A'
-
-        // Get range covered by this band (where response > 0.5)
-        let lowerBound = 0
-        let upperBound = 0
-
-        // Calculate approximate bandwidth based on Q
-        // For a bell curve, bandwidth at half power points (-3dB) is approximately center/Q
-        const bandwidth = band.centerFreq / band.q
-        lowerBound = Math.max(FREQ_RANGE.MIN, band.centerFreq - bandwidth / 2)
-        upperBound = Math.min(FREQ_RANGE.MAX, band.centerFreq + bandwidth / 2)
-
-        return {
-          name: ['Low', 'Mid Low', 'Mid High', 'High'][i] || `Band ${i + 1}`,
-          centerFreq: `${Math.round(band.centerFreq)}Hz`,
-          q: band.q.toFixed(1),
-          bandwidth: `${Math.round(bandwidth)}Hz`,
-          range: `${Math.round(lowerBound)}-${Math.round(upperBound)}Hz`,
-          level,
-        }
-      })
-
-      console.log('[AudioInput] Current band levels:', bandsDebug)
-
-      // Calculate overall audio level (average of all bands)
-      const avgLevel = this.levelsData.reduce((sum, val) => sum + (val || 0), 0) / this.bands.length
-      console.log(`[AudioInput] Average audio level: ${avgLevel.toFixed(3)}`)
-
-      // Find peak bin in full spectrum if available
-      if (this.fullLevelsData && this.fullLevelsData.length > 0) {
-        let peakBin = 0
-        let peakValue = 0
-
-        for (let i = 0; i < this.fullLevelsData.length; i++) {
-          if (this.fullLevelsData[i] > peakValue) {
-            peakValue = this.fullLevelsData[i]
-            peakBin = i
-          }
-        }
-
-        // Convert peak bin to frequency
-        const peakFreq = Math.round((peakBin / this.fullLevelsData.length) * this.nyquist)
-        if (peakValue > 0.1) {
-          console.log(
-            `[AudioInput] Peak frequency: ~${peakFreq}Hz (bin ${peakBin}) with magnitude ${peakValue.toFixed(3)}`,
-          )
-        }
-      }
-
-      // Log if bands were modified
-      if (this.bandsModified) {
-        console.log('[AudioInput] Band settings have been modified')
-        this.bandsModified = false
-      }
+    if (AudioInput.ENABLE_LOGGING) {
+      this.debugAudioLevels()
     }
+
+    this.updateInputNodes()
 
     // Schedule next update
     window.requestAnimationFrame(() => this.update(settings))
 
     return this.levelsData
+  }
+
+  /**
+   * Updates sketch nodes based on current audio levels
+   * Called each frame from the main update loop
+   */
+  private updateInputNodes() {
+    const storeState = this._store.getState()
+    handleEachInput<typeof this.optionNodesConfig>(
+      storeState,
+      this.inputType,
+      ({ input, optionNodes, targetNode }) => {
+        // TODO: This can be handled by `onInput` once we have `isEnabled` as a generic option
+        if (!optionNodes.isEnabled) return
+        if (targetNode.valueType !== 'number') return
+
+        // If audio data is available, use the appropriate frequency band based on the option
+        if (this.audioData && this.levelsData.length > 0) {
+          const bandIndex = Math.min(optionNodes.frequency, this.bandsCount - 1)
+          const audioValue = this.levelsData[bandIndex] || 0
+
+          // Map the audio value to the configured min/max range
+          storeState.updateNodeValue(
+            input.targetNodeId,
+            lerp(optionNodes.min, optionNodes.max, audioValue),
+          )
+        } else {
+          // Fallback behavior when audio isn't initialized yet
+          storeState.updateNodeValue(
+            input.targetNodeId,
+            lerp(optionNodes.min, optionNodes.max, optionNodes.frequency * 0.25),
+          )
+        }
+      },
+    )
+  }
+
+  private debugAudioLevels() {
+    const currentTime = Date.now()
+    if (currentTime - this._lastDebugTime < this._debugInterval) {
+      return
+    }
+    this._lastDebugTime = currentTime
+
+    // Log the levels data for each frequency band
+    const bandsDebug = this.bands.map((band, i) => {
+      const level = this.levelsData[i]?.toFixed(3) || 'N/A'
+
+      // Get range covered by this band (where response > 0.5)
+      let lowerBound = 0
+      let upperBound = 0
+
+      // Calculate approximate bandwidth based on Q
+      // For a bell curve, bandwidth at half power points (-3dB) is approximately center/Q
+      const bandwidth = band.centerFreq / band.q
+      lowerBound = Math.max(FREQ_RANGE.MIN, band.centerFreq - bandwidth / 2)
+      upperBound = Math.min(FREQ_RANGE.MAX, band.centerFreq + bandwidth / 2)
+
+      return {
+        name: ['Low', 'Mid Low', 'Mid High', 'High'][i] || `Band ${i + 1}`,
+        centerFreq: `${Math.round(band.centerFreq)}Hz`,
+        q: band.q.toFixed(1),
+        bandwidth: `${Math.round(bandwidth)}Hz`,
+        range: `${Math.round(lowerBound)}-${Math.round(upperBound)}Hz`,
+        level,
+      }
+    })
+
+    console.log('[AudioInput] Current band levels:', bandsDebug)
+
+    // Calculate overall audio level (average of all bands)
+    const avgLevel = this.levelsData.reduce((sum, val) => sum + (val || 0), 0) / this.bands.length
+    console.log(`[AudioInput] Average audio level: ${avgLevel.toFixed(3)}`)
+
+    // Find peak bin in full spectrum if available
+    if (this.fullLevelsData && this.fullLevelsData.length > 0) {
+      let peakBin = 0
+      let peakValue = 0
+
+      for (let i = 0; i < this.fullLevelsData.length; i++) {
+        if (this.fullLevelsData[i] > peakValue) {
+          peakValue = this.fullLevelsData[i]
+          peakBin = i
+        }
+      }
+
+      // Convert peak bin to frequency
+      const peakFreq = Math.round((peakBin / this.fullLevelsData.length) * this.nyquist)
+      if (peakValue > 0.1) {
+        console.log(
+          `[AudioInput] Peak frequency: ~${peakFreq}Hz (bin ${peakBin}) with magnitude ${peakValue.toFixed(3)}`,
+        )
+      }
+    }
+
+    // Log if bands were modified
+    if (this.bandsModified) {
+      console.log('[AudioInput] Band settings have been modified')
+      this.bandsModified = false
+    }
   }
 
   /**
