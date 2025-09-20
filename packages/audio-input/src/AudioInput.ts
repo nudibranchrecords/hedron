@@ -1,15 +1,4 @@
-import {
-  ConfigToOptionsType,
-  EngineState,
-  getNextEnumValue,
-  handleEachInput,
-  HedronEngine,
-  Input,
-  InputOptionNodesConfig,
-  IPlugin,
-  Node,
-  NodeValue,
-} from '@hedron/engine'
+import { handleEachInput, HedronEngine, InputOptionNodesConfig, IPlugin } from '@hedron/engine'
 import * as THREE from 'three'
 
 const TAU = Math.PI * 2
@@ -128,6 +117,11 @@ export type AudioData = {
  */
 export class AudioInput implements IPlugin {
   public static ID = 'audio-input'
+  /**
+   * Controls whether audio-related console logging is enabled
+   * Set to false to disable all audio debug logs
+   */
+  public static ENABLE_LOGGING = false
   public readonly id = AudioInput.ID
   public readonly name = 'Audio Input'
   public readonly inputType = 'audio'
@@ -384,7 +378,8 @@ export class AudioInput implements IPlugin {
     // Mark bands as modified
     this.bandsModified = true
 
-    console.log(`[AudioInput] Band ${bandIndex} updated: Center=${clampedFreq}Hz, Q=${clampedQ}`)
+    if (AudioInput.ENABLE_LOGGING)
+      console.log(`[AudioInput] Band ${bandIndex} updated: Center=${clampedFreq}Hz, Q=${clampedQ}`)
   }
 
   /**
@@ -396,10 +391,12 @@ export class AudioInput implements IPlugin {
       const devices = await navigator.mediaDevices.enumerateDevices()
       this.availableInputDevices = devices.filter((device) => device.kind === 'audioinput')
 
-      console.log('[AudioInput] Available audio input devices:')
-      this.availableInputDevices.forEach((device, index) => {
-        console.log(`  ${index + 1}. ${device.label || 'Unnamed device'} (${device.deviceId})`)
-      })
+      if (AudioInput.ENABLE_LOGGING) {
+        console.log('[AudioInput] Available audio input devices:')
+        this.availableInputDevices.forEach((device, index) => {
+          console.log(`  ${index + 1}. ${device.label || 'Unnamed device'} (${device.deviceId})`)
+        })
+      }
 
       if (this.availableInputDevices.length === 0) {
         console.warn('[AudioInput] No audio input devices detected!')
@@ -420,7 +417,8 @@ export class AudioInput implements IPlugin {
    */
   public async changeAudioInputDevice(deviceId: string): Promise<boolean> {
     try {
-      console.log(`[AudioInput] Changing audio input device to: ${deviceId}`)
+      if (AudioInput.ENABLE_LOGGING)
+        console.log(`[AudioInput] Changing audio input device to: ${deviceId}`)
 
       // Store the new device ID
       this.currentDeviceId = deviceId
@@ -477,13 +475,15 @@ export class AudioInput implements IPlugin {
    */
   public async initAudio(): Promise<AudioData> {
     try {
-      console.log('[AudioInput] Initializing audio capture system...')
+      if (AudioInput.ENABLE_LOGGING)
+        console.log('[AudioInput] Initializing audio capture system...')
 
       // Update device list
       await this.updateInputDeviceList()
 
       // Request microphone access with specific device if set
-      console.log(`[AudioInput] Requesting microphone access for device: ${this.currentDeviceId}`)
+      if (AudioInput.ENABLE_LOGGING)
+        console.log(`[AudioInput] Requesting microphone access for device: ${this.currentDeviceId}`)
       const constraints = {
         audio:
           this.currentDeviceId !== 'default' ? { deviceId: { exact: this.currentDeviceId } } : true,
@@ -493,34 +493,40 @@ export class AudioInput implements IPlugin {
 
       // Log information about the audio tracks that were captured
       const audioTracks = this.currentStream.getAudioTracks()
-      console.log(
-        `[AudioInput] Audio access granted. Captured ${audioTracks.length} audio track(s):`,
-      )
-      audioTracks.forEach((track, index) => {
-        console.log(`  Track ${index + 1}: ${track.label}`)
-        console.log(`    - Enabled: ${track.enabled}`)
-        console.log(`    - Muted: ${track.muted}`)
-        console.log(`    - ReadyState: ${track.readyState}`)
+      if (AudioInput.ENABLE_LOGGING) {
+        console.log(
+          `[AudioInput] Audio access granted. Captured ${audioTracks.length} audio track(s):`,
+        )
+        audioTracks.forEach((track, index) => {
+          console.log(`  Track ${index + 1}: ${track.label}`)
+          console.log(`    - Enabled: ${track.enabled}`)
+          console.log(`    - Muted: ${track.muted}`)
+          console.log(`    - ReadyState: ${track.readyState}`)
 
-        // Log track constraints and settings
-        const settings = track.getSettings()
-        console.log('    - Settings:', settings)
-      })
+          // Log track constraints and settings
+          const settings = track.getSettings()
+          console.log('    - Settings:', settings)
+        })
+      }
 
       const context = new window.AudioContext()
-      console.log(
-        `[AudioInput] Audio context created. Sample rate: ${context.sampleRate}Hz, State: ${context.state}`,
-      )
+      if (AudioInput.ENABLE_LOGGING) {
+        console.log(
+          `[AudioInput] Audio context created. Sample rate: ${context.sampleRate}Hz, State: ${context.state}`,
+        )
+      }
 
       const source = context.createMediaStreamSource(this.currentStream)
       const analyser = context.createAnalyser()
 
       // Log analyzer configuration
-      console.log('[AudioInput] Audio analyzer configuration:')
-      console.log(`  - FFT Size: ${analyser.fftSize}`)
-      console.log(`  - Frequency bin count: ${analyser.frequencyBinCount}`)
-      console.log(`  - Min/Max decibels: ${analyser.minDecibels} to ${analyser.maxDecibels} dB`)
-      console.log(`  - Smoothing time constant: ${analyser.smoothingTimeConstant}`)
+      if (AudioInput.ENABLE_LOGGING) {
+        console.log('[AudioInput] Audio analyzer configuration:')
+        console.log(`  - FFT Size: ${analyser.fftSize}`)
+        console.log(`  - Frequency bin count: ${analyser.frequencyBinCount}`)
+        console.log(`  - Min/Max decibels: ${analyser.minDecibels} to ${analyser.maxDecibels} dB`)
+        console.log(`  - Smoothing time constant: ${analyser.smoothingTimeConstant}`)
+      }
 
       // Create texture data array and initialize it
       const textureData = new Uint8Array(analyser.frequencyBinCount)
@@ -576,57 +582,67 @@ export class AudioInput implements IPlugin {
       source.connect(this.audioData.analyser)
 
       // Log frequency band information
-      console.log('[AudioInput] Frequency bands configuration:')
-      console.log(`  - Frequency bin count: ${this.audioData.analyser.frequencyBinCount}`)
-      console.log(`  - Sample rate: ${this.sampleRate}Hz, Nyquist: ${this.nyquist}Hz`)
-      console.log(`  - ${this.bandsCount} bands with band-pass filter configuration`)
+      if (AudioInput.ENABLE_LOGGING) {
+        console.log('[AudioInput] Frequency bands configuration:')
+        console.log(`  - Frequency bin count: ${this.audioData.analyser.frequencyBinCount}`)
+        console.log(`  - Sample rate: ${this.sampleRate}Hz, Nyquist: ${this.nyquist}Hz`)
+        console.log(`  - ${this.bandsCount} bands with band-pass filter configuration`)
+      }
 
       // Calculate frequency for each bin
       const binSize = this.nyquist / this.audioData.analyser.frequencyBinCount
 
       // Log band settings
-      console.log('[AudioInput] Band filter settings:')
-      for (let i = 0; i < this.bands.length; i++) {
-        const band = this.bands[i]
-        console.log(
-          `  - Band ${i + 1} (${['Low', 'Mid Low', 'Mid High', 'High'][i] || i}): ` +
-            `Center: ${band.centerFreq}Hz, Q: ${band.q}, Color: ${band.color}`,
-        )
-
-        // Verify band frequency is within the audible range
-        if (band.centerFreq < FREQ_RANGE.MIN || band.centerFreq > FREQ_RANGE.MAX) {
-          console.warn(
-            `[AudioInput] Band ${i + 1} center frequency (${band.centerFreq}Hz) is outside the recommended range (${FREQ_RANGE.MIN}-${FREQ_RANGE.MAX}Hz)`,
+      if (AudioInput.ENABLE_LOGGING) {
+        console.log('[AudioInput] Band filter settings:')
+        for (let i = 0; i < this.bands.length; i++) {
+          const band = this.bands[i]
+          console.log(
+            `  - Band ${i + 1} (${['Low', 'Mid Low', 'Mid High', 'High'][i] || i}): ` +
+              `Center: ${band.centerFreq}Hz, Q: ${band.q}, Color: ${band.color}`,
           )
+
+          // Verify band frequency is within the audible range
+          if (band.centerFreq < FREQ_RANGE.MIN || band.centerFreq > FREQ_RANGE.MAX) {
+            console.warn(
+              `[AudioInput] Band ${i + 1} center frequency (${band.centerFreq}Hz) is outside the recommended range (${FREQ_RANGE.MIN}-${FREQ_RANGE.MAX}Hz)`,
+            )
+          }
         }
       }
 
       return this.audioData
     } catch (error) {
-      // Handle common audio permission errors with more detailed logging
+      // Always log errors regardless of logging settings
       if (error instanceof DOMException) {
         switch (error.name) {
           case 'NotAllowedError':
             console.error('[AudioInput] Microphone access denied by user or system settings.')
-            console.log('[AudioInput] Troubleshooting tips:')
-            console.log(
-              '  - Check that you have granted microphone permissions in browser settings',
-            )
-            console.log('  - Ensure no other application is using the microphone exclusively')
-            console.log('  - Try selecting a specific audio device if multiple are available')
+            if (AudioInput.ENABLE_LOGGING) {
+              console.log('[AudioInput] Troubleshooting tips:')
+              console.log(
+                '  - Check that you have granted microphone permissions in browser settings',
+              )
+              console.log('  - Ensure no other application is using the microphone exclusively')
+              console.log('  - Try selecting a specific audio device if multiple are available')
+            }
             break
           case 'NotFoundError':
             console.error('[AudioInput] No microphone detected on this device.')
-            console.log('[AudioInput] Troubleshooting tips:')
-            console.log('  - Check if a microphone is properly connected')
-            console.log('  - Try reconnecting your audio device')
+            if (AudioInput.ENABLE_LOGGING) {
+              console.log('[AudioInput] Troubleshooting tips:')
+              console.log('  - Check if a microphone is properly connected')
+              console.log('  - Try reconnecting your audio device')
+            }
             break
           case 'NotReadableError':
             console.error('[AudioInput] Could not start audio capture. Hardware or OS error.')
-            console.log('[AudioInput] Troubleshooting tips:')
-            console.log('  - Try reconnecting your audio device')
-            console.log('  - Restart your browser or application')
-            console.log('  - Check system audio settings')
+            if (AudioInput.ENABLE_LOGGING) {
+              console.log('[AudioInput] Troubleshooting tips:')
+              console.log('  - Try reconnecting your audio device')
+              console.log('  - Restart your browser or application')
+              console.log('  - Check system audio settings')
+            }
             break
           default:
             console.error(`[AudioInput] Error initializing audio: ${error.name}`, error)
@@ -637,7 +653,7 @@ export class AudioInput implements IPlugin {
 
       // Even when there's an error, log browser audio capabilities for debugging
       if (navigator.mediaDevices) {
-        console.log('[AudioInput] Media devices API available')
+        if (AudioInput.ENABLE_LOGGING) console.log('[AudioInput] Media devices API available')
       } else {
         console.error(
           '[AudioInput] Media devices API not available - microphone access not possible',
@@ -645,7 +661,7 @@ export class AudioInput implements IPlugin {
       }
 
       if (typeof window.AudioContext !== 'undefined') {
-        console.log('[AudioInput] AudioContext API available')
+        if (AudioInput.ENABLE_LOGGING) console.log('[AudioInput] AudioContext API available')
       } else {
         console.error('[AudioInput] AudioContext API not available - audio processing not possible')
       }
@@ -679,7 +695,7 @@ export class AudioInput implements IPlugin {
 
     // Debug frequency data periodically
     const currentTime = Date.now()
-    if (currentTime - this.lastDebugTime > this.debugInterval) {
+    if (AudioInput.ENABLE_LOGGING && currentTime - this.lastDebugTime > this.debugInterval) {
       this.lastDebugTime = currentTime
 
       // Log the levels data for each frequency band
