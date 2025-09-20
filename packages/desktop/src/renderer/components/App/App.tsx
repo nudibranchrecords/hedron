@@ -25,7 +25,6 @@ export const App = (): JSX.Element => {
               <div className={c.widgetItem}>
                 <VideoControls />
               </div>
-              {/* <Audio /> */}
             </div>
           </div>
           <div className={c.right}>
