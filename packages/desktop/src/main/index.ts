@@ -15,6 +15,7 @@ import { createWindow } from '@main/mainWindow'
 import { startSketchesServer } from '@main/handleSketchFiles'
 import { saveProjectFile } from '@main/handlers/saveProjectFile'
 import { openProjectFile } from '@main/handlers/openProjectFile'
+import { openFolder } from '@main/handlers/openFolder'
 import { FrameEvents } from '@shared/FrameEvents'
 const isDevelopment = process.env.NODE_ENV !== 'production'
 
@@ -106,6 +107,10 @@ ipcMain.handle(
     return await saveProjectFile(projectData, savePath)
   },
 )
+
+ipcMain.handle(FileEvents.OpenFolder, async (_, folderPath: string) => {
+  return await openFolder(folderPath)
+})
 
 ipcMain.handle(SketchEvents.StartSketchesServer, async (_, sketchesDir: string) => {
   return await startSketchesServer(sketchesDir)
