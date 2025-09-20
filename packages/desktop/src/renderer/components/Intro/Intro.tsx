@@ -23,13 +23,26 @@ import c from './Intro.module.css'
 import { handleLoadProjectDialog, handleSketchesDialog } from '@renderer/handlers/fileHandlers'
 import { SaveItem, useAppStore } from '@renderer/appStore'
 import { pluralize } from '@renderer/utils/pluralize'
+import { openFolder } from '@renderer/ipc/mainThreadTalk'
 
 const RecentProjectItem = ({ item }: { item: SaveItem }) => {
   return (
     <Card>
       <CardContent>
         <CardHeader iconName="draft">{item.title}</CardHeader>
-        <CardDetails>{item.path}</CardDetails>
+        <CardDetails>
+          <a
+            href="#"
+            onClick={(e) => {
+              e.preventDefault()
+              openFolder(item.path)
+            }}
+            style={{ textDecoration: 'underline', color: 'inherit', cursor: 'pointer' }}
+            title="Open folder in file browser"
+          >
+            {item.path}
+          </a>
+        </CardDetails>
         <CardDetails>{formatDistanceToNow(item.date, { addSuffix: true })}</CardDetails>
         <CardBody>
           <IconList>
