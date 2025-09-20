@@ -2,7 +2,8 @@ import { HedronEngine, Input, IPlugin } from '@hedron/engine'
 import { ControlGrid, Param } from '@hedron/ui-core'
 import * as THREE from 'three'
 import { useEffect, useRef, useState, useCallback } from 'react'
-import { AudioData, AudioInput, FREQ_RANGE } from './AudioInput'
+import { AudioInput } from './AudioInput'
+import { FREQ_RANGE } from './AudioAnalyzer'
 import { AudioDebugPanel } from './AudioDebugPanel'
 import {
   freqToX,
@@ -50,14 +51,14 @@ const FreqPreview = ({ audioPlugin }: { audioPlugin: AudioInput }) => {
     ctx.clearRect(0, 0, width, height)
 
     // Draw frequency spectrum background
-    const spectrum = audioPlugin.fullLevelsData
+    const spectrum = audioPlugin.analyzer.fullLevelsData
     if (spectrum && spectrum.length > 0) {
       ctx.beginPath()
       ctx.moveTo(0, height)
 
       for (let i = 0; i < spectrum.length; i++) {
         // Skip frequencies outside our range
-        const freq = audioPlugin.nyquist * (i / spectrum.length)
+        const freq = audioPlugin.analyzer.nyquist * (i / spectrum.length)
         if (freq < FREQ_RANGE.MIN || freq > FREQ_RANGE.MAX) continue
 
         const x = freqToX(freq, width, FREQ_RANGE.MIN, FREQ_RANGE.MAX)
@@ -100,10 +101,10 @@ const FreqPreview = ({ audioPlugin }: { audioPlugin: AudioInput }) => {
     }
 
     // Draw each band response curve
-    for (let i = 0; i < audioPlugin.bands.length; i++) {
-      const band = audioPlugin.bands[i]
+    for (let i = 0; i < audioPlugin.analyzer.bands.length; i++) {
+      const band = audioPlugin.analyzer.bands[i]
       const color = band.color
-      const responseCurve = audioPlugin.getBandResponseCurve(i, width)
+      const responseCurve = audioPlugin.analyzer.getBandResponseCurve(i, width)
 
       // Draw the curve
       ctx.beginPath()
@@ -146,9 +147,9 @@ const FreqPreview = ({ audioPlugin }: { audioPlugin: AudioInput }) => {
     }
 
     // Draw current audio levels for each band
-    for (let i = 0; i < audioPlugin.bands.length; i++) {
-      const band = audioPlugin.bands[i]
-      const level = audioPlugin.levelsData[i] || 0
+    for (let i = 0; i < audioPlugin.analyzer.bands.length; i++) {
+      const band = audioPlugin.analyzer.bands[i]
+      const level = audioPlugin.analyzer.levelsData[i] || 0
 
       const centerX = freqToX(band.centerFreq, width, FREQ_RANGE.MIN, FREQ_RANGE.MAX)
       const barHeight = level * height * 0.8
@@ -161,7 +162,7 @@ const FreqPreview = ({ audioPlugin }: { audioPlugin: AudioInput }) => {
 
     // Draw selected band info
     if (selectedBand !== null) {
-      const band = audioPlugin.bands[selectedBand]
+      const band = audioPlugin.analyzer.bands[selectedBand]
       const color = band.color
 
       ctx.fillStyle = color
@@ -188,8 +189,8 @@ const FreqPreview = ({ audioPlugin }: { audioPlugin: AudioInput }) => {
       const height = canvas.height
 
       // Check if clicked on a band handle
-      for (let i = 0; i < audioPlugin.bands.length; i++) {
-        const band = audioPlugin.bands[i]
+      for (let i = 0; i < audioPlugin.analyzer.bands.length; i++) {
+        const band = audioPlugin.analyzer.bands[i]
         const handleX = freqToX(band.centerFreq, width, FREQ_RANGE.MIN, FREQ_RANGE.MAX)
         const handleY = qToY(band.q, height)
 
@@ -407,9 +408,9 @@ export const AudioInputPanel = ({ input, engine }: IProps) => {
     if (!audioPlugin) return
 
     const interval = setInterval(() => {
-      if (audioPlugin.levelsData && audioPlugin.levelsData.length > 0) {
+      if (audioPlugin.analyzer.levelsData && audioPlugin.analyzer.levelsData.length > 0) {
         // Calculate average level across all bands using shared utility
-        const avgLevel = calculateAverageLevel(audioPlugin.levelsData)
+        const avgLevel = calculateAverageLevel(audioPlugin.analyzer.levelsData)
         setAudioLevel(avgLevel)
       }
     }, 100)

@@ -1,67 +1,7 @@
 import { handleEachInput, HedronEngine, InputOptionNodesConfig, IPlugin } from '@hedron/engine'
-import { bellCurve, clamp, lerp } from 'src/AudioUtils'
-import * as THREE from 'three'
+import { lerp } from 'src/AudioUtils'
 import { AudioDeviceManager } from './AudioDeviceManager'
-
-/**
- * Represents a frequency band with center frequency and Q factor
- */
-export interface FrequencyBand {
-  /**
-   * Center frequency in Hz
-   */
-  centerFreq: number
-
-  /**
-   * Q factor - higher values create narrower bands
-   */
-  q: number
-
-  /**
-   * Band color for visualization
-   */
-  color: string
-}
-
-/**
- * Frequency range limits for bands
- */
-export const FREQ_RANGE = {
-  MIN: 40, // Minimum frequency in Hz
-  MAX: 10000, // Maximum frequency in Hz
-}
-
-/**
- * Default band colors for visualization
- */
-export const BAND_COLORS = [
-  '#FF5252', // Red
-  '#FFEB3B', // Yellow
-  '#4CAF50', // Green
-  '#2196F3', // Blue
-]
-
-/**
- * Structure containing the audio analysis data and visualization resources
- */
-export type AudioData = {
-  /**
-   * Web Audio API AnalyserNode for accessing audio frequency data
-   */
-  analyser: AnalyserNode
-  /**
-   * Raw frequency data from the audio input
-   */
-  freqs: Uint8Array
-  /**
-   * Processed audio data ready for texture creation
-   */
-  textureData: Uint8Array
-  /**
-   * THREE.js texture for visualizing the audio data
-   */
-  texture: THREE.DataTexture
-}
+import { AudioAnalyzer, AudioData, FrequencyBand, BAND_COLORS } from './AudioAnalyzer'
 
 /**
  * Audio Input plugin for capturing and processing audio from the microphone
@@ -120,14 +60,11 @@ export class AudioInput implements IPlugin {
   ] as const satisfies InputOptionNodesConfig
 
   /**
-   * Whether to generate a texture from audio data for visualization
-   */
-  public generateAudioTexture: boolean = true
-
-  /**
    * Audio data containing the analyzer and visualization resources
    */
-  public audioData: AudioData | undefined
+  public get audioData(): AudioData | undefined {
+    return this.analyzer?.audioData
+  }
 
   /**
    * Audio device manager that handles device selection and management
@@ -135,14 +72,14 @@ export class AudioInput implements IPlugin {
   public deviceManager: AudioDeviceManager
 
   /**
-   * Number of frequency bands to analyze
+   * Audio analyzer that processes audio data into frequency bands
    */
-  public readonly bandsCount: number = 4
+  public analyzer: AudioAnalyzer
 
   /**
-   * Frequency band configurations with center frequencies and Q factors
+   * Default frequency bands to use
    */
-  public bands: FrequencyBand[] = [
+  private static DEFAULT_BANDS: FrequencyBand[] = [
     { centerFreq: 100, q: 1.0, color: BAND_COLORS[0] }, // Low
     { centerFreq: 400, q: 1.5, color: BAND_COLORS[1] }, // Mid Low
     { centerFreq: 1200, q: 2.0, color: BAND_COLORS[2] }, // Mid High
@@ -150,112 +87,9 @@ export class AudioInput implements IPlugin {
   ]
 
   /**
-   * Sample rate from audio context (needed for frequency calculations)
-   */
-  public sampleRate: number = 44100
-
-  /**
-   * Nyquist frequency (half the sample rate)
-   */
-  public nyquist: number = 22050
-
-  /**
-   * Normalized and processed audio levels for each frequency band
-   */
-  public levelsData: number[] = []
-
-  /**
-   * Raw audio levels before normalization
-   * Stored separately to avoid errors when using a low falloff
-   */
-  public cleanLevelsData: number[] = []
-
-  /**
-   * Maximum values recorded for each frequency band
-   * Used for normalization
-   */
-  public maxLevelsData: number[] = []
-
-  /**
-   * Minimum values recorded for each frequency band
-   * Used for normalization
-   */
-  public minLevelsData: number[] = []
-
-  /**
-   * Full spectrum data for all frequencies
-   */
-  public fullLevelsData: number[] = []
-
-  /**
-   * Raw full spectrum data before normalization
-   */
-  public fullCleanLevelsData: number[] = []
-
-  /**
-   * Maximum values for the full spectrum
-   */
-  public fullMaxLevelsData: number[] = []
-
-  /**
-   * Minimum values for the full spectrum
-   */
-  public fullMinLevelsData: number[] = []
-
-  /**
-   * How much to reduce the clean bins value each frame
-   * Lower values create smoother release after sound peaks
-   */
-  public levelsFalloff: number = 1
-
-  /**
-   * Blends between raw volume and normalized result (0-1)
-   * 0 = raw values, 1 = fully normalized
-   */
-  public normalizeLevels: number = 0
-
-  /**
-   * Smoothes out input changes over time (0-1)
-   * Higher values create smoother transitions
-   */
-  public smoothing: number = 0
-
-  /**
-   * Applies exponential curve to levels, makes only loudest peaks stand out
-   * Higher values emphasize peaks more dramatically
-   */
-  public levelsPower: number = 1
-
-  /**
-   * Gradually reduces max level values each frame
-   * Helps adapt to quieter audio sections over time
-   */
-  public maxLevelFalloffMultiplier: number = 0.9999
-
-  /**
-   * Minimum value for max levels to prevent divide-by-zero errors
-   */
-  public maxLevelMinimum: number = 0.001
-
-  /**
-   * Whether band settings have been modified since last update
-   */
-  public bandsModified: boolean = false
-
-  /**
    * Reference to the engine's state store
    */
   private _store
-
-  /**
-   * The last time debug information was logged
-   */
-  private _lastDebugTime: number = 0
-
-  /**
-   * Interval in milliseconds between debug logs
-   */
-  private _debugInterval: number = 2000 // Log every 2 seconds
 
   constructor(engine: HedronEngine) {
     console.log('[AudioInput] Plugin initializing...')
@@ -264,6 +98,9 @@ export class AudioInput implements IPlugin {
     // Initialize audio device manager
     this.deviceManager = new AudioDeviceManager()
     AudioDeviceManager.ENABLE_LOGGING = AudioInput.ENABLE_LOGGING
+
+    // Initialize audio analyzer
+    this.analyzer = new AudioAnalyzer(AudioInput.DEFAULT_BANDS)
 
     // Initialize audio capture
     this.deviceManager
@@ -288,26 +125,8 @@ export class AudioInput implements IPlugin {
    * @param q New Q factor
    */
   public updateBand(bandIndex: number, centerFreq: number, q: number): void {
-    if (bandIndex < 0 || bandIndex >= this.bands.length) {
-      console.error(`[AudioInput] Invalid band index: ${bandIndex}`)
-      return
-    }
-
-    // Clamp frequency to valid range
-    const clampedFreq = clamp(centerFreq, FREQ_RANGE.MIN, FREQ_RANGE.MAX)
-
-    // Clamp Q to reasonable values
-    const clampedQ = clamp(q, 0.1, 10.0)
-
-    // Update band parameters
-    this.bands[bandIndex].centerFreq = clampedFreq
-    this.bands[bandIndex].q = clampedQ
-
-    // Mark bands as modified
-    this.bandsModified = true
-
-    if (AudioInput.ENABLE_LOGGING)
-      console.log(`[AudioInput] Band ${bandIndex} updated: Center=${clampedFreq}Hz, Q=${clampedQ}`)
+    // Delegate to the analyzer
+    this.analyzer.updateBand(bandIndex, centerFreq, q)
   }
 
   /**
@@ -345,22 +164,9 @@ export class AudioInput implements IPlugin {
    */
   private async reinitializeAudio(): Promise<boolean> {
     try {
-      // Reset state if we had previous data
+      // Reset analyzer data
       if (this.audioData) {
-        // Reset levels data
-        for (let i = 0; i < this.bandsCount; i++) {
-          this.minLevelsData[i] = 0
-          this.maxLevelsData[i] = this.maxLevelMinimum
-          this.levelsData[i] = this.cleanLevelsData[i] = 0
-        }
-
-        // Reset full spectrum data
-        const binCount = this.audioData.analyser.frequencyBinCount
-        for (let i = 0; i < binCount; i++) {
-          this.fullMinLevelsData[i] = 0
-          this.fullMaxLevelsData[i] = this.maxLevelMinimum
-          this.fullLevelsData[i] = this.fullCleanLevelsData[i] = 0
-        }
+        this.analyzer.resetLevelsData()
       }
 
       // Initialize with new device
@@ -408,90 +214,13 @@ export class AudioInput implements IPlugin {
         console.log(`  - Smoothing time constant: ${analyser.smoothingTimeConstant}`)
       }
 
-      // Create texture data array and initialize it
-      const textureData = new Uint8Array(analyser.frequencyBinCount)
-      for (let i = 0; i < textureData.length; i++) {
-        textureData[i] = i
-      }
-
-      // Create frequency data array for analyzer
-      const freqs = new Uint8Array(analyser.frequencyBinCount)
-
-      // Initialize audio data structure
-      this.audioData = {
-        analyser,
-        freqs,
-        textureData: textureData,
-        texture: new THREE.DataTexture(
-          textureData,
-          textureData.length,
-          1,
-          THREE.RedFormat,
-          THREE.UnsignedByteType,
-        ),
-      }
-
-      // Configure texture properties
-      const texture = this.audioData.texture
-      texture.wrapS = THREE.ClampToEdgeWrapping
-      texture.wrapT = THREE.ClampToEdgeWrapping
-      texture.flipY = true
-      texture.magFilter = THREE.LinearFilter
-      texture.minFilter = THREE.LinearFilter
-      texture.needsUpdate = true
-
-      // Save sample rate for frequency calculations
-      this.sampleRate = context.sampleRate
-      this.nyquist = this.sampleRate / 2
-
-      // Initialize data arrays for bands
-      for (let i = 0; i < this.bandsCount; i++) {
-        this.minLevelsData[i] = 0
-        this.maxLevelsData[i] = this.maxLevelMinimum
-        this.levelsData[i] = this.cleanLevelsData[i] = 0
-      }
-
-      // Initialize data arrays for full spectrum
-      for (let i = 0; i < this.audioData.analyser.frequencyBinCount; i++) {
-        this.fullMinLevelsData[i] = 0
-        this.fullMaxLevelsData[i] = this.maxLevelMinimum
-        this.fullLevelsData[i] = this.fullCleanLevelsData[i] = 0
-      }
+      // Set up audio data in the analyzer
+      const audioData = this.analyzer.setupAudioData(analyser, context.sampleRate)
 
       // Connect the audio source to the analyzer
-      source.connect(this.audioData.analyser)
+      source.connect(analyser)
 
-      // Log frequency band information
-      if (AudioInput.ENABLE_LOGGING) {
-        console.log('[AudioInput] Frequency bands configuration:')
-        console.log(`  - Frequency bin count: ${this.audioData.analyser.frequencyBinCount}`)
-        console.log(`  - Sample rate: ${this.sampleRate}Hz, Nyquist: ${this.nyquist}Hz`)
-        console.log(`  - ${this.bandsCount} bands with band-pass filter configuration`)
-      }
-
-      // Calculate frequency for each bin
-      const binSize = this.nyquist / this.audioData.analyser.frequencyBinCount
-
-      // Log band settings
-      if (AudioInput.ENABLE_LOGGING) {
-        console.log('[AudioInput] Band filter settings:')
-        for (let i = 0; i < this.bands.length; i++) {
-          const band = this.bands[i]
-          console.log(
-            `  - Band ${i + 1} (${['Low', 'Mid Low', 'Mid High', 'High'][i] || i}): ` +
-              `Center: ${band.centerFreq}Hz, Q: ${band.q}, Color: ${band.color}`,
-          )
-
-          // Verify band frequency is within the audible range
-          if (band.centerFreq < FREQ_RANGE.MIN || band.centerFreq > FREQ_RANGE.MAX) {
-            console.warn(
-              `[AudioInput] Band ${i + 1} center frequency (${band.centerFreq}Hz) is outside the recommended range (${FREQ_RANGE.MIN}-${FREQ_RANGE.MAX}Hz)`,
-            )
-          }
-        }
-      }
-
-      return this.audioData
+      return audioData
     } catch (error) {
       // Always log errors regardless of logging settings
       if (error instanceof DOMException) {
@@ -552,31 +281,16 @@ export class AudioInput implements IPlugin {
 
   /**
    * Updates audio analysis on each frame
-   * @param settings Configuration for audio processing
    * @returns The current levels data array
    */
   public update() {
     if (!this.audioData) return
-
-    // Get latest frequency data from analyzer - using any to work around type issues with Uint8Array
-    this.audioData.analyser.getByteFrequencyData(this.audioData.freqs as any)
-
-    // Process the frequency bands
-    this.processBands()
-
-    this.processFullSpectrum()
-
-    // Debug frequency data periodically
-    if (AudioInput.ENABLE_LOGGING) {
-      this.debugAudioLevels()
-    }
-
+    // Update the analyzer
+    this.analyzer.update()
+    // Update nodes based on new audio levels
     this.updateInputNodes()
-
     // Schedule next update
     window.requestAnimationFrame(() => this.update())
-
-    return this.levelsData
   }
 
   /**
@@ -589,14 +303,13 @@ export class AudioInput implements IPlugin {
       storeState,
       this.inputType,
       ({ input, optionNodes, targetNode }) => {
-        // TODO: This can be handled by `onInput` once we have `isEnabled` as a generic option
         if (!optionNodes.isEnabled) return
         if (targetNode.valueType !== 'number') return
 
         // If audio data is available, use the appropriate frequency band based on the option
-        if (this.audioData && this.levelsData.length > 0) {
-          const bandIndex = Math.min(optionNodes.frequency, this.bandsCount - 1)
-          const audioValue = this.levelsData[bandIndex] || 0
+        if (this.audioData && this.analyzer.levelsData.length > 0) {
+          const bandIndex = Math.min(optionNodes.frequency, this.analyzer.bandsCount - 1)
+          const audioValue = this.analyzer.levelsData[bandIndex] || 0
 
           // Map the audio value to the configured min/max range
           storeState.updateNodeValue(
@@ -612,224 +325,5 @@ export class AudioInput implements IPlugin {
         }
       },
     )
-  }
-
-  private debugAudioLevels() {
-    const currentTime = Date.now()
-    if (currentTime - this._lastDebugTime < this._debugInterval) {
-      return
-    }
-    this._lastDebugTime = currentTime
-
-    // Log the levels data for each frequency band
-    const bandsDebug = this.bands.map((band, i) => {
-      const level = this.levelsData[i]?.toFixed(3) || 'N/A'
-
-      // Get range covered by this band (where response > 0.5)
-      let lowerBound = 0
-      let upperBound = 0
-
-      // Calculate approximate bandwidth based on Q
-      // For a bell curve, bandwidth at half power points (-3dB) is approximately center/Q
-      const bandwidth = band.centerFreq / band.q
-      lowerBound = Math.max(FREQ_RANGE.MIN, band.centerFreq - bandwidth / 2)
-      upperBound = Math.min(FREQ_RANGE.MAX, band.centerFreq + bandwidth / 2)
-
-      return {
-        name: ['Low', 'Mid Low', 'Mid High', 'High'][i] || `Band ${i + 1}`,
-        centerFreq: `${Math.round(band.centerFreq)}Hz`,
-        q: band.q.toFixed(1),
-        bandwidth: `${Math.round(bandwidth)}Hz`,
-        range: `${Math.round(lowerBound)}-${Math.round(upperBound)}Hz`,
-        level,
-      }
-    })
-
-    console.log('[AudioInput] Current band levels:', bandsDebug)
-
-    // Calculate overall audio level (average of all bands)
-    const avgLevel = this.levelsData.reduce((sum, val) => sum + (val || 0), 0) / this.bands.length
-    console.log(`[AudioInput] Average audio level: ${avgLevel.toFixed(3)}`)
-
-    // Find peak bin in full spectrum if available
-    if (this.fullLevelsData && this.fullLevelsData.length > 0) {
-      let peakBin = 0
-      let peakValue = 0
-
-      for (let i = 0; i < this.fullLevelsData.length; i++) {
-        if (this.fullLevelsData[i] > peakValue) {
-          peakValue = this.fullLevelsData[i]
-          peakBin = i
-        }
-      }
-
-      // Convert peak bin to frequency
-      const peakFreq = Math.round((peakBin / this.fullLevelsData.length) * this.nyquist)
-      if (peakValue > 0.1) {
-        console.log(
-          `[AudioInput] Peak frequency: ~${peakFreq}Hz (bin ${peakBin}) with magnitude ${peakValue.toFixed(3)}`,
-        )
-      }
-    }
-
-    // Log if bands were modified
-    if (this.bandsModified) {
-      console.log('[AudioInput] Band settings have been modified')
-      this.bandsModified = false
-    }
-  }
-
-  /**
-   * Processes the full frequency spectrum for visualization
-   * @param settings Audio processing configuration
-   */
-  private processFullSpectrum() {
-    if (!this.audioData) return
-
-    // Process each frequency in the spectrum
-    for (let i = 0; i < this.audioData.freqs.length; i++) {
-      // Normalize to 0-1 range
-      let freq = this.audioData.freqs[i] / 256
-
-      // Apply falloff to create smoother transitions
-      freq = Math.max(freq, Math.max(0, this.fullCleanLevelsData[i] - this.levelsFalloff))
-      this.fullCleanLevelsData[i] = freq
-
-      // Update min/max values with falloff
-      this.fullMaxLevelsData[i] = Math.max(
-        this.fullMaxLevelsData[i] * this.maxLevelFalloffMultiplier,
-        this.maxLevelMinimum,
-      )
-      this.fullMinLevelsData[i] = Math.min(
-        1 - (1 - this.fullMinLevelsData[i]) * this.maxLevelFalloffMultiplier,
-        this.fullMaxLevelsData[i] - this.maxLevelMinimum,
-      )
-
-      // Update range boundaries
-      this.fullMaxLevelsData[i] = Math.max(this.fullMaxLevelsData[i], freq)
-      this.fullMinLevelsData[i] = Math.min(this.fullMinLevelsData[i], freq)
-
-      // Calculate normalized value within the dynamic range
-      const normalized =
-        (freq - this.fullMinLevelsData[i]) / (this.fullMaxLevelsData[i] - this.fullMinLevelsData[i])
-
-      // Blend between raw and normalized values
-      freq = lerp(freq, normalized, this.normalizeLevels)
-
-      // Apply exponential curve for emphasis
-      freq = Math.pow(freq, this.levelsPower)
-
-      // Apply smoothing between frames
-      this.fullLevelsData[i] = lerp(freq, this.fullLevelsData[i], this.smoothing)
-    }
-
-    // Update visualization texture if requested
-    if (this.generateAudioTexture) {
-      for (let i = 0; i < this.audioData.freqs.length; i++) {
-        this.audioData.textureData[i] = Math.floor(this.fullLevelsData[i] * 256)
-      }
-      this.audioData.texture.needsUpdate = true
-    }
-  }
-
-  /**
-   * Processes audio data into frequency bands using band-pass filters
-   * Applies a bell curve filter to the frequency spectrum for each band
-   */
-  processBands() {
-    if (!this.audioData) return
-
-    const binCount = this.audioData.freqs.length
-    const binSize = this.nyquist / binCount
-
-    // Process each frequency band
-    for (let bandIndex = 0; bandIndex < this.bands.length; bandIndex++) {
-      const band = this.bands[bandIndex]
-      let sum = 0
-      let totalWeight = 0
-
-      // Apply band-pass filter to each frequency bin
-      for (let i = 0; i < binCount; i++) {
-        // Calculate the frequency for this bin
-        const frequency = i * binSize
-
-        // Skip frequencies outside our range of interest
-        if (frequency < FREQ_RANGE.MIN || frequency > FREQ_RANGE.MAX) continue
-
-        // Calculate weight using bell curve function
-        const weight = bellCurve(frequency, band.centerFreq, band.q)
-
-        // Skip negligible weights for performance
-        if (weight < 0.01) continue
-
-        // Apply weight to the frequency bin value
-        const value = this.audioData.freqs[i] / 256 // Normalize to 0-1
-        sum += value * weight
-        totalWeight += weight
-      }
-
-      // Calculate weighted average
-      let bandValue = totalWeight > 0 ? sum / totalWeight : 0
-
-      // Apply falloff for smoother transitions
-      bandValue = Math.max(
-        bandValue,
-        Math.max(0, this.cleanLevelsData[bandIndex] - this.levelsFalloff),
-      )
-      this.cleanLevelsData[bandIndex] = bandValue
-
-      // Update min/max values with falloff
-      this.maxLevelsData[bandIndex] = Math.max(
-        this.maxLevelsData[bandIndex] * this.maxLevelFalloffMultiplier,
-        this.maxLevelMinimum,
-      )
-      this.maxLevelsData[bandIndex] = Math.max(this.maxLevelsData[bandIndex], bandValue)
-
-      this.minLevelsData[bandIndex] = Math.min(
-        1 - (1 - this.minLevelsData[bandIndex]) * this.maxLevelFalloffMultiplier,
-        this.maxLevelsData[bandIndex] - this.maxLevelMinimum,
-      )
-      this.minLevelsData[bandIndex] = Math.min(this.minLevelsData[bandIndex], bandValue)
-
-      // Calculate normalized value
-      const normalized =
-        (bandValue - this.minLevelsData[bandIndex]) /
-        (this.maxLevelsData[bandIndex] - this.minLevelsData[bandIndex])
-
-      // Blend between raw and normalized values
-      bandValue = lerp(bandValue, normalized, this.normalizeLevels)
-
-      // Apply exponential curve for emphasis
-      bandValue = Math.pow(bandValue, this.levelsPower)
-
-      // Apply smoothing between frames
-      this.levelsData[bandIndex] = lerp(bandValue, this.levelsData[bandIndex], this.smoothing)
-    }
-  }
-
-  /**
-   * Gets the band response curve for visualization
-   * @param bandIndex Index of the band to get curve for
-   * @param resolution Number of points in the curve
-   * @returns Array of points representing the curve (0-1 normalized)
-   */
-  getBandResponseCurve(bandIndex: number, resolution: number = 100): number[] {
-    if (bandIndex < 0 || bandIndex >= this.bands.length) {
-      return Array(resolution).fill(0)
-    }
-
-    const band = this.bands[bandIndex]
-    const curve: number[] = []
-
-    // Generate logarithmically spaced points across frequency range
-    for (let i = 0; i < resolution; i++) {
-      // Use logarithmic scale for frequency (more natural for audio)
-      const t = i / (resolution - 1)
-      const freq = FREQ_RANGE.MIN * Math.pow(FREQ_RANGE.MAX / FREQ_RANGE.MIN, t)
-      const response = bellCurve(freq, band.centerFreq, band.q)
-      curve.push(response)
-    }
-
-    return curve
   }
 }

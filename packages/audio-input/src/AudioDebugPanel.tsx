@@ -78,8 +78,8 @@ export const AudioDebugPanel = ({ audioPlugin }: AudioDebugPanelProps) => {
     }
 
     console.log('[AudioDebugPanel] Audio Plugin State:', {
-      levelsData: [...audioPlugin.levelsData],
-      bands: audioPlugin.bands.map((band) => ({
+      levelsData: [...audioPlugin.analyzer.levelsData],
+      bands: audioPlugin.analyzer.bands.map((band) => ({
         centerFreq: band.centerFreq,
         q: band.q,
         color: band.color,
