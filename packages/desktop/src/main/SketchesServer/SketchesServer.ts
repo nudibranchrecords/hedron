@@ -1,6 +1,6 @@
 import { getEsbuild } from '@main/getUnpackedModules'
 import { FileWatchEvents } from '@shared/Events'
-import chokidar from 'chokidar'
+import chokidar, { FSWatcher } from 'chokidar'
 import { app } from 'electron'
 import * as esbuild from 'esbuild'
 import { EventEmitter } from 'events'
@@ -14,7 +14,7 @@ const HOST = process.platform.startsWith('win') ? 'localhost' : '0.0.0.0'
 export class SketchesServer extends EventEmitter {
   private isFirstBuildComplete: boolean
   private esbuildContext?: esbuild.BuildContext
-  private watcher?: chokidar.FSWatcher
+  private watcher?: FSWatcher
 
   constructor() {
     super()
