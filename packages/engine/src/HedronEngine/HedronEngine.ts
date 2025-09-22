@@ -64,6 +64,7 @@ export class HedronEngine {
 
   public registerPlugin(plugin: IPlugin) {
     this.plugins[plugin.id] = plugin
+    ;(window as any)['__HEDRON'].plugins = this.plugins
   }
 
   public async initiateSketchModules(sketchesUrl: string, moduleIds: string[]) {
