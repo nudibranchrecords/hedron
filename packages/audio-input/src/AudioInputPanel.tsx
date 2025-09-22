@@ -208,22 +208,34 @@ const FreqPreview = ({ audioPlugin }: { audioPlugin: AudioInput }) => {
     [audioPlugin],
   )
 
+  // This function handles both canvas mouse move and document mouse move
   const handleMouseMove = useCallback(
-    (e: React.MouseEvent) => {
+    (e: MouseEvent | React.MouseEvent) => {
       if (!isDragging || selectedBand === null) return
 
       const canvas = canvasRef.current
       if (!canvas || !audioPlugin) return
 
       const rect = canvas.getBoundingClientRect()
-      const x = e.clientX - rect.left
-      const y = e.clientY - rect.top
+
+      // Get mouse coordinates
+      const { clientX, clientY } = e
+
+      // Calculate position relative to canvas - may be outside bounds
+      const rawX = clientX - rect.left
+      const rawY = clientY - rect.top
+
+      // Get canvas dimensions
       const width = canvas.width
       const height = canvas.height
 
+      // Clamp position to canvas bounds
+      const x = clampValue(rawX, 0, width)
+      const y = clampValue(rawY, 0, height)
+
       // Convert position to frequency and Q
-      const freq = xToFreq(clampValue(x, 0, width), width, FREQ_RANGE.MIN, FREQ_RANGE.MAX)
-      const q = yToQ(clampValue(y, 0, height), height)
+      const freq = xToFreq(x, width, FREQ_RANGE.MIN, FREQ_RANGE.MAX)
+      const q = yToQ(y, height)
 
       // Update the band
       audioPlugin.updateBand(selectedBand, freq, q)
@@ -234,6 +246,30 @@ const FreqPreview = ({ audioPlugin }: { audioPlugin: AudioInput }) => {
   const handleMouseUp = useCallback(() => {
     setIsDragging(false)
   }, [])
+
+  // Add global mouse event handlers for dragging outside the canvas
+  useEffect(() => {
+    if (!isDragging) return
+
+    // Use document-level event listeners when dragging
+    const handleDocumentMouseMove = (e: MouseEvent) => {
+      handleMouseMove(e)
+    }
+
+    const handleDocumentMouseUp = () => {
+      setIsDragging(false)
+    }
+
+    // Add document-level event listeners
+    document.addEventListener('mousemove', handleDocumentMouseMove)
+    document.addEventListener('mouseup', handleDocumentMouseUp)
+
+    // Clean up event listeners when dragging stops or component unmounts
+    return () => {
+      document.removeEventListener('mousemove', handleDocumentMouseMove)
+      document.removeEventListener('mouseup', handleDocumentMouseUp)
+    }
+  }, [isDragging, handleMouseMove])
 
   // Animation loop
   useEffect(() => {
@@ -298,7 +334,6 @@ const FreqPreview = ({ audioPlugin }: { audioPlugin: AudioInput }) => {
         onMouseDown={handleMouseDown}
         onMouseMove={handleMouseMove}
         onMouseUp={handleMouseUp}
-        onMouseLeave={handleMouseUp}
       />
       {/* Add instructions text */}
       <div
