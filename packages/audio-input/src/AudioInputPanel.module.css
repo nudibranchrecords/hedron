@@ -1,0 +1,194 @@
+/* AudioInputPanel styles */
+
+/* FreqPreview component styles */
+.freqPreviewContainer {
+    width: 100%;
+    height: 180px;
+    margin-bottom: 1rem;
+    border-radius: 4px;
+    overflow: hidden;
+    position: relative;
+    background-color: #1e1e1e;
+}
+
+.freqPreviewCanvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.freqPreviewInstructions {
+    position: absolute;
+    top: 5px;
+    right: 10px;
+    font-size: 9px;
+    color: rgba(255, 255, 255, 0.5);
+    user-select: none;
+}
+
+/* Audio Status & Controls */
+.audioStatusContainer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+    padding: 8px;
+    background-color: #2a2a2a;
+    border-radius: 4px;
+}
+
+.audioStatusText {
+    font-size: 12px;
+    color: #aaa;
+    margin-bottom: 4px;
+}
+
+.audioStatusActive {
+    color: #4CAF50;
+}
+
+.audioDeviceContainer {
+    margin-bottom: 8px;
+}
+
+.audioDeviceLabel {
+    font-size: 12px;
+    color: #aaa;
+    margin-bottom: 4px;
+}
+
+.audioDeviceControls {
+    display: flex;
+    align-items: center;
+}
+
+.audioDeviceSelect {
+    padding: 4px;
+    font-size: 12px;
+    background-color: #333;
+    color: white;
+    border-radius: 4px;
+    width: 170px;
+    margin-right: 8px;
+}
+
+.audioDeviceSelectError {
+    border: 1px solid #FF5252;
+}
+
+.audioDeviceSelectNormal {
+    border: 1px solid #555;
+}
+
+.audioDeviceSelectDisabled {
+    opacity: 0.7;
+}
+
+.audioDeviceRefreshButton {
+    padding: 4px 8px;
+    font-size: 11px;
+    color: white;
+    border: none;
+    border-radius: 4px;
+}
+
+.audioDeviceRefreshButtonActive {
+    background-color: #555;
+    cursor: default;
+}
+
+.audioDeviceRefreshButtonNormal {
+    background-color: #444;
+    cursor: pointer;
+}
+
+.audioDeviceErrorText {
+    font-size: 11px;
+    color: #FF5252;
+    margin-top: 4px;
+}
+
+.audioDeviceChangingText {
+    font-size: 11px;
+    color: #FFD700;
+    margin-top: 4px;
+}
+
+.audioLevelContainer {
+    display: flex;
+    align-items: center;
+}
+
+.audioLevelLabel {
+    font-size: 12px;
+    color: #aaa;
+    margin-right: 8px;
+}
+
+.audioLevelMeter {
+    width: 100px;
+    height: 8px;
+    background-color: #444;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.audioLevelValue {
+    height: 100%;
+    transition: width 0.1s;
+}
+
+.audioLevelText {
+    font-size: 12px;
+    color: #aaa;
+    margin-left: 8px;
+}
+
+/* Test Tone Controls */
+.testToneContainer {
+    display: flex;
+    align-items: center;
+}
+
+.testToneButton {
+    padding: 6px 12px;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-right: 8px;
+    font-size: 12px;
+}
+
+.testToneButtonActive {
+    background-color: #FF5252;
+}
+
+.testToneButtonInactive {
+    background-color: #2196F3;
+}
+
+.testToneControlContainer {
+    margin-right: 8px;
+}
+
+.testToneControlLabel {
+    font-size: 10px;
+    color: #aaa;
+    display: block;
+    margin-bottom: 2px;
+}
+
+.testToneControlSlider {
+    width: 80px;
+}
+
+/* Error message */
+.audioErrorMessage {
+    padding: 10px;
+    background-color: #ffeeee;
+    border-radius: 4px;
+    margin-bottom: 10px;
+}

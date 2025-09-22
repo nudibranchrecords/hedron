@@ -1,6 +1,5 @@
 import { HedronEngine, Input, IPlugin } from '@hedron/engine'
 import { ControlGrid, Param } from '@hedron/ui-core'
-import * as THREE from 'three'
 import { useEffect, useRef, useState, useCallback } from 'react'
 import { AudioInput } from './AudioInput'
 import { FREQ_RANGE } from './AudioAnalyzer'
@@ -15,6 +14,7 @@ import {
   playTestTone,
   clamp as clampValue,
 } from './AudioUtils'
+import styles from './AudioInputPanel.module.css'
 
 // Using the imported clamp function as clampValue
 
@@ -310,42 +310,16 @@ const FreqPreview = ({ audioPlugin }: { audioPlugin: AudioInput }) => {
   }, [audioPlugin, drawVisualization])
 
   return (
-    <div
-      ref={containerRef}
-      style={{
-        width: '100%',
-        height: '180px',
-        marginBottom: '1rem',
-        borderRadius: '4px',
-        overflow: 'hidden',
-        position: 'relative',
-        backgroundColor: '#1e1e1e',
-      }}
-    >
+    <div ref={containerRef} className={styles.freqPreviewContainer}>
       <canvas
         ref={canvasRef}
-        style={{
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          width: '100%',
-          height: '100%',
-        }}
+        className={styles.freqPreviewCanvas}
         onMouseDown={handleMouseDown}
         onMouseMove={handleMouseMove}
         onMouseUp={handleMouseUp}
       />
       {/* Add instructions text */}
-      <div
-        style={{
-          position: 'absolute',
-          bottom: 5,
-          right: 10,
-          fontSize: '9px',
-          color: 'rgba(255,255,255,0.5)',
-          userSelect: 'none',
-        }}
-      >
+      <div className={styles.freqPreviewInstructions}>
         Drag circles to adjust frequency (x) and Q factor (y)
       </div>
     </div>
@@ -479,28 +453,16 @@ export const AudioInputPanel = ({ input, engine }: IProps) => {
           <FreqPreview audioPlugin={audioPlugin} />
 
           {/* Audio Status & Controls */}
-          <div
-            style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              marginBottom: '12px',
-              padding: '8px',
-              backgroundColor: '#2a2a2a',
-              borderRadius: '4px',
-            }}
-          >
+          <div className={styles.audioStatusContainer}>
             <div>
-              <div style={{ fontSize: '12px', color: '#aaa', marginBottom: '4px' }}>
-                Audio Status: <span style={{ color: '#4CAF50' }}>Active</span>
+              <div className={styles.audioStatusText}>
+                Audio Status: <span className={styles.audioStatusActive}>Active</span>
               </div>
 
               {/* Audio Input Device Selector */}
-              <div style={{ marginBottom: '8px' }}>
-                <div style={{ fontSize: '12px', color: '#aaa', marginBottom: '4px' }}>
-                  Input Device:
-                </div>
-                <div style={{ display: 'flex', alignItems: 'center' }}>
+              <div className={styles.audioDeviceContainer}>
+                <div className={styles.audioDeviceLabel}>Input Device:</div>
+                <div className={styles.audioDeviceControls}>
                   <select
                     value={audioPlugin.deviceManager.currentDeviceId}
                     onChange={async (e) => {
@@ -525,17 +487,9 @@ export const AudioInputPanel = ({ input, engine }: IProps) => {
                         setIsChangingDevice(false)
                       }
                     }}
-                    style={{
-                      padding: '4px',
-                      fontSize: '12px',
-                      backgroundColor: '#333',
-                      color: 'white',
-                      border: `1px solid ${deviceChangeError ? '#FF5252' : '#555'}`,
-                      borderRadius: '4px',
-                      width: '170px',
-                      marginRight: '8px',
-                      opacity: isChangingDevice ? 0.7 : 1,
-                    }}
+                    className={`${styles.audioDeviceSelect} 
+                              ${deviceChangeError ? styles.audioDeviceSelectError : styles.audioDeviceSelectNormal} 
+                              ${isChangingDevice ? styles.audioDeviceSelectDisabled : ''}`}
                     disabled={isChangingDevice || isRefreshingDevices}
                   >
                     <option value="default">System Default</option>
@@ -564,95 +518,55 @@ export const AudioInputPanel = ({ input, engine }: IProps) => {
                         setIsRefreshingDevices(false)
                       }
                     }}
-                    style={{
-                      padding: '4px 8px',
-                      fontSize: '11px',
-                      backgroundColor: isRefreshingDevices ? '#555' : '#444',
-                      color: 'white',
-                      border: 'none',
-                      borderRadius: '4px',
-                      cursor: isRefreshingDevices || isChangingDevice ? 'default' : 'pointer',
-                    }}
+                    className={`${styles.audioDeviceRefreshButton} ${
+                      isRefreshingDevices
+                        ? styles.audioDeviceRefreshButtonActive
+                        : styles.audioDeviceRefreshButtonNormal
+                    }`}
                     disabled={isRefreshingDevices || isChangingDevice}
                   >
                     {isRefreshingDevices ? 'Refreshing...' : 'Refresh'}
                   </button>
                 </div>
                 {deviceChangeError && (
-                  <div style={{ fontSize: '11px', color: '#FF5252', marginTop: '4px' }}>
-                    {deviceChangeError}
-                  </div>
+                  <div className={styles.audioDeviceErrorText}>{deviceChangeError}</div>
                 )}
                 {isChangingDevice && (
-                  <div style={{ fontSize: '11px', color: '#FFD700', marginTop: '4px' }}>
-                    Changing audio device...
-                  </div>
+                  <div className={styles.audioDeviceChangingText}>Changing audio device...</div>
                 )}
               </div>
 
               {/* Audio Level Meter */}
-              <div
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                }}
-              >
-                <span style={{ fontSize: '12px', color: '#aaa', marginRight: '8px' }}>Level:</span>
-                <div
-                  style={{
-                    width: '100px',
-                    height: '8px',
-                    backgroundColor: '#444',
-                    borderRadius: '4px',
-                    overflow: 'hidden',
-                  }}
-                >
+              <div className={styles.audioLevelContainer}>
+                <span className={styles.audioLevelLabel}>Level:</span>
+                <div className={styles.audioLevelMeter}>
                   <div
+                    className={styles.audioLevelValue}
                     style={{
-                      height: '100%',
                       width: `${audioLevel * 100}%`,
                       backgroundColor: getLevelColor(audioLevel),
-                      transition: 'width 0.1s',
                     }}
                   />
                 </div>
-                <span style={{ fontSize: '12px', color: '#aaa', marginLeft: '8px' }}>
-                  {(audioLevel * 100).toFixed(0)}%
-                </span>
+                <span className={styles.audioLevelText}>{(audioLevel * 100).toFixed(0)}%</span>
               </div>
             </div>
 
             {/* Test Tone Controls */}
-            <div style={{ display: 'flex', alignItems: 'center' }}>
+            <div className={styles.testToneContainer}>
               <button
                 onClick={toggleTestTone}
-                style={{
-                  padding: '6px 12px',
-                  backgroundColor: testToneActive ? '#FF5252' : '#2196F3',
-                  color: 'white',
-                  border: 'none',
-                  borderRadius: '4px',
-                  cursor: 'pointer',
-                  marginRight: '8px',
-                  fontSize: '12px',
-                }}
+                className={`${styles.testToneButton} ${
+                  testToneActive ? styles.testToneButtonActive : styles.testToneButtonInactive
+                }`}
               >
                 {testToneActive ? 'Stop Tone' : 'Test Tone'}
               </button>
 
               {testToneActive && (
                 <>
-                  <div style={{ marginRight: '8px' }}>
-                    <label
-                      style={{
-                        fontSize: '10px',
-                        color: '#aaa',
-                        display: 'block',
-                        marginBottom: '2px',
-                      }}
-                    >
-                      Freq: {testToneFreq}Hz
-                    </label>
+                  <div className={styles.testToneControlContainer}>
+                    <label className={styles.testToneControlLabel}>Freq: {testToneFreq}Hz</label>
                     <input
                       type="range"
                       min="50"
@@ -660,18 +574,11 @@ export const AudioInputPanel = ({ input, engine }: IProps) => {
                       step="10"
                       value={testToneFreq}
                       onChange={(e) => setTestToneFreq(Number(e.target.value))}
-                      style={{ width: '80px' }}
+                      className={styles.testToneControlSlider}
                     />
                   </div>
-                  <div>
-                    <label
-                      style={{
-                        fontSize: '10px',
-                        color: '#aaa',
-                        display: 'block',
-                        marginBottom: '2px',
-                      }}
-                    >
+                  <div className={styles.testToneControlContainer}>
+                    <label className={styles.testToneControlLabel}>
                       Vol: {(testToneVolume * 100).toFixed(0)}%
                     </label>
                     <input
@@ -681,7 +588,7 @@ export const AudioInputPanel = ({ input, engine }: IProps) => {
                       step="0.01"
                       value={testToneVolume}
                       onChange={(e) => setTestToneVolume(Number(e.target.value))}
-                      style={{ width: '80px' }}
+                      className={styles.testToneControlSlider}
                     />
                   </div>
                 </>
@@ -690,14 +597,7 @@ export const AudioInputPanel = ({ input, engine }: IProps) => {
           </div>
         </>
       ) : (
-        <div
-          style={{
-            padding: '10px',
-            backgroundColor: '#ffeeee',
-            borderRadius: '4px',
-            marginBottom: '10px',
-          }}
-        >
+        <div className={styles.audioErrorMessage}>
           Audio input not available. Check console for details.
         </div>
       )}
