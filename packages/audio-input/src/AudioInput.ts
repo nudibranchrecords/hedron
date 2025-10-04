@@ -18,6 +18,17 @@ export class AudioInput implements IPlugin {
   public readonly name = 'Audio Input'
   public readonly inputType = 'audio'
   public readonly description = 'README.md.'
+  public readonly globalOptionNodesConfig = [
+    {
+      key: 'masterVolume',
+      title: 'Master Volume',
+      valueType: 'number',
+      defaultValue: 1.0,
+      sliderMin: 0,
+      sliderMax: 2.0,
+    },
+  ] as const satisfies InputOptionNodesConfig
+
   public readonly optionNodesConfig = [
     {
       key: 'isEnabled',
@@ -280,11 +291,26 @@ export class AudioInput implements IPlugin {
   }
 
   /**
+   * Gets the master volume value from the global options
+   * @returns Master volume value (default: 1.0)
+   */
+  private getMasterVolume(): number {
+    const storeState = this._store.getState()
+    // Construct the ID for the master volume node
+    const masterVolumeNodeId = `${AudioInput.ID}-global-masterVolume`
+    // Get the value from the store, default to 1.0 if not found
+    const masterVolume = storeState.nodeValues[masterVolumeNodeId] as number | undefined
+    return masterVolume ?? 1.0
+  }
+
+  /**
    * Updates audio analysis on each frame
    * @returns The current levels data array
    */
   public update() {
     if (!this.audioData) return
+    // Set the analyzer's master volume from global option
+    this.analyzer.masterVolume = this.getMasterVolume()
     // Update the analyzer
     this.analyzer.update()
     // Update nodes based on new audio levels
@@ -309,12 +335,18 @@ export class AudioInput implements IPlugin {
         // If audio data is available, use the appropriate frequency band based on the option
         if (this.audioData && this.analyzer.levelsData.length > 0) {
           const bandIndex = Math.min(optionNodes.frequency, this.analyzer.bandsCount - 1)
+          // The master volume is already applied in the analyzer
           const audioValue = this.analyzer.levelsData[bandIndex] || 0
+
+          const sliderMin =
+            (storeState.nodeValues[`${input.targetNodeId}-sliderMin`] as number) ?? 0
+          const sliderMax =
+            (storeState.nodeValues[`${input.targetNodeId}-sliderMax`] as number) ?? 1
 
           // Map the audio value to the configured min/max range
           storeState.updateNodeValue(
             input.targetNodeId,
-            lerp(optionNodes.min, optionNodes.max, audioValue),
+            lerp(sliderMin, sliderMax, lerp(optionNodes.min, optionNodes.max, audioValue)),
           )
         } else {
           // Fallback behavior when audio isn't initialized yet

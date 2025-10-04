@@ -118,6 +118,12 @@ export class AudioAnalyzer {
   public audioData: AudioData | undefined
 
   /**
+   * Master volume multiplier applied to all audio levels
+   * Can be used to globally scale the audio response
+   */
+  public masterVolume: number = 1.0
+
+  /**
    * Number of frequency bands to analyze
    */
   public readonly bandsCount: number
@@ -520,6 +526,9 @@ export class AudioAnalyzer {
 
       // Apply exponential curve for emphasis
       bandValue = Math.pow(bandValue, this.levelsPower)
+
+      // Apply master volume
+      bandValue = bandValue * this.masterVolume
 
       // Apply smoothing between frames
       this.levelsData[bandIndex] = lerp(bandValue, this.levelsData[bandIndex], this.smoothing)
