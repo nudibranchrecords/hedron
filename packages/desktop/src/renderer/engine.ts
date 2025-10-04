@@ -3,7 +3,12 @@ import Stats from 'three/examples/jsm/libs/stats.module.js'
 import { Clock } from '@hedron/clock'
 import { MidiInput, MidiInputPanel } from '@hedron/midi-input'
 import { LFOInput, LFOInputPanel } from '@hedron/lfo-input'
-import { AudioInput, AudioInputPanel } from '@hedron/audio-input'
+import {
+  AudioInput,
+  AudioInputPanel,
+  AudioGlobalWidget,
+  AudioGlobalPanel,
+} from '@hedron/audio-input'
 
 export const performanceMonitor = new Stats()
 
@@ -28,5 +33,11 @@ export const pluginViews = {
     midi: MidiInputPanel,
     lfo: LFOInputPanel,
     audio: AudioInputPanel,
+  },
+  globalPanel: {
+    audio: {
+      widget: AudioGlobalWidget,
+      panel: AudioGlobalPanel,
+    },
   },
 }

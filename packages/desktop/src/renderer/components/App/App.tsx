@@ -1,5 +1,5 @@
 // import { Audio } from '../Audio'
-import { AppStoreProvider, EngineStoreProvider } from '@hedron/ui-core'
+import { AppStoreProvider, EngineStoreProvider, WidgetStrip } from '@hedron/ui-core'
 import c from './App.module.css'
 import { GlobalClock } from '@components/GlobalClock/GlobalClock'
 import { GlobalDialogs } from '@components/GlobalDialogs/GlobalDialogs'
@@ -8,7 +8,7 @@ import { VideoControls } from '@components/VideoControls/VideoControls'
 import { Viewer } from '@components/Viewer'
 import { WorkArea } from '@components/WorkArea/WorkArea'
 import { appStore } from '@renderer/appStore'
-import { engineStore } from '@renderer/engine'
+import { engine, engineStore, pluginViews } from '@renderer/engine'
 
 export const App = (): JSX.Element => {
   return (
@@ -25,6 +25,11 @@ export const App = (): JSX.Element => {
               <div className={c.widgetItem}>
                 <VideoControls />
               </div>
+              {/* Add the WidgetStrip with plugin views */}
+              <WidgetStrip 
+                engine={engine} 
+                pluginViews={pluginViews.globalPanel} 
+              />
             </div>
           </div>
           <div className={c.right}>

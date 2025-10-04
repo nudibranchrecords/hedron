@@ -1,0 +1,31 @@
+.panel {
+    background-color: #1e1e1e;
+    border: 1px solid #333;
+    border-radius: 4px;
+    padding: 12px;
+    min-width: 300px;
+}
+
+.title {
+    font-size: 16px;
+    font-weight: 500;
+    color: #ddd;
+    margin: 0 0 12px 0;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #444;
+}
+
+.controlGrid {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.errorPanel {
+    background-color: rgba(255, 0, 0, 0.2);
+    border: 1px solid #833;
+    padding: 12px;
+    color: #f88;
+    text-align: center;
+    border-radius: 4px;
+}
