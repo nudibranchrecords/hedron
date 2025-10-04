@@ -35,6 +35,11 @@ export interface IPlugin {
    * Config to generate option nodes. Follows same structure as sketch params config.
    */
   optionNodesConfig: InputOptionNodesConfig
+
+  /**
+   * Config to generate global option nodes. Follows same structure as sketch params config.
+   */
+  globalOptionNodesConfig?: InputOptionNodesConfig
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

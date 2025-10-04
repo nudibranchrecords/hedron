@@ -8,11 +8,12 @@ import { stripForSave } from '@utils/stripForSave'
 import { Renderer } from '@world/Renderer'
 import { SketchInstanceError, SketchManager } from '@world/SketchManager'
 import { createDebugScene } from '@world/debugScene'
-import { EngineData, SketchModuleItem } from '@store/types'
+import { EngineData, SketchModuleItem, SketchConfigParamImported } from '@store/types'
 import { getSketchesOfModuleId } from '@store/selectors/getSketchesOfModuleId'
 import { createEngineStore, EngineStore } from '@store/engineStore'
 import { getSketchParamValues } from '@store/selectors/getSketchParamValues'
 import { EngineScene } from '@world/EngineScene'
+import { addNode } from '@store/shared/addNode'
 export class HedronEngine {
   public rendererType: RendererType
   private renderer: Renderer
@@ -64,6 +65,45 @@ export class HedronEngine {
 
   public registerPlugin(plugin: IPlugin) {
     this.plugins[plugin.id] = plugin
+    // Make plugins available in the global window object for debugging
+    const hedronWindow = (window as any).__HEDRON
+    if (hedronWindow) {
+      hedronWindow.plugins = this.plugins
+    }
+
+    // Create global option nodes if they exist
+    if (plugin.globalOptionNodesConfig) {
+      this.store.setState((state) => {
+        for (const cfg of plugin.globalOptionNodesConfig || []) {
+          const nodeId = `${plugin.id}-global-${cfg.key}`
+
+          // Create proper imported config with required fields
+          const cfgImported: SketchConfigParamImported = {
+            ...cfg,
+            valueType: cfg.valueType ?? 'number',
+            groupIndex: null,
+            title: cfg.title ?? cfg.key,
+            params: [], // Required for imported config
+          } as SketchConfigParamImported
+
+          // Add the node to the store using the shared addNode utility
+          addNode(state, nodeId, cfgImported)
+        }
+      })
+    }
+  }
+
+  /**
+   * Get the node IDs for a plugin's global option nodes
+   * @param pluginId The ID of the plugin
+   * @returns An array of node IDs for the global options
+   */
+  public getPluginGlobalOptionNodeIds(pluginId: string): string[] {
+    const plugin = this.plugins[pluginId]
+    if (!plugin || !plugin.globalOptionNodesConfig) return []
+
+    // The IDs of global option nodes follow the pattern: `${pluginId}-global-${optionKey}`
+    return plugin.globalOptionNodesConfig.map((config) => `${pluginId}-global-${config.key}`)
   }
 
   public async initiateSketchModules(sketchesUrl: string, moduleIds: string[]) {
@@ -158,6 +198,37 @@ export class HedronEngine {
 
   public getSaveData(): EngineData {
     return stripForSave(this.store.getState())
+  }
+
+  /**
+   * Recreates global option nodes for all registered plugins
+   * This should be called after loading a project or resetting the store
+   */
+  public recreateGlobalOptionNodes() {
+    // For each registered plugin
+    Object.values(this.plugins).forEach((plugin) => {
+      // Only process plugins with global options
+      if (plugin.globalOptionNodesConfig) {
+        // Create option nodes in the store
+        this.store.setState((state) => {
+          for (const cfg of plugin.globalOptionNodesConfig || []) {
+            const nodeId = `${plugin.id}-global-${cfg.key}`
+
+            // Create proper imported config with required fields
+            const cfgImported: SketchConfigParamImported = {
+              ...cfg,
+              valueType: cfg.valueType ?? 'number',
+              groupIndex: null,
+              title: cfg.title ?? cfg.key,
+              params: [], // Required for imported config
+            } as SketchConfigParamImported
+
+            // Add the node to the store using the shared addNode utility
+            addNode(state, nodeId, cfgImported)
+          }
+        })
+      }
+    })
   }
 
   /**

@@ -3,6 +3,8 @@ export * from './AudioInputPanel'
 export * from './AudioDebugPanel'
 export * from './AudioDeviceManager'
 export * from './AudioAnalyzer'
+export * from './AudioGlobalWidget'
+export * from './AudioGlobalPanel'
 
 // Export test utilities
 export { getAudioDiagnostics, testAudioInputCapture } from './AudioTestUtils'

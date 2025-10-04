@@ -45,6 +45,9 @@ export const handleLoadProjectDialog = async (projectPath?: string) => {
 
   engineStore.getState().loadProject(projectData.engine)
 
+  // Recreate global option nodes after loading project
+  engine.recreateGlobalOptionNodes()
+
   appStore.setState((state) => ({
     ...state,
     currentSavePath: savePath,
