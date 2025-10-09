@@ -37,6 +37,11 @@ export const createEngineStore = () =>
           loadProject: createLoadProject(set),
           addInput: createAddInput(set),
         })),
+        {
+          name: 'Hedron Engine',
+          // TODO: make this configurable for users of the engine
+          enabled: false,
+        },
       ),
     ),
   )
