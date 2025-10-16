@@ -6,7 +6,6 @@ import {
   isNodeTypeWithChildren,
   NodeValueType,
   Param,
-  SketchConfigParam,
 } from '@store/types'
 import { createUniqueId } from '@utils/createUniqueId'
 
@@ -52,7 +51,7 @@ const _addNodeToState = (
 const _addSliderMinAndMaxNodesToState = (
   state: EngineState,
   paramId: string,
-  sketchConfigParam: SketchConfigParam,
+  sketchConfigParam: { sliderMin?: number; sliderMax?: number; valueType: NodeValueType },
 ) => {
   /** TODO: This can probably be tidier, using some sort of config object to generate the option nodes
    * The same config object could also be used in the component to loop through
