@@ -32,12 +32,9 @@ const RecentProjectItem = ({ item }: { item: SaveItem }) => {
         <CardHeader iconName="draft">{item.title}</CardHeader>
         <CardDetails>
           <a
-            href="#"
-            onClick={(e) => {
-              e.preventDefault()
+            onClick={() => {
               openFolder(item.path)
             }}
-            style={{ textDecoration: 'underline', color: 'inherit', cursor: 'pointer' }}
             title="Open folder in file browser"
           >
             {item.path}

@@ -28,6 +28,11 @@ button {
   cursor: pointer;
 }
 
+a {
+  text-decoration: underline;
+  cursor: pointer;
+}
+
 *,
 *::before,
 *::after {
