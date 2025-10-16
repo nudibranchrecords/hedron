@@ -126,10 +126,16 @@ importers:
       react-dom:
         specifier: ^18.3.1
         version: 18.3.1(react@18.3.1)
+      three:
+        specifier: ^0.178.0
+        version: 0.178.0
       zustand:
         specifier: ^5.0.2
         version: 5.0.8(@types/react@18.3.23)(immer@10.1.1)(react@18.3.1)(use-sync-external-store@1.5.0(react@18.3.1))
     devDependencies:
+      '@types/three':
+        specifier: ^0.178.1
+        version: 0.178.1
       '@vitejs/plugin-react':
         specifier: ^4.3.4
         version: 4.7.0(vite@6.3.5(@types/node@24.3.0)(yaml@2.8.1))
