@@ -49,7 +49,6 @@
     "@types/fs-extra": "^11.0.4",
     "@types/lodash.debounce": "^4.0.9",
     "@types/node": "^24.3.0",
-    "@types/path-browserify": "^1.0.3",
     "@types/three": "^0.178.1",
     "electron": "37.3.0",
     "electron-builder": "26.0.12",
