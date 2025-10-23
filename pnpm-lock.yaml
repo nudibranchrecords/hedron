@@ -185,9 +185,6 @@ importers:
       lodash.debounce:
         specifier: ^4.0.8
         version: 4.0.8
-      path-browserify:
-        specifier: ^1.0.1
-        version: 1.0.1
       postprocessing:
         specifier: ^6.37.7
         version: 6.37.7(three@0.178.0)
@@ -202,7 +199,7 @@ importers:
         version: 3.1.1(react@19.1.1)
       zustand:
         specifier: ^4.5.7
-        version: 4.5.7(@types/react@18.3.23)(immer@10.1.1)(react@19.1.1)
+        version: 4.5.7(@types/react@19.1.10)(immer@10.1.1)(react@19.1.1)
     devDependencies:
       '@types/fs-extra':
         specifier: ^11.0.4
@@ -12381,7 +12378,7 @@ snapshots:
 
   tinyglobby@0.2.14:
     dependencies:
-      fdir: 6.4.6(picomatch@4.0.3)
+      fdir: 6.5.0(picomatch@4.0.3)
       picomatch: 4.0.3
 
   tinyrainbow@1.2.0: {}
@@ -12980,6 +12977,14 @@ snapshots:
       use-sync-external-store: 1.5.0(react@19.1.1)
     optionalDependencies:
       '@types/react': 18.3.23
+      immer: 10.1.1
+      react: 19.1.1
+
+  zustand@4.5.7(@types/react@19.1.10)(immer@10.1.1)(react@19.1.1):
+    dependencies:
+      use-sync-external-store: 1.5.0(react@19.1.1)
+    optionalDependencies:
+      '@types/react': 19.1.10
       immer: 10.1.1
       react: 19.1.1
 

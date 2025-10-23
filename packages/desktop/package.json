@@ -39,7 +39,6 @@
     "fs-extra": "^11.3.1",
     "get-port-please": "^3.2.0",
     "lodash.debounce": "^4.0.8",
-    "path-browserify": "^1.0.1",
     "postprocessing": "^6.37.7",
     "react-error-boundary": "^4.1.2",
     "three": "^0.178.0",
