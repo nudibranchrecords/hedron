@@ -8,6 +8,8 @@
 .left {
   flex: 0 0 50%;
   position: relative;
+  display: flex;
+  flex-direction: column;
 }
 
 .right {
@@ -17,6 +19,12 @@
 .widgetStrip {
   display: flex;
   gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+.widgetStrip:last-child {
+  flex: 1;
+  min-height: 0;
 }
 
 .widgetItem {

@@ -1,5 +1,6 @@
 export * from './AudioInput'
 export * from './AudioInputPanel'
+export * from './AudioInputSelector'
 export * from './AudioDebugPanel'
 export * from './AudioDeviceManager'
 export * from './AudioAnalyzer'
@@ -12,8 +13,6 @@ export { getAudioDiagnostics, testAudioInputCapture } from './AudioTestUtils'
 // Export core audio utilities
 export {
   createAudioContext,
-  createOscillator,
-  playTestTone,
   calculateAverageLevel,
   getLevelColor,
   clamp,
@@ -21,5 +20,4 @@ export {
   xToFreq,
   qToY,
   yToQ,
-  type TestToneOptions,
 } from './AudioUtils'

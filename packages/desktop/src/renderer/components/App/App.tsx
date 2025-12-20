@@ -25,7 +25,9 @@ export const App = (): JSX.Element => {
               <div className={c.widgetItem}>
                 <VideoControls />
               </div>
-              {/* Add the WidgetStrip with plugin views */}
+            </div>
+            {/* The above widgets need to be converted to plugins */}
+            <div className={c.widgetStrip}>
               <WidgetStrip engine={engine} pluginViews={pluginViews.globalPanel} />
             </div>
           </div>

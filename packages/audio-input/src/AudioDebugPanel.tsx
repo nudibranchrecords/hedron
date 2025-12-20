@@ -1,7 +1,6 @@
 import { useCallback, useState, useRef, useEffect } from 'react'
 import { getAudioDiagnostics, testAudioInputCapture } from './AudioTestUtils'
 import { AudioInput } from './AudioInput'
-import { TestToneOptions, playTestTone } from './AudioUtils'
 
 interface AudioDebugPanelProps {
   audioPlugin: AudioInput | undefined
@@ -14,8 +13,6 @@ export const AudioDebugPanel = ({ audioPlugin }: AudioDebugPanelProps) => {
   const [isOpen, setIsOpen] = useState(false)
   const [diagReport, setDiagReport] = useState<string | null>(null)
   const [isRunningTest, setIsRunningTest] = useState(false)
-  const [testToneActive, setTestToneActive] = useState(false)
-  const [testFrequency, setTestFrequency] = useState(440)
   const [testResults, setTestResults] = useState<any>(null)
 
   // Run diagnostics
@@ -47,28 +44,6 @@ export const AudioDebugPanel = ({ audioPlugin }: AudioDebugPanelProps) => {
       setIsRunningTest(false)
     }
   }, [])
-
-  // Play test tone using the utility function
-  const handleTestTone = useCallback(() => {
-    if (testToneActive) return
-
-    setTestToneActive(true)
-
-    // Call with duration to get a Promise
-    const result = playTestTone(testFrequency, 2000, 0.3)
-
-    // Since we provided a duration, we know it returns a Promise
-    if (result instanceof Promise) {
-      result
-        .then(() => {
-          setTestToneActive(false)
-        })
-        .catch((error) => {
-          console.error('[AudioDebugPanel] Test tone error:', error)
-          setTestToneActive(false)
-        })
-    }
-  }, [testFrequency, testToneActive])
 
   // Log audio plugin state
   const logAudioState = useCallback(() => {
@@ -184,42 +159,6 @@ export const AudioDebugPanel = ({ audioPlugin }: AudioDebugPanelProps) => {
         >
           Test Audio Input
         </button>
-
-        <div style={{ display: 'flex', alignItems: 'center' }}>
-          <input
-            type="number"
-            value={testFrequency}
-            onChange={(e) => setTestFrequency(parseInt(e.target.value) || 440)}
-            min="20"
-            max="20000"
-            step="10"
-            style={{
-              width: '60px',
-              marginRight: '4px',
-              padding: '4px',
-              backgroundColor: '#444',
-              color: '#fff',
-              border: '1px solid #555',
-              borderRadius: '4px',
-            }}
-          />
-          <span style={{ color: '#aaa', marginRight: '6px' }}>Hz</span>
-          <button
-            onClick={handleTestTone}
-            disabled={testToneActive || isRunningTest}
-            style={{
-              padding: '6px 12px',
-              backgroundColor: '#FF9800',
-              color: 'white',
-              border: 'none',
-              borderRadius: '4px',
-              cursor: testToneActive || isRunningTest ? 'not-allowed' : 'pointer',
-              opacity: testToneActive || isRunningTest ? 0.7 : 1,
-            }}
-          >
-            {testToneActive ? 'Playing...' : 'Play Test Tone'}
-          </button>
-        </div>
 
         <button
           onClick={logAudioState}
