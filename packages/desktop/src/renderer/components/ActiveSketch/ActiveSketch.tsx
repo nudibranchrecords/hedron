@@ -36,6 +36,16 @@ export const ActiveSketch = () => {
               icon: 'delete',
               onClick: () => engineStore.getState().deleteSketch(activeSketch.id),
             },
+            {
+              label: 'Move Up',
+              icon: 'edit',
+              onClick: () => engineStore.getState().moveSketchUp(activeSketch.id),
+            },
+            {
+              label: 'Move Down',
+              icon: 'edit',
+              onClick: () => engineStore.getState().moveSketchDown(activeSketch.id),
+            },
           ]}
         >
           <Button type="ghost" iconName="menu" />
