@@ -27,6 +27,54 @@ export class AudioInput implements IPlugin {
       sliderMin: 0,
       sliderMax: 2.0,
     },
+    {
+      key: 'smoothing',
+      title: 'Smoothing',
+      valueType: 'number',
+      defaultValue: 0,
+      sliderMin: 0,
+      sliderMax: 0.999,
+    },
+    {
+      key: 'normalizeLevels',
+      title: 'Normalize Levels',
+      valueType: 'number',
+      defaultValue: 0,
+      sliderMin: 0,
+      sliderMax: 1.0,
+    },
+    {
+      key: 'levelsFalloff',
+      title: 'Levels Falloff',
+      valueType: 'number',
+      defaultValue: 1,
+      sliderMin: 0,
+      sliderMax: 2.0,
+    },
+    {
+      key: 'levelsPower',
+      title: 'Levels Power',
+      valueType: 'number',
+      defaultValue: 1,
+      sliderMin: 0.1,
+      sliderMax: 5.0,
+    },
+    {
+      key: 'maxLevelFalloffMultiplier',
+      title: 'Max Level Falloff Multiplier',
+      valueType: 'number',
+      defaultValue: 0.9999,
+      sliderMin: 0.9,
+      sliderMax: 1.0,
+    },
+    {
+      key: 'maxLevelMinimum',
+      title: 'Max Level Minimum',
+      valueType: 'number',
+      defaultValue: 0.001,
+      sliderMin: 0.0001,
+      sliderMax: 0.1,
+    },
   ] as const satisfies InputOptionNodesConfig
 
   public readonly optionNodesConfig = [
@@ -304,13 +352,85 @@ export class AudioInput implements IPlugin {
   }
 
   /**
+   * Gets the smoothing value from the global options
+   * @returns Smoothing value (default: 0)
+   */
+  private getSmoothing(): number {
+    const storeState = this._store.getState()
+    const nodeId = `${AudioInput.ID}-global-smoothing`
+    const value = storeState.nodeValues[nodeId] as number | undefined
+    return value ?? 0
+  }
+
+  /**
+   * Gets the normalize levels value from the global options
+   * @returns Normalize levels value (default: 0)
+   */
+  private getNormalizeLevels(): number {
+    const storeState = this._store.getState()
+    const nodeId = `${AudioInput.ID}-global-normalizeLevels`
+    const value = storeState.nodeValues[nodeId] as number | undefined
+    return value ?? 0
+  }
+
+  /**
+   * Gets the levels falloff value from the global options
+   * @returns Levels falloff value (default: 1)
+   */
+  private getLevelsFalloff(): number {
+    const storeState = this._store.getState()
+    const nodeId = `${AudioInput.ID}-global-levelsFalloff`
+    const value = storeState.nodeValues[nodeId] as number | undefined
+    return value ?? 1
+  }
+
+  /**
+   * Gets the levels power value from the global options
+   * @returns Levels power value (default: 1)
+   */
+  private getLevelsPower(): number {
+    const storeState = this._store.getState()
+    const nodeId = `${AudioInput.ID}-global-levelsPower`
+    const value = storeState.nodeValues[nodeId] as number | undefined
+    return value ?? 1
+  }
+
+  /**
+   * Gets the max level falloff multiplier value from the global options
+   * @returns Max level falloff multiplier value (default: 0.9999)
+   */
+  private getMaxLevelFalloffMultiplier(): number {
+    const storeState = this._store.getState()
+    const nodeId = `${AudioInput.ID}-global-maxLevelFalloffMultiplier`
+    const value = storeState.nodeValues[nodeId] as number | undefined
+    return value ?? 0.9999
+  }
+
+  /**
+   * Gets the max level minimum value from the global options
+   * @returns Max level minimum value (default: 0.001)
+   */
+  private getMaxLevelMinimum(): number {
+    const storeState = this._store.getState()
+    const nodeId = `${AudioInput.ID}-global-maxLevelMinimum`
+    const value = storeState.nodeValues[nodeId] as number | undefined
+    return value ?? 0.001
+  }
+
+  /**
    * Updates audio analysis on each frame
    * @returns The current levels data array
    */
   public update() {
     if (!this.audioData) return
-    // Set the analyzer's master volume from global option
+    // Set all analyzer properties from global options
     this.analyzer.masterVolume = this.getMasterVolume()
+    this.analyzer.smoothing = this.getSmoothing()
+    this.analyzer.normalizeLevels = this.getNormalizeLevels()
+    this.analyzer.levelsFalloff = this.getLevelsFalloff()
+    this.analyzer.levelsPower = this.getLevelsPower()
+    this.analyzer.maxLevelFalloffMultiplier = this.getMaxLevelFalloffMultiplier()
+    this.analyzer.maxLevelMinimum = this.getMaxLevelMinimum()
     // Update the analyzer
     this.analyzer.update()
     // Update nodes based on new audio levels
