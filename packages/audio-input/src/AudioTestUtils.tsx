@@ -2,56 +2,58 @@
  * Audio Test Utilities
  * Helper functions for debugging and testing audio functionality
  */
+import React from 'react'
 import { createAudioContext } from './AudioUtils'
+import styles from './AudioGlobalPanel.module.css'
 
 /**
  * Generates diagnostic information about the audio system
- * @returns A string with formatted diagnostic information
+ * @returns A React element with formatted diagnostic information
  */
-export async function getAudioDiagnostics(): Promise<string> {
-  let report = '=== AUDIO SYSTEM DIAGNOSTICS ===\n\n'
-
+export async function getAudioDiagnostics(): Promise<React.ReactElement> {
+  let lines: string[] = []
+  lines.push('=== AUDIO DIAGNOSTICS ===')
   // Check if Web Audio API is available
-  report += '🔍 Web Audio API Support:\n'
+  lines.push('🔍 Web Audio API Support:')
   if (
     typeof window.AudioContext !== 'undefined' ||
     typeof (window as any).webkitAudioContext !== 'undefined'
   ) {
-    report += '✅ Web Audio API is supported\n'
+    lines.push('✅ Web Audio API is supported')
   } else {
-    report += '❌ Web Audio API is NOT supported\n'
+    lines.push('❌ Web Audio API is NOT supported')
   }
 
   // Check if MediaDevices API is available
-  report += '\n🔍 MediaDevices API Support:\n'
+  lines.push('\n🔍 MediaDevices API Support:')
   if (navigator.mediaDevices) {
-    report += '✅ MediaDevices API is supported\n'
+    lines.push('✅ MediaDevices API is supported')
 
     // Try to list available audio devices
     try {
       const devices = await navigator.mediaDevices.enumerateDevices()
       const audioInputDevices = devices.filter((device) => device.kind === 'audioinput')
-      report += `✅ Found ${audioInputDevices.length} audio input device(s)\n`
+      lines.push(`✅ Found ${audioInputDevices.length} audio input device(s)`)
 
       if (audioInputDevices.length > 0) {
-        report += '\n📱 Audio Input Devices:\n'
+        lines.push('\n📱 Audio Input Devices:')
         audioInputDevices.forEach((device, index) => {
-          report += `  ${index + 1}. ${device.label || 'Unnamed device'}\n`
+          lines.push(`  ${index + 1}. ${device.label || 'Unnamed device'}`)
         })
       } else {
-        report += '❌ No audio input devices detected\n'
+        lines.push('❌ No audio input devices detected')
       }
     } catch (err) {
-      report += `❌ Error enumerating devices: ${err}\n`
+      lines.push(`❌ Error enumerating devices: ${err}`)
     }
   } else {
-    report += '❌ MediaDevices API is NOT supported\n'
+    lines.push('❌ MediaDevices API is NOT supported')
   }
 
   // Check user media permissions
-  report += '\n🔍 Microphone Permission:\n'
+  lines.push('\n🔍 Microphone Permission:')
   try {
-    report += '⏳ Requesting microphone permission...\n'
+    lines.push('⏳ Requesting microphone permission...')
 
     // Try to get permission with minimal access
     const stream = await navigator.mediaDevices.getUserMedia({
@@ -63,18 +65,18 @@ export async function getAudioDiagnostics(): Promise<string> {
 
     // Get track information
     const tracks = stream.getAudioTracks()
-    report += `✅ Permission granted! Captured ${tracks.length} audio track(s)\n`
+    lines.push(`✅ Permission granted! Captured ${tracks.length} audio track(s)`)
 
     if (tracks.length > 0) {
       const track = tracks[0]
       const settings = track.getSettings()
 
-      report += '\n🎤 Audio Track Details:\n'
-      report += `  - Label: ${track.label}\n`
-      report += `  - Sample Rate: ${settings.sampleRate || 'unknown'}Hz\n`
-      report += `  - Echo Cancellation: ${settings.echoCancellation ? 'enabled' : 'disabled'}\n`
-      report += `  - Noise Suppression: ${settings.noiseSuppression ? 'enabled' : 'disabled'}\n`
-      report += `  - Auto Gain Control: ${settings.autoGainControl ? 'enabled' : 'disabled'}\n`
+      lines.push('\n🎤 Audio Track Details:')
+      lines.push(`  - Label: ${track.label}`)
+      lines.push(`  - Sample Rate: ${settings.sampleRate || 'unknown'}Hz`)
+      lines.push(`  - Echo Cancellation: ${settings.echoCancellation ? 'enabled' : 'disabled'}`)
+      lines.push(`  - Noise Suppression: ${settings.noiseSuppression ? 'enabled' : 'disabled'}`)
+      lines.push(`  - Auto Gain Control: ${settings.autoGainControl ? 'enabled' : 'disabled'}`)
     }
 
     // Test if we can create analyzer
@@ -83,10 +85,10 @@ export async function getAudioDiagnostics(): Promise<string> {
     const source = audioContext.createMediaStreamSource(stream)
     source.connect(analyser)
 
-    report += '\n🔊 Analyzer Created:\n'
-    report += `  - FFT Size: ${analyser.fftSize}\n`
-    report += `  - Frequency Bins: ${analyser.frequencyBinCount}\n`
-    report += `  - Sample Rate: ${audioContext.sampleRate}Hz\n`
+    lines.push('\n🔊 Analyzer Created:')
+    lines.push(`  - FFT Size: ${analyser.fftSize}`)
+    lines.push(`  - Frequency Bins: ${analyser.frequencyBinCount}`)
+    lines.push(`  - Sample Rate: ${audioContext.sampleRate}Hz`)
 
     // Create buffer to test analysis
     const buffer = new Uint8Array(analyser.frequencyBinCount)
@@ -97,61 +99,53 @@ export async function getAudioDiagnostics(): Promise<string> {
     audioContext.close()
     tracks.forEach((track) => track.stop())
 
-    report += '✅ Analyzer test successful\n'
+    lines.push('✅ Analyzer test successful')
   } catch (err) {
     if (err instanceof DOMException) {
       if (err.name === 'NotAllowedError') {
-        report += '❌ Microphone permission was denied by the user or system\n'
+        lines.push('❌ Microphone permission was denied by the user or system')
       } else if (err.name === 'NotFoundError') {
-        report += '❌ No microphone device found\n'
+        lines.push('❌ No microphone device found')
       } else {
-        report += `❌ Error accessing microphone: ${err.name} - ${err.message}\n`
+        lines.push(`❌ Error accessing microphone: ${err.name} - ${err.message}`)
       }
     } else {
-      report += `❌ Unexpected error: ${err}\n`
+      lines.push(`❌ Unexpected error: ${err}`)
     }
   }
 
   // Check browser information
   const ua = navigator.userAgent
-  report += '\n🔍 Browser Information:\n'
-  report += `  - User Agent: ${ua}\n`
+  lines.push('\n🔍 Browser Information:')
+  lines.push(`  - User Agent: ${ua}`)
 
   // Check for mobile devices
   const isMobile = /iPhone|iPad|iPod|Android/i.test(ua)
   if (isMobile) {
-    report += '  - Device Type: Mobile (may have more restricted audio access)\n'
+    lines.push('  - Device Type: Mobile (may have more restricted audio access)')
   } else {
-    report += '  - Device Type: Desktop\n'
+    lines.push('  - Device Type: Desktop')
   }
 
-  report += '\n=== END OF DIAGNOSTICS ===\n'
-  return report
+  return <div className={styles.testResultsMonospace}>{lines.join('\n')}</div>
 }
 
 // Test tone functionality has been moved to AudioUtils.ts
 
 /**
  * Tests the audio input capture system and returns diagnostic information
- * @returns Promise with audio input metrics
+ * @returns Promise with a React element showing test results
  */
-export async function testAudioInputCapture(): Promise<{
-  success: boolean
-  message: string
-  metrics?: {
-    deviceCount: number
-    deviceLabel?: string
-    noiseFloor?: number
-    peakLevel?: number
-  }
-}> {
+export async function testAudioInputCapture(): Promise<React.ReactElement> {
   try {
     // First check if media devices API is available
     if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-      return {
-        success: false,
-        message: 'MediaDevices API not available in this browser',
-      }
+      return (
+        <div>
+          <h4 style={{ margin: '0 0 8px 0', color: '#FF5252' }}>Audio Input Test Results</h4>
+          <div style={{ marginBottom: '6px' }}>MediaDevices API not available in this browser</div>
+        </div>
+      )
     }
 
     // List available devices
@@ -159,13 +153,13 @@ export async function testAudioInputCapture(): Promise<{
     const audioInputDevices = devices.filter((device) => device.kind === 'audioinput')
 
     if (audioInputDevices.length === 0) {
-      return {
-        success: false,
-        message: 'No audio input devices detected',
-        metrics: {
-          deviceCount: 0,
-        },
-      }
+      return (
+        <div>
+          <h4 style={{ margin: '0 0 8px 0', color: '#FF5252' }}>Audio Input Test Results</h4>
+          <div style={{ marginBottom: '6px' }}>No audio input devices detected</div>
+          <div>Devices detected: 0</div>
+        </div>
+      )
     }
 
     // Request access to the microphone
@@ -230,36 +224,44 @@ export async function testAudioInputCapture(): Promise<{
           const normalizedNoiseFloor = noiseFloor / 256
           const normalizedPeakLevel = peakLevel / 256
 
-          resolve({
-            success: true,
-            message: 'Audio input capture test completed successfully',
-            metrics: {
-              deviceCount: audioInputDevices.length,
-              deviceLabel: audioTrack.label,
-              noiseFloor: normalizedNoiseFloor,
-              peakLevel: normalizedPeakLevel,
-            },
-          })
+          resolve(
+            <div>
+              <h4 style={{ margin: '0 0 8px 0', color: '#4CAF50' }}>Audio Input Test Results</h4>
+              <div style={{ marginBottom: '6px' }}>
+                Audio input capture test completed successfully
+              </div>
+              <div>Devices detected: {audioInputDevices.length}</div>
+              <div>Active device: {audioTrack.label}</div>
+              <div>
+                Noise floor: {Math.round(normalizedNoiseFloor * 100)}%
+                {normalizedNoiseFloor > 0.1 && (
+                  <span style={{ color: '#FF5252' }}> (High background noise detected)</span>
+                )}
+              </div>
+              <div>
+                Peak level: {Math.round(normalizedPeakLevel * 100)}%
+                {normalizedPeakLevel < 0.3 && (
+                  <span style={{ color: '#FFEB3B' }}> (Low signal level)</span>
+                )}
+              </div>
+            </div>,
+          )
         }
       }, 100)
     })
   } catch (error) {
-    if (error instanceof DOMException && error.name === 'NotAllowedError') {
-      return {
-        success: false,
-        message: 'Microphone access permission denied',
-        metrics: {
-          deviceCount: 0,
-        },
-      }
-    }
+    const isPermissionError = error instanceof DOMException && error.name === 'NotAllowedError'
 
-    return {
-      success: false,
-      message: `Error testing audio input: ${error}`,
-      metrics: {
-        deviceCount: 0,
-      },
-    }
+    return (
+      <div>
+        <h4 style={{ margin: '0 0 8px 0', color: '#FF5252' }}>Audio Input Test Results</h4>
+        <div style={{ marginBottom: '6px' }}>
+          {isPermissionError
+            ? 'Microphone access permission denied'
+            : `Error testing audio input: ${error}`}
+        </div>
+        <div>Devices detected: 0</div>
+      </div>
+    )
   }
 }

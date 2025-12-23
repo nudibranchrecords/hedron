@@ -1,6 +1,7 @@
-import { useCallback, useState, useRef, useEffect } from 'react'
+import React, { useCallback, useState, useRef, useEffect } from 'react'
 import { getAudioDiagnostics, testAudioInputCapture } from './AudioTestUtils'
 import { AudioInput } from './AudioInput'
+import styles from './AudioGlobalPanel.module.css'
 
 interface AudioDebugPanelProps {
   audioPlugin: AudioInput | undefined
@@ -11,20 +12,21 @@ interface AudioDebugPanelProps {
  */
 export const AudioDebugPanel = ({ audioPlugin }: AudioDebugPanelProps) => {
   const [isOpen, setIsOpen] = useState(false)
-  const [diagReport, setDiagReport] = useState<string | null>(null)
   const [isRunningTest, setIsRunningTest] = useState(false)
-  const [testResults, setTestResults] = useState<any>(null)
+  const [testResults, setTestResults] = useState<React.ReactElement | null>(null)
 
   // Run diagnostics
   const runDiagnostics = useCallback(async () => {
     setIsRunningTest(true)
-    setDiagReport('Running diagnostics...')
+    setTestResults(<i>Running diagnostics...</i>)
 
     try {
-      const report = await getAudioDiagnostics()
-      setDiagReport(report)
+      const result = await getAudioDiagnostics()
+      setTestResults(result)
     } catch (error) {
-      setDiagReport(`Error running diagnostics: ${error}`)
+      setTestResults(
+        <div className={styles.errorText}>Error running diagnostics: {String(error)}</div>,
+      )
     } finally {
       setIsRunningTest(false)
     }
@@ -33,13 +35,15 @@ export const AudioDebugPanel = ({ audioPlugin }: AudioDebugPanelProps) => {
   // Run audio input test
   const runInputTest = useCallback(async () => {
     setIsRunningTest(true)
-    setTestResults('Testing audio input...')
+    setTestResults(<i>Testing audio input...</i>)
 
     try {
-      const results = await testAudioInputCapture()
-      setTestResults(results)
+      const result = await testAudioInputCapture()
+      setTestResults(result)
     } catch (error) {
-      setTestResults(`Error testing audio input: ${error}`)
+      setTestResults(
+        <div className={styles.errorText}>Error testing audio input: {String(error)}</div>,
+      )
     } finally {
       setIsRunningTest(false)
     }
@@ -49,27 +53,49 @@ export const AudioDebugPanel = ({ audioPlugin }: AudioDebugPanelProps) => {
   const logAudioState = useCallback(() => {
     if (!audioPlugin) {
       console.log('[AudioDebugPanel] Audio plugin not available')
+      setTestResults(<div className={styles.errorText}>Audio plugin not available</div>)
       return
     }
 
-    console.log('[AudioDebugPanel] Audio Plugin State:', {
+    const pluginState = {
       levelsData: [...audioPlugin.analyzer.levelsData],
       bands: audioPlugin.analyzer.bands.map((band) => ({
         centerFreq: band.centerFreq,
         q: band.q,
         color: band.color,
       })),
-    })
-
-    if (audioPlugin.audioData) {
-      console.log(
-        '[AudioDebugPanel] Frequency data sample (first 10 bins):',
-        Array.from(audioPlugin.audioData.freqs.slice(0, 10)),
-      )
     }
 
-    // If in browser, add to console
-    alert('Audio state logged to console. Check developer tools.')
+    console.log('[AudioDebugPanel] Audio Plugin State:', pluginState)
+
+    let freqSample: number[] = []
+    if (audioPlugin.audioData) {
+      freqSample = Array.from(audioPlugin.audioData.freqs.slice(0, 10))
+      console.log('[AudioDebugPanel] Frequency data sample (first 10 bins):', freqSample)
+    }
+
+    // Create a formatted display of the audio state
+    const stateLines = [
+      '=== AUDIO PLUGIN STATE ===',
+      '',
+      `📊 Analyzer Bands: ${pluginState.bands.length}`,
+      ...pluginState.bands.map(
+        (band, i) => `  Band ${i + 1}: ${band.centerFreq.toFixed(1)}Hz (Q: ${band.q.toFixed(2)})`,
+      ),
+      '',
+      `📈 Levels Data: [${pluginState.levelsData
+        .slice(0, 8)
+        .map((v) => v.toFixed(3))
+        .join(', ')}${pluginState.levelsData.length > 8 ? '...' : ''}]`,
+      '',
+      audioPlugin.audioData
+        ? `🎵 Frequency Sample: [${freqSample.map((v) => v.toFixed(1)).join(', ')}...]`
+        : '🎵 No frequency data available',
+      '',
+      '✅ Audio state logged to console',
+    ]
+
+    setTestResults(<div className={styles.testResultsMonospace}>{stateLines.join('\n')}</div>)
   }, [audioPlugin])
 
   if (!isOpen) {
@@ -127,7 +153,7 @@ export const AudioDebugPanel = ({ audioPlugin }: AudioDebugPanelProps) => {
         </button>
       </div>
 
-      <div style={{ display: 'flex', gap: '8px', marginBottom: '12px' }}>
+      <div style={{ display: 'flex', gap: '8px' }}>
         <button
           onClick={runDiagnostics}
           disabled={isRunningTest}
@@ -135,7 +161,6 @@ export const AudioDebugPanel = ({ audioPlugin }: AudioDebugPanelProps) => {
             padding: '6px 12px',
             backgroundColor: '#2196F3',
             color: 'white',
-            border: 'none',
             borderRadius: '4px',
             cursor: isRunningTest ? 'not-allowed' : 'pointer',
             opacity: isRunningTest ? 0.7 : 1,
@@ -151,7 +176,6 @@ export const AudioDebugPanel = ({ audioPlugin }: AudioDebugPanelProps) => {
             padding: '6px 12px',
             backgroundColor: '#4CAF50',
             color: 'white',
-            border: 'none',
             borderRadius: '4px',
             cursor: isRunningTest ? 'not-allowed' : 'pointer',
             opacity: isRunningTest ? 0.7 : 1,
@@ -166,7 +190,6 @@ export const AudioDebugPanel = ({ audioPlugin }: AudioDebugPanelProps) => {
             padding: '6px 12px',
             backgroundColor: '#9C27B0',
             color: 'white',
-            border: 'none',
             borderRadius: '4px',
             cursor: 'pointer',
           }}
@@ -176,80 +199,7 @@ export const AudioDebugPanel = ({ audioPlugin }: AudioDebugPanelProps) => {
       </div>
 
       {/* Results Display */}
-      {diagReport && (
-        <div
-          style={{
-            backgroundColor: '#333',
-            padding: '8px',
-            borderRadius: '4px',
-            maxHeight: '200px',
-            overflowY: 'auto',
-            whiteSpace: 'pre-wrap',
-            fontFamily: 'monospace',
-            fontSize: '11px',
-            color: '#eee',
-          }}
-        >
-          {diagReport}
-        </div>
-      )}
-
-      {testResults && typeof testResults !== 'string' && (
-        <div
-          style={{
-            backgroundColor: '#333',
-            padding: '8px',
-            borderRadius: '4px',
-            marginTop: '12px',
-            color: '#eee',
-          }}
-        >
-          <h4 style={{ margin: '0 0 8px 0', color: testResults.success ? '#4CAF50' : '#FF5252' }}>
-            Audio Input Test Results
-          </h4>
-          <div style={{ marginBottom: '6px' }}>{testResults.message}</div>
-
-          {testResults.metrics && (
-            <div>
-              <div>Devices detected: {testResults.metrics.deviceCount}</div>
-              {testResults.metrics.deviceLabel && (
-                <div>Active device: {testResults.metrics.deviceLabel}</div>
-              )}
-              {testResults.metrics.noiseFloor !== undefined && (
-                <div>
-                  Noise floor: {Math.round(testResults.metrics.noiseFloor * 100)}%
-                  {testResults.metrics.noiseFloor > 0.1 && (
-                    <span style={{ color: '#FF5252' }}> (High background noise detected)</span>
-                  )}
-                </div>
-              )}
-              {testResults.metrics.peakLevel !== undefined && (
-                <div>
-                  Peak level: {Math.round(testResults.metrics.peakLevel * 100)}%
-                  {testResults.metrics.peakLevel < 0.3 && (
-                    <span style={{ color: '#FFEB3B' }}> (Low signal level)</span>
-                  )}
-                </div>
-              )}
-            </div>
-          )}
-        </div>
-      )}
-
-      {testResults && typeof testResults === 'string' && (
-        <div
-          style={{
-            backgroundColor: '#333',
-            padding: '8px',
-            borderRadius: '4px',
-            marginTop: '12px',
-            color: '#eee',
-            fontStyle: 'italic',
-          }}
-        >
-          {testResults}
-        </div>
-      )}
+      {testResults && <div className={styles.testResultsArea}>{testResults}</div>}
 
       <div style={{ marginTop: '12px', fontSize: '11px', color: '#888' }}>
         Use these tools to diagnose audio input issues. Results will be displayed here and in the
