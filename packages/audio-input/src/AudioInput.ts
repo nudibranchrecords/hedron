@@ -139,10 +139,10 @@ export class AudioInput implements IPlugin {
    * Default frequency bands to use
    */
   private static DEFAULT_BANDS: FrequencyBand[] = [
-    { centerFreq: 100, q: 1.0, color: BAND_COLORS[0] }, // Low
-    { centerFreq: 400, q: 1.5, color: BAND_COLORS[1] }, // Mid Low
-    { centerFreq: 1200, q: 2.0, color: BAND_COLORS[2] }, // Mid High
-    { centerFreq: 4000, q: 2.5, color: BAND_COLORS[3] }, // High
+    { centerFreq: 70, q: 0.2, color: BAND_COLORS[0] }, // Low
+    { centerFreq: 400, q: 0.25, color: BAND_COLORS[1] }, // Mid Low
+    { centerFreq: 1400, q: 0.3, color: BAND_COLORS[2] }, // Mid High
+    { centerFreq: 5000, q: 0.33, color: BAND_COLORS[3] }, // High
   ]
 
   /**
