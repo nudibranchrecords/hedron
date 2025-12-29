@@ -1,7 +1,8 @@
 import { handleEachInput, HedronEngine, InputOptionNodesConfig, IPlugin } from '@hedron/engine'
-import { lerp } from 'src/AudioUtils'
 import { AudioDeviceManager } from './AudioDeviceManager'
 import { AudioAnalyzer, AudioData, FrequencyBand, BAND_COLORS } from './AudioAnalyzer'
+import { lerp } from './AudioUtils'
+import { handleAudioError } from './AudioTestUtils'
 
 /**
  * Audio Input plugin for capturing and processing audio from the microphone
@@ -281,59 +282,7 @@ export class AudioInput implements IPlugin {
 
       return audioData
     } catch (error) {
-      // Always log errors regardless of logging settings
-      if (error instanceof DOMException) {
-        switch (error.name) {
-          case 'NotAllowedError':
-            console.error('[AudioInput] Microphone access denied by user or system settings.')
-            if (AudioInput.ENABLE_LOGGING) {
-              console.log('[AudioInput] Troubleshooting tips:')
-              console.log(
-                '  - Check that you have granted microphone permissions in browser settings',
-              )
-              console.log('  - Ensure no other application is using the microphone exclusively')
-              console.log('  - Try selecting a specific audio device if multiple are available')
-            }
-            break
-          case 'NotFoundError':
-            console.error('[AudioInput] No microphone detected on this device.')
-            if (AudioInput.ENABLE_LOGGING) {
-              console.log('[AudioInput] Troubleshooting tips:')
-              console.log('  - Check if a microphone is properly connected')
-              console.log('  - Try reconnecting your audio device')
-            }
-            break
-          case 'NotReadableError':
-            console.error('[AudioInput] Could not start audio capture. Hardware or OS error.')
-            if (AudioInput.ENABLE_LOGGING) {
-              console.log('[AudioInput] Troubleshooting tips:')
-              console.log('  - Try reconnecting your audio device')
-              console.log('  - Restart your browser or application')
-              console.log('  - Check system audio settings')
-            }
-            break
-          default:
-            console.error(`[AudioInput] Error initializing audio: ${error.name}`, error)
-        }
-      } else {
-        console.error('[AudioInput] Failed to initialize audio input:', error)
-      }
-
-      // Even when there's an error, log browser audio capabilities for debugging
-      if (navigator.mediaDevices) {
-        if (AudioInput.ENABLE_LOGGING) console.log('[AudioInput] Media devices API available')
-      } else {
-        console.error(
-          '[AudioInput] Media devices API not available - microphone access not possible',
-        )
-      }
-
-      if (typeof window.AudioContext !== 'undefined') {
-        if (AudioInput.ENABLE_LOGGING) console.log('[AudioInput] AudioContext API available')
-      } else {
-        console.error('[AudioInput] AudioContext API not available - audio processing not possible')
-      }
-
+      handleAudioError(error)
       throw error
     }
   }

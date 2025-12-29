@@ -5,13 +5,14 @@
 import React from 'react'
 import { createAudioContext } from './AudioUtils'
 import styles from './AudioGlobalPanel.module.css'
+import { AudioInput } from './AudioInput'
 
 /**
  * Generates diagnostic information about the audio system
  * @returns A React element with formatted diagnostic information
  */
 export async function getAudioDiagnostics(): Promise<React.ReactElement> {
-  let lines: string[] = []
+  const lines: string[] = []
   lines.push('=== AUDIO DIAGNOSTICS ===')
   // Check if Web Audio API is available
   lines.push('🔍 Web Audio API Support:')
@@ -130,8 +131,6 @@ export async function getAudioDiagnostics(): Promise<React.ReactElement> {
   return <div className={styles.testResultsMonospace}>{lines.join('\n')}</div>
 }
 
-// Test tone functionality has been moved to AudioUtils.ts
-
 /**
  * Tests the audio input capture system and returns diagnostic information
  * @returns Promise with a React element showing test results
@@ -192,12 +191,9 @@ export async function testAudioInputCapture(): Promise<React.ReactElement> {
         analyser.getByteFrequencyData(dataArray)
 
         // Calculate average and peak levels
-        let sum = 0
         let peak = 0
-
         for (let i = 0; i < bufferLength; i++) {
           const value = dataArray[i]
-          sum += value
           peak = Math.max(peak, value)
 
           // Update noise floor (minimum level detected)
@@ -263,5 +259,59 @@ export async function testAudioInputCapture(): Promise<React.ReactElement> {
         <div>Devices detected: 0</div>
       </div>
     )
+  }
+}
+
+/**
+ * Handles logging audio errors
+ * @param error The caught error
+ */
+export function handleAudioError(error: unknown) {
+  if (error instanceof DOMException) {
+    switch (error.name) {
+      case 'NotAllowedError':
+        console.error('[AudioInput] Microphone access denied by user or system settings.')
+        if (AudioInput.ENABLE_LOGGING) {
+          console.log('[AudioInput] Troubleshooting tips:')
+          console.log('  - Check that you have granted microphone permissions in browser settings')
+          console.log('  - Ensure no other application is using the microphone exclusively')
+          console.log('  - Try selecting a specific audio device if multiple are available')
+        }
+        break
+      case 'NotFoundError':
+        console.error('[AudioInput] No microphone detected on this device.')
+        if (AudioInput.ENABLE_LOGGING) {
+          console.log('[AudioInput] Troubleshooting tips:')
+          console.log('  - Check if a microphone is properly connected')
+          console.log('  - Try reconnecting your audio device')
+        }
+        break
+      case 'NotReadableError':
+        console.error('[AudioInput] Could not start audio capture. Hardware or OS error.')
+        if (AudioInput.ENABLE_LOGGING) {
+          console.log('[AudioInput] Troubleshooting tips:')
+          console.log('  - Try reconnecting your audio device')
+          console.log('  - Restart your browser or application')
+          console.log('  - Check system audio settings')
+        }
+        break
+      default:
+        console.error(`[AudioInput] Error initializing audio: ${error.name}`, error)
+    }
+  } else {
+    console.error('[AudioInput] Failed to initialize audio input:', error)
+  }
+
+  // Even when there's an error, log browser audio capabilities for debugging
+  if (navigator.mediaDevices) {
+    if (AudioInput.ENABLE_LOGGING) console.log('[AudioInput] Media devices API available')
+  } else {
+    console.error('[AudioInput] Media devices API not available - microphone access not possible')
+  }
+
+  if (typeof window.AudioContext !== 'undefined') {
+    if (AudioInput.ENABLE_LOGGING) console.log('[AudioInput] AudioContext API available')
+  } else {
+    console.error('[AudioInput] AudioContext API not available - audio processing not possible')
   }
 }
