@@ -125,7 +125,6 @@ export class AudioDeviceManager {
 
       // Close existing stream - new stream will be created when needed
       this.closeCurrentStream()
-
       return true
     } catch (error) {
       console.error(`[AudioDeviceManager] Failed to change audio input device:`, error)

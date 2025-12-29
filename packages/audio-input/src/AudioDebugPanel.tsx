@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useRef, useEffect } from 'react'
+import React, { useCallback, useState } from 'react'
 import { getAudioDiagnostics, testAudioInputCapture } from './AudioTestUtils'
 import { AudioInput } from './AudioInput'
 import styles from './AudioGlobalPanel.module.css'

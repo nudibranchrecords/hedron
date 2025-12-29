@@ -16,10 +16,7 @@ export async function getAudioDiagnostics(): Promise<React.ReactElement> {
   lines.push('=== AUDIO DIAGNOSTICS ===')
   // Check if Web Audio API is available
   lines.push('🔍 Web Audio API Support:')
-  if (
-    typeof window.AudioContext !== 'undefined' ||
-    typeof (window as any).webkitAudioContext !== 'undefined'
-  ) {
+  if (typeof window.AudioContext !== 'undefined') {
     lines.push('✅ Web Audio API is supported')
   } else {
     lines.push('❌ Web Audio API is NOT supported')

@@ -1,6 +1,6 @@
-import { HedronEngine, Input, IPlugin } from '@hedron/engine'
+import { HedronEngine, Input } from '@hedron/engine'
 import { ControlGrid, Param } from '@hedron/ui-core'
-import { useEffect, useRef, useState, useCallback } from 'react'
+import { useEffect, useState } from 'react'
 import { AudioInput } from './AudioInput'
 import { calculateAverageLevel, getLevelColor } from './AudioUtils'
 import styles from './AudioInputPanel.module.css'

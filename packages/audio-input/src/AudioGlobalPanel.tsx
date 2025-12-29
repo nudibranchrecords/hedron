@@ -1,7 +1,7 @@
 import React from 'react'
 import { HedronEngine } from '@hedron/engine'
-import { AudioInput } from './AudioInput'
 import { ControlGrid, Param } from '@hedron/ui-core'
+import { AudioInput } from './AudioInput'
 import styles from './AudioGlobalPanel.module.css'
 import { AudioDebugPanel } from './AudioDebugPanel'
 import { FreqPreview } from './FreqPreview'
