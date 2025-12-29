@@ -1,6 +1,6 @@
-import { AudioInput } from 'src/AudioInput'
-import { bellCurve, lerp } from 'src/AudioUtils'
 import * as THREE from 'three'
+import { AudioInput } from './AudioInput'
+import { bellCurve, lerp } from './AudioUtils'
 
 /**
  * Represents a frequency band with center frequency and Q factor
@@ -227,11 +227,6 @@ export class AudioAnalyzer {
   public maxLevelMinimum: number
 
   /**
-   * Whether band settings have been modified since last update
-   */
-  public bandsModified: boolean = false
-
-  /**
    * Create a new AudioAnalyzer
    *
    * @param bands Frequency band configurations
@@ -270,7 +265,7 @@ export class AudioAnalyzer {
     }
 
     if (AudioInput.ENABLE_LOGGING) {
-      console.log('[AudioAnalyzer] Initialized with', this.bandsCount, 'frequency bands')
+      console.log(`[AudioAnalyzer] Initialized with ${this.bandsCount} frequency bands`)
     }
   }
 
@@ -381,9 +376,6 @@ export class AudioAnalyzer {
     this.bands[bandIndex].centerFreq = clampedFreq
     this.bands[bandIndex].q = clampedQ
 
-    // Mark bands as modified
-    this.bandsModified = true
-
     if (AudioInput.ENABLE_LOGGING) {
       console.log(
         `[AudioAnalyzer] Band ${bandIndex} updated: Center=${clampedFreq}Hz, Q=${clampedQ}`,
@@ -397,11 +389,10 @@ export class AudioAnalyzer {
    */
   public update(): void {
     if (!this.audioData) return
-    // Get latest frequency data from analyzer - using any to work around type issues with Uint8Array
-    this.audioData.analyser.getByteFrequencyData(this.audioData.freqs as any)
-    // Process the frequency bands
+    // Get latest frequency data from analyzer
+    this.audioData.analyser.getByteFrequencyData(this.audioData.freqs as Uint8Array<ArrayBuffer>)
+
     this.processBands()
-    // Process the full spectrum
     this.processFullSpectrum()
   }
 
@@ -559,69 +550,5 @@ export class AudioAnalyzer {
     }
 
     return curve
-  }
-
-  /**
-   * Log debug information about the audio analyzer
-   */
-  public logDebugInfo(): void {
-    if (!AudioInput.ENABLE_LOGGING) return
-
-    // Log the levels data for each frequency band
-    const bandsDebug = this.bands.map((band, i) => {
-      const level = this.levelsData[i]?.toFixed(3) || 'N/A'
-
-      // Get range covered by this band (where response > 0.5)
-      let lowerBound = 0
-      let upperBound = 0
-
-      // Calculate approximate bandwidth based on Q
-      // For a bell curve, bandwidth at half power points (-3dB) is approximately center/Q
-      const bandwidth = band.centerFreq / band.q
-      lowerBound = Math.max(FREQ_RANGE.MIN, band.centerFreq - bandwidth / 2)
-      upperBound = Math.min(FREQ_RANGE.MAX, band.centerFreq + bandwidth / 2)
-
-      return {
-        name: ['Low', 'Mid Low', 'Mid High', 'High'][i] || `Band ${i + 1}`,
-        centerFreq: `${Math.round(band.centerFreq)}Hz`,
-        q: band.q.toFixed(1),
-        bandwidth: `${Math.round(bandwidth)}Hz`,
-        range: `${Math.round(lowerBound)}-${Math.round(upperBound)}Hz`,
-        level,
-      }
-    })
-
-    console.log('[AudioAnalyzer] Current band levels:', bandsDebug)
-
-    // Calculate overall audio level (average of all bands)
-    const avgLevel = this.levelsData.reduce((sum, val) => sum + (val || 0), 0) / this.bands.length
-    console.log(`[AudioAnalyzer] Average audio level: ${avgLevel.toFixed(3)}`)
-
-    // Find peak bin in full spectrum if available
-    if (this.fullLevelsData && this.fullLevelsData.length > 0) {
-      let peakBin = 0
-      let peakValue = 0
-
-      for (let i = 0; i < this.fullLevelsData.length; i++) {
-        if (this.fullLevelsData[i] > peakValue) {
-          peakValue = this.fullLevelsData[i]
-          peakBin = i
-        }
-      }
-
-      // Convert peak bin to frequency
-      const peakFreq = Math.round((peakBin / this.fullLevelsData.length) * this.nyquist)
-      if (peakValue > 0.1) {
-        console.log(
-          `[AudioAnalyzer] Peak frequency: ~${peakFreq}Hz (bin ${peakBin}) with magnitude ${peakValue.toFixed(3)}`,
-        )
-      }
-    }
-
-    // Log if bands were modified
-    if (this.bandsModified) {
-      console.log('[AudioAnalyzer] Band settings have been modified')
-      this.bandsModified = false
-    }
   }
 }
