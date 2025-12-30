@@ -1,6 +1,3 @@
-/* AudioInputPanel styles */
-
-/* FreqPreview component styles */
 .freqPreviewContainer {
     width: 100%;
     height: 180px;
@@ -39,25 +36,6 @@
     border-radius: 4px;
 }
 
-.audioStatusActive {
-    color: #4CAF50;
-}
-
-.audioDeviceContainer {
-    margin-bottom: 8px;
-}
-
-.audioDeviceLabel {
-    font-size: 12px;
-    color: #aaa;
-    margin-bottom: 4px;
-}
-
-.audioDeviceControls {
-    display: flex;
-    align-items: center;
-}
-
 .audioDeviceSelect {
     padding: 4px;
     font-size: 12px;
@@ -78,24 +56,6 @@
 
 .audioDeviceSelectDisabled {
     opacity: 0.7;
-}
-
-.audioDeviceRefreshButton {
-    padding: 4px 8px;
-    font-size: 11px;
-    color: white;
-    border: none;
-    border-radius: 4px;
-}
-
-.audioDeviceRefreshButtonActive {
-    background-color: #555;
-    cursor: default;
-}
-
-.audioDeviceRefreshButtonNormal {
-    background-color: #444;
-    cursor: pointer;
 }
 
 .audioDeviceErrorText {

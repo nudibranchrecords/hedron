@@ -1,4 +1,11 @@
 import { useState, useEffect } from 'react'
+import {
+  Button,
+  NodeControl,
+  NodeControlInner,
+  NodeControlMain,
+  NodeControlTitle,
+} from '@hedron/ui-core'
 import { AudioInput } from './AudioInput'
 import styles from './AudioInputPanel.module.css'
 
@@ -72,36 +79,37 @@ export const AudioInputSelector = ({ audioPlugin }: AudioInputSelectorProps) => 
   }
 
   return (
-    <div className={styles.audioDeviceContainer}>
-      <div className={styles.audioDeviceControls}>
-        <div className={styles.audioDeviceLabel}>Input Device:</div>
-        <select
-          value={audioPlugin.deviceManager.currentDeviceId}
-          onChange={(e) => handleDeviceChange(e.target.value)}
-          className={`${styles.audioDeviceSelect} 
-                    ${deviceChangeError ? styles.audioDeviceSelectError : styles.audioDeviceSelectNormal} 
+    <div>
+      <NodeControl>
+        <NodeControlMain>
+          <NodeControlTitle>Input Device:</NodeControlTitle>
+          <NodeControlInner>
+            <select
+              value={audioPlugin.deviceManager.currentDeviceId}
+              onChange={(e) => handleDeviceChange(e.target.value)}
+              className={`${styles.audioDeviceSelect}
+                    ${deviceChangeError ? styles.audioDeviceSelectError : styles.audioDeviceSelectNormal}
                     ${isChangingDevice ? styles.audioDeviceSelectDisabled : ''}`}
-          disabled={isChangingDevice || isRefreshingDevices}
-        >
-          <option value="default">System Default</option>
-          {audioPlugin.deviceManager.availableInputDevices.map((device) => (
-            <option key={device.deviceId} value={device.deviceId}>
-              {device.label || `Device (${device.deviceId.slice(0, 8)}...)`}
-            </option>
-          ))}
-        </select>
-        <button
-          onClick={handleRefreshDevices}
-          className={`${styles.audioDeviceRefreshButton} ${
-            isRefreshingDevices
-              ? styles.audioDeviceRefreshButtonActive
-              : styles.audioDeviceRefreshButtonNormal
-          }`}
-          disabled={isRefreshingDevices || isChangingDevice}
-        >
-          {isRefreshingDevices ? 'Refreshing...' : 'Refresh'}
-        </button>
-      </div>
+              disabled={isChangingDevice || isRefreshingDevices}
+            >
+              <option value="default">System Default</option>
+              {audioPlugin.deviceManager.availableInputDevices.map((device) => (
+                <option key={device.deviceId} value={device.deviceId}>
+                  {device.label || `Device (${device.deviceId.slice(0, 8)}...)`}
+                </option>
+              ))}
+            </select>
+          </NodeControlInner>
+
+          <Button
+            type="neutral"
+            onClick={handleRefreshDevices}
+            disabled={isRefreshingDevices || isChangingDevice}
+          >
+            {isRefreshingDevices ? 'Refreshing...' : 'Refresh'}
+          </Button>
+        </NodeControlMain>
+      </NodeControl>
       {deviceChangeError && <div className={styles.audioDeviceErrorText}>{deviceChangeError}</div>}
       {isChangingDevice && (
         <div className={styles.audioDeviceChangingText}>Changing audio device...</div>
