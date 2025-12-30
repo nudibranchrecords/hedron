@@ -1,4 +1,5 @@
 import React, { useCallback, useState } from 'react'
+import { Button, Collapsible } from '@hedron/ui-core'
 import { getAudioDiagnostics, testAudioInputCapture } from './AudioTestUtils'
 import { AudioInput } from './AudioInput'
 import styles from './AudioGlobalPanel.module.css'
@@ -98,104 +99,24 @@ export const AudioDebugPanel = ({ audioPlugin }: AudioDebugPanelProps) => {
     setTestResults(<div className={styles.testResultsMonospace}>{stateLines.join('\n')}</div>)
   }, [audioPlugin])
 
-  if (!isOpen) {
-    return (
-      <div style={{ marginTop: '12px', textAlign: 'right' }}>
-        <button
-          onClick={() => setIsOpen(true)}
-          style={{
-            padding: '4px 8px',
-            fontSize: '11px',
-            backgroundColor: '#555',
-            color: 'white',
-            border: 'none',
-            borderRadius: '4px',
-            cursor: 'pointer',
-          }}
-        >
-          Show Audio Debug Tools
-        </button>
-      </div>
-    )
-  }
-
   return (
-    <div
-      style={{
-        marginTop: '16px',
-        padding: '12px',
-        backgroundColor: '#2a2a2a',
-        borderRadius: '4px',
-        fontSize: '12px',
-      }}
+    <Collapsible
+      title={`${isOpen ? 'Hide' : 'Show'} Audio Debug Tools`}
+      isOpen={isOpen}
+      onToggle={() => setIsOpen(!isOpen)}
     >
-      <div
-        style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          marginBottom: '12px',
-        }}
-      >
-        <h3 style={{ margin: 0, color: '#fff' }}>Audio Debug Tools</h3>
-        <button
-          onClick={() => setIsOpen(false)}
-          style={{
-            padding: '2px 6px',
-            fontSize: '11px',
-            backgroundColor: 'transparent',
-            color: '#aaa',
-            border: '1px solid #aaa',
-            borderRadius: '4px',
-            cursor: 'pointer',
-          }}
-        >
-          Hide
-        </button>
-      </div>
-
       <div style={{ display: 'flex', gap: '8px' }}>
-        <button
-          onClick={runDiagnostics}
-          disabled={isRunningTest}
-          style={{
-            padding: '6px 12px',
-            backgroundColor: '#2196F3',
-            color: 'white',
-            borderRadius: '4px',
-            cursor: isRunningTest ? 'not-allowed' : 'pointer',
-            opacity: isRunningTest ? 0.7 : 1,
-          }}
-        >
+        <Button onClick={runDiagnostics} disabled={isRunningTest}>
           Run Audio Diagnostics
-        </button>
+        </Button>
 
-        <button
-          onClick={runInputTest}
-          disabled={isRunningTest}
-          style={{
-            padding: '6px 12px',
-            backgroundColor: '#4CAF50',
-            color: 'white',
-            borderRadius: '4px',
-            cursor: isRunningTest ? 'not-allowed' : 'pointer',
-            opacity: isRunningTest ? 0.7 : 1,
-          }}
-        >
+        <Button type="secondary" onClick={runInputTest} disabled={isRunningTest}>
           Test Audio Input
-        </button>
+        </Button>
 
-        <button
-          onClick={logAudioState}
-          style={{
-            padding: '6px 12px',
-            backgroundColor: '#9C27B0',
-            color: 'white',
-            borderRadius: '4px',
-            cursor: 'pointer',
-          }}
-        >
+        <Button type="neutral" onClick={logAudioState}>
           Log Audio State
-        </button>
+        </Button>
       </div>
 
       {/* Results Display */}
@@ -205,6 +126,6 @@ export const AudioDebugPanel = ({ audioPlugin }: AudioDebugPanelProps) => {
         Use these tools to diagnose audio input issues. Results will be displayed here and in the
         console.
       </div>
-    </div>
+    </Collapsible>
   )
 }
