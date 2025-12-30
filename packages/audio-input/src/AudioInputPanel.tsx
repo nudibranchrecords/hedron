@@ -5,8 +5,6 @@ import { AudioInput } from './AudioInput'
 import { calculateAverageLevel, getLevelColor } from './AudioUtils'
 import styles from './AudioInputPanel.module.css'
 
-// Using the imported clamp function as clampValue
-
 interface IProps {
   input: Input
   // TODO: This can be typed as something like HedronEngineWithPlugin<AudioInput>
