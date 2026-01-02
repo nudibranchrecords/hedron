@@ -1,5 +1,4 @@
 /**
- * AudioUtils.ts
  * Shared utilities for audio operations used across components
  */
 
