@@ -18,7 +18,7 @@ export class AudioInput implements IPlugin {
   public readonly id = AudioInput.ID
   public readonly name = 'Audio Input'
   public readonly inputType = 'audio'
-  public readonly description = 'README.md.'
+  public readonly description = 'Captures microphone audio and provides real-time frequency analysis for visualization.'
   public readonly globalOptionNodesConfig = [
     {
       key: 'masterVolume',
