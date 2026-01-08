@@ -1,6 +1,5 @@
 import React from 'react'
 import { HedronEngine } from '@hedron/engine'
-import { AudioInput } from './AudioInput'
 import styles from './AudioGlobalWidget.module.css'
 
 interface AudioGlobalWidgetProps {
