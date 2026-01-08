@@ -9,12 +9,7 @@ interface AudioGlobalWidgetProps {
   onToggle: () => void
 }
 
-export const AudioGlobalWidget: React.FC<AudioGlobalWidgetProps> = ({
-  engine,
-  isOpen,
-  onToggle,
-}) => {
-  const audioPlugin = engine.plugins[AudioInput.ID] as AudioInput | undefined
+export const AudioGlobalWidget: React.FC<AudioGlobalWidgetProps> = ({ isOpen, onToggle }) => {
   return (
     <button
       className={`${styles.audioGlobalButton} ${isOpen ? styles.active : ''}`}
