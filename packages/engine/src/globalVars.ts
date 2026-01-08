@@ -21,15 +21,16 @@ declare global {
   Sketch authors don't need to worry about this! SketchesServer makes sure that any import declared below
   gets resolved to point to these global instances of the libraries
 */
-if (typeof window !== 'undefined') {
-  window.__HEDRON = {
-    ...(window.__HEDRON ?? {}),
-    dependencies: {
-      THREE,
-      THREE_WEBGPU,
-      THREE_TSL,
-      POSTPROCESSING,
-    },
+export const initializeGlobalVars = () => {
+  if (typeof window !== 'undefined') {
+    window.__HEDRON = {
+      dependencies: {
+        THREE,
+        THREE_WEBGPU,
+        THREE_TSL,
+        POSTPROCESSING,
+      },
+    }
   }
 }
 

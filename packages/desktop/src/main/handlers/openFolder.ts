@@ -1,6 +1,6 @@
-import { shell } from 'electron'
 import path from 'path'
 import fs from 'fs'
+import { shell } from 'electron'
 
 /**
  * Opens a folder in the user's default file browser

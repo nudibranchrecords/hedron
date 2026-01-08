@@ -14,7 +14,7 @@ listen(SketchEvents.ReimportSketchModule, (moduleId: string) => {
 })
 
 listen(SketchEvents.AddSketchModule, (moduleId: string) => {
-  engine.addSketchModule(moduleId)
+  engine.importSketchModule(moduleId)
 })
 
 listen(SketchEvents.RemoveSketchModule, (moduleId: string) => {

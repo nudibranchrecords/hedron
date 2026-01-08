@@ -1,8 +1,9 @@
 import { Pass } from 'postprocessing'
 import { type Clock } from '@hedron/clock'
 import { listenToStore } from './storeListener'
-import { RendererType, Result } from './types'
+import { CanvasSizeMode, RendererType, Result } from './types'
 import { importSketchModule } from './importSketchModule'
+import { initializeGlobalVars } from '@globalVars'
 import { IPlugin } from '@plugins/Plugin'
 import { stripForSave } from '@utils/stripForSave'
 import { Renderer } from '@world/Renderer'
@@ -36,8 +37,12 @@ export class HedronEngine {
     onFrameEnd?: () => void
     onError?: SketchInstanceError
     rendererType: RendererType
+    canvasSizeMode: CanvasSizeMode
     clock?: Clock
   }) {
+    // Initialize global variables for sketches
+    initializeGlobalVars()
+
     this.rendererType = params.rendererType
     this.store = createEngineStore()
 
@@ -47,7 +52,10 @@ export class HedronEngine {
     }
 
     this.sketchManager = new SketchManager({ onError: this._onError })
-    this.renderer = new Renderer({ rendererType: this.rendererType })
+    this.renderer = new Renderer({
+      rendererType: this.rendererType,
+      canvasSizeMode: params.canvasSizeMode,
+    })
     this.scene = createDebugScene(this.renderer, this._onError)
 
     this.onFrameStart = params?.onFrameStart
@@ -66,32 +74,45 @@ export class HedronEngine {
     this.plugins[plugin.id] = plugin
   }
 
-  public async initiateSketchModules(sketchesUrl: string, moduleIds: string[]) {
-    this.sketchesUrl = sketchesUrl
-
-    for (const moduleId of moduleIds) {
-      await this.addSketchModule(moduleId)
-    }
-
+  /**
+   * Sets up listeners to the engine store to handle adding/removing sketches from the scene.
+   * Should be called after setting sketch modules (e.g. importSketchModulesFromIds or manually with setSketchModuleItem)
+   */
+  public startStoreListener() {
     const { removeSketchFromScene } = this.sketchManager
 
     const addSketchToScene = (sketchInstanceId: string, moduleId: string) => {
-      const modules = this.store.getState().sketchModules
-      const module = modules[moduleId].module
+      try {
+        const modules = this.store.getState().sketchModules
+        const module = modules[moduleId].module
 
-      const sketchInstance = this.sketchManager.addSketchToScene(sketchInstanceId, module)
+        const sketchInstance = this.sketchManager.addSketchToScene(sketchInstanceId, module)
 
-      if (sketchInstance) {
-        this.setIsSketchBroken(sketchInstance.id, false)
+        if (sketchInstance) {
+          this.setIsSketchBroken(sketchInstance.id, false)
+        }
+
+        this.renderer.passesNeedUpdate_webGPU = true
+      } catch {
+        console.error(
+          `Failed to add sketch ${sketchInstanceId} of module ${moduleId} to scene. Is the module in your sketch folder? Web projects: Have you imported the module?`,
+        )
+        this.setIsSketchBroken(sketchInstanceId, true)
       }
-
-      this.renderer.passesNeedUpdate_webGPU = true
     }
 
     listenToStore(this.store, addSketchToScene, removeSketchFromScene)
   }
 
-  public async addSketchModule(moduleId: string): Promise<Result<SketchModuleItem>> {
+  public async importSketchModulesFromIds(sketchesUrl: string, moduleIds: string[]) {
+    this.sketchesUrl = sketchesUrl
+
+    for (const moduleId of moduleIds) {
+      await this.importSketchModule(moduleId)
+    }
+  }
+
+  public async importSketchModule(moduleId: string): Promise<Result<SketchModuleItem>> {
     if (!this.sketchesUrl) throw new Error('Sketches URL not ready')
 
     const result = await importSketchModule(this.sketchesUrl, moduleId)
@@ -113,7 +134,7 @@ export class HedronEngine {
   }
 
   public async reimportSketchModuleAndReloadSketches(moduleId: string): Promise<void> {
-    const result = await this.addSketchModule(moduleId)
+    const result = await this.importSketchModule(moduleId)
 
     if (!result.success) {
       return
@@ -136,11 +157,15 @@ export class HedronEngine {
     this.renderer.passesNeedUpdate_webGPU = true
   }
 
-  public createCanvas(containerEl: HTMLDivElement) {
+  /**
+   * Creates a canvas element for the engine and attaches it to the specified container.
+   * @param containerEl The HTML element to contain the engine's canvas.
+   */
+  public createCanvas(containerEl: HTMLElement) {
     return this.renderer.createCanvas(containerEl)
   }
 
-  public setOutput(container: HTMLDivElement) {
+  public setOutput(container: HTMLElement) {
     this.renderer.setOutput(container)
   }
 

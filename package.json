@@ -2,7 +2,7 @@
   "name": "root",
   "private": true,
   "scripts": {
-    "dev": "lerna run dev --parallel --ignore @hedron/example-project --ignore @hedron/midi-test-app --ignore @hedron/clock-test-app",
+    "dev": "lerna run dev --parallel --ignore @hedron/example-project --ignore @hedron/midi-test-app --ignore @hedron/clock-test-app --ignore @hedron/web-example",
     "dev:clock": "lerna run dev --parallel --scope @hedron/clock --scope @hedron/clock-test-app",
     "storybook": "lerna run storybook --scope @hedron/ui-core",
     "build:engine": "lerna run build --scope @hedron/engine",

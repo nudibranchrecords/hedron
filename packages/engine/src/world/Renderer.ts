@@ -2,7 +2,7 @@ import debounce from 'lodash.debounce'
 import { EffectComposer } from 'postprocessing'
 import { WebGLRenderer } from 'three'
 import { PostProcessing, WebGPURenderer } from 'three/webgpu'
-import { RendererType } from '@HedronEngine/types'
+import { CanvasSizeMode, RendererType } from '@HedronEngine/types'
 import { EngineScene } from '@world/EngineScene'
 import { engineScenes } from '@world/scenes'
 
@@ -13,8 +13,8 @@ export class Renderer {
   public rendererType: RendererType
   private rendererHeight: number = 0
   private rendererWidth: number = 0
-  private viewerContainer: HTMLDivElement | undefined
-  private outputContainer: HTMLDivElement | undefined | null
+  private viewerContainer: HTMLElement | undefined
+  private outputContainer: HTMLElement | undefined | null
   private previewCanvas: HTMLCanvasElement | undefined
   private outputCanvas: HTMLCanvasElement | undefined
   private canvas: HTMLCanvasElement | undefined
@@ -22,9 +22,17 @@ export class Renderer {
   public aspectRatio: number = 1
   public passesNeedUpdate_webGPU: boolean = true
   private isSendingOutput = false
+  private canvasSizeMode: CanvasSizeMode
 
-  constructor({ rendererType }: { rendererType: RendererType }) {
+  constructor({
+    rendererType,
+    canvasSizeMode,
+  }: {
+    rendererType: RendererType
+    canvasSizeMode: CanvasSizeMode
+  }) {
     this.rendererType = rendererType
+    this.canvasSizeMode = canvasSizeMode
 
     switch (this.rendererType) {
       case 'webgl':
@@ -46,7 +54,7 @@ export class Renderer {
     }
   }
 
-  private setResizeObserver = (el: HTMLDivElement) => {
+  private setResizeObserver = (el: HTMLElement) => {
     const resizeObserver = new ResizeObserver(
       debounce(() => {
         this.setSize()
@@ -56,7 +64,11 @@ export class Renderer {
     resizeObserver.observe(el)
   }
 
-  public createCanvas(containerEl: HTMLDivElement): void {
+  /**
+   * Creates a canvas element for the renderer and attaches it to the specified container.
+   * @param containerEl The HTML element to contain the renderer's canvas.
+   */
+  public createCanvas(containerEl: HTMLElement): void {
     this.canvas = this.renderer.domElement
     containerEl.innerHTML = ''
     containerEl.appendChild(this.canvas)
@@ -99,6 +111,10 @@ export class Renderer {
       if (!this.outputCanvas) throw new Error('outputCanvas not set')
       if (!this.outputContainer) throw new Error('outputContainer not set')
 
+      // During a performance sending output to an external display (e.g. projector)
+      // we can assume the desired pixel ratio is 1
+      this.renderer.setPixelRatio(1)
+
       // Get width and ratio from output window
       width = this.outputContainer.offsetWidth
       ratio = width / this.outputContainer.offsetHeight
@@ -107,12 +123,23 @@ export class Renderer {
       this.outputCanvas.width = width
       this.outputCanvas.height = width / ratio
     } else {
-      // Basic width and ratio if no output
-      width = this.viewerContainer.offsetWidth
-      ratio = settings.aspectW / settings.aspectH
+      // When working on a laptop (or web project!), we match the device's pixel ratio
+      this.renderer.setPixelRatio(window.devicePixelRatio)
+
+      switch (this.canvasSizeMode) {
+        case 'fixedAspectRatio':
+          width = this.viewerContainer.offsetWidth
+          ratio = settings.aspectW / settings.aspectH
+          break
+        case 'fillContainer':
+          width = this.viewerContainer.offsetWidth
+          ratio = this.viewerContainer.offsetWidth / this.viewerContainer.offsetHeight
+          break
+        default:
+          throw new Error(`Unknown canvas size mode: ${this.canvasSizeMode}`)
+      }
     }
 
-    const perc = 100 / ratio
     const height = width / ratio
 
     composerOrRenderer.setSize(width, height)
@@ -126,13 +153,16 @@ export class Renderer {
     this.rendererHeight = height
 
     // CSS trick to resize canvas
-    this.viewerContainer.style.paddingBottom = perc + '%'
+    if (this.canvasSizeMode !== 'fillContainer') {
+      const perc = 100 / ratio
+      this.viewerContainer.style.paddingBottom = perc + '%'
+    }
 
     this.aspectRatio = ratio
   }
 
   // Set the output to a second canvas (e.g. a separate window for making full screen)
-  public setOutput(container: HTMLDivElement): void {
+  public setOutput(container: HTMLElement): void {
     this.stopOutput()
     this.outputContainer = container
 

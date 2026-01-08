@@ -1,13 +1,13 @@
-import { getEsbuild } from '@main/getUnpackedModules'
-import { FileWatchEvents } from '@shared/Events'
+import { EventEmitter } from 'events'
+import path from 'path'
 import chokidar, { FSWatcher } from 'chokidar'
 import { app } from 'electron'
 import * as esbuild from 'esbuild'
-import { EventEmitter } from 'events'
 import { emptyDirSync } from 'fs-extra'
 import { getPort } from 'get-port-please'
-import path from 'path'
 import { createGlobalVarModuleFiles, watchWithDebounce } from './utils'
+import { FileWatchEvents } from '@shared/Events'
+import { getEsbuild } from '@main/getUnpackedModules'
 
 const HOST = process.platform.startsWith('win') ? 'localhost' : '0.0.0.0'
 
@@ -52,6 +52,8 @@ export class SketchesServer extends EventEmitter {
         `${entryBase}/**/config.ts`,
       ],
       outdir,
+      // `outbase` is needed to preserve sketches folder structure in the outdir
+      outbase: entryBase,
       loader: {
         // https://esbuild.github.io/content-types/
         // file: loaded into sketch as path
