@@ -31,6 +31,13 @@ button {
 a {
   text-decoration: underline;
   cursor: pointer;
+  color: var(--textColorLight2);
+}
+
+a:hover,
+a:focus,
+a:active {
+  color: var(--actionColor1Hover);
 }
 
 *,

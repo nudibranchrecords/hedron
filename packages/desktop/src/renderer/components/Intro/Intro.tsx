@@ -26,14 +26,26 @@ import { pluralize } from '@renderer/utils/pluralize'
 import { openFolder } from '@renderer/ipc/mainThreadTalk'
 
 const RecentProjectItem = ({ item }: { item: SaveItem }) => {
+  const handleOpenFolder = async () => {
+    const result = await openFolder(item.path)
+    if (result.error) {
+      console.error('Error opening folder:', result.error)
+    }
+  }
   return (
     <Card>
       <CardContent>
         <CardHeader iconName="draft">{item.title}</CardHeader>
         <CardDetails>
           <a
-            onClick={() => {
-              openFolder(item.path)
+            className={c.projectPath}
+            role="button"
+            tabIndex={0}
+            onClick={handleOpenFolder}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                handleOpenFolder()
+              }
             }}
             title="Open folder in file browser"
           >
