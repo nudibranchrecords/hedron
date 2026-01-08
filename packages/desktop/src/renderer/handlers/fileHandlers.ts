@@ -1,5 +1,5 @@
 import path from 'path-browserify'
-import { ProjectData } from '@hedron/app-store'
+import { ProjectData, AppState } from '@hedron/app-store'
 import { appStore } from '@renderer/appStore'
 import { engine, engineStore } from '@renderer/engine'
 import {
@@ -49,7 +49,7 @@ export const handleLoadProjectDialog = async (projectPath?: string) => {
 
   engine.ensureGlobalOptionNodes()
 
-  appStore.setState((state) => ({
+  appStore.setState((state: AppState) => ({
     ...state,
     currentSavePath: savePath,
     ...projectData.app,

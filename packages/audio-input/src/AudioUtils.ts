@@ -7,6 +7,7 @@
  * @returns A new AudioContext instance
  */
 export function createAudioContext(): AudioContext {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   return new (window.AudioContext || (window as any).webkitAudioContext)()
 }
 
