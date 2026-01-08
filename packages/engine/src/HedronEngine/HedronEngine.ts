@@ -15,14 +15,6 @@ import { getSketchParamValues } from '@store/selectors/getSketchParamValues'
 import { EngineScene } from '@world/EngineScene'
 import { addNode } from '@store/shared/addNode'
 
-declare global {
-  interface Window {
-    __HEDRON: {
-      plugins: Record<string, IPlugin>
-    }
-  }
-}
-
 export class HedronEngine {
   public rendererType: RendererType
   private renderer: Renderer

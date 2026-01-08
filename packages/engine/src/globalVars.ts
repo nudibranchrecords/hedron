@@ -2,6 +2,7 @@ import * as THREE from 'three'
 import * as THREE_WEBGPU from 'three/webgpu'
 import * as THREE_TSL from 'three/tsl'
 import * as POSTPROCESSING from 'postprocessing'
+import { IPlugin } from './plugins/Plugin'
 
 /**
   To prevent duplicate instances of three.js being imported, we have to make sure
@@ -11,8 +12,21 @@ import * as POSTPROCESSING from 'postprocessing'
   Sketch authors don't need to worry about this! SketchesServer makes sure that any import declared below
   gets resolved to point to these global instances of the libraries
 */
+declare global {
+  interface Window {
+    __HEDRON: {
+      dependencies?: {
+        THREE: typeof import('three')
+        THREE_WEBGPU: typeof import('three/webgpu')
+        THREE_TSL: typeof import('three/tsl')
+        POSTPROCESSING: typeof import('postprocessing')
+      }
+      plugins?: Record<string, IPlugin>
+    }
+  }
+}
+
 if (typeof window !== 'undefined') {
-  // @ts-expect-error ---
   window.__HEDRON = {
     dependencies: {
       THREE,
