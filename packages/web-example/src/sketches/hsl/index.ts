@@ -53,12 +53,14 @@ export default class HSL {
   /**
    * Called by Hedron every frame with the current parameters.
    */
-  update({ params }) {
+  update({ params }: { params: { hue: number; saturation: number; lightness: number } }) {
     this.setUniform('u_hsl', new Vector3(params.hue, params.saturation, params.lightness))
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   setUniform(key: string, value: any) {
+    if (!this.shader) return
+
     if (this.shader.uniforms[key]) {
       this.shader.uniforms[key].value = value
     }
