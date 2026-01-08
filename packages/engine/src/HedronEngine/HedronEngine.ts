@@ -224,6 +224,7 @@ export class HedronEngine {
     // For each registered plugin, ensure global option nodes exist
     Object.values(this.plugins).forEach((plugin) => {
       this.createGlobalOptionNodesForPlugin(plugin)
+      plugin.onEngineInitialize?.()
     })
   }
 
