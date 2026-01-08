@@ -77,6 +77,11 @@ export class HedronEngine {
       for (const cfg of plugin.globalOptionNodesConfig || []) {
         const nodeId = `${plugin.id}-global-${cfg.key}`
 
+        // Only create the node if it doesn't already exist
+        if (state.nodes[nodeId]) {
+          continue
+        }
+
         // Create proper imported config with required fields
         const cfgImported: SketchConfigParamImported = {
           ...cfg,
@@ -97,9 +102,6 @@ export class HedronEngine {
     // Make plugins available in the global window object for debugging
     window.__HEDRON = window.__HEDRON || {}
     window.__HEDRON.plugins = this.plugins
-
-    // Create global option nodes if they exist
-    this.createGlobalOptionNodesForPlugin(plugin)
   }
 
   /**
@@ -210,11 +212,11 @@ export class HedronEngine {
   }
 
   /**
-   * Recreates global option nodes for all registered plugins
-   * This should be called after loading a project or resetting the store
+   * Ensures global option nodes exist for all registered plugins
+   * This should be called when the engine is ready to use plugin global options
    */
-  public recreateGlobalOptionNodes() {
-    // For each registered plugin
+  public ensureGlobalOptionNodes() {
+    // For each registered plugin, ensure global option nodes exist
     Object.values(this.plugins).forEach((plugin) => {
       this.createGlobalOptionNodesForPlugin(plugin)
     })

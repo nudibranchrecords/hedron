@@ -13,21 +13,11 @@ interface AudioGlobalPanelProps {
 
 export const AudioGlobalPanel: React.FC<AudioGlobalPanelProps> = ({ engine }) => {
   const audioPlugin = engine.plugins[AudioInput.ID] as AudioInput | undefined
-  const [ensuredNodes, setEnsuredNodes] = React.useState(false)
 
   // If plugin is not available, show an error message
   if (!audioPlugin) {
     return <div className={styles.errorPanel}>Audio plugin not available</div>
   }
-
-  // Ensure global option nodes exist when the panel is opened
-  React.useEffect(() => {
-    if (!ensuredNodes) {
-      // This will recreate global option nodes if they don't exist
-      engine.recreateGlobalOptionNodes()
-      setEnsuredNodes(true)
-    }
-  }, [engine, ensuredNodes])
 
   // Get global option node IDs
   const globalOptionNodeIds = engine.getPluginGlobalOptionNodeIds(AudioInput.ID)

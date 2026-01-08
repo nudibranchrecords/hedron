@@ -24,6 +24,8 @@ export const handleSketchesDialog = async () => {
 
   appStore.getState().setSketchesDir(sketchesDir)
   await startEngineWithSketchesDir(sketchesDir)
+
+  engine.ensureGlobalOptionNodes()
 }
 
 export const handleLoadProjectDialog = async (projectPath?: string) => {
@@ -45,8 +47,7 @@ export const handleLoadProjectDialog = async (projectPath?: string) => {
 
   engineStore.getState().loadProject(projectData.engine)
 
-  // Recreate global option nodes after loading project
-  engine.recreateGlobalOptionNodes()
+  engine.ensureGlobalOptionNodes()
 
   appStore.setState((state) => ({
     ...state,
