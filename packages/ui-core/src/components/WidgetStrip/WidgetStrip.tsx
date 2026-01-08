@@ -9,11 +9,9 @@ interface PluginWidgetConfig {
     onToggle: () => void
     engine: HedronEngine
   }>
-  panel:
-    | React.ComponentType<{
-        engine: HedronEngine
-      }>
-    | undefined
+  panel?: React.ComponentType<{
+    engine: HedronEngine
+  }>
 }
 
 // Internal widget config used by the WidgetStrip
@@ -43,7 +41,7 @@ export const WidgetStrip: React.FC<WidgetStripProps> = ({ engine, pluginViews })
   const widgets = useMemo(() => {
     return Object.entries(pluginViews).reduce(
       (acc, [id, config]) => {
-        if (config.widget && config.panel) {
+        if (config.widget) {
           acc[id] = {
             id,
             widget: config.widget,
