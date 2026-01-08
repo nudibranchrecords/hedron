@@ -111,11 +111,17 @@ export class AudioInput implements IPlugin {
       key: 'min',
       valueType: 'number',
       defaultValue: 0,
+      title: 'Min Value',
+      sliderMin: 0,
+      sliderMax: 1,
     },
     {
       key: 'max',
       valueType: 'number',
       defaultValue: 1,
+      title: 'Max Value',
+      sliderMin: 0,
+      sliderMax: 1,
     },
   ] as const satisfies InputOptionNodesConfig
 
