@@ -32,19 +32,19 @@ export const ActiveSketch = () => {
           className="ml-auto"
           items={[
             {
-              label: 'Delete Sketch',
-              icon: 'delete',
-              onClick: () => engineStore.getState().deleteSketch(activeSketch.id),
-            },
-            {
               label: 'Move Up',
-              icon: 'edit',
+              icon: 'arrow_upward',
               onClick: () => engineStore.getState().moveSketchUp(activeSketch.id),
             },
             {
               label: 'Move Down',
-              icon: 'edit',
+              icon: 'arrow_downward',
               onClick: () => engineStore.getState().moveSketchDown(activeSketch.id),
+            },
+            {
+              label: 'Delete Sketch',
+              icon: 'delete',
+              onClick: () => engineStore.getState().deleteSketch(activeSketch.id),
             },
           ]}
         >

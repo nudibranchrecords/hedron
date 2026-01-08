@@ -29,6 +29,8 @@ export type IconName =
   | 'photo_camera_back'
   | '360'
   | 'error'
+  | 'arrow_upward'
+  | 'arrow_downward'
 
 export const sketchIcon: IconName = 'token'
 export const sceneIcon: IconName = 'panorama'
