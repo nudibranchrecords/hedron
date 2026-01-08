@@ -96,6 +96,10 @@ export const hasChildNodes = (node: Node): node is NodeParamWithChildren => {
 export interface SketchConfigParamBase {
   key: string
   title?: string
+  /**
+   * If true, this node will not appear in the UI but will still be saved/loaded
+   */
+  hidden?: boolean
 }
 
 export interface SketchConfigParamNumber extends SketchConfigParamBase {

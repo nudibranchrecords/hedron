@@ -107,14 +107,19 @@ export class HedronEngine {
   /**
    * Get the node IDs for a plugin's global option nodes
    * @param pluginId The ID of the plugin
+   * @param includeHidden Whether to include hidden nodes (default: false)
    * @returns An array of node IDs for the global options
    */
-  public getPluginGlobalOptionNodeIds(pluginId: string): string[] {
+  public getPluginGlobalOptionNodeIds(pluginId: string, includeHidden: boolean = false): string[] {
     const plugin = this.plugins[pluginId]
     if (!plugin || !plugin.globalOptionNodesConfig) return []
 
+    let nodes = [...plugin.globalOptionNodesConfig]
+    if (!includeHidden) {
+      nodes = nodes.filter((cfg) => !cfg.hidden)
+    }
     // The IDs of global option nodes follow the pattern: `${pluginId}-global-${optionKey}`
-    return plugin.globalOptionNodesConfig.map((config) => `${pluginId}-global-${config.key}`)
+    return nodes.map((config) => `${pluginId}-global-${config.key}`)
   }
 
   public async initiateSketchModules(sketchesUrl: string, moduleIds: string[]) {

@@ -359,8 +359,13 @@ export class AudioAnalyzer {
    * @param bandIndex Index of the band to update
    * @param centerFreq New center frequency (Hz)
    * @param q New Q factor
+   * @returns The clamped frequency and Q values, or undefined if index is invalid
    */
-  public updateBand(bandIndex: number, centerFreq: number, q: number): void {
+  public updateBand(
+    bandIndex: number,
+    centerFreq: number,
+    q: number,
+  ): { clampedFreq: number; clampedQ: number } | undefined {
     if (bandIndex < 0 || bandIndex >= this.bands.length) {
       console.error(`[AudioAnalyzer] Invalid band index: ${bandIndex}`)
       return
@@ -381,6 +386,7 @@ export class AudioAnalyzer {
         `[AudioAnalyzer] Band ${bandIndex} updated: Center=${clampedFreq}Hz, Q=${clampedQ}`,
       )
     }
+    return { clampedFreq, clampedQ }
   }
 
   /**

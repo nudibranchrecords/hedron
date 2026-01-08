@@ -18,7 +18,18 @@ export class AudioInput implements IPlugin {
   public readonly id = AudioInput.ID
   public readonly name = 'Audio Input'
   public readonly inputType = 'audio'
-  public readonly description = 'Captures microphone audio and provides real-time frequency analysis for visualization.'
+  public readonly description =
+    'Captures microphone audio and provides real-time frequency analysis for visualization.'
+
+  /**
+   * Default frequency bands to use
+   */
+  private static DEFAULT_BANDS: FrequencyBand[] = [
+    { centerFreq: 70, q: 0.2, color: BAND_COLORS[0] }, // Low
+    { centerFreq: 400, q: 0.25, color: BAND_COLORS[1] }, // Mid Low
+    { centerFreq: 1400, q: 0.3, color: BAND_COLORS[2] }, // Mid High
+    { centerFreq: 5000, q: 0.33, color: BAND_COLORS[3] }, // High
+  ]
   public readonly globalOptionNodesConfig = [
     {
       key: 'masterVolume',
@@ -76,6 +87,23 @@ export class AudioInput implements IPlugin {
       sliderMin: 0.0001,
       sliderMax: 0.1,
     },
+    // Generate hidden band configuration nodes from DEFAULT_BANDS
+    ...AudioInput.DEFAULT_BANDS.flatMap((band, index) => [
+      {
+        key: `band${index}CenterFreq`,
+        title: `Band ${index} Center Frequency`,
+        valueType: 'number' as const,
+        defaultValue: band.centerFreq,
+        hidden: true,
+      },
+      {
+        key: `band${index}Q`,
+        title: `Band ${index} Q Factor`,
+        valueType: 'number' as const,
+        defaultValue: band.q,
+        hidden: true,
+      },
+    ]),
   ] as const satisfies InputOptionNodesConfig
 
   public readonly optionNodesConfig = [
@@ -144,16 +172,6 @@ export class AudioInput implements IPlugin {
   public analyzer: AudioAnalyzer
 
   /**
-   * Default frequency bands to use
-   */
-  private static DEFAULT_BANDS: FrequencyBand[] = [
-    { centerFreq: 70, q: 0.2, color: BAND_COLORS[0] }, // Low
-    { centerFreq: 400, q: 0.25, color: BAND_COLORS[1] }, // Mid Low
-    { centerFreq: 1400, q: 0.3, color: BAND_COLORS[2] }, // Mid High
-    { centerFreq: 5000, q: 0.33, color: BAND_COLORS[3] }, // High
-  ]
-
-  /**
    * Reference to the engine's state store
    */
   private _store
@@ -168,7 +186,8 @@ export class AudioInput implements IPlugin {
 
     // Initialize audio analyzer
     this.analyzer = new AudioAnalyzer(AudioInput.DEFAULT_BANDS)
-
+    // Sync band configurations once on initialization
+    this.syncBandConfigurations()
     // Initialize audio capture
     this.deviceManager
       .updateInputDeviceList()
@@ -186,14 +205,33 @@ export class AudioInput implements IPlugin {
   }
 
   /**
+   * Called after engine initialization to sync plugin state
+   */
+  public onEngineInitialize = (): void => {
+    this.syncBandConfigurations()
+  }
+
+  /**
    * Updates a band's center frequency and Q factor
    * @param bandIndex Index of the band to update
    * @param centerFreq New center frequency (Hz)
    * @param q New Q factor
    */
   public updateBand(bandIndex: number, centerFreq: number, q: number): void {
-    // Delegate to the analyzer
-    this.analyzer.updateBand(bandIndex, centerFreq, q)
+    // Update the analyzer
+    const result = this.analyzer.updateBand(bandIndex, centerFreq, q)
+    if (!result) return
+
+    // Update the store values so they persist
+    const storeState = this._store.getState()
+    const centerFreqNodeId = `${AudioInput.ID}-global-band${bandIndex}CenterFreq`
+    const qNodeId = `${AudioInput.ID}-global-band${bandIndex}Q`
+
+    // Only update store if the nodes exist
+    if (storeState.nodes[centerFreqNodeId] && storeState.nodes[qNodeId]) {
+      storeState.updateNodeValue(centerFreqNodeId, result.clampedFreq)
+      storeState.updateNodeValue(qNodeId, result.clampedQ)
+    }
   }
 
   /**
@@ -374,11 +412,79 @@ export class AudioInput implements IPlugin {
   }
 
   /**
+   * Gets band configuration values from the store
+   * @param bandIndex Index of the band (0-3)
+   * @returns Object with centerFreq and q values
+   */
+  private getBandConfig(bandIndex: number): { centerFreq: number; q: number } {
+    const storeState = this._store.getState()
+    const centerFreqNodeId = `${AudioInput.ID}-global-band${bandIndex}CenterFreq`
+    const qNodeId = `${AudioInput.ID}-global-band${bandIndex}Q`
+
+    // Check if the nodes exist in the store first
+    const centerFreqNode = storeState.nodes[centerFreqNodeId]
+    const qNode = storeState.nodes[qNodeId]
+
+    // If nodes don't exist (old project), use defaults
+    if (!centerFreqNode || !qNode) {
+      const defaults = AudioInput.DEFAULT_BANDS[bandIndex] || { centerFreq: 1000, q: 1 }
+      return {
+        centerFreq: defaults.centerFreq,
+        q: defaults.q,
+      }
+    }
+
+    const centerFreq = storeState.nodeValues[centerFreqNodeId] as number | undefined
+    const q = storeState.nodeValues[qNodeId] as number | undefined
+
+    // Return stored values or defaults
+    const defaults = AudioInput.DEFAULT_BANDS[bandIndex] || { centerFreq: 1000, q: 1 }
+    return {
+      centerFreq: centerFreq ?? defaults.centerFreq,
+      q: q ?? defaults.q,
+    }
+  }
+
+  /**
+   * Syncs band configurations from store to analyzer
+   * Only syncs if all required nodes exist, otherwise leaves analyzer with defaults
+   */
+  private syncBandConfigurations(): void {
+    const storeState = this._store.getState()
+
+    // Check if any of the band configuration nodes exist
+    let hasAnyBandNodes = false
+    for (let i = 0; i < AudioInput.DEFAULT_BANDS.length; i++) {
+      const centerFreqNodeId = `${AudioInput.ID}-global-band${i}CenterFreq`
+      const qNodeId = `${AudioInput.ID}-global-band${i}Q`
+      if (storeState.nodes[centerFreqNodeId] && storeState.nodes[qNodeId]) {
+        hasAnyBandNodes = true
+        break
+      }
+    }
+
+    // If no band nodes exist (old project), don't sync - keep analyzer defaults
+    if (!hasAnyBandNodes) {
+      return
+    }
+
+    // Sync each band configuration
+    for (let i = 0; i < AudioInput.DEFAULT_BANDS.length; i++) {
+      const config = this.getBandConfig(i)
+      this.analyzer.updateBand(i, config.centerFreq, config.q)
+      if (AudioInput.ENABLE_LOGGING) {
+        console.log(`[AudioInput] Synced band ${i}: ${config.centerFreq}Hz, Q=${config.q}`)
+      }
+    }
+  }
+
+  /**
    * Updates audio analysis on each frame
    * @returns The current levels data array
    */
   public update() {
     if (!this.audioData) return
+
     // Set all analyzer properties from global options
     this.analyzer.masterVolume = this.getMasterVolume()
     this.analyzer.smoothing = this.getSmoothing()
@@ -387,10 +493,13 @@ export class AudioInput implements IPlugin {
     this.analyzer.levelsPower = this.getLevelsPower()
     this.analyzer.maxLevelFalloffMultiplier = this.getMaxLevelFalloffMultiplier()
     this.analyzer.maxLevelMinimum = this.getMaxLevelMinimum()
+
     // Update the analyzer
     this.analyzer.update()
+
     // Update nodes based on new audio levels
     this.updateInputNodes()
+
     // Schedule next update
     window.requestAnimationFrame(() => this.update())
   }
