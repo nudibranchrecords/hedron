@@ -5,11 +5,13 @@ export const createMoveSketchUp: SetterCreator<'moveSketchUp'> =
     setState((state) => {
       const sketches = Object.entries(state.sketches)
       const currentIndex = sketches.findIndex(([id]) => id === instanceId)
-      if (currentIndex > 0) {
-        const [currentSketch] = sketches.splice(currentIndex, 1)
-        sketches.splice(currentIndex - 1, 0, currentSketch)
-        state.sketches = Object.fromEntries(sketches)
+      if (currentIndex <= 0) {
+        // Can't move the first index up further
+        return
       }
+      const [currentSketch] = sketches.splice(currentIndex, 1)
+      sketches.splice(currentIndex - 1, 0, currentSketch)
+      state.sketches = Object.fromEntries(sketches)
     })
 
 export const createMoveSketchDown: SetterCreator<'moveSketchDown'> =
@@ -17,9 +19,11 @@ export const createMoveSketchDown: SetterCreator<'moveSketchDown'> =
     setState((state) => {
       const sketches = Object.entries(state.sketches)
       const currentIndex = sketches.findIndex(([id]) => id === instanceId)
-      if (currentIndex < sketches.length - 1) {
-        const [currentSketch] = sketches.splice(currentIndex, 1)
-        sketches.splice(currentIndex + 1, 0, currentSketch)
-        state.sketches = Object.fromEntries(sketches)
+      if (currentIndex === -1 || currentIndex >= sketches.length - 1) {
+        // Can't move the last index down further
+        return
       }
+      const [currentSketch] = sketches.splice(currentIndex, 1)
+      sketches.splice(currentIndex + 1, 0, currentSketch)
+      state.sketches = Object.fromEntries(sketches)
     })
