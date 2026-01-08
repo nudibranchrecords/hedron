@@ -275,16 +275,18 @@ export const FreqPreview = ({ audioPlugin }: { audioPlugin: AudioInput }) => {
     window.addEventListener('resize', resizeCanvas)
 
     // Animation loop
+    let animationRef: number | undefined
     const animate = () => {
       drawVisualization()
-      animationRef.current = requestAnimationFrame(animate)
+      animationRef = requestAnimationFrame(animate)
     }
-
-    const animationRef = { current: requestAnimationFrame(animate) }
+    animationRef = requestAnimationFrame(animate)
 
     // Cleanup
     return () => {
-      cancelAnimationFrame(animationRef.current)
+      if (animationRef !== undefined) {
+        cancelAnimationFrame(animationRef)
+      }
       window.removeEventListener('resize', resizeCanvas)
     }
   }, [audioPlugin, drawVisualization])
