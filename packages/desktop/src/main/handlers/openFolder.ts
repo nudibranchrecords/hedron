@@ -25,7 +25,11 @@ export const openFolder = async (
     }
 
     // Open the folder in the default file browser
-    await shell.openPath(normalizedPath)
+    const openResult = await shell.openPath(normalizedPath)
+    if (openResult) {
+      // Electron's shell.openPath returns a non-empty string on error
+      return { success: false, error: openResult }
+    }
     return { success: true }
   } catch (err) {
     console.error('Error opening folder:', err)
