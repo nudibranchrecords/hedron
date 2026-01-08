@@ -223,10 +223,6 @@ export const FreqPreview = ({ audioPlugin }: { audioPlugin: AudioInput }) => {
     [audioPlugin, isDragging, selectedBand],
   )
 
-  const handleMouseUp = useCallback(() => {
-    setIsDragging(false)
-  }, [])
-
   // Add global mouse event handlers for dragging outside the canvas
   useEffect(() => {
     if (!isDragging) return
@@ -293,13 +289,7 @@ export const FreqPreview = ({ audioPlugin }: { audioPlugin: AudioInput }) => {
 
   return (
     <div ref={containerRef} className={styles.freqPreviewContainer}>
-      <canvas
-        ref={canvasRef}
-        className={styles.freqPreviewCanvas}
-        onMouseDown={handleMouseDown}
-        onMouseMove={handleMouseMove}
-        onMouseUp={handleMouseUp}
-      />
+      <canvas ref={canvasRef} className={styles.freqPreviewCanvas} onMouseDown={handleMouseDown} />
       {/* Add instructions text */}
       <div className={styles.freqPreviewInstructions}>
         Drag circles to adjust frequency (x) and Q factor (y)
