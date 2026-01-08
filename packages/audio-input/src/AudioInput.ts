@@ -81,6 +81,7 @@ export class AudioInput implements IPlugin {
   public readonly optionNodesConfig = [
     {
       key: 'isEnabled',
+      title: 'Enabled',
       valueType: 'boolean',
       defaultValue: true,
     },
