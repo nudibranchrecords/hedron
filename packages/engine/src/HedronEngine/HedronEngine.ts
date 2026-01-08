@@ -14,6 +14,15 @@ import { createEngineStore, EngineStore } from '@store/engineStore'
 import { getSketchParamValues } from '@store/selectors/getSketchParamValues'
 import { EngineScene } from '@world/EngineScene'
 import { addNode } from '@store/shared/addNode'
+
+declare global {
+  interface Window {
+    __HEDRON: {
+      plugins: Record<string, IPlugin>
+    }
+  }
+}
+
 export class HedronEngine {
   public rendererType: RendererType
   private renderer: Renderer
@@ -94,10 +103,8 @@ export class HedronEngine {
   public registerPlugin(plugin: IPlugin) {
     this.plugins[plugin.id] = plugin
     // Make plugins available in the global window object for debugging
-    const hedronWindow = (window as any).__HEDRON
-    if (hedronWindow) {
-      hedronWindow.plugins = this.plugins
-    }
+    window.__HEDRON = window.__HEDRON || {}
+    window.__HEDRON.plugins = this.plugins
 
     // Create global option nodes if they exist
     this.createGlobalOptionNodesForPlugin(plugin)
