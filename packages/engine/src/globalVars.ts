@@ -2,7 +2,16 @@ import * as THREE from 'three'
 import * as THREE_WEBGPU from 'three/webgpu'
 import * as THREE_TSL from 'three/tsl'
 import * as POSTPROCESSING from 'postprocessing'
-import './hedronTypes' // Import type declarations
+
+/**
+ * Extend the Window interface to include our global Hedron variable
+ * Don't export as we don't really want folks using this and it is subject to change
+ */
+declare global {
+  interface Window {
+    __HEDRON: object
+  }
+}
 
 /**
   To prevent duplicate instances of three.js being imported, we have to make sure
@@ -13,9 +22,8 @@ import './hedronTypes' // Import type declarations
   gets resolved to point to these global instances of the libraries
 */
 if (typeof window !== 'undefined') {
-  window.__HEDRON = window.__HEDRON || {}
   window.__HEDRON = {
-    ...window.__HEDRON,
+    ...(window.__HEDRON ?? {}),
     dependencies: {
       THREE,
       THREE_WEBGPU,
