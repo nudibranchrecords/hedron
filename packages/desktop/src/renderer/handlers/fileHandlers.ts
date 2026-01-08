@@ -1,4 +1,3 @@
-import path from 'path-browserify'
 import { ProjectData } from '@hedron/app-store'
 import { appStore } from '@renderer/appStore'
 import { engine, engineStore } from '@renderer/engine'
@@ -85,7 +84,7 @@ export const handleSaveProjectDialog = async (options?: { saveAs?: boolean }) =>
   if (response.result === 'success') {
     appState.setCurrentSavePath(response.savePath)
     appState.addToSaveList({
-      title: path.basename(response.savePath),
+      title: response.fileNameWithoutExt,
       date: Date.now(),
       path: response.savePath,
       numScenes: 1,
