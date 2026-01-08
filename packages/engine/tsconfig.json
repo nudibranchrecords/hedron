@@ -10,7 +10,8 @@
       "@utils/*": ["src/utils/*"],
       "@world/*": ["src/world/*"],
       "@plugins/*": ["src/plugins/*"],
-      "@HedronEngine/*": ["src/HedronEngine/*"]
+      "@HedronEngine/*": ["src/HedronEngine/*"],
+      "@globalVars": ["src/globalVars"]
     }
   }
 }

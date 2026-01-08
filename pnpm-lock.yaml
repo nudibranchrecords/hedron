@@ -199,7 +199,7 @@ importers:
         version: 3.1.1(react@19.1.1)
       zustand:
         specifier: ^4.5.7
-        version: 4.5.7(@types/react@19.1.10)(immer@10.1.1)(react@19.1.1)
+        version: 4.5.7(@types/react@18.3.23)(immer@10.1.1)(react@19.1.1)
     devDependencies:
       '@types/fs-extra':
         specifier: ^11.0.4
@@ -291,10 +291,10 @@ importers:
         specifier: workspace:^
         version: link:../ui-core
       react:
-        specifier: ^18.3.1
+        specifier: '>=18.0.0'
         version: 18.3.1
       react-dom:
-        specifier: ^18.3.1
+        specifier: '>=18.0.0'
         version: 18.3.1(react@18.3.1)
       zustand:
         specifier: ^5.0.2
@@ -390,6 +390,34 @@ importers:
       storybook:
         specifier: ^8.2.9
         version: 8.6.14(prettier@3.6.2)
+
+  packages/web-example:
+    dependencies:
+      '@fontsource/chivo-mono':
+        specifier: ^5.2.6
+        version: 5.2.6
+      '@hedron/clock':
+        specifier: workspace:^
+        version: link:../clock
+      '@hedron/engine':
+        specifier: workspace:^
+        version: link:../engine
+      '@hedron/lfo-input':
+        specifier: workspace:^
+        version: link:../lfo-input
+      postprocessing:
+        specifier: ^6.38.2
+        version: 6.38.2(three@0.178.0)
+      three:
+        specifier: ^0.178.0
+        version: 0.178.0
+      three-stdlib:
+        specifier: ^2.36.0
+        version: 2.36.0(three@0.178.0)
+    devDependencies:
+      '@types/three':
+        specifier: ^0.178.0
+        version: 0.178.1
 
 packages:
 
@@ -1116,6 +1144,9 @@ packages:
 
   '@floating-ui/utils@0.2.10':
     resolution: {integrity: sha512-aGTxbpbg8/b5JfU1HXSrbH3wXZuLPJcNEcZQFMxLs3oSzgtVu6nFPkbbGGUvBcUjKV2YyB9Wxxabo+HEH9tcRQ==}
+
+  '@fontsource/chivo-mono@5.2.6':
+    resolution: {integrity: sha512-fs0bzPlzpatWrnEtEbXt49p5Jvb1SO6JMz+om8C6ImYLA7QUe4iF8Yt3cVWB4yNNIHPj9h3ylql05gXOScyiJw==}
 
   '@gar/promisify@1.1.3':
     resolution: {integrity: sha512-k2Ty1JcVojjJFwrg/ThKi2ujJ7XNLYaFGNB/bWT9wGR+oSMJHMa5w+CUq6p/pVrKeNNgA7pCqEcjSnHVoqJQFw==}
@@ -4987,6 +5018,11 @@ packages:
     peerDependencies:
       three: '>= 0.157.0 < 0.180.0'
 
+  postprocessing@6.38.2:
+    resolution: {integrity: sha512-7DwuT7Tkst41ZjSj287g7C9c5/D3Xx5rMgBosg0dadbUPoZD2HNzkadKPol1d2PJAoI9f+Jeh1/v9YfLzpFGVw==}
+    peerDependencies:
+      three: '>= 0.157.0 < 0.183.0'
+
   potpack@1.0.2:
     resolution: {integrity: sha512-choctRBIV9EMT9WGAZHn3V7t0Z2pMQyl0EZE6pFc/6ml3ssw7Dlf/oAOvFwjm1HVsqfQN8GfeFyJ+d8tRzqueQ==}
 
@@ -6885,6 +6921,8 @@ snapshots:
       react-dom: 18.3.1(react@18.3.1)
 
   '@floating-ui/utils@0.2.10': {}
+
+  '@fontsource/chivo-mono@5.2.6': {}
 
   '@gar/promisify@1.1.3': {}
 
@@ -11606,6 +11644,10 @@ snapshots:
     dependencies:
       three: 0.178.0
 
+  postprocessing@6.38.2(three@0.178.0):
+    dependencies:
+      three: 0.178.0
+
   potpack@1.0.2: {}
 
   prelude-ls@1.2.1: {}
@@ -12969,14 +13011,6 @@ snapshots:
       use-sync-external-store: 1.5.0(react@19.1.1)
     optionalDependencies:
       '@types/react': 18.3.23
-      immer: 10.1.1
-      react: 19.1.1
-
-  zustand@4.5.7(@types/react@19.1.10)(immer@10.1.1)(react@19.1.1):
-    dependencies:
-      use-sync-external-store: 1.5.0(react@19.1.1)
-    optionalDependencies:
-      '@types/react': 19.1.10
       immer: 10.1.1
       react: 19.1.1
 
