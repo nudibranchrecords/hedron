@@ -11,7 +11,11 @@
     "@hedron/clock": "workspace:^",
     "@hedron/engine": "workspace:^",
     "@hedron/lfo-input": "workspace:^",
+    "postprocessing": "^6.38.2",
     "three": "^0.178.0",
     "three-stdlib": "^2.36.0"
+  },
+  "devDependencies": {
+    "@types/three": "^0.182.0"
   }
 }
