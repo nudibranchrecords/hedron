@@ -38,6 +38,13 @@ export const saveProjectFileDialog = (
       })
   })
 
+export const openFolder = (folderPath: string) =>
+  new Promise<{ success: boolean; error?: string }>((resolve) => {
+    window.electronApi.ipcRenderer.invoke(FileEvents.OpenFolder, folderPath).then((response) => {
+      resolve(response)
+    })
+  })
+
 export const startSketchesServer = (sketchesDirPath: string) =>
   new Promise<SketchesServerResponse>((resolve) => {
     window.electronApi.ipcRenderer

@@ -216,6 +216,8 @@ interface Actions {
   updateSketch: (instanceId: string, sketchState: Partial<SketchState>) => void
   updateSketchParams: (instanceId: string) => void
   deleteSketch: (instanceId: string) => void
+  moveSketchUp: (instanceId: string) => void
+  moveSketchDown: (instanceId: string) => void
   setSketchModuleItem: (newItem: SketchModuleItem) => void
   updateNodeValue: (nodeId: string, value: NodeValue) => void
   updateMultipleNodeValues: (nodeIds: string[], values: NodeValue[]) => void

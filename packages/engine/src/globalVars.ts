@@ -4,6 +4,16 @@ import * as THREE_TSL from 'three/tsl'
 import * as POSTPROCESSING from 'postprocessing'
 
 /**
+ * Extend the Window interface to include our global Hedron variable
+ * Don't export as we don't really want folks using this and it is subject to change
+ */
+declare global {
+  interface Window {
+    __HEDRON: object
+  }
+}
+
+/**
   To prevent duplicate instances of three.js being imported, we have to make sure
   sketches have access to the same instance of three.js as Hedron does. We do this by exposing
   them as a global variable for SketchesServer to make use of.
