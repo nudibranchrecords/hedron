@@ -58,6 +58,8 @@ type OpenProjectResponseSuccess = {
 type SaveProjectResponseSuccess = {
   result: 'success'
   savePath: string
+  fileName: string
+  fileNameWithoutExt: string
 }
 
 export type OpenProjectResponse = OpenProjectResponseSuccess | ResponseError | ResponseCanceled
