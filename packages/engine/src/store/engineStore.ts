@@ -18,6 +18,7 @@ import { createReset } from '@store/actionCreators/reset'
 import { createLoadProject } from '@store/actionCreators/loadProject'
 import { createAddInput } from '@store/actionCreators/createAddInput'
 import { createUpdateSketch } from '@store/actionCreators/updateSketch'
+import { createMoveSketchDown, createMoveSketchUp } from '@store/actionCreators/moveSketchOrder'
 
 export const createEngineStore = () =>
   createStore<EngineStateWithActions>()(
@@ -33,6 +34,8 @@ export const createEngineStore = () =>
           updateMultipleNodeValues: createUpdateMultipleNodeValues(set),
           deleteSketch: createDeleteSketch(set),
           deleteSketchModule: createDeleteSketchModule(set),
+          moveSketchUp: createMoveSketchUp(set),
+          moveSketchDown: createMoveSketchDown(set),
           reset: createReset(set),
           loadProject: createLoadProject(set),
           addInput: createAddInput(set),
