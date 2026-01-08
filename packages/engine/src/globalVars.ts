@@ -23,7 +23,6 @@ declare global {
 */
 export const initializeGlobalVars = () => {
   if (typeof window !== 'undefined') {
-    // @ts-expect-error ---
     window.__HEDRON = {
       dependencies: {
         THREE,
