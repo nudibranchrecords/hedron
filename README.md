@@ -3,7 +3,8 @@
 ## Get started
 
 1. Run `pnpm install` at the top level to install all deps
-2. Run `pnpm dev` at the top level to start Hedron. This will watch for changes in all relevant packages for the main app
+2. Run `pnpm build` to build all packages in the monorepo
+3. Run `pnpm dev` to start Hedron. This will `cd` into `packages/desktop` and only be watching for changes in that package - you'll need to separately run `dev` in packages you are working in.
 
 ## Working on isolated packages
 

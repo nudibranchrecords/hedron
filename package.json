@@ -2,9 +2,7 @@
   "name": "root",
   "private": true,
   "scripts": {
-    "dev": "node -e \"process.platform === 'win32' ? require('child_process').execSync('pnpm run dev:win', {stdio: 'inherit'}) : require('child_process').execSync('pnpm run dev:mac', {stdio: 'inherit'})\"",
-    "dev:win": "cd packages/desktop && pnpm dev",
-    "dev:mac": "lerna run dev --parallel --ignore @hedron/example-project --ignore @hedron/midi-test-app --ignore @hedron/clock-test-app",
+    "dev": "cd packages/desktop && pnpm dev",
     "build": "lerna run build",
     "build:example": "node build-example-project.js",
     "typecheck": "lerna run typecheck",
