@@ -2,7 +2,7 @@
   "name": "root",
   "private": true,
   "scripts": {
-    "dev": "cd packages/desktop && pnpm dev",
+    "dev": "lerna run dev --scope @hedron/desktop",
     "build": "lerna run build",
     "build:example": "node build-example-project.js",
     "typecheck": "lerna run typecheck",
