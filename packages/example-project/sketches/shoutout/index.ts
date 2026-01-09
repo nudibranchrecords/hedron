@@ -1,12 +1,31 @@
 import * as THREE from 'three'
 
+const shuffleString = (str: string): string => {
+  const arr = str.split('')
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1))
+    ;[arr[i], arr[j]] = [arr[j], arr[i]]
+  }
+  return arr.join('')
+}
+
 export default class Shoutout {
   root = new THREE.Group()
+  message: string = 'Hello, Hedron!'
+  shuffledMessage: string | null = null
   plane: THREE.Mesh
   canvas: HTMLCanvasElement
   context: CanvasRenderingContext2D
   texture: THREE.CanvasTexture
   textX: number = 0
+
+  shuffle(p: { message: string }) {
+    this.shuffledMessage = shuffleString(p.message)
+  }
+
+  clearShuffle() {
+    this.shuffledMessage = null
+  }
 
   constructor() {
     // Create canvas for text texture
@@ -40,6 +59,11 @@ export default class Shoutout {
   }: {
     params: { message: string; color: [number, number, number]; scrollSpeed: number }
   }) {
+    if (this.message !== p.message) {
+      this.clearShuffle()
+      this.message = p.message
+    }
+
     this.context.fillStyle = `rgb(${p.color.map((c) => c * 255).join(' ')})`
 
     // Clear canvas
@@ -57,7 +81,7 @@ export default class Shoutout {
     }
 
     // Draw the scrolling text
-    this.context.fillText(p.message, this.textX, this.canvas.height / 2)
+    this.context.fillText(this.shuffledMessage ?? p.message, this.textX, this.canvas.height / 2)
 
     // Update texture
     this.texture.needsUpdate = true
