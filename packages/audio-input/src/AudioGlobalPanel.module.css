@@ -1,37 +1,37 @@
 .controlGrid {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
 .errorPanel {
-    background-color: rgba(255, 0, 0, 0.2);
-    border: 1px solid #833;
-    padding: 12px;
-    color: #f88;
-    text-align: center;
-    border-radius: 4px;
+  background-color: rgba(255, 0, 0, 0.2);
+  border: 1px solid #833;
+  padding: 12px;
+  color: #f88;
+  text-align: center;
+  border-radius: 4px;
 }
 
 .testResultsArea {
-    background-color: #333;
-    padding: 8px;
-    border-radius: 4px;
-    margin: 12px 0 0 0;
-    color: #eee;
-    max-width: 100%;
-    overflow-x: auto;
+  background-color: #333;
+  padding: 8px;
+  border-radius: 4px;
+  margin: 12px 0 0 0;
+  color: #eee;
+  max-width: 100%;
+  overflow-x: auto;
 }
 
 .errorText {
-    color: #FF5252;
+  color: #ff5252;
 }
 
 .testResultsMonospace {
-    font-family: monospace;
-    font-size: 11px;
-    white-space: pre-wrap;
-    line-height: 1.4;
-    word-break: break-all;
-    max-width: 100%;
+  font-family: monospace;
+  font-size: 11px;
+  white-space: pre-wrap;
+  line-height: 1.4;
+  word-break: break-all;
+  max-width: 100%;
 }
