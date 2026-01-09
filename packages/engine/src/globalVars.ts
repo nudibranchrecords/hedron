@@ -26,14 +26,16 @@ declare global {
   }
 }
 
-if (typeof window !== 'undefined') {
-  window.__HEDRON = {
-    dependencies: {
-      THREE,
-      THREE_WEBGPU,
-      THREE_TSL,
-      POSTPROCESSING,
-    },
+export const initializeGlobalVars = () => {
+  if (typeof window !== 'undefined') {
+    window.__HEDRON = {
+      dependencies: {
+        THREE,
+        THREE_WEBGPU,
+        THREE_TSL,
+        POSTPROCESSING,
+      },
+    }
   }
 }
 

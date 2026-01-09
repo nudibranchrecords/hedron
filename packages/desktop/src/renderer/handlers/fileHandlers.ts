@@ -1,4 +1,3 @@
-import path from 'path-browserify'
 import { ProjectData, AppState } from '@hedron/app-store'
 import { appStore } from '@renderer/appStore'
 import { engine, engineStore } from '@renderer/engine'
@@ -12,7 +11,8 @@ import {
 const startEngineWithSketchesDir = async (sketchesDirPath: string) => {
   const { moduleIds, url } = await startSketchesServer(sketchesDirPath)
 
-  await engine.initiateSketchModules(url, moduleIds)
+  await engine.importSketchModulesFromIds(url, moduleIds)
+  engine.startStoreListener()
 
   engine.run()
 }
@@ -88,7 +88,7 @@ export const handleSaveProjectDialog = async (options?: { saveAs?: boolean }) =>
   if (response.result === 'success') {
     appState.setCurrentSavePath(response.savePath)
     appState.addToSaveList({
-      title: path.basename(response.savePath),
+      title: response.fileNameWithoutExt,
       date: Date.now(),
       path: response.savePath,
       numScenes: 1,

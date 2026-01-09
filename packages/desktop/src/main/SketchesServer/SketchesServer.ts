@@ -1,18 +1,20 @@
-import path from 'path'
 import { EventEmitter } from 'events'
-import chokidar from 'chokidar'
-import { getPort } from 'get-port-please'
+import path from 'path'
+import chokidar, { FSWatcher } from 'chokidar'
 import { app } from 'electron'
 import * as esbuild from 'esbuild'
 import { emptyDirSync } from 'fs-extra'
+import { getPort } from 'get-port-please'
 import { createGlobalVarModuleFiles, watchWithDebounce } from './utils'
-import { getEsbuild } from '@main/getUnpackedModules'
 import { FileWatchEvents } from '@shared/Events'
+import { getEsbuild } from '@main/getUnpackedModules'
 
 const HOST = process.platform.startsWith('win') ? 'localhost' : '0.0.0.0'
 
 export class SketchesServer extends EventEmitter {
   private isFirstBuildComplete: boolean
+  private esbuildContext?: esbuild.BuildContext
+  private watcher?: FSWatcher
 
   constructor() {
     super()
@@ -50,12 +52,15 @@ export class SketchesServer extends EventEmitter {
         `${entryBase}/**/config.ts`,
       ],
       outdir,
+      // `outbase` is needed to preserve sketches folder structure in the outdir
+      outbase: entryBase,
       loader: {
         // https://esbuild.github.io/content-types/
         // file: loaded into sketch as path
         '.glb': 'file',
         '.fbx': 'file',
         '.obj': 'file',
+        '.dae': 'file',
         '.png': 'file',
         '.jpg': 'file',
         '.jpeg': 'file',
@@ -72,6 +77,7 @@ export class SketchesServer extends EventEmitter {
         '.ply': 'text',
         '.frag': 'text',
         '.vert': 'text',
+        '.json': 'text',
       },
       assetNames: '[dir]/[name]-[hash]',
       publicPath: `http://${HOST}:${port}`,
@@ -143,6 +149,30 @@ export class SketchesServer extends EventEmitter {
       this.emit(FileWatchEvents.unlink, id)
     })
 
+    // Store references for shutdown
+    this.esbuildContext = ctx
+    this.watcher = watcher
+
     return { host, port }
+  }
+
+  shutdown = async (): Promise<void> => {
+    try {
+      // Close the watcher if it exists
+      if (this.watcher) {
+        await this.watcher.close()
+        this.watcher = undefined
+      }
+
+      // Stop the esbuild context if it exists
+      if (this.esbuildContext) {
+        await this.esbuildContext.dispose()
+        this.esbuildContext = undefined
+      }
+
+      console.log('[HEDRON] Sketches server shut down successfully')
+    } catch (error) {
+      console.error('[HEDRON] Error shutting down sketches server:', error)
+    }
   }
 }

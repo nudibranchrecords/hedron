@@ -23,13 +23,35 @@ import c from './Intro.module.css'
 import { handleLoadProjectDialog, handleSketchesDialog } from '@renderer/handlers/fileHandlers'
 import { SaveItem, useAppStore } from '@renderer/appStore'
 import { pluralize } from '@renderer/utils/pluralize'
+import { openFolder } from '@renderer/ipc/mainThreadTalk'
 
 const RecentProjectItem = ({ item }: { item: SaveItem }) => {
+  const handleOpenFolder = async () => {
+    const result = await openFolder(item.path)
+    if (result.error) {
+      console.error('Error opening folder:', result.error)
+    }
+  }
   return (
     <Card>
       <CardContent>
         <CardHeader iconName="draft">{item.title}</CardHeader>
-        <CardDetails>{item.path}</CardDetails>
+        <CardDetails>
+          <a
+            className={c.projectPath}
+            role="button"
+            tabIndex={0}
+            onClick={handleOpenFolder}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                handleOpenFolder()
+              }
+            }}
+            title="Open folder in file browser"
+          >
+            {item.path}
+          </a>
+        </CardDetails>
         <CardDetails>{formatDistanceToNow(item.date, { addSuffix: true })}</CardDetails>
         <CardBody>
           <IconList>

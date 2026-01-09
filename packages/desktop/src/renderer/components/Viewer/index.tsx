@@ -3,7 +3,7 @@ import c from './styles.module.css'
 import { engine } from '@renderer/engine'
 
 export const Viewer = (): JSX.Element => {
-  const containerRef = useCallback((node: HTMLDivElement) => {
+  const containerRef = useCallback((node: HTMLElement | null) => {
     if (node !== null) {
       engine.createCanvas(node)
     }

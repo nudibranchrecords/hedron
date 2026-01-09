@@ -6,14 +6,16 @@
 }
 
 .left {
-  flex: 0 0 50%;
+  flex: 0 1 50%;
+  max-width: 50%;
   position: relative;
   display: flex;
   flex-direction: column;
 }
 
 .right {
-  flex: 1;
+  flex: 1 1 0;
+  position: relative;
 }
 
 .widgetStrip {

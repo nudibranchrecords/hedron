@@ -36,6 +36,7 @@ export enum DialogEvents {
 
 export enum FileEvents {
   SaveProject = 'save-project',
+  OpenFolder = 'open-folder',
 }
 
 type ResponseCanceled = {
@@ -57,6 +58,8 @@ type OpenProjectResponseSuccess = {
 type SaveProjectResponseSuccess = {
   result: 'success'
   savePath: string
+  fileName: string
+  fileNameWithoutExt: string
 }
 
 export type OpenProjectResponse = OpenProjectResponseSuccess | ResponseError | ResponseCanceled

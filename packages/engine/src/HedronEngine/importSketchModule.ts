@@ -27,7 +27,7 @@ interface ProcessConfigOptions {
   fallBackTitle: string
 }
 
-const processConfig = (
+export const processConfig = (
   config: SketchConfigRaw,
   { fallBackTitle }: ProcessConfigOptions,
 ): SketchConfigImported => {

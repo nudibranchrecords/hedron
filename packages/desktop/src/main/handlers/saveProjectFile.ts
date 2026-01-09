@@ -57,6 +57,8 @@ export const saveProjectFile = async (
 
     return {
       result: 'success',
+      fileName: path.basename(savePath),
+      fileNameWithoutExt: path.basename(savePath, '.json'),
       savePath,
     }
   } catch (err) {

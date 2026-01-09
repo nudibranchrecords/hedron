@@ -3,6 +3,9 @@
   "private": true,
   "scripts": {
     "dev": "lerna run dev --scope @hedron/desktop",
+    "dev:clock": "lerna run dev --parallel --scope @hedron/clock --scope @hedron/clock-test-app",
+    "storybook": "lerna run storybook --scope @hedron/ui-core",
+    "build:engine": "lerna run build --scope @hedron/engine",
     "build": "lerna run build",
     "build:example": "node build-example-project.js",
     "typecheck": "lerna run typecheck",

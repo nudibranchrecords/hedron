@@ -71,9 +71,11 @@ export const SketchModulesDialog = ({ closeDialog }: GlobalDialogProps) => {
         </PanelHeader>
         <PanelBody scrollable={true}>
           <CardList>
-            {sketchModules.map((item) => (
-              <SketchCard key={item.moduleId} item={item} closeDialog={closeDialog} />
-            ))}
+            {[...sketchModules]
+              .sort((a, b) => a.config.title.localeCompare(b.config.title))
+              .map((item) => (
+                <SketchCard key={item.moduleId} item={item} closeDialog={closeDialog} />
+              ))}
           </CardList>
         </PanelBody>
       </Panel>

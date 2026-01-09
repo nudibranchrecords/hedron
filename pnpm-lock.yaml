@@ -225,9 +225,6 @@ importers:
       lodash.debounce:
         specifier: ^4.0.8
         version: 4.0.8
-      path-browserify:
-        specifier: ^1.0.1
-        version: 1.0.1
       postprocessing:
         specifier: ^6.37.7
         version: 6.37.7(three@0.178.0)
@@ -253,9 +250,6 @@ importers:
       '@types/node':
         specifier: ^24.3.0
         version: 24.3.0
-      '@types/path-browserify':
-        specifier: ^1.0.3
-        version: 1.0.3
       '@types/three':
         specifier: ^0.178.1
         version: 0.178.1
@@ -337,10 +331,10 @@ importers:
         specifier: workspace:^
         version: link:../ui-core
       react:
-        specifier: ^18.3.1
+        specifier: '>=18.0.0'
         version: 18.3.1
       react-dom:
-        specifier: ^18.3.1
+        specifier: '>=18.0.0'
         version: 18.3.1(react@18.3.1)
       zustand:
         specifier: ^5.0.2
@@ -436,6 +430,34 @@ importers:
       storybook:
         specifier: ^8.2.9
         version: 8.6.14(prettier@3.6.2)
+
+  packages/web-example:
+    dependencies:
+      '@fontsource/chivo-mono':
+        specifier: ^5.2.6
+        version: 5.2.6
+      '@hedron/clock':
+        specifier: workspace:^
+        version: link:../clock
+      '@hedron/engine':
+        specifier: workspace:^
+        version: link:../engine
+      '@hedron/lfo-input':
+        specifier: workspace:^
+        version: link:../lfo-input
+      postprocessing:
+        specifier: ^6.38.2
+        version: 6.38.2(three@0.178.0)
+      three:
+        specifier: ^0.178.0
+        version: 0.178.0
+      three-stdlib:
+        specifier: ^2.36.0
+        version: 2.36.0(three@0.178.0)
+    devDependencies:
+      '@types/three':
+        specifier: ^0.178.0
+        version: 0.178.1
 
 packages:
 
@@ -1162,6 +1184,9 @@ packages:
 
   '@floating-ui/utils@0.2.10':
     resolution: {integrity: sha512-aGTxbpbg8/b5JfU1HXSrbH3wXZuLPJcNEcZQFMxLs3oSzgtVu6nFPkbbGGUvBcUjKV2YyB9Wxxabo+HEH9tcRQ==}
+
+  '@fontsource/chivo-mono@5.2.6':
+    resolution: {integrity: sha512-fs0bzPlzpatWrnEtEbXt49p5Jvb1SO6JMz+om8C6ImYLA7QUe4iF8Yt3cVWB4yNNIHPj9h3ylql05gXOScyiJw==}
 
   '@gar/promisify@1.1.3':
     resolution: {integrity: sha512-k2Ty1JcVojjJFwrg/ThKi2ujJ7XNLYaFGNB/bWT9wGR+oSMJHMa5w+CUq6p/pVrKeNNgA7pCqEcjSnHVoqJQFw==}
@@ -1960,9 +1985,6 @@ packages:
 
   '@types/offscreencanvas@2019.7.3':
     resolution: {integrity: sha512-ieXiYmgSRXUDeOntE1InxjWyvEelZGP63M+cGuquuRLuIKKT1osnkXjxev9B7d1nXSug5vpunx+gNlbVxMlC9A==}
-
-  '@types/path-browserify@1.0.3':
-    resolution: {integrity: sha512-ZmHivEbNCBtAfcrFeBCiTjdIc2dey0l7oCGNGpSuRTy8jP6UVND7oUowlvDujBy8r2Hoa8bfFUOCiPWfmtkfxw==}
 
   '@types/plist@3.0.5':
     resolution: {integrity: sha512-E6OCaRmAe4WDmWNsL/9RMqdkkzDCY1etutkflWk4c+AcjDU07Pcz1fQwTX0TQz+Pxqn9i4L1TU3UFpjnrcDgxA==}
@@ -5012,6 +5034,11 @@ packages:
     peerDependencies:
       three: '>= 0.157.0 < 0.180.0'
 
+  postprocessing@6.38.2:
+    resolution: {integrity: sha512-7DwuT7Tkst41ZjSj287g7C9c5/D3Xx5rMgBosg0dadbUPoZD2HNzkadKPol1d2PJAoI9f+Jeh1/v9YfLzpFGVw==}
+    peerDependencies:
+      three: '>= 0.157.0 < 0.183.0'
+
   potpack@1.0.2:
     resolution: {integrity: sha512-choctRBIV9EMT9WGAZHn3V7t0Z2pMQyl0EZE6pFc/6ml3ssw7Dlf/oAOvFwjm1HVsqfQN8GfeFyJ+d8tRzqueQ==}
 
@@ -6903,6 +6930,8 @@ snapshots:
 
   '@floating-ui/utils@0.2.10': {}
 
+  '@fontsource/chivo-mono@5.2.6': {}
+
   '@gar/promisify@1.1.3': {}
 
   '@humanwhocodes/config-array@0.13.0':
@@ -7905,8 +7934,6 @@ snapshots:
   '@types/normalize-package-data@2.4.4': {}
 
   '@types/offscreencanvas@2019.7.3': {}
-
-  '@types/path-browserify@1.0.3': {}
 
   '@types/plist@3.0.5':
     dependencies:
@@ -11599,6 +11626,10 @@ snapshots:
     optional: true
 
   postprocessing@6.37.7(three@0.178.0):
+    dependencies:
+      three: 0.178.0
+
+  postprocessing@6.38.2(three@0.178.0):
     dependencies:
       three: 0.178.0
 
