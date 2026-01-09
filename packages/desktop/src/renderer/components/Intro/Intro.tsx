@@ -1,5 +1,4 @@
 import { formatDistanceToNow } from 'date-fns'
-import { ErrorBoundary } from 'react-error-boundary'
 import {
   sceneIcon,
   sketchIcon,
@@ -17,6 +16,7 @@ import {
   CardDetails,
   CardHeader,
   CardList,
+  HedronErrorBoundary,
 } from '@hedron/ui-core'
 
 import c from './Intro.module.css'
@@ -93,9 +93,9 @@ export const Intro = () => {
       <h2 className={c.projectsTitle}>Recent Projects</h2>
       <CardList>
         {saveList.map((item) => (
-          <ErrorBoundary key={item.path} fallbackRender={() => ''}>
+          <HedronErrorBoundary key={item.path}>
             <RecentProjectItem item={item} />
-          </ErrorBoundary>
+          </HedronErrorBoundary>
         ))}
       </CardList>
     </div>

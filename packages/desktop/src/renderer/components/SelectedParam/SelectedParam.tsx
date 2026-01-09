@@ -6,6 +6,7 @@ import {
   useEngineStore,
   useAppStore,
   ParamNumberOptions,
+  HedronErrorBoundary,
 } from '@hedron/ui-core'
 import { useMemo } from 'react'
 import { useSelectedParam } from '@components/hooks/useSelectedParam'
@@ -75,7 +76,9 @@ export const SelectedParam = () => {
         </PopoutMenu>
       </MiniTabs>
       <div className="mb-xl">
-        {PluginView && <PluginView input={currentInput} engine={engine} />}
+        <HedronErrorBoundary key={currentInput ? currentInput.id : 'no-input'}>
+          {PluginView && <PluginView input={currentInput} engine={engine} />}
+        </HedronErrorBoundary>
       </div>
       <div>
         <h3>Param Options: {selectedParam.valueType}</h3>

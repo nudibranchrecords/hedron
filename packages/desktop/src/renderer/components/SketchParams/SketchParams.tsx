@@ -1,4 +1,10 @@
-import { ControlGrid, Collapsible, Param, useOnSelectNode } from '@hedron/ui-core'
+import {
+  ControlGrid,
+  Collapsible,
+  Param,
+  useOnSelectNode,
+  HedronErrorBoundary,
+} from '@hedron/ui-core'
 import c from './SketchParams.module.css'
 import { useActiveSketchParams } from '@components/hooks/useActiveSketchParams'
 
@@ -21,37 +27,39 @@ export const SketchParams = ({ sketchId }: SketchParamsProps) => {
   const setOpenedParamGroup = useAppStore((state) => state.setOpenedParamGroup)
 
   return (
-    <div className={c.wrapper}>
-      {paramGroups.map(({ groupTitle, groupIndex, params, isUngrouped }) => {
-        const isOpen = openedParamGroups[groupIndex] ?? true
-        const itemCountText = isOpen ? '' : ` (${params.length})`
-        const title = isUngrouped ? 'Ungrouped' : groupTitle
+    <HedronErrorBoundary>
+      <div className={c.wrapper}>
+        {paramGroups.map(({ groupTitle, groupIndex, params, isUngrouped }) => {
+          const isOpen = openedParamGroups[groupIndex] ?? true
+          const itemCountText = isOpen ? '' : ` (${params.length})`
+          const title = isUngrouped ? 'Ungrouped' : groupTitle
 
-        const grid = (
-          <ControlGrid>
-            {params.map((param) => (
-              /* unique key is important here! otherwise can get cross talk between params with the same key in different sketches */
-              <ParamItem key={`${param.key}${sketchId}`} paramId={param.id} sketchId={sketchId} />
-            ))}
-          </ControlGrid>
-        )
+          const grid = (
+            <ControlGrid>
+              {params.map((param) => (
+                /* unique key is important here! otherwise can get cross talk between params with the same key in different sketches */
+                <ParamItem key={`${param.key}${sketchId}`} paramId={param.id} sketchId={sketchId} />
+              ))}
+            </ControlGrid>
+          )
 
-        return (
-          <div key={groupIndex} className="mb-xl">
-            {paramGroups.length === 1 && isUngrouped ? (
-              grid
-            ) : (
-              <Collapsible
-                title={`${title}${itemCountText}`}
-                isOpen={isOpen}
-                onToggle={() => setOpenedParamGroup(sketchId, groupIndex, !isOpen)}
-              >
-                {grid}
-              </Collapsible>
-            )}
-          </div>
-        )
-      })}
-    </div>
+          return (
+            <div key={groupIndex} className="mb-xl">
+              {paramGroups.length === 1 && isUngrouped ? (
+                grid
+              ) : (
+                <Collapsible
+                  title={`${title}${itemCountText}`}
+                  isOpen={isOpen}
+                  onToggle={() => setOpenedParamGroup(sketchId, groupIndex, !isOpen)}
+                >
+                  {grid}
+                </Collapsible>
+              )}
+            </div>
+          )
+        })}
+      </div>
+    </HedronErrorBoundary>
   )
 }

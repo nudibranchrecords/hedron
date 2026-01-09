@@ -1,5 +1,6 @@
 export * from './components/Button/Button'
 export * from './components/Dialog/Dialog'
+export * from './components/ErrorFallback/ErrorFallback'
 export * from './components/SideTabs/SideTabs'
 export * from './components/Panel/Panel'
 export * from './components/NodeControl/NodeControl'

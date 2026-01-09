@@ -7,6 +7,7 @@ import {
   PanelBody,
   PanelHeader,
   PopoutMenu,
+  HedronErrorBoundary,
 } from '@hedron/ui-core'
 import c from './ActiveSketch.module.css'
 import { useActiveSketch } from '@components/hooks/useActiveSketch'
@@ -51,18 +52,20 @@ export const ActiveSketch = () => {
           <Button type="ghost" iconName="menu" />
         </PopoutMenu>
       </ViewHeader>
-      <div className={c.section}>
-        <SketchParams sketchId={activeSketch.id} />
-      </div>
+      <HedronErrorBoundary key={activeSketch.id}>
+        <div className={c.section}>
+          <SketchParams sketchId={activeSketch.id} />
+        </div>
 
-      {selectedParam && (
-        <Panel snugPosition="bottom" spacing="slim" width="full" className={c.bottomPanel}>
-          <PanelHeader iconName={paramIcon}>{selectedParam.title}</PanelHeader>
-          <PanelBody>
-            <SelectedParam />
-          </PanelBody>
-        </Panel>
-      )}
+        {selectedParam && (
+          <Panel snugPosition="bottom" spacing="slim" width="full" className={c.bottomPanel}>
+            <PanelHeader iconName={paramIcon}>{selectedParam.title}</PanelHeader>
+            <PanelBody>
+              <SelectedParam />
+            </PanelBody>
+          </Panel>
+        )}
+      </HedronErrorBoundary>
     </div>
   )
 }
