@@ -2,16 +2,7 @@ import * as THREE from 'three'
 import * as THREE_WEBGPU from 'three/webgpu'
 import * as THREE_TSL from 'three/tsl'
 import * as POSTPROCESSING from 'postprocessing'
-
-/**
- * Extend the Window interface to include our global Hedron variable
- * Don't export as we don't really want folks using this and it is subject to change
- */
-declare global {
-  interface Window {
-    __HEDRON: object
-  }
-}
+import { IPlugin } from './plugins/Plugin'
 
 /**
   To prevent duplicate instances of three.js being imported, we have to make sure
@@ -21,6 +12,20 @@ declare global {
   Sketch authors don't need to worry about this! SketchesServer makes sure that any import declared below
   gets resolved to point to these global instances of the libraries
 */
+declare global {
+  interface Window {
+    __HEDRON: {
+      dependencies?: {
+        THREE: typeof import('three')
+        THREE_WEBGPU: typeof import('three/webgpu')
+        THREE_TSL: typeof import('three/tsl')
+        POSTPROCESSING: typeof import('postprocessing')
+      }
+      plugins?: Record<string, IPlugin>
+    }
+  }
+}
+
 export const initializeGlobalVars = () => {
   if (typeof window !== 'undefined') {
     window.__HEDRON = {

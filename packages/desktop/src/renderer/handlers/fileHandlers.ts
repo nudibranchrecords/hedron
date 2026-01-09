@@ -1,4 +1,4 @@
-import { ProjectData } from '@hedron/app-store'
+import { ProjectData, AppState } from '@hedron/app-store'
 import { appStore } from '@renderer/appStore'
 import { engine, engineStore } from '@renderer/engine'
 import {
@@ -24,6 +24,8 @@ export const handleSketchesDialog = async () => {
 
   appStore.getState().setSketchesDir(sketchesDir)
   await startEngineWithSketchesDir(sketchesDir)
+
+  engine.ensureGlobalOptionNodes()
 }
 
 export const handleLoadProjectDialog = async (projectPath?: string) => {
@@ -45,7 +47,9 @@ export const handleLoadProjectDialog = async (projectPath?: string) => {
 
   engineStore.getState().loadProject(projectData.engine)
 
-  appStore.setState((state) => ({
+  engine.ensureGlobalOptionNodes()
+
+  appStore.setState((state: AppState) => ({
     ...state,
     currentSavePath: savePath,
     ...projectData.app,

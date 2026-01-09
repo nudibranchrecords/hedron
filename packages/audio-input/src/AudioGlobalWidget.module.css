@@ -1,0 +1,32 @@
+.audioGlobalButton {
+  display: flex;
+  align-items: center;
+  padding: 6px 10px;
+  background-color: #2a2a2a;
+  border: 1px solid #444;
+  border-radius: 4px;
+  color: #ddd;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 14px;
+}
+
+.audioGlobalButton:hover {
+  background-color: #333;
+  border-color: #666;
+}
+
+.audioGlobalButton.active {
+  background-color: #444;
+  border-color: #888;
+  box-shadow: 0 0 5px rgba(255, 255, 255, 0.2);
+}
+
+.icon {
+  margin-right: 6px;
+  font-size: 16px;
+}
+
+.label {
+  font-weight: 500;
+}

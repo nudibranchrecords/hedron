@@ -29,6 +29,7 @@
     "@hedron/clock": "workspace:^",
     "@hedron/engine": "workspace:^",
     "@hedron/lfo-input": "workspace:^",
+    "@hedron/audio-input": "workspace:^",
     "@hedron/midi-input": "workspace:^",
     "@hedron/ui-core": "workspace:^",
     "@tomjs/electron-devtools-installer": "^2.4.0",
