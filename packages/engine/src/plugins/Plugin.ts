@@ -35,6 +35,17 @@ export interface IPlugin {
    * Config to generate option nodes. Follows same structure as sketch params config.
    */
   optionNodesConfig: InputOptionNodesConfig
+
+  /**
+   * Config to generate global option nodes. Follows same structure as sketch params config.
+   */
+  globalOptionNodesConfig?: InputOptionNodesConfig
+
+  /**
+   * Optional callback called after engine initialization (project load, sketches folder selection)
+   * Useful for plugins that need to sync their state after the store is populated
+   */
+  onEngineInitialize?: () => void
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
