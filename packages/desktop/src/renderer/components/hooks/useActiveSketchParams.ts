@@ -29,14 +29,14 @@ export const useActiveSketchParams = () => {
       const node = nodes[id]
 
       const isUngrouped = node.groupIndex === null
-      const groupIndex = isUngrouped ? module.config.groupInfo.length : node.groupIndex!
+      const groupIndex = isUngrouped ? module.config.paramGroupInfo.length : node.groupIndex!
 
       const group =
         groups[groupIndex] ||
         (groups[groupIndex] = {
           isUngrouped,
           groupIndex,
-          groupTitle: module?.config.groupInfo[groupIndex]?.groupTitle,
+          groupTitle: module?.config.paramGroupInfo[groupIndex]?.groupTitle,
           params: [],
         })
 

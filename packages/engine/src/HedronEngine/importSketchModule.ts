@@ -31,17 +31,19 @@ export const processConfig = (
   config: SketchConfigRaw,
   { fallBackTitle }: ProcessConfigOptions,
 ): SketchConfigImported => {
-  const groupInfo: SketchConfigImported['groupInfo'] = []
+  const paramGroupInfo: SketchConfigImported['paramGroupInfo'] = []
+  const shotGroupInfo: SketchConfigImported['shotGroupInfo'] = []
 
   let groupIndex = -1
-  const flattenedParams: SketchConfigParamImported[] = []
+  const flattenedParams: SketchConfigImported['params'] = []
+  const flattenedShots: SketchConfigImported['shots'] = []
 
   if (config.params) {
     config.params.forEach((param) => {
       if ('params' in param) {
         groupIndex++
 
-        groupInfo[groupIndex] = {
+        paramGroupInfo[groupIndex] = {
           groupTitle: param.groupTitle ?? `Group ${groupIndex}`,
         }
 
@@ -52,11 +54,31 @@ export const processConfig = (
     })
   }
 
+  if (config.shots) {
+    config.shots.forEach((shot) => {
+      if ('shots' in shot) {
+        groupIndex++
+
+        shotGroupInfo[groupIndex] = {
+          groupTitle: shot.groupTitle ?? `Group ${groupIndex}`,
+        }
+
+        flattenedShots.push(
+          ...shot.shots.map((s) => ({ ...s, groupIndex, title: s.title ?? s.key })),
+        )
+      } else {
+        flattenedShots.push({ ...shot, groupIndex: null, title: shot.title ?? shot.key })
+      }
+    })
+  }
+
   const processedConfig: SketchConfigImported = {
     ...config,
     title: config.title ?? fallBackTitle,
     params: flattenedParams,
-    groupInfo,
+    shots: flattenedShots,
+    paramGroupInfo: paramGroupInfo,
+    shotGroupInfo: shotGroupInfo,
   }
 
   return processedConfig

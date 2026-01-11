@@ -144,6 +144,11 @@ export type SketchConfigParam =
   | SketchConfigParamVector3
   | SketchConfigParamRGB
 
+export type SketchConfigShot = {
+  key: string
+  title?: string
+}
+
 export type EnsureRequiredValueType<T> = T extends { valueType?: infer V }
   ? Omit<T, 'valueType'> & { valueType: V }
   : T
@@ -151,15 +156,29 @@ export type EnsureRequiredValueType<T> = T extends { valueType?: infer V }
 export type SketchConfigParamImported = EnsureRequiredValueType<SketchConfigParam> & {
   groupIndex: number | null
   title: string
-  params: (SketchConfigParam | SketchConfigGroup)[]
 }
 
-export interface SketchConfigGroup {
+export type SketchConfigShotImported = SketchConfigShot & {
+  groupIndex: number | null
+  title: string
+}
+
+export interface SketchConfigParamGroup {
   groupTitle?: string
   params: SketchConfigParam[]
 }
 
-export interface SketchConfigGroupImported extends SketchConfigGroup {
+export interface SketchConfigShotGroup {
+  groupTitle?: string
+  shots: SketchConfigShot[]
+}
+
+export interface SketchConfigGroupImported extends SketchConfigParamGroup {
+  groupTitle: string
+  groupIndex: number
+}
+
+export interface SketchConfigShotGroupImported extends SketchConfigShotGroup {
   groupTitle: string
   groupIndex: number
 }
@@ -168,14 +187,20 @@ export interface SketchConfigGroupImported extends SketchConfigGroup {
 export interface SketchConfigRaw {
   title?: string
   description?: string
-  params?: (SketchConfigParam | SketchConfigGroup)[]
+  params?: (SketchConfigParam | SketchConfigParamGroup)[]
+  shots?: (SketchConfigShot | SketchConfigShotGroup)[]
 }
 
+export interface ControlGroupInfo {
+  groupTitle: string
+}
 export interface SketchConfigImported {
   title: string
   description?: string
   params: SketchConfigParamImported[]
-  groupInfo: { groupTitle: string }[]
+  shots: SketchConfigShotImported[]
+  paramGroupInfo: ControlGroupInfo[]
+  shotGroupInfo: ControlGroupInfo[]
 }
 
 export interface SketchModuleItem {

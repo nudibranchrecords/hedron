@@ -96,7 +96,6 @@ export class HedronEngine {
           valueType: cfg.valueType ?? 'number',
           groupIndex: null,
           title: cfg.title ?? cfg.key,
-          params: [], // Required for imported config
         } as SketchConfigParamImported
 
         // Add the node to the store using the shared addNode utility
