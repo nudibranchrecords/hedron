@@ -23,14 +23,14 @@ const ParamItem = ({ paramId, sketchId }: { paramId: string; sketchId: string })
 
 export const SketchParams = ({ sketchId }: SketchParamsProps) => {
   const paramGroups = useActiveSketchParams()
-  const openedParamGroups = useAppStore((state) => state.openedParamGroups[sketchId] ?? {})
-  const setOpenedParamGroup = useAppStore((state) => state.setOpenedParamGroup)
+  const openedControlGroups = useAppStore((state) => state.openedControlGroups[sketchId] ?? {})
+  const setOpenedControlGroup = useAppStore((state) => state.setOpenedControlGroup)
 
   return (
     <HedronErrorBoundary>
       <div className={c.wrapper}>
         {paramGroups.map(({ groupTitle, groupIndex, params, isUngrouped }) => {
-          const isOpen = openedParamGroups[groupIndex] ?? true
+          const isOpen = openedControlGroups[groupIndex] ?? true
           const itemCountText = isOpen ? '' : ` (${params.length})`
           const title = isUngrouped ? 'Ungrouped' : groupTitle
 
@@ -51,7 +51,7 @@ export const SketchParams = ({ sketchId }: SketchParamsProps) => {
                 <Collapsible
                   title={`${title}${itemCountText}`}
                   isOpen={isOpen}
-                  onToggle={() => setOpenedParamGroup(sketchId, groupIndex, !isOpen)}
+                  onToggle={() => setOpenedControlGroup(sketchId, groupIndex, !isOpen)}
                 >
                   {grid}
                 </Collapsible>
