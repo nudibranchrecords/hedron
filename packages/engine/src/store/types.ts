@@ -198,17 +198,12 @@ export interface SketchConfigRaw {
   shots?: (SketchConfigShot | SketchConfigShotGroup)[]
 }
 
-export interface ControlGroupInfo {
-  groupTitle: string
-}
-
 export interface SketchConfigImported {
   title: string
   description?: string
   params: SketchConfigParamImported[]
   shots: SketchConfigShotImported[]
-  paramGroupInfo: ControlGroupInfo[]
-  shotGroupInfo: ControlGroupInfo[]
+  groupInfo: { groupTitle: string }[]
 }
 
 export interface SketchModuleItem {

@@ -31,8 +31,7 @@ export const processConfig = (
   config: SketchConfigRaw,
   { fallBackTitle }: ProcessConfigOptions,
 ): SketchConfigImported => {
-  const paramGroupInfo: SketchConfigImported['paramGroupInfo'] = []
-  const shotGroupInfo: SketchConfigImported['shotGroupInfo'] = []
+  const groupInfo: SketchConfigImported['groupInfo'] = []
 
   let groupIndex = -1
   const flattenedParams: SketchConfigImported['params'] = []
@@ -43,7 +42,7 @@ export const processConfig = (
       if ('params' in param) {
         groupIndex++
 
-        paramGroupInfo[groupIndex] = {
+        groupInfo[groupIndex] = {
           groupTitle: param.groupTitle ?? `Group ${groupIndex}`,
         }
 
@@ -59,7 +58,7 @@ export const processConfig = (
       if ('shots' in shot) {
         groupIndex++
 
-        shotGroupInfo[groupIndex] = {
+        groupInfo[groupIndex] = {
           groupTitle: shot.groupTitle ?? `Group ${groupIndex}`,
         }
 
@@ -77,8 +76,7 @@ export const processConfig = (
     title: config.title ?? fallBackTitle,
     params: flattenedParams,
     shots: flattenedShots,
-    paramGroupInfo: paramGroupInfo,
-    shotGroupInfo: shotGroupInfo,
+    groupInfo,
   }
 
   return processedConfig
