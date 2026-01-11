@@ -32,7 +32,8 @@ export const SketchParams = ({ sketchId }: SketchParamsProps) => {
         {paramGroups.map(({ groupTitle, groupIndex, params, isUngrouped }) => {
           const isOpen = openedControlGroups[groupIndex] ?? true
           const itemCountText = isOpen ? '' : ` (${params.length})`
-          const title = isUngrouped ? 'Ungrouped' : groupTitle
+          const ungroupedTitle = paramGroups.length > 1 ? 'Params (ungrouped)' : 'Params'
+          const title = isUngrouped ? ungroupedTitle : groupTitle
 
           const grid = (
             <ControlGrid>
@@ -45,17 +46,13 @@ export const SketchParams = ({ sketchId }: SketchParamsProps) => {
 
           return (
             <div key={groupIndex} className="mb-xl">
-              {paramGroups.length === 1 && isUngrouped ? (
-                grid
-              ) : (
-                <Collapsible
-                  title={`${title}${itemCountText}`}
-                  isOpen={isOpen}
-                  onToggle={() => setOpenedControlGroup(sketchId, groupIndex, !isOpen)}
-                >
-                  {grid}
-                </Collapsible>
-              )}
+              <Collapsible
+                title={`${title}${itemCountText}`}
+                isOpen={isOpen}
+                onToggle={() => setOpenedControlGroup(sketchId, groupIndex, !isOpen)}
+              >
+                {grid}
+              </Collapsible>
             </div>
           )
         })}
