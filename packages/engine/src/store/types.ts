@@ -84,6 +84,11 @@ export type Shot = NodeBase & {
   groupIndex: number | null
 }
 
+// TODO: We may want to generalise nodeType to "value" and "func"
+// Then all nodes can be treated the same way by various inputs.
+// "Params" and "shots" would remain as terms specific to sketches
+export type NodeType = 'param' | 'shot'
+
 export type Node = Param | Shot
 export type Nodes = { [key: string]: Node }
 
@@ -166,10 +171,6 @@ export type SketchConfigItemImported<T> = T & {
   groupIndex: number | null
   title: string
 }
-
-// TODO: We may want to generalise nodeType to "value" and "func"
-// Then all nodes can be treated the same way by various inputs.
-// "Params" and "shots" would remain as terms specific to sketches
 
 export type SketchConfigParamImported = SketchConfigItemImported<
   EnsureRequiredValueType<SketchConfigParam>

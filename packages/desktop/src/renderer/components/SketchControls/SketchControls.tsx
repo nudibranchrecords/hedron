@@ -12,7 +12,7 @@ interface SketchControlsProps {
     children: Node[]
     isUngrouped?: boolean
   }[]
-  ControlItem: ComponentType<{ nodeId: string; sketchId: string }>
+  ControlItem: ComponentType<{ node: Node; sketchId: string }>
 }
 
 export const SketchControls = ({ sketchId, nodeGroups, ControlItem }: SketchControlsProps) => {
@@ -32,7 +32,7 @@ export const SketchControls = ({ sketchId, nodeGroups, ControlItem }: SketchCont
             <ControlGrid>
               {children.map((node) => (
                 /* unique key is important here! otherwise can get cross talk between params with the same key in different sketches */
-                <ControlItem key={`${node.key}${sketchId}`} nodeId={node.id} sketchId={sketchId} />
+                <ControlItem key={`${node.key}${sketchId}`} node={node} sketchId={sketchId} />
               ))}
             </ControlGrid>
           )

@@ -13,44 +13,49 @@ import {
   useOnSelectNode,
 } from '@hedron/ui-core'
 
+import { Node } from '@hedron/engine'
 import c from './ActiveSketch.module.css'
 import { useActiveSketch } from '@components/hooks/useActiveSketch'
 import { engineStore } from '@renderer/engine'
 import { SketchControls } from '@components/SketchControls/SketchControls'
-import { useActiveSketchParams } from '@components/hooks/useActiveSketchParams'
+import { useGroupedNodes } from '@components/hooks/useGroupedNodes'
 import { useSelectedParam } from '@components/hooks/useSelectedParam'
 import { SelectedParam } from '@components/SelectedParam/SelectedParam'
 
-interface ParamItemProps {
-  nodeId: string
+interface ControlItemProps {
+  node: Node
   sketchId: string
 }
 
-const ParamItem = ({ nodeId, sketchId }: ParamItemProps) => {
-  const isActive = useAppStore((state) => state.selectedNodes[sketchId] === nodeId)
-  const onSelectNode = useOnSelectNode(sketchId, nodeId)
+const ControlItem = ({ node, sketchId }: ControlItemProps) => {
+  const isActive = useAppStore((state) => state.selectedNodes[sketchId] === node.id)
+  const onSelectNode = useOnSelectNode(sketchId, node.id)
 
-  return <Param onClick={onSelectNode} paramId={nodeId} isActive={isActive} />
-}
-
-const NodeItem = ({ nodeId, sketchId }: ParamItemProps) => {
-  const isActive = useAppStore((state) => state.selectedNodes[sketchId] === nodeId)
-  const onSelectNode = useOnSelectNode(sketchId, nodeId)
-
-  return (
-    <div style={{ display: 'block' }} onClick={onSelectNode}>
-      Shot: {nodeId}
-    </div>
-  )
+  switch (node.nodeType) {
+    case 'param':
+      return <Param onClick={onSelectNode} paramId={node.id} isActive={isActive} />
+    case 'shot':
+      return (
+        <div style={{ display: 'block' }} onClick={onSelectNode}>
+          Shot: {node.id}
+        </div>
+      )
+    default:
+      return null
+  }
 }
 
 export const ActiveSketch = () => {
   const activeSketch = useActiveSketch()
-  const paramGroups = useActiveSketchParams()
 
   if (!activeSketch) {
     throw new Error('ActiveSketch component: No activesketch found')
   }
+
+  const nodeGroups = useGroupedNodes(
+    [...activeSketch.paramIds, ...activeSketch.shotIds],
+    activeSketch.moduleId,
+  )
 
   const selectedParam = useSelectedParam()
 
@@ -85,13 +90,8 @@ export const ActiveSketch = () => {
         <div className={c.section}>
           <SketchControls
             sketchId={activeSketch.id}
-            nodeGroups={paramGroups}
-            ControlItem={ParamItem}
-          />
-          <SketchControls
-            sketchId={activeSketch.id}
-            nodeGroups={paramGroups}
-            ControlItem={NodeItem}
+            nodeGroups={nodeGroups}
+            ControlItem={ControlItem}
           />
         </div>
 
