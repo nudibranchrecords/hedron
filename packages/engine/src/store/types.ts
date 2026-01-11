@@ -153,34 +153,41 @@ export type EnsureRequiredValueType<T> = T extends { valueType?: infer V }
   ? Omit<T, 'valueType'> & { valueType: V }
   : T
 
-export type SketchConfigParamImported = EnsureRequiredValueType<SketchConfigParam> & {
+export type SketchConfigItemImported<T> = T & {
   groupIndex: number | null
   title: string
 }
 
-export type SketchConfigShotImported = SketchConfigShot & {
-  groupIndex: number | null
-  title: string
-}
+export type SketchConfigParamImported = SketchConfigItemImported<
+  EnsureRequiredValueType<SketchConfigParam>
+>
 
-export interface SketchConfigParamGroup {
+export type SketchConfigShotImported = SketchConfigItemImported<SketchConfigShot>
+
+export interface SketchConfigGroup {
   groupTitle?: string
+}
+
+export interface SketchConfigParamGroup extends SketchConfigGroup {
   params: SketchConfigParam[]
 }
 
-export interface SketchConfigShotGroup {
-  groupTitle?: string
+export interface SketchConfigShotGroup extends SketchConfigGroup {
   shots: SketchConfigShot[]
 }
 
-export interface SketchConfigGroupImported extends SketchConfigParamGroup {
+// Generic type for imported config groups
+export interface SketchConfigGroupImported extends SketchConfigGroup {
   groupTitle: string
   groupIndex: number
 }
 
-export interface SketchConfigShotGroupImported extends SketchConfigShotGroup {
-  groupTitle: string
-  groupIndex: number
+export interface SketchConfigParamGroupImported extends SketchConfigGroupImported {
+  params: SketchConfigParam[]
+}
+
+export interface SketchConfigShotGroupImported extends SketchConfigGroupImported {
+  shots: SketchConfigShot[]
 }
 
 // As the user defines the config, it can be a mix of params and groups
@@ -194,6 +201,7 @@ export interface SketchConfigRaw {
 export interface ControlGroupInfo {
   groupTitle: string
 }
+
 export interface SketchConfigImported {
   title: string
   description?: string
