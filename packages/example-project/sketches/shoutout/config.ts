@@ -22,4 +22,10 @@ export default {
       defaultValue: [1, 1, 1],
     },
   ],
+  shots: [
+    {
+      key: 'shuffle',
+      title: 'Shuffle',
+    },
+  ],
 }
