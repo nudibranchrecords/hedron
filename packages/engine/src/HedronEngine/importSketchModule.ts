@@ -20,6 +20,7 @@ const ensureParamImported = (
     ...param,
     groupIndex,
     valueType,
+    nodeType: 'param',
   } as SketchConfigParamImported
 }
 
@@ -63,10 +64,20 @@ export const processConfig = (
         }
 
         flattenedShots.push(
-          ...shot.shots.map((s) => ({ ...s, groupIndex, title: s.title ?? s.key })),
+          ...shot.shots.map((s) => ({
+            ...s,
+            groupIndex,
+            title: s.title ?? s.key,
+            nodeType: 'shot' as const,
+          })),
         )
       } else {
-        flattenedShots.push({ ...shot, groupIndex: null, title: shot.title ?? shot.key })
+        flattenedShots.push({
+          ...shot,
+          groupIndex: null,
+          title: shot.title ?? shot.key,
+          nodeType: 'shot',
+        })
       }
     })
   }

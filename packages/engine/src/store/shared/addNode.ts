@@ -6,27 +6,38 @@ import {
   isNodeTypeWithChildren,
   NodeValueType,
   Param,
+  SketchConfigShotImported,
+  Shot,
 } from '@store/types'
 import { createUniqueId } from '@utils/createUniqueId'
 
 const vector3Keys = ['x', 'y', 'z']
 const rgbKeys = ['r', 'g', 'b']
 
-const _addNodeToState = (
-  state: EngineState,
-  paramId: string,
-  config: EnsureRequiredValueType<SketchConfigParamImported>,
-) => {
+type AddNodeConfig = EnsureRequiredValueType<SketchConfigParamImported> | SketchConfigShotImported
+
+const _addNodeToState = (state: EngineState, nodeId: string, config: AddNodeConfig) => {
+  if (config.nodeType === 'shot') {
+    state.nodes[nodeId] = {
+      ...config,
+      id: nodeId,
+      type: 'shot' as const,
+      title: config.title ?? config.key,
+    } as Shot
+
+    return state.nodes[nodeId]
+  }
+
   const { defaultValue, valueType, key } = config
 
   if (isNodeTypeWithChildren(valueType)) {
     throw new Error(`_addNodeToState shouldn't be used with node of valueType: ${valueType}`)
   }
 
-  state.nodes[paramId] = {
+  state.nodes[nodeId] = {
     ...config,
     valueType,
-    id: paramId,
+    id: nodeId,
     type: 'param' as const,
     title: config.title ?? config.key,
   } as Param
@@ -38,14 +49,14 @@ const _addNodeToState = (
       (typeof defaultValue === 'string' || typeof defaultValue === 'number')) ||
     (valueType === 'string' && typeof defaultValue === 'string')
   ) {
-    state.nodeValues[paramId] = defaultValue
+    state.nodeValues[nodeId] = defaultValue
   } else {
     throw new Error(
       `valueType of param ${key}: ${valueType} does not match defaultValue: ${defaultValue}`,
     )
   }
 
-  return state.nodes[paramId]
+  return state.nodes[nodeId]
 }
 
 const _addSliderMinAndMaxNodesToState = (
@@ -59,26 +70,26 @@ const _addSliderMinAndMaxNodesToState = (
   if (sketchConfigParam.valueType === 'number') {
     _addNodeToState(state, `${paramId}-sliderMin`, {
       key: 'sliderMin',
+      nodeType: 'param',
       valueType: 'number',
       defaultValue: sketchConfigParam.sliderMin ?? 0,
       groupIndex: null,
-      params: [], // TODO: Bad typing means we have to do this
       title: 'Slider Min',
     })
 
     _addNodeToState(state, `${paramId}-sliderMax`, {
       key: 'sliderMax',
+      nodeType: 'param',
       valueType: 'number',
       defaultValue: sketchConfigParam.sliderMax ?? 1,
       groupIndex: null,
-      params: [], // TODO: Bad typing means we have to do this
       title: 'Slider Max',
     })
   }
 }
 
-export const addNode = (state: EngineState, paramId: string, config: SketchConfigParamImported) => {
-  if (isNodeTypeWithChildren(config.valueType)) {
+export const addNode = (state: EngineState, nodeId: string, config: AddNodeConfig) => {
+  if (config.nodeType === 'param' && isNodeTypeWithChildren(config.valueType)) {
     if (!Array.isArray(config.defaultValue)) {
       throw new Error(`Expected defaultValue to be an array for ${config.valueType} type`)
     }
@@ -86,9 +97,9 @@ export const addNode = (state: EngineState, paramId: string, config: SketchConfi
     const childNodeIds = Array.from({ length: 3 }, createUniqueId) as [string, string, string]
     const keys = config.valueType === 'vector3' ? vector3Keys : rgbKeys
 
-    state.nodes[paramId] = {
+    state.nodes[nodeId] = {
       ...config,
-      id: paramId,
+      id: nodeId,
       type: 'param',
       title: config.title ?? config.key,
       childNodeIds,
@@ -97,18 +108,21 @@ export const addNode = (state: EngineState, paramId: string, config: SketchConfi
     for (const [index, childNodeId] of childNodeIds.entries()) {
       _addNodeToState(state, childNodeId, {
         groupIndex: null,
+        nodeType: 'param',
         title: keys[index],
         key: keys[index],
         valueType: 'number',
         defaultValue: config.defaultValue[index],
-        params: [], // TODO: Bad typing means we have to do this
       })
       _addSliderMinAndMaxNodesToState(state, childNodeId, {
         valueType: 'number',
       })
     }
   } else {
-    _addNodeToState(state, paramId, config)
-    _addSliderMinAndMaxNodesToState(state, paramId, config)
+    _addNodeToState(state, nodeId, config)
+
+    if (config.nodeType === 'param') {
+      _addSliderMinAndMaxNodesToState(state, nodeId, config)
+    }
   }
 }

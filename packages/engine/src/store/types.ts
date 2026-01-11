@@ -29,6 +29,7 @@ export interface NodeParamBase extends NodeBase {
 }
 
 export interface NodeParamWithChildren extends NodeParamBase {
+  nodeType: 'param'
   childNodeIds: string[]
   valueType: NodeTypeWithChildren
   defaultValue: [number, number, number]
@@ -67,20 +68,27 @@ export interface NodeParamRGB extends NodeParamWithChildren {
   defaultValue: [number, number, number]
 }
 
-export type Param =
+export type Param = (
   | NodeParamBoolean
   | NodeParamString
   | NodeParamNumber
   | NodeParamEnum
   | NodeParamVector3
   | NodeParamRGB
+) & { nodeType: 'param' }
 
-export type Node = Param
+export type Shot = NodeBase & {
+  nodeType: 'shot'
+  title: string
+  groupIndex: number | null
+}
+
+export type Node = Param | Shot
 export type Nodes = { [key: string]: Node }
 
 export type NodeValue = number | boolean | string
 export type NodeValues = { [key: string]: NodeValue }
-export type NodeValueType = Node['valueType']
+export type NodeValueType = Param['valueType'] | null
 
 export const isNodeTypeWithChildren = (
   nodeValueType: NodeValueType,
@@ -158,11 +166,17 @@ export type SketchConfigItemImported<T> = T & {
   title: string
 }
 
+// TODO: We may want to generalise nodeType to "value" and "func"
+// Then all nodes can be treated the same way by various inputs.
+// "Params" and "shots" would remain as terms specific to sketches
+
 export type SketchConfigParamImported = SketchConfigItemImported<
   EnsureRequiredValueType<SketchConfigParam>
->
+> & { nodeType: 'param' }
 
-export type SketchConfigShotImported = SketchConfigItemImported<SketchConfigShot>
+export type SketchConfigShotImported = SketchConfigItemImported<SketchConfigShot> & {
+  nodeType: 'shot'
+}
 
 export interface SketchConfigGroup {
   groupTitle?: string
