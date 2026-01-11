@@ -54,6 +54,8 @@ export const handleLoadProjectDialog = async (projectPath?: string) => {
     currentSavePath: savePath,
     ...projectData.app,
   }))
+
+  await engine.reimportAllSketchModulesAndReloadSketches()
 }
 
 export const handleSaveProjectDialog = async (options?: { saveAs?: boolean }) => {
