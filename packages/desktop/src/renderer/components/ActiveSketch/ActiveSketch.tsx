@@ -8,16 +8,45 @@ import {
   PanelHeader,
   PopoutMenu,
   HedronErrorBoundary,
+  Param,
+  useAppStore,
+  useOnSelectNode,
 } from '@hedron/ui-core'
+
 import c from './ActiveSketch.module.css'
 import { useActiveSketch } from '@components/hooks/useActiveSketch'
 import { engineStore } from '@renderer/engine'
-import { SketchParams } from '@components/SketchParams/SketchParams'
+import { SketchControls } from '@components/SketchControls/SketchControls'
+import { useActiveSketchParams } from '@components/hooks/useActiveSketchParams'
 import { useSelectedParam } from '@components/hooks/useSelectedParam'
 import { SelectedParam } from '@components/SelectedParam/SelectedParam'
 
+interface ParamItemProps {
+  nodeId: string
+  sketchId: string
+}
+
+const ParamItem = ({ nodeId, sketchId }: ParamItemProps) => {
+  const isActive = useAppStore((state) => state.selectedNodes[sketchId] === nodeId)
+  const onSelectNode = useOnSelectNode(sketchId, nodeId)
+
+  return <Param onClick={onSelectNode} paramId={nodeId} isActive={isActive} />
+}
+
+const NodeItem = ({ nodeId, sketchId }: ParamItemProps) => {
+  const isActive = useAppStore((state) => state.selectedNodes[sketchId] === nodeId)
+  const onSelectNode = useOnSelectNode(sketchId, nodeId)
+
+  return (
+    <div style={{ display: 'block' }} onClick={onSelectNode}>
+      Shot: {nodeId}
+    </div>
+  )
+}
+
 export const ActiveSketch = () => {
   const activeSketch = useActiveSketch()
+  const paramGroups = useActiveSketchParams()
 
   if (!activeSketch) {
     throw new Error('ActiveSketch component: No activesketch found')
@@ -54,7 +83,16 @@ export const ActiveSketch = () => {
       </ViewHeader>
       <HedronErrorBoundary key={activeSketch.id}>
         <div className={c.section}>
-          <SketchParams sketchId={activeSketch.id} />
+          <SketchControls
+            sketchId={activeSketch.id}
+            nodeGroups={paramGroups}
+            ControlItem={ParamItem}
+          />
+          <SketchControls
+            sketchId={activeSketch.id}
+            nodeGroups={paramGroups}
+            ControlItem={NodeItem}
+          />
         </div>
 
         {selectedParam && (

@@ -7,7 +7,7 @@ type GroupedParams = {
   isUngrouped?: boolean
   groupTitle: string
   groupIndex: number
-  params: Param[]
+  children: Param[]
 }
 
 export const useActiveSketchParams = () => {
@@ -26,7 +26,7 @@ export const useActiveSketchParams = () => {
     const groups = [] as GroupedParams[]
 
     activeSketch.paramIds.forEach((id) => {
-      const node = nodes[id]
+      const node = nodes[id] as Param
 
       const isUngrouped = node.groupIndex === null
       const groupIndex = isUngrouped ? module.config.groupInfo.length : node.groupIndex!
@@ -37,10 +37,10 @@ export const useActiveSketchParams = () => {
           isUngrouped,
           groupIndex,
           groupTitle: module?.config.groupInfo[groupIndex]?.groupTitle,
-          params: [],
+          children: [],
         })
 
-      group.params.push({ ...node })
+      group.children.push({ ...node })
     })
 
     return groups

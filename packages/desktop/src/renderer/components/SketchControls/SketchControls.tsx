@@ -1,45 +1,38 @@
-import {
-  ControlGrid,
-  Collapsible,
-  Param,
-  useOnSelectNode,
-  HedronErrorBoundary,
-} from '@hedron/ui-core'
-import c from './SketchParams.module.css'
-import { useActiveSketchParams } from '@components/hooks/useActiveSketchParams'
-
+import { ControlGrid, Collapsible, HedronErrorBoundary } from '@hedron/ui-core'
+import { ComponentType } from 'react'
+import { Node } from '@hedron/engine'
+import c from './SketchControls.module.css'
 import { useAppStore } from '@renderer/appStore'
 
-interface SketchParamsProps {
+interface SketchControlsProps {
   sketchId: string
+  nodeGroups: {
+    groupTitle: string
+    groupIndex: number
+    children: Node[]
+    isUngrouped?: boolean
+  }[]
+  ControlItem: ComponentType<{ nodeId: string; sketchId: string }>
 }
 
-const ParamItem = ({ paramId, sketchId }: { paramId: string; sketchId: string }) => {
-  const isActive = useAppStore((state) => state.selectedNodes[sketchId] === paramId)
-  const onSelectNode = useOnSelectNode(sketchId, paramId)
-
-  return <Param onClick={onSelectNode} paramId={paramId} isActive={isActive} />
-}
-
-export const SketchParams = ({ sketchId }: SketchParamsProps) => {
-  const paramGroups = useActiveSketchParams()
+export const SketchControls = ({ sketchId, nodeGroups, ControlItem }: SketchControlsProps) => {
   const openedControlGroups = useAppStore((state) => state.openedControlGroups[sketchId] ?? {})
   const setOpenedControlGroup = useAppStore((state) => state.setOpenedControlGroup)
 
   return (
     <HedronErrorBoundary>
       <div className={c.wrapper}>
-        {paramGroups.map(({ groupTitle, groupIndex, params, isUngrouped }) => {
+        {nodeGroups.map(({ groupTitle, groupIndex, children, isUngrouped }) => {
           const isOpen = openedControlGroups[groupIndex] ?? true
-          const itemCountText = isOpen ? '' : ` (${params.length})`
-          const ungroupedTitle = paramGroups.length > 1 ? 'Params (ungrouped)' : 'Params'
+          const itemCountText = isOpen ? '' : ` (${children.length})`
+          const ungroupedTitle = nodeGroups.length > 1 ? 'Params (ungrouped)' : 'Params'
           const title = isUngrouped ? ungroupedTitle : groupTitle
 
           const grid = (
             <ControlGrid>
-              {params.map((param) => (
+              {children.map((node) => (
                 /* unique key is important here! otherwise can get cross talk between params with the same key in different sketches */
-                <ParamItem key={`${param.key}${sketchId}`} paramId={param.id} sketchId={sketchId} />
+                <ControlItem key={`${node.key}${sketchId}`} nodeId={node.id} sketchId={sketchId} />
               ))}
             </ControlGrid>
           )
