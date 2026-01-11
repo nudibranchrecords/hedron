@@ -5,6 +5,7 @@ export interface SketchState {
   title: string
   moduleId: string
   paramIds: string[]
+  shotIds: string[]
   isBroken?: boolean
 }
 
