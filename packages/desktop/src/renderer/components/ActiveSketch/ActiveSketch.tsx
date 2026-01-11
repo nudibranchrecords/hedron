@@ -52,10 +52,7 @@ export const ActiveSketch = () => {
     throw new Error('ActiveSketch component: No activesketch found')
   }
 
-  const nodeGroups = useGroupedNodes(
-    [...activeSketch.paramIds, ...activeSketch.shotIds],
-    activeSketch.moduleId,
-  )
+  const nodeGroups = useGroupedNodes(activeSketch.nodeIds, activeSketch.moduleId)
 
   const selectedParam = useSelectedParam()
 

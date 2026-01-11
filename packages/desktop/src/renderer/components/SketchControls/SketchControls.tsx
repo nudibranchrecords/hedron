@@ -10,7 +10,6 @@ interface SketchControlsProps {
     groupTitle: string
     groupIndex: number
     children: Node[]
-    isUngrouped?: boolean
   }[]
   ControlItem: ComponentType<{ node: Node; sketchId: string }>
 }
@@ -22,11 +21,9 @@ export const SketchControls = ({ sketchId, nodeGroups, ControlItem }: SketchCont
   return (
     <HedronErrorBoundary>
       <div className={c.wrapper}>
-        {nodeGroups.map(({ groupTitle, groupIndex, children, isUngrouped }) => {
+        {nodeGroups.map(({ groupTitle, groupIndex, children }) => {
           const isOpen = openedControlGroups[groupIndex] ?? true
           const itemCountText = isOpen ? '' : ` (${children.length})`
-          const ungroupedTitle = nodeGroups.length > 1 ? 'Params (ungrouped)' : 'Params'
-          const title = isUngrouped ? ungroupedTitle : groupTitle
 
           const grid = (
             <ControlGrid>
@@ -40,7 +37,7 @@ export const SketchControls = ({ sketchId, nodeGroups, ControlItem }: SketchCont
           return (
             <div key={groupIndex} className="mb-xl">
               <Collapsible
-                title={`${title}${itemCountText}`}
+                title={`${groupTitle}${itemCountText}`}
                 isOpen={isOpen}
                 onToggle={() => setOpenedControlGroup(sketchId, groupIndex, !isOpen)}
               >

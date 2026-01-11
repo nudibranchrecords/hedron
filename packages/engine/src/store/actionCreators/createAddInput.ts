@@ -16,7 +16,7 @@ export const createAddInput: SetterCreator<'addInput'> =
         const cfgImported = {
           ...cfg,
           valueType: cfg.valueType ?? 'number',
-          groupIndex: null,
+          groupIndex: 0,
           title: cfg.title ?? cfg.key,
         } as SketchConfigParamImported
 

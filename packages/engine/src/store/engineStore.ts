@@ -9,7 +9,7 @@ import { createAddSketch } from '@store/actionCreators/addSketch'
 import { createDeleteSketch } from '@store/actionCreators/deleteSketch'
 import { createSetSketchModuleItem } from '@store/actionCreators/setSketchModuleItem'
 import { createDeleteSketchModule } from '@store/actionCreators/deleteSketchModule'
-import { createReconcileSketchParamsAndShots } from '@store/actionCreators/createReconcileSketchParamsAndShots'
+import { createReconcileSketchNodes } from '@store/actionCreators/createReconcileSketchNodes'
 import {
   createUpdateMultipleNodeValues,
   createUpdateNodeValue,
@@ -28,7 +28,7 @@ export const createEngineStore = () =>
           ...initialState,
           addSketch: createAddSketch(set),
           updateSketch: createUpdateSketch(set),
-          reconcileSketchParamsAndShots: createReconcileSketchParamsAndShots(set),
+          reconcileSketchNodes: createReconcileSketchNodes(set),
           setSketchModuleItem: createSetSketchModuleItem(set),
           updateNodeValue: createUpdateNodeValue(set),
           updateMultipleNodeValues: createUpdateMultipleNodeValues(set),

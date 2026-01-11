@@ -73,7 +73,7 @@ const _addSliderMinAndMaxNodesToState = (
       nodeType: 'param',
       valueType: 'number',
       defaultValue: sketchConfigParam.sliderMin ?? 0,
-      groupIndex: null,
+      groupIndex: 0,
       title: 'Slider Min',
     })
 
@@ -82,7 +82,7 @@ const _addSliderMinAndMaxNodesToState = (
       nodeType: 'param',
       valueType: 'number',
       defaultValue: sketchConfigParam.sliderMax ?? 1,
-      groupIndex: null,
+      groupIndex: 0,
       title: 'Slider Max',
     })
   }
@@ -107,7 +107,7 @@ export const addNode = (state: EngineState, nodeId: string, config: AddNodeConfi
 
     for (const [index, childNodeId] of childNodeIds.entries()) {
       _addNodeToState(state, childNodeId, {
-        groupIndex: null,
+        groupIndex: 0,
         nodeType: 'param',
         title: keys[index],
         key: keys[index],

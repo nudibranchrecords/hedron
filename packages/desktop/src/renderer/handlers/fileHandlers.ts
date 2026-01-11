@@ -55,7 +55,7 @@ export const handleLoadProjectDialog = async (projectPath?: string) => {
     ...projectData.app,
   }))
 
-  engine.reconcileAllSketchesParamsAndShots()
+  engine.reconcileAllSketchNodes()
 }
 
 export const handleSaveProjectDialog = async (options?: { saveAs?: boolean }) => {

@@ -94,7 +94,7 @@ export class HedronEngine {
         const cfgImported: SketchConfigParamImported = {
           ...cfg,
           valueType: cfg.valueType ?? 'number',
-          groupIndex: null,
+          groupIndex: 0,
           title: cfg.title ?? cfg.key,
         } as SketchConfigParamImported
 
@@ -206,18 +206,18 @@ export class HedronEngine {
         this.setIsSketchBroken(sketchInstance.id, false)
       }
 
-      this.store.getState().reconcileSketchParamsAndShots(sketch.id)
+      this.store.getState().reconcileSketchNodes(sketch.id)
     }
 
     this.renderer.passesNeedUpdate_webGPU = true
   }
 
-  public async reconcileAllSketchesParamsAndShots(): Promise<void> {
+  public async reconcileAllSketchNodes(): Promise<void> {
     const state = this.store.getState()
-    const sketchesToRefresh = Object.values(state.sketches)
+    const sketchesToReconcile = Object.values(state.sketches)
 
-    for (const sketch of sketchesToRefresh) {
-      state.reconcileSketchParamsAndShots(sketch.id)
+    for (const sketch of sketchesToReconcile) {
+      state.reconcileSketchNodes(sketch.id)
     }
   }
 

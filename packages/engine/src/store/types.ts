@@ -4,8 +4,7 @@ export interface SketchState {
   id: string
   title: string
   moduleId: string
-  paramIds: string[]
-  shotIds: string[]
+  nodeIds: string[]
   isBroken?: boolean
 }
 
@@ -18,6 +17,7 @@ export type SketchModule = any
 export interface NodeBase {
   id: string
   key: string
+  groupIndex: number
 }
 
 export const NodeTypesWithChildren = ['vector3', 'rgb'] as const
@@ -26,7 +26,6 @@ export type NodeTypeWithChildren = (typeof NodeTypesWithChildren)[number]
 export interface NodeParamBase extends NodeBase {
   type: 'param'
   title: string
-  groupIndex: number | null
 }
 
 export interface NodeParamWithChildren extends NodeParamBase {
@@ -81,7 +80,6 @@ export type Param = (
 export type Shot = NodeBase & {
   nodeType: 'shot'
   title: string
-  groupIndex: number | null
 }
 
 // TODO: We may want to generalise nodeType to "value" and "func"
@@ -168,7 +166,7 @@ export type EnsureRequiredValueType<T> = T extends { valueType?: infer V }
   : T
 
 export type SketchConfigItemImported<T> = T & {
-  groupIndex: number | null
+  groupIndex: number
   title: string
 }
 
@@ -180,29 +178,20 @@ export type SketchConfigShotImported = SketchConfigItemImported<SketchConfigShot
   nodeType: 'shot'
 }
 
-export interface SketchConfigGroup {
+export type SketchConfigNodeImported = SketchConfigParamImported | SketchConfigShotImported
+
+export interface SketchConfigNodeGroup {
   groupTitle?: string
+  children: (SketchConfigParam | SketchConfigShot)[]
 }
 
-export interface SketchConfigParamGroup extends SketchConfigGroup {
+export interface SketchConfigParamGroup {
+  groupTitle?: string
   params: SketchConfigParam[]
 }
 
-export interface SketchConfigShotGroup extends SketchConfigGroup {
-  shots: SketchConfigShot[]
-}
-
-// Generic type for imported config groups
-export interface SketchConfigGroupImported extends SketchConfigGroup {
-  groupTitle: string
-  groupIndex: number
-}
-
-export interface SketchConfigParamGroupImported extends SketchConfigGroupImported {
-  params: SketchConfigParam[]
-}
-
-export interface SketchConfigShotGroupImported extends SketchConfigGroupImported {
+export interface SketchConfigShotGroup {
+  groupTitle?: string
   shots: SketchConfigShot[]
 }
 
@@ -217,8 +206,7 @@ export interface SketchConfigRaw {
 export interface SketchConfigImported {
   title: string
   description?: string
-  params: SketchConfigParamImported[]
-  shots: SketchConfigShotImported[]
+  nodes: SketchConfigNodeImported[]
   groupInfo: { groupTitle: string }[]
 }
 
@@ -262,7 +250,7 @@ export type EngineState = EngineData & AuxState
 interface Actions {
   addSketch: (moduleId: string) => string
   updateSketch: (instanceId: string, sketchState: Partial<SketchState>) => void
-  reconcileSketchParamsAndShots: (instanceId: string) => void
+  reconcileSketchNodes: (instanceId: string) => void
   deleteSketch: (instanceId: string) => void
   moveSketchUp: (instanceId: string) => void
   moveSketchDown: (instanceId: string) => void
