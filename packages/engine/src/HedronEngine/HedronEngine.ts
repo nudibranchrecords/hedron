@@ -206,17 +206,18 @@ export class HedronEngine {
         this.setIsSketchBroken(sketchInstance.id, false)
       }
 
-      this.store.getState().refreshSketchParamsAndShots(sketch.id)
+      this.store.getState().reconcileSketchParamsAndShots(sketch.id)
     }
 
     this.renderer.passesNeedUpdate_webGPU = true
   }
 
-  public async reimportAllSketchModulesAndReloadSketches(): Promise<void> {
-    const moduleIds = Object.keys(this.store.getState().sketchModules)
+  public async reconcileAllSketchesParamsAndShots(): Promise<void> {
+    const state = this.store.getState()
+    const sketchesToRefresh = Object.values(state.sketches)
 
-    for (const moduleId of moduleIds) {
-      await this.reimportSketchModuleAndReloadSketches(moduleId)
+    for (const sketch of sketchesToRefresh) {
+      state.reconcileSketchParamsAndShots(sketch.id)
     }
   }
 

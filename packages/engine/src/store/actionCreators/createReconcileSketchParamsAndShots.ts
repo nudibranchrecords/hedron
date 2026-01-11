@@ -12,10 +12,10 @@ import { createUniqueId } from '@utils/createUniqueId'
 type NodeConfig = SketchConfigParamImported | SketchConfigShotImported
 
 /**
- * Refreshes a collection of nodes (params or shots) for a sketch.
+ * Reconciles a collection of nodes (params or shots) for a sketch.
  * Handles adding new nodes, updating existing nodes, and removing obsolete ones.
  */
-const refreshNodes = <T extends NodeConfig>(
+const reconcileNodes = <T extends NodeConfig>(
   state: EngineState,
   existingNodeIds: string[],
   configNodes: T[],
@@ -64,7 +64,7 @@ const refreshNodes = <T extends NodeConfig>(
   return newNodeIds
 }
 
-export const createRefreshSketchParamsAndShots: SetterCreator<'refreshSketchParamsAndShots'> =
+export const createReconcileSketchParamsAndShots: SetterCreator<'reconcileSketchParamsAndShots'> =
   (setState) => (sketchId: string) => {
     setState((state) => {
       const sketch = state.sketches[sketchId]
@@ -75,7 +75,7 @@ export const createRefreshSketchParamsAndShots: SetterCreator<'refreshSketchPara
       const moduleId = sketch.moduleId
       const { config } = state.sketchModules[moduleId]
 
-      sketch.paramIds = refreshNodes(state, sketch.paramIds, config.params)
-      sketch.shotIds = refreshNodes(state, sketch.shotIds, config.shots)
+      sketch.paramIds = reconcileNodes(state, sketch.paramIds, config.params)
+      sketch.shotIds = reconcileNodes(state, sketch.shotIds, config.shots)
     })
   }

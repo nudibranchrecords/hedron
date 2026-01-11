@@ -261,7 +261,7 @@ export type EngineState = EngineData & AuxState
 interface Actions {
   addSketch: (moduleId: string) => string
   updateSketch: (instanceId: string, sketchState: Partial<SketchState>) => void
-  refreshSketchParamsAndShots: (instanceId: string) => void
+  reconcileSketchParamsAndShots: (instanceId: string) => void
   deleteSketch: (instanceId: string) => void
   moveSketchUp: (instanceId: string) => void
   moveSketchDown: (instanceId: string) => void

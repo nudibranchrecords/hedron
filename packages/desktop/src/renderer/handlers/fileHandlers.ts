@@ -55,12 +55,12 @@ export const handleLoadProjectDialog = async (projectPath?: string) => {
     ...projectData.app,
   }))
 
-  await engine.reimportAllSketchModulesAndReloadSketches()
+  engine.reconcileAllSketchesParamsAndShots()
 }
 
 export const handleSaveProjectDialog = async (options?: { saveAs?: boolean }) => {
   const appState = appStore.getState()
-  const { sketchesDir, openedParamGroups, selectedNodes, selectedInputs } = appState
+  const { sketchesDir, openedControlGroups, selectedNodes, selectedInputs } = appState
 
   if (!sketchesDir) {
     throw new Error("Can't save project without sketches dir")
@@ -74,7 +74,7 @@ export const handleSaveProjectDialog = async (options?: { saveAs?: boolean }) =>
       sketchesDir,
       selectedNodes,
       selectedInputs,
-      openedParamGroups,
+      openedControlGroups,
     },
   }
 
