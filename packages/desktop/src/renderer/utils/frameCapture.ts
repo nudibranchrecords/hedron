@@ -93,7 +93,7 @@ window.renderFrames = async (
   }
 
   engine.resetTime() // Reset the engine time before starting
-  engine.jumpTime(-prewarm / fps) // Jump to time 0 to start from the beginning
+  engine.jumpTime(-prewarm / fps) // Jump back by prewarm duration so we will hit 0 on the first saved frame
 
   if (typeof engine.renderFramesSequence === 'function') {
     // Render total frames including prewarm, but only save frames after prewarm
