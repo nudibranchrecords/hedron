@@ -30,6 +30,7 @@ export class Clock {
   private _onNewBeat?: (beatCount: number) => void
   private _onBpmChange?: (bpm: number) => void
   private _onIsRunningChange?: (isRunning: boolean) => void
+  private _manualMode: boolean = false
 
   /**
    * @param bpm Beats per minute
@@ -62,7 +63,9 @@ export class Clock {
         this._beatCount = newBeatCount
       }
 
-      requestAnimationFrame(this.tick)
+      if (!this._manualMode) {
+        requestAnimationFrame(this.tick)
+      }
 
       this._lastTimestamp = timestamp
     }
@@ -328,5 +331,49 @@ export class Clock {
     return () => {
       this._onIsRunningChange = undefined
     }
+  }
+
+  /**
+   * Allow jumping the clock forward/backwards by a specific number of milliseconds.
+   * @param ms The number of milliseconds to jump the clock by. Can be negative to jump backwards.
+   */
+  public jumpMS(ms: number) {
+    const deltaInc = this._beatsPerMs * ms * (1 + this._beatPulseOffset)
+    this._beatDelta += deltaInc
+    this._beatPulseComparisonDelta += deltaInc
+  }
+
+  /**
+   * Enable manual mode for frame sequence rendering.
+   * In manual mode, the clock will not automatically tick via requestAnimationFrame.
+   * Use manualTick() to advance the clock manually.
+   */
+  public enableManualMode = () => {
+    this._manualMode = true
+  }
+
+  /**
+   * Disable manual mode and resume automatic ticking.
+   */
+  public disableManualMode = () => {
+    this._manualMode = false
+    if (this._isRunning) {
+      requestAnimationFrame(this.tick)
+    }
+  }
+
+  /**
+   * Manually tick the clock with a specific timestamp.
+   * This should only be used when in manual mode for frame sequence rendering.
+   * @param timestamp The timestamp to use for this tick
+   */
+  public manualTick = (timestamp: number) => {
+    if (!this._manualMode) {
+      console.warn(
+        'Clock.manualTick() called while not in manual mode. Use enableManualMode() first.',
+      )
+      return
+    }
+    this.tick(timestamp)
   }
 }

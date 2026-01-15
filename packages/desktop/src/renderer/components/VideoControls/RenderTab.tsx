@@ -12,6 +12,7 @@ declare global {
       width?: number,
       height?: number,
       audioPath?: string,
+      prewarmFrames?: number,
     ) => Promise<void>
   }
 }
@@ -23,6 +24,7 @@ export interface RenderSettings {
   width: number | null
   height: number | null
   audioPath: string
+  prewarmFrames: number
 }
 
 interface RenderTabProps {
@@ -51,17 +53,26 @@ export function RenderTab({ renderSettings, setRenderSettings }: RenderTabProps)
       console.log = (message: string) => {
         originalConsoleLog(message)
         if (typeof message === 'string') {
-          if (message.includes('Saved frame')) {
+          if (message.includes('Prewarming')) {
+            setRenderingStatus('Prewarming frames...')
+          } else if (message.includes('Prewarm complete')) {
+            setRenderingStatus('Starting render...')
+          } else if (message.includes('Saved frame')) {
             const match = message.match(/Saved frame (\d+) \/ (\d+)/)
             if (match && match[1] && match[2]) {
               processedFrames = parseInt(match[1])
               setProgress(Math.floor((processedFrames / totalFrames) * 100))
               setRenderingStatus(`Rendering frames: ${processedFrames}/${totalFrames}`)
             }
+          } else if (message.includes('All frames rendered')) {
+            setProgress(100)
+            setRenderingStatus('All frames rendered')
           } else if (message.includes('Creating video')) {
             setRenderingStatus('Creating video file...')
           } else if (message.includes('Video created at')) {
             setRenderingStatus('Video created successfully!')
+          } else if (message.includes('Render complete')) {
+            setRenderingStatus('Render completed!')
           }
         }
       }
@@ -74,6 +85,7 @@ export function RenderTab({ renderSettings, setRenderSettings }: RenderTabProps)
         renderSettings.width || undefined,
         renderSettings.height || undefined,
         renderSettings.audioPath || undefined,
+        renderSettings.prewarmFrames || 0,
       )
 
       // Restore console.log
@@ -101,6 +113,9 @@ export function RenderTab({ renderSettings, setRenderSettings }: RenderTabProps)
       setRenderSettings((prev) => ({ ...prev, [name]: checked }))
     } else if (name === 'width' || name === 'height') {
       const numValue = value === '' ? null : Number(value)
+      setRenderSettings((prev) => ({ ...prev, [name]: numValue }))
+    } else if (name === 'frameCount' || name === 'prewarmFrames') {
+      const numValue = value === '' ? 0 : Number(value)
       setRenderSettings((prev) => ({ ...prev, [name]: numValue }))
     } else {
       setRenderSettings((prev) => ({ ...prev, [name]: value }))
@@ -136,6 +151,21 @@ export function RenderTab({ renderSettings, setRenderSettings }: RenderTabProps)
           />
           {Math.round((renderSettings.frameCount / 30) * 10) / 10} seconds at 30fps
         </div>
+      </div>
+
+      <div className={c.formGroup}>
+        Prewarm Frames (to stabilize feedback loops)
+        <input
+          className={c.input}
+          type="number"
+          id="prewarmFrames"
+          name="prewarmFrames"
+          value={renderSettings.prewarmFrames}
+          onChange={handleRenderSettingChange}
+          min="0"
+          disabled={isRendering}
+        />
+        <small>Render frames without saving to stabilize effects before actual render</small>
       </div>
 
       <div className={c.formGroupRow}>

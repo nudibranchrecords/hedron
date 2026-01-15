@@ -397,6 +397,11 @@ export class HedronEngine {
     height?: number,
   ): Promise<void> {
     this.paused = true
+    // Enable manual clock mode to prevent automatic ticking
+    const wasClockRunning = this.clock?.isRunning
+    if (this.clock && wasClockRunning) {
+      this.clock.enableManualMode()
+    }
 
     // Store original size if resizing
     let originalSize: { width: number; height: number } | null = null
@@ -406,7 +411,9 @@ export class HedronEngine {
     }
 
     const frameDuration = 1 / fps
+    const frameDurationMs = frameDuration * 1000
     const padCount = frameCount.toString().length // Zero-pad index based on frame count
+    let accumulatedTime = performance.now()
 
     for (let i = 0; i < frameCount; i++) {
       this.onFrameStart?.()
@@ -417,6 +424,12 @@ export class HedronEngine {
         this.extraTime = 0
       }
       this.totalTime += deltaTime
+      accumulatedTime += frameDurationMs
+
+      // Manually tick the clock with the fixed timestamp
+      if (this.clock && wasClockRunning) {
+        this.clock.manualTick(accumulatedTime)
+      }
 
       this.advanceFrame(this.scene, deltaTime)
       this.onFrameEnd?.()
@@ -432,10 +445,16 @@ export class HedronEngine {
         await new Promise((resolve) => setTimeout(resolve, 1))
       }
     }
+    console.log(`Frame loop completed: ${frameCount} frames rendered`)
 
     // Restore original size after rendering
     if (originalSize) {
       this.resizeRenderer(originalSize.width, originalSize.height)
+    }
+
+    // Disable manual clock mode and resume automatic ticking
+    if (this.clock && wasClockRunning) {
+      this.clock.disableManualMode()
     }
 
     this.paused = false
@@ -446,7 +465,9 @@ export class HedronEngine {
    * @param seconds Number of seconds to jump forward (positive) or backward (negative)
    */
   public jumpTime(seconds: number): void {
+    console.log(`Jumping time by ${seconds} seconds`)
     this.extraTime += seconds
+    this.clock?.jumpMS(seconds * 1000)
   }
 
   /**
@@ -454,6 +475,7 @@ export class HedronEngine {
    */
   public resetTime(): void {
     this.extraTime -= this.totalTime
+    this.clock?.reset()
     console.log(`Resetting time, extraTime: ${this.extraTime}, totalTime: ${this.totalTime}`)
   }
 }

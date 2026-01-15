@@ -14,6 +14,7 @@ declare global {
       width?: number,
       height?: number,
       audioPath?: string,
+      prewarmFrames?: number,
     ) => Promise<void>
     resetEvery: (seconds: number, offset?: number) => void
     cancelReset: () => void
@@ -25,13 +26,22 @@ async function saveFrameViaIPC(
   dataUrl: string,
   name?: string,
   frameIndex?: number | string,
+  frameCount?: number,
 ): Promise<SaveFrameResponse> {
   const base64Data = dataUrl.replace(/^data:image\/png;base64,/, '')
+
+  // Apply padding if we have frameCount
+  let paddedFrameIndex = frameIndex
+  if (frameCount !== undefined && typeof frameIndex === 'number') {
+    const padding = String(frameCount - 1).length
+    paddedFrameIndex = String(frameIndex).padStart(padding, '0')
+  }
+
   const result = (await window.electronApi.ipcRenderer.invoke(
     FrameEvents.SaveFrame,
     base64Data,
     name,
-    frameIndex,
+    paddedFrameIndex,
   )) as SaveFrameResponse
   return result
 }
@@ -62,10 +72,14 @@ window.renderFrames = async (
   width?: number,
   height?: number,
   audioPath?: string,
+  prewarmFrames: number = 0,
 ) => {
   const fps = 30
   const filePaths: string[] = []
-  engine.resetTime() // Reset the engine time before starting
+
+  // Ensure prewarmFrames is a number to prevent string concatenation
+  const prewarm = Number(prewarmFrames) || 0
+  const frames = Number(frameCount)
 
   // Store original size if resizing
   let originalSize: { width: number; height: number } | null = null
@@ -74,28 +88,64 @@ window.renderFrames = async (
     engine.resizeRenderer(width, height)
   }
 
+  if (prewarm > 0) {
+    console.log(`Prewarming ${prewarm} frames...`)
+  }
+
+  engine.resetTime() // Reset the engine time before starting
+  engine.jumpTime(-prewarm / fps) // Jump to time 0 to start from the beginning
+
   if (typeof engine.renderFramesSequence === 'function') {
-    await engine.renderFramesSequence(
-      frameCount,
-      fps,
-      async (dataUrl: string, frameIndex: number | string) => {
-        const result = await saveFrameViaIPC(dataUrl, name, frameIndex)
-        if (result.success && result.path) {
-          filePaths.push(result.path)
-        } else {
-          console.error(`Failed to save frame ${frameIndex}: ${result.error}`)
-        }
-        const frameNum = Number(frameIndex)
-        if (isNaN(frameNum)) {
-          console.log(`Saved frame ${frameCount} / ${frameNum}`)
-        } else if ((frameNum + 1) % 10 === 0 || frameNum === frameCount - 1) {
-          console.log(`Saved frame ${frameNum + 1} / ${frameNum}`)
-        }
-        console.warn(frameNum)
-      },
-      width,
-      height,
-    )
+    // Render total frames including prewarm, but only save frames after prewarm
+    console.log(`Starting renderFramesSequence with ${frames + prewarm} total frames`)
+    try {
+      await engine.renderFramesSequence(
+        frames + prewarm,
+        fps,
+        async (dataUrl: string, frameIndex: number | string) => {
+          const frameNum = Number(frameIndex)
+
+          // Skip saving prewarm frames
+          if (frameNum < prewarm) {
+            if (frameNum === prewarm - 1) {
+              console.log('Prewarm complete, starting render...')
+            }
+            return
+          }
+
+          // Adjust frame index to start from 0 after prewarm
+          const adjustedFrameIndex = frameNum - prewarm
+
+          // Stop saving after we've saved all the frames we need
+          if (adjustedFrameIndex >= frames) {
+            return
+          }
+
+          try {
+            const result = await saveFrameViaIPC(dataUrl, name, adjustedFrameIndex, frames)
+            if (result.success && result.path) {
+              filePaths.push(result.path)
+            } else {
+              console.error(`Failed to save frame ${adjustedFrameIndex}: ${result.error}`)
+            }
+
+            if ((adjustedFrameIndex + 1) % 10 === 0 || adjustedFrameIndex === frames - 1) {
+              console.log(`Saved frame ${adjustedFrameIndex + 1} / ${frames}`)
+            }
+          } catch (error) {
+            console.error(`Error saving frame ${adjustedFrameIndex}:`, error)
+          }
+        },
+        width,
+        height,
+      )
+      console.log('renderFramesSequence completed')
+    } catch (error) {
+      console.error('Error in renderFramesSequence:', error)
+      throw error
+    }
+
+    console.log('All frames rendered')
   } else {
     console.error('engine.renderFramesSequence is not available')
     // Restore original size if needed
@@ -115,12 +165,14 @@ window.renderFrames = async (
   // After all frames, optionally create video
   let videoPath: string | undefined = undefined
   if (video) {
+    console.log('Creating video...')
     const result = await window.electronApi.ipcRenderer.invoke(
       FrameEvents.SaveFrameSequence,
       [], // No base64 array needed, just trigger video creation
       name,
       true,
       audioPath, // Pass the audio path to the IPC call
+      frames, // Pass the frame count for padding calculation
     )
     if (result.success && result.videoPath) {
       videoPath = result.videoPath
@@ -132,6 +184,8 @@ window.renderFrames = async (
       console.error(`Failed to create video: ${result.error}`)
     }
   }
+
+  console.log('Render complete')
 }
 
 // Using window.resetTimeoutId so it can be accessed by other components
