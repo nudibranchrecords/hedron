@@ -515,6 +515,7 @@ export class AudioInput implements IPlugin {
       this.inputType,
       ({ input, optionNodes, targetNode }) => {
         if (!optionNodes.isEnabled) return
+        if (targetNode.nodeType === 'shot') return
         if (targetNode.valueType !== 'number') return
 
         // If audio data is available, use the appropriate frequency band based on the option
