@@ -2,6 +2,7 @@ import { Group } from 'three'
 import { Pass } from 'postprocessing'
 import { PassNode } from 'three/webgpu'
 import { type ShaderNodeObject } from 'three/tsl'
+import { ShotArgsObject } from '@HedronEngine/types'
 import { SketchModule } from '@store/types'
 import { getDebugScene } from '@world/debugScene'
 import { EngineScene } from '@world/EngineScene'
@@ -13,7 +14,9 @@ type SketchUpdateParams = {
   scene: EngineScene
 }
 
-type ShotFunc = (args: Omit<SketchUpdateParams, 'deltaFrame' | 'deltaTime'>) => void
+type ShotFunc = (
+  args: Omit<SketchUpdateParams, 'deltaFrame' | 'deltaTime'> & { shotArgs: ShotArgsObject },
+) => void
 
 enum SketchErrorType {
   Create = 'Create',

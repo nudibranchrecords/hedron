@@ -1,7 +1,7 @@
 import { Pass } from 'postprocessing'
 import { type Clock } from '@hedron/clock'
 import { listenToStore } from './storeListener'
-import { CanvasSizeMode, RendererType, Result } from './types'
+import { CanvasSizeMode, RendererType, Result, ShotArgsObject } from './types'
 import { importSketchModule } from './importSketchModule'
 import { getSketchShotNodes } from '@store/selectors/getSketchShotNodes'
 import { initializeGlobalVars } from '@globalVars'
@@ -131,9 +131,9 @@ export class HedronEngine {
     return nodes.map((config) => `${pluginId}-global-${config.key}`)
   }
 
-  public registerShot(shotId: string, shotFunc: () => void) {
+  public registerShot(shotId: string, shotFunc: (value: ShotArgsObject) => void) {
     this.registeredShots[shotId] = this.store.subscribe(
-      (state) => state.nodeValues[shotId],
+      (state) => state.nodeValues[shotId] as ShotArgsObject,
       shotFunc,
     )
   }
@@ -144,6 +144,11 @@ export class HedronEngine {
       unsubscribe()
       delete this.registeredShots[shotId]
     }
+  }
+
+  public fireShot(shotId: string, value?: ShotArgsObject) {
+    // We don't directly call the shot function, instead we update the node value and let the store listener handle it
+    this.store.getState().updateNodeValue(shotId, value ?? {})
   }
 
   /**
@@ -162,11 +167,13 @@ export class HedronEngine {
         const shotNodes = getSketchShotNodes(storeState, sketchInstanceId)
 
         shotNodes.forEach((shotNode) => {
-          this.registerShot(shotNode.id, () => {
+          this.registerShot(shotNode.id, (shotArgs) => {
             const params = getSketchParamValues(this.store.getState(), sketchInstanceId)
+
             sketchInstance?.[shotNode.key]?.({
               params,
               scene: this.scene,
+              shotArgs,
             })
           })
         })

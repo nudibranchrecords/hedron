@@ -1,4 +1,5 @@
 import { StoreApi } from 'zustand'
+import { ShotArgsObject } from '@HedronEngine/types'
 
 export interface SketchState {
   id: string
@@ -90,7 +91,7 @@ export type NodeType = 'param' | 'shot'
 export type Node = Param | Shot
 export type Nodes = { [key: string]: Node }
 
-export type NodeValue = number | boolean | string
+export type NodeValue = number | boolean | string | ShotArgsObject
 export type NodeValues = { [key: string]: NodeValue }
 export type NodeValueType = Param['valueType'] | null
 

@@ -9,7 +9,8 @@ export const useFireShot = (shotId: string) => {
   const updateNodeValue = useUpdateNodeValue()
 
   const onValueChange = useCallback(() => {
-    updateNodeValue(shotId, performance.now())
+    // pass in a new empty args object to trigger to the shot listener
+    updateNodeValue(shotId, {})
   }, [shotId, updateNodeValue])
 
   return onValueChange
