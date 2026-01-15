@@ -15,17 +15,19 @@ export type Sketches = { [key: string]: SketchState }
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type SketchModule = any
 
+export type NodeType = 'param' | 'shot'
+
 export interface NodeBase {
   id: string
   key: string
   groupIndex: number
+  nodeType: NodeType
 }
 
 export const NodeTypesWithChildren = ['vector3', 'rgb'] as const
 export type NodeTypeWithChildren = (typeof NodeTypesWithChildren)[number]
 
 export interface NodeParamBase extends NodeBase {
-  type: 'param'
   title: string
 }
 
@@ -82,11 +84,6 @@ export type Shot = NodeBase & {
   nodeType: 'shot'
   title: string
 }
-
-// TODO: We may want to generalise nodeType to "value" and "func"
-// Then all nodes can be treated the same way by various inputs.
-// "Params" and "shots" would remain as terms specific to sketches
-export type NodeType = 'param' | 'shot'
 
 export type Node = Param | Shot
 export type Nodes = { [key: string]: Node }

@@ -38,7 +38,7 @@ const _addNodeToState = (state: EngineState, nodeId: string, config: AddNodeConf
     ...config,
     valueType,
     id: nodeId,
-    type: 'param' as const,
+    nodeType: 'param',
     title: config.title ?? config.key,
   } as Param
 
@@ -100,7 +100,7 @@ export const addNode = (state: EngineState, nodeId: string, config: AddNodeConfi
     state.nodes[nodeId] = {
       ...config,
       id: nodeId,
-      type: 'param',
+      nodeType: 'param',
       title: config.title ?? config.key,
       childNodeIds,
     } as NodeParamWithChildren
