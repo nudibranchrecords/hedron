@@ -2,12 +2,11 @@ import {
   EngineState,
   EnsureRequiredValueType,
   NodeParamWithChildren,
+  NodeTypeWithChildren,
   SketchConfigParamImported,
   isNodeTypeWithChildren,
   NodeValueType,
-  Param,
   SketchConfigShotImported,
-  Shot,
 } from '@store/types'
 import { createUniqueId } from '@utils/createUniqueId'
 
@@ -16,31 +15,66 @@ const rgbKeys = ['r', 'g', 'b']
 
 type AddNodeConfig = EnsureRequiredValueType<SketchConfigParamImported> | SketchConfigShotImported
 
+// Exclude param types that have children (vector3, rgb)
+type ParamConfigWithoutChildren = Exclude<
+  EnsureRequiredValueType<SketchConfigParamImported>,
+  { valueType: NodeTypeWithChildren }
+>
+
+const isParamConfigWithoutChildren = (
+  config: EnsureRequiredValueType<SketchConfigParamImported>,
+): config is ParamConfigWithoutChildren => {
+  return !isNodeTypeWithChildren(config.valueType)
+}
+
 const _addNodeToState = (state: EngineState, nodeId: string, config: AddNodeConfig) => {
   if (config.nodeType === 'shot') {
     state.nodes[nodeId] = {
       ...config,
       id: nodeId,
-      type: 'shot' as const,
+      nodeType: 'shot',
       title: config.title ?? config.key,
-    } as Shot
+    }
 
     return state.nodes[nodeId]
   }
 
-  const { defaultValue, valueType, key } = config
-
-  if (isNodeTypeWithChildren(valueType)) {
-    throw new Error(`_addNodeToState shouldn't be used with node of valueType: ${valueType}`)
+  if (!isParamConfigWithoutChildren(config)) {
+    throw new Error(`_addNodeToState shouldn't be used with node of valueType: ${config.valueType}`)
   }
 
-  state.nodes[nodeId] = {
-    ...config,
-    valueType,
+  const { defaultValue, valueType, key, groupIndex, hidden } = config
+  const title = config.title ?? config.key
+
+  const baseNode = {
     id: nodeId,
-    nodeType: 'param',
-    title: config.title ?? config.key,
-  } as Param
+    key,
+    groupIndex,
+    nodeType: 'param' as const,
+    title,
+    hidden,
+  }
+
+  switch (valueType) {
+    case 'number':
+      state.nodes[nodeId] = {
+        ...baseNode,
+        valueType,
+        defaultValue,
+        sliderMin: config.sliderMin,
+        sliderMax: config.sliderMax,
+      }
+      break
+    case 'boolean':
+      state.nodes[nodeId] = { ...baseNode, valueType, defaultValue }
+      break
+    case 'string':
+      state.nodes[nodeId] = { ...baseNode, valueType, defaultValue }
+      break
+    case 'enum':
+      state.nodes[nodeId] = { ...baseNode, valueType, defaultValue, options: config.options }
+      break
+  }
 
   if (
     (valueType === 'number' && typeof defaultValue === 'number') ||
