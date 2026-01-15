@@ -8,9 +8,9 @@ import {
   PanelHeader,
   PopoutMenu,
   HedronErrorBoundary,
-  Param,
   useAppStore,
   useOnSelectNode,
+  NodeContainer,
 } from '@hedron/ui-core'
 
 import { Node } from '@hedron/engine'
@@ -19,7 +19,7 @@ import { useActiveSketch } from '@components/hooks/useActiveSketch'
 import { engineStore } from '@renderer/engine'
 import { SketchControls } from '@components/SketchControls/SketchControls'
 import { useGroupedNodes } from '@components/hooks/useGroupedNodes'
-import { useSelectedParam } from '@components/hooks/useSelectedParam'
+import { useSelectedNode } from '@components/hooks/useSelectedNode'
 import { SelectedParam } from '@components/SelectedParam/SelectedParam'
 
 interface ControlItemProps {
@@ -31,18 +31,7 @@ const ControlItem = ({ node, sketchId }: ControlItemProps) => {
   const isActive = useAppStore((state) => state.selectedNodes[sketchId] === node.id)
   const onSelectNode = useOnSelectNode(sketchId, node.id)
 
-  switch (node.nodeType) {
-    case 'param':
-      return <Param onClick={onSelectNode} paramId={node.id} isActive={isActive} />
-    case 'shot':
-      return (
-        <div style={{ display: 'block' }} onClick={onSelectNode}>
-          Shot: {node.id}
-        </div>
-      )
-    default:
-      return null
-  }
+  return <NodeContainer onClick={onSelectNode} nodeId={node.id} isActive={isActive} />
 }
 
 export const ActiveSketch = () => {
@@ -54,7 +43,7 @@ export const ActiveSketch = () => {
 
   const nodeGroups = useGroupedNodes(activeSketch.nodeIds, activeSketch.moduleId)
 
-  const selectedParam = useSelectedParam()
+  const selectedNode = useSelectedNode()
 
   return (
     <div className={c.container}>
@@ -92,9 +81,9 @@ export const ActiveSketch = () => {
           />
         </div>
 
-        {selectedParam && (
+        {selectedNode && (
           <Panel snugPosition="bottom" spacing="slim" width="full" className={c.bottomPanel}>
-            <PanelHeader iconName={paramIcon}>{selectedParam.title}</PanelHeader>
+            <PanelHeader iconName={paramIcon}>{selectedNode.title}</PanelHeader>
             <PanelBody>
               <SelectedParam />
             </PanelBody>

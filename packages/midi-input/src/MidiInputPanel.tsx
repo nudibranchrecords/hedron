@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react'
 import { HedronEngine, Input } from '@hedron/engine'
-import { Button, ControlGrid, Param } from '@hedron/ui-core'
+import { Button, ControlGrid, NodeContainer } from '@hedron/ui-core'
 import { MidiInput } from './MidiInput'
 
 interface IProps {
@@ -73,7 +73,7 @@ export const MidiInputPanel = ({ input, engine }: IProps) => {
     <div>
       <ControlGrid className="mb-xl">
         {input.optionNodeIds.map((id) => (
-          <Param key={id} paramId={id} />
+          <NodeContainer key={id} nodeId={id} />
         ))}
       </ControlGrid>
 

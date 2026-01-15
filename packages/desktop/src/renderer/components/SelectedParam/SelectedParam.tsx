@@ -9,12 +9,12 @@ import {
   HedronErrorBoundary,
 } from '@hedron/ui-core'
 import { useMemo } from 'react'
-import { useSelectedParam } from '@components/hooks/useSelectedParam'
+import { useSelectedNode } from '@components/hooks/useSelectedNode'
 import { pluginViews, engine } from '@renderer/engine'
 import { useInputsWithNode } from '@components/hooks/useInput'
 
 export const SelectedParam = () => {
-  const selectedParam = useSelectedParam()
+  const selectedParam = useSelectedNode()
 
   if (!selectedParam) {
     throw new Error(
