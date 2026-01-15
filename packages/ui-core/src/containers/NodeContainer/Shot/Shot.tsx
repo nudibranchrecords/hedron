@@ -1,7 +1,8 @@
 import { useRef } from 'react'
-import { useOnNodeValueChange } from '@hooks/useOnNodeValueChange'
-import { useSubscribeToNodeValue } from '@hooks/useSubscribeToNodeValue'
+import { useFireShot } from '@hooks/useFireShot'
+
 import { TriggerPad, TriggerPadHandle } from '@components/TriggerPad/TriggerPad'
+import { useSubscribeToShot } from '@hooks/useSubscribeToShot'
 
 interface ShotProps {
   id: string
@@ -9,13 +10,11 @@ interface ShotProps {
 
 export const Shot = ({ id }: ShotProps) => {
   const ref = useRef<TriggerPadHandle>(null)
-  const onValueChange = useOnNodeValueChange(id)
+  const fireShot = useFireShot(id)
 
-  useSubscribeToNodeValue<boolean>(id, (value) => {
-    if (value) {
-      ref.current?.blink()
-    }
+  useSubscribeToShot(id, () => {
+    ref.current?.blink()
   })
 
-  return <TriggerPad ref={ref} onClick={() => onValueChange(performance.now())} />
+  return <TriggerPad ref={ref} onMouseDown={fireShot} />
 }

@@ -195,7 +195,7 @@ export const Trigger = ({ title = 'Trigger Pad', isActive, onClick }: BasicProps
       <NodeControlMain>
         <NodeControlTitle>{title}</NodeControlTitle>
         <NodeControlInner>
-          <TriggerPad ref={ref} onClick={onPadClick} />
+          <TriggerPad ref={ref} onMouseDown={onPadClick} />
         </NodeControlInner>
       </NodeControlMain>
     </NodeControl>

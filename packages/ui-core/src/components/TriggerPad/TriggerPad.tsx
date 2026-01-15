@@ -6,7 +6,7 @@ export type TriggerPadHandle = {
 }
 
 export interface TriggerPadProps {
-  onClick: () => void
+  onMouseDown: () => void
 }
 
 // void el.offsetWidth forces a reflow, retriggering the CSS animation
@@ -17,7 +17,7 @@ const pulseClass = (el: HTMLElement, className: string) => {
 }
 
 export const TriggerPad = forwardRef<TriggerPadHandle, TriggerPadProps>(function TriggerPad(
-  { onClick },
+  { onMouseDown },
   ref,
 ) {
   const buttonRef = useRef<HTMLButtonElement>(null)
@@ -31,12 +31,12 @@ export const TriggerPad = forwardRef<TriggerPadHandle, TriggerPadProps>(function
 
   useImperativeHandle(ref, () => ({ blink }), [blink])
 
-  const handleClick = useCallback(() => {
-    onClick()
-  }, [onClick])
+  const handleMouseDown = useCallback(() => {
+    onMouseDown()
+  }, [onMouseDown])
 
   return (
-    <button className={css.triggerPad} onMouseDown={handleClick} ref={buttonRef} type="button">
+    <button className={css.triggerPad} onMouseDown={handleMouseDown} ref={buttonRef} type="button">
       <span className={css.label}></span>
     </button>
   )
