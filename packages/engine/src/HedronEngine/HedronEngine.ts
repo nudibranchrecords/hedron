@@ -1,9 +1,9 @@
 import { Pass } from 'postprocessing'
 import { type Clock } from '@hedron/clock'
-import { getSketchShotNodes } from '../store/selectors/getSketchShotNodes'
 import { listenToStore } from './storeListener'
 import { CanvasSizeMode, RendererType, Result } from './types'
 import { importSketchModule } from './importSketchModule'
+import { getSketchShotNodes } from '@store/selectors/getSketchShotNodes'
 import { initializeGlobalVars } from '@globalVars'
 import { IPlugin } from '@plugins/Plugin'
 import { stripForSave } from '@utils/stripForSave'
@@ -24,6 +24,7 @@ export class HedronEngine {
   private sketchesUrl: string | null = null
   private sketchManager: SketchManager
   public plugins: Record<string, IPlugin> = {}
+  private registeredShots: Record<string, () => void> = {}
   private onFrameStart?: () => void
   private onFrameEnd?: () => void
   public clock?: Clock
@@ -130,13 +131,26 @@ export class HedronEngine {
     return nodes.map((config) => `${pluginId}-global-${config.key}`)
   }
 
+  public registerShot(shotId: string, shotFunc: () => void) {
+    this.registeredShots[shotId] = this.store.subscribe(
+      (state) => state.nodeValues[shotId],
+      shotFunc,
+    )
+  }
+
+  public unregisterShot(shotId: string) {
+    const unsubscribe = this.registeredShots[shotId]
+    if (unsubscribe) {
+      unsubscribe()
+      delete this.registeredShots[shotId]
+    }
+  }
+
   /**
-   * Sets up listeners to the engine store to handle adding/removing sketches from the scene.
+   * Sets up listeners to the engine store to handle adding/removing sketches from the scene and registering shots.
    * Should be called after setting sketch modules (e.g. importSketchModulesFromIds or manually with setSketchModuleItem)
    */
   public startStoreListener() {
-    const { removeSketchFromScene } = this.sketchManager
-
     const addSketchToScene = (sketchInstanceId: string, moduleId: string) => {
       try {
         const storeState = this.store.getState()
@@ -147,16 +161,14 @@ export class HedronEngine {
 
         const shotNodes = getSketchShotNodes(storeState, sketchInstanceId)
 
-        console.log(sketchInstance)
-
         shotNodes.forEach((shotNode) => {
-          this.store.subscribe(
-            (state) => state.nodeValues[shotNode.id],
-            (value) => {
-              const params = getSketchParamValues(this.store.getState(), sketchInstanceId)
-              sketchInstance?.[shotNode.key]?.(params)
-            },
-          )
+          this.registerShot(shotNode.id, () => {
+            const params = getSketchParamValues(this.store.getState(), sketchInstanceId)
+            sketchInstance?.[shotNode.key]?.({
+              params,
+              scene: this.scene,
+            })
+          })
         })
 
         if (sketchInstance) {
@@ -171,6 +183,17 @@ export class HedronEngine {
         )
         this.setIsSketchBroken(sketchInstanceId, true)
       }
+    }
+
+    const removeSketchFromScene = (sketchInstanceId: string) => {
+      const storeState = this.store.getState()
+      const shotNodes = getSketchShotNodes(storeState, sketchInstanceId)
+
+      shotNodes.forEach((shotNode) => {
+        this.unregisterShot(shotNode.id)
+      })
+
+      this.sketchManager.removeSketchFromScene(sketchInstanceId)
     }
 
     listenToStore(this.store, addSketchToScene, removeSketchFromScene)
@@ -197,7 +220,6 @@ export class HedronEngine {
 
     const moduleItem = result.data
     this.store.getState().setSketchModuleItem(moduleItem)
-
     return result
   }
 

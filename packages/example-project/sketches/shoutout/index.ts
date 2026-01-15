@@ -9,6 +9,12 @@ const shuffleString = (str: string): string => {
   return arr.join('')
 }
 
+interface ShoutoutParams {
+  message: string
+  color: [number, number, number]
+  scrollSpeed: number
+}
+
 export default class Shoutout {
   root = new THREE.Group()
   message: string = 'Hello, Hedron!'
@@ -19,7 +25,7 @@ export default class Shoutout {
   texture: THREE.CanvasTexture
   textX: number = 0
 
-  shuffle(p: { message: string }) {
+  shuffle({ params: p }: { params: ShoutoutParams }) {
     this.shuffledMessage = shuffleString(p.message)
   }
 
@@ -54,11 +60,7 @@ export default class Shoutout {
     this.textX = this.canvas.width
   }
 
-  update({
-    params: p,
-  }: {
-    params: { message: string; color: [number, number, number]; scrollSpeed: number }
-  }) {
+  update({ params: p }: { params: ShoutoutParams }) {
     if (this.message !== p.message) {
       this.clearShuffle()
       this.message = p.message
