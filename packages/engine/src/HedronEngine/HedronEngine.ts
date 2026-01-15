@@ -193,17 +193,19 @@ export class HedronEngine {
     }
 
     const removeSketchFromScene = (sketchInstanceId: string) => {
-      const storeState = this.store.getState()
-      const shotNodes = getSketchShotNodes(storeState, sketchInstanceId)
-
-      shotNodes.forEach((shotNode) => {
-        this.unregisterShot(shotNode.id)
-      })
-
       this.sketchManager.removeSketchFromScene(sketchInstanceId)
     }
 
-    listenToStore(this.store, addSketchToScene, removeSketchFromScene)
+    const handleRemovedNode = (nodeId: string) => {
+      this.unregisterShot(nodeId)
+    }
+
+    listenToStore({
+      store: this.store,
+      onSketchAdded: addSketchToScene,
+      onSketchRemoved: removeSketchFromScene,
+      onNodeRemoved: handleRemovedNode,
+    })
   }
 
   public async importSketchModulesFromIds(sketchesUrl: string, moduleIds: string[]) {

@@ -27,5 +27,9 @@ export default {
       key: 'shuffle',
       title: 'Shuffle',
     },
+    {
+      key: 'displayMidiNote',
+      title: 'Display MIDI Note',
+    },
   ],
 }

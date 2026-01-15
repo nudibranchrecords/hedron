@@ -15,10 +15,18 @@ interface ShoutoutParams {
   scrollSpeed: number
 }
 
+interface MIDIEvent {
+  device: MIDIInput
+  channel: number
+  type: number
+  note: number
+  value: number
+}
+
 export default class Shoutout {
   root = new THREE.Group()
   message: string = 'Hello, Hedron!'
-  shuffledMessage: string | null = null
+  modifiedMessage: string | null = null
   plane: THREE.Mesh
   canvas: HTMLCanvasElement
   context: CanvasRenderingContext2D
@@ -26,11 +34,22 @@ export default class Shoutout {
   textX: number = 0
 
   shuffle({ params: p }: { params: ShoutoutParams }) {
-    this.shuffledMessage = shuffleString(p.message)
+    this.modifiedMessage = shuffleString(p.message)
+  }
+
+  // TODO: This shot is a bit pointless until the same MIDI input can handle a range of notes
+  displayMidiNote({ shotArgs }: { shotArgs?: { _midiEvent?: MIDIEvent } }) {
+    const note = shotArgs?._midiEvent?.note
+    if (!note) {
+      console.warn('No MIDI event data provided for displayMidiNote shot.')
+      return
+    }
+
+    this.modifiedMessage = note.toString() ?? null
   }
 
   clearShuffle() {
-    this.shuffledMessage = null
+    this.modifiedMessage = null
   }
 
   constructor() {
@@ -83,7 +102,7 @@ export default class Shoutout {
     }
 
     // Draw the scrolling text
-    this.context.fillText(this.shuffledMessage ?? p.message, this.textX, this.canvas.height / 2)
+    this.context.fillText(this.modifiedMessage ?? p.message, this.textX, this.canvas.height / 2)
 
     // Update texture
     this.texture.needsUpdate = true
