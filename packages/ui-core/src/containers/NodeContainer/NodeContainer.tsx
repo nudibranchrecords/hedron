@@ -35,7 +35,7 @@ const getInputElement = (node: NodeType) => {
     case 'rgb':
       return <ParamColor id={node.id} />
     default:
-      return <i>Unsupported type {node.valueType}</i>
+      return <i>Unsupported type {(node as { valueType: string }).valueType}</i>
   }
 }
 
