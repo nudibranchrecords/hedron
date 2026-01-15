@@ -26,4 +26,7 @@ export { ParamNumberOptions } from './containers/NodeContainer/ParamNumber/Param
 export * from './hooks/storeHooks'
 export * from './hooks/useOnSelectNode'
 export * from './hooks/useSelectedNode'
+export * from './hooks/useFireShot'
+export * from './hooks/useUpdateNodeValue'
+export * from './hooks/useSubscribeToShot'
 export * from './components/WidgetStrip'
