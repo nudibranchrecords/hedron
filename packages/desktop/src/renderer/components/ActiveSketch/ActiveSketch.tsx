@@ -20,7 +20,7 @@ import { engineStore } from '@renderer/engine'
 import { SketchControls } from '@components/SketchControls/SketchControls'
 import { useGroupedNodes } from '@components/hooks/useGroupedNodes'
 import { useSelectedNode } from '@components/hooks/useSelectedNode'
-import { SelectedParam } from '@components/SelectedParam/SelectedParam'
+import { SelectedNode } from '@components/SelectedNode/SelectedNode'
 
 interface ControlItemProps {
   node: Node
@@ -85,7 +85,7 @@ export const ActiveSketch = () => {
           <Panel snugPosition="bottom" spacing="slim" width="full" className={c.bottomPanel}>
             <PanelHeader iconName={paramIcon}>{selectedNode.title}</PanelHeader>
             <PanelBody>
-              <SelectedParam />
+              <SelectedNode />
             </PanelBody>
           </Panel>
         )}

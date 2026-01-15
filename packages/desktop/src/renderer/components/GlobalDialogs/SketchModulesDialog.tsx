@@ -27,7 +27,7 @@ interface SketchCardProps {
 export const SketchCard = ({
   item: {
     moduleId,
-    config: { params, title, description },
+    config: { nodes, title, description },
   },
   closeDialog,
 }: SketchCardProps) => {
@@ -40,11 +40,16 @@ export const SketchCard = ({
     closeDialog()
   }, [addSketch, closeDialog, moduleId, setActiveSketchId])
 
+  const numParams = nodes.filter((n) => n.nodeType === 'param').length
+  const numShots = nodes.filter((n) => n.nodeType === 'shot').length
+
   return (
     <Card>
       <CardContent>
         <CardHeader iconName="token">{title}</CardHeader>
-        <CardDetails>Params: {params.length}</CardDetails>
+        <CardDetails>
+          Params: {numParams} • Shots: {numShots}
+        </CardDetails>
         {description && (
           <CardBody>
             <p>{description}</p>
