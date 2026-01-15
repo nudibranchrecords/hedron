@@ -138,7 +138,8 @@ export class HedronEngine {
     )
   }
 
-  public unregisterShot(shotId: string) {
+  // This method is private, because we're automatically unregistering shots when nodes are removed from the store
+  private unregisterShot(shotId: string) {
     const unsubscribe = this.registeredShots[shotId]
     if (unsubscribe) {
       unsubscribe()
