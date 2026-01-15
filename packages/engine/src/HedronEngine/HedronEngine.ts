@@ -1,5 +1,6 @@
 import { Pass } from 'postprocessing'
 import { type Clock } from '@hedron/clock'
+import { getSketchShotNodes } from '../store/selectors/getSketchShotNodes'
 import { listenToStore } from './storeListener'
 import { CanvasSizeMode, RendererType, Result } from './types'
 import { importSketchModule } from './importSketchModule'
@@ -138,17 +139,33 @@ export class HedronEngine {
 
     const addSketchToScene = (sketchInstanceId: string, moduleId: string) => {
       try {
-        const modules = this.store.getState().sketchModules
+        const storeState = this.store.getState()
+        const modules = storeState.sketchModules
         const module = modules[moduleId].module
 
         const sketchInstance = this.sketchManager.addSketchToScene(sketchInstanceId, module)
+
+        const shotNodes = getSketchShotNodes(storeState, sketchInstanceId)
+
+        console.log(sketchInstance)
+
+        shotNodes.forEach((shotNode) => {
+          this.store.subscribe(
+            (state) => state.nodeValues[shotNode.id],
+            (value) => {
+              const params = getSketchParamValues(this.store.getState(), sketchInstanceId)
+              sketchInstance?.[shotNode.key]?.(params)
+            },
+          )
+        })
 
         if (sketchInstance) {
           this.setIsSketchBroken(sketchInstance.id, false)
         }
 
         this.renderer.passesNeedUpdate_webGPU = true
-      } catch {
+      } catch (error) {
+        console.error('Error adding sketch to scene:', error)
         console.error(
           `Failed to add sketch ${sketchInstanceId} of module ${moduleId} to scene. Is the module in your sketch folder? Web projects: Have you imported the module?`,
         )

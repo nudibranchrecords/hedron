@@ -181,6 +181,11 @@ export const Enum = ({ title = 'Enum Dropdown', isActive, onClick }: BasicProps)
 export const Trigger = ({ title = 'Trigger Pad', isActive, onClick }: BasicProps) => {
   const ref = useRef<TriggerPadHandle>(null)
 
+  const onPadClick = () => {
+    fn()
+    ref.current?.blink()
+  }
+
   useInterval(() => {
     ref.current!.blink()
   }, 3000)
@@ -190,7 +195,7 @@ export const Trigger = ({ title = 'Trigger Pad', isActive, onClick }: BasicProps
       <NodeControlMain>
         <NodeControlTitle>{title}</NodeControlTitle>
         <NodeControlInner>
-          <TriggerPad ref={ref} onClick={fn()} />
+          <TriggerPad ref={ref} onClick={onPadClick} />
         </NodeControlInner>
       </NodeControlMain>
     </NodeControl>

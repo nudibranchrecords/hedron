@@ -17,5 +17,5 @@ export const Shot = ({ id }: ShotProps) => {
     }
   })
 
-  return <TriggerPad ref={ref} onClick={() => onValueChange(true)} />
+  return <TriggerPad ref={ref} onClick={() => onValueChange(performance.now())} />
 }

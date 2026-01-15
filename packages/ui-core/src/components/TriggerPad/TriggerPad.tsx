@@ -32,12 +32,11 @@ export const TriggerPad = forwardRef<TriggerPadHandle, TriggerPadProps>(function
   useImperativeHandle(ref, () => ({ blink }), [blink])
 
   const handleClick = useCallback(() => {
-    blink()
     onClick()
-  }, [blink, onClick])
+  }, [onClick])
 
   return (
-    <button className={css.triggerPad} onClick={handleClick} ref={buttonRef} type="button">
+    <button className={css.triggerPad} onMouseDown={handleClick} ref={buttonRef} type="button">
       <span className={css.label}></span>
     </button>
   )
