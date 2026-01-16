@@ -8,6 +8,7 @@ import { RenderTab, type RenderSettings } from './RenderTab'
 // Initialize with default settings
 const defaultRenderSettings: RenderSettings = {
   frameCount: 300, // 10 seconds at 30fps
+  prewarmFrames: 0,
   name: 'hedron-render',
   createVideo: true,
   width: null,
