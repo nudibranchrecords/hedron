@@ -5,10 +5,10 @@ import {
   IPlugin,
   NodeValue,
   handleEachInput,
-  EngineState,
   Input,
   ConfigToOptionsType,
   Param,
+  EngineStateWithActions,
 } from '@hedron/engine'
 import { MIDIEvent, MidiManager, MidiMessageType } from '@hedron/midi-manager'
 import { NodeParamEnum } from 'node_modules/@hedron/engine/dist'
@@ -28,7 +28,7 @@ type MIDIEventWithValue = Omit<MIDIEvent, 'value'> & { value: number }
 type ValueHander<T = Param> = (params: {
   midiEvent: MIDIEventWithValue
   input: Input
-  storeState: EngineState
+  storeState: EngineStateWithActions
   optionNodes: ConfigToOptionsType<typeof MidiInput.prototype.optionNodesConfig>
   targetNode: T
   targetNodeValue: NodeValue
@@ -123,7 +123,7 @@ export class MidiInput implements IPlugin {
     return null
   }
 
-  private scheduleUpdate(storeState: EngineState) {
+  private scheduleUpdate(storeState: EngineStateWithActions) {
     if (this.updateScheduled) return
 
     this.updateScheduled = true
