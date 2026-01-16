@@ -33,11 +33,11 @@ function App() {
   midi.onMidiMessage.add(onMidiMessage)
 
   function getMidiDevices(): string {
-    if (midi.devices.length === 0) {
+    if (midi.inputDevices.length === 0) {
       return 'No MIDI devices found.'
     }
 
-    return midi.devices
+    return midi.inputDevices
       .map((device: MIDIInput) => {
         return `Connected MIDI device: ${device.name}`
       })

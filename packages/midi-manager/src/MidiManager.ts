@@ -37,7 +37,7 @@ export const midiMessageNames: Record<MidiMessageType, string> = {
  * A simple type that provides both the device and the message of a MIDI event.
  */
 export type MIDIEvent = {
-  device: MIDIInput
+  device: MIDIInput | MIDIOutput
   channel: number
   type: MidiMessageType
   note: number
@@ -50,10 +50,16 @@ export type MIDIEvent = {
 export class MidiManager {
   public readonly name: string = 'MIDI'
   public readonly description: string = 'Handles MIDI input devices and messages.'
+
   /**
    * The list of MIDI input devices connected to the system.
    */
-  public devices: MIDIInput[] = []
+  public inputDevices: MIDIInput[] = []
+
+  /**
+   * The list of MIDI output devices connected to the system.
+   */
+  public outputDevices: MIDIOutput[] = []
 
   /**
    * The MIDI access object that allows for interaction with MIDI devices.
@@ -83,7 +89,7 @@ export class MidiManager {
    * Clears all MIDI event listeners from the devices.
    */
   private clearMidiEventListeners = (): void => {
-    this.devices.forEach((device) => {
+    this.inputDevices.forEach((device) => {
       const listener = this.eventListeners.get(device)
       if (listener) {
         device.removeEventListener('midimessage', listener)
@@ -98,17 +104,17 @@ export class MidiManager {
    */
   private setDevices = (deviceList: MIDIInput[]): void => {
     if (
-      this.devices.length === deviceList.length &&
-      this.devices.every((value, index) => value === deviceList[index])
+      this.inputDevices.length === deviceList.length &&
+      this.inputDevices.every((value, index) => value === deviceList[index])
     ) {
       return
     }
     this.clearMidiEventListeners()
 
-    this.devices = deviceList
+    this.inputDevices = deviceList
 
     // Add event listeners to new devices
-    this.devices.forEach((device: MIDIInput) => {
+    this.inputDevices.forEach((device: MIDIInput) => {
       if (!this.eventListeners.has(device)) {
         const listener = (message: MIDIMessageEvent) => {
           if (!message.data) return
@@ -136,6 +142,7 @@ export class MidiManager {
    */
   private updateDevices = (): void => {
     this.setDevices(Array.from(this.midiAccess?.inputs.values() ?? []))
+    this.outputDevices = Array.from(this.midiAccess?.outputs.values() ?? [])
   }
 
   /**
@@ -164,7 +171,7 @@ export class MidiManager {
   public async midiLearn(): Promise<MIDIEvent | undefined> {
     const event = await this.beginMidiLearn()
     if (!event) {
-      console.log('MIDI learn canceled')
+      console.log('MIDI learn canceled.')
       return
     }
     return event
@@ -181,6 +188,7 @@ export class MidiManager {
     this.learnPromise = new Promise((resolve) => {
       this.learnResolve = resolve
       this.learnListener = (event: MIDIEvent) => {
+        if (event.type === MidiMessageType.Clock) return
         resolve(event)
         this.learnResolve = undefined
         this.cancelMidiLearn()
@@ -215,5 +223,85 @@ export class MidiManager {
     }
 
     return messageType
+  }
+
+  public sendMidiMessageRaw(device: MIDIOutput, data: number[], targetTime?: number): void {
+    device.send(data, targetTime ?? performance.now())
+  }
+
+  public sendMidiMessage(device: MIDIOutput, event: MIDIEvent): void {
+    // Construct the status byte with channel
+    const status = event.type | (event.channel & 0x0f)
+    const data1 = event.note
+    const data2 = event.value ?? 0
+
+    const message = new Uint8Array([status, data1, data2])
+    device.send(message)
+  }
+
+  public async sendMidiNoteOn(device: MIDIOutput, note: number, velocity: number): Promise<void> {
+    this.sendMidiMessage(device, {
+      channel: 0,
+      device,
+      type: MidiMessageType.NoteOn,
+      note,
+      value: velocity,
+    })
+  }
+
+  public async sendMidiNoteOff(device: MIDIOutput, note: number, velocity: number): Promise<void> {
+    this.sendMidiMessage(device, {
+      channel: 0,
+      device,
+      type: MidiMessageType.NoteOff,
+      note,
+      value: velocity,
+    })
+  }
+
+  public async sendMidiNoteOnOff(
+    device: MIDIOutput,
+    note: number,
+    velocity: number,
+    duration: number,
+    channel: number = 0,
+  ): Promise<void> {
+    this.sendMidiMessage(device, {
+      channel,
+      device,
+      type: MidiMessageType.NoteOn,
+      note,
+      value: velocity,
+    })
+
+    setTimeout(() => {
+      this.sendMidiMessage(device, {
+        device,
+        channel: 0,
+        type: MidiMessageType.NoteOff,
+        note,
+        value: velocity,
+      })
+    }, duration)
+  }
+
+  /**
+   * Sends a timestamped MIDI note to the given output, for precise timing.
+   * @param output The MIDI output to send the note to.
+   * @param note The MIDI note number.
+   * @param velocity The velocity of the note.
+   * @param duration The duration to hold the note before sending a Note Off message.
+   * @param targetTime The target time in milliseconds to send the note.
+   */
+  public sendMidiNoteAtMS(
+    output: MIDIOutput,
+    channel: number,
+    note: number,
+    velocity: number,
+    duration: number,
+    targetTime: number,
+  ): void {
+    output.send([MidiMessageType.NoteOn | (channel & 0x0f), note, velocity], targetTime)
+    output.send([MidiMessageType.NoteOff | (channel & 0x0f), note, velocity], targetTime + duration)
   }
 }
