@@ -41,6 +41,7 @@
     "url": "https://github.com/nudibranchrecords/hedron/issues"
   },
   "dependencies": {
+    "@base-ui/react": "^1.1.0",
     "@floating-ui/react-dom": "^2.1.2",
     "@hedron/app-store": "workspace:^",
     "@uiw/react-color": "^2.3.4",

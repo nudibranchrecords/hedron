@@ -61,6 +61,12 @@ export interface NodeParamEnum extends NodeParamBase {
   options: EnumOption[]
 }
 
+export interface NodeParamEnumMulti extends NodeParamBase {
+  valueType: 'enum-multi'
+  defaultValue: NodeEnumValue[]
+  options: EnumOption[]
+}
+
 export interface NodeParamVector3 extends NodeParamWithChildren {
   valueType: 'vector3'
   defaultValue: [number, number, number]
@@ -76,6 +82,7 @@ export type Param = (
   | NodeParamString
   | NodeParamNumber
   | NodeParamEnum
+  | NodeParamEnumMulti
   | NodeParamVector3
   | NodeParamRGB
 ) & { nodeType: 'param' }
@@ -133,6 +140,12 @@ export type NodeEnumValue = string | number
 export interface SketchConfigParamEnum extends SketchConfigParamBase {
   valueType: 'enum'
   defaultValue: NodeEnumValue
+  options: EnumOption[]
+}
+
+export interface SketchConfigParamEnumMulti extends SketchConfigParamBase {
+  valueType: 'enum-multi'
+  defaultValue: NodeEnumValue[]
   options: EnumOption[]
 }
 

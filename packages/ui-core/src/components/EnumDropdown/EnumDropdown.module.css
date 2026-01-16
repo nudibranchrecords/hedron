@@ -6,43 +6,83 @@
   --enumBackgroundColor: var(--bgColorDark3);
 }
 
-.wrapper {
-  select {
-    /* reset */
-    appearance: none;
-    background-color: transparent;
-    border: none;
-    margin: 0;
-    width: 100%;
-    font-family: inherit;
-    font-size: inherit;
-    line-height: inherit;
-    z-index: 1;
-    outline: none;
-    padding: 0 1rem 0 0;
-  }
-
-  /* style */
+.trigger {
+  appearance: none;
   background-color: var(--enumBackgroundColor);
+  border: none;
+  margin: 0;
+  width: 100%;
+  font-family: inherit;
+  font-size: 0.7rem;
+  line-height: inherit;
+  outline: none;
   height: 100%;
   border-radius: var(--borderRadiusSubtle);
   padding: var(--gapSmall);
+  padding-right: 1.4rem;
   font-weight: 200;
-  font-size: 0.7rem;
-  position: relative;
   color: var(--textColorLight1);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  position: relative;
 
-  &::after {
-    content: '';
-    width: 0.6rem;
-    height: 0.5rem;
-    background-color: var(--textColorLight2);
-    /* chevron pointing down */
-    clip-path: polygon(100% 40%, 100% 57%, 50% 100%, 0 57%, 0 40%, 50% 80%);
-    position: absolute;
-    display: block;
-    right: var(--gapSmall);
-    top: 50%;
-    transform: translateY(-0.35rem);
+  &:focus-visible {
+    outline: 2px solid var(--textColorLight2);
+    outline-offset: -2px;
   }
+}
+
+.icon {
+  position: absolute;
+  right: var(--gapSmall);
+  top: 50%;
+  transform: translateY(-50%);
+  width: 0.6rem;
+  height: 0.5rem;
+  background-color: var(--textColorLight2);
+  clip-path: polygon(100% 40%, 100% 57%, 50% 100%, 0 57%, 0 40%, 50% 80%);
+}
+
+.positioner {
+  z-index: 1000;
+}
+
+.popup {
+  background-color: var(--bgColorDark2);
+  border-radius: var(--borderRadiusSubtle);
+  padding: var(--gapSmall);
+  min-width: 8rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  max-height: var(--available-height);
+  overflow: auto;
+}
+
+.item {
+  font-size: 0.7rem;
+  font-weight: 200;
+  color: var(--textColorLight1);
+  padding: var(--gapSmall);
+  border-radius: var(--borderRadiusSubtle);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  outline: none;
+
+  &[data-highlighted] {
+    background-color: var(--bgColorDark4);
+  }
+
+  &[data-selected] {
+    color: var(--textColorLight1);
+  }
+}
+
+.itemIndicator {
+  display: flex;
+  align-items: center;
+  color: var(--textColorLight2);
 }
