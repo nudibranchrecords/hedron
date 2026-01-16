@@ -63,12 +63,25 @@ export class MidiInput implements IPlugin {
         { value: MidiMessageType.ControlChange, label: 'Control Change' },
       ],
     },
+    {
+      key: 'overrideValue',
+      title: 'Override Value',
+      // description: 'Override the incoming MIDI value with this value (0-127). Set to a negative value to use the actual MIDI value.',
+      valueType: 'number',
+      defaultValue: -1,
+      sliderMin: -1,
+      sliderMax: 127,
+    },
   ] as const satisfies InputOptionNodesConfig
+
+  private pendingUpdates = new Map<string, NodeValue>()
+  private updateScheduled = false
 
   private handleEnum: ValueHander<NodeParamEnum> = ({
     midiEvent,
     input,
     storeState,
+    optionNodes,
     targetNode,
   }) => {
     switch (midiEvent.type) {
@@ -76,28 +89,30 @@ export class MidiInput implements IPlugin {
       case MidiMessageType.NoteOff:
         return getNextEnumValue(input.targetNodeId)(storeState)
       default: {
-        return targetNode.options[
-          Math.floor((midiEvent.value / 127) * (targetNode.options.length - 1))
-        ].value
+        const value = optionNodes.overrideValue < 0 ? midiEvent.value : optionNodes.overrideValue
+        return targetNode.options[Math.floor((value / 127) * (targetNode.options.length - 1))].value
       }
     }
   }
 
-  private handleBoolean: ValueHander = ({ midiEvent, targetNodeValue }) => {
+  private handleBoolean: ValueHander = ({ midiEvent, optionNodes, targetNodeValue }) => {
     switch (midiEvent.type) {
       case MidiMessageType.NoteOn:
       case MidiMessageType.NoteOff:
         return !targetNodeValue
-      default:
-        return midiEvent.value > 0
+      default: {
+        const value = optionNodes.overrideValue < 0 ? midiEvent.value : optionNodes.overrideValue
+        return value > 0
+      }
     }
   }
 
-  private handleNumber: ValueHander = ({ midiEvent, storeState, input }) => {
+  private handleNumber: ValueHander = ({ midiEvent, storeState, input, optionNodes }) => {
     const sliderMin = (storeState.nodeValues[`${input.targetNodeId}-sliderMin`] as number) ?? 0
     const sliderMax = (storeState.nodeValues[`${input.targetNodeId}-sliderMax`] as number) ?? 1
 
-    return (midiEvent.value / 127) * (sliderMax - sliderMin) + sliderMin
+    const value = optionNodes.overrideValue < 0 ? midiEvent.value : optionNodes.overrideValue
+    return (value / 127) * (sliderMax - sliderMin) + sliderMin
   }
 
   private handleUnsupported: ValueHander = ({ input, targetNode, midiEvent }) => {
@@ -106,6 +121,22 @@ export class MidiInput implements IPlugin {
     )
 
     return null
+  }
+
+  private scheduleUpdate(storeState: EngineState) {
+    if (this.updateScheduled) return
+
+    this.updateScheduled = true
+    requestAnimationFrame(() => {
+      // Apply all pending updates
+      this.pendingUpdates.forEach((value, nodeId) => {
+        storeState.updateNodeValue(nodeId, value)
+      })
+
+      // Clear pending updates
+      this.pendingUpdates.clear()
+      this.updateScheduled = false
+    })
   }
 
   constructor(engine: HedronEngine) {
@@ -147,7 +178,9 @@ export class MidiInput implements IPlugin {
               return
             }
 
-            storeState.updateNodeValue(input.targetNodeId, value)
+            // Queue the update instead of applying immediately to avoid flooding the store with multiple per frame
+            this.pendingUpdates.set(input.targetNodeId, value)
+            this.scheduleUpdate(storeState)
           }
         },
       )
