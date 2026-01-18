@@ -7,13 +7,32 @@ import {
   PanelBody,
   PanelHeader,
   PopoutMenu,
+  HedronErrorBoundary,
+  useAppStore,
+  useOnSelectNode,
+  NodeContainer,
 } from '@hedron/ui-core'
+
+import { Node } from '@hedron/engine'
 import c from './ActiveSketch.module.css'
 import { useActiveSketch } from '@components/hooks/useActiveSketch'
 import { engineStore } from '@renderer/engine'
-import { SketchParams } from '@components/SketchParams/SketchParams'
-import { useSelectedParam } from '@components/hooks/useSelectedParam'
-import { SelectedParam } from '@components/SelectedParam/SelectedParam'
+import { SketchControls } from '@components/SketchControls/SketchControls'
+import { useGroupedNodes } from '@components/hooks/useGroupedNodes'
+import { useSelectedNode } from '@components/hooks/useSelectedNode'
+import { SelectedNode } from '@components/SelectedNode/SelectedNode'
+
+interface ControlItemProps {
+  node: Node
+  sketchId: string
+}
+
+const ControlItem = ({ node, sketchId }: ControlItemProps) => {
+  const isActive = useAppStore((state) => state.selectedNodes[sketchId] === node.id)
+  const onSelectNode = useOnSelectNode(sketchId, node.id)
+
+  return <NodeContainer onClick={onSelectNode} nodeId={node.id} isActive={isActive} />
+}
 
 export const ActiveSketch = () => {
   const activeSketch = useActiveSketch()
@@ -22,7 +41,9 @@ export const ActiveSketch = () => {
     throw new Error('ActiveSketch component: No activesketch found')
   }
 
-  const selectedParam = useSelectedParam()
+  const nodeGroups = useGroupedNodes(activeSketch.nodeIds, activeSketch.moduleId)
+
+  const selectedNode = useSelectedNode()
 
   return (
     <div className={c.container}>
@@ -51,18 +72,24 @@ export const ActiveSketch = () => {
           <Button type="ghost" iconName="menu" />
         </PopoutMenu>
       </ViewHeader>
-      <div className={c.section}>
-        <SketchParams sketchId={activeSketch.id} />
-      </div>
+      <HedronErrorBoundary key={activeSketch.id}>
+        <div className={c.section}>
+          <SketchControls
+            sketchId={activeSketch.id}
+            nodeGroups={nodeGroups}
+            ControlItem={ControlItem}
+          />
+        </div>
 
-      {selectedParam && (
-        <Panel snugPosition="bottom" spacing="slim" width="full" className={c.bottomPanel}>
-          <PanelHeader iconName={paramIcon}>{selectedParam.title}</PanelHeader>
-          <PanelBody>
-            <SelectedParam />
-          </PanelBody>
-        </Panel>
-      )}
+        {selectedNode && (
+          <Panel snugPosition="bottom" spacing="slim" width="full" className={c.bottomPanel}>
+            <PanelHeader iconName={paramIcon}>{selectedNode.title}</PanelHeader>
+            <PanelBody>
+              <SelectedNode />
+            </PanelBody>
+          </Panel>
+        )}
+      </HedronErrorBoundary>
     </div>
   )
 }

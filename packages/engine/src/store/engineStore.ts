@@ -9,7 +9,7 @@ import { createAddSketch } from '@store/actionCreators/addSketch'
 import { createDeleteSketch } from '@store/actionCreators/deleteSketch'
 import { createSetSketchModuleItem } from '@store/actionCreators/setSketchModuleItem'
 import { createDeleteSketchModule } from '@store/actionCreators/deleteSketchModule'
-import { createUpdateSketchParams } from '@store/actionCreators/updateSketchParams'
+import { createReconcileSketchNodes } from '@store/actionCreators/createReconcileSketchNodes'
 import {
   createUpdateMultipleNodeValues,
   createUpdateNodeValue,
@@ -28,7 +28,7 @@ export const createEngineStore = () =>
           ...initialState,
           addSketch: createAddSketch(set),
           updateSketch: createUpdateSketch(set),
-          updateSketchParams: createUpdateSketchParams(set),
+          reconcileSketchNodes: createReconcileSketchNodes(set),
           setSketchModuleItem: createSetSketchModuleItem(set),
           updateNodeValue: createUpdateNodeValue(set),
           updateMultipleNodeValues: createUpdateMultipleNodeValues(set),
@@ -43,7 +43,7 @@ export const createEngineStore = () =>
         {
           name: 'Hedron Engine',
           // TODO: make this configurable for users of the engine
-          enabled: false,
+          enabled: true,
         },
       ),
     ),

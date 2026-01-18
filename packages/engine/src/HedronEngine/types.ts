@@ -5,3 +5,8 @@ export type Result<T> =
 export type RendererType = 'webgl' | 'webgpu'
 
 export type CanvasSizeMode = 'fixedAspectRatio' | 'fillContainer'
+
+export type ShotArgsObject = {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  [key: string]: any
+}

@@ -31,6 +31,7 @@ export type IconName =
   | 'error'
   | 'arrow_upward'
   | 'arrow_downward'
+  | 'frame_bug'
 
 export const sketchIcon: IconName = 'token'
 export const sceneIcon: IconName = 'panorama'

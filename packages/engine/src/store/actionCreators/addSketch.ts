@@ -6,19 +6,19 @@ export const createAddSketch: SetterCreator<'addSketch'> = (setState) => (module
   const newSketchId = createUniqueId()
   setState((state) => {
     const { config } = state.sketchModules[moduleId]
-    const paramIds = []
+    const nodeIds = []
 
-    for (const paramConfig of config.params) {
+    for (const nodeConfig of config.nodes) {
       const id = createUniqueId()
-      paramIds.push(id)
-      addNode(state, id, paramConfig)
+      nodeIds.push(id)
+      addNode(state, id, nodeConfig)
     }
 
     state.sketches[newSketchId] = {
       id: newSketchId,
       moduleId,
       title: config.title,
-      paramIds,
+      nodeIds,
     }
   })
 

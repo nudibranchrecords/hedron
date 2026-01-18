@@ -1,13 +1,13 @@
-import { Param } from '@hedron/engine'
+import { Node } from '@hedron/engine'
 import { useEngineStore } from '@hedron/ui-core'
 import { useAppStore } from '@renderer/appStore'
 import { useActiveSketch } from '@components/hooks/useActiveSketch'
 
-export const useSelectedParam = (): Param | null => {
+export const useSelectedNode = (): Node | null => {
   const activeSketch = useActiveSketch()
 
   if (!activeSketch) {
-    throw new Error('useSelectedParam hook: No active sketch found')
+    throw new Error('useSelectedNode hook: No active sketch found')
   }
 
   const selectedNodeId = useAppStore((state) => state.selectedNodes[activeSketch.id])

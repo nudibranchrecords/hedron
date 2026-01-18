@@ -1,5 +1,5 @@
 import { HedronEngine, Input } from '@hedron/engine'
-import { ControlGrid, Param } from '@hedron/ui-core'
+import { ControlGrid, NodeContainer } from '@hedron/ui-core'
 import { useEffect, useState } from 'react'
 import { AudioInput } from './AudioInput'
 import { calculateAverageLevel, getLevelColor } from './AudioUtils'
@@ -75,7 +75,7 @@ export const AudioInputPanel = ({ input, engine }: IProps) => {
 
       <ControlGrid className="mb-xl">
         {input.optionNodeIds.map((id: string) => (
-          <Param key={id} paramId={id} />
+          <NodeContainer key={id} nodeId={id} />
         ))}
       </ControlGrid>
     </div>

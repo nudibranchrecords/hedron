@@ -1,12 +1,56 @@
 import * as THREE from 'three'
 
+const shuffleString = (str: string): string => {
+  const arr = str.split('')
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1))
+    ;[arr[i], arr[j]] = [arr[j], arr[i]]
+  }
+  return arr.join('')
+}
+
+interface ShoutoutParams {
+  message: string
+  color: [number, number, number]
+  scrollSpeed: number
+}
+
+interface MIDIEvent {
+  device: MIDIInput
+  channel: number
+  type: number
+  note: number
+  value: number
+}
+
 export default class Shoutout {
   root = new THREE.Group()
+  message: string = 'Hello, Hedron!'
+  modifiedMessage: string | null = null
   plane: THREE.Mesh
   canvas: HTMLCanvasElement
   context: CanvasRenderingContext2D
   texture: THREE.CanvasTexture
   textX: number = 0
+
+  shuffle({ params: p }: { params: ShoutoutParams }) {
+    this.modifiedMessage = shuffleString(p.message)
+  }
+
+  // TODO: This shot is a bit pointless until the same MIDI input can handle a range of notes
+  displayMidiNote({ shotArgs }: { shotArgs?: { _midiEvent?: MIDIEvent } }) {
+    const note = shotArgs?._midiEvent?.note
+    if (!note) {
+      console.warn('No MIDI event data provided for displayMidiNote shot.')
+      return
+    }
+
+    this.modifiedMessage = note.toString()
+  }
+
+  clearShuffle() {
+    this.modifiedMessage = null
+  }
 
   constructor() {
     // Create canvas for text texture
@@ -35,11 +79,12 @@ export default class Shoutout {
     this.textX = this.canvas.width
   }
 
-  update({
-    params: p,
-  }: {
-    params: { message: string; color: [number, number, number]; scrollSpeed: number }
-  }) {
+  update({ params: p }: { params: ShoutoutParams }) {
+    if (this.message !== p.message) {
+      this.clearShuffle()
+      this.message = p.message
+    }
+
     this.context.fillStyle = `rgb(${p.color.map((c) => c * 255).join(' ')})`
 
     // Clear canvas
@@ -57,7 +102,7 @@ export default class Shoutout {
     }
 
     // Draw the scrolling text
-    this.context.fillText(p.message, this.textX, this.canvas.height / 2)
+    this.context.fillText(this.modifiedMessage ?? p.message, this.textX, this.canvas.height / 2)
 
     // Update texture
     this.texture.needsUpdate = true

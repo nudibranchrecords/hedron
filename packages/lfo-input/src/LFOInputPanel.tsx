@@ -1,5 +1,5 @@
 import { HedronEngine, Input } from '@hedron/engine'
-import { ControlGrid, Param } from '@hedron/ui-core'
+import { ControlGrid, NodeContainer } from '@hedron/ui-core'
 
 interface IProps {
   input: Input
@@ -15,7 +15,7 @@ export const LFOInputPanel = ({ input }: IProps) => {
     <div>
       <ControlGrid className="mb-xl">
         {input.optionNodeIds.map((id) => (
-          <Param key={id} paramId={id} />
+          <NodeContainer key={id} nodeId={id} />
         ))}
       </ControlGrid>
     </div>

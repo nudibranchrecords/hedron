@@ -228,9 +228,6 @@ importers:
       postprocessing:
         specifier: ^6.37.7
         version: 6.37.7(three@0.178.0)
-      react-error-boundary:
-        specifier: ^4.1.2
-        version: 4.1.2(react@19.1.1)
       three:
         specifier: ^0.178.0
         version: 0.178.0
@@ -239,7 +236,7 @@ importers:
         version: 3.1.1(react@19.1.1)
       zustand:
         specifier: ^4.5.7
-        version: 4.5.7(@types/react@18.3.23)(immer@10.1.1)(react@19.1.1)
+        version: 4.5.7(@types/react@19.1.10)(immer@10.1.1)(react@19.1.1)
     devDependencies:
       '@types/fs-extra':
         specifier: ^11.0.4
@@ -391,8 +388,11 @@ importers:
         specifier: ^2.3.4
         version: 2.7.3(@babel/runtime@7.28.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       material-symbols:
-        specifier: ^0.23.0
-        version: 0.23.0
+        specifier: ^0.40.2
+        version: 0.40.2
+      react-error-boundary:
+        specifier: ^4.1.2
+        version: 4.1.2(react@18.3.1)
       usehooks-ts:
         specifier: ^3.1.0
         version: 3.1.1(react@18.3.1)
@@ -4440,8 +4440,8 @@ packages:
     resolution: {integrity: sha512-OkeDaAZ/bQCxeFAozM55PKcKU0yJMPGifLwV4Qgjitu+5MoAfSQN4lsLJeXZ1b8w0x+/Emda6MZgXS1jvsapng==}
     engines: {node: '>=10'}
 
-  material-symbols@0.23.0:
-    resolution: {integrity: sha512-ciq9bPgw5bFGC807lT3KgbvU97bC7w6DeUQmqLXdIHD28L/FD9ajvX11swtQXcMV/nEjQ/fI6u5NVtli18qUqQ==}
+  material-symbols@0.40.2:
+    resolution: {integrity: sha512-QUJF1HztvcpP8pXHPPNESK05Thq/Zy8ub17T2xBDf4+gqx4KBs353lKHuVzE/eCYOtiB9JBlFOU7cjAI6vVMTQ==}
 
   math-intrinsics@1.1.0:
     resolution: {integrity: sha512-/IXtbwEk5HTPyEwyKX6hGkYXxM9nbj64B+ilVJnC/R6B0pH5G4V3b0pVbL7DBj4tkhBAppbQUlf6F6Xl9LHu1g==}
@@ -10975,7 +10975,7 @@ snapshots:
       escape-string-regexp: 4.0.0
     optional: true
 
-  material-symbols@0.23.0: {}
+  material-symbols@0.40.2: {}
 
   math-intrinsics@1.1.0: {}
 
@@ -11737,10 +11737,10 @@ snapshots:
       react: 18.3.1
       scheduler: 0.23.2
 
-  react-error-boundary@4.1.2(react@19.1.1):
+  react-error-boundary@4.1.2(react@18.3.1):
     dependencies:
       '@babel/runtime': 7.28.3
-      react: 19.1.1
+      react: 18.3.1
 
   react-is@16.13.1: {}
 
@@ -12990,6 +12990,14 @@ snapshots:
       use-sync-external-store: 1.5.0(react@19.1.1)
     optionalDependencies:
       '@types/react': 18.3.23
+      immer: 10.1.1
+      react: 19.1.1
+
+  zustand@4.5.7(@types/react@19.1.10)(immer@10.1.1)(react@19.1.1):
+    dependencies:
+      use-sync-external-store: 1.5.0(react@19.1.1)
+    optionalDependencies:
+      '@types/react': 19.1.10
       immer: 10.1.1
       react: 19.1.1
 
