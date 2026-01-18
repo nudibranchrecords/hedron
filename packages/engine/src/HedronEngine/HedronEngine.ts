@@ -147,9 +147,10 @@ export class HedronEngine {
     }
   }
 
-  public fireShot(shotId: string, value?: ShotArgsObject) {
+  public fireShot(shotId: string, shotArgs?: ShotArgsObject) {
     // We don't directly call the shot function, instead we update the node value and let the store listener handle it
-    this.store.getState().updateNodeValue(shotId, value ?? {})
+    // We're spreading the args to create a new object reference, to ensire the store listener detects a change
+    this.store.getState().updateNodeValue(shotId, shotArgs ? { ...shotArgs } : {})
   }
 
   /**
