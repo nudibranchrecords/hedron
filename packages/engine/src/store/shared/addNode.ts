@@ -2,7 +2,7 @@ import {
   EngineState,
   EnsureRequiredValueType,
   NodeParamWithChildren,
-  NodeTypeWithChildren,
+  ParamValueTypeWithChildren,
   SketchConfigParamImported,
   isNodeTypeWithChildren,
   NodeValueType,
@@ -18,7 +18,7 @@ type AddNodeConfig = EnsureRequiredValueType<SketchConfigParamImported> | Sketch
 // Exclude param types that have children (vector3, rgb)
 type ParamConfigWithoutChildren = Exclude<
   EnsureRequiredValueType<SketchConfigParamImported>,
-  { valueType: NodeTypeWithChildren }
+  { valueType: ParamValueTypeWithChildren }
 >
 
 const isParamConfigWithoutChildren = (

@@ -24,8 +24,8 @@ export interface NodeBase {
   nodeType: NodeType
 }
 
-export const NodeTypesWithChildren = ['vector3', 'rgb'] as const
-export type NodeTypeWithChildren = (typeof NodeTypesWithChildren)[number]
+export const ParamValueTypesWithChildren = ['vector3', 'rgb'] as const
+export type ParamValueTypeWithChildren = (typeof ParamValueTypesWithChildren)[number]
 
 export interface NodeParamBase extends NodeBase {
   title: string
@@ -34,7 +34,7 @@ export interface NodeParamBase extends NodeBase {
 export interface NodeParamWithChildren extends NodeParamBase {
   nodeType: 'param'
   childNodeIds: string[]
-  valueType: NodeTypeWithChildren
+  valueType: ParamValueTypeWithChildren
   defaultValue: [number, number, number]
 }
 
@@ -94,8 +94,8 @@ export type NodeValueType = Param['valueType'] | null
 
 export const isNodeTypeWithChildren = (
   nodeValueType: NodeValueType,
-): nodeValueType is NodeTypeWithChildren => {
-  return NodeTypesWithChildren.includes(nodeValueType as NodeTypeWithChildren)
+): nodeValueType is ParamValueTypeWithChildren => {
+  return ParamValueTypesWithChildren.includes(nodeValueType as ParamValueTypeWithChildren)
 }
 
 // Utility type guard to check if a node has child nodes

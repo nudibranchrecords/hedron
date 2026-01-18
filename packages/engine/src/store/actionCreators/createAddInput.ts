@@ -18,6 +18,8 @@ export const createAddInput: SetterCreator<'addInput'> =
           valueType: cfg.valueType ?? 'number',
           groupIndex: 0,
           title: cfg.title ?? cfg.key,
+          nodeType: 'param',
+          // TODO: This casting is not ideal, issues tie in with `addNode` type messiness
         } as SketchConfigParamImported
 
         addNode(state, optionNodeId, cfgImported)
