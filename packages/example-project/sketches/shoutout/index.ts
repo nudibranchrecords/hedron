@@ -45,7 +45,7 @@ export default class Shoutout {
       return
     }
 
-    this.modifiedMessage = note.toString() ?? null
+    this.modifiedMessage = note.toString()
   }
 
   clearShuffle() {
