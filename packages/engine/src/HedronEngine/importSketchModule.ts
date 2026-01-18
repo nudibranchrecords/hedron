@@ -13,8 +13,7 @@ import { createUniqueId } from '@utils/createUniqueId'
 const ensureParamImported = (
   param: SketchConfigParam,
 ): Omit<SketchConfigParamImported, 'groupIndex'> => {
-  const valueType =
-    'valueType' in param && param.valueType !== undefined ? param.valueType : 'number'
+  const valueType = param.valueType ?? 'number'
 
   return {
     ...param,
