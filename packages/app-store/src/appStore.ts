@@ -25,7 +25,7 @@ export interface ProjectData {
     // activeSketchId: string | null
     selectedNodes: { [sketchId: string]: string }
     selectedInputs: { [inputId: string]: string }
-    openedParamGroups: { [sketchId: string]: Record<number, boolean> }
+    openedControlGroups: { [sketchId: string]: Record<number, boolean> }
   }
 }
 
@@ -33,14 +33,14 @@ export interface AppState {
   activeSketchId: string | null // TODO: should be part of ProjectData
   selectedNodes: ProjectData['app']['selectedNodes']
   selectedInputs: ProjectData['app']['selectedInputs']
-  openedParamGroups: ProjectData['app']['openedParamGroups']
+  openedControlGroups: ProjectData['app']['openedControlGroups']
   sketchesDir: string | null
   globalDialogId: DialogId | null
   currentSavePath: string | null
   saveList: SaveItem[]
   setSelectedNode: (sketchID: string | null, nodeId: string) => void
   setSelectedInput: (nodeId: string, inputId: string) => void
-  setOpenedParamGroup: (sketchId: string, groupIndex: number, isOpen: boolean) => void
+  setOpenedControlGroup: (sketchId: string, groupIndex: number, isOpen: boolean) => void
   setActiveSketchId: (id: string) => void
   setSketchesDir: (dir: string) => void
   setGlobalDialogId: (id: DialogId | null) => void
@@ -73,7 +73,7 @@ export const createAppStore = () =>
             currentSavePath: null,
             selectedNodes: {},
             selectedInputs: {},
-            openedParamGroups: {},
+            openedControlGroups: {},
             saveList: [],
             setActiveSketchId: (id: string) => {
               set((state) => {
@@ -125,12 +125,12 @@ export const createAppStore = () =>
                 state.selectedInputs[nodeId] = inputId
               })
             },
-            setOpenedParamGroup: (sketchId: string, groupIndex: number, isOpen: boolean) => {
+            setOpenedControlGroup: (sketchId: string, groupIndex: number, isOpen: boolean) => {
               set((state) => {
-                if (!state.openedParamGroups[sketchId]) {
-                  state.openedParamGroups[sketchId] = {}
+                if (!state.openedControlGroups[sketchId]) {
+                  state.openedControlGroups[sketchId] = {}
                 }
-                state.openedParamGroups[sketchId][groupIndex] = isOpen
+                state.openedControlGroups[sketchId][groupIndex] = isOpen
               })
             },
           })),

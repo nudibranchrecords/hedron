@@ -15,6 +15,7 @@ import { ControlGrid } from '@components/ControlGrid/ControlGrid'
 import { FloatSlider, FloatSliderHandle } from '@components/FloatSlider/FloatSlider'
 import { BooleanToggle, BooleanToggleHandle } from '@components/BooleanToggle/BooleanToggle'
 import { ColorPickerHandle, ColorPicker } from '@components/ColorPicker/ColorPicker'
+import { TriggerPad, TriggerPadHandle } from '@components/TriggerPad/TriggerPad'
 import { Panel, PanelBody, PanelHeader } from '@components/Panel/Panel'
 import { NumberInput, NumberInputHandle } from '@components/NumberInput/NumberInput'
 
@@ -177,6 +178,30 @@ export const Enum = ({ title = 'Enum Dropdown', isActive, onClick }: BasicProps)
   )
 }
 
+export const Trigger = ({ title = 'Trigger Pad', isActive, onClick }: BasicProps) => {
+  const ref = useRef<TriggerPadHandle>(null)
+
+  const onPadClick = () => {
+    fn()
+    ref.current?.blink()
+  }
+
+  useInterval(() => {
+    ref.current!.blink()
+  }, 3000)
+
+  return (
+    <NodeControl isActive={isActive} onClick={onClick}>
+      <NodeControlMain>
+        <NodeControlTitle>{title}</NodeControlTitle>
+        <NodeControlInner>
+          <TriggerPad ref={ref} onMouseDown={onPadClick} />
+        </NodeControlInner>
+      </NodeControlMain>
+    </NodeControl>
+  )
+}
+
 const params = [
   ['Fun Param Name', 'number'],
   ['Another Param', 'boolean'],
@@ -190,6 +215,7 @@ const params = [
   ['Toggle', 'boolean'],
   ['Color Picker', 'color'],
   ['Enum Dropdown', 'enum'],
+  ['Trigger Pad', 'trigger'],
 ]
 
 export const WithControlGrid = () => {
@@ -220,6 +246,14 @@ export const WithControlGrid = () => {
           )}
           {type === 'enum' && (
             <Enum key={i} title={title} isActive={activeId === i} onClick={() => setActiveId(i)} />
+          )}
+          {type === 'trigger' && (
+            <Trigger
+              key={i}
+              title={title}
+              isActive={activeId === i}
+              onClick={() => setActiveId(i)}
+            />
           )}
         </>
       ))}

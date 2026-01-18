@@ -2,7 +2,7 @@ import { useRef } from 'react'
 import { useOnNodeValueChange } from '@hooks/useOnNodeValueChange'
 import { useEngineStore } from '@hooks/storeHooks'
 import { useSubscribeToNodeValue } from '@hooks/useSubscribeToNodeValue'
-import { OptionNumber } from '@containers/Param/OptionNumber/OptionNumber'
+import { OptionNumber } from '@containers/NodeContainer/OptionNumber/OptionNumber'
 import { FloatSlider, FloatSliderHandle } from '@components/FloatSlider/FloatSlider'
 import { ControlGrid } from '@components/ControlGrid/ControlGrid'
 

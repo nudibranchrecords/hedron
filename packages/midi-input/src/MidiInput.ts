@@ -34,6 +34,12 @@ type ValueHander<T = Param> = (params: {
   targetNodeValue: NodeValue
 }) => NodeValue | null
 
+type ShotHandler = (params: {
+  input: Input
+  engine: HedronEngine
+  midiEvent: MIDIEventWithValue
+}) => void
+
 export class MidiInput implements IPlugin {
   public readonly id = 'midi-input'
   public readonly name = 'MIDI Input'
@@ -64,6 +70,10 @@ export class MidiInput implements IPlugin {
       ],
     },
   ] as const satisfies InputOptionNodesConfig
+
+  private handleShot: ShotHandler = ({ input, engine, midiEvent }) => {
+    engine.fireShot(input.targetNodeId, { _midiEvent: midiEvent })
+  }
 
   private handleEnum: ValueHander<NodeParamEnum> = ({
     midiEvent,
@@ -126,6 +136,11 @@ export class MidiInput implements IPlugin {
             event.type === optionNodes.type &&
             event.value !== undefined
           ) {
+            if (targetNode.nodeType === 'shot') {
+              this.handleShot({ input, engine, midiEvent: event as MIDIEventWithValue })
+              return
+            }
+
             const value = {
               enum: this.handleEnum,
               boolean: this.handleBoolean,

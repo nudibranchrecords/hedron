@@ -3,9 +3,9 @@ import { SetterCreator } from '@store/types'
 export const createDeleteSketch: SetterCreator<'deleteSketch'> =
   (setState) => (instanceId: string) =>
     setState((state) => {
-      state.sketches[instanceId].paramIds.forEach((paramId) => {
-        delete state.nodes[paramId]
-        delete state.nodeValues[paramId]
+      state.sketches[instanceId].nodeIds.forEach((nodeId) => {
+        delete state.nodes[nodeId]
+        delete state.nodeValues[nodeId]
       })
 
       delete state.sketches[instanceId]

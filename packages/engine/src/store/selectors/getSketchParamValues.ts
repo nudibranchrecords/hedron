@@ -7,7 +7,7 @@ export const getSketchParamValues = (state: EngineState, sketchId: string) => {
   const paramValues: { [key: string]: any } = {}
   const sketch = sketches[sketchId]
 
-  sketch.paramIds.forEach((id) => {
+  sketch.nodeIds.forEach((id) => {
     const node = nodes[id]
     const { key } = node
 
