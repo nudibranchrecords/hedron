@@ -55,6 +55,7 @@ export const handleLoadProjectDialog = async (projectPath?: string) => {
     ...projectData.app,
   }))
 
+  // Add/remove shots from sketches based on their current module configs, in case files were updated since last load
   engine.reconcileAllSketchNodes()
 }
 

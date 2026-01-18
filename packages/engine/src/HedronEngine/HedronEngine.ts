@@ -261,6 +261,10 @@ export class HedronEngine {
     this.renderer.passesNeedUpdate_webGPU = true
   }
 
+  /**
+   * Reconciles all sketches in the engine store to ensure their nodes match their module configurations (e.g. add/remove params and shots).
+   * Useful after loading a project.
+   */
   public async reconcileAllSketchNodes(): Promise<void> {
     const state = this.store.getState()
     const sketchesToReconcile = Object.values(state.sketches)
