@@ -14,7 +14,7 @@ type SketchUpdateParams = {
   scene: EngineScene
 }
 
-type ShotFunc = (
+type SketchShotFun = (
   args: Omit<SketchUpdateParams, 'deltaFrame' | 'deltaTime'> & { shotArgs: ShotArgsObject },
 ) => void
 
@@ -39,7 +39,7 @@ export type SketchInstance = {
    * It should clean up any resources, event listeners, or references it holds.
    */
   dispose(engineScene: EngineScene): () => void
-} & Record<string, ShotFunc>
+} & Record<string, SketchShotFun>
 
 export type SketchInstanceMap = Map<string, SketchInstance>
 
