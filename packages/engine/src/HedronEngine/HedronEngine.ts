@@ -3,6 +3,7 @@ import { type Clock } from '@hedron/clock'
 import { listenToStore } from './storeListener'
 import { CanvasSizeMode, RendererType, Result, ShotArgsObject } from './types'
 import { importSketchModule } from './importSketchModule'
+import { flushNodeValueBuffer } from '@store/actionCreators/updateNodeValue'
 import { getSketchShotNodes } from '@store/selectors/getSketchShotNodes'
 import { initializeGlobalVars } from '@globalVars'
 import { IPlugin } from '@plugins/Plugin'
@@ -349,6 +350,9 @@ export class HedronEngine {
    * @param deltaTime The time delta (in seconds) to advance this frame.
    */
   private advanceFrame(engineScene: EngineScene, deltaTime: number) {
+    // Flush buffered node value updates before processing the frame
+    flushNodeValueBuffer(this.store.setState)
+
     const state = this.store.getState()
     const sketchInstances =
       // TODO: When we have scenes, sketches should be added to the scene earlier on
