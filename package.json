@@ -11,8 +11,7 @@
     "typecheck": "lerna run typecheck",
     "lint": "lerna run lint",
     "format": "prettier . --write",
-    "dist": "pnpm build:example && lerna run lint,typecheck,build,dist --sort",
-    "publish": "lerna publish --no-private"
+    "dist": "pnpm build:example && lerna run lint,typecheck,build,dist --sort"
   },
   "devDependencies": {
     "@electron-toolkit/eslint-config-prettier": "^2.0.0",
