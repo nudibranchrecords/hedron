@@ -12,7 +12,7 @@
     "lint": "lerna run lint",
     "format": "prettier . --write",
     "dist": "pnpm build:example && lerna run lint,typecheck,build,dist --sort",
-    "version": "pnpm install && git stage pnpm-lock.yaml"
+    "publish": "lerna publish --no-private"
   },
   "devDependencies": {
     "@electron-toolkit/eslint-config-prettier": "^2.0.0",
