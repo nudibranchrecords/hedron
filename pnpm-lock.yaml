@@ -31,7 +31,7 @@ importers:
         version: 18.3.7(@types/react@18.3.23)
       '@vitejs/plugin-react':
         specifier: ^4.3.4
-        version: 4.7.0(vite@7.1.2(@types/node@25.0.10)(jiti@2.6.1)(yaml@2.8.2))
+        version: 4.7.0(vite@7.3.1(@types/node@25.0.10)(jiti@2.6.1)(yaml@2.8.2))
       eslint:
         specifier: ^8.57.0
         version: 8.57.1
@@ -75,14 +75,14 @@ importers:
         specifier: ^5.6.2
         version: 5.8.2
       vite:
-        specifier: ^7.1.2
-        version: 7.1.2(@types/node@25.0.10)(jiti@2.6.1)(yaml@2.8.2)
+        specifier: ^7.3.1
+        version: 7.3.1(@types/node@25.0.10)(jiti@2.6.1)(yaml@2.8.2)
       vite-plugin-dts:
         specifier: ^4.5.3
-        version: 4.5.4(@types/node@25.0.10)(rollup@4.56.0)(typescript@5.8.2)(vite@7.1.2(@types/node@25.0.10)(jiti@2.6.1)(yaml@2.8.2))
+        version: 4.5.4(@types/node@25.0.10)(rollup@4.56.0)(typescript@5.8.2)(vite@7.3.1(@types/node@25.0.10)(jiti@2.6.1)(yaml@2.8.2))
       vite-tsconfig-paths:
         specifier: ^5.1.4
-        version: 5.1.4(typescript@5.8.2)(vite@7.1.2(@types/node@25.0.10)(jiti@2.6.1)(yaml@2.8.2))
+        version: 5.1.4(typescript@5.8.2)(vite@7.3.1(@types/node@25.0.10)(jiti@2.6.1)(yaml@2.8.2))
 
   apps/clock-test-app:
     dependencies:
@@ -172,7 +172,7 @@ importers:
         version: 3.1.1(react@19.2.3)
       zustand:
         specifier: ^4.5.7
-        version: 4.5.7(@types/react@19.2.9)(immer@11.1.3)(react@19.2.3)
+        version: 4.5.7(@types/react@18.3.23)(immer@10.1.1)(react@19.2.3)
     devDependencies:
       '@types/fs-extra':
         specifier: ^11.0.4
@@ -181,8 +181,8 @@ importers:
         specifier: ^4.0.9
         version: 4.0.9
       '@types/node':
-        specifier: ^24.3.0
-        version: 24.3.0
+        specifier: ^25.0.0
+        version: 25.0.10
       '@types/three':
         specifier: ^0.178.1
         version: 0.178.1
@@ -194,7 +194,7 @@ importers:
         version: 26.0.12(electron-builder-squirrel-windows@26.4.0(dmg-builder@26.0.12))
       electron-vite:
         specifier: ^4.0.0
-        version: 4.0.0(vite@7.3.1(@types/node@24.3.0)(jiti@2.6.1)(yaml@2.8.2))
+        version: 4.0.0(vite@7.3.1(@types/node@25.0.10)(jiti@2.6.1)(yaml@2.8.2))
 
   apps/example-project:
     dependencies:
@@ -225,7 +225,7 @@ importers:
         version: 2.1.1
       zustand:
         specifier: ^5.0.2
-        version: 5.0.8(@types/react@19.2.9)(immer@11.1.3)(react@19.2.3)(use-sync-external-store@1.6.0(react@19.2.3))
+        version: 5.0.8(@types/react@18.3.23)(immer@10.1.1)(react@18.3.1)(use-sync-external-store@1.6.0(react@18.3.1))
 
   apps/web-example:
     dependencies:
@@ -268,7 +268,7 @@ importers:
         version: 10.1.1
       zustand:
         specifier: ^4.5.7
-        version: 4.5.7(@types/react@19.2.9)(immer@10.1.1)(react@19.2.3)
+        version: 4.5.7(@types/react@18.3.23)(immer@10.1.1)(react@19.2.3)
     devDependencies:
       '@types/node':
         specifier: ^24.3.0
@@ -299,7 +299,7 @@ importers:
         version: 0.178.0
       zustand:
         specifier: ^5.0.2
-        version: 5.0.8(@types/react@19.2.9)(immer@11.1.3)(react@18.3.1)(use-sync-external-store@1.6.0(react@18.3.1))
+        version: 5.0.8(@types/react@18.3.23)(immer@10.1.1)(react@18.3.1)(use-sync-external-store@1.6.0(react@18.3.1))
     devDependencies:
       '@types/three':
         specifier: ^0.178.1
@@ -375,7 +375,7 @@ importers:
         version: 18.3.1(react@18.3.1)
       zustand:
         specifier: ^5.0.2
-        version: 5.0.7(@types/react@19.2.9)(immer@11.1.3)(react@18.3.1)(use-sync-external-store@1.6.0(react@18.3.1))
+        version: 5.0.7(@types/react@18.3.23)(immer@10.1.1)(react@18.3.1)(use-sync-external-store@1.6.0(react@18.3.1))
     devDependencies:
       '@vitejs/plugin-react':
         specifier: ^4.3.4
@@ -426,7 +426,7 @@ importers:
         version: 3.1.1(react@18.3.1)
       zustand:
         specifier: ^5.0.8
-        version: 5.0.8(@types/react@19.2.9)(immer@11.1.3)(react@18.3.1)(use-sync-external-store@1.6.0(react@18.3.1))
+        version: 5.0.8(@types/react@19.2.9)(immer@10.1.1)(react@18.3.1)(use-sync-external-store@1.6.0(react@18.3.1))
     devDependencies:
       '@chromatic-com/storybook':
         specifier: ^1.8.0
@@ -4490,9 +4490,6 @@ packages:
   immer@10.1.1:
     resolution: {integrity: sha512-s2MPrmjovJcoMaHtx6K11Ra7oD05NT97w1IC5zpMkT6Atjr7H8LjaDd81iIxUYpMKSRRNMJE703M1Fhr/TctHw==}
 
-  immer@11.1.3:
-    resolution: {integrity: sha512-6jQTc5z0KJFtr1UgFpIL3N9XSC3saRaI9PwWtzM2pSqkNGtiNkYY2OSwkOGDK2XcTRcLb1pi/aNkKZz0nxVH4Q==}
-
   immutable@4.3.7:
     resolution: {integrity: sha512-1hqclzwYwjRDFLjcFxOM5AYkkG0rpFPpr1RLPMEuGczoS7YA8gLhy8SWXYRAA/XwfEHpfo3cw5JGioS32fnMRw==}
 
@@ -6758,46 +6755,6 @@ packages:
       yaml:
         optional: true
 
-  vite@7.1.2:
-    resolution: {integrity: sha512-J0SQBPlQiEXAF7tajiH+rUooJPo0l8KQgyg4/aMunNtrOa7bwuZJsJbDWzeljqQpgftxuq5yNJxQ91O9ts29UQ==}
-    engines: {node: ^20.19.0 || >=22.12.0}
-    hasBin: true
-    peerDependencies:
-      '@types/node': ^20.19.0 || >=22.12.0
-      jiti: '>=1.21.0'
-      less: ^4.0.0
-      lightningcss: ^1.21.0
-      sass: ^1.70.0
-      sass-embedded: ^1.70.0
-      stylus: '>=0.54.8'
-      sugarss: ^5.0.0
-      terser: ^5.16.0
-      tsx: ^4.8.1
-      yaml: ^2.4.2
-    peerDependenciesMeta:
-      '@types/node':
-        optional: true
-      jiti:
-        optional: true
-      less:
-        optional: true
-      lightningcss:
-        optional: true
-      sass:
-        optional: true
-      sass-embedded:
-        optional: true
-      stylus:
-        optional: true
-      sugarss:
-        optional: true
-      terser:
-        optional: true
-      tsx:
-        optional: true
-      yaml:
-        optional: true
-
   vite@7.3.1:
     resolution: {integrity: sha512-w+N7Hifpc3gRjZ63vYBXA56dvvRlNWRczTdmCBBa+CotUzAPf5b7YMdMR/8CQoeYE5LX3W4wj6RYTgonm1b9DA==}
     engines: {node: ^20.19.0 || >=22.12.0}
@@ -7350,7 +7307,7 @@ snapshots:
       make-fetch-happen: 10.2.1
       nopt: 6.0.0
       proc-log: 2.0.1
-      semver: 7.7.2
+      semver: 7.7.3
       tar: 6.2.1
       which: 2.0.2
     transitivePeerDependencies:
@@ -8319,7 +8276,7 @@ snapshots:
   '@npmcli/fs@2.1.2':
     dependencies:
       '@gar/promisify': 1.1.3
-      semver: 7.7.2
+      semver: 7.7.3
 
   '@npmcli/fs@4.0.0':
     dependencies:
@@ -9158,7 +9115,7 @@ snapshots:
     dependencies:
       '@types/http-cache-semantics': 4.0.4
       '@types/keyv': 3.1.4
-      '@types/node': 24.3.0
+      '@types/node': 25.0.10
       '@types/responselike': 1.0.3
 
   '@types/debug@4.1.12':
@@ -9174,11 +9131,11 @@ snapshots:
   '@types/fs-extra@11.0.4':
     dependencies:
       '@types/jsonfile': 6.1.4
-      '@types/node': 24.3.0
+      '@types/node': 25.0.10
 
   '@types/fs-extra@9.0.13':
     dependencies:
-      '@types/node': 24.3.0
+      '@types/node': 25.0.10
 
   '@types/http-cache-semantics@4.0.4': {}
 
@@ -9188,11 +9145,11 @@ snapshots:
 
   '@types/jsonfile@6.1.4':
     dependencies:
-      '@types/node': 24.3.0
+      '@types/node': 25.0.10
 
   '@types/keyv@3.1.4':
     dependencies:
-      '@types/node': 24.3.0
+      '@types/node': 25.0.10
 
   '@types/lodash.debounce@4.0.9':
     dependencies:
@@ -9226,7 +9183,7 @@ snapshots:
 
   '@types/plist@3.0.5':
     dependencies:
-      '@types/node': 24.3.0
+      '@types/node': 25.0.10
       xmlbuilder: 15.1.1
     optional: true
 
@@ -9249,7 +9206,7 @@ snapshots:
 
   '@types/responselike@1.0.3':
     dependencies:
-      '@types/node': 24.3.0
+      '@types/node': 25.0.10
 
   '@types/semver@7.7.0': {}
 
@@ -9274,7 +9231,7 @@ snapshots:
 
   '@types/yauzl@2.10.3':
     dependencies:
-      '@types/node': 24.3.0
+      '@types/node': 25.0.10
     optional: true
 
   '@typescript-eslint/eslint-plugin@7.18.0(@typescript-eslint/parser@7.18.0(eslint@8.57.1)(typescript@5.8.2))(eslint@8.57.1)(typescript@5.8.2)':
@@ -9672,7 +9629,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@vitejs/plugin-react@4.7.0(vite@7.1.2(@types/node@25.0.10)(jiti@2.6.1)(yaml@2.8.2))':
+  '@vitejs/plugin-react@4.7.0(vite@7.3.1(@types/node@25.0.10)(jiti@2.6.1)(yaml@2.8.2))':
     dependencies:
       '@babel/core': 7.28.0
       '@babel/plugin-transform-react-jsx-self': 7.27.1(@babel/core@7.28.0)
@@ -9680,7 +9637,7 @@ snapshots:
       '@rolldown/pluginutils': 1.0.0-beta.27
       '@types/babel__core': 7.20.5
       react-refresh: 0.17.0
-      vite: 7.1.2(@types/node@25.0.10)(jiti@2.6.1)(yaml@2.8.2)
+      vite: 7.3.1(@types/node@25.0.10)(jiti@2.6.1)(yaml@2.8.2)
     transitivePeerDependencies:
       - supports-color
 
@@ -9808,7 +9765,7 @@ snapshots:
 
   agent-base@6.0.2:
     dependencies:
-      debug: 4.4.1
+      debug: 4.4.3
     transitivePeerDependencies:
       - supports-color
 
@@ -10768,7 +10725,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  electron-vite@4.0.0(vite@7.3.1(@types/node@24.3.0)(jiti@2.6.1)(yaml@2.8.2)):
+  electron-vite@4.0.0(vite@7.3.1(@types/node@25.0.10)(jiti@2.6.1)(yaml@2.8.2)):
     dependencies:
       '@babel/core': 7.28.3
       '@babel/plugin-transform-arrow-functions': 7.27.1(@babel/core@7.28.3)
@@ -10776,7 +10733,7 @@ snapshots:
       esbuild: 0.25.9
       magic-string: 0.30.17
       picocolors: 1.1.1
-      vite: 7.3.1(@types/node@24.3.0)(jiti@2.6.1)(yaml@2.8.2)
+      vite: 7.3.1(@types/node@25.0.10)(jiti@2.6.1)(yaml@2.8.2)
     transitivePeerDependencies:
       - supports-color
 
@@ -11719,7 +11676,7 @@ snapshots:
     dependencies:
       '@tootallnate/once': 2.0.0
       agent-base: 6.0.2
-      debug: 4.4.1
+      debug: 4.4.3
     transitivePeerDependencies:
       - supports-color
 
@@ -11738,7 +11695,7 @@ snapshots:
   https-proxy-agent@5.0.1:
     dependencies:
       agent-base: 6.0.2
-      debug: 4.4.1
+      debug: 4.4.3
     transitivePeerDependencies:
       - supports-color
 
@@ -11782,9 +11739,6 @@ snapshots:
   immediate@3.0.6: {}
 
   immer@10.1.1: {}
-
-  immer@11.1.3:
-    optional: true
 
   immutable@4.3.7: {}
 
@@ -13692,7 +13646,7 @@ snapshots:
   socks-proxy-agent@7.0.0:
     dependencies:
       agent-base: 6.0.2
-      debug: 4.4.1
+      debug: 4.4.3
       socks: 2.8.7
     transitivePeerDependencies:
       - supports-color
@@ -14292,11 +14246,6 @@ snapshots:
       react: 18.3.1
     optional: true
 
-  use-sync-external-store@1.6.0(react@19.2.3):
-    dependencies:
-      react: 19.2.3
-    optional: true
-
   usehooks-ts@3.1.1(react@18.3.1):
     dependencies:
       lodash.debounce: 4.0.8
@@ -14337,7 +14286,7 @@ snapshots:
       extsprintf: 1.4.1
     optional: true
 
-  vite-plugin-dts@4.5.4(@types/node@25.0.10)(rollup@4.56.0)(typescript@5.8.2)(vite@7.1.2(@types/node@25.0.10)(jiti@2.6.1)(yaml@2.8.2)):
+  vite-plugin-dts@4.5.4(@types/node@25.0.10)(rollup@4.56.0)(typescript@5.8.2)(vite@7.3.1(@types/node@25.0.10)(jiti@2.6.1)(yaml@2.8.2)):
     dependencies:
       '@microsoft/api-extractor': 7.52.10(@types/node@25.0.10)
       '@rollup/pluginutils': 5.2.0(rollup@4.56.0)
@@ -14350,7 +14299,7 @@ snapshots:
       magic-string: 0.30.17
       typescript: 5.8.2
     optionalDependencies:
-      vite: 7.1.2(@types/node@25.0.10)(jiti@2.6.1)(yaml@2.8.2)
+      vite: 7.3.1(@types/node@25.0.10)(jiti@2.6.1)(yaml@2.8.2)
     transitivePeerDependencies:
       - '@types/node'
       - rollup
@@ -14375,13 +14324,13 @@ snapshots:
       - rollup
       - supports-color
 
-  vite-tsconfig-paths@5.1.4(typescript@5.8.2)(vite@7.1.2(@types/node@25.0.10)(jiti@2.6.1)(yaml@2.8.2)):
+  vite-tsconfig-paths@5.1.4(typescript@5.8.2)(vite@7.3.1(@types/node@25.0.10)(jiti@2.6.1)(yaml@2.8.2)):
     dependencies:
       debug: 4.4.1
       globrex: 0.1.2
       tsconfck: 3.1.6(typescript@5.8.2)
     optionalDependencies:
-      vite: 7.1.2(@types/node@25.0.10)(jiti@2.6.1)(yaml@2.8.2)
+      vite: 7.3.1(@types/node@25.0.10)(jiti@2.6.1)(yaml@2.8.2)
     transitivePeerDependencies:
       - supports-color
       - typescript
@@ -14407,34 +14356,6 @@ snapshots:
       tinyglobby: 0.2.14
     optionalDependencies:
       '@types/node': 25.0.10
-      fsevents: 2.3.3
-      jiti: 2.6.1
-      yaml: 2.8.2
-
-  vite@7.1.2(@types/node@25.0.10)(jiti@2.6.1)(yaml@2.8.2):
-    dependencies:
-      esbuild: 0.25.9
-      fdir: 6.5.0(picomatch@4.0.3)
-      picomatch: 4.0.3
-      postcss: 8.5.6
-      rollup: 4.46.2
-      tinyglobby: 0.2.14
-    optionalDependencies:
-      '@types/node': 25.0.10
-      fsevents: 2.3.3
-      jiti: 2.6.1
-      yaml: 2.8.2
-
-  vite@7.3.1(@types/node@24.3.0)(jiti@2.6.1)(yaml@2.8.2):
-    dependencies:
-      esbuild: 0.27.2
-      fdir: 6.5.0(picomatch@4.0.3)
-      picomatch: 4.0.3
-      postcss: 8.5.6
-      rollup: 4.56.0
-      tinyglobby: 0.2.15
-    optionalDependencies:
-      '@types/node': 24.3.0
       fsevents: 2.3.3
       jiti: 2.6.1
       yaml: 2.8.2
@@ -14632,20 +14553,12 @@ snapshots:
 
   yoctocolors-cjs@2.1.3: {}
 
-  zustand@4.5.7(@types/react@19.2.9)(immer@10.1.1)(react@19.2.3):
+  zustand@4.5.7(@types/react@18.3.23)(immer@10.1.1)(react@19.2.3):
     dependencies:
       use-sync-external-store: 1.5.0(react@19.2.3)
     optionalDependencies:
-      '@types/react': 19.2.9
+      '@types/react': 18.3.23
       immer: 10.1.1
-      react: 19.2.3
-
-  zustand@4.5.7(@types/react@19.2.9)(immer@11.1.3)(react@19.2.3):
-    dependencies:
-      use-sync-external-store: 1.5.0(react@19.2.3)
-    optionalDependencies:
-      '@types/react': 19.2.9
-      immer: 11.1.3
       react: 19.2.3
 
   zustand@5.0.7(@types/react@18.3.23)(immer@10.1.1)(react@18.3.1)(use-sync-external-store@1.6.0(react@18.3.1)):
@@ -14655,23 +14568,16 @@ snapshots:
       react: 18.3.1
       use-sync-external-store: 1.6.0(react@18.3.1)
 
-  zustand@5.0.7(@types/react@19.2.9)(immer@11.1.3)(react@18.3.1)(use-sync-external-store@1.6.0(react@18.3.1)):
+  zustand@5.0.8(@types/react@18.3.23)(immer@10.1.1)(react@18.3.1)(use-sync-external-store@1.6.0(react@18.3.1)):
     optionalDependencies:
-      '@types/react': 19.2.9
-      immer: 11.1.3
+      '@types/react': 18.3.23
+      immer: 10.1.1
       react: 18.3.1
       use-sync-external-store: 1.6.0(react@18.3.1)
 
-  zustand@5.0.8(@types/react@19.2.9)(immer@11.1.3)(react@18.3.1)(use-sync-external-store@1.6.0(react@18.3.1)):
+  zustand@5.0.8(@types/react@19.2.9)(immer@10.1.1)(react@18.3.1)(use-sync-external-store@1.6.0(react@18.3.1)):
     optionalDependencies:
       '@types/react': 19.2.9
-      immer: 11.1.3
+      immer: 10.1.1
       react: 18.3.1
       use-sync-external-store: 1.6.0(react@18.3.1)
-
-  zustand@5.0.8(@types/react@19.2.9)(immer@11.1.3)(react@19.2.3)(use-sync-external-store@1.6.0(react@19.2.3)):
-    optionalDependencies:
-      '@types/react': 19.2.9
-      immer: 11.1.3
-      react: 19.2.3
-      use-sync-external-store: 1.6.0(react@19.2.3)
