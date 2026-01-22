@@ -35,7 +35,7 @@
     "url": "https://github.com/nudibranchrecords/hedron/issues"
   },
   "dependencies": {
-    "@hedron-gl/engine": "^1.0.0-alpha.3",
+    "@hedron-gl/engine": "workspace:^",
     "@redux-devtools/extension": "^3.3.0",
     "immer": "^10.1.1",
     "zustand": "^4.5.7"
