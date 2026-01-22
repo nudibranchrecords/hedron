@@ -33,6 +33,10 @@ Build and zip the example project with `pnpm build:example` and it will be creat
 
 Run `npx lerna version`. This bumps all versions across packages. While in alpha, we want to choose the "Custom Prerelease" option. This will keep the format of `1.0.0-alpha.x`, where only `x` gets bumped (as major/minor/patch makes no sense).
 
+## Publish packages
+
+Run `npx lerna publish from-package --no-private`. Need to be logged in with `npm login`. Might need to update the authToken with `npm config set //registry.npmjs.org/:_authToken=YOUR_TOKEN_HERE`.
+
 ## Configuration
 
 You can configure the renderer type by creating a `.env` file in this directory:
