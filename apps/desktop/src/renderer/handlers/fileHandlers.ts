@@ -1,4 +1,4 @@
-import { ProjectData, AppState } from '@hedron/app-store'
+import { ProjectData, AppState } from '@hedron-gl/app-store'
 import { appStore } from '@renderer/appStore'
 import { engine, engineStore } from '@renderer/engine'
 import {

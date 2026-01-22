@@ -12,7 +12,7 @@ export default defineConfig({
       fileName: (format) => `lfo-input.${format}.js`,
     },
     rollupOptions: {
-      external: ['react', 'react-dom', 'react/jsx-runtime', '@hedron/ui-core', '@hedron/engine'],
+      external: ['react', 'react-dom', 'react/jsx-runtime', '@hedron-gl/ui-core', '@hedron-gl/engine'],
       output: {
         globals: {
           react: 'React',

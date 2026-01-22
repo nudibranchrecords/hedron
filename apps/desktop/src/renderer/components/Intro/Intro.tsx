@@ -17,7 +17,7 @@ import {
   CardHeader,
   CardList,
   HedronErrorBoundary,
-} from '@hedron/ui-core'
+} from '@hedron-gl/ui-core'
 
 import c from './Intro.module.css'
 import { handleLoadProjectDialog, handleSketchesDialog } from '@renderer/handlers/fileHandlers'

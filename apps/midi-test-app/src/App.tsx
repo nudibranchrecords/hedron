@@ -1,5 +1,5 @@
 import './custom.css'
-import { MidiManager, MIDIEvent } from '@hedron/midi-manager'
+import { MidiManager, MIDIEvent } from '@hedron-gl/midi-manager'
 
 const $text = (id: string, text: string) => {
   document.querySelector<HTMLDivElement>(`#${id}`)!.textContent = text

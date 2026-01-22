@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
-import { useEngineStore } from '@hedron/ui-core'
-import { Node } from '@hedron/engine'
+import { useEngineStore } from '@hedron-gl/ui-core'
+import { Node } from '@hedron-gl/engine'
 
 type GroupedNodes = {
   groupTitle: string

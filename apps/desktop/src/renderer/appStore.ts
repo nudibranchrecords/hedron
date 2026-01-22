@@ -1,7 +1,7 @@
-import { createAppStore, AppState } from '@hedron/app-store'
+import { createAppStore, AppState } from '@hedron-gl/app-store'
 import { useStore } from 'zustand'
 
-export * from '@hedron/app-store'
+export * from '@hedron-gl/app-store'
 
 export const appStore = createAppStore()
 

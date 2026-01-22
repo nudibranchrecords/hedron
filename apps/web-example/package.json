@@ -9,9 +9,9 @@
   },
   "dependencies": {
     "@fontsource/chivo-mono": "^5.2.6",
-    "@hedron/clock": "workspace:^",
-    "@hedron/engine": "workspace:^",
-    "@hedron/lfo-input": "workspace:^",
+    "@hedron-gl/clock": "workspace:^",
+    "@hedron-gl/engine": "workspace:^",
+    "@hedron-gl/lfo-input": "workspace:^",
     "postprocessing": "^6.38.2",
     "three": "^0.178.0",
     "three-stdlib": "^2.36.0"

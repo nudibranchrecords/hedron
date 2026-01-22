@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { ClockDisplay } from '@hedron/ui-core'
+import { ClockDisplay } from '@hedron-gl/ui-core'
 import { clock } from '@renderer/engine'
 
 const onBpmEdit = (bpm: number) => {

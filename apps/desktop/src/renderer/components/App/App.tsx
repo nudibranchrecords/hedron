@@ -1,5 +1,5 @@
 // import { Audio } from '../Audio'
-import { AppStoreProvider, EngineStoreProvider, WidgetStrip, useAppStore } from '@hedron/ui-core'
+import { AppStoreProvider, EngineStoreProvider, WidgetStrip, useAppStore } from '@hedron-gl/ui-core'
 import c from './App.module.css'
 import { GlobalClock } from '@components/GlobalClock/GlobalClock'
 import { GlobalDialogs } from '@components/GlobalDialogs/GlobalDialogs'

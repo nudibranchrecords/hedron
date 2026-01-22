@@ -1,7 +1,7 @@
 import { app, BrowserWindow, dialog, ipcMain, screen, session } from 'electron'
 import { electronApp, optimizer } from '@electron-toolkit/utils'
 import { REDUX_DEVTOOLS, installExtension } from '@tomjs/electron-devtools-installer'
-import { ProjectData } from '@hedron/app-store'
+import { ProjectData } from '@hedron-gl/app-store'
 import { saveFrameHandler, saveFrameSequenceHandler } from './handlers/frameHandlers'
 import {
   DialogEvents,

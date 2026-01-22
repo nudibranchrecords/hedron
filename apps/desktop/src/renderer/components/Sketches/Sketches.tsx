@@ -1,4 +1,4 @@
-import { Panel, PanelBody, PanelHeader } from '@hedron/ui-core'
+import { Panel, PanelBody, PanelHeader } from '@hedron-gl/ui-core'
 import c from './Sketches.module.css'
 import { useActiveSketch } from '@components/hooks/useActiveSketch'
 import { ActiveSketch } from '@components/ActiveSketch/ActiveSketch'

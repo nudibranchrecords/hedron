@@ -1,7 +1,7 @@
 import fs from 'fs'
 import path from 'path'
 import { dialog } from 'electron'
-import { ProjectData } from '@hedron/app-store'
+import { ProjectData } from '@hedron-gl/app-store'
 import { SaveProjectResponse } from '@shared/Events'
 
 const isSubdirectory = (parentDir: string, directory: string) => {

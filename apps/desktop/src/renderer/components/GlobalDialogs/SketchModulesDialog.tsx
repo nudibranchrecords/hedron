@@ -1,5 +1,5 @@
 import { useCallback } from 'react'
-import { SketchModuleItem } from '@hedron/engine'
+import { SketchModuleItem } from '@hedron-gl/engine'
 import {
   Button,
   Card,
@@ -14,7 +14,7 @@ import {
   PanelBody,
   PanelHeader,
   useEngineStore,
-} from '@hedron/ui-core'
+} from '@hedron-gl/ui-core'
 import { GlobalDialogProps } from '@components/GlobalDialogs/types'
 import { useSketchModuleList } from '@components/hooks/useSketchModuleList'
 import { useSetActiveSketchId } from '@components/hooks/useSetActiveSketchId'

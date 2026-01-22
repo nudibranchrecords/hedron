@@ -41,7 +41,7 @@ export class SketchesServer extends EventEmitter {
       Esbuild will resolve any imports (e.g. `import { BufferGeometry } from 'three'`) to point to these files instead.
       See `.sketches-server/` for all the generated files.
     */
-    const { globalVarsRef } = await import('@hedron/engine')
+    const { globalVarsRef } = await import('@hedron-gl/engine')
     await createGlobalVarModuleFiles(outdir, globalVarsRef)
 
     const ctx = await esbuild.context({
@@ -90,7 +90,7 @@ export class SketchesServer extends EventEmitter {
         {
           name: 'global-var-package-resolver',
           setup: (build): void => {
-            // Resolve any package defined in the `@hedron/engine` to point to Hedron's global vars
+            // Resolve any package defined in the `@hedron-gl/engine` to point to Hedron's global vars
             for (const { varName, packageName } of globalVarsRef.vars) {
               build.onResolve({ filter: new RegExp(`^${packageName}$`) }, () => {
                 return {

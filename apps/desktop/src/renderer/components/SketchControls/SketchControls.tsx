@@ -1,6 +1,6 @@
-import { ControlGrid, Collapsible, HedronErrorBoundary } from '@hedron/ui-core'
+import { ControlGrid, Collapsible, HedronErrorBoundary } from '@hedron-gl/ui-core'
 import { ComponentType } from 'react'
-import { Node } from '@hedron/engine'
+import { Node } from '@hedron-gl/engine'
 import c from './SketchControls.module.css'
 import { useAppStore } from '@renderer/appStore'
 

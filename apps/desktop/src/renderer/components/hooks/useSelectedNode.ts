@@ -1,5 +1,5 @@
-import { Node } from '@hedron/engine'
-import { useEngineStore } from '@hedron/ui-core'
+import { Node } from '@hedron-gl/engine'
+import { useEngineStore } from '@hedron-gl/ui-core'
 import { useAppStore } from '@renderer/appStore'
 import { useActiveSketch } from '@components/hooks/useActiveSketch'
 

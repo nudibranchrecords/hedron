@@ -1,4 +1,4 @@
-import { processConfig } from '@hedron/engine'
+import { processConfig } from '@hedron-gl/engine'
 
 // TODO: This file should be exported as a helper package somewhere (vite plugin?)
 

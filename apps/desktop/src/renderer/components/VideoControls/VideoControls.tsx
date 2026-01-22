@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Button, Icon, MiniTabs, MiniTabsItem } from '@hedron/ui-core'
+import { Button, Icon, MiniTabs, MiniTabsItem } from '@hedron-gl/ui-core'
 import c from './VideoControls.module.css'
 import { CaptureTab } from './CaptureTab'
 import { LoopTab, type LoopSettings } from './LoopTab'

@@ -1,5 +1,5 @@
-import { HedronEngine, Input } from '@hedron/engine'
-import { ControlGrid, NodeContainer } from '@hedron/ui-core'
+import { HedronEngine, Input } from '@hedron-gl/engine'
+import { ControlGrid, NodeContainer } from '@hedron-gl/ui-core'
 import { useEffect, useState } from 'react'
 import { AudioInput } from './AudioInput'
 import { calculateAverageLevel, getLevelColor } from './AudioUtils'

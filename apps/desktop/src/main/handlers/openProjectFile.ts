@@ -1,7 +1,7 @@
 import fs from 'fs'
 import path from 'path'
 import { dialog } from 'electron'
-import { ProjectData } from '@hedron/app-store'
+import { ProjectData } from '@hedron-gl/app-store'
 import { OpenProjectResponse } from '@shared/Events'
 
 export const openProjectFile = async (projectPath?: string): Promise<OpenProjectResponse> => {

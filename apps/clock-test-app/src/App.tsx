@@ -1,5 +1,5 @@
 import { FormEvent, useEffect, useRef } from 'react'
-import { Clock } from '@hedron/clock'
+import { Clock } from '@hedron-gl/clock'
 import './custom.css'
 import { MidiClockListener } from './MidiClockListener'
 

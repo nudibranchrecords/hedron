@@ -1,4 +1,4 @@
-import { Button } from '@hedron/ui-core'
+import { Button } from '@hedron-gl/ui-core'
 
 // Include the global type definitions
 declare global {

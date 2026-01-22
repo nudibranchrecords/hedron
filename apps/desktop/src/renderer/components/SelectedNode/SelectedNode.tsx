@@ -7,7 +7,7 @@ import {
   useAppStore,
   ParamNumberOptions,
   HedronErrorBoundary,
-} from '@hedron/ui-core'
+} from '@hedron-gl/ui-core'
 import { useMemo } from 'react'
 import { useSelectedNode } from '@components/hooks/useSelectedNode'
 import { pluginViews, engine } from '@renderer/engine'
@@ -33,7 +33,7 @@ export const SelectedNode = () => {
 
   const inputs = useInputsWithNode(selectedNode.id)
 
-  // TODO: Fix types here, maybe we need a "@hedron/plugins" package to handle this sort of thing?
+  // TODO: Fix types here, maybe we need a "@hedron-gl/plugins" package to handle this sort of thing?
   // @ts-expect-error -- needs work
   const PluginView = currentInput && pluginViews.inputPanel[currentInput?.type]
 

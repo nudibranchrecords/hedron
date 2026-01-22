@@ -1,4 +1,4 @@
-import { type Node as NodeType } from '@hedron/engine'
+import { type Node as NodeType } from '@hedron-gl/engine'
 import { useCallback } from 'react'
 import { ParamNumber } from './ParamNumber/ParamNumber'
 import { ParamBoolean } from './ParamBoolean/ParamBoolean'

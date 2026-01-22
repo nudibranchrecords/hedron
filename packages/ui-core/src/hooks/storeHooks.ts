@@ -1,7 +1,7 @@
 import { createContext, useContext } from 'react'
 import { useStore } from 'zustand'
-import { AppStore, AppState } from '@hedron/app-store'
-import { EngineStore, EngineStateWithActions } from '@hedron/engine'
+import { AppStore, AppState } from '@hedron-gl/app-store'
+import { EngineStore, EngineStateWithActions } from '@hedron-gl/engine'
 
 export const AppStoreContext = createContext<AppStore | null>(null)
 

@@ -1,14 +1,14 @@
-import { HedronEngine } from '@hedron/engine'
+import { HedronEngine } from '@hedron-gl/engine'
 import Stats from 'three/examples/jsm/libs/stats.module.js'
-import { Clock } from '@hedron/clock'
-import { MidiInput, MidiInputPanel } from '@hedron/midi-input'
-import { LFOInput, LFOInputPanel } from '@hedron/lfo-input'
+import { Clock } from '@hedron-gl/clock'
+import { MidiInput, MidiInputPanel } from '@hedron-gl/midi-input'
+import { LFOInput, LFOInputPanel } from '@hedron-gl/lfo-input'
 import {
   AudioInput,
   AudioInputPanel,
   AudioGlobalWidget,
   AudioGlobalPanel,
-} from '@hedron/audio-input'
+} from '@hedron-gl/audio-input'
 
 export const performanceMonitor = new Stats()
 

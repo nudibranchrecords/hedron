@@ -1,4 +1,4 @@
-import { ProjectData } from '@hedron/app-store'
+import { ProjectData } from '@hedron-gl/app-store'
 import {
   DialogEvents,
   FileEvents,

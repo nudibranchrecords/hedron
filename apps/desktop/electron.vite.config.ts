@@ -18,26 +18,26 @@ export default defineConfig({
     resolve: {
       alias: {
         // Setting aliases here to allow for hot module reloading
-        '@hedron/ui-core/base.css': path.resolve(
+        '@hedron-gl/ui-core/base.css': path.resolve(
           __dirname,
           '../../packages/ui-core/src/css/base.css',
         ),
-        '@hedron/ui-core/icons.css': path.resolve(
+        '@hedron-gl/ui-core/icons.css': path.resolve(
           __dirname,
           '../../packages/ui-core/src/css/icons.css',
         ),
-        '@hedron/ui-core/fonts.css': path.resolve(
+        '@hedron-gl/ui-core/fonts.css': path.resolve(
           __dirname,
           '../../packages/ui-core/src/css/fonts.css',
         ),
-        '@hedron/ui-core': path.resolve(__dirname, '../../packages/ui-core/src'),
-        '@hedron/midi-input': path.resolve(__dirname, '../../packages/midi-input/src'),
-        '@hedron/lfo-input': path.resolve(__dirname, '../../packages/lfo-input/src'),
-        '@hedron/audio-input': path.resolve(__dirname, '../../packages/audio-input/src'),
-        '@hedron/app-store': path.resolve(__dirname, '../../packages/app-store/src'),
-        '@hedron/clock': path.resolve(__dirname, '../../packages/clock/src'),
-        '@hedron/engine': path.resolve(__dirname, '../../packages/engine/src'),
-        '@hedron/midi-manager': path.resolve(__dirname, '../../packages/midi-manager/src'),
+        '@hedron-gl/ui-core': path.resolve(__dirname, '../../packages/ui-core/src'),
+        '@hedron-gl/midi-input': path.resolve(__dirname, '../../packages/midi-input/src'),
+        '@hedron-gl/lfo-input': path.resolve(__dirname, '../../packages/lfo-input/src'),
+        '@hedron-gl/audio-input': path.resolve(__dirname, '../../packages/audio-input/src'),
+        '@hedron-gl/app-store': path.resolve(__dirname, '../../packages/app-store/src'),
+        '@hedron-gl/clock': path.resolve(__dirname, '../../packages/clock/src'),
+        '@hedron-gl/engine': path.resolve(__dirname, '../../packages/engine/src'),
+        '@hedron-gl/midi-manager': path.resolve(__dirname, '../../packages/midi-manager/src'),
       },
     },
   },

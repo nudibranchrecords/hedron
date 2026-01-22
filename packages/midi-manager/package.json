@@ -1,5 +1,5 @@
 {
-  "name": "@hedron/midi-manager",
+  "name": "@hedron-gl/midi-manager",
   "version": "1.0.0-alpha.3",
   "description": "MIDI Module",
   "author": "Alex Kempton <alex@funwithtriangles.net>",
@@ -19,5 +19,6 @@
   },
   "bugs": {
     "url": "https://github.com/nudibranchrecords/hedron/issues"
-  }
+  },
+  "gitHead": "1951953311362df340f1926345356e937286cc39"
 }

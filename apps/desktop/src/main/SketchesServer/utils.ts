@@ -1,6 +1,6 @@
 import path from 'path'
 import { FSWatcher } from 'chokidar'
-import { GlobalEngineVarsRef } from '@hedron/engine'
+import { GlobalEngineVarsRef } from '@hedron-gl/engine'
 import { debounceWithId } from '@shared/utils/debounceWithId'
 import { FileWatchEvents } from '@shared/Events'
 

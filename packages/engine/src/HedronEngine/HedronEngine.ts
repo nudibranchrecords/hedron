@@ -1,5 +1,5 @@
 import { Pass } from 'postprocessing'
-import { type Clock } from '@hedron/clock'
+import { type Clock } from '@hedron-gl/clock'
 import { listenToStore } from './storeListener'
 import { CanvasSizeMode, RendererType, Result, ShotArgsObject } from './types'
 import { importSketchModule } from './importSketchModule'

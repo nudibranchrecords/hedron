@@ -11,9 +11,9 @@ import {
   useAppStore,
   useOnSelectNode,
   NodeContainer,
-} from '@hedron/ui-core'
+} from '@hedron-gl/ui-core'
 
-import { Node } from '@hedron/engine'
+import { Node } from '@hedron-gl/engine'
 import c from './ActiveSketch.module.css'
 import { useActiveSketch } from '@components/hooks/useActiveSketch'
 import { engineStore } from '@renderer/engine'

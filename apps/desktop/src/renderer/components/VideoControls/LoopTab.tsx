@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Button } from '@hedron/ui-core'
+import { Button } from '@hedron-gl/ui-core'
 import c from './VideoControls.module.css'
 import { engine } from '@renderer/engine'
 
