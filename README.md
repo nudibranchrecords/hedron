@@ -6,6 +6,14 @@
 2. Run `pnpm build` to build all packages in the monorepo
 3. Run `pnpm dev` to start Hedron. This will only be watching for changes in `packages/desktop` - you'll need to separately run `dev` in packages you are working in
 
+## Repo structure
+
+This is a monorepo. All app-like parts are under `apps` and the packages they consume are under `packages`, most of which are published on npm.
+
+## License overview
+
+Most code in this repo is licenced under MIT, with one exception. The Hedron app itself is published under AGPL-3.0. This means you can freely use all of Hedron's packages to make your own software (e.g. web experiences) but you cannot use the main app itself (e.g the entire UI interface) in your own software without making that open-source, with the same AGPL-3.0 license.
+
 ## Working on isolated packages
 
 If you're just working on the clock package, use `pnpm dev:clock`. This will build the clock package and also start the `clock-test-app` package.
