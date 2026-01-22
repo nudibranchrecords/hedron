@@ -42,6 +42,9 @@
     "url": "https://github.com/nudibranchrecords/hedron/issues"
   },
   "homepage": "https://github.com/nudibranchrecords/hedron#readme",
+  "publishConfig": {
+    "access": "public"
+  },
   "dependencies": {
     "immer": "^10.1.1",
     "lodash.debounce": "^4.0.8",
@@ -69,5 +72,5 @@
       "optional": true
     }
   },
-  "gitHead": "1951953311362df340f1926345356e937286cc39"
+  "gitHead": "1352d7fd73c0ff7d261d044533f347023b8a323c"
 }

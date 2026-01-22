@@ -40,6 +40,9 @@
   "bugs": {
     "url": "https://github.com/nudibranchrecords/hedron/issues"
   },
+  "publishConfig": {
+    "access": "public"
+  },
   "dependencies": {
     "@floating-ui/react-dom": "^2.1.2",
     "@hedron-gl/app-store": "workspace:^",
@@ -61,5 +64,5 @@
     "@storybook/test": "^8.2.9",
     "storybook": "^8.2.9"
   },
-  "gitHead": "1951953311362df340f1926345356e937286cc39"
+  "gitHead": "1352d7fd73c0ff7d261d044533f347023b8a323c"
 }

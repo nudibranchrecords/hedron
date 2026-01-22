@@ -34,6 +34,9 @@
   "bugs": {
     "url": "https://github.com/nudibranchrecords/hedron/issues"
   },
+  "publishConfig": {
+    "access": "public"
+  },
   "dependencies": {
     "@hedron-gl/engine": "workspace:^",
     "@redux-devtools/extension": "^3.3.0",
@@ -45,5 +48,5 @@
     "tsup": "^8.0.0",
     "typescript": "^5.0.0"
   },
-  "gitHead": "1951953311362df340f1926345356e937286cc39"
+  "gitHead": "1352d7fd73c0ff7d261d044533f347023b8a323c"
 }
