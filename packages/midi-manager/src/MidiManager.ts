@@ -277,7 +277,7 @@ export class MidiManager {
     setTimeout(() => {
       this.sendMidiMessage(device, {
         device,
-        channel: 0,
+        channel,
         type: MidiMessageType.NoteOff,
         note,
         value: velocity,
