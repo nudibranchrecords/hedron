@@ -1,6 +1,7 @@
 {
-  "name": "@hedron/example-project",
+  "name": "example-project",
   "version": "1.0.0-alpha.2",
+  "private": true,
   "dependencies": {
     "is-even": "^1.0.0",
     "postprocessing": "^6.37.6",

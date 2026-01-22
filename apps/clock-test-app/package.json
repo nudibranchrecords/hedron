@@ -1,6 +1,7 @@
 {
-  "name": "@hedron/clock-test-app",
+  "name": "clock-test-app",
   "version": "1.0.0-alpha.2",
+  "private": true,
   "type": "module",
   "scripts": {
     "dev": "vite",

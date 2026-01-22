@@ -84,6 +84,177 @@ importers:
         specifier: ^5.1.4
         version: 5.1.4(typescript@5.8.2)(vite@7.1.2(@types/node@24.3.0)(yaml@2.8.1))
 
+  apps/clock-test-app:
+    dependencies:
+      '@hedron/clock':
+        specifier: workspace:^
+        version: link:../../packages/clock
+      '@picocss/pico':
+        specifier: ^2.0.6
+        version: 2.1.1
+
+  apps/desktop:
+    dependencies:
+      '@electron-toolkit/preload':
+        specifier: ^3.0.2
+        version: 3.0.2(electron@37.3.0)
+      '@electron-toolkit/utils':
+        specifier: ^3.0.0
+        version: 3.0.0(electron@37.3.0)
+      '@esbuild/darwin-arm64':
+        specifier: ^0.23.1
+        version: 0.23.1
+      '@esbuild/darwin-x64':
+        specifier: ^0.23.1
+        version: 0.23.1
+      '@esbuild/linux-x64':
+        specifier: ^0.23.1
+        version: 0.23.1
+      '@esbuild/win32-ia32':
+        specifier: ^0.23.1
+        version: 0.23.1
+      '@esbuild/win32-x64':
+        specifier: ^0.23.1
+        version: 0.23.1
+      '@hedron/app-store':
+        specifier: workspace:^
+        version: link:../../packages/app-store
+      '@hedron/audio-input':
+        specifier: workspace:^
+        version: link:../../packages/audio-input
+      '@hedron/clock':
+        specifier: workspace:^
+        version: link:../../packages/clock
+      '@hedron/engine':
+        specifier: workspace:^
+        version: link:../../packages/engine
+      '@hedron/lfo-input':
+        specifier: workspace:^
+        version: link:../../packages/lfo-input
+      '@hedron/midi-input':
+        specifier: workspace:^
+        version: link:../../packages/midi-input
+      '@hedron/ui-core':
+        specifier: workspace:^
+        version: link:../../packages/ui-core
+      '@tomjs/electron-devtools-installer':
+        specifier: ^2.4.0
+        version: 2.4.0(electron@37.3.0)
+      chokidar:
+        specifier: ^4.0.3
+        version: 4.0.3
+      date-fns:
+        specifier: ^4.1.0
+        version: 4.1.0
+      electron-updater:
+        specifier: ^6.6.2
+        version: 6.6.2
+      esbuild:
+        specifier: ^0.23.1
+        version: 0.23.1
+      fs-extra:
+        specifier: ^11.3.1
+        version: 11.3.1
+      get-port-please:
+        specifier: ^3.2.0
+        version: 3.2.0
+      lodash.debounce:
+        specifier: ^4.0.8
+        version: 4.0.8
+      postprocessing:
+        specifier: ^6.37.7
+        version: 6.38.2(three@0.178.0)
+      three:
+        specifier: ^0.178.0
+        version: 0.178.0
+      usehooks-ts:
+        specifier: ^3.1.1
+        version: 3.1.1(react@19.1.1)
+      zustand:
+        specifier: ^4.5.7
+        version: 4.5.7(@types/react@18.3.23)(immer@10.1.1)(react@19.1.1)
+    devDependencies:
+      '@types/fs-extra':
+        specifier: ^11.0.4
+        version: 11.0.4
+      '@types/lodash.debounce':
+        specifier: ^4.0.9
+        version: 4.0.9
+      '@types/node':
+        specifier: ^24.3.0
+        version: 24.3.0
+      '@types/three':
+        specifier: ^0.178.1
+        version: 0.178.1
+      electron:
+        specifier: 37.3.0
+        version: 37.3.0
+      electron-builder:
+        specifier: 26.0.12
+        version: 26.0.12(electron-builder-squirrel-windows@26.0.12(dmg-builder@26.0.12))
+      electron-vite:
+        specifier: ^4.0.0
+        version: 4.0.0(vite@7.1.2(@types/node@24.3.0)(yaml@2.8.1))
+
+  apps/example-project:
+    dependencies:
+      is-even:
+        specifier: ^1.0.0
+        version: 1.0.0
+      postprocessing:
+        specifier: ^6.37.6
+        version: 6.38.2(three@0.178.0)
+      three:
+        specifier: ^0.178.0
+        version: 0.178.0
+      three-stdlib:
+        specifier: ^2.36.0
+        version: 2.36.0(three@0.178.0)
+    devDependencies:
+      '@types/three':
+        specifier: ^0.178.1
+        version: 0.178.1
+
+  apps/midi-test-app:
+    dependencies:
+      '@hedron/midi-manager':
+        specifier: workspace:^
+        version: link:../../packages/midi-manager
+      '@picocss/pico':
+        specifier: ^2.0.6
+        version: 2.1.1
+      zustand:
+        specifier: ^5.0.2
+        version: 5.0.8(@types/react@18.3.23)(immer@10.1.1)(react@18.3.1)(use-sync-external-store@1.5.0(react@18.3.1))
+
+  apps/web-example:
+    dependencies:
+      '@fontsource/chivo-mono':
+        specifier: ^5.2.6
+        version: 5.2.6
+      '@hedron/clock':
+        specifier: workspace:^
+        version: link:../../packages/clock
+      '@hedron/engine':
+        specifier: workspace:^
+        version: link:../../packages/engine
+      '@hedron/lfo-input':
+        specifier: workspace:^
+        version: link:../../packages/lfo-input
+      postprocessing:
+        specifier: ^6.38.2
+        version: 6.38.2(three@0.178.0)
+      three:
+        specifier: ^0.178.0
+        version: 0.178.0
+      three-stdlib:
+        specifier: ^2.36.0
+        version: 2.36.0(three@0.178.0)
+    devDependencies:
+      '@types/three':
+        specifier: ^0.178.0
+        version: 0.178.1
+
   packages/app-store:
     dependencies:
       '@hedron/engine':
@@ -148,118 +319,6 @@ importers:
 
   packages/clock: {}
 
-  packages/clock-test-app:
-    dependencies:
-      '@hedron/clock':
-        specifier: workspace:^
-        version: link:../clock
-      '@picocss/pico':
-        specifier: ^2.0.6
-        version: 2.1.1
-
-  packages/desktop:
-    dependencies:
-      '@electron-toolkit/preload':
-        specifier: ^3.0.2
-        version: 3.0.2(electron@37.3.0)
-      '@electron-toolkit/utils':
-        specifier: ^3.0.0
-        version: 3.0.0(electron@37.3.0)
-      '@esbuild/darwin-arm64':
-        specifier: ^0.23.1
-        version: 0.23.1
-      '@esbuild/darwin-x64':
-        specifier: ^0.23.1
-        version: 0.23.1
-      '@esbuild/linux-x64':
-        specifier: ^0.23.1
-        version: 0.23.1
-      '@esbuild/win32-ia32':
-        specifier: ^0.23.1
-        version: 0.23.1
-      '@esbuild/win32-x64':
-        specifier: ^0.23.1
-        version: 0.23.1
-      '@hedron/app-store':
-        specifier: workspace:^
-        version: link:../app-store
-      '@hedron/audio-input':
-        specifier: workspace:^
-        version: link:../audio-input
-      '@hedron/clock':
-        specifier: workspace:^
-        version: link:../clock
-      '@hedron/engine':
-        specifier: workspace:^
-        version: link:../engine
-      '@hedron/lfo-input':
-        specifier: workspace:^
-        version: link:../lfo-input
-      '@hedron/midi-input':
-        specifier: workspace:^
-        version: link:../midi-input
-      '@hedron/ui-core':
-        specifier: workspace:^
-        version: link:../ui-core
-      '@tomjs/electron-devtools-installer':
-        specifier: ^2.4.0
-        version: 2.4.0(electron@37.3.0)
-      chokidar:
-        specifier: ^4.0.3
-        version: 4.0.3
-      date-fns:
-        specifier: ^4.1.0
-        version: 4.1.0
-      electron-updater:
-        specifier: ^6.6.2
-        version: 6.6.2
-      esbuild:
-        specifier: ^0.23.1
-        version: 0.23.1
-      fs-extra:
-        specifier: ^11.3.1
-        version: 11.3.1
-      get-port-please:
-        specifier: ^3.2.0
-        version: 3.2.0
-      lodash.debounce:
-        specifier: ^4.0.8
-        version: 4.0.8
-      postprocessing:
-        specifier: ^6.37.7
-        version: 6.37.7(three@0.178.0)
-      three:
-        specifier: ^0.178.0
-        version: 0.178.0
-      usehooks-ts:
-        specifier: ^3.1.1
-        version: 3.1.1(react@19.1.1)
-      zustand:
-        specifier: ^4.5.7
-        version: 4.5.7(@types/react@19.1.10)(immer@10.1.1)(react@19.1.1)
-    devDependencies:
-      '@types/fs-extra':
-        specifier: ^11.0.4
-        version: 11.0.4
-      '@types/lodash.debounce':
-        specifier: ^4.0.9
-        version: 4.0.9
-      '@types/node':
-        specifier: ^24.3.0
-        version: 24.3.0
-      '@types/three':
-        specifier: ^0.178.1
-        version: 0.178.1
-      electron:
-        specifier: 37.3.0
-        version: 37.3.0
-      electron-builder:
-        specifier: 26.0.12
-        version: 26.0.12(electron-builder-squirrel-windows@26.0.12(dmg-builder@26.0.12))
-      electron-vite:
-        specifier: ^4.0.0
-        version: 4.0.0(vite@7.1.2(@types/node@24.3.0)(yaml@2.8.1))
-
   packages/engine:
     dependencies:
       '@types/react':
@@ -298,25 +357,6 @@ importers:
         version: 4.0.9
       '@types/three':
         specifier: ^0.178.0
-        version: 0.178.1
-
-  packages/example-project:
-    dependencies:
-      is-even:
-        specifier: ^1.0.0
-        version: 1.0.0
-      postprocessing:
-        specifier: ^6.37.6
-        version: 6.37.7(three@0.178.0)
-      three:
-        specifier: ^0.178.0
-        version: 0.178.0
-      three-stdlib:
-        specifier: ^2.36.0
-        version: 2.36.0(three@0.178.0)
-    devDependencies:
-      '@types/three':
-        specifier: ^0.178.1
         version: 0.178.1
 
   packages/lfo-input:
@@ -363,18 +403,6 @@ importers:
         version: link:../ui-core
 
   packages/midi-manager: {}
-
-  packages/midi-test-app:
-    dependencies:
-      '@hedron/midi-manager':
-        specifier: workspace:^
-        version: link:../midi-manager
-      '@picocss/pico':
-        specifier: ^2.0.6
-        version: 2.1.1
-      zustand:
-        specifier: ^5.0.2
-        version: 5.0.7(@types/react@18.3.23)(immer@10.1.1)(react@18.3.1)(use-sync-external-store@1.5.0(react@18.3.1))
 
   packages/ui-core:
     dependencies:
@@ -430,34 +458,6 @@ importers:
       storybook:
         specifier: ^8.2.9
         version: 8.6.14(prettier@3.6.2)
-
-  packages/web-example:
-    dependencies:
-      '@fontsource/chivo-mono':
-        specifier: ^5.2.6
-        version: 5.2.6
-      '@hedron/clock':
-        specifier: workspace:^
-        version: link:../clock
-      '@hedron/engine':
-        specifier: workspace:^
-        version: link:../engine
-      '@hedron/lfo-input':
-        specifier: workspace:^
-        version: link:../lfo-input
-      postprocessing:
-        specifier: ^6.38.2
-        version: 6.38.2(three@0.178.0)
-      three:
-        specifier: ^0.178.0
-        version: 0.178.0
-      three-stdlib:
-        specifier: ^2.36.0
-        version: 2.36.0(three@0.178.0)
-    devDependencies:
-      '@types/three':
-        specifier: ^0.178.0
-        version: 0.178.1
 
 packages:
 
@@ -6631,7 +6631,7 @@ snapshots:
 
   '@electron/universal@2.0.1':
     dependencies:
-      '@electron/asar': 3.2.18
+      '@electron/asar': 3.4.1
       '@malept/cross-spawn-promise': 2.0.0
       debug: 4.4.1
       dir-compare: 4.2.0
@@ -12990,14 +12990,6 @@ snapshots:
       use-sync-external-store: 1.5.0(react@19.1.1)
     optionalDependencies:
       '@types/react': 18.3.23
-      immer: 10.1.1
-      react: 19.1.1
-
-  zustand@4.5.7(@types/react@19.1.10)(immer@10.1.1)(react@19.1.1):
-    dependencies:
-      use-sync-external-store: 1.5.0(react@19.1.1)
-    optionalDependencies:
-      '@types/react': 19.1.10
       immer: 10.1.1
       react: 19.1.1
 

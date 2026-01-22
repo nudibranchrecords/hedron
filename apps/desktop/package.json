@@ -1,6 +1,7 @@
 {
-  "name": "@hedron/desktop",
+  "name": "desktop",
   "version": "1.0.0-alpha.2",
+  "private": true,
   "description": "Visual app using three.js",
   "main": "./out/main/index.js",
   "scripts": {

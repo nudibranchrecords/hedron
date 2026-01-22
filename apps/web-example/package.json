@@ -1,6 +1,7 @@
 {
-  "name": "@hedron/web-example",
+  "name": "web-example",
   "version": "1.0.0-alpha.2",
+  "private": true,
   "type": "module",
   "scripts": {
     "dev": "vite",
