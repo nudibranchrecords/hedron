@@ -63,5 +63,5 @@
     "@storybook/react-vite": "^8.2.9",
     "@storybook/test": "^8.2.9",
     "storybook": "^8.2.9"
-  },
+  }
 }
