@@ -1,6 +1,6 @@
 {
   "name": "@hedron/app-store",
-  "version": "1.0.0-alpha.2",
+  "version": "1.0.0-alpha.3",
   "description": "Zustand-based application state store for Hedron",
   "author": "Alex Kempton <alex@funwithtriangles.net>",
   "homepage": "https://github.com/nudibranchrecords/hedron#readme",

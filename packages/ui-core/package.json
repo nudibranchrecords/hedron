@@ -1,6 +1,6 @@
 {
   "name": "@hedron/ui-core",
-  "version": "1.0.0-alpha.2",
+  "version": "1.0.0-alpha.3",
   "description": "A collection of components and hooks for Hedron desktop and any plugins/inputs",
   "author": "Alex Kempton <alex@funwithtriangles.net>",
   "homepage": "https://github.com/nudibranchrecords/hedron#readme",
