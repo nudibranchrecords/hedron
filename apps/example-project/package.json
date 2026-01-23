@@ -1,6 +1,6 @@
 {
   "name": "example-project",
-  "version": "1.0.0-alpha.3",
+  "version": "1.0.0-alpha.4",
   "private": true,
   "dependencies": {
     "is-even": "^1.0.0",

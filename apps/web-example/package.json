@@ -1,6 +1,6 @@
 {
   "name": "web-example",
-  "version": "1.0.0-alpha.3",
+  "version": "1.0.0-alpha.4",
   "private": true,
   "type": "module",
   "scripts": {
@@ -9,9 +9,9 @@
   },
   "dependencies": {
     "@fontsource/chivo-mono": "^5.2.6",
-    "@hedron-gl/clock": "1.0.0-alpha.3",
-    "@hedron-gl/engine": "1.0.0-alpha.3",
-    "@hedron-gl/lfo-input": "1.0.0-alpha.3",
+    "@hedron-gl/clock": "^1.0.0-alpha.4",
+    "@hedron-gl/engine": "^1.0.0-alpha.4",
+    "@hedron-gl/lfo-input": "^1.0.0-alpha.4",
     "postprocessing": "*",
     "three": "^0.178.0",
     "three-stdlib": "^2.36.0"

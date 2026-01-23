@@ -1,6 +1,6 @@
 {
   "name": "@hedron-gl/ui-core",
-  "version": "1.0.0-alpha.3",
+  "version": "1.0.0-alpha.4",
   "description": "A collection of components and hooks for Hedron desktop and any plugins/inputs",
   "author": "Alex Kempton <alex@funwithtriangles.net>",
   "homepage": "https://github.com/nudibranchrecords/hedron#readme",
@@ -45,7 +45,7 @@
   },
   "dependencies": {
     "@floating-ui/react-dom": "^2.1.2",
-    "@hedron-gl/app-store": "1.0.0-alpha.3",
+    "@hedron-gl/app-store": "^1.0.0-alpha.4",
     "@uiw/react-color": "^2.3.4",
     "material-symbols": "^0.40.2",
     "react-error-boundary": "^4.1.2",
@@ -54,7 +54,7 @@
   },
   "devDependencies": {
     "@chromatic-com/storybook": "^1.8.0",
-    "@hedron-gl/engine": "1.0.0-alpha.3",
+    "@hedron-gl/engine": "^1.0.0-alpha.4",
     "@storybook/addon-essentials": "^8.2.9",
     "@storybook/addon-interactions": "^8.2.9",
     "@storybook/addon-links": "^8.2.9",

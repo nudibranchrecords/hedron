@@ -1,6 +1,6 @@
 {
   "name": "clock-test-app",
-  "version": "1.0.0-alpha.3",
+  "version": "1.0.0-alpha.4",
   "private": true,
   "type": "module",
   "scripts": {
@@ -8,7 +8,7 @@
     "lint": "eslint . --ext .js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix"
   },
   "dependencies": {
-    "@hedron-gl/clock": "1.0.0-alpha.3",
+    "@hedron-gl/clock": "^1.0.0-alpha.4",
     "@picocss/pico": "^2.0.6"
   }
 }

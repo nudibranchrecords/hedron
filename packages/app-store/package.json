@@ -1,6 +1,6 @@
 {
   "name": "@hedron-gl/app-store",
-  "version": "1.0.0-alpha.3",
+  "version": "1.0.0-alpha.4",
   "description": "Zustand-based application state store for Hedron",
   "author": "Alex Kempton <alex@funwithtriangles.net>",
   "homepage": "https://github.com/nudibranchrecords/hedron#readme",
@@ -38,7 +38,7 @@
     "access": "public"
   },
   "dependencies": {
-    "@hedron-gl/engine": "1.0.0-alpha.3",
+    "@hedron-gl/engine": "^1.0.0-alpha.4",
     "@redux-devtools/extension": "^3.3.0",
     "immer": "^10.1.1",
     "zustand": "^5.0.8"
