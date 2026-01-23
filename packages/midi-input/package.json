@@ -8,13 +8,6 @@
   "license": "ISC",
   "main": "./dist/midi-input.es.js",
   "types": "./dist/index.d.ts",
-  "directories": {
-    "lib": "lib",
-    "test": "__tests__"
-  },
-  "files": [
-    "lib"
-  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/nudibranchrecords/hedron.git"
