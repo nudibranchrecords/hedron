@@ -26,9 +26,9 @@
     "lint": "eslint . --ext .js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix"
   },
   "dependencies": {
-    "@hedron-gl/engine": "workspace:^",
-    "@hedron-gl/midi-manager": "workspace:^",
-    "@hedron-gl/ui-core": "workspace:^"
+    "@hedron-gl/engine": "1.0.0-alpha.3",
+    "@hedron-gl/midi-manager": "1.0.0-alpha.3",
+    "@hedron-gl/ui-core": "1.0.0-alpha.3"
   },
   "bugs": {
     "url": "https://github.com/nudibranchrecords/hedron/issues"

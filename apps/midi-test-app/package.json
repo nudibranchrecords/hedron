@@ -8,8 +8,8 @@
     "lint": "eslint . --ext .js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix"
   },
   "dependencies": {
-    "@hedron-gl/midi-manager": "workspace:^",
+    "@hedron-gl/midi-manager": "1.0.0-alpha.3",
     "@picocss/pico": "^2.0.6",
-    "zustand": "^5.0.2"
+    "zustand": "^5.0.8"
   }
 }

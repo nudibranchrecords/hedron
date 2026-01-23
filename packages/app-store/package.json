@@ -38,14 +38,14 @@
     "access": "public"
   },
   "dependencies": {
-    "@hedron-gl/engine": "workspace:^",
+    "@hedron-gl/engine": "1.0.0-alpha.3",
     "@redux-devtools/extension": "^3.3.0",
     "immer": "^10.1.1",
-    "zustand": "^4.5.7"
+    "zustand": "^5.0.8"
   },
   "devDependencies": {
-    "@types/node": "^24.3.0",
-    "tsup": "^8.0.0",
-    "typescript": "^5.0.0"
+    "@types/node": "^25.0.0",
+    "tsup": "^8.3.6",
+    "typescript": "^5.6.2"
   }
 }
