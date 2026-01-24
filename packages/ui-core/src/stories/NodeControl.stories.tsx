@@ -79,11 +79,6 @@ export const NumberVertical = ({ title = 'Short Name', isActive, onClick }: Basi
 }
 
 export const NumberMinMaxPositive = ({
-
-
-
- ,
-
   title = 'Short Name',
   isActive,
   layout,
@@ -103,11 +98,7 @@ export const NumberMinMaxPositive = ({
           <FloatSlider min={5} max={20} onValueChange={fn()} ref={ref} />
         </NodeControlInner>
       </NodeControlMain>
-
-
-
- ,
-
+      ,
     </NodeControl>
   )
 }
