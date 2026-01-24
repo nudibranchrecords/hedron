@@ -413,6 +413,8 @@ export class AudioAnalyzer {
       // Normalize to 0-1 range
       let freq = this.audioData.freqs[i] / 256
 
+      freq = freq * this.masterVolume
+
       // Apply falloff to create smoother transitions
       freq = Math.max(freq, Math.max(0, this.fullCleanLevelsData[i] - this.levelsFalloff))
       this.fullCleanLevelsData[i] = freq
@@ -493,6 +495,9 @@ export class AudioAnalyzer {
       // Calculate weighted average
       let bandValue = totalWeight > 0 ? sum / totalWeight : 0
 
+      // Apply master volume
+      bandValue = bandValue * this.masterVolume
+
       // Apply falloff for smoother transitions
       bandValue = Math.max(
         bandValue,
@@ -523,9 +528,6 @@ export class AudioAnalyzer {
 
       // Apply exponential curve for emphasis
       bandValue = Math.pow(bandValue, this.levelsPower)
-
-      // Apply master volume
-      bandValue = bandValue * this.masterVolume
 
       // Apply smoothing between frames
       this.levelsData[bandIndex] = lerp(bandValue, this.levelsData[bandIndex], this.smoothing)
