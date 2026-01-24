@@ -1,8 +1,5 @@
 import { RefObject, useEffect, useRef } from 'react'
 
-console.log('oi')
-
-export const useElementScrub = (elRef: RefObject<HTMLElement>, onDrag: (diff: number) => void) => {
   const startX = useRef<number>(0)
 
   useEffect(() => {
