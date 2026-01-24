@@ -26,6 +26,7 @@ export const createWindow = (): void => {
     show: false,
     autoHideMenuBar: !process.platform.startsWith('win'),
     ...(process.platform === 'linux' ? { icon } : {}),
+    title: 'Hedron',
     webPreferences: {
       preload: join(__dirname, '../preload/index.js'),
       sandbox: false,

@@ -1,5 +1,6 @@
 {
   "name": "root",
+  "productName": "Hedron",
   "private": true,
   "scripts": {
     "dev": "lerna run dev --scope @hedron/desktop",
