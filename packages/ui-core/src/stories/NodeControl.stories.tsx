@@ -78,7 +78,17 @@ export const NumberVertical = ({ title = 'Short Name', isActive, onClick }: Basi
   )
 }
 
-export const NumberMinMaxPositive = ({ title = 'Short Name', isActive, layout, onClick }: BasicProps) => {
+export const NumberMinMaxPositive = ({
+
+
+
+ ,
+
+  title = 'Short Name',
+  isActive,
+  layout,
+  onClick,
+}: BasicProps) => {
   const ref = useRef<FloatSliderHandle>(null)
 
   useEffect(() => {
@@ -93,11 +103,21 @@ export const NumberMinMaxPositive = ({ title = 'Short Name', isActive, layout, o
           <FloatSlider min={5} max={20} onValueChange={fn()} ref={ref} />
         </NodeControlInner>
       </NodeControlMain>
+
+
+
+ ,
+
     </NodeControl>
   )
 }
 
-export const NumberMinMaxNegative = ({ title = 'Short Name', isActive, layout, onClick }: BasicProps) => {
+export const NumberMinMaxNegative = ({
+  title = 'Short Name',
+  isActive,
+  layout,
+  onClick,
+}: BasicProps) => {
   const ref = useRef<FloatSliderHandle>(null)
 
   useEffect(() => {
