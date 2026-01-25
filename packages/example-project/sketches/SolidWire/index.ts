@@ -249,6 +249,7 @@ export default class Solid {
     return {
       title: 'Solid Wire',
       category: 'simple',
+      description: 'Wireframe solid geometries with adjustable edge thickness',
       params: [
         {
           key: 'rotX',
