@@ -192,6 +192,9 @@ importers:
       '@hedron/engine':
         specifier: workspace:^
         version: link:../engine
+      '@hedron/gamepad-input':
+        specifier: workspace:^
+        version: link:../gamepad-input
       '@hedron/lfo-input':
         specifier: workspace:^
         version: link:../lfo-input
@@ -236,7 +239,7 @@ importers:
         version: 3.1.1(react@19.1.1)
       zustand:
         specifier: ^4.5.7
-        version: 4.5.7(@types/react@19.1.10)(immer@10.1.1)(react@19.1.1)
+        version: 4.5.7(@types/react@18.3.23)(immer@10.1.1)(react@19.1.1)
     devDependencies:
       '@types/fs-extra':
         specifier: ^11.0.4
@@ -318,6 +321,15 @@ importers:
       '@types/three':
         specifier: ^0.178.1
         version: 0.178.1
+
+  packages/gamepad-input:
+    dependencies:
+      '@hedron/engine':
+        specifier: workspace:^
+        version: link:../engine
+      '@hedron/ui-core':
+        specifier: workspace:^
+        version: link:../ui-core
 
   packages/lfo-input:
     dependencies:
@@ -12990,14 +13002,6 @@ snapshots:
       use-sync-external-store: 1.5.0(react@19.1.1)
     optionalDependencies:
       '@types/react': 18.3.23
-      immer: 10.1.1
-      react: 19.1.1
-
-  zustand@4.5.7(@types/react@19.1.10)(immer@10.1.1)(react@19.1.1):
-    dependencies:
-      use-sync-external-store: 1.5.0(react@19.1.1)
-    optionalDependencies:
-      '@types/react': 19.1.10
       immer: 10.1.1
       react: 19.1.1
 
