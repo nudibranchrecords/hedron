@@ -25,6 +25,7 @@ export default defineConfig({
         '@hedron/midi-input': path.resolve(__dirname, '../midi-input/src'),
         '@hedron/lfo-input': path.resolve(__dirname, '../lfo-input/src'),
         '@hedron/audio-input': path.resolve(__dirname, '../audio-input/src'),
+        '@hedron/gamepad-input': path.resolve(__dirname, '../gamepad-input/src'),
       },
     },
   },

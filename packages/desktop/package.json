@@ -31,6 +31,7 @@
     "@hedron/engine": "workspace:^",
     "@hedron/lfo-input": "workspace:^",
     "@hedron/midi-input": "workspace:^",
+    "@hedron/gamepad-input": "workspace:^",
     "@hedron/ui-core": "workspace:^",
     "@tomjs/electron-devtools-installer": "^2.4.0",
     "chokidar": "^4.0.3",
