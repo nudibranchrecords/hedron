@@ -67,17 +67,19 @@ const useGamepadLearn = (input: Input, engine: HedronEngine) => {
 export const GamepadInputPanel = ({ input, engine }: IProps) => {
   const { isLearning, runGamepadLearn, cancelGamepadLearn } = useGamepadLearn(input, engine)
 
-  // Get both nodes and inputType value in a single selector for efficiency
-  const { nodes, inputTypeValue } = useEngineStore(
+  // Get nodes, inputType, and target node type in a single selector for efficiency
+  const { nodes, inputTypeValue, targetNodeValueType } = useEngineStore(
     useCallback(
       (state) => {
         const inputTypeNode = input.optionNodeIds.find((id) => state.nodes[id]?.key === 'inputType')
+        const targetNode = state.nodes[input.targetNodeId]
         return {
           nodes: state.nodes,
           inputTypeValue: inputTypeNode ? state.nodeValues[inputTypeNode] : null,
+          targetNodeValueType: targetNode?.nodeType === 'param' ? targetNode.valueType : null,
         }
       },
-      [input.optionNodeIds],
+      [input.optionNodeIds, input.targetNodeId],
     ),
   )
 
@@ -86,9 +88,17 @@ export const GamepadInputPanel = ({ input, engine }: IProps) => {
     () =>
       input.optionNodeIds.filter((id) => {
         const node = nodes[id]
-        return !(node?.key === 'triggerOn' && inputTypeValue === 'axis')
+        // Hide triggerOn for axis inputs
+        if (node?.key === 'triggerOn' && inputTypeValue === 'axis') {
+          return false
+        }
+        // Hide buttonMode unless it's a button input targeting a number
+        if (node?.key === 'buttonMode') {
+          return inputTypeValue === 'button' && targetNodeValueType === 'number'
+        }
+        return true
       }),
-    [input.optionNodeIds, nodes, inputTypeValue],
+    [input.optionNodeIds, nodes, inputTypeValue, targetNodeValueType],
   )
 
   return (

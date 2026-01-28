@@ -68,6 +68,16 @@ export class GamepadInput implements IPlugin {
       ],
       defaultValue: 'down',
     },
+    {
+      key: 'buttonMode',
+      title: 'Button Mode',
+      valueType: 'enum',
+      options: [
+        { value: 'hold', label: 'Hold' },
+        { value: 'toggle', label: 'Toggle' },
+      ],
+      defaultValue: 'hold',
+    },
   ] as const satisfies InputOptionNodesConfig
 
   /**
@@ -127,10 +137,29 @@ export class GamepadInput implements IPlugin {
   /**
    * Handles number inputs from gamepad events.
    */
-  private handleNumber: ValueHander = ({ gamepadEvent, storeState, input }) => {
+  private handleNumber: ValueHander = ({ gamepadEvent, storeState, input, optionNodes }) => {
     const sliderMin = (storeState.nodeValues[`${input.targetNodeId}-sliderMin`] as number) ?? 0
     const sliderMax = (storeState.nodeValues[`${input.targetNodeId}-sliderMax`] as number) ?? 1
 
+    // For button inputs, check if toggle mode is enabled
+    if (optionNodes.inputType === GamepadInputType.Button && optionNodes.buttonMode === 'toggle') {
+      // Only toggle on button down
+      const shouldTrigger =
+        (optionNodes.triggerOn === 'down' && gamepadEvent.isPressed) ||
+        (optionNodes.triggerOn === 'up' && !gamepadEvent.isPressed)
+
+      if (!shouldTrigger) return null
+
+      // Toggle the state
+      const currentToggleState = this.toggleStates.get(input.id) ?? false
+      const newToggleState = !currentToggleState
+      this.toggleStates.set(input.id, newToggleState)
+
+      // Return max if toggled on, min if toggled off
+      return newToggleState ? sliderMax : sliderMin
+    }
+
+    // Default behavior: map value to slider range
     return gamepadEvent.value * (sliderMax - sliderMin) + sliderMin
   }
 
@@ -150,6 +179,10 @@ export class GamepadInput implements IPlugin {
    * Tracks target values from gamepad events for each input
    */
   private targetValues = new Map<string, number>()
+  /**
+   * Tracks toggle state for button inputs in toggle mode
+   */
+  private toggleStates = new Map<string, boolean>()
   /**
    * Tracks previous smoothed values for each input target node
    */
