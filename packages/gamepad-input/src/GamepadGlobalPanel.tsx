@@ -9,6 +9,8 @@ import {
   CardBody,
   CardContent,
   Collapsible,
+  ControlGrid,
+  NodeContainer,
 } from '@hedron/ui-core'
 import { GamepadInput } from './GamepadInput'
 import styles from './GamepadGlobalPanel.module.css'
@@ -226,6 +228,7 @@ export const GamepadGlobalPanel: React.FC<GamepadGlobalPanelProps> = ({ engine }
     <Panel>
       <PanelHeader>Gamepad Global Settings</PanelHeader>
       <PanelBody>
+        <GlobalSettings engine={engine} />
         <ControllerList
           connectedGamepads={connectedGamepads}
           expandedControllers={expandedControllers}
@@ -244,6 +247,27 @@ export const GamepadGlobalPanel: React.FC<GamepadGlobalPanelProps> = ({ engine }
         />
       </PanelBody>
     </Panel>
+  )
+}
+
+// Component: Global Settings
+interface GlobalSettingsProps {
+  engine: HedronEngine
+}
+
+const GlobalSettings: React.FC<GlobalSettingsProps> = ({ engine }) => {
+  const globalOptionNodeIds = engine.getPluginGlobalOptionNodeIds('gamepad-input')
+
+  if (globalOptionNodeIds.length === 0) {
+    return null
+  }
+
+  return (
+    <ControlGrid className={styles.controlGrid}>
+      {globalOptionNodeIds.map((id: string) => (
+        <NodeContainer key={id} nodeId={id} />
+      ))}
+    </ControlGrid>
   )
 }
 
