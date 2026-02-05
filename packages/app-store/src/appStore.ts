@@ -5,7 +5,17 @@ import { immer } from 'zustand/middleware/immer'
 import type {} from '@redux-devtools/extension' // required for devtools typing
 import { EngineData } from '@hedron/engine'
 
-export type DialogId = 'sketchModules'
+export type DialogId = 'sketchModules' | 'sketchBuildErrors'
+
+export interface BuildError {
+  text: string
+  location?: {
+    file: string
+    line: number
+    column: number
+    lineText: string
+  } | null
+}
 
 export interface SaveItem {
   title: string
@@ -38,6 +48,7 @@ export interface AppState {
   globalDialogId: DialogId | null
   currentSavePath: string | null
   saveList: SaveItem[]
+  buildErrors: BuildError[]
   setSelectedNode: (sketchID: string | null, nodeId: string) => void
   setSelectedInput: (nodeId: string, inputId: string) => void
   setOpenedControlGroup: (sketchId: string, groupIndex: number, isOpen: boolean) => void
@@ -47,6 +58,7 @@ export interface AppState {
   setCurrentSavePath: (path: string) => void
   addToSaveList: (path: SaveItem) => void
   removeFromSaveList: (path: string) => void
+  setBuildErrors: (errors: BuildError[]) => void
 }
 
 export type SetState = StoreApi<AppState>['setState']
@@ -75,6 +87,7 @@ export const createAppStore = () =>
             selectedInputs: {},
             openedControlGroups: {},
             saveList: [],
+            buildErrors: [],
             setActiveSketchId: (id: string) => {
               set((state) => {
                 state.activeSketchId = id
@@ -107,6 +120,11 @@ export const createAppStore = () =>
                 return {
                   saveList: state.saveList.filter((item) => item.path !== path),
                 }
+              })
+            },
+            setBuildErrors: (errors: BuildError[]) => {
+              set((state) => {
+                state.buildErrors = errors
               })
             },
             setSelectedNode: (sketchID, nodeId) => {

@@ -1,6 +1,7 @@
 import { engine } from '@renderer/engine'
 import { handleLoadProjectDialog, handleSaveProjectDialog } from '@renderer/handlers/fileHandlers'
 import { AppMenuEvents, AppMenuEventsItem, SketchEvents } from '@shared/Events'
+import { appStore, BuildError } from '@renderer/appStore'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const listen = (event: string, cb: (info: any) => void): void => {
@@ -21,16 +22,18 @@ listen(SketchEvents.RemoveSketchModule, (moduleId: string) => {
   engine.removeSketchModule(moduleId)
 })
 
-listen(SketchEvents.BuildErrors, (errors) => {
-  console.log('[Hedron] Build errors:', errors)
+listen(SketchEvents.BuildErrors, (errors: BuildError[]) => {
+  appStore.getState().setBuildErrors(errors)
+  appStore.getState().setGlobalDialogId('sketchBuildErrors')
 })
 
 listen(SketchEvents.BuildWarnings, (warnings) => {
-  console.log('[Hedron] Build warnings:', warnings)
+  console.warn('[Hedron] Build warnings:', warnings)
 })
 
 listen(SketchEvents.BuildSuccess, () => {
-  console.log('[Hedron] Build successful')
+  // Clear any existing build errors on successful build
+  appStore.getState().setBuildErrors([])
 })
 
 listen(AppMenuEvents.AppMenuClick, (item: AppMenuEventsItem) => {
