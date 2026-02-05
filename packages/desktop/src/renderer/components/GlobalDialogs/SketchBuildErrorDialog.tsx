@@ -24,7 +24,7 @@ const MessageItem = ({ message, type }: MessageItemProps) => (
 )
 
 export const SketchBuildErrorDialog = ({ closeDialog }: GlobalDialogProps) => {
-  const buildResult = useAppStore((state) => state.buildResult)
+  const buildResult = useAppStore((state) => state.sketchesServerBuildResult)
 
   const errors = buildResult?.errors ?? []
   const warnings = buildResult?.warnings ?? []

@@ -6,7 +6,7 @@ import { DialogId } from '@renderer/appStore'
 
 const dialogs: { [key in DialogId]: (props: GlobalDialogProps) => JSX.Element } = {
   sketchModules: SketchModulesDialog,
-  sketchBuildResult: SketchBuildErrorDialog,
+  sketchesServerBuildResult: SketchBuildErrorDialog,
 }
 
 export const GlobalDialogs = () => {

@@ -26,12 +26,12 @@ listen(SketchEvents.BuildResult, (result: BuildResult) => {
   const state = appStore.getState()
 
   if (result.errors.length > 0) {
-    state.setBuildResult(result)
-    state.setGlobalDialogId('sketchBuildResult')
+    state.setSketchesServerBuildResult(result)
+    state.setGlobalDialogId('sketchesServerBuildResult')
   } else {
     // Clear build result on successful build with no errors
-    state.setBuildResult(null)
-    if (state.globalDialogId === 'sketchBuildResult') {
+    state.setSketchesServerBuildResult(null)
+    if (state.globalDialogId === 'sketchesServerBuildResult') {
       state.setGlobalDialogId(null)
     }
   }

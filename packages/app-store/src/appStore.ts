@@ -5,7 +5,7 @@ import { immer } from 'zustand/middleware/immer'
 import type {} from '@redux-devtools/extension' // required for devtools typing
 import { EngineData } from '@hedron/engine'
 
-export type DialogId = 'sketchModules' | 'sketchBuildResult'
+export type DialogId = 'sketchModules' | 'sketchesServerBuildResult'
 
 export interface BuildMessage {
   text: string
@@ -53,7 +53,7 @@ export interface AppState {
   globalDialogId: DialogId | null
   currentSavePath: string | null
   saveList: SaveItem[]
-  buildResult: BuildResult | null
+  sketchesServerBuildResult: BuildResult | null
   setSelectedNode: (sketchID: string | null, nodeId: string) => void
   setSelectedInput: (nodeId: string, inputId: string) => void
   setOpenedControlGroup: (sketchId: string, groupIndex: number, isOpen: boolean) => void
@@ -63,7 +63,7 @@ export interface AppState {
   setCurrentSavePath: (path: string) => void
   addToSaveList: (path: SaveItem) => void
   removeFromSaveList: (path: string) => void
-  setBuildResult: (result: BuildResult | null) => void
+  setSketchesServerBuildResult: (result: BuildResult | null) => void
 }
 
 export type SetState = StoreApi<AppState>['setState']
@@ -92,7 +92,7 @@ export const createAppStore = () =>
             selectedInputs: {},
             openedControlGroups: {},
             saveList: [],
-            buildResult: null,
+            sketchesServerBuildResult: null,
             setActiveSketchId: (id: string) => {
               set((state) => {
                 state.activeSketchId = id
@@ -127,9 +127,9 @@ export const createAppStore = () =>
                 }
               })
             },
-            setBuildResult: (result: BuildResult | null) => {
+            setSketchesServerBuildResult: (result: BuildResult | null) => {
               set((state) => {
-                state.buildResult = result
+                state.sketchesServerBuildResult = result
               })
             },
             setSelectedNode: (sketchID, nodeId) => {
