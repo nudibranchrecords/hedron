@@ -47,18 +47,8 @@ export const startSketchesServer = async (dirPath: string): Promise<SketchesServ
     sendToMainWindow(SketchEvents.RemoveSketchModule, moduleId)
   })
 
-  sketchesServer.on(FileWatchEvents.buildErrors, (errors) => {
-    console.log('Build errors:', errors)
-    sendToMainWindow(SketchEvents.BuildErrors, errors)
-  })
-
-  sketchesServer.on(FileWatchEvents.buildWarnings, (warnings) => {
-    console.log('Build warnings:', warnings)
-    sendToMainWindow(SketchEvents.BuildWarnings, warnings)
-  })
-
-  sketchesServer.on(FileWatchEvents.buildSuccess, () => {
-    sendToMainWindow(SketchEvents.BuildSuccess)
+  sketchesServer.on(FileWatchEvents.buildResult, (result) => {
+    sendToMainWindow(SketchEvents.BuildResult, result)
   })
 
   const url = `http://${host}:${port}`

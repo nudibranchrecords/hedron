@@ -1,7 +1,7 @@
 import { engine } from '@renderer/engine'
 import { handleLoadProjectDialog, handleSaveProjectDialog } from '@renderer/handlers/fileHandlers'
 import { AppMenuEvents, AppMenuEventsItem, SketchEvents } from '@shared/Events'
-import { appStore, BuildError } from '@renderer/appStore'
+import { appStore, BuildResult } from '@renderer/appStore'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const listen = (event: string, cb: (info: any) => void): void => {
@@ -22,18 +22,19 @@ listen(SketchEvents.RemoveSketchModule, (moduleId: string) => {
   engine.removeSketchModule(moduleId)
 })
 
-listen(SketchEvents.BuildErrors, (errors: BuildError[]) => {
-  appStore.getState().setBuildErrors(errors)
-  appStore.getState().setGlobalDialogId('sketchBuildErrors')
-})
+listen(SketchEvents.BuildResult, (result: BuildResult) => {
+  const state = appStore.getState()
 
-listen(SketchEvents.BuildWarnings, (warnings) => {
-  console.warn('[Hedron] Build warnings:', warnings)
-})
-
-listen(SketchEvents.BuildSuccess, () => {
-  // Clear any existing build errors on successful build
-  appStore.getState().setBuildErrors([])
+  if (result.errors.length > 0) {
+    state.setBuildResult(result)
+    state.setGlobalDialogId('sketchBuildResult')
+  } else {
+    // Clear build result on successful build with no errors
+    state.setBuildResult(null)
+    if (state.globalDialogId === 'sketchBuildResult') {
+      state.setGlobalDialogId(null)
+    }
+  }
 })
 
 listen(AppMenuEvents.AppMenuClick, (item: AppMenuEventsItem) => {

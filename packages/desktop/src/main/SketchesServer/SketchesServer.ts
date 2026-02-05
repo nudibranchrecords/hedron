@@ -105,20 +105,16 @@ export class SketchesServer extends EventEmitter {
           name: 'on-end',
           setup: (build): void => {
             build.onEnd((result) => {
-              // Emit build errors if any
-              if (result.errors.length > 0) {
-                this.emit(FileWatchEvents.buildErrors, result.errors)
-              }
+              const filteredWarnings = result.warnings.filter(
+                // Glob warnings are ok to ignore, as its looking for both .ts and .js files, but there will always be one of them missing
+                (warning) => warning.id !== 'empty-glob',
+              )
 
-              // Emit build warnings if any
-              if (result.warnings.length > 0) {
-                this.emit(FileWatchEvents.buildWarnings, result.warnings)
-              }
-
-              // Emit success if no errors
-              if (result.errors.length === 0) {
-                this.emit(FileWatchEvents.buildSuccess)
-              }
+              // Emit build result with errors and warnings
+              this.emit(FileWatchEvents.buildResult, {
+                errors: result.errors,
+                warnings: filteredWarnings,
+              })
 
               // setTimeout is needed because chokidar is overly sensitive and firing change events after first build is complete
               setTimeout(() => {

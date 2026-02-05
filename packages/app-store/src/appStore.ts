@@ -5,9 +5,9 @@ import { immer } from 'zustand/middleware/immer'
 import type {} from '@redux-devtools/extension' // required for devtools typing
 import { EngineData } from '@hedron/engine'
 
-export type DialogId = 'sketchModules' | 'sketchBuildErrors'
+export type DialogId = 'sketchModules' | 'sketchBuildResult'
 
-export interface BuildError {
+export interface BuildMessage {
   text: string
   location?: {
     file: string
@@ -15,6 +15,11 @@ export interface BuildError {
     column: number
     lineText: string
   } | null
+}
+
+export interface BuildResult {
+  errors: BuildMessage[]
+  warnings: BuildMessage[]
 }
 
 export interface SaveItem {
@@ -48,7 +53,7 @@ export interface AppState {
   globalDialogId: DialogId | null
   currentSavePath: string | null
   saveList: SaveItem[]
-  buildErrors: BuildError[]
+  buildResult: BuildResult | null
   setSelectedNode: (sketchID: string | null, nodeId: string) => void
   setSelectedInput: (nodeId: string, inputId: string) => void
   setOpenedControlGroup: (sketchId: string, groupIndex: number, isOpen: boolean) => void
@@ -58,7 +63,7 @@ export interface AppState {
   setCurrentSavePath: (path: string) => void
   addToSaveList: (path: SaveItem) => void
   removeFromSaveList: (path: string) => void
-  setBuildErrors: (errors: BuildError[]) => void
+  setBuildResult: (result: BuildResult | null) => void
 }
 
 export type SetState = StoreApi<AppState>['setState']
@@ -87,7 +92,7 @@ export const createAppStore = () =>
             selectedInputs: {},
             openedControlGroups: {},
             saveList: [],
-            buildErrors: [],
+            buildResult: null,
             setActiveSketchId: (id: string) => {
               set((state) => {
                 state.activeSketchId = id
@@ -122,9 +127,9 @@ export const createAppStore = () =>
                 }
               })
             },
-            setBuildErrors: (errors: BuildError[]) => {
+            setBuildResult: (result: BuildResult | null) => {
               set((state) => {
-                state.buildErrors = errors
+                state.buildResult = result
               })
             },
             setSelectedNode: (sketchID, nodeId) => {
