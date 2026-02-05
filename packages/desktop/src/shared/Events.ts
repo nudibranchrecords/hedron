@@ -6,6 +6,9 @@ export enum SketchEvents {
   ReimportSketchModule = 'reimport-sketch-module',
   AddSketchModule = 'add-sketch-module',
   RemoveSketchModule = 'remove-sketch-module',
+  BuildErrors = 'build-errors',
+  BuildWarnings = 'build-warnings',
+  BuildSuccess = 'build-success',
 }
 
 export interface SketchesServerResponse {
@@ -70,4 +73,7 @@ export enum FileWatchEvents {
   change = 'change',
   unlink = 'unlink',
   add = 'add',
+  buildErrors = 'buildErrors',
+  buildWarnings = 'buildWarnings',
+  buildSuccess = 'buildSuccess',
 }

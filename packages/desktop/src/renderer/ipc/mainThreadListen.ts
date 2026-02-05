@@ -21,6 +21,18 @@ listen(SketchEvents.RemoveSketchModule, (moduleId: string) => {
   engine.removeSketchModule(moduleId)
 })
 
+listen(SketchEvents.BuildErrors, (errors) => {
+  console.log('[Hedron] Build errors:', errors)
+})
+
+listen(SketchEvents.BuildWarnings, (warnings) => {
+  console.log('[Hedron] Build warnings:', warnings)
+})
+
+listen(SketchEvents.BuildSuccess, () => {
+  console.log('[Hedron] Build successful')
+})
+
 listen(AppMenuEvents.AppMenuClick, (item: AppMenuEventsItem) => {
   switch (item) {
     case AppMenuEventsItem.Save:

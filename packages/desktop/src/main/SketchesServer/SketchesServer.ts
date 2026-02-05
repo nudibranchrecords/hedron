@@ -104,7 +104,22 @@ export class SketchesServer extends EventEmitter {
         {
           name: 'on-end',
           setup: (build): void => {
-            build.onEnd(() => {
+            build.onEnd((result) => {
+              // Emit build errors if any
+              if (result.errors.length > 0) {
+                this.emit(FileWatchEvents.buildErrors, result.errors)
+              }
+
+              // Emit build warnings if any
+              if (result.warnings.length > 0) {
+                this.emit(FileWatchEvents.buildWarnings, result.warnings)
+              }
+
+              // Emit success if no errors
+              if (result.errors.length === 0) {
+                this.emit(FileWatchEvents.buildSuccess)
+              }
+
               // setTimeout is needed because chokidar is overly sensitive and firing change events after first build is complete
               setTimeout(() => {
                 this.isFirstBuildComplete = true
