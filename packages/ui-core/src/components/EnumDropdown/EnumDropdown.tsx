@@ -27,7 +27,7 @@ export const EnumDropdown = forwardRef<EnumDropdownHandle, EnumDropdownProps>(fu
   }, [])
 
   const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    onValueChange(event.target.value)
+    onValueChange(values[event.target.selectedIndex].value)
   }
 
   useImperativeHandle(ref, () => {
