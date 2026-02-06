@@ -9,7 +9,8 @@ type GroupedNodes = {
 }
 
 export const useGroupedNodes = (nodeIds: string[], moduleId: string) => {
-  const [nodes, module] = useEngineStore((state) => [state.nodes, state.sketchModules[moduleId]])
+  const nodes = useEngineStore((state) => state.nodes)
+  const module = useEngineStore((state) => state.sketchModules[moduleId])
 
   const groupedNodes: GroupedNodes[] = useMemo(() => {
     const groups = [] as GroupedNodes[]

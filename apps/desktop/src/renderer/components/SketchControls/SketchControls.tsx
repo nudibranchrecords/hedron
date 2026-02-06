@@ -1,5 +1,5 @@
 import { ControlGrid, Collapsible, HedronErrorBoundary } from '@hedron-gl/ui-core'
-import { ComponentType } from 'react'
+import { ComponentType, useMemo } from 'react'
 import { Node } from '@hedron-gl/engine'
 import c from './SketchControls.module.css'
 import { useAppStore } from '@renderer/appStore'
@@ -14,8 +14,10 @@ interface SketchControlsProps {
   ControlItem: ComponentType<{ node: Node; sketchId: string }>
 }
 
+const EMPTY_OBJECT = {} as Record<number, boolean>
+
 export const SketchControls = ({ sketchId, nodeGroups, ControlItem }: SketchControlsProps) => {
-  const openedControlGroups = useAppStore((state) => state.openedControlGroups[sketchId] ?? {})
+  const openedControlGroups = useAppStore((state) => state.openedControlGroups[sketchId]) ?? EMPTY_OBJECT
   const setOpenedControlGroup = useAppStore((state) => state.setOpenedControlGroup)
 
   return (
