@@ -41,41 +41,41 @@ module.exports = {
     'import/resolver': {
       typescript: {
         project: [
-          './packages/*/tsconfig.json',
-          './packages/desktop/tsconfig.web.json',
-          './packages/desktop/tsconfig.node.json',
+          './{packages,apps}/*/tsconfig.json',
+          './{packages,apps}/desktop/tsconfig.web.json',
+          './{packages,apps}/desktop/tsconfig.node.json',
         ],
         alwaysTryTypes: true,
       },
       node: {
         extensions: ['.js', '.jsx', '.ts', '.tsx'],
-        paths: ['packages/*/src', 'packages/desktop/src'],
+        paths: ['{packages,apps}/*/src', '{packages,apps}/desktop/src'],
       },
     },
   },
   overrides: [
     {
       files: [
-        'packages/desktop/src/main/**/*',
-        'packages/desktop/src/preload/**/*',
-        'packages/desktop/src/shared/**/*',
-        'packages/desktop/electron.vite.config.*',
+        'apps/desktop/src/main/**/*',
+        'apps/desktop/src/preload/**/*',
+        'apps/desktop/src/shared/**/*',
+        'apps/desktop/electron.vite.config.*',
       ],
       settings: {
         'import/resolver': {
           typescript: {
-            project: './packages/desktop/tsconfig.node.json',
+            project: './apps/desktop/tsconfig.node.json',
             alwaysTryTypes: true,
           },
         },
       },
     },
     {
-      files: ['packages/desktop/src/renderer/**/*', 'packages/desktop/src/stories/**/*'],
+      files: ['apps/desktop/src/renderer/**/*', 'apps/desktop/src/stories/**/*'],
       settings: {
         'import/resolver': {
           typescript: {
-            project: './packages/desktop/tsconfig.web.json',
+            project: './apps/desktop/tsconfig.web.json',
             alwaysTryTypes: true,
           },
         },
