@@ -17,7 +17,7 @@
 
 .messageItem.warning {
   font-size: 1.25em;
-  border-left: 3px solid var(--color-warning, #ffaa00);
+  border-left: 3px solid var(--warningTextColor);
 }
 
 .messageText {
@@ -30,27 +30,17 @@
 }
 
 .warning .messageText {
-  color: var(--color-warning, #ffaa00);
+  color: var(--warningTextColor);
 }
 
 .messageLocation {
   font-family: monospace;
   font-size: 0.85rem;
-  color: var(--color-text-2);
-}
-
-.messageFile {
-  color: var(--color-text-1);
-}
-
-.messageLine {
-  color: var(--color-text-3);
 }
 
 .messageLineText {
   margin-top: 0.5rem;
   padding: 0.5rem;
-  background: var(--color-bg-1);
   border-radius: 0.25rem;
   overflow-x: auto;
   white-space: pre;
