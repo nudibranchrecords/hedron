@@ -5,7 +5,22 @@ import { immer } from 'zustand/middleware/immer'
 import type {} from '@redux-devtools/extension' // required for devtools typing
 import { EngineData } from '@hedron/engine'
 
-export type DialogId = 'sketchModules'
+export type DialogId = 'sketchModules' | 'sketchesServerBuildResult'
+
+export interface BuildMessage {
+  text: string
+  location?: {
+    file: string
+    line: number
+    column: number
+    lineText: string
+  } | null
+}
+
+export interface BuildResult {
+  errors: BuildMessage[]
+  warnings: BuildMessage[]
+}
 
 export interface SaveItem {
   title: string
@@ -38,6 +53,7 @@ export interface AppState {
   globalDialogId: DialogId | null
   currentSavePath: string | null
   saveList: SaveItem[]
+  sketchesServerBuildResult: BuildResult | null
   setSelectedNode: (sketchID: string | null, nodeId: string) => void
   setSelectedInput: (nodeId: string, inputId: string) => void
   setOpenedControlGroup: (sketchId: string, groupIndex: number, isOpen: boolean) => void
@@ -47,6 +63,7 @@ export interface AppState {
   setCurrentSavePath: (path: string) => void
   addToSaveList: (path: SaveItem) => void
   removeFromSaveList: (path: string) => void
+  setSketchesServerBuildResult: (result: BuildResult | null) => void
 }
 
 export type SetState = StoreApi<AppState>['setState']
@@ -75,6 +92,7 @@ export const createAppStore = () =>
             selectedInputs: {},
             openedControlGroups: {},
             saveList: [],
+            sketchesServerBuildResult: null,
             setActiveSketchId: (id: string) => {
               set((state) => {
                 state.activeSketchId = id
@@ -107,6 +125,11 @@ export const createAppStore = () =>
                 return {
                   saveList: state.saveList.filter((item) => item.path !== path),
                 }
+              })
+            },
+            setSketchesServerBuildResult: (result: BuildResult | null) => {
+              set((state) => {
+                state.sketchesServerBuildResult = result
               })
             },
             setSelectedNode: (sketchID, nodeId) => {
