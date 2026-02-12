@@ -47,6 +47,10 @@ export const startSketchesServer = async (dirPath: string): Promise<SketchesServ
     sendToMainWindow(SketchEvents.RemoveSketchModule, moduleId)
   })
 
+  sketchesServer.on(FileWatchEvents.buildResult, (result) => {
+    sendToMainWindow(SketchEvents.BuildResult, result)
+  })
+
   const url = `http://${host}:${port}`
 
   return { url, moduleIds }

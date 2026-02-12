@@ -1,6 +1,7 @@
 import { engine } from '@renderer/engine'
 import { handleLoadProjectDialog, handleSaveProjectDialog } from '@renderer/handlers/fileHandlers'
 import { AppMenuEvents, AppMenuEventsItem, SketchEvents } from '@shared/Events'
+import { appStore, BuildResult } from '@renderer/appStore'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const listen = (event: string, cb: (info: any) => void): void => {
@@ -19,6 +20,21 @@ listen(SketchEvents.AddSketchModule, (moduleId: string) => {
 
 listen(SketchEvents.RemoveSketchModule, (moduleId: string) => {
   engine.removeSketchModule(moduleId)
+})
+
+listen(SketchEvents.BuildResult, (result: BuildResult) => {
+  const state = appStore.getState()
+
+  if (result.errors.length > 0) {
+    state.setSketchesServerBuildResult(result)
+    state.setGlobalDialogId('sketchesServerBuildResult')
+  } else {
+    // Clear build result on successful build with no errors
+    state.setSketchesServerBuildResult(null)
+    if (state.globalDialogId === 'sketchesServerBuildResult') {
+      state.setGlobalDialogId(null)
+    }
+  }
 })
 
 listen(AppMenuEvents.AppMenuClick, (item: AppMenuEventsItem) => {
