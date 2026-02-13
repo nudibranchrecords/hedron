@@ -181,6 +181,11 @@ export class LFOInput implements IPlugin {
 
     const tick = () => {
       requestAnimationFrame(() => {
+        if (!clock.isRunning) {
+          tick()
+          return
+        }
+
         const storeState = store.getState()
         handleEachInput<typeof this.optionNodesConfig>(
           storeState,
