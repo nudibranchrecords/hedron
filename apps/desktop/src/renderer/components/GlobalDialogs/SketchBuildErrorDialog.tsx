@@ -1,7 +1,7 @@
 import { Dialog, Panel, PanelBody, PanelHeader } from '@hedron-gl/ui-core'
+import styles from './SketchBuildErrorDialog.module.css'
 import { useAppStore, BuildMessage } from '@renderer/appStore'
 import { GlobalDialogProps } from '@components/GlobalDialogs/types'
-import styles from './SketchBuildErrorDialog.module.css'
 
 interface MessageItemProps {
   message: BuildMessage
