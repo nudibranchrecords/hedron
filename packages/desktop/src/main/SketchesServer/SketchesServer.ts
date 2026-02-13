@@ -73,6 +73,8 @@ export class SketchesServer extends EventEmitter {
         '.hdr': 'file',
         '.ttf': 'file',
         '.otf': 'file',
+        '.woff': 'file',
+        '.woff2': 'file',
         // text: loaded into sketch as string
         '.glsl': 'text',
         '.isf': 'text',
