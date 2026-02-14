@@ -166,8 +166,8 @@ importers:
         specifier: ^4.0.8
         version: 4.0.8
       postprocessing:
-        specifier: '*'
-        version: 6.38.2(three@0.178.0)
+        specifier: 6.37.8
+        version: 6.37.8(three@0.178.0)
       three:
         specifier: ^0.178.0
         version: 0.178.0
@@ -206,8 +206,8 @@ importers:
         specifier: ^1.0.0
         version: 1.0.0
       postprocessing:
-        specifier: '*'
-        version: 6.38.2(three@0.178.0)
+        specifier: 6.37.8
+        version: 6.37.8(three@0.178.0)
       three:
         specifier: ^0.178.0
         version: 0.178.0
@@ -246,8 +246,8 @@ importers:
         specifier: ^1.0.0-alpha.4
         version: link:../../packages/lfo-input
       postprocessing:
-        specifier: '*'
-        version: 6.38.2(three@0.178.0)
+        specifier: 6.37.8
+        version: 6.37.8(three@0.178.0)
       three:
         specifier: ^0.178.0
         version: 0.178.0
@@ -338,8 +338,8 @@ importers:
         specifier: ^4.0.8
         version: 4.0.8
       postprocessing:
-        specifier: '*'
-        version: 6.38.2(three@0.178.0)
+        specifier: 6.37.8
+        version: 6.37.8(three@0.178.0)
       react:
         specifier: ^18.3.1
         version: 18.3.1
@@ -5303,10 +5303,10 @@ packages:
     engines: {node: '>=14.0.0'}
     hasBin: true
 
-  postprocessing@6.38.2:
-    resolution: {integrity: sha512-7DwuT7Tkst41ZjSj287g7C9c5/D3Xx5rMgBosg0dadbUPoZD2HNzkadKPol1d2PJAoI9f+Jeh1/v9YfLzpFGVw==}
+  postprocessing@6.37.8:
+    resolution: {integrity: sha512-qTFUKS51z/fuw2U+irz4/TiKJ/0oI70cNtvQG1WxlPKvBdJUfS1CcFswJd5ATY3slotWfvkDDZAsj1X0fU8BOQ==}
     peerDependencies:
-      three: '>= 0.157.0 < 0.183.0'
+      three: '>= 0.157.0 < 0.181.0'
 
   potpack@1.0.2:
     resolution: {integrity: sha512-choctRBIV9EMT9WGAZHn3V7t0Z2pMQyl0EZE6pFc/6ml3ssw7Dlf/oAOvFwjm1HVsqfQN8GfeFyJ+d8tRzqueQ==}
@@ -12040,7 +12040,7 @@ snapshots:
       commander: 9.5.0
     optional: true
 
-  postprocessing@6.38.2(three@0.178.0):
+  postprocessing@6.37.8(three@0.178.0):
     dependencies:
       three: 0.178.0
 
