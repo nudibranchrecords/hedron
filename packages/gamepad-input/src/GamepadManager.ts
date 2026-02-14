@@ -155,16 +155,26 @@ export class GamepadManager {
       })
 
       if (now - this.learnStartTime > AXIS_LEARN_DURATION_MS) {
-        // Find the axis with the strongest movement
-        const bestSample = this.learnAxisSamples.reduce((best, current) =>
-          current.magnitude > best.magnitude ? current : best,
-        )
+        // Find the top two axes with the strongest movement
+        const sortedSamples = [...this.learnAxisSamples].sort((a, b) => b.magnitude - a.magnitude)
+
+        const bestSample = sortedSamples[0]
+
+        // Find the second strongest axis (if it exists and is different from the first)
+        let secondaryIndex: number | undefined
+        for (const sample of sortedSamples.slice(1)) {
+          if (sample.axis !== bestSample.axis) {
+            secondaryIndex = sample.axis
+            break
+          }
+        }
 
         this.learnResolve({
           controllerIndex: bestSample.controller,
           inputType: GamepadInputType.Axis,
           index: bestSample.axis,
           value: 0.5,
+          secondaryIndex,
         })
         this.learnResolve = null
         this.learnAxisSamples = []

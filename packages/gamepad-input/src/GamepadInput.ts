@@ -8,7 +8,14 @@ import {
   EngineStore,
 } from '@hedron/engine'
 import { GamepadManager } from './GamepadManager'
-import { GamepadEvent, GamepadInputType, ShotHandler, ValueHander } from './GamepadTypes'
+import {
+  GamepadEvent,
+  GamepadInputType,
+  ShotHandler,
+  ValueHander,
+  ButtonMode,
+  AxisMode,
+} from './GamepadTypes'
 
 /**
  * Plugin to handle gamepad input devices.
@@ -66,6 +73,13 @@ export class GamepadInput implements IPlugin {
       defaultValue: 0,
     },
     {
+      key: 'secondaryIndex',
+      title: 'Secondary Index',
+      valueType: 'enum',
+      options: Array.from({ length: 20 }, (_, i) => ({ value: i, label: `${i}` })),
+      defaultValue: 1,
+    },
+    {
       key: 'triggerOn',
       valueType: 'enum',
       options: [
@@ -79,10 +93,29 @@ export class GamepadInput implements IPlugin {
       title: 'Button Mode',
       valueType: 'enum',
       options: [
-        { value: 'hold', label: 'Hold' },
-        { value: 'toggle', label: 'Toggle' },
+        { value: ButtonMode.Hold, label: 'Hold' },
+        { value: ButtonMode.Toggle, label: 'Toggle' },
       ],
-      defaultValue: 'hold',
+      defaultValue: ButtonMode.Hold,
+    },
+    {
+      key: 'axisMode',
+      title: 'Axis Mode',
+      valueType: 'enum',
+      options: [
+        { value: AxisMode.Single, label: 'Single Axis' },
+        { value: AxisMode.Angle, label: '2 Axis as Angle' },
+        { value: AxisMode.Distance, label: '2 Axis as Distance' },
+      ],
+      defaultValue: AxisMode.Single,
+    },
+    {
+      key: 'angleOffset',
+      title: 'Angle Offset',
+      valueType: 'number',
+      defaultValue: 0,
+      sliderMin: 0,
+      sliderMax: 1,
     },
   ] as const satisfies InputOptionNodesConfig
 
@@ -141,6 +174,35 @@ export class GamepadInput implements IPlugin {
   }
 
   /**
+   * Calculates the combined value for 2-axis modes.
+   */
+  private calculate2AxisValue(
+    primaryValue: number,
+    secondaryValue: number,
+    mode: AxisMode,
+    angleOffset: number,
+  ): number {
+    // Convert from [0, 1] to [-1, 1] for calculation
+    const x = primaryValue * 2 - 1
+    const y = secondaryValue * 2 - 1
+
+    if (mode === AxisMode.Angle) {
+      // Calculate angle using atan2, normalize to [0, 1]
+      const angle = Math.atan2(y, x)
+      const normalizedAngle = (angle + Math.PI) / (2 * Math.PI)
+      // Apply angle offset (wrapping around)
+      return (normalizedAngle + angleOffset) % 1
+    } else if (mode === AxisMode.Distance) {
+      // Calculate distance from origin, clamp to [0, 1]
+      const distance = Math.sqrt(x * x + y * y) / Math.sqrt(2)
+      return Math.min(1, distance)
+    }
+
+    // Default to primary value
+    return primaryValue
+  }
+
+  /**
    * Handles number inputs from gamepad events.
    */
   private handleNumber: ValueHander = ({ gamepadEvent, storeState, input, optionNodes }) => {
@@ -148,7 +210,10 @@ export class GamepadInput implements IPlugin {
     const sliderMax = (storeState.nodeValues[`${input.targetNodeId}-sliderMax`] as number) ?? 1
 
     // For button inputs, check if toggle mode is enabled
-    if (optionNodes.inputType === GamepadInputType.Button && optionNodes.buttonMode === 'toggle') {
+    if (
+      optionNodes.inputType === GamepadInputType.Button &&
+      optionNodes.buttonMode === ButtonMode.Toggle
+    ) {
       // Only toggle on button down
       const shouldTrigger =
         (optionNodes.triggerOn === 'down' && gamepadEvent.isPressed) ||
@@ -165,8 +230,24 @@ export class GamepadInput implements IPlugin {
       return newToggleState ? sliderMax : sliderMin
     }
 
+    // For axis inputs in 2-axis mode, use the combined value
+    let finalValue = gamepadEvent.value
+    if (
+      optionNodes.inputType === GamepadInputType.Axis &&
+      optionNodes.axisMode !== AxisMode.Single
+    ) {
+      const primaryValue = this.primaryAxisValues.get(input.id) ?? 0.5
+      const secondaryValue = this.secondaryAxisValues.get(input.id) ?? 0.5
+      finalValue = this.calculate2AxisValue(
+        primaryValue,
+        secondaryValue,
+        optionNodes.axisMode,
+        optionNodes.angleOffset,
+      )
+    }
+
     // Default behavior: map value to slider range
-    return gamepadEvent.value * (sliderMax - sliderMin) + sliderMin
+    return finalValue * (sliderMax - sliderMin) + sliderMin
   }
 
   /**
@@ -193,6 +274,14 @@ export class GamepadInput implements IPlugin {
    * Tracks previous smoothed values for each input target node
    */
   private previousValues = new Map<string, number>()
+  /**
+   * Tracks raw primary axis values for each input (before 2-axis calculation)
+   */
+  private primaryAxisValues = new Map<string, number>()
+  /**
+   * Tracks raw secondary axis values for each input (for 2-axis modes)
+   */
+  private secondaryAxisValues = new Map<string, number>()
   handlers = {
     enum: this.handleEnum,
     boolean: this.handleBoolean,
@@ -248,37 +337,85 @@ export class GamepadInput implements IPlugin {
         // Skip if input is disabled
         if (!optionNodes.isEnabled) return
 
+        // Check if this event matches the controller and input type
+        if (event.controllerIndex !== optionNodes.controllerIndex) return
+        if (event.inputType !== optionNodes.inputType) return
+
+        // Check if this event is for the primary or secondary axis
+        const isPrimaryAxis = event.index === optionNodes.index
+        const isSecondaryAxis =
+          optionNodes.inputType === GamepadInputType.Axis &&
+          optionNodes.axisMode !== 'single' &&
+          event.index === optionNodes.secondaryIndex
+
+        if (!isPrimaryAxis && !isSecondaryAxis) return
+
+        // For axis inputs in 2-axis mode, update the raw axis values
         if (
-          event.controllerIndex === optionNodes.controllerIndex &&
-          event.inputType === optionNodes.inputType &&
-          event.index === optionNodes.index
+          optionNodes.inputType === GamepadInputType.Axis &&
+          optionNodes.axisMode !== AxisMode.Single
         ) {
-          if (targetNode.nodeType === 'shot') {
+          if (isPrimaryAxis) {
+            this.primaryAxisValues.set(input.id, event.value)
+          } else if (isSecondaryAxis) {
+            this.secondaryAxisValues.set(input.id, event.value)
+          }
+
+          // For number types, recalculate the combined value when either axis changes
+          if (targetNode.nodeType === 'param' && targetNode.valueType === 'number') {
+            const primaryValue = this.primaryAxisValues.get(input.id) ?? 0.5
+            const secondaryValue = this.secondaryAxisValues.get(input.id) ?? 0.5
+            const combinedValue = this.calculate2AxisValue(
+              primaryValue,
+              secondaryValue,
+              optionNodes.axisMode,
+              optionNodes.angleOffset,
+            )
+
+            const sliderMin =
+              (storeState.nodeValues[`${input.targetNodeId}-sliderMin`] as number) ?? 0
+            const sliderMax =
+              (storeState.nodeValues[`${input.targetNodeId}-sliderMax`] as number) ?? 1
+            const scaledValue = combinedValue * (sliderMax - sliderMin) + sliderMin
+
+            this.targetValues.set(input.id, scaledValue)
+          }
+
+          // For 2-axis mode, we handle the update above, so return early
+          return
+        }
+
+        // Handle shots
+        if (targetNode.nodeType === 'shot') {
+          if (isPrimaryAxis) {
             this.handleShot({ input, engine: this.engine, gamepadEvent: event, optionNodes })
-            return
           }
+          return
+        }
 
-          const value = this.handlers[targetNode.valueType]({
-            gamepadEvent: event,
-            input,
-            storeState,
-            optionNodes,
-            // @ts-expect-error -- TS isn't smart enough to infer the correct node type
-            targetNode,
-            targetNodeValue,
-          })
+        // Only process primary axis for value updates (secondary is handled via raw values)
+        if (!isPrimaryAxis) return
 
-          if (value === null) {
-            return
-          }
+        const value = this.handlers[targetNode.valueType]({
+          gamepadEvent: event,
+          input,
+          storeState,
+          optionNodes,
+          // @ts-expect-error -- TS isn't smart enough to infer the correct node type
+          targetNode,
+          targetNodeValue,
+        })
 
-          // Store the target value for smoothing in the update loop (only for numbers)
-          if (targetNode.valueType === 'number' && typeof value === 'number') {
-            this.targetValues.set(input.id, value)
-          } else {
-            // For non-number types, update directly
-            storeState.updateNodeValue(input.targetNodeId, value)
-          }
+        if (value === null) {
+          return
+        }
+
+        // Store the target value for smoothing in the update loop (only for numbers)
+        if (targetNode.valueType === 'number' && typeof value === 'number') {
+          this.targetValues.set(input.id, value)
+        } else {
+          // For non-number types, update directly
+          storeState.updateNodeValue(input.targetNodeId, value)
         }
       },
     )

@@ -17,6 +17,23 @@ export enum GamepadInputType {
 }
 
 /**
+ * Enum for button input modes.
+ */
+export enum ButtonMode {
+  Hold = 'hold',
+  Toggle = 'toggle',
+}
+
+/**
+ * Enum for axis input modes.
+ */
+export enum AxisMode {
+  Single = 'single',
+  Angle = 'angle',
+  Distance = 'distance',
+}
+
+/**
  * Interface for gamepad event data.
  */
 export interface GamepadEvent {
@@ -25,6 +42,7 @@ export interface GamepadEvent {
   index: number
   value: number
   isPressed?: boolean // Only for buttons
+  secondaryIndex?: number // For 2-axis modes
 }
 
 /**

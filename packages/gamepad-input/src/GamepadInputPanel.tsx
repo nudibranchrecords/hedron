@@ -2,7 +2,7 @@ import { useCallback, useState, useMemo } from 'react'
 import { HedronEngine, HedronEngineWithPlugin, Input } from '@hedron/engine'
 import { Button, ControlGrid, NodeContainer, useEngineStore } from '@hedron/ui-core'
 import { GamepadInput } from './GamepadInput'
-import { GamepadEvent } from './GamepadTypes'
+import { GamepadEvent, AxisMode, GamepadInputType } from './GamepadTypes'
 
 interface IProps {
   input: Input
@@ -42,6 +42,11 @@ const useGamepadLearn = (input: Input, engine: HedronEngine) => {
             case 'index':
               state.updateNodeValue(nodeId, event.index)
               break
+            case 'secondaryIndex':
+              if (event.secondaryIndex !== undefined) {
+                state.updateNodeValue(nodeId, event.secondaryIndex)
+              }
+              break
           }
         })
       })
@@ -67,15 +72,16 @@ const useGamepadLearn = (input: Input, engine: HedronEngine) => {
 export const GamepadInputPanel = ({ input, engine }: IProps) => {
   const { isLearning, runGamepadLearn, cancelGamepadLearn } = useGamepadLearn(input, engine)
 
-  // Get nodes, inputType, and target node type in a single selector for efficiency
-  const { nodes, inputTypeValue, targetNodeValueType } = useEngineStore(
+  const { nodes, inputTypeValue, axisModeValue, targetNodeValueType } = useEngineStore(
     useCallback(
       (state) => {
         const inputTypeNode = input.optionNodeIds.find((id) => state.nodes[id]?.key === 'inputType')
+        const axisModeNode = input.optionNodeIds.find((id) => state.nodes[id]?.key === 'axisMode')
         const targetNode = state.nodes[input.targetNodeId]
         return {
           nodes: state.nodes,
           inputTypeValue: inputTypeNode ? state.nodeValues[inputTypeNode] : null,
+          axisModeValue: axisModeNode ? state.nodeValues[axisModeNode] : null,
           targetNodeValueType: targetNode?.nodeType === 'param' ? targetNode.valueType : null,
         }
       },
@@ -89,16 +95,31 @@ export const GamepadInputPanel = ({ input, engine }: IProps) => {
       input.optionNodeIds.filter((id) => {
         const node = nodes[id]
         // Hide triggerOn for axis inputs
-        if (node?.key === 'triggerOn' && inputTypeValue === 'axis') {
+        if (node?.key === 'triggerOn' && inputTypeValue === GamepadInputType.Axis) {
           return false
         }
         // Hide buttonMode unless it's a button input targeting a number
         if (node?.key === 'buttonMode') {
-          return inputTypeValue === 'button' && targetNodeValueType === 'number'
+          return inputTypeValue === GamepadInputType.Button && targetNodeValueType === 'number'
+        }
+        // Hide axisMode unless it's an axis input
+        if (node?.key === 'axisMode') {
+          return inputTypeValue === GamepadInputType.Axis
+        }
+        // Hide secondaryIndex unless it's an axis input with a 2-axis mode
+        if (node?.key === 'secondaryIndex') {
+          return (
+            inputTypeValue === GamepadInputType.Axis &&
+            (axisModeValue === AxisMode.Angle || axisModeValue === AxisMode.Distance)
+          )
+        }
+        // Hide angleOffset unless it's an axis input in angle mode
+        if (node?.key === 'angleOffset') {
+          return inputTypeValue === GamepadInputType.Axis && axisModeValue === AxisMode.Angle
         }
         return true
       }),
-    [input.optionNodeIds, nodes, inputTypeValue, targetNodeValueType],
+    [input.optionNodeIds, nodes, inputTypeValue, axisModeValue, targetNodeValueType],
   )
 
   return (
