@@ -41,7 +41,7 @@
     "fs-extra": "^11.3.1",
     "get-port-please": "^3.2.0",
     "lodash.debounce": "^4.0.8",
-    "postprocessing": "*",
+    "postprocessing": "6.37.8",
     "three": "^0.178.0",
     "usehooks-ts": "^3.1.1",
     "zustand": "^5.0.8"

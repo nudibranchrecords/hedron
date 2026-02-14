@@ -73,10 +73,12 @@ export class SketchesServer extends EventEmitter {
         '.hdr': 'file',
         '.ttf': 'file',
         '.otf': 'file',
+        '.woff': 'file',
+        '.woff2': 'file',
+        '.ply': 'file',
         // text: loaded into sketch as string
         '.glsl': 'text',
         '.isf': 'text',
-        '.ply': 'text',
         '.frag': 'text',
         '.vert': 'text',
         '.json': 'text',
@@ -104,7 +106,18 @@ export class SketchesServer extends EventEmitter {
         {
           name: 'on-end',
           setup: (build): void => {
-            build.onEnd(() => {
+            build.onEnd((result) => {
+              const filteredWarnings = result.warnings.filter(
+                // Glob warnings are ok to ignore, as its looking for both .ts and .js files, but there will always be one of them missing
+                (warning) => warning.id !== 'empty-glob',
+              )
+
+              // Emit build result with errors and warnings
+              this.emit(FileWatchEvents.buildResult, {
+                errors: result.errors,
+                warnings: filteredWarnings,
+              })
+
               // setTimeout is needed because chokidar is overly sensitive and firing change events after first build is complete
               setTimeout(() => {
                 this.isFirstBuildComplete = true

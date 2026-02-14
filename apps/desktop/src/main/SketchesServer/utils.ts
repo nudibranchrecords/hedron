@@ -17,7 +17,8 @@ export const watchWithDebounce = (
   eventName: FileWatchEvents,
   cb: (path: string, moduleId: string) => void,
 ) => {
-  watcher.on(eventName, (path) => {
+  watcher.on(eventName, (...args) => {
+    const path = args[0] as string
     const id = getSketchIdFromPath(path)
 
     debounceWithId(

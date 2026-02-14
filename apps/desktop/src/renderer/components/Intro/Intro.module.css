@@ -1,5 +1,6 @@
 .wrapper {
   padding: var(--gapMega);
+  overflow-y: scroll;
 }
 
 .projectsTitle {

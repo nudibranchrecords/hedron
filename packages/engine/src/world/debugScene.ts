@@ -21,6 +21,7 @@ export const createDebugScene = (
 
   const newScene = new EngineScene({
     rendererType: renderer.rendererType,
+    renderer: renderer.renderer,
     onSketchInstanceError,
   })
 

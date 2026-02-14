@@ -14,7 +14,7 @@
     "source.fixAll": "always"
   },
 
-  "eslint.workingDirectories": [{ "pattern": "./packages/*/" }],
+  "eslint.workingDirectories": [{ "pattern": "./packages/*/" }, { "pattern": "./apps/*/" }],
   "typescript.tsdk": "node_modules/typescript/lib",
   "typescript.preferences.importModuleSpecifier": "relative"
 }

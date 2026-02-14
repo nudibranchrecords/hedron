@@ -14,8 +14,11 @@ interface SketchControlsProps {
   ControlItem: ComponentType<{ node: Node; sketchId: string }>
 }
 
+const EMPTY_OBJECT = {} as Record<number, boolean>
+
 export const SketchControls = ({ sketchId, nodeGroups, ControlItem }: SketchControlsProps) => {
-  const openedControlGroups = useAppStore((state) => state.openedControlGroups[sketchId] ?? {})
+  const openedControlGroups =
+    useAppStore((state) => state.openedControlGroups[sketchId]) ?? EMPTY_OBJECT
   const setOpenedControlGroup = useAppStore((state) => state.setOpenedControlGroup)
 
   return (
