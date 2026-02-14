@@ -1,5 +1,5 @@
 import { useRef } from 'react'
-import { NodeParamEnum } from '@hedron/engine'
+import { NodeParamEnum } from '@hedron-gl/engine'
 import { useEngineStore } from '@hooks/storeHooks'
 import { useOnNodeValueChange } from '@hooks/useOnNodeValueChange'
 import { useSubscribeToNodeValue } from '@hooks/useSubscribeToNodeValue'

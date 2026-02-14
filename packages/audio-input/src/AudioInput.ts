@@ -1,4 +1,4 @@
-import { handleEachInput, HedronEngine, InputOptionNodesConfig, IPlugin } from '@hedron/engine'
+import { handleEachInput, HedronEngine, InputOptionNodesConfig, IPlugin } from '@hedron-gl/engine'
 import { AudioDeviceManager } from './AudioDeviceManager'
 import { AudioAnalyzer, AudioData, FrequencyBand, BAND_COLORS } from './AudioAnalyzer'
 import { lerp } from './AudioUtils'

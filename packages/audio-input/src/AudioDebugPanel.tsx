@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from 'react'
-import { Button, Collapsible } from '@hedron/ui-core'
+import { Button, Collapsible } from '@hedron-gl/ui-core'
 import { getAudioDiagnostics, testAudioInputCapture } from './AudioTestUtils'
 import { AudioInput } from './AudioInput'
 import styles from './AudioGlobalPanel.module.css'

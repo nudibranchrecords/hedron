@@ -1,6 +1,6 @@
 import React from 'react'
-import { HedronEngine } from '@hedron/engine'
-import { ControlGrid, NodeContainer, Panel, PanelHeader, PanelBody } from '@hedron/ui-core'
+import { HedronEngine } from '@hedron-gl/engine'
+import { ControlGrid, NodeContainer, Panel, PanelHeader, PanelBody } from '@hedron-gl/ui-core'
 import { AudioInput } from './AudioInput'
 import styles from './AudioGlobalPanel.module.css'
 import { AudioDebugPanel } from './AudioDebugPanel'
