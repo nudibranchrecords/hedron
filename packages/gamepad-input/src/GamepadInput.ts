@@ -39,6 +39,12 @@ export class GamepadInput implements IPlugin {
   ] as const satisfies InputOptionNodesConfig
   public readonly optionNodesConfig = [
     {
+      key: 'isEnabled',
+      title: 'Enabled',
+      valueType: 'boolean',
+      defaultValue: true,
+    },
+    {
       key: 'controllerIndex',
       valueType: 'enum',
       options: Array.from({ length: 4 }, (_, i) => ({ value: i, label: `Controller ${i + 1}` })),
@@ -239,6 +245,9 @@ export class GamepadInput implements IPlugin {
       storeState,
       'gamepad',
       ({ input, optionNodes, targetNode, targetNodeValue }) => {
+        // Skip if input is disabled
+        if (!optionNodes.isEnabled) return
+
         if (
           event.controllerIndex === optionNodes.controllerIndex &&
           event.inputType === optionNodes.inputType &&
@@ -296,6 +305,9 @@ export class GamepadInput implements IPlugin {
       storeState,
       'gamepad',
       ({ input, optionNodes, targetNode }) => {
+        // Skip if input is disabled
+        if (!optionNodes.isEnabled) return
+
         if (targetNode.nodeType === 'shot') return
         if (targetNode.valueType !== 'number') return
 
