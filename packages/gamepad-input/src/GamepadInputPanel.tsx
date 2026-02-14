@@ -98,9 +98,12 @@ export const GamepadInputPanel = ({ input, engine }: IProps) => {
         if (node?.key === 'triggerOn' && inputTypeValue === GamepadInputType.Axis) {
           return false
         }
-        // Hide buttonMode unless it's a button input targeting a number
+        // Hide buttonMode unless it's a button input targeting a number or boolean
         if (node?.key === 'buttonMode') {
-          return inputTypeValue === GamepadInputType.Button && targetNodeValueType === 'number'
+          return (
+            inputTypeValue === GamepadInputType.Button &&
+            (targetNodeValueType === 'number' || targetNodeValueType === 'boolean')
+          )
         }
         // Hide axisMode unless it's an axis input
         if (node?.key === 'axisMode') {

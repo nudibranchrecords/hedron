@@ -178,12 +178,24 @@ export class GamepadInput implements IPlugin {
    */
   private handleBoolean: ValueHander = ({ gamepadEvent, targetNodeValue, optionNodes }) => {
     if (optionNodes.inputType === GamepadInputType.Button) {
-      const shouldTrigger =
-        (optionNodes.triggerOn === 'down' && gamepadEvent.isPressed) ||
-        (optionNodes.triggerOn === 'up' && !gamepadEvent.isPressed)
-      if (!shouldTrigger) return null
+      // For toggle mode, toggle the state on trigger event
+      if (optionNodes.buttonMode === ButtonMode.Toggle) {
+        const shouldTrigger =
+          (optionNodes.triggerOn === 'down' && gamepadEvent.isPressed) ||
+          (optionNodes.triggerOn === 'up' && !gamepadEvent.isPressed)
+        if (!shouldTrigger) return null
 
-      return !targetNodeValue
+        return !targetNodeValue
+      }
+
+      // For hold mode, follow the button state
+      if (optionNodes.triggerOn === 'down') {
+        // On press: true, on release: false
+        return gamepadEvent.isPressed ?? false
+      } else {
+        // On release: true, on press: false (inverted)
+        return !(gamepadEvent.isPressed ?? true)
+      }
     } else {
       return gamepadEvent.value > 0.5
     }
