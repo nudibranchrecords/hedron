@@ -9,7 +9,7 @@ import {
   IPlugin,
   NodeValue,
   Param,
-} from '@hedron/engine'
+} from '@hedron-gl/engine'
 
 const TAU = Math.PI * 2
 const lerp = (v0: number, v1: number, t: number) => (1 - t) * v0 + t * v1

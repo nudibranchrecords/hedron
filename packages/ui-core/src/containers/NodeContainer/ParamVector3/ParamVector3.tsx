@@ -1,5 +1,5 @@
 import { useRef } from 'react'
-import { NodeParamVector3 } from '@hedron/engine'
+import { NodeParamVector3 } from '@hedron-gl/engine'
 import c from './ParamVector3.module.css'
 import { FloatSlider, FloatSliderHandle } from '@components/FloatSlider/FloatSlider'
 import { useOnNodeValueChange } from '@hooks/useOnNodeValueChange'

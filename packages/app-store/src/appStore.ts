@@ -3,7 +3,7 @@ import { StoreApi } from 'zustand'
 import { devtools, persist, subscribeWithSelector } from 'zustand/middleware'
 import { immer } from 'zustand/middleware/immer'
 import type {} from '@redux-devtools/extension' // required for devtools typing
-import { EngineData } from '@hedron/engine'
+import { EngineData } from '@hedron-gl/engine'
 
 export type DialogId = 'sketchModules' | 'sketchesServerBuildResult'
 

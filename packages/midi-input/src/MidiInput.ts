@@ -9,9 +9,9 @@ import {
   Input,
   ConfigToOptionsType,
   Param,
-} from '@hedron/engine'
-import { MIDIEvent, MidiManager, MidiMessageType } from '@hedron/midi-manager'
-import { NodeParamEnum } from 'node_modules/@hedron/engine/dist'
+} from '@hedron-gl/engine'
+import { MIDIEvent, MidiManager, MidiMessageType } from '@hedron-gl/midi-manager'
+import { NodeParamEnum } from 'node_modules/@hedron-gl/engine/dist'
 
 const noteLetters = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B']
 

@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react'
-import { HedronEngine } from '@hedron/engine'
+import { HedronEngine } from '@hedron-gl/engine'
 import styles from './WidgetStrip.module.css'
 
 // Interface for widget configuration coming from plugin views

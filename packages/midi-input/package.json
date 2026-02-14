@@ -1,6 +1,6 @@
 {
-  "name": "@hedron/midi-input",
-  "version": "1.0.0-alpha.2",
+  "name": "@hedron-gl/midi-input",
+  "version": "1.0.0-alpha.4",
   "description": "MIDI input for Hedron",
   "author": "Alex Kempton <alex@funwithtriangles.net>",
   "homepage": "https://github.com/nudibranchrecords/hedron#readme",
@@ -8,13 +8,6 @@
   "license": "ISC",
   "main": "./dist/midi-input.es.js",
   "types": "./dist/index.d.ts",
-  "directories": {
-    "lib": "lib",
-    "test": "__tests__"
-  },
-  "files": [
-    "lib"
-  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/nudibranchrecords/hedron.git"
@@ -26,11 +19,14 @@
     "lint": "eslint . --ext .js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix"
   },
   "dependencies": {
-    "@hedron/engine": "workspace:^",
-    "@hedron/midi-manager": "workspace:^",
-    "@hedron/ui-core": "workspace:^"
+    "@hedron-gl/engine": "^1.0.0-alpha.4",
+    "@hedron-gl/midi-manager": "^1.0.0-alpha.4",
+    "@hedron-gl/ui-core": "^1.0.0-alpha.4"
   },
   "bugs": {
     "url": "https://github.com/nudibranchrecords/hedron/issues"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }
