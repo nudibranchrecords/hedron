@@ -43,6 +43,22 @@ export class GamepadInput implements IPlugin {
       sliderMin: 0,
       sliderMax: 0.99,
     },
+    {
+      key: 'axisDeadZone',
+      title: 'Axis Dead Zone',
+      valueType: 'number',
+      defaultValue: 0,
+      sliderMin: 0,
+      sliderMax: 0.5,
+    },
+    {
+      key: 'axisCap',
+      title: 'Axis Cap',
+      valueType: 'number',
+      defaultValue: 1,
+      sliderMin: 0,
+      sliderMax: 1,
+    },
   ] as const satisfies InputOptionNodesConfig
   public readonly optionNodesConfig = [
     {
@@ -194,7 +210,7 @@ export class GamepadInput implements IPlugin {
       return (normalizedAngle + angleOffset) % 1
     } else if (mode === AxisMode.Distance) {
       // Calculate distance from origin, clamp to [0, 1]
-      const distance = Math.sqrt(x * x + y * y) / Math.sqrt(2)
+      const distance = Math.sqrt(x * x + y * y)
       return Math.min(1, distance)
     }
 
@@ -282,7 +298,15 @@ export class GamepadInput implements IPlugin {
    * Tracks raw secondary axis values for each input (for 2-axis modes)
    */
   private secondaryAxisValues = new Map<string, number>()
-  handlers = {
+  /**
+   * Tracks the axis mode for each input (for proper smoothing)
+   */
+  private inputAxisModes = new Map<string, AxisMode>()
+
+  /**
+   * Handlers for each input type
+   */
+  public handlers = {
     enum: this.handleEnum,
     boolean: this.handleBoolean,
     number: this.handleNumber,
@@ -324,6 +348,55 @@ export class GamepadInput implements IPlugin {
   }
 
   /**
+   * Gets the axis dead zone value from the global options
+   * @returns Axis dead zone value (default: 0)
+   */
+  private getAxisDeadZone(): number {
+    const storeState = this.store.getState()
+    const nodeId = `${this.id}-global-axisDeadZone`
+    const value = storeState.nodeValues[nodeId] as number | undefined
+    return value ?? 0
+  }
+
+  /**
+   * Gets the axis cap value from the global options
+   * @returns Axis cap value (default: 1)
+   */
+  private getAxisCap(): number {
+    const storeState = this.store.getState()
+    const nodeId = `${this.id}-global-axisCap`
+    const value = storeState.nodeValues[nodeId] as number | undefined
+    return value ?? 1
+  }
+
+  /**
+   * Applies dead zone and axis cap to a raw axis value.
+   * @param rawValue The raw axis value in range [0, 1] where 0.5 is center
+   * @returns The processed value with dead zone and cap applied
+   */
+  private applyAxisDeadZoneAndCap(rawValue: number): number {
+    const deadZone = this.getAxisDeadZone()
+    const cap = this.getAxisCap()
+
+    // Convert to distance from center [-1, 1]
+    const centered = (rawValue - 0.5) * 2
+    const distance = Math.abs(centered)
+    const sign = Math.sign(centered)
+
+    // Apply dead zone
+    if (distance < deadZone) {
+      return 0.5 // Return to center
+    }
+
+    // Remap from [deadZone, cap] to [0, 1] and clamp
+    const remapped = (distance - deadZone) / (cap - deadZone)
+    const clamped = Math.min(1, Math.max(0, remapped))
+
+    // Convert back to [0, 1] range
+    return 0.5 + (clamped * sign) / 2
+  }
+
+  /**
    * Updates the engine state based on a gamepad event.
    * Stores target values for smoothing in the update loop.
    * @param event The gamepad event data.
@@ -350,15 +423,24 @@ export class GamepadInput implements IPlugin {
 
         if (!isPrimaryAxis && !isSecondaryAxis) return
 
+        // Apply dead zone and axis cap to axis values
+        let processedValue = event.value
+        if (event.inputType === GamepadInputType.Axis) {
+          processedValue = this.applyAxisDeadZoneAndCap(event.value)
+        }
+
         // For axis inputs in 2-axis mode, update the raw axis values
         if (
           optionNodes.inputType === GamepadInputType.Axis &&
           optionNodes.axisMode !== AxisMode.Single
         ) {
+          // Track the axis mode for this input
+          this.inputAxisModes.set(input.id, optionNodes.axisMode)
+
           if (isPrimaryAxis) {
-            this.primaryAxisValues.set(input.id, event.value)
+            this.primaryAxisValues.set(input.id, processedValue)
           } else if (isSecondaryAxis) {
-            this.secondaryAxisValues.set(input.id, event.value)
+            this.secondaryAxisValues.set(input.id, processedValue)
           }
 
           // For number types, recalculate the combined value when either axis changes
@@ -383,12 +465,22 @@ export class GamepadInput implements IPlugin {
 
           // For 2-axis mode, we handle the update above, so return early
           return
+        } else if (optionNodes.inputType === GamepadInputType.Axis) {
+          // For single-axis mode, clear the axis mode tracking
+          this.inputAxisModes.delete(input.id)
         }
 
         // Handle shots
         if (targetNode.nodeType === 'shot') {
           if (isPrimaryAxis) {
-            this.handleShot({ input, engine: this.engine, gamepadEvent: event, optionNodes })
+            // Use processed value for shots as well
+            const processedEvent = { ...event, value: processedValue }
+            this.handleShot({
+              input,
+              engine: this.engine,
+              gamepadEvent: processedEvent,
+              optionNodes,
+            })
           }
           return
         }
@@ -396,8 +488,11 @@ export class GamepadInput implements IPlugin {
         // Only process primary axis for value updates (secondary is handled via raw values)
         if (!isPrimaryAxis) return
 
+        // Create modified event with processed value for handlers
+        const processedEvent = { ...event, value: processedValue }
+
         const value = this.handlers[targetNode.valueType]({
-          gamepadEvent: event,
+          gamepadEvent: processedEvent,
           input,
           storeState,
           optionNodes,
@@ -430,6 +525,46 @@ export class GamepadInput implements IPlugin {
 
     // Schedule next update
     window.requestAnimationFrame(() => this.update())
+  }
+
+  /**
+   * Applies smoothing with special handling for angle wrapping.
+   * @param currentValue The current smoothed value
+   * @param targetValue The target value to smooth towards
+   * @param smoothing The smoothing factor (0 = no smoothing, 1 = max smoothing)
+   * @param isAngle Whether this is an angle value that needs wrap-around handling
+   * @returns The smoothed value
+   */
+  private applySmoothing(
+    currentValue: number,
+    targetValue: number,
+    smoothing: number,
+    isAngle: boolean = false,
+  ): number {
+    if (!isAngle) {
+      // Standard linear interpolation
+      return currentValue * smoothing + targetValue * (1 - smoothing)
+    }
+
+    // For angles, handle wrap-around
+    let delta = targetValue - currentValue
+
+    // Normalize delta to [-0.5, 0.5] to take the shortest path
+    if (delta > 0.5) {
+      delta -= 1
+    } else if (delta < -0.5) {
+      delta += 1
+    }
+
+    // Apply smoothing to the delta
+    const smoothedDelta = delta * (1 - smoothing)
+    let result = currentValue + smoothedDelta
+
+    // Wrap result to [0, 1]
+    if (result < 0) result += 1
+    if (result >= 1) result -= 1
+
+    return result
   }
 
   /**
@@ -466,7 +601,10 @@ export class GamepadInput implements IPlugin {
         // Apply smoothing if enabled
         let finalValue = targetValue
         if (smoothing > 0 && currentValue !== undefined) {
-          finalValue = currentValue * smoothing + targetValue * (1 - smoothing)
+          // Check if this is an angle mode input
+          const axisMode = this.inputAxisModes.get(input.id)
+          const isAngle = axisMode === AxisMode.Angle
+          finalValue = this.applySmoothing(currentValue, targetValue, smoothing, isAngle)
         }
 
         // Update the node value
