@@ -98,7 +98,6 @@ export const NumberMinMaxPositive = ({
           <FloatSlider min={5} max={20} onValueChange={fn()} ref={ref} />
         </NodeControlInner>
       </NodeControlMain>
-      ,
     </NodeControl>
   )
 }
