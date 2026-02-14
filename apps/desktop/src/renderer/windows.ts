@@ -8,7 +8,7 @@ export const sendOutput = (display: Display): void => {
 
   if (!outputWin) throw new Error("Couldn't open window")
 
-  outputWin.document.write('<div style="width:100vw;height:100vh;"></div>')
+  outputWin.document.write('<div style="width:100vw;height:100vh;background:black;"></div>')
   outputWin.document.body.style.margin = '0'
   outputWin.document.body.style.cursor = 'none'
 
