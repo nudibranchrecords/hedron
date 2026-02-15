@@ -35,6 +35,19 @@
   }
 }
 
+.subHeader {
+  display: flex;
+  flex: 1;
+  gap: var(--gapMedium);
+  align-items: center;
+  min-height: 1.5rem;
+  margin-bottom: var(--gapXLarge);
+
+  h3 {
+    margin: 0;
+  }
+}
+
 .body {
   padding: var(--gapXLarge);
 

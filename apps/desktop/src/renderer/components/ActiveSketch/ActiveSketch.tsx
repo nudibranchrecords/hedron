@@ -44,6 +44,7 @@ export const ActiveSketch = () => {
   const nodeGroups = useGroupedNodes(activeSketch.nodeIds, activeSketch.moduleId)
 
   const selectedNode = useSelectedNode()
+  const closeSelectedNodePanel = useOnSelectNode(activeSketch.id, null)
 
   return (
     <div className={c.container}>
@@ -69,7 +70,7 @@ export const ActiveSketch = () => {
             },
           ]}
         >
-          <Button type="ghost" iconName="menu" />
+          <Button type="ghost" iconName="more_horiz" />
         </PopoutMenu>
       </ViewHeader>
       <HedronErrorBoundary key={activeSketch.id}>
@@ -83,7 +84,9 @@ export const ActiveSketch = () => {
 
         {selectedNode && (
           <Panel snugPosition="bottom" spacing="slim" width="full" className={c.bottomPanel}>
-            <PanelHeader iconName={paramIcon}>{selectedNode.title}</PanelHeader>
+            <PanelHeader iconName={paramIcon} buttonOnClick={closeSelectedNodePanel}>
+              {selectedNode.title}
+            </PanelHeader>
             <PanelBody>
               <SelectedNode />
             </PanelBody>

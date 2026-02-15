@@ -7,10 +7,14 @@ import {
   useAppStore,
   ParamNumberOptions,
   HedronErrorBoundary,
+  inputIcon,
+  PanelSubHeader,
+  Button,
 } from '@hedron-gl/ui-core'
-import { useMemo } from 'react'
+import { useCallback, useMemo } from 'react'
+import c from './SelectedNode.module.css'
 import { useSelectedNode } from '@components/hooks/useSelectedNode'
-import { pluginViews, engine } from '@renderer/engine'
+import { pluginViews, engine, engineStore } from '@renderer/engine'
 import { useInputsWithNode } from '@components/hooks/useInput'
 
 export const SelectedNode = () => {
@@ -57,32 +61,72 @@ export const SelectedNode = () => {
     [addInput, inputs, selectedNode.id, setSelectedInputId],
   )
 
+  const onDeleteCurrentInput = useCallback(() => {
+    if (currentInput) {
+      engineStore.getState().deleteInput(currentInput.id)
+
+      if (inputs.length > 1) {
+        // Select remaining input after deletion
+        const otherInput = inputs.find((input) => input.id !== currentInput.id)
+        if (otherInput) {
+          setSelectedInputId(selectedNode.id, otherInput.id)
+        }
+      } else {
+        // If there are no more inputs after deletion, clear selected input
+        setSelectedInputId(selectedNode.id, null)
+      }
+    }
+  }, [currentInput, inputs, selectedNode.id, setSelectedInputId])
+
   return (
     <>
-      <MiniTabs className="mb-xl">
-        {inputs.map((input) => (
-          <MiniTabsItem
-            key={input.id}
-            isActive={selectedInputId === input.id}
-            onClick={() => setSelectedInputId(selectedNode.id, input.id)}
+      <PanelSubHeader title={currentInput ? currentInput.title : 'No Inputs'} iconName={inputIcon}>
+        {currentInput && (
+          <PopoutMenu
+            items={[
+              {
+                label: `Delete ${currentInput.title}`,
+                icon: 'delete',
+                onClick: onDeleteCurrentInput,
+              },
+            ]}
           >
-            {input.title}
-          </MiniTabsItem>
-        ))}
-        <PopoutMenu items={availableInputs}>
-          <MiniTabsItem>
-            <Icon name="add" />
-          </MiniTabsItem>
-        </PopoutMenu>
-      </MiniTabs>
+            <Button type="ghost" size="slim" iconName="more_horiz" />
+          </PopoutMenu>
+        )}
+        <MiniTabs className="ml-auto">
+          {inputs.map((input) => (
+            <MiniTabsItem
+              key={input.id}
+              isActive={selectedInputId === input.id}
+              onClick={() => setSelectedInputId(selectedNode.id, input.id)}
+            >
+              {input.title}
+            </MiniTabsItem>
+          ))}
+          <PopoutMenu items={availableInputs}>
+            <MiniTabsItem>
+              <Icon name="add" />
+            </MiniTabsItem>
+          </PopoutMenu>
+        </MiniTabs>
+      </PanelSubHeader>
+
       <div className="mb-xl">
         <HedronErrorBoundary key={currentInput ? currentInput.id : 'no-input'}>
+          {inputs.length === 0 && (
+            <div className={c.noInputs}>Add inputs to this node using the plus (+) button</div>
+          )}
           {PluginView && <PluginView input={currentInput} engine={engine} />}
         </HedronErrorBoundary>
       </div>
       {selectedNode.nodeType === 'param' && (
         <div>
-          <h3>Param Options: {selectedNode.valueType}</h3>
+          <PanelSubHeader
+            title={`Parameter Options: ${selectedNode.valueType}`}
+            iconName="settings"
+          />
+
           {(() => {
             switch (selectedNode.valueType) {
               case 'number':

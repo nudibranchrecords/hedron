@@ -17,6 +17,7 @@ import {
 import { createReset } from '@store/actionCreators/reset'
 import { createLoadProject } from '@store/actionCreators/loadProject'
 import { createAddInput } from '@store/actionCreators/createAddInput'
+import { createDeleteInput } from '@store/actionCreators/createDeleteInput'
 import { createUpdateSketch } from '@store/actionCreators/updateSketch'
 import { createMoveSketchDown, createMoveSketchUp } from '@store/actionCreators/moveSketchOrder'
 
@@ -39,6 +40,7 @@ export const createEngineStore = () =>
           reset: createReset(set),
           loadProject: createLoadProject(set),
           addInput: createAddInput(set),
+          deleteInput: createDeleteInput(set),
         })),
         {
           name: 'Hedron Engine',
