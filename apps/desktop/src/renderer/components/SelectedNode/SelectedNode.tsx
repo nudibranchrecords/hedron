@@ -9,11 +9,12 @@ import {
   HedronErrorBoundary,
   inputIcon,
   PanelSubHeader,
+  Button,
 } from '@hedron-gl/ui-core'
 import { useMemo } from 'react'
 import c from './SelectedNode.module.css'
 import { useSelectedNode } from '@components/hooks/useSelectedNode'
-import { pluginViews, engine } from '@renderer/engine'
+import { pluginViews, engine, engineStore } from '@renderer/engine'
 import { useInputsWithNode } from '@components/hooks/useInput'
 
 export const SelectedNode = () => {
@@ -63,6 +64,19 @@ export const SelectedNode = () => {
   return (
     <>
       <PanelSubHeader title={currentInput ? currentInput.title : 'No Inputs'} iconName={inputIcon}>
+        {currentInput && (
+          <PopoutMenu
+            items={[
+              {
+                label: `Delete ${currentInput.title}`,
+                icon: 'delete',
+                onClick: () => engineStore.getState().deleteInput(currentInput.id),
+              },
+            ]}
+          >
+            <Button type="ghost" size="slim" iconName="more_horiz" />
+          </PopoutMenu>
+        )}
         <MiniTabs className="ml-auto">
           {inputs.map((input) => (
             <MiniTabsItem

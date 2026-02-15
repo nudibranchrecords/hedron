@@ -1,5 +1,6 @@
 import { addNode } from '@store/shared/addNode'
-import { hasChildNodes, Node, SetterCreator } from '@store/types'
+import { deleteNode } from '@store/shared/deleteCascade'
+import { Node, SetterCreator } from '@store/types'
 import { createUniqueId } from '@utils/createUniqueId'
 
 /**
@@ -44,17 +45,7 @@ export const createReconcileSketchNodes: SetterCreator<'reconcileSketchNodes'> =
 
       // 2. Remove nodes that are no longer in the config.
       for (const oldNodeId of existingIds) {
-        const oldNode = state.nodes[oldNodeId]
-        delete state.nodes[oldNodeId]
-        delete state.nodeValues[oldNodeId]
-
-        // Remove vector child nodes if they exist
-        if (hasChildNodes(oldNode)) {
-          oldNode.childNodeIds.forEach((childNodeId) => {
-            delete state.nodes[childNodeId]
-            delete state.nodeValues[childNodeId]
-          })
-        }
+        deleteNode(state, oldNodeId)
       }
 
       sketch.nodeIds = newNodeIds
