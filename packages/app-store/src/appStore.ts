@@ -135,13 +135,7 @@ export const createAppStore = () =>
             },
             setSelectedNode: (sketchID, nodeId) => {
               set((state) => {
-                let catId = sketchID
-                if (!catId) {
-                  // Some nodes wont have a relevant sketch ID, for now we store them under "aux"
-                  catId = 'aux'
-                }
-
-                state.selectedNodes[catId] = nodeId
+                state.selectedNodes[sketchID] = nodeId
               })
             },
             setSelectedInput: (nodeId: string, inputId: string) => {
