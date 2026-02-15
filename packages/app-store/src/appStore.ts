@@ -38,7 +38,7 @@ export interface ProjectData {
     // TODO: activeSketchId should be part of the save state
     // but causing errors when Hedron opens directly on a sketch
     // activeSketchId: string | null
-    selectedNodes: { [sketchId: string]: string }
+    selectedNodes: { [sketchId: string]: string | null }
     selectedInputs: { [inputId: string]: string }
     openedControlGroups: { [sketchId: string]: Record<number, boolean> }
   }
@@ -54,7 +54,7 @@ export interface AppState {
   currentSavePath: string | null
   saveList: SaveItem[]
   sketchesServerBuildResult: BuildResult | null
-  setSelectedNode: (sketchID: string | null, nodeId: string) => void
+  setSelectedNode: (sketchID: string, nodeId: string | null) => void
   setSelectedInput: (nodeId: string, inputId: string) => void
   setOpenedControlGroup: (sketchId: string, groupIndex: number, isOpen: boolean) => void
   setActiveSketchId: (id: string) => void
