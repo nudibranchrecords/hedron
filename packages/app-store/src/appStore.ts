@@ -64,6 +64,7 @@ export interface AppState {
   addToSaveList: (path: SaveItem) => void
   removeFromSaveList: (path: string) => void
   setSketchesServerBuildResult: (result: BuildResult | null) => void
+  cleanupStaleReferences: (engineData: EngineData) => void
 }
 
 export type SetState = StoreApi<AppState>['setState']
@@ -154,6 +155,36 @@ export const createAppStore = () =>
                   state.openedControlGroups[sketchId] = {}
                 }
                 state.openedControlGroups[sketchId][groupIndex] = isOpen
+              })
+            },
+            cleanupStaleReferences: (engineData: EngineData) => {
+              set((state) => {
+                const validNodeIds = new Set(Object.keys(engineData.nodes))
+                const validInputIds = new Set(Object.keys(engineData.inputs))
+                const validSketchIds = new Set(Object.keys(engineData.sketches))
+
+                for (const sketchId of Object.keys(state.selectedNodes)) {
+                  if (!validSketchIds.has(sketchId)) {
+                    delete state.selectedNodes[sketchId]
+                    continue
+                  }
+
+                  const selectedNodeId = state.selectedNodes[sketchId]
+                  if (selectedNodeId && !validNodeIds.has(selectedNodeId)) {
+                    delete state.selectedNodes[sketchId]
+                  }
+                }
+
+                for (const selectedNodeId of Object.keys(state.selectedInputs)) {
+                  const selectedInputId = state.selectedInputs[selectedNodeId]
+                  if (
+                    !validNodeIds.has(selectedNodeId) ||
+                    !selectedInputId ||
+                    !validInputIds.has(selectedInputId)
+                  ) {
+                    delete state.selectedInputs[selectedNodeId]
+                  }
+                }
               })
             },
           })),
