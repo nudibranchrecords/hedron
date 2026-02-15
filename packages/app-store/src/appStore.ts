@@ -179,6 +179,12 @@ export const createAppStore = () =>
                     delete state.selectedInputs[selectedNodeId]
                   }
                 }
+
+                for (const sketchId of Object.keys(state.openedControlGroups)) {
+                  if (!validSketchIds.has(sketchId)) {
+                    delete state.openedControlGroups[sketchId]
+                  }
+                }
               })
             },
           })),
