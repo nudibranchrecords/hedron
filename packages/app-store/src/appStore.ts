@@ -39,7 +39,7 @@ export interface ProjectData {
     // but causing errors when Hedron opens directly on a sketch
     // activeSketchId: string | null
     selectedNodes: { [sketchId: string]: string | null }
-    selectedInputs: { [inputId: string]: string }
+    selectedInputs: { [inputId: string]: string | null }
     openedControlGroups: { [sketchId: string]: Record<number, boolean> }
   }
 }
@@ -55,7 +55,7 @@ export interface AppState {
   saveList: SaveItem[]
   sketchesServerBuildResult: BuildResult | null
   setSelectedNode: (sketchID: string, nodeId: string | null) => void
-  setSelectedInput: (nodeId: string, inputId: string) => void
+  setSelectedInput: (nodeId: string, inputId: string | null) => void
   setOpenedControlGroup: (sketchId: string, groupIndex: number, isOpen: boolean) => void
   setActiveSketchId: (id: string) => void
   setSketchesDir: (dir: string) => void
@@ -138,7 +138,7 @@ export const createAppStore = () =>
                 state.selectedNodes[sketchID] = nodeId
               })
             },
-            setSelectedInput: (nodeId: string, inputId: string) => {
+            setSelectedInput: (nodeId, inputId) => {
               set((state) => {
                 state.selectedInputs[nodeId] = inputId
               })

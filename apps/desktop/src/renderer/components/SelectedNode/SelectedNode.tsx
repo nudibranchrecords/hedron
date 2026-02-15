@@ -11,7 +11,7 @@ import {
   PanelSubHeader,
   Button,
 } from '@hedron-gl/ui-core'
-import { useMemo } from 'react'
+import { useCallback, useMemo } from 'react'
 import c from './SelectedNode.module.css'
 import { useSelectedNode } from '@components/hooks/useSelectedNode'
 import { pluginViews, engine, engineStore } from '@renderer/engine'
@@ -61,6 +61,23 @@ export const SelectedNode = () => {
     [addInput, inputs, selectedNode.id, setSelectedInputId],
   )
 
+  const onDeleteCurrentInput = useCallback(() => {
+    if (currentInput) {
+      engineStore.getState().deleteInput(currentInput.id)
+
+      if (inputs.length > 1) {
+        // Select remaining input after deletion
+        const otherInput = inputs.find((input) => input.id !== currentInput.id)
+        if (otherInput) {
+          setSelectedInputId(selectedNode.id, otherInput.id)
+        }
+      } else {
+        // If there are no more inputs after deletion, clear selected input
+        setSelectedInputId(selectedNode.id, null)
+      }
+    }
+  }, [currentInput, inputs, selectedNode.id, setSelectedInputId])
+
   return (
     <>
       <PanelSubHeader title={currentInput ? currentInput.title : 'No Inputs'} iconName={inputIcon}>
@@ -70,7 +87,7 @@ export const SelectedNode = () => {
               {
                 label: `Delete ${currentInput.title}`,
                 icon: 'delete',
-                onClick: () => engineStore.getState().deleteInput(currentInput.id),
+                onClick: onDeleteCurrentInput,
               },
             ]}
           >
