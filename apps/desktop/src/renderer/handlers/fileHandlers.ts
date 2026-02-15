@@ -57,6 +57,8 @@ export const handleLoadProjectDialog = async (projectPath?: string) => {
 
   // Add/remove shots from sketches based on their current module configs, in case files were updated since last load
   engine.reconcileAllSketchNodes()
+
+  appStore.getState().cleanupStaleReferences(engine.getSaveData())
 }
 
 export const handleSaveProjectDialog = async (options?: { saveAs?: boolean }) => {

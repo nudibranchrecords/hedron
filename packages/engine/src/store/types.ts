@@ -262,6 +262,7 @@ interface Actions {
     inputConfig: Omit<Input, 'id' | 'optionNodeIds'>,
     optionsNodeConfig: InputOptionNodesConfig,
   ) => string
+  deleteInput: (inputId: string) => void
 }
 
 export type EngineStateWithActions = EngineData & AuxState & Actions
