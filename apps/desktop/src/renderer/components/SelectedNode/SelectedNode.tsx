@@ -7,8 +7,11 @@ import {
   useAppStore,
   ParamNumberOptions,
   HedronErrorBoundary,
+  inputIcon,
+  PanelSubHeader,
 } from '@hedron-gl/ui-core'
 import { useMemo } from 'react'
+import c from './SelectedNode.module.css'
 import { useSelectedNode } from '@components/hooks/useSelectedNode'
 import { pluginViews, engine } from '@renderer/engine'
 import { useInputsWithNode } from '@components/hooks/useInput'
@@ -59,30 +62,40 @@ export const SelectedNode = () => {
 
   return (
     <>
-      <MiniTabs className="mb-xl">
-        {inputs.map((input) => (
-          <MiniTabsItem
-            key={input.id}
-            isActive={selectedInputId === input.id}
-            onClick={() => setSelectedInputId(selectedNode.id, input.id)}
-          >
-            {input.title}
-          </MiniTabsItem>
-        ))}
-        <PopoutMenu items={availableInputs}>
-          <MiniTabsItem>
-            <Icon name="add" />
-          </MiniTabsItem>
-        </PopoutMenu>
-      </MiniTabs>
+      <PanelSubHeader title={currentInput ? currentInput.title : 'No Inputs'} iconName={inputIcon}>
+        <MiniTabs className="ml-auto">
+          {inputs.map((input) => (
+            <MiniTabsItem
+              key={input.id}
+              isActive={selectedInputId === input.id}
+              onClick={() => setSelectedInputId(selectedNode.id, input.id)}
+            >
+              {input.title}
+            </MiniTabsItem>
+          ))}
+          <PopoutMenu items={availableInputs}>
+            <MiniTabsItem>
+              <Icon name="add" />
+            </MiniTabsItem>
+          </PopoutMenu>
+        </MiniTabs>
+      </PanelSubHeader>
+
       <div className="mb-xl">
         <HedronErrorBoundary key={currentInput ? currentInput.id : 'no-input'}>
+          {inputs.length === 0 && (
+            <div className={c.noInputs}>Add inputs to this node using the plus (+) button</div>
+          )}
           {PluginView && <PluginView input={currentInput} engine={engine} />}
         </HedronErrorBoundary>
       </div>
       {selectedNode.nodeType === 'param' && (
         <div>
-          <h3>Param Options: {selectedNode.valueType}</h3>
+          <PanelSubHeader
+            title={`Parameter Options: ${selectedNode.valueType}`}
+            iconName="settings"
+          />
+
           {(() => {
             switch (selectedNode.valueType) {
               case 'number':

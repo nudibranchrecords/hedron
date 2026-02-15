@@ -32,10 +32,13 @@ export type IconName =
   | 'arrow_upward'
   | 'arrow_downward'
   | 'frame_bug'
+  | 'cable'
+  | 'settings'
 
 export const sketchIcon: IconName = 'token'
 export const sceneIcon: IconName = 'panorama'
 export const paramIcon: IconName = 'tune'
+export const inputIcon: IconName = 'cable'
 
 export interface IconProps extends React.HTMLAttributes<HTMLSpanElement> {
   name: IconName
