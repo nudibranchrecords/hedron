@@ -70,7 +70,7 @@ export const ActiveSketch = () => {
             },
           ]}
         >
-          <Button type="ghost" iconName="menu" />
+          <Button type="ghost" iconName="more_horiz" />
         </PopoutMenu>
       </ViewHeader>
       <HedronErrorBoundary key={activeSketch.id}>

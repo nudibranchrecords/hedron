@@ -23,7 +23,7 @@ export type IconName =
   | 'edit'
   | 'play_arrow'
   | 'pause'
-  | 'menu'
+  | 'more_horiz'
   | 'fullscreen'
   | 'video_camera_back'
   | 'photo_camera_back'
