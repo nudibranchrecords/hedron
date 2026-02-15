@@ -53,13 +53,7 @@ export const PanelHeader = ({
     <h2>{children}</h2>
 
     {buttonOnClick && (
-      <Button
-        className={c.button}
-        iconName={buttonIcon}
-        size="slim"
-        type="neutral"
-        onClick={buttonOnClick}
-      />
+      <Button className={c.button} iconName={buttonIcon} type="ghost" onClick={buttonOnClick} />
     )}
   </div>
 )
