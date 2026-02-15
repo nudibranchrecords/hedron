@@ -68,7 +68,7 @@ export const PanelSubHeader = ({
   iconName?: IconName
 }) => (
   <header className={c.subHeader}>
-    {iconName && <Icon name={iconName} className={c.subheaderIcon} />}
+    {iconName && <Icon name={iconName} />}
     <h3>{title}</h3>
     {children}
   </header>
