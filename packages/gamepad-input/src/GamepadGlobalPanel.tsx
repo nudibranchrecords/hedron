@@ -83,6 +83,11 @@ const useGamepadEvents = (
     new Map(),
   )
 
+  // Track axis event counts for throttling
+  const axisEventCounts = React.useRef<Map<number, number>>(new Map())
+  // Track pending axis events to compare significance
+  const pendingAxisEvents = React.useRef<Map<number, GamepadEvent>>(new Map())
+
   useEffect(() => {
     if (!gamepadPlugin) return
 
@@ -101,8 +106,40 @@ const useGamepadEvents = (
 
       addDebugMessage(event, physicalIndices[0] ?? -1, setDebugMessages)
 
-      // Track last event per logical controller
-      setLastEventPerController((prev) => new Map(prev).set(event.controllerIndex, event))
+      // Handle axis events with throttling and significance comparison
+      if (event.inputType === 'axis') {
+        const controllerKey = event.controllerIndex
+        const currentCount = axisEventCounts.current.get(controllerKey) || 0
+        const pendingEvent = pendingAxisEvents.current.get(controllerKey)
+
+        // Compare with pending event and keep the more significant one
+        if (pendingEvent) {
+          // Calculate significance (distance from center 0.5)
+          const currentSignificance = Math.abs(event.value - 0.5)
+          const pendingSignificance = Math.abs(pendingEvent.value - 0.5)
+
+          if (currentSignificance > pendingSignificance) {
+            pendingAxisEvents.current.set(controllerKey, event)
+          }
+        } else {
+          pendingAxisEvents.current.set(controllerKey, event)
+        }
+
+        // Update every 5th axis event
+        if (currentCount >= 4) {
+          const eventToLog = pendingAxisEvents.current.get(controllerKey)
+          if (eventToLog) {
+            setLastEventPerController((prev) => new Map(prev).set(controllerKey, eventToLog))
+          }
+          axisEventCounts.current.set(controllerKey, 0)
+          pendingAxisEvents.current.delete(controllerKey)
+        } else {
+          axisEventCounts.current.set(controllerKey, currentCount + 1)
+        }
+      } else {
+        // For button events, update immediately
+        setLastEventPerController((prev) => new Map(prev).set(event.controllerIndex, event))
+      }
     }
 
     gamepadPlugin.gamepadManager.onGamepadEvent.add(handleEvent)
