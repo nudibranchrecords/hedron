@@ -49,6 +49,10 @@ export class GamepadInput implements IPlugin {
    * Tracks the axis mode for each input (for proper smoothing)
    */
   private inputAxisModes = new Map<string, AxisMode>()
+  /**
+   * Tracks button states for each controller to support gated axis mode
+   */
+  private buttonStates = new Map<string, boolean>()
 
   /**
    * Handlers for each input type
@@ -167,6 +171,12 @@ export class GamepadInput implements IPlugin {
    * @param event The gamepad event data.
    */
   private handleGamepadEvent(event: GamepadEvent): void {
+    // Track button states for gated axis mode (track ALL button events)
+    if (event.inputType === GamepadInputType.Button) {
+      const buttonKey = `${event.controllerIndex}-${event.index}`
+      this.buttonStates.set(buttonKey, event.isPressed ?? false)
+    }
+
     const storeState = this.store.getState()
     handleEachInput<typeof this.optionNodesConfig>(
       storeState,
@@ -192,6 +202,13 @@ export class GamepadInput implements IPlugin {
         let processedValue = event.value
         if (event.inputType === GamepadInputType.Axis) {
           processedValue = this.applyAxisDeadZoneAndCap(event.value)
+        }
+
+        // For gated axis mode, check if gate button is pressed
+        if (optionNodes.inputType === GamepadInputType.Axis && optionNodes.gateButtonIndex !== -1) {
+          const gateButtonKey = `${optionNodes.controllerIndex}-${optionNodes.gateButtonIndex}`
+          const isGatePressed = this.buttonStates.get(gateButtonKey) ?? false
+          if (!isGatePressed) return // Don't update if gate button isn't pressed
         }
 
         // For axis inputs in 2-axis mode, update the raw axis values

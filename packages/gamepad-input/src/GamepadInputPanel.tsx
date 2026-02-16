@@ -116,6 +116,10 @@ export const GamepadInputPanel = ({ input, engine }: IProps) => {
             (axisModeValue === AxisMode.Angle || axisModeValue === AxisMode.Distance)
           )
         }
+        // Hide gateButtonIndex unless it's an axis input
+        if (node?.key === 'gateButtonIndex') {
+          return inputTypeValue === GamepadInputType.Axis
+        }
         // Hide angleOffset unless it's an axis input in angle mode
         if (node?.key === 'angleOffset') {
           return inputTypeValue === GamepadInputType.Axis && axisModeValue === AxisMode.Angle

@@ -102,6 +102,16 @@ export const optionNodesConfig = [
     defaultValue: AxisMode.Single,
   },
   {
+    key: 'gateButtonIndex',
+    title: 'Gate Button',
+    valueType: 'enum',
+    options: [
+      { value: -1, label: 'None' },
+      ...Array.from({ length: 20 }, (_, i) => ({ value: i, label: `${i}` })),
+    ],
+    defaultValue: -1,
+  },
+  {
     key: 'angleOffset',
     title: 'Angle Offset',
     valueType: 'number',
