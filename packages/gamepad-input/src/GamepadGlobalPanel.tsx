@@ -70,9 +70,18 @@ const useConnectedGamepads = (gamepadPlugin: GamepadInput | undefined) => {
 }
 
 // Custom hook to manage gamepad events (flashing and debug messages)
-const useGamepadEvents = (gamepadPlugin: GamepadInput | undefined) => {
+const useGamepadEvents = (
+  gamepadPlugin: GamepadInput | undefined,
+  inputs: Record<string, Input>,
+  nodes: Record<string, Node>,
+  nodeValues: Record<string, NodeValue>,
+) => {
+  const [flashingInputs, setFlashingInputs] = useState<Set<string>>(new Set())
   const [flashingControllers, setFlashingControllers] = useState<Set<number>>(new Set())
   const [debugMessages, setDebugMessages] = useState<DebugMessage[]>([])
+  const [lastEventPerController, setLastEventPerController] = useState<Map<number, GamepadEvent>>(
+    new Map(),
+  )
 
   useEffect(() => {
     if (!gamepadPlugin) return
@@ -83,15 +92,24 @@ const useGamepadEvents = (gamepadPlugin: GamepadInput | undefined) => {
         gamepadPlugin,
       )
 
+      // Find matching inputs and flash them
+      const matchingInputIds = findMatchingInputsForEvent(event, inputs, nodes, nodeValues)
+      flashInputs(matchingInputIds, setFlashingInputs)
+
+      // Flash controller card at reduced capacity
       flashControllers(physicalIndices, setFlashingControllers)
+
       addDebugMessage(event, physicalIndices[0] ?? -1, setDebugMessages)
+
+      // Track last event per logical controller
+      setLastEventPerController((prev) => new Map(prev).set(event.controllerIndex, event))
     }
 
     gamepadPlugin.gamepadManager.onGamepadEvent.add(handleEvent)
     return () => gamepadPlugin.gamepadManager.onGamepadEvent.remove(handleEvent)
-  }, [gamepadPlugin])
+  }, [gamepadPlugin, inputs, nodes, nodeValues])
 
-  return { flashingControllers, debugMessages }
+  return { flashingInputs, flashingControllers, debugMessages, lastEventPerController }
 }
 
 // Helper: Find physical controller indices that map to a logical index
@@ -111,6 +129,40 @@ const findPhysicalIndicesForLogicalController = (
   return physicalIndices
 }
 
+// Helper: Find inputs that match a gamepad event
+const findMatchingInputsForEvent = (
+  event: GamepadEvent,
+  inputs: Record<string, Input>,
+  nodes: Record<string, Node>,
+  nodeValues: Record<string, NodeValue>,
+): string[] => {
+  return Object.values(inputs)
+    .filter((input) => {
+      if (input.type !== 'gamepad') return false
+
+      const controllerIndexNode = input.optionNodeIds.find(
+        (nodeId: string) => nodes[nodeId]?.key === 'controllerIndex',
+      )
+      const inputTypeNode = input.optionNodeIds.find(
+        (nodeId: string) => nodes[nodeId]?.key === 'inputType',
+      )
+      const indexNode = input.optionNodeIds.find((nodeId: string) => nodes[nodeId]?.key === 'index')
+
+      if (!controllerIndexNode || !inputTypeNode || !indexNode) return false
+
+      const controllerIndex = nodeValues[controllerIndexNode]
+      const inputType = nodeValues[inputTypeNode]
+      const index = nodeValues[indexNode]
+
+      return (
+        controllerIndex === event.controllerIndex &&
+        inputType === event.inputType &&
+        index === event.index
+      )
+    })
+    .map((input) => input.id)
+}
+
 // Helper: Flash controllers briefly
 const flashControllers = (
   physicalIndices: number[],
@@ -122,6 +174,23 @@ const flashControllers = (
       setFlashingControllers((prev) => {
         const next = new Set(prev)
         next.delete(physicalIndex)
+        return next
+      })
+    }, 300)
+  })
+}
+
+// Helper: Flash inputs briefly
+const flashInputs = (
+  inputIds: string[],
+  setFlashingInputs: React.Dispatch<React.SetStateAction<Set<string>>>,
+) => {
+  inputIds.forEach((inputId) => {
+    setFlashingInputs((prev) => new Set(prev).add(inputId))
+    setTimeout(() => {
+      setFlashingInputs((prev) => {
+        const next = new Set(prev)
+        next.delete(inputId)
         return next
       })
     }, 300)
@@ -177,7 +246,8 @@ export const GamepadGlobalPanel: React.FC<GamepadGlobalPanelProps> = ({ engine }
   const nodeValues = useEngineStore((state) => state.nodeValues)
 
   const { connectedGamepads, setConnectedGamepads } = useConnectedGamepads(gamepadPlugin)
-  const { flashingControllers, debugMessages } = useGamepadEvents(gamepadPlugin)
+  const { flashingInputs, flashingControllers, debugMessages, lastEventPerController } =
+    useGamepadEvents(gamepadPlugin, inputs, nodes, nodeValues)
 
   const toggleExpanded = useCallback((physicalIndex: number) => {
     setExpandedControllers((prev) => {
@@ -232,6 +302,7 @@ export const GamepadGlobalPanel: React.FC<GamepadGlobalPanelProps> = ({ engine }
         <ControllerList
           connectedGamepads={connectedGamepads}
           expandedControllers={expandedControllers}
+          flashingInputs={flashingInputs}
           flashingControllers={flashingControllers}
           inputs={inputs}
           nodes={nodes}
@@ -239,6 +310,7 @@ export const GamepadGlobalPanel: React.FC<GamepadGlobalPanelProps> = ({ engine }
           engine={engine}
           toggleExpanded={toggleExpanded}
           handleControllerAssignment={handleControllerAssignment}
+          lastEventPerController={lastEventPerController}
         />
         <DebugSection
           showDebug={showDebug}
@@ -275,6 +347,7 @@ const GlobalSettings: React.FC<GlobalSettingsProps> = ({ engine }) => {
 interface ControllerListProps {
   connectedGamepads: ConnectedGamepad[]
   expandedControllers: Set<number>
+  flashingInputs: Set<string>
   flashingControllers: Set<number>
   inputs: Record<string, Input>
   nodes: Record<string, Node>
@@ -282,11 +355,13 @@ interface ControllerListProps {
   engine: HedronEngine
   toggleExpanded: (physicalIndex: number) => void
   handleControllerAssignment: (physicalIndex: number, logicalIndex: number) => void
+  lastEventPerController: Map<number, GamepadEvent>
 }
 
 const ControllerList: React.FC<ControllerListProps> = ({
   connectedGamepads,
   expandedControllers,
+  flashingInputs,
   flashingControllers,
   inputs,
   nodes,
@@ -294,6 +369,7 @@ const ControllerList: React.FC<ControllerListProps> = ({
   engine,
   toggleExpanded,
   handleControllerAssignment,
+  lastEventPerController,
 }) => {
   return (
     <div className={styles.controllerList}>
@@ -313,11 +389,13 @@ const ControllerList: React.FC<ControllerListProps> = ({
             gamepad={gamepad}
             isExpanded={isExpanded}
             isFlashing={isFlashing}
+            flashingInputs={flashingInputs}
             controllerInputs={controllerInputs}
             nodes={nodes}
             nodeValues={nodeValues}
             toggleExpanded={toggleExpanded}
             handleControllerAssignment={handleControllerAssignment}
+            lastEvent={lastEventPerController.get(gamepad.assignedIndex)}
           />
         )
       })}
@@ -330,26 +408,58 @@ interface ControllerItemProps {
   gamepad: ConnectedGamepad
   isExpanded: boolean
   isFlashing: boolean
+  flashingInputs: Set<string>
   controllerInputs: Input[]
   nodes: Record<string, Node>
   nodeValues: Record<string, NodeValue>
   toggleExpanded: (physicalIndex: number) => void
   handleControllerAssignment: (physicalIndex: number, logicalIndex: number) => void
+  lastEvent?: GamepadEvent
 }
 
 const ControllerItem: React.FC<ControllerItemProps> = ({
   gamepad,
   isExpanded,
   isFlashing,
+  flashingInputs,
   controllerInputs,
   nodes,
   nodeValues,
   toggleExpanded,
   handleControllerAssignment,
+  lastEvent,
 }) => {
+  // Find which input/parameter was affected by the last event
+  const affectedParameter = React.useMemo(() => {
+    if (!lastEvent) return null
+
+    const matchingInput = controllerInputs.find((input) => {
+      const inputTypeNode = input.optionNodeIds.find(
+        (nodeId: string) => nodes[nodeId]?.key === 'inputType',
+      )
+      const indexNode = input.optionNodeIds.find((nodeId: string) => nodes[nodeId]?.key === 'index')
+
+      if (!inputTypeNode || !indexNode) return false
+
+      const inputType = nodeValues[inputTypeNode]
+      const index = nodeValues[indexNode]
+
+      return inputType === lastEvent.inputType && index === lastEvent.index
+    })
+
+    // Return event info whether or not there's a matching input
+    const targetNode = matchingInput ? nodes[matchingInput.targetNodeId] : null
+    return {
+      inputType: lastEvent.inputType,
+      index: lastEvent.index,
+      value: lastEvent.value,
+      targetTitle: targetNode?.title || null,
+      isRegistered: !!matchingInput,
+    }
+  }, [lastEvent, controllerInputs, nodes, nodeValues])
   return (
     <Card>
-      <div className={isFlashing ? styles.activeCard : ''}>
+      <div className={isFlashing ? styles.activeCardSubtle : ''}>
         <div className={styles.controllerHeader}>
           <span>{gamepad.id}</span>
           <div className={styles.controllerAssignment}>
@@ -370,6 +480,17 @@ const ControllerItem: React.FC<ControllerItemProps> = ({
         </div>
 
         <CardBody>
+          {affectedParameter && (
+            <div className={styles.lastEvent}>
+              Last: {affectedParameter.inputType} {affectedParameter.index} (
+              {affectedParameter.value.toFixed(3)}) →{' '}
+              {affectedParameter.isRegistered ? (
+                affectedParameter.targetTitle
+              ) : (
+                <span className={styles.notRegistered}>Not Registered</span>
+              )}
+            </div>
+          )}
           <Collapsible
             title="Inputs Using This Controller"
             isOpen={isExpanded}
@@ -380,6 +501,7 @@ const ControllerItem: React.FC<ControllerItemProps> = ({
                 <div className={styles.nodeList}>
                   {controllerInputs.map((input) => {
                     const targetNode = nodes[input.targetNodeId]
+                    const isFlashing = flashingInputs.has(input.id)
                     let type, index: number | string | undefined
                     input.optionNodeIds.forEach((nodeId) => {
                       const node = nodes[nodeId]
@@ -391,7 +513,10 @@ const ControllerItem: React.FC<ControllerItemProps> = ({
                       }
                     })
                     return (
-                      <div key={input.id} className={styles.nodeItem}>
+                      <div
+                        key={input.id}
+                        className={`${styles.nodeItem} ${isFlashing ? styles.activeNodeItem : ''}`}
+                      >
                         {type} {index} → {targetNode?.title || 'Unknown'}
                       </div>
                     )
