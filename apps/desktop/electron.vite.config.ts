@@ -33,6 +33,7 @@ export default defineConfig({
         '@hedron-gl/ui-core': path.resolve(__dirname, '../../packages/ui-core/src'),
         '@hedron-gl/midi-input': path.resolve(__dirname, '../../packages/midi-input/src'),
         '@hedron-gl/lfo-input': path.resolve(__dirname, '../../packages/lfo-input/src'),
+        '@hedron-gl/gamepad-input': path.resolve(__dirname, '../../packages/gamepad-input/src'),
         '@hedron-gl/audio-input': path.resolve(__dirname, '../../packages/audio-input/src'),
         '@hedron-gl/app-store': path.resolve(__dirname, '../../packages/app-store/src'),
         '@hedron-gl/clock': path.resolve(__dirname, '../../packages/clock/src'),

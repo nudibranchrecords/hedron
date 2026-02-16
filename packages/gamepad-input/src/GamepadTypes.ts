@@ -5,7 +5,7 @@ import {
   Input,
   NodeValue,
   Param,
-} from '@hedron/engine'
+} from '@hedron-gl/engine'
 import { GamepadInput } from './GamepadInput'
 
 /**

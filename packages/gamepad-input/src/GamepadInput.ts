@@ -9,7 +9,7 @@ import {
   NodeParamString,
   NodeParamRGB,
   NodeParamVector3,
-} from '@hedron/engine'
+} from '@hedron-gl/engine'
 import { GamepadManager } from './GamepadManager'
 import { GamepadEvent, GamepadInputType, AxisMode, ValueHander, ShotHandler } from './GamepadTypes'
 import { globalOptionNodesConfig, optionNodesConfig } from './GamepadConfig'

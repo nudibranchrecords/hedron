@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react'
-import { HedronEngine, Input, Node, NodeValue } from '@hedron/engine'
+import { HedronEngine, Input, Node, NodeValue } from '@hedron-gl/engine'
 import {
   Panel,
   PanelHeader,
@@ -11,7 +11,7 @@ import {
   Collapsible,
   ControlGrid,
   NodeContainer,
-} from '@hedron/ui-core'
+} from '@hedron-gl/ui-core'
 import { GamepadInput } from './GamepadInput'
 import styles from './GamepadGlobalPanel.module.css'
 import { GamepadEvent } from './GamepadTypes'

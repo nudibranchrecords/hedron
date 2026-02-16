@@ -6,7 +6,7 @@ import {
   NodeParamString,
   NodeParamRGB,
   NodeParamVector3,
-} from '@hedron/engine'
+} from '@hedron-gl/engine'
 import { GamepadInputType, ShotHandler, ValueHander, ButtonMode, AxisMode } from './GamepadTypes'
 
 /**

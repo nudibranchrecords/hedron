@@ -1,5 +1,5 @@
 import React from 'react'
-import { HedronEngine } from '@hedron/engine'
+import { HedronEngine } from '@hedron-gl/engine'
 import styles from './GamepadGlobalWidget.module.css'
 
 interface GamepadGlobalWidgetProps {

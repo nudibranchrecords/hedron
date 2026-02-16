@@ -1,6 +1,6 @@
 import { useCallback, useState, useMemo } from 'react'
-import { HedronEngine, HedronEngineWithPlugin, Input } from '@hedron/engine'
-import { Button, ControlGrid, NodeContainer, useEngineStore } from '@hedron/ui-core'
+import { HedronEngine, HedronEngineWithPlugin, Input } from '@hedron-gl/engine'
+import { Button, ControlGrid, NodeContainer, useEngineStore } from '@hedron-gl/ui-core'
 import { GamepadInput } from './GamepadInput'
 import { GamepadEvent, AxisMode, GamepadInputType } from './GamepadTypes'
 
