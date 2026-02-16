@@ -10,9 +10,15 @@ export interface NodeControlProps {
   isActive?: boolean
   children: React.ReactNode
   onClick?: () => void
+  layout?: 'horizontal' | 'vertical'
 }
 
-export const NodeControl = ({ isActive, children, onClick }: NodeControlProps) => {
+export const NodeControl = ({
+  isActive,
+  children,
+  onClick,
+  layout = 'horizontal',
+}: NodeControlProps) => {
   const wasMouseDownOnInner = useWasMouseDownOnInnerContext()
 
   const handleClick = useCallback(() => {
@@ -24,7 +30,7 @@ export const NodeControl = ({ isActive, children, onClick }: NodeControlProps) =
 
   return (
     <MouseDownContext.Provider value={wasMouseDownOnInner}>
-      <div onClick={handleClick} className={`${c.wrapper} ${isActive && 'active'}`}>
+      <div onClick={handleClick} className={`${c.wrapper} ${isActive && 'active'} ${c[layout]}`}>
         {children}
       </div>
     </MouseDownContext.Provider>

@@ -1,4 +1,4 @@
-import { type Node as NodeType } from '@hedron/engine'
+import { type Node as NodeType } from '@hedron-gl/engine'
 import { useCallback } from 'react'
 import { ParamNumber } from './ParamNumber/ParamNumber'
 import { ParamBoolean } from './ParamBoolean/ParamBoolean'
@@ -12,6 +12,7 @@ import {
   NodeControl,
   NodeControlInner,
   NodeControlMain,
+  NodeControlProps,
   NodeControlTitle,
 } from '@components/NodeControl/NodeControl'
 import { useEngineStore } from '@hooks/storeHooks'
@@ -43,10 +44,12 @@ export const NodeContainer = ({
   onClick,
   isActive,
   nodeId,
+  layout,
 }: {
   onClick?: (nodeId: string) => void
   isActive?: boolean
   nodeId: string
+  layout?: NodeControlProps['layout']
 }) => {
   const node = useEngineStore((state) => state.nodes[nodeId])
 
@@ -54,7 +57,7 @@ export const NodeContainer = ({
     onClick?.(nodeId)
   }, [nodeId, onClick])
   return (
-    <NodeControl key={node.key} onClick={_onClick} isActive={isActive}>
+    <NodeControl key={node.key} onClick={_onClick} isActive={isActive} layout={layout}>
       <NodeControlMain>
         <NodeControlTitle>{node.title}</NodeControlTitle>
         <NodeControlInner>{getInputElement(node)}</NodeControlInner>

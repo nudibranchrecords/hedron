@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react'
-import { HedronEngine, Input } from '@hedron/engine'
-import { Button, ControlGrid, NodeContainer } from '@hedron/ui-core'
+import { HedronEngine, Input } from '@hedron-gl/engine'
+import { Button, ControlGrid, NodeContainer } from '@hedron-gl/ui-core'
 import { MidiInput } from './MidiInput'
 
 interface IProps {

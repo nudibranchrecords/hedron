@@ -1,0 +1,47 @@
+.messageList {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1rem;
+}
+
+.messageItem {
+  background: var(--color-bg-2);
+  padding: 1rem;
+}
+
+.messageItem.error {
+  font-size: 1.25em;
+  border-left: 3px solid var(--errorTextColor);
+}
+
+.messageItem.warning {
+  font-size: 1.25em;
+  border-left: 3px solid var(--warningTextColor);
+}
+
+.messageText {
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.error .messageText {
+  color: var(--errorTextColor);
+}
+
+.warning .messageText {
+  color: var(--warningTextColor);
+}
+
+.messageLocation {
+  font-family: monospace;
+  font-size: 0.85rem;
+}
+
+.messageLineText {
+  margin-top: 0.5rem;
+  padding: 0.5rem;
+  border-radius: 0.25rem;
+  overflow-x: auto;
+  white-space: pre;
+}

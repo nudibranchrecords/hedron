@@ -1,5 +1,5 @@
 import { Pass } from 'postprocessing'
-import { type Clock } from '@hedron/clock'
+import { type Clock } from '@hedron-gl/clock'
 import { listenToStore } from './storeListener'
 import { CanvasSizeMode, RendererType, Result, ShotArgsObject } from './types'
 import { importSketchModule } from './importSketchModule'
@@ -9,7 +9,7 @@ import { initializeGlobalVars } from '@globalVars'
 import { IPlugin } from '@plugins/Plugin'
 import { stripForSave } from '@utils/stripForSave'
 import { Renderer } from '@world/Renderer'
-import { SketchInstanceError, SketchManager } from '@world/SketchManager'
+import { SketchInstance, SketchInstanceError, SketchManager } from '@world/SketchManager'
 import { createDebugScene } from '@world/debugScene'
 import { EngineData, SketchModuleItem, SketchConfigParamImported } from '@store/types'
 import { getSketchesOfModuleId } from '@store/selectors/getSketchesOfModuleId'
@@ -133,6 +133,7 @@ export class HedronEngine {
   }
 
   public registerShot(shotId: string, shotFunc: (value: ShotArgsObject) => void) {
+    this.unregisterShot(shotId) // Unregister existing shot if it exists to avoid duplicates
     this.registeredShots[shotId] = this.store.subscribe(
       (state) => state.nodeValues[shotId] as ShotArgsObject,
       shotFunc,
@@ -146,6 +147,22 @@ export class HedronEngine {
       unsubscribe()
       delete this.registeredShots[shotId]
     }
+  }
+
+  private registerAllSketchShots(sketchId: string, sketchInstance: SketchInstance) {
+    const shotNodes = getSketchShotNodes(this.store.getState(), sketchId)
+
+    shotNodes.forEach((shotNode) => {
+      this.registerShot(shotNode.id, (shotArgs) => {
+        const params = getSketchParamValues(this.store.getState(), sketchId)
+
+        sketchInstance?.[shotNode.key]?.({
+          params,
+          scene: this.scene,
+          shotArgs,
+        })
+      })
+    })
   }
 
   public fireShot(shotId: string, shotArgs?: ShotArgsObject) {
@@ -167,21 +184,8 @@ export class HedronEngine {
 
         const sketchInstance = this.sketchManager.addSketchToScene(sketchInstanceId, module)
 
-        const shotNodes = getSketchShotNodes(storeState, sketchInstanceId)
-
-        shotNodes.forEach((shotNode) => {
-          this.registerShot(shotNode.id, (shotArgs) => {
-            const params = getSketchParamValues(this.store.getState(), sketchInstanceId)
-
-            sketchInstance?.[shotNode.key]?.({
-              params,
-              scene: this.scene,
-              shotArgs,
-            })
-          })
-        })
-
         if (sketchInstance) {
+          this.registerAllSketchShots(sketchInstanceId, sketchInstance)
           this.setIsSketchBroken(sketchInstance.id, false)
         }
 
@@ -254,6 +258,7 @@ export class HedronEngine {
       const sketchInstance = this.sketchManager.addSketchToScene(sketch.id, moduleItem.module)
 
       if (sketchInstance) {
+        this.registerAllSketchShots(sketch.id, sketchInstance)
         this.setIsSketchBroken(sketchInstance.id, false)
       }
 

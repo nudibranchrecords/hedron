@@ -1,5 +1,5 @@
 import { forwardRef, useCallback, useImperativeHandle, useRef } from 'react'
-import { NodeEnumValue } from '@hedron/engine'
+import { NodeEnumValue } from '@hedron-gl/engine'
 import c from './EnumDropdown.module.css'
 
 export type EnumDropdownHandle = {

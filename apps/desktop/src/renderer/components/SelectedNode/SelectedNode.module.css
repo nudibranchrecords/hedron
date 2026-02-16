@@ -1,0 +1,23 @@
+.header {
+  display: flex;
+  align-items: center;
+
+  gap: var(--gapXLarge);
+  display: flex;
+  flex: 1;
+  padding-bottom: var(--gapSmall);
+  align-items: center;
+  gap: var(--gapMedium);
+  border-bottom: 1px solid var(--lineColor1);
+  margin-bottom: var(--gapXLarge);
+
+  h3 {
+    margin: 0;
+  }
+}
+
+.noInputs {
+  text-align: center;
+  color: var(--textColorLight2);
+  font-style: italic;
+}

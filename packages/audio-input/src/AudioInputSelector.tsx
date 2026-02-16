@@ -5,7 +5,7 @@ import {
   NodeControlInner,
   NodeControlMain,
   NodeControlTitle,
-} from '@hedron/ui-core'
+} from '@hedron-gl/ui-core'
 import { AudioInput } from './AudioInput'
 import styles from './AudioInputPanel.module.css'
 

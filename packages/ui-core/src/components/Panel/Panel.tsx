@@ -1,4 +1,3 @@
-import React from 'react'
 import c from './Panel.module.css'
 import { Button } from '@components/Button/Button'
 import { Icon, IconName } from '@components/Icon/Icon'
@@ -54,15 +53,25 @@ export const PanelHeader = ({
     <h2>{children}</h2>
 
     {buttonOnClick && (
-      <Button
-        className={c.button}
-        iconName={buttonIcon}
-        size="slim"
-        type="neutral"
-        onClick={buttonOnClick}
-      />
+      <Button className={c.button} iconName={buttonIcon} type="ghost" onClick={buttonOnClick} />
     )}
   </div>
+)
+
+export const PanelSubHeader = ({
+  title,
+  children,
+  iconName,
+}: {
+  title: string
+  children?: React.ReactNode
+  iconName?: IconName
+}) => (
+  <header className={c.subHeader}>
+    {iconName && <Icon name={iconName} />}
+    <h3>{title}</h3>
+    {children}
+  </header>
 )
 
 export interface PanelBodyProps extends React.HTMLAttributes<HTMLDivElement> {
