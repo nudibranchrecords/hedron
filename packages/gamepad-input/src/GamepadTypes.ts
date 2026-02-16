@@ -48,7 +48,7 @@ export interface GamepadEvent {
 /**
  * Type for value handler functions.
  */
-export type ValueHander<T = Param> = (params: {
+export type ValueHandler<T = Param> = (params: {
   gamepadEvent: GamepadEvent
   input: Input
   storeState: EngineState
