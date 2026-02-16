@@ -12,7 +12,7 @@ interface IProps {
 const useGamepadLearn = (input: Input, engine: HedronEngineWithPlugin<GamepadInput>) => {
   const [isLearning, setIsLearning] = useState(false)
 
-  const plugin = engine.getPlugin('gamepad-input')
+  const plugin = engine.getPlugin('gamepad-input') as GamepadInput
   const gamepadManager = plugin.gamepadManager
 
   const runGamepadLearn = useCallback(async () => {
