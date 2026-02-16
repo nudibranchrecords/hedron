@@ -244,6 +244,7 @@ export const GamepadGlobalPanel: React.FC<GamepadGlobalPanelProps> = ({ engine }
   const inputs = useEngineStore((state) => state.inputs)
   const nodes = useEngineStore((state) => state.nodes)
   const nodeValues = useEngineStore((state) => state.nodeValues)
+  const sketches = useEngineStore((state) => state.sketches)
 
   const { connectedGamepads, setConnectedGamepads } = useConnectedGamepads(gamepadPlugin)
   const { flashingInputs, flashingControllers, debugMessages, lastEventPerController } =
@@ -307,6 +308,7 @@ export const GamepadGlobalPanel: React.FC<GamepadGlobalPanelProps> = ({ engine }
           inputs={inputs}
           nodes={nodes}
           nodeValues={nodeValues}
+          sketches={sketches}
           engine={engine}
           toggleExpanded={toggleExpanded}
           handleControllerAssignment={handleControllerAssignment}
@@ -352,6 +354,7 @@ interface ControllerListProps {
   inputs: Record<string, Input>
   nodes: Record<string, Node>
   nodeValues: Record<string, NodeValue>
+  sketches: Record<string, { id: string; title: string; nodeIds: string[] }>
   engine: HedronEngine
   toggleExpanded: (physicalIndex: number) => void
   handleControllerAssignment: (physicalIndex: number, logicalIndex: number) => void
@@ -366,6 +369,7 @@ const ControllerList: React.FC<ControllerListProps> = ({
   inputs,
   nodes,
   nodeValues,
+  sketches,
   engine,
   toggleExpanded,
   handleControllerAssignment,
@@ -393,6 +397,7 @@ const ControllerList: React.FC<ControllerListProps> = ({
             controllerInputs={controllerInputs}
             nodes={nodes}
             nodeValues={nodeValues}
+            sketches={sketches}
             toggleExpanded={toggleExpanded}
             handleControllerAssignment={handleControllerAssignment}
             lastEvent={lastEventPerController.get(gamepad.assignedIndex)}
@@ -412,6 +417,7 @@ interface ControllerItemProps {
   controllerInputs: Input[]
   nodes: Record<string, Node>
   nodeValues: Record<string, NodeValue>
+  sketches: Record<string, { id: string; title: string; nodeIds: string[] }>
   toggleExpanded: (physicalIndex: number) => void
   handleControllerAssignment: (physicalIndex: number, logicalIndex: number) => void
   lastEvent?: GamepadEvent
@@ -425,6 +431,7 @@ const ControllerItem: React.FC<ControllerItemProps> = ({
   controllerInputs,
   nodes,
   nodeValues,
+  sketches,
   toggleExpanded,
   handleControllerAssignment,
   lastEvent,
@@ -449,14 +456,25 @@ const ControllerItem: React.FC<ControllerItemProps> = ({
 
     // Return event info whether or not there's a matching input
     const targetNode = matchingInput ? nodes[matchingInput.targetNodeId] : null
+
+    // Find the sketch that contains this node by scanning all sketches
+    let sketch = null
+    if (matchingInput?.targetNodeId) {
+      const foundSketch = Object.values(sketches).find((s) =>
+        s.nodeIds?.includes(matchingInput.targetNodeId),
+      )
+      sketch = foundSketch || null
+    }
+
     return {
       inputType: lastEvent.inputType,
       index: lastEvent.index,
       value: lastEvent.value,
       targetTitle: targetNode?.title || null,
+      sketchTitle: sketch?.title || null,
       isRegistered: !!matchingInput,
     }
-  }, [lastEvent, controllerInputs, nodes, nodeValues])
+  }, [lastEvent, controllerInputs, nodes, nodeValues, sketches])
   return (
     <Card>
       <div className={isFlashing ? styles.activeCardSubtle : ''}>
@@ -485,7 +503,12 @@ const ControllerItem: React.FC<ControllerItemProps> = ({
               Last: {affectedParameter.inputType} {affectedParameter.index} (
               {affectedParameter.value.toFixed(3)}) →{' '}
               {affectedParameter.isRegistered ? (
-                affectedParameter.targetTitle
+                <>
+                  {affectedParameter.sketchTitle && (
+                    <span className={styles.sketchName}>{affectedParameter.sketchTitle} / </span>
+                  )}
+                  {affectedParameter.targetTitle}
+                </>
               ) : (
                 <span className={styles.notRegistered}>Not Registered</span>
               )}
@@ -505,7 +528,6 @@ const ControllerItem: React.FC<ControllerItemProps> = ({
                     let type, index: number | string | undefined
                     input.optionNodeIds.forEach((nodeId) => {
                       const node = nodes[nodeId]
-                      console.error(node)
                       if (node.key === 'inputType') {
                         type = nodeValues[nodeId] as number
                       } else if (node.key === 'index') {
