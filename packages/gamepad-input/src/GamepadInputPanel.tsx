@@ -72,22 +72,22 @@ const useGamepadLearn = (input: Input, engine: HedronEngine) => {
 export const GamepadInputPanel = ({ input, engine }: IProps) => {
   const { isLearning, runGamepadLearn, cancelGamepadLearn } = useGamepadLearn(input, engine)
 
-  const { nodes, inputTypeValue, axisModeValue, targetNodeValueType } = useEngineStore(
-    useCallback(
-      (state) => {
-        const inputTypeNode = input.optionNodeIds.find((id) => state.nodes[id]?.key === 'inputType')
-        const axisModeNode = input.optionNodeIds.find((id) => state.nodes[id]?.key === 'axisMode')
-        const targetNode = state.nodes[input.targetNodeId]
-        return {
-          nodes: state.nodes,
-          inputTypeValue: inputTypeNode ? state.nodeValues[inputTypeNode] : null,
-          axisModeValue: axisModeNode ? state.nodeValues[axisModeNode] : null,
-          targetNodeValueType: targetNode?.nodeType === 'param' ? targetNode.valueType : null,
-        }
-      },
-      [input.optionNodeIds, input.targetNodeId],
-    ),
+  const nodes = useEngineStore((state) => state.nodes)
+  const nodeValues = useEngineStore((state) => state.nodeValues)
+
+  const inputTypeNode = useMemo(
+    () => input.optionNodeIds.find((id) => nodes[id]?.key === 'inputType'),
+    [input.optionNodeIds, nodes],
   )
+  const axisModeNode = useMemo(
+    () => input.optionNodeIds.find((id) => nodes[id]?.key === 'axisMode'),
+    [input.optionNodeIds, nodes],
+  )
+
+  const inputTypeValue = inputTypeNode ? nodeValues[inputTypeNode] : null
+  const axisModeValue = axisModeNode ? nodeValues[axisModeNode] : null
+  const targetNode = nodes[input.targetNodeId]
+  const targetNodeValueType = targetNode?.nodeType === 'param' ? targetNode.valueType : null
 
   // Memoize filtered node IDs to prevent unnecessary recalculations
   const visibleOptionNodeIds = useMemo(
