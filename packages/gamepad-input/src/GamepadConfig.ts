@@ -11,14 +11,6 @@ export const globalOptionNodesConfig = [
     sliderMax: 0.99,
   },
   {
-    key: 'buttonSmoothing',
-    title: 'Button Smoothing',
-    valueType: 'number',
-    defaultValue: 0,
-    sliderMin: 0,
-    sliderMax: 0.99,
-  },
-  {
     key: 'axisDeadZone',
     title: 'Axis Dead Zone',
     valueType: 'number',
@@ -33,6 +25,14 @@ export const globalOptionNodesConfig = [
     defaultValue: 1,
     sliderMin: 0,
     sliderMax: 1,
+  },
+  {
+    key: 'buttonSmoothing',
+    title: 'Button Smoothing',
+    valueType: 'number',
+    defaultValue: 0,
+    sliderMin: 0,
+    sliderMax: 0.99,
   },
 ] as const satisfies InputOptionNodesConfig
 
