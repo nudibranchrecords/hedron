@@ -26,15 +26,6 @@ interface ConnectedGamepad {
   assignedIndex: number
 }
 
-interface DebugMessage {
-  timestamp: number
-  physicalIndex: number
-  logicalIndex: number
-  inputType: string
-  index: number
-  value: number
-}
-
 // Custom hook to manage connected gamepads
 const useConnectedGamepads = (gamepadPlugin: GamepadInput | undefined) => {
   const [connectedGamepads, setConnectedGamepads] = useState<ConnectedGamepad[]>([])
@@ -78,7 +69,6 @@ const useGamepadEvents = (
 ) => {
   const [flashingInputs, setFlashingInputs] = useState<Set<string>>(new Set())
   const [flashingControllers, setFlashingControllers] = useState<Set<number>>(new Set())
-  const [debugMessages, setDebugMessages] = useState<DebugMessage[]>([])
   const [lastEventPerController, setLastEventPerController] = useState<Map<number, GamepadEvent>>(
     new Map(),
   )
@@ -103,8 +93,6 @@ const useGamepadEvents = (
 
       // Flash controller card at reduced capacity
       flashControllers(physicalIndices, setFlashingControllers)
-
-      addDebugMessage(event, physicalIndices[0] ?? -1, setDebugMessages)
 
       // Handle axis events with throttling and significance comparison
       if (event.inputType === 'axis') {
@@ -146,7 +134,7 @@ const useGamepadEvents = (
     return () => gamepadPlugin.gamepadManager.onGamepadEvent.remove(handleEvent)
   }, [gamepadPlugin, inputs, nodes, nodeValues])
 
-  return { flashingInputs, flashingControllers, debugMessages, lastEventPerController }
+  return { flashingInputs, flashingControllers, lastEventPerController }
 }
 
 // Helper: Find physical controller indices that map to a logical index
@@ -234,25 +222,6 @@ const flashInputs = (
   })
 }
 
-// Helper: Add debug message
-const addDebugMessage = (
-  event: GamepadEvent,
-  physicalIndex: number,
-  setDebugMessages: React.Dispatch<React.SetStateAction<DebugMessage[]>>,
-) => {
-  setDebugMessages((prev) => {
-    const newMessage: DebugMessage = {
-      timestamp: Date.now(),
-      physicalIndex,
-      logicalIndex: event.controllerIndex,
-      inputType: event.inputType,
-      index: event.index,
-      value: event.value,
-    }
-    return [newMessage, ...prev].slice(0, 100)
-  })
-}
-
 // Helper: Get inputs for a specific controller
 const getInputsForController = (
   controllerIndex: number,
@@ -276,7 +245,6 @@ const getInputsForController = (
 export const GamepadGlobalPanel: React.FC<GamepadGlobalPanelProps> = ({ engine }) => {
   const gamepadPlugin = engine.plugins['gamepad-input'] as GamepadInput | undefined
   const [expandedControllers, setExpandedControllers] = useState<Set<number>>(new Set())
-  const [showDebug, setShowDebug] = useState(false)
 
   const inputs = useEngineStore((state) => state.inputs)
   const nodes = useEngineStore((state) => state.nodes)
@@ -284,8 +252,12 @@ export const GamepadGlobalPanel: React.FC<GamepadGlobalPanelProps> = ({ engine }
   const sketches = useEngineStore((state) => state.sketches)
 
   const { connectedGamepads, setConnectedGamepads } = useConnectedGamepads(gamepadPlugin)
-  const { flashingInputs, flashingControllers, debugMessages, lastEventPerController } =
-    useGamepadEvents(gamepadPlugin, inputs, nodes, nodeValues)
+  const { flashingInputs, flashingControllers, lastEventPerController } = useGamepadEvents(
+    gamepadPlugin,
+    inputs,
+    nodes,
+    nodeValues,
+  )
 
   const toggleExpanded = useCallback((physicalIndex: number) => {
     setExpandedControllers((prev) => {
@@ -350,11 +322,6 @@ export const GamepadGlobalPanel: React.FC<GamepadGlobalPanelProps> = ({ engine }
           toggleExpanded={toggleExpanded}
           handleControllerAssignment={handleControllerAssignment}
           lastEventPerController={lastEventPerController}
-        />
-        <DebugSection
-          showDebug={showDebug}
-          setShowDebug={setShowDebug}
-          debugMessages={debugMessages}
         />
       </PanelBody>
     </Panel>
@@ -591,36 +558,5 @@ const ControllerItem: React.FC<ControllerItemProps> = ({
         </CardBody>
       </div>
     </Card>
-  )
-}
-
-// Component: Debug Section
-interface DebugSectionProps {
-  showDebug: boolean
-  setShowDebug: (show: boolean) => void
-  debugMessages: DebugMessage[]
-}
-
-const DebugSection: React.FC<DebugSectionProps> = ({ showDebug, setShowDebug, debugMessages }) => {
-  return (
-    <div className={styles.debugSection}>
-      <Collapsible title="Debug Messages" isOpen={showDebug} onToggle={setShowDebug}>
-        <div className={styles.debugMessages}>
-          {debugMessages.length > 0 ? (
-            debugMessages.map((msg, idx) => (
-              <div key={idx} className={styles.debugMessage}>
-                <span className={styles.timestamp}>
-                  {new Date(msg.timestamp).toLocaleTimeString()}
-                </span>
-                Physical: {msg.physicalIndex} → Logical: {msg.logicalIndex} | {msg.inputType}#
-                {msg.index} = {msg.value.toFixed(3)}
-              </div>
-            ))
-          ) : (
-            <div className={styles.emptyMessage}>No messages yet</div>
-          )}
-        </div>
-      </Collapsible>
-    </div>
   )
 }
