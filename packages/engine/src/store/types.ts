@@ -24,18 +24,13 @@ export interface NodeBase {
   nodeType: NodeType
 }
 
-export const ParamValueTypesWithChildren = ['vector3', 'rgb'] as const
-export type ParamValueTypeWithChildren = (typeof ParamValueTypesWithChildren)[number]
-
 export interface NodeParamBase extends NodeBase {
   title: string
 }
 
-export interface NodeParamWithChildren extends NodeParamBase {
+export interface NodeParamWithChildrenBase extends NodeParamBase {
   nodeType: 'param'
   childNodeIds: string[]
-  valueType: ParamValueTypeWithChildren
-  defaultValue: [number, number, number]
 }
 
 export interface NodeParamNumber extends NodeParamBase {
@@ -61,12 +56,17 @@ export interface NodeParamEnum extends NodeParamBase {
   options: EnumOption[]
 }
 
-export interface NodeParamVector3 extends NodeParamWithChildren {
+export interface NodeParamVector3 extends NodeParamWithChildrenBase {
   valueType: 'vector3'
   defaultValue: [number, number, number]
 }
 
-export interface NodeParamRGB extends NodeParamWithChildren {
+export interface NodeParamVector2 extends NodeParamWithChildrenBase {
+  valueType: 'vector2'
+  defaultValue: [number, number]
+}
+
+export interface NodeParamRGB extends NodeParamWithChildrenBase {
   valueType: 'rgb'
   defaultValue: [number, number, number]
 }
@@ -77,8 +77,12 @@ export type Param = (
   | NodeParamNumber
   | NodeParamEnum
   | NodeParamVector3
+  | NodeParamVector2
   | NodeParamRGB
 ) & { nodeType: 'param' }
+
+export type NodeParamWithChildren = NodeParamVector3 | NodeParamRGB | NodeParamVector2
+export type ParamValueTypeWithChildren = NodeParamWithChildren['valueType']
 
 export type Shot = NodeBase & {
   nodeType: 'shot'
@@ -92,10 +96,19 @@ export type NodeValue = number | boolean | string | ShotArgsObject
 export type NodeValues = { [key: string]: NodeValue }
 export type NodeValueType = Param['valueType'] | null
 
+// Record ensures every ParamValueTypeWithChildren member is listed — adding a new
+// type that extends NodeParamWithChildrenBase will cause a compile error here if
+// it isn't included.
+const paramValueTypesWithChildren: Record<ParamValueTypeWithChildren, true> = {
+  vector3: true,
+  vector2: true,
+  rgb: true,
+}
+
 export const isNodeTypeWithChildren = (
   nodeValueType: NodeValueType,
 ): nodeValueType is ParamValueTypeWithChildren => {
-  return ParamValueTypesWithChildren.includes(nodeValueType as ParamValueTypeWithChildren)
+  return nodeValueType != null && nodeValueType in paramValueTypesWithChildren
 }
 
 // Utility type guard to check if a node has child nodes
