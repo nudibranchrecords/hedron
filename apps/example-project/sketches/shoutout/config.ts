@@ -12,7 +12,7 @@ export default {
       key: 'position',
       title: 'Position',
       valueType: 'vector2',
-      defaultValue: [0, 0],
+      defaultValue: [0.5, 0.5],
     },
     {
       key: 'scrollSpeed',
