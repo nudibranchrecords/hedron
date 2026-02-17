@@ -9,6 +9,12 @@ export default {
       defaultValue: 'Hello, world!',
     },
     {
+      key: 'position',
+      title: 'Position',
+      valueType: 'vector2',
+      defaultValue: [0, 0],
+    },
+    {
       key: 'scrollSpeed',
       title: 'Scroll Speed',
       defaultValue: 2,
@@ -30,6 +36,10 @@ export default {
     {
       key: 'displayMidiNote',
       title: 'Display MIDI Note',
+    },
+    {
+      key: 'resetScroll',
+      title: 'Reset Scroll',
     },
   ],
 }

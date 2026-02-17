@@ -26,6 +26,7 @@ export interface NodeBase {
 
 export interface NodeParamBase extends NodeBase {
   title: string
+  nodeType: 'param'
 }
 
 export interface NodeParamWithChildrenBase extends NodeParamBase {
@@ -71,7 +72,7 @@ export interface NodeParamRGB extends NodeParamWithChildrenBase {
   defaultValue: [number, number, number]
 }
 
-export type Param = (
+export type Param =
   | NodeParamBoolean
   | NodeParamString
   | NodeParamNumber
@@ -79,7 +80,6 @@ export type Param = (
   | NodeParamVector3
   | NodeParamVector2
   | NodeParamRGB
-) & { nodeType: 'param' }
 
 export type NodeParamWithChildren = NodeParamVector3 | NodeParamRGB | NodeParamVector2
 export type ParamValueTypeWithChildren = NodeParamWithChildren['valueType']
@@ -117,6 +117,7 @@ export const hasChildNodes = (node: Node): node is NodeParamWithChildren => {
 }
 
 export interface SketchConfigParamBase {
+  nodeType?: 'param'
   key: string
   title?: string
   /**
@@ -154,6 +155,11 @@ export interface SketchConfigParamVector3 extends SketchConfigParamBase {
   defaultValue: [number, number, number]
 }
 
+export interface SketchConfigParamVector2 extends SketchConfigParamBase {
+  valueType: 'vector2'
+  defaultValue: [number, number]
+}
+
 export interface SketchConfigParamRGB extends SketchConfigParamBase {
   valueType: 'rgb'
   defaultValue: [number, number, number]
@@ -164,6 +170,7 @@ export type SketchConfigParam =
   | SketchConfigParamBoolean
   | SketchConfigParamString
   | SketchConfigParamEnum
+  | SketchConfigParamVector2
   | SketchConfigParamVector3
   | SketchConfigParamRGB
 

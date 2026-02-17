@@ -13,6 +13,7 @@ interface ShoutoutParams {
   message: string
   color: [number, number, number]
   scrollSpeed: number
+  position: [number, number]
 }
 
 interface MIDIEvent {
@@ -52,6 +53,10 @@ export default class Shoutout {
     this.modifiedMessage = null
   }
 
+  resetScroll() {
+    this.textX = 0
+  }
+
   constructor() {
     // Create canvas for text texture
     this.canvas = document.createElement('canvas')
@@ -74,9 +79,6 @@ export default class Shoutout {
     this.plane = new THREE.Mesh(geometry, material)
     this.plane.position.set(0, 0, 4) // Position the plane in front of the camera
     this.root.add(this.plane)
-
-    // Initialize text position to start from right edge
-    this.textX = this.canvas.width
   }
 
   update({ params: p }: { params: ShoutoutParams }) {
@@ -101,8 +103,11 @@ export default class Shoutout {
       this.textX = this.canvas.width
     }
 
-    // Draw the scrolling text
-    this.context.fillText(this.modifiedMessage ?? p.message, this.textX, this.canvas.height / 2)
+    const posX = p.position[0] * this.canvas.width + this.textX - textWidth / 2
+    const posY = p.position[1] * this.canvas.height
+
+    this.context // Draw the scrolling text
+      .fillText(this.modifiedMessage ?? p.message, posX, posY)
 
     // Update texture
     this.texture.needsUpdate = true
