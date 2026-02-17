@@ -323,3 +323,22 @@ export const GridOnPanel = () => (
     </PanelBody>
   </Panel>
 )
+
+export const NumberReversed = ({ title = 'Short Name', isActive, layout, onClick }: BasicProps) => {
+  const ref = useRef<FloatSliderHandle>(null)
+
+  useEffect(() => {
+    ref.current?.updateValue(Math.random() * 1)
+  }, [])
+
+  return (
+    <NodeControl isActive={isActive} onClick={onClick} layout={layout}>
+      <NodeControlMain>
+        <NodeControlTitle>{title}</NodeControlTitle>
+        <NodeControlInner>
+          <FloatSlider min={10} max={-10} onValueChange={fn()} ref={ref} />
+        </NodeControlInner>
+      </NodeControlMain>
+    </NodeControl>
+  )
+}
