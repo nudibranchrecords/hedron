@@ -57,11 +57,11 @@ export default class Shoutout {
     this.textX = 0
   }
 
-  constructor() {
+  constructor({ renderer }) {
     // Create canvas for text texture
     this.canvas = document.createElement('canvas')
-    this.canvas.width = 1024
-    this.canvas.height = 512
+    this.canvas.width = renderer.domElement.width
+    this.canvas.height = renderer.domElement.height
     this.context = this.canvas.getContext('2d')!
 
     // Set up canvas styling
@@ -77,7 +77,7 @@ export default class Shoutout {
     const material = new THREE.MeshBasicMaterial({ map: this.texture })
     material.transparent = true
     this.plane = new THREE.Mesh(geometry, material)
-    this.plane.position.set(0, 0, 4) // Position the plane in front of the camera
+    this.plane.position.set(0, 0, 3.7) // Position the plane in front of the camera
     this.root.add(this.plane)
   }
 
@@ -103,8 +103,10 @@ export default class Shoutout {
       this.textX = this.canvas.width
     }
 
-    const posX = p.position[0] * this.canvas.width + this.textX - textWidth / 2
+    const posX = p.position[0] * this.canvas.width
     const posY = p.position[1] * this.canvas.height
+
+    console.log(this.canvas.width)
 
     this.context // Draw the scrolling text
       .fillText(this.modifiedMessage ?? p.message, posX, posY)
