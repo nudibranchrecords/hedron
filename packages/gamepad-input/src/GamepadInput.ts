@@ -8,7 +8,7 @@ import {
   NodeParamString,
   NodeParamRGB,
   NodeParamVector3,
-  HedronEngineWithPlugin,
+  HedronEngine,
 } from '@hedron-gl/engine'
 import { GamepadManager } from './GamepadManager'
 import { GamepadEvent, GamepadInputType, AxisMode, ValueHandler, ShotHandler } from './GamepadTypes'
@@ -28,7 +28,7 @@ export class GamepadInput implements IPlugin {
   public readonly optionNodesConfig = optionNodesConfig
 
   store: EngineStore
-  engine: HedronEngineWithPlugin<GamepadInput>
+  engine: HedronEngine
   /**
    * Tracks target values from gamepad events for each input
    */
@@ -67,7 +67,7 @@ export class GamepadInput implements IPlugin {
     vector3: ValueHandler<NodeParamVector3>
   }
 
-  constructor(engine: HedronEngineWithPlugin<GamepadInput>) {
+  constructor(engine: HedronEngine) {
     this.store = engine.getStore()
     this.engine = engine
 

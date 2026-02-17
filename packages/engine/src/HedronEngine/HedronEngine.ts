@@ -537,11 +537,3 @@ export class HedronEngine {
     return this.plugins[id]
   }
 }
-
-/**
- * Extends HedronEngine with a typed getPlugin method for a specific plugin type.
- * @template TPlugin The type of the plugin to retrieve
- */
-export type HedronEngineWithPlugin<TPlugin extends IPlugin = IPlugin> = {
-  getPlugin: (id: string) => TPlugin | undefined
-} & HedronEngine

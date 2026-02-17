@@ -1,15 +1,15 @@
 import { useCallback, useState, useMemo } from 'react'
-import { HedronEngineWithPlugin, Input } from '@hedron-gl/engine'
+import { HedronEngine, Input } from '@hedron-gl/engine'
 import { Button, ControlGrid, NodeContainer, useEngineStore } from '@hedron-gl/ui-core'
 import { GamepadInput } from './GamepadInput'
 import { GamepadEvent, AxisMode, GamepadInputType } from './GamepadTypes'
 
 interface IProps {
   input: Input
-  engine: HedronEngineWithPlugin<GamepadInput>
+  engine: HedronEngine
 }
 
-const useGamepadLearn = (input: Input, engine: HedronEngineWithPlugin<GamepadInput>) => {
+const useGamepadLearn = (input: Input, engine: HedronEngine) => {
   const [isLearning, setIsLearning] = useState(false)
 
   const plugin = engine.getPlugin('gamepad-input') as GamepadInput
