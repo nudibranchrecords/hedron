@@ -17,7 +17,7 @@ export const Viewer = (): JSX.Element => {
   const scrubRef = useRef<HTMLDivElement>(null)
 
   const onElementScrub = useCallback(
-    (inc: number) => {
+    ({ x, y }: { x: number; y: number }) => {
       if (
         selectedNode &&
         selectedNode.nodeType === 'param' &&
@@ -29,7 +29,8 @@ export const Viewer = (): JSX.Element => {
 
         const values = selectedNode.childNodeIds.map((id) => nodeValues[id] as number)
 
-        updateNodeValue(selectedNode.childNodeIds[0], values[0] + inc)
+        updateNodeValue(selectedNode.childNodeIds[0], values[0] + x)
+        updateNodeValue(selectedNode.childNodeIds[1], values[1] + y)
       }
     },
     [selectedNode],

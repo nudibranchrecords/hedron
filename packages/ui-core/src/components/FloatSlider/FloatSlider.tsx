@@ -119,8 +119,8 @@ export const FloatSlider = forwardRef<FloatSliderHandle, FloatSliderProps>(funct
   })
 
   const onElementScrub = useCallback(
-    (inc: number) => {
-      const diff = inc * range
+    ({ x }: { x: number; y: number }) => {
+      const diff = x * range
       const newVal = Math.max(min, Math.min(max, currVal.current + diff))
 
       updateValue(newVal)

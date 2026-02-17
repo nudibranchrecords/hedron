@@ -1,7 +1,11 @@
 import { RefObject, useEffect, useRef } from 'react'
 
-export const useElementScrub = (elRef: RefObject<HTMLElement>, onDrag: (delta: number) => void) => {
+export const useElementScrub = (
+  elRef: RefObject<HTMLElement>,
+  onDrag: (delta: { x: number; y: number }) => void,
+) => {
   const startX = useRef<number>(0)
+  const startY = useRef<number>(0)
 
   useEffect(() => {
     const el = elRef.current!
@@ -9,15 +13,18 @@ export const useElementScrub = (elRef: RefObject<HTMLElement>, onDrag: (delta: n
     // Mouse handlers
     const handleMouseDown = (e: MouseEvent) => {
       startX.current = e.screenX
+      startY.current = e.screenY
 
       document.addEventListener('mousemove', onMouseMove)
       document.addEventListener('mouseup', onMouseUp)
     }
 
     const onMouseMove = (e: MouseEvent) => {
-      const diff = (e.screenX - startX.current) / el.offsetWidth
+      const diffX = (e.screenX - startX.current) / el.offsetWidth
+      const diffY = (e.screenY - startY.current) / el.offsetHeight
       startX.current = e.screenX
-      onDrag(diff)
+      startY.current = e.screenY
+      onDrag({ x: diffX, y: diffY })
     }
 
     const onMouseUp = () => {
@@ -29,6 +36,7 @@ export const useElementScrub = (elRef: RefObject<HTMLElement>, onDrag: (delta: n
     const handleTouchStart = (e: TouchEvent) => {
       if (e.touches.length !== 1) return
       startX.current = e.touches[0].screenX
+      startY.current = e.touches[0].screenY
 
       document.addEventListener('touchmove', onTouchMove)
       document.addEventListener('touchend', onTouchEnd)
@@ -37,9 +45,11 @@ export const useElementScrub = (elRef: RefObject<HTMLElement>, onDrag: (delta: n
 
     const onTouchMove = (e: TouchEvent) => {
       if (e.touches.length !== 1) return
-      const diff = (e.touches[0].screenX - startX.current) / el.offsetWidth
+      const diffX = (e.touches[0].screenX - startX.current) / el.offsetWidth
+      const diffY = (e.touches[0].screenY - startY.current) / el.offsetHeight
       startX.current = e.touches[0].screenX
-      onDrag(diff)
+      startY.current = e.touches[0].screenY
+      onDrag({ x: diffX, y: diffY })
     }
 
     const onTouchEnd = () => {
