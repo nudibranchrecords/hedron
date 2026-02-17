@@ -106,8 +106,6 @@ export default class Shoutout {
     const posX = p.position[0] * this.canvas.width
     const posY = p.position[1] * this.canvas.height
 
-    console.log(this.canvas.width)
-
     this.context // Draw the scrolling text
       .fillText(this.modifiedMessage ?? p.message, posX, posY)
 
