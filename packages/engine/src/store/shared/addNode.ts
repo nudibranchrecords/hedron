@@ -1,12 +1,12 @@
 import {
   EngineState,
   EnsureRequiredValueType,
-  NodeParamWithChildrenBase,
   ParamValueTypeWithChildren,
   SketchConfigParamImported,
   isNodeTypeWithChildren,
   NodeValueType,
   SketchConfigShotImported,
+  NodeParamWithChildren,
 } from '@store/types'
 import { createUniqueId } from '@utils/createUniqueId'
 
@@ -137,7 +137,7 @@ export const addNode = (state: EngineState, nodeId: string, config: AddNodeConfi
       nodeType: 'param',
       title: config.title ?? config.key,
       childNodeIds,
-    } as NodeParamWithChildrenBase
+    } as NodeParamWithChildren
 
     for (const [index, childNodeId] of childNodeIds.entries()) {
       _addNodeToState(state, childNodeId, {
