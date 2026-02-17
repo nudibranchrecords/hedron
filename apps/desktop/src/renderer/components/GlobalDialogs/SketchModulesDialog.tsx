@@ -1,4 +1,4 @@
-import { useCallback } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { SketchModuleItem } from '@hedron-gl/engine'
 import {
   Button,
@@ -67,6 +67,55 @@ export const SketchCard = ({
 
 export const SketchModulesDialog = ({ closeDialog }: GlobalDialogProps) => {
   const sketchModules = useSketchModuleList()
+  const [search, setSearch] = useState('')
+  const inputRef = useRef<HTMLInputElement>(null)
+  const setActiveSketchId = useSetActiveSketchId()
+  const addSketch = useEngineStore((state) => state.addSketch)
+
+  useEffect(() => {
+    // Focus the search input when dialog opens
+    if (inputRef.current) {
+      inputRef.current.focus()
+      inputRef.current.select()
+    }
+  }, [])
+
+  // Filter and sort modules
+  const filteredModules = [...sketchModules]
+    .filter((item) => {
+      if (!search) return true
+      const title = item.config.title.toLowerCase()
+      const s = search.toLowerCase()
+      return title.includes(s)
+    })
+    .sort((a, b) => {
+      if (!search) return a.config.title.localeCompare(b.config.title)
+      const s = search.toLowerCase()
+      const aTitle = a.config.title.toLowerCase()
+      const bTitle = b.config.title.toLowerCase()
+      const aStarts = aTitle.startsWith(s)
+      const bStarts = bTitle.startsWith(s)
+      if (aStarts && !bStarts) return -1
+      if (!aStarts && bStarts) return 1
+      // If both or neither start, sort alphabetically
+      return aTitle.localeCompare(bTitle)
+    })
+
+  const handleInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter' && filteredModules.length > 0) {
+      const top = filteredModules[0]
+      const id = addSketch(top.moduleId)
+      setActiveSketchId(id)
+      closeDialog()
+    } else if (e.key === 'Escape') {
+      setSearch('')
+      // Optionally re-focus and select
+      if (inputRef.current) {
+        inputRef.current.focus()
+        inputRef.current.select()
+      }
+    }
+  }
 
   return (
     <Dialog onBackgroundClick={closeDialog}>
@@ -75,12 +124,33 @@ export const SketchModulesDialog = ({ closeDialog }: GlobalDialogProps) => {
           Add sketch to scene
         </PanelHeader>
         <PanelBody scrollable={true}>
+          <div
+            style={{
+              marginBottom: '1rem',
+              display: 'flex',
+              gap: '0.5rem',
+              flexDirection: 'row',
+            }}
+          >
+            <input
+              ref={inputRef}
+              type="text"
+              placeholder="Search sketches..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              onKeyDown={handleInputKeyDown}
+              style={{
+                width: '100%',
+                maxWidth: '30rem',
+              }}
+              aria-label="Search sketches"
+            />
+            <div>Press enter to add the top sketch, escape to clear search</div>
+          </div>
           <CardList>
-            {[...sketchModules]
-              .sort((a, b) => a.config.title.localeCompare(b.config.title))
-              .map((item) => (
-                <SketchCard key={item.moduleId} item={item} closeDialog={closeDialog} />
-              ))}
+            {filteredModules.map((item) => (
+              <SketchCard key={item.moduleId} item={item} closeDialog={closeDialog} />
+            ))}
           </CardList>
         </PanelBody>
       </Panel>
