@@ -3,19 +3,42 @@
   width: 100vw;
   height: 100vh;
   color: white;
+  position: relative;
 }
 
+
 .left {
-  flex: 0 1 50%;
-  max-width: 50%;
+  flex: 0 1 auto;
   position: relative;
   display: flex;
   flex-direction: column;
+  min-width: 0;
 }
 
 .right {
   flex: 1 1 0;
   position: relative;
+  min-width: 0;
+}
+
+.handle {
+  width: 8px;
+  cursor: col-resize;
+  background: linear-gradient(90deg, #222 0%, #444 100%);
+  transition: background 0.2s;
+  z-index: 10;
+  user-select: none;
+  position: relative;
+  margin: 0 -4px;
+  border-radius: 4px;
+  box-shadow: 0 0 2px #0008;
+  display: flex;
+  align-items: center;
+}
+
+.handle:active, .handle:focus {
+  background: #666;
+  outline: none;
 }
 
 .widgetStrip {
