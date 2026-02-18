@@ -34,6 +34,7 @@ export type IconName =
   | 'frame_bug'
   | 'cable'
   | 'settings'
+  | 'drag_pan'
 
 export const sketchIcon: IconName = 'token'
 export const sceneIcon: IconName = 'panorama'

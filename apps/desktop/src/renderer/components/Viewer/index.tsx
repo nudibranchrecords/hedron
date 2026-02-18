@@ -1,5 +1,5 @@
 import { useCallback, useRef } from 'react'
-import { useElementScrub } from '@hedron-gl/ui-core'
+import { Icon, useElementScrub } from '@hedron-gl/ui-core'
 
 import c from './styles.module.css'
 import { useSelectedNode } from '@components/hooks/useSelectedNode'
@@ -16,13 +16,11 @@ export const Viewer = (): JSX.Element => {
 
   const scrubRef = useRef<HTMLDivElement>(null)
 
+  const isVector2 = selectedNode?.nodeType === 'param' && selectedNode.valueType === 'vector2'
+
   const onElementScrub = useCallback(
     ({ x, y }: { x: number; y: number }) => {
-      if (
-        selectedNode &&
-        selectedNode.nodeType === 'param' &&
-        selectedNode.valueType === 'vector2'
-      ) {
+      if (isVector2) {
         const storeState = engine.getStore().getState()
         const nodeValues = storeState.nodeValues
         const updateNodeValue = storeState.updateNodeValue
@@ -33,14 +31,22 @@ export const Viewer = (): JSX.Element => {
         updateNodeValue(selectedNode.childNodeIds[1], values[1] + y)
       }
     },
-    [selectedNode],
+    [isVector2, selectedNode],
   )
 
   useElementScrub(scrubRef, onElementScrub)
 
   return (
-    <div ref={scrubRef}>
-      <div ref={containerRef} className={c.wrapper}></div>
+    <div className={c.wrapper}>
+      <div ref={containerRef}></div>
+
+      {isVector2 && (
+        <div ref={scrubRef} className={c.scrubOverlay}>
+          <span>
+            <Icon name="drag_pan" />
+          </span>
+        </div>
+      )}
     </div>
   )
 }

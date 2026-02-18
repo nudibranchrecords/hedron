@@ -1,33 +1,58 @@
-import { RefObject, useEffect, useRef } from 'react'
+import { useEffect, useRef, type RefObject } from 'react'
 
 export const useElementScrub = (
   elRef: RefObject<HTMLElement>,
   onDrag: (delta: { x: number; y: number }) => void,
+  cursorCSSValue = 'move',
 ) => {
   const startX = useRef<number>(0)
   const startY = useRef<number>(0)
+  const globalCursorStyle = useRef<HTMLStyleElement | null>(null)
 
   useEffect(() => {
-    const el = elRef.current!
+    const el = elRef.current
+
+    if (!el) return
+
+    el.style.cursor = cursorCSSValue
+
+    const start = (x: number, y: number) => {
+      startX.current = x
+      startY.current = y
+
+      const styleEl = document.createElement('style')
+      styleEl.textContent = `html, body, body * { cursor: ${cursorCSSValue} !important; }`
+      document.head.appendChild(styleEl)
+      globalCursorStyle.current = styleEl
+    }
+
+    const end = () => {
+      globalCursorStyle.current?.remove()
+      globalCursorStyle.current = null
+    }
+
+    const move = (x: number, y: number) => {
+      const diffX = (x - startX.current) / el.offsetWidth
+      const diffY = (y - startY.current) / el.offsetHeight
+      startX.current = x
+      startY.current = y
+      onDrag({ x: diffX, y: diffY })
+    }
 
     // Mouse handlers
     const handleMouseDown = (e: MouseEvent) => {
-      startX.current = e.screenX
-      startY.current = e.screenY
+      start(e.screenX, e.screenY)
 
       document.addEventListener('mousemove', onMouseMove)
       document.addEventListener('mouseup', onMouseUp)
     }
 
     const onMouseMove = (e: MouseEvent) => {
-      const diffX = (e.screenX - startX.current) / el.offsetWidth
-      const diffY = (e.screenY - startY.current) / el.offsetHeight
-      startX.current = e.screenX
-      startY.current = e.screenY
-      onDrag({ x: diffX, y: diffY })
+      move(e.screenX, e.screenY)
     }
 
     const onMouseUp = () => {
+      end()
       document.removeEventListener('mouseup', onMouseUp)
       document.removeEventListener('mousemove', onMouseMove)
     }
@@ -35,8 +60,8 @@ export const useElementScrub = (
     // Touch handlers
     const handleTouchStart = (e: TouchEvent) => {
       if (e.touches.length !== 1) return
-      startX.current = e.touches[0].screenX
-      startY.current = e.touches[0].screenY
+
+      start(e.touches[0].screenX, e.touches[0].screenY)
 
       document.addEventListener('touchmove', onTouchMove)
       document.addEventListener('touchend', onTouchEnd)
@@ -45,14 +70,11 @@ export const useElementScrub = (
 
     const onTouchMove = (e: TouchEvent) => {
       if (e.touches.length !== 1) return
-      const diffX = (e.touches[0].screenX - startX.current) / el.offsetWidth
-      const diffY = (e.touches[0].screenY - startY.current) / el.offsetHeight
-      startX.current = e.touches[0].screenX
-      startY.current = e.touches[0].screenY
-      onDrag({ x: diffX, y: diffY })
+      move(e.touches[0].screenX, e.touches[0].screenY)
     }
 
     const onTouchEnd = () => {
+      end()
       document.removeEventListener('touchmove', onTouchMove)
       document.removeEventListener('touchend', onTouchEnd)
       document.removeEventListener('touchcancel', onTouchEnd)
@@ -62,10 +84,12 @@ export const useElementScrub = (
     el.addEventListener('touchstart', handleTouchStart)
 
     return () => {
+      el.style.cursor = ''
+      end()
       el.removeEventListener('mousedown', handleMouseDown)
       el.removeEventListener('touchstart', handleTouchStart)
       onMouseUp()
       onTouchEnd()
     }
-  }, [elRef, onDrag])
+  }, [elRef, onDrag, cursorCSSValue])
 }
