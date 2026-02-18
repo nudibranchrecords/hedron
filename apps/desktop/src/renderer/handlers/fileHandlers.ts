@@ -40,7 +40,7 @@ export const handleLoadProjectDialog = async (projectPath?: string) => {
     return
   }
 
-  const { sketchesDirAbsolute, projectData, savePath, activeSketchId } = response
+  const { sketchesDirAbsolute, projectData, savePath } = response
 
   await startEngineWithSketchesDir(sketchesDirAbsolute)
 
@@ -58,11 +58,6 @@ export const handleLoadProjectDialog = async (projectPath?: string) => {
   engine.reconcileAllSketchNodes()
 
   appStore.getState().cleanupStaleReferences(engine.getSaveData())
-
-  appStore.setState((state: AppState) => ({
-    ...state,
-    activeSketchId: activeSketchId || state.activeSketchId,
-  }))
 }
 
 export const handleSaveProjectDialog = async (options?: { saveAs?: boolean }) => {
