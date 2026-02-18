@@ -30,7 +30,6 @@ export const handleSketchesDialog = async () => {
 
 export const handleLoadProjectDialog = async (projectPath?: string) => {
   const appState = appStore.getState()
-
   const response = await openProjectFileDialog(projectPath)
 
   if (response.result === 'canceled') return
@@ -41,7 +40,7 @@ export const handleLoadProjectDialog = async (projectPath?: string) => {
     return
   }
 
-  const { sketchesDirAbsolute, projectData, savePath } = response
+  const { sketchesDirAbsolute, projectData, savePath, activeSketchId } = response
 
   await startEngineWithSketchesDir(sketchesDirAbsolute)
 
@@ -59,11 +58,17 @@ export const handleLoadProjectDialog = async (projectPath?: string) => {
   engine.reconcileAllSketchNodes()
 
   appStore.getState().cleanupStaleReferences(engine.getSaveData())
+
+  appStore.setState((state: AppState) => ({
+    ...state,
+    activeSketchId: activeSketchId || state.activeSketchId,
+  }))
 }
 
 export const handleSaveProjectDialog = async (options?: { saveAs?: boolean }) => {
   const appState = appStore.getState()
-  const { sketchesDir, openedControlGroups, selectedNodes, selectedInputs } = appState
+  const { sketchesDir, openedControlGroups, selectedNodes, selectedInputs, activeSketchId } =
+    appState
 
   if (!sketchesDir) {
     throw new Error("Can't save project without sketches dir")
@@ -75,6 +80,7 @@ export const handleSaveProjectDialog = async (options?: { saveAs?: boolean }) =>
     engine: engineData,
     app: {
       sketchesDir,
+      activeSketchId,
       selectedNodes,
       selectedInputs,
       openedControlGroups,
