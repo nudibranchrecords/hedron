@@ -15,6 +15,7 @@ import {
   PanelHeader,
   useEngineStore,
 } from '@hedron-gl/ui-core'
+import c from './SketchModulesDialog.module.css'
 import { GlobalDialogProps } from '@components/GlobalDialogs/types'
 import { useSketchModuleList } from '@components/hooks/useSketchModuleList'
 import { useSetActiveSketchId } from '@components/hooks/useSetActiveSketchId'
@@ -125,28 +126,20 @@ export const SketchModulesDialog = ({ closeDialog }: GlobalDialogProps) => {
           Add sketch to scene
         </PanelHeader>
         <PanelBody scrollable={true}>
-          <div
-            style={{
-              marginBottom: '1rem',
-              display: 'flex',
-              gap: '0.5rem',
-              flexDirection: 'row',
-            }}
-          >
+          <div className={c.searchContainer}>
             <input
+              className={c.searchInput}
               ref={inputRef}
               type="search"
               placeholder="Search sketches..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               onKeyDown={handleInputKeyDown}
-              style={{
-                width: '100%',
-                maxWidth: '30rem',
-              }}
               aria-label="Search sketches"
             />
-            <div>Press enter to add the top sketch, escape to clear search</div>
+            <span className={c.hint}>
+              Press enter to add the top sketch, escape to clear search
+            </span>
           </div>
           <CardList>
             {filteredModules.map((item) => (
