@@ -1,5 +1,5 @@
 import { useGlobalDialog } from '@components/GlobalDialogs/useGlobalDialog'
-import { SketchModulesDialog } from '@components/GlobalDialogs/SketchModulesDialog'
+import { SketchModulesDialog } from '@components/GlobalDialogs/SketchModulesDialog/SketchModulesDialog'
 import { SketchBuildErrorDialog } from '@components/GlobalDialogs/SketchBuildErrorDialog'
 import { GlobalDialogProps } from '@components/GlobalDialogs/types'
 import { DialogId } from '@renderer/appStore'
