@@ -50,6 +50,26 @@ export const NumberInput = forwardRef<NumberInputHandle, NumberInputProps>(funct
     updateTextValue(currVal.current)
   }, [updateTextValue])
 
+  const onInputKeyDown = useCallback(
+    (e: React.KeyboardEvent<HTMLInputElement>) => {
+      if (e.key === 'Tab') {
+        // Submit value on Tab
+        const value = parseFloat(numberInput.current.value)
+        if (!isNaN(value)) {
+          updateValue(value)
+          onValueChange(value)
+        }
+        // Let Tab propagate for focus change
+      } else if (e.key === 'Escape') {
+        // Reset to last value and blur
+        updateTextValue(currVal.current)
+        numberInput.current.blur()
+        e.preventDefault()
+      }
+    },
+    [onValueChange, updateValue, updateTextValue],
+  )
+
   const onInputFocus = useCallback(() => {
     numberInput.current.select()
   }, [])
@@ -67,6 +87,7 @@ export const NumberInput = forwardRef<NumberInputHandle, NumberInputProps>(funct
           ref={numberInput}
           onBlur={onInputBlur}
           onFocus={onInputFocus}
+          onKeyDown={onInputKeyDown}
         />
       </form>
     </div>
