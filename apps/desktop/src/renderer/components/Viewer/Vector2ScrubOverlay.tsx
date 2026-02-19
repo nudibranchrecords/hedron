@@ -24,10 +24,18 @@ export const Vector2ScrubOverlay = () => {
         const nodeValues = storeState.nodeValues
         const updateNodeValue = storeState.updateNodeValue
 
-        const values = selectedNode.childNodeIds.map((id) => nodeValues[id] as number)
+        const vec2 = [x, y]
 
-        updateNodeValue(selectedNode.childNodeIds[0], values[0] + x)
-        updateNodeValue(selectedNode.childNodeIds[1], values[1] + y)
+        selectedNode.childNodeIds.forEach((id, i) => {
+          const oldVal = nodeValues[id] as number
+          const sliderMin = (nodeValues[`${id}-sliderMin`] as number | undefined) ?? 0
+          const sliderMax = (nodeValues[`${id}-sliderMax`] as number | undefined) ?? 1
+          const range = sliderMax - sliderMin
+
+          const nextValue = oldVal + vec2[i] * range
+          const clampedValue = Math.min(Math.max(nextValue, sliderMin), sliderMax)
+          updateNodeValue(id, clampedValue)
+        })
       }
     },
     [isVector2, selectedNode],
