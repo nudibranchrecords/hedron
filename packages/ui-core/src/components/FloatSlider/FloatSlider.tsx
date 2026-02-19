@@ -118,7 +118,8 @@ export const FloatSlider = forwardRef<FloatSliderHandle, FloatSliderProps>(funct
       canvas.width = width! * PIXEL_DENSITY
       size.current.width = width! * PIXEL_DENSITY
       size.current.height = height! * PIXEL_DENSITY
-      canvas.setAttribute('style', 'width:' + width + 'px; height:' + height + 'px;')
+      canvas.style.width = width + 'px'
+      canvas.style.height = height + 'px'
 
       drawBar(currVal.current)
       updateZeroPip()
@@ -134,8 +135,8 @@ export const FloatSlider = forwardRef<FloatSliderHandle, FloatSliderProps>(funct
   })
 
   const onElementScrub = useCallback(
-    (inc: number) => {
-      const diff = inc * range * direction
+    ({ x }: { x: number; y: number }) => {
+      const diff = x * range * direction
       let newVal = currVal.current + diff
       // Clamp to min/max regardless of order
       if (direction === 1) {
@@ -149,7 +150,7 @@ export const FloatSlider = forwardRef<FloatSliderHandle, FloatSliderProps>(funct
     [range, min, max, direction, updateValue, onValueChange],
   )
 
-  useElementScrub(canvasRef, onElementScrub)
+  useElementScrub(canvasRef, onElementScrub, 'ew-resize')
 
   useEffect(() => {
     const canvas = canvasRef.current

@@ -4,11 +4,28 @@
   background: #222;
   overflow: hidden;
 
-  > canvas {
+  canvas {
     position: absolute;
     left: 0;
     top: 0;
     height: 100%;
     width: 100%;
+  }
+}
+
+.scrubOverlay {
+  position: absolute;
+  inset: 0;
+  border: 1px solid var(--actionColor1);
+
+  > span {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    background: var(--actionColor1);
+    padding: 0.2rem 0.3rem;
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
   }
 }

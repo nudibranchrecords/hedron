@@ -8,6 +8,7 @@ import { ParamColor } from './ParamColor/ParamColor'
 import { ParamString } from './ParamString/ParamString'
 import { Shot } from './Shot/Shot'
 
+import { ParamVector2 } from './ParamVector2/ParamVector2'
 import {
   NodeControl,
   NodeControlInner,
@@ -31,6 +32,8 @@ const getInputElement = (node: NodeType) => {
       return <ParamString id={node.id} />
     case 'enum':
       return <ParamEnum id={node.id} />
+    case 'vector2':
+      return <ParamVector2 id={node.id} />
     case 'vector3':
       return <ParamVector3 id={node.id} />
     case 'rgb':
