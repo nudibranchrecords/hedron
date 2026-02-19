@@ -34,7 +34,7 @@ export const Viewer = (): JSX.Element => {
     [isVector2, selectedNode],
   )
 
-  useElementScrub(scrubRef, onElementScrub)
+  useElementScrub(scrubRef, onElementScrub, 'move')
 
   return (
     <div className={c.wrapper}>

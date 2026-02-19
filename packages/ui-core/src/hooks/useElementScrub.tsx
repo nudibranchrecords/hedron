@@ -1,34 +1,36 @@
 import { useEffect, useRef, type RefObject } from 'react'
+import { clearGlobalCursor, CursorCSSValue, setGlobalCursor } from '@utils/setGlobalCursor'
 
 export const useElementScrub = (
   elRef: RefObject<HTMLElement>,
   onDrag: (delta: { x: number; y: number }) => void,
-  cursorCSSValue = 'move',
+  cursorCSSValue?: CursorCSSValue,
 ) => {
   const startX = useRef<number>(0)
   const startY = useRef<number>(0)
-  const globalCursorStyle = useRef<HTMLStyleElement | null>(null)
 
   useEffect(() => {
     const el = elRef.current
 
     if (!el) return
 
-    el.style.cursor = cursorCSSValue
+    if (cursorCSSValue) {
+      el.style.cursor = cursorCSSValue
+    }
 
     const start = (x: number, y: number) => {
       startX.current = x
       startY.current = y
 
-      const styleEl = document.createElement('style')
-      styleEl.textContent = `html, body, body * { cursor: ${cursorCSSValue} !important; }`
-      document.head.appendChild(styleEl)
-      globalCursorStyle.current = styleEl
+      if (cursorCSSValue) {
+        setGlobalCursor(cursorCSSValue)
+      }
     }
 
     const end = () => {
-      globalCursorStyle.current?.remove()
-      globalCursorStyle.current = null
+      if (cursorCSSValue) {
+        clearGlobalCursor()
+      }
     }
 
     const move = (x: number, y: number) => {
