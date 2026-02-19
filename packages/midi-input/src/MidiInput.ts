@@ -147,6 +147,7 @@ export class MidiInput implements IPlugin {
               number: this.handleNumber,
               string: this.handleUnsupported,
               rgb: this.handleUnsupported,
+              vector2: this.handleUnsupported,
               vector3: this.handleUnsupported,
             }[targetNode.valueType]({
               midiEvent: event as MIDIEventWithValue,

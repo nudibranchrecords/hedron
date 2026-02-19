@@ -34,7 +34,11 @@ export const FloatSlider = forwardRef<FloatSliderHandle, FloatSliderProps>(funct
   const numberInput = useRef<NumberInputHandle>(null)
   const zeroPip = useRef<HTMLDivElement>(null!)
 
-  const range = useMemo(() => max - min, [max, min])
+  // Always positive range, regardless of which number is larger
+  // min/max is really the sliders left side and right side values, not necessarily min/max in the traditional sense
+  const range = useMemo(() => Math.abs(max - min), [max, min])
+  // Direction: 1 if increasing, -1 if decreasing
+  const direction = useMemo(() => (max >= min ? 1 : -1), [max, min])
 
   const drawBar = useCallback(
     (value: number) => {
@@ -50,16 +54,26 @@ export const FloatSlider = forwardRef<FloatSliderHandle, FloatSliderProps>(funct
       // Red line if slider is out of bounds
       ctx.fillStyle = '#fe0000'
 
-      if (value > max) {
-        x = w
-      } else if (value < min) {
-        x = 0
+      // Normalize value for any min/max order
+      const minVal = Math.min(min, max)
+      const maxVal = Math.max(min, max)
+      // For out-of-bounds, red bar should be at the side corresponding to the violated bound
+      if (value > maxVal) {
+        // Exceeds the greater value, so bar is at the side for max
+        x = max > min ? w : 0
+      } else if (value < minVal) {
+        // Below the lesser value, so bar is at the side for min
+        x = min < max ? 0 : w
       } else {
         ctx.fillStyle = '#fff'
-        x = ((value - min) / range) * w
+        // Map value to [0, 1] regardless of direction
+        const t = (value - min) / (max - min)
+        x = t * w
       }
 
-      const prevX = Math.min(Math.max(0, ((currVal.current - min) / range) * w), w)
+      // Previous value position
+      const prevT = (currVal.current - min) / (max - min)
+      const prevX = Math.min(Math.max(0, prevT * w), w)
 
       // Only clear the area from the last position
       ctx.clearRect(prevX - 1, 0, barWidth + 2, h)
@@ -67,7 +81,7 @@ export const FloatSlider = forwardRef<FloatSliderHandle, FloatSliderProps>(funct
       // Draw bar
       ctx.fillRect(x, 0, barWidth, h)
     },
-    [min, max, range],
+    [min, max],
   )
 
   const updateValue = useCallback(
@@ -85,15 +99,16 @@ export const FloatSlider = forwardRef<FloatSliderHandle, FloatSliderProps>(funct
   }, [])
 
   const updateZeroPip = useCallback(() => {
-    if (min >= 0) {
-      zeroPip.current.style.display = 'none'
-    } else {
+    // Show zero pip if 0 is between min and max (regardless of order)
+    if ((min <= 0 && max >= 0) || (max <= 0 && min >= 0)) {
       zeroPip.current.style.display = 'block'
       const w = canvasRef.current.offsetWidth - barWidth
-      const zeroPos = (0 - min) / range
+      const zeroPos = (0 - min) / (max - min)
       zeroPip.current.style.left = `${zeroPos * w}px`
+    } else {
+      zeroPip.current.style.display = 'none'
     }
-  }, [min, range])
+  }, [min, max])
 
   const onResize = useCallback(
     ({ width, height }: Size) => {
@@ -103,7 +118,8 @@ export const FloatSlider = forwardRef<FloatSliderHandle, FloatSliderProps>(funct
       canvas.width = width! * PIXEL_DENSITY
       size.current.width = width! * PIXEL_DENSITY
       size.current.height = height! * PIXEL_DENSITY
-      canvas.setAttribute('style', 'width:' + width + 'px; height:' + height + 'px;')
+      canvas.style.width = width + 'px'
+      canvas.style.height = height + 'px'
 
       drawBar(currVal.current)
       updateZeroPip()
@@ -119,17 +135,22 @@ export const FloatSlider = forwardRef<FloatSliderHandle, FloatSliderProps>(funct
   })
 
   const onElementScrub = useCallback(
-    (inc: number) => {
-      const diff = inc * range
-      const newVal = Math.max(min, Math.min(max, currVal.current + diff))
-
+    ({ x }: { x: number; y: number }) => {
+      const diff = x * range * direction
+      let newVal = currVal.current + diff
+      // Clamp to min/max regardless of order
+      if (direction === 1) {
+        newVal = Math.max(min, Math.min(max, newVal))
+      } else {
+        newVal = Math.min(min, Math.max(max, newVal))
+      }
       updateValue(newVal)
       onValueChange(newVal)
     },
-    [range, min, max, updateValue, onValueChange],
+    [range, min, max, direction, updateValue, onValueChange],
   )
 
-  useElementScrub(canvasRef, onElementScrub)
+  useElementScrub(canvasRef, onElementScrub, 'ew-resize')
 
   useEffect(() => {
     const canvas = canvasRef.current
