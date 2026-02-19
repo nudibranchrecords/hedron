@@ -6,11 +6,9 @@ import { useActiveSketch } from '@components/hooks/useActiveSketch'
 export const useSelectedNode = (): Node | null => {
   const activeSketch = useActiveSketch()
 
-  if (!activeSketch) {
-    throw new Error('useSelectedNode hook: No active sketch found')
-  }
-
-  const selectedNodeId = useAppStore((state) => state.selectedNodes[activeSketch.id])
+  const selectedNodeId = useAppStore((state) =>
+    activeSketch ? state.selectedNodes[activeSketch.id] : null,
+  )
 
   return useEngineStore((state) => (selectedNodeId ? state.nodes[selectedNodeId] : null))
 }
