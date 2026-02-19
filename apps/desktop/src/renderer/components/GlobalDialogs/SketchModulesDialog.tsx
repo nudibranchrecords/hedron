@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { SketchModuleItem } from '@hedron-gl/engine'
 import {
   Button,
@@ -81,25 +81,27 @@ export const SketchModulesDialog = ({ closeDialog }: GlobalDialogProps) => {
   }, [])
 
   // Filter and sort modules
-  const filteredModules = [...sketchModules]
-    .filter((item) => {
-      if (!search) return true
-      const title = item.config.title.toLowerCase()
-      const s = search.toLowerCase()
-      return title.includes(s)
-    })
-    .sort((a, b) => {
-      if (!search) return a.config.title.localeCompare(b.config.title)
-      const s = search.toLowerCase()
-      const aTitle = a.config.title.toLowerCase()
-      const bTitle = b.config.title.toLowerCase()
-      const aStarts = aTitle.startsWith(s)
-      const bStarts = bTitle.startsWith(s)
-      if (aStarts && !bStarts) return -1
-      if (!aStarts && bStarts) return 1
-      // If both or neither start, sort alphabetically
-      return aTitle.localeCompare(bTitle)
-    })
+  const filteredModules = useMemo(() => {
+    if (!search) return sketchModules
+
+    const s = search.toLowerCase()
+
+    return [...sketchModules]
+      .filter((item) => {
+        const title = item.config.title.toLowerCase()
+        return title.includes(s)
+      })
+      .sort((a, b) => {
+        const aTitle = a.config.title.toLowerCase()
+        const bTitle = b.config.title.toLowerCase()
+        const aStarts = aTitle.startsWith(s)
+        const bStarts = bTitle.startsWith(s)
+        if (aStarts && !bStarts) return -1
+        if (!aStarts && bStarts) return 1
+        // If both or neither start, sort alphabetically
+        return aTitle.localeCompare(bTitle)
+      })
+  }, [search, sketchModules])
 
   const handleInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter' && filteredModules.length > 0) {
@@ -108,7 +110,6 @@ export const SketchModulesDialog = ({ closeDialog }: GlobalDialogProps) => {
       setActiveSketchId(id)
       closeDialog()
     } else if (e.key === 'Escape') {
-      setSearch('')
       // Optionally re-focus and select
       if (inputRef.current) {
         inputRef.current.focus()
@@ -134,7 +135,7 @@ export const SketchModulesDialog = ({ closeDialog }: GlobalDialogProps) => {
           >
             <input
               ref={inputRef}
-              type="text"
+              type="search"
               placeholder="Search sketches..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
