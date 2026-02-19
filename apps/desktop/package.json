@@ -30,6 +30,7 @@
     "@hedron-gl/audio-input": "^1.0.0-alpha.4",
     "@hedron-gl/clock": "^1.0.0-alpha.4",
     "@hedron-gl/engine": "^1.0.0-alpha.4",
+    "@hedron-gl/gamepad-input": "^1.0.0-alpha.4",
     "@hedron-gl/lfo-input": "^1.0.0-alpha.4",
     "@hedron-gl/midi-input": "^1.0.0-alpha.4",
     "@hedron-gl/ui-core": "^1.0.0-alpha.4",
