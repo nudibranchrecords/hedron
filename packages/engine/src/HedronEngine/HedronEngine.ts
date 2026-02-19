@@ -527,4 +527,13 @@ export class HedronEngine {
     this.extraTime -= this.totalTime
     console.log(`Resetting time, extraTime: ${this.extraTime}, totalTime: ${this.totalTime}`)
   }
+
+  /**
+   * Retrieves a registered plugin by its ID.
+   * @param id The ID of the plugin to retrieve
+   * @returns The plugin if it has been registered, undefined otherwise
+   */
+  public getPlugin(id: string): IPlugin | undefined {
+    return this.plugins[id]
+  }
 }
