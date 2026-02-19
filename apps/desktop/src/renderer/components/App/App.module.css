@@ -6,7 +6,6 @@
   position: relative;
 }
 
-
 .left {
   flex: 0 1 auto;
   position: relative;
@@ -22,23 +21,40 @@
 }
 
 .handle {
-  width: 8px;
+  width: 5px;
   cursor: col-resize;
-  background: linear-gradient(90deg, #222 0%, #444 100%);
-  transition: background 0.2s;
-  z-index: 10;
   user-select: none;
   position: relative;
-  margin: 0 -4px;
-  border-radius: 4px;
-  box-shadow: 0 0 2px #0008;
-  display: flex;
-  align-items: center;
-}
+  background: var(--bgColorDark3);
 
-.handle:active, .handle:focus {
-  background: #666;
-  outline: none;
+  /* Increase the hitbox of the handle */
+  &:before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    margin-left: -4px;
+    margin-right: -4px;
+    background: transparent;
+    z-index: 10;
+  }
+
+  &::after {
+    transition: 0.1s;
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 2px;
+    width: 1px;
+    background: var(--bgColorDark3);
+  }
+
+  &:active,
+  &:hover {
+    &:after {
+      background-color: var(--lineColor2);
+    }
+  }
 }
 
 .widgetStrip {
