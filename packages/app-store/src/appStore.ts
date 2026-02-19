@@ -35,9 +35,7 @@ export interface ProjectData {
   engine: EngineData
   app: {
     sketchesDir: string
-    // TODO: activeSketchId should be part of the save state
-    // but causing errors when Hedron opens directly on a sketch
-    // activeSketchId: string | null
+    activeSketchId: string | null
     selectedNodes: { [sketchId: string]: string | null }
     selectedInputs: { [inputId: string]: string | null }
     openedControlGroups: { [sketchId: string]: Record<number, boolean> }
