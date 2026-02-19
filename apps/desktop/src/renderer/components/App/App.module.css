@@ -3,19 +3,58 @@
   width: 100vw;
   height: 100vh;
   color: white;
+  position: relative;
 }
 
 .left {
-  flex: 0 1 50%;
-  max-width: 50%;
+  flex: 0 1 auto;
   position: relative;
   display: flex;
   flex-direction: column;
+  min-width: 0;
 }
 
 .right {
   flex: 1 1 0;
   position: relative;
+  min-width: 0;
+}
+
+.handle {
+  width: 5px;
+  cursor: col-resize;
+  user-select: none;
+  position: relative;
+  background: var(--bgColorDark3);
+
+  /* Increase the hitbox of the handle */
+  &:before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    margin-left: -4px;
+    margin-right: -4px;
+    background: transparent;
+    z-index: 10;
+  }
+
+  &::after {
+    transition: 0.1s;
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 2px;
+    width: 1px;
+    background: var(--bgColorDark3);
+  }
+
+  &:active,
+  &:hover {
+    &:after {
+      background-color: var(--lineColor2);
+    }
+  }
 }
 
 .widgetStrip {
