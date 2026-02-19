@@ -6,6 +6,7 @@ import {
   NodeParamString,
   NodeParamRGB,
   NodeParamVector3,
+  NodeParamVector2,
 } from '@hedron-gl/engine'
 import {
   GamepadInputType,
@@ -250,6 +251,21 @@ export function createGamepadHandlers(dependencies: {
   /**
    * Handles unsupported Vector3 value types from gamepad events, logging a warning.
    */
+  const handleUnsupportedVector2: ValueHandler<NodeParamVector2> = ({
+    input,
+    targetNode,
+    gamepadEvent,
+  }) => {
+    console.warn(
+      `Gamepad Input: Unsupported value type for node ${input.targetNodeId}. Value: ${gamepadEvent.value}, Type: ${targetNode.valueType}`,
+    )
+
+    return null
+  }
+
+  /**
+   * Handles unsupported Vector3 value types from gamepad events, logging a warning.
+   */
   const handleUnsupportedVector3: ValueHandler<NodeParamVector3> = ({
     input,
     targetNode,
@@ -269,6 +285,7 @@ export function createGamepadHandlers(dependencies: {
     handleNumber,
     handleUnsupportedString,
     handleUnsupportedRGB,
+    handleUnsupportedVector2,
     handleUnsupportedVector3,
   }
 }

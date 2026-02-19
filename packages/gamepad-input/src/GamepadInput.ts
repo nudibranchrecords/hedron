@@ -9,6 +9,7 @@ import {
   NodeParamRGB,
   NodeParamVector3,
   HedronEngine,
+  NodeParamVector2,
 } from '@hedron-gl/engine'
 import { GamepadManager } from './GamepadManager'
 import { GamepadEvent, GamepadInputType, AxisMode, ValueHandler, ShotHandler } from './GamepadTypes'
@@ -64,6 +65,7 @@ export class GamepadInput implements IPlugin {
     number: ValueHandler<NodeParamNumber>
     string: ValueHandler<NodeParamString>
     rgb: ValueHandler<NodeParamRGB>
+    vector2: ValueHandler<NodeParamVector2>
     vector3: ValueHandler<NodeParamVector3>
   }
 
@@ -85,6 +87,7 @@ export class GamepadInput implements IPlugin {
       number: baseHandlers.handleNumber,
       string: baseHandlers.handleUnsupportedString,
       rgb: baseHandlers.handleUnsupportedRGB,
+      vector2: baseHandlers.handleUnsupportedVector2,
       vector3: baseHandlers.handleUnsupportedVector3,
     }
 
