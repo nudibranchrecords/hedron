@@ -8,15 +8,9 @@ import {
   CardContent,
   CardDetails,
   CardHeader,
-  CardList,
-  Dialog,
-  Panel,
-  PanelBody,
-  PanelHeader,
   useEngineStore,
 } from '@hedron-gl/ui-core'
-import { GlobalDialogProps } from '@components/GlobalDialogs/types'
-import { useSketchModuleList } from '@components/hooks/useSketchModuleList'
+
 import { useSetActiveSketchId } from '@components/hooks/useSetActiveSketchId'
 
 interface SketchCardProps {
@@ -62,28 +56,5 @@ export const SketchCard = ({
         </Button>
       </CardActions>
     </Card>
-  )
-}
-
-export const SketchModulesDialog = ({ closeDialog }: GlobalDialogProps) => {
-  const sketchModules = useSketchModuleList()
-
-  return (
-    <Dialog onBackgroundClick={closeDialog}>
-      <Panel width="full" height="full" style={{ maxWidth: '60rem' }}>
-        <PanelHeader iconName="add_circle" buttonOnClick={closeDialog}>
-          Add sketch to scene
-        </PanelHeader>
-        <PanelBody scrollable={true}>
-          <CardList>
-            {[...sketchModules]
-              .sort((a, b) => a.config.title.localeCompare(b.config.title))
-              .map((item) => (
-                <SketchCard key={item.moduleId} item={item} closeDialog={closeDialog} />
-              ))}
-          </CardList>
-        </PanelBody>
-      </Panel>
-    </Dialog>
   )
 }
