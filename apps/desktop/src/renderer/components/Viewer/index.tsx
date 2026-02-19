@@ -1,5 +1,7 @@
 import { useCallback } from 'react'
+
 import c from './styles.module.css'
+import { Vector2ScrubOverlay } from './Vector2ScrubOverlay'
 import { engine } from '@renderer/engine'
 
 export const Viewer = (): JSX.Element => {
@@ -9,5 +11,11 @@ export const Viewer = (): JSX.Element => {
     }
   }, [])
 
-  return <div ref={containerRef} className={c.wrapper}></div>
+  return (
+    <div className={c.wrapper}>
+      <div ref={containerRef}></div>
+
+      <Vector2ScrubOverlay />
+    </div>
+  )
 }

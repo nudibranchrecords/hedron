@@ -1,17 +1,20 @@
 import {
   EngineState,
   EnsureRequiredValueType,
-  NodeParamWithChildren,
   ParamValueTypeWithChildren,
   SketchConfigParamImported,
   isNodeTypeWithChildren,
   NodeValueType,
   SketchConfigShotImported,
+  NodeParamWithChildren,
 } from '@store/types'
 import { createUniqueId } from '@utils/createUniqueId'
 
-const vector3Keys = ['x', 'y', 'z']
-const rgbKeys = ['r', 'g', 'b']
+const keysLookup: Record<ParamValueTypeWithChildren, string[]> = {
+  vector3: ['x', 'y', 'z'],
+  vector2: ['x', 'y'],
+  rgb: ['r', 'g', 'b'],
+}
 
 type AddNodeConfig = EnsureRequiredValueType<SketchConfigParamImported> | SketchConfigShotImported
 
@@ -128,8 +131,9 @@ export const addNode = (state: EngineState, nodeId: string, config: AddNodeConfi
       throw new Error(`Expected defaultValue to be an array for ${config.valueType} type`)
     }
 
-    const childNodeIds = Array.from({ length: 3 }, createUniqueId) as [string, string, string]
-    const keys = config.valueType === 'vector3' ? vector3Keys : rgbKeys
+    const keys = keysLookup[config.valueType]
+
+    const childNodeIds = Array.from({ length: keys.length }, createUniqueId) as string[]
 
     state.nodes[nodeId] = {
       ...config,

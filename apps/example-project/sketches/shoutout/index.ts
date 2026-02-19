@@ -13,6 +13,7 @@ interface ShoutoutParams {
   message: string
   color: [number, number, number]
   scrollSpeed: number
+  position: [number, number]
 }
 
 interface MIDIEvent {
@@ -52,12 +53,18 @@ export default class Shoutout {
     this.modifiedMessage = null
   }
 
-  constructor() {
+  resetScroll() {
+    this.textX = 0
+  }
+
+  constructor({ renderer, camera }) {
     // Create canvas for text texture
     this.canvas = document.createElement('canvas')
-    this.canvas.width = 1024
-    this.canvas.height = 512
+    this.canvas.width = renderer.domElement.width
+    this.canvas.height = renderer.domElement.height
     this.context = this.canvas.getContext('2d')!
+
+    const aspect = this.canvas.width / this.canvas.height
 
     // Set up canvas styling
     this.context.font = '48px "Chivo Mono"'
@@ -68,15 +75,16 @@ export default class Shoutout {
     this.texture = new THREE.CanvasTexture(this.canvas)
 
     // Create plane geometry and material
-    const geometry = new THREE.PlaneGeometry(4, 2)
+    const geometry = new THREE.PlaneGeometry(1, 1 / aspect)
     const material = new THREE.MeshBasicMaterial({ map: this.texture })
     material.transparent = true
     this.plane = new THREE.Mesh(geometry, material)
-    this.plane.position.set(0, 0, 4) // Position the plane in front of the camera
-    this.root.add(this.plane)
 
-    // Initialize text position to start from right edge
-    this.textX = this.canvas.width
+    // Position the plane in front of the camera
+    this.plane.position.copy(camera.position)
+    this.plane.position.z -= 0.36
+
+    this.root.add(this.plane)
   }
 
   update({ params: p }: { params: ShoutoutParams }) {
@@ -97,12 +105,15 @@ export default class Shoutout {
     const textWidth = this.context.measureText(p.message).width
 
     // Reset position when text has completely scrolled off screen
-    if (this.textX + textWidth < 0) {
+    if (this.textX < -this.canvas.width) {
       this.textX = this.canvas.width
     }
 
-    // Draw the scrolling text
-    this.context.fillText(this.modifiedMessage ?? p.message, this.textX, this.canvas.height / 2)
+    const posX = p.position[0] * this.canvas.width - textWidth / 2 + this.textX
+    const posY = p.position[1] * this.canvas.height
+
+    this.context // Draw the scrolling text
+      .fillText(this.modifiedMessage ?? p.message, posX, posY)
 
     // Update texture
     this.texture.needsUpdate = true

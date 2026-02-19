@@ -1,6 +1,6 @@
-// import { Audio } from '../Audio'
 import { AppStoreProvider, EngineStoreProvider, WidgetStrip, useAppStore } from '@hedron-gl/ui-core'
 import c from './App.module.css'
+import { useHandleDrag } from './useHandleDrag'
 import { GlobalClock } from '@components/GlobalClock/GlobalClock'
 import { GlobalDialogs } from '@components/GlobalDialogs/GlobalDialogs'
 import { PerformanceStats } from '@components/PerformanceStats/PerformanceStats'
@@ -14,9 +14,14 @@ const AppContent = (): JSX.Element => {
   const sketchesDir = useAppStore((state) => state.sketchesDir)
   const isProjectLoaded = sketchesDir !== null
 
+  const { leftRatio, onHandleMouseDown, wrapperRef } = useHandleDrag()
+
   return (
-    <div className={c.wrapper}>
-      <div className={c.left}>
+    <div className={c.wrapper} ref={wrapperRef}>
+      <div
+        className={c.left}
+        style={{ flexBasis: `${leftRatio * 100}%`, maxWidth: `${leftRatio * 100}%` }}
+      >
         <Viewer />
         {isProjectLoaded && (
           <>
@@ -36,6 +41,14 @@ const AppContent = (): JSX.Element => {
           </>
         )}
       </div>
+      <div
+        className={c.handle}
+        onMouseDown={onHandleMouseDown}
+        role="separator"
+        aria-orientation="vertical"
+        tabIndex={0}
+        title="Resize panels"
+      />
       <div className={c.right}>
         <WorkArea />
       </div>
