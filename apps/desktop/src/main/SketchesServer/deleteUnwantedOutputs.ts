@@ -6,7 +6,7 @@ https://esbuild.github.io/api/#glob-style-entry-points
 Removes any index.js or config.js files that are not one level deep
 (e.g. sketches/sketch1/index.js is ok, but sketches/sketch1/subfolder/index.js is not).
 */
-export const removeUnwantedOutputs = (outputs: string[]) => {
+export const deleteUnwantedOutputs = (outputs: string[]) => {
   const badFiles = outputs.filter((key) => {
     if (key.includes('node_modules')) return false
 

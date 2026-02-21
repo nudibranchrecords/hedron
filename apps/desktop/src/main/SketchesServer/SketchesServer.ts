@@ -6,7 +6,7 @@ import * as esbuild from 'esbuild'
 import { emptyDirSync } from 'fs-extra'
 import { getPort } from 'get-port-please'
 import { createGlobalVarModuleFiles, watchWithDebounce } from './utils'
-import { removeUnwantedOutputs } from './removeUnwantedOutputs'
+import { deleteUnwantedOutputs } from './deleteUnwantedOutputs'
 import { FileWatchEvents } from '@shared/Events'
 import { getEsbuild } from '@main/getUnpackedModules'
 
@@ -116,10 +116,10 @@ export class SketchesServer extends EventEmitter {
 
               const outputs = result.metafile?.outputs
 
-              // Check outputs for index.js and config.js files not one level deep, ignoring _.._ paths
+              // Delete index.js and config.js files not one level deep, ignoring _.._ paths
               if (outputs) {
                 const outputKeys = Object.keys(outputs)
-                removeUnwantedOutputs(outputKeys)
+                deleteUnwantedOutputs(outputKeys)
               }
 
               // Emit build result with errors and warnings
