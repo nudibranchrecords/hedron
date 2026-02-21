@@ -35,7 +35,7 @@
     "@hedron-gl/midi-input": "^1.0.0-alpha.4",
     "@hedron-gl/ui-core": "^1.0.0-alpha.4",
     "@tomjs/electron-devtools-installer": "^2.4.0",
-    "chokidar": "^4.0.3",
+    "chokidar": "^5.0.0",
     "date-fns": "^4.1.0",
     "electron-updater": "^6.6.2",
     "esbuild": "^0.23.1",
