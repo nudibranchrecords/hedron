@@ -1,8 +1,10 @@
 /*
-Esbuild has a limited glob pattern, meaning that unwanted index.js/config.js might be generated in subfolders, which causes noise for our watcher
+Esbuild has a limited glob pattern, meaning that incidentally named index.js (and config.js) files might be generated in subfolders
+This is causing noise for our watcher along with meaningless warnings for the user
 https://esbuild.github.io/api/#glob-style-entry-points
 
-This removes any index.js or config.js files that are not one level deep (e.g. sketches/sketch1/index.js is ok, but sketches/sketch1/subfolder/index.js is not).
+Removes any index.js or config.js files that are not one level deep
+(e.g. sketches/sketch1/index.js is ok, but sketches/sketch1/subfolder/index.js is not).
 */
 export const removeUnwantedOutputs = (outputs: string[]) => {
   const badFiles = outputs.filter((key) => {
