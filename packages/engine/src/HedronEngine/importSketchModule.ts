@@ -164,8 +164,9 @@ export const importSketchModule = async (
     try {
       const tempModule = new module(undefined)
       unprocessedConfigFromGetConfig = tempModule.getConfig?.() as SketchConfigRaw | undefined
+      tempModule.dispose?.()
     } catch {
-      // tempModule is likely to throw due to now parameters, we just care eabout getting the config though
+      // tempModule is likely to throw due to not giving it correct parameters, we just care about getting the config though
     }
 
     if (unprocessedConfigFromGetConfig) {
