@@ -166,11 +166,12 @@ export const importSketchModule = async (
         configPath,
         `Failed to import sketch config: ${configPath}`,
       )
-      if (!configImport.ok) {
-        return { success: false, error: configImport.error, data: undefined }
+      if (configImport.ok) {
+        config = processConfig(configImport.module.default as SketchConfigRaw, processConfigOptions)
+      } else {
+        // Generate empty config if config.js is not found, allowing for no config sketches
+        config = processConfig({}, processConfigOptions)
       }
-
-      config = processConfig(configImport.module.default as SketchConfigRaw, processConfigOptions)
     }
 
     return {
