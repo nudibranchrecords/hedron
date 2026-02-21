@@ -148,7 +148,7 @@ export const importSketchModule = async (
       sketchPath,
       `Failed to import sketch module: ${sketchPath}`,
     )
-    if (!sketchImport.ok || !sketchImport.module) {
+    if (!sketchImport.ok) {
       return { success: false, error: sketchImport.error, data: undefined }
     }
     const module: SketchModule = sketchImport.module.default
@@ -193,7 +193,7 @@ export const importSketchModule = async (
         configPath,
         `Failed to import sketch config: ${configPath}`,
       )
-      if (!configImport.ok || !configImport.module) {
+      if (!configImport.ok) {
         return { success: false, error: configImport.error, data: undefined }
       }
       config = processConfig(configImport.module.default as SketchConfigRaw, processConfigOptions)
