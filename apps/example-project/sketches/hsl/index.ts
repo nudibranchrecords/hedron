@@ -68,7 +68,7 @@ export default class HSL {
    * The function can be used instead of a seperate config.js/ts file
    * @returns The configuration for this effect.
    */
-  getConfig() {
+  static getConfig() {
     return {
       title: 'HSL',
       description: 'Hue, Saturation, Lightness',
