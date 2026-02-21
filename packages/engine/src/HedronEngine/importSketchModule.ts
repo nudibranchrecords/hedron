@@ -1,5 +1,5 @@
 import { Result } from './types'
-import { safeFetch, safeImport } from './importUtils'
+import { safeImport } from './importUtils'
 import {
   SketchConfigRaw,
   SketchConfigImported,
