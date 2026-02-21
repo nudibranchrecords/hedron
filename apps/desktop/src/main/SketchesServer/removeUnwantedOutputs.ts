@@ -1,5 +1,5 @@
 /*
-Esbuild has a limited glob pattern, meaning that incidentally named index.js (and config.js) files might be generated in subfolders
+Esbuild only allows for simple glob patterns, meaning that incidentally named index.js (and config.js) files might be generated in subfolders
 This is causing noise for our watcher along with meaningless warnings for the user
 https://esbuild.github.io/api/#glob-style-entry-points
 
