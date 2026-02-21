@@ -116,7 +116,7 @@ export class SketchesServer extends EventEmitter {
 
               const outputs = result.metafile?.outputs
 
-              // Delete index.js and config.js files not one level deep, ignoring _.._ paths
+              // Delete index.js and config.js files not one level deep
               if (outputs) {
                 const outputKeys = Object.keys(outputs)
                 deleteUnwantedOutputs(outputKeys)
