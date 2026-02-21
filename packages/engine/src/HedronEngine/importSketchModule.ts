@@ -136,14 +136,14 @@ export const importSketchModule = async (
 
     // Get the sketch module
     const sketchPath = `${baseUrl}/${moduleId}/index.js?${cacheBust}`
-    const sketchFetch = await safeFetch(
-      sketchPath,
-      `Sketch module not found: ${sketchPath}`,
-      `Network error fetching sketch module: ${sketchPath}`,
-    )
-    if (!sketchFetch.ok) {
-      return { success: false, error: sketchFetch.error, data: undefined }
-    }
+    // const sketchFetch = await safeFetch(
+    //   sketchPath,
+    //   `Sketch module not found: ${sketchPath}`,
+    //   `Network error fetching sketch module: ${sketchPath}`,
+    // )
+    // if (!sketchFetch.ok) {
+    //   return { success: false, error: sketchFetch.error, data: undefined }
+    // }
     const sketchImport = await safeImport(
       sketchPath,
       `Failed to import sketch module: ${sketchPath}`,
@@ -157,38 +157,23 @@ export const importSketchModule = async (
       fallBackTitle: moduleId,
     }
 
-    // Get the sketch config
-    const configPath = `${baseUrl}/${moduleId}/config.js?${cacheBust}`
-    const configFetch = await safeFetch(
-      configPath,
-      `Sketch config not found: ${configPath}`,
-      `Network error fetching sketch config: ${configPath}`,
-    )
     let config: SketchConfigImported
-    if (!configFetch.ok) {
-      // No config file found, try getConfig()
-      let tempModule, unprocessedConfig
-      try {
-        tempModule = new module(undefined)
-        unprocessedConfig = tempModule.getConfig?.() as SketchConfigRaw | undefined
-        tempModule.dispose?.()
-      } catch (err) {
-        return {
-          success: false,
-          error: `Sketch config not found: ${configPath} and no valid getConfig() function found in sketch`,
-          data: undefined,
-        }
-      }
-      if (unprocessedConfig) {
-        config = processConfig(unprocessedConfig, processConfigOptions)
-      } else {
-        return {
-          success: false,
-          error: `Sketch config not found: ${configPath} and no valid getConfig() function found in sketch`,
-          data: undefined,
-        }
-      }
+    let unprocessedConfigFromGetConfig: SketchConfigRaw | undefined
+
+    // First, try getConfig()
+    try {
+      const tempModule = new module(undefined)
+      unprocessedConfigFromGetConfig = tempModule.getConfig?.() as SketchConfigRaw | undefined
+    } catch {
+      // tempModule is likely to throw due to now parameters, we just care eabout getting the config though
+    }
+
+    if (unprocessedConfigFromGetConfig) {
+      config = processConfig(unprocessedConfigFromGetConfig, processConfigOptions)
     } else {
+      // If no getConfig(), try to import config.js
+      const configPath = `${baseUrl}/${moduleId}/config.js?${cacheBust}`
+
       const configImport = await safeImport(
         configPath,
         `Failed to import sketch config: ${configPath}`,
@@ -196,6 +181,7 @@ export const importSketchModule = async (
       if (!configImport.ok) {
         return { success: false, error: configImport.error, data: undefined }
       }
+
       config = processConfig(configImport.module.default as SketchConfigRaw, processConfigOptions)
     }
 
