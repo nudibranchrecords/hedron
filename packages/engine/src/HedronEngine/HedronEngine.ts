@@ -204,7 +204,7 @@ export class HedronEngine {
       this.renderer.passesNeedUpdate_webGPU = true
     }
 
-    const handleReorderedSketches = (sketchInstanceIds: string[]) => {
+    const reorderSketchesInScene = (sketchInstanceIds: string[]) => {
       this.sketchManager.reorderSketchesInScene(sketchInstanceIds)
       this.renderer.passesNeedUpdate_webGPU = true
     }
@@ -218,7 +218,7 @@ export class HedronEngine {
       onSketchAdded: addSketchToScene,
       onSketchRemoved: removeSketchFromScene,
       onNodeRemoved: handleRemovedNode,
-      onSketchesReordered: handleReorderedSketches,
+      onSketchesReordered: reorderSketchesInScene,
     })
   }
 
