@@ -80,9 +80,6 @@ export class MidiInput implements IPlugin {
     },
   ] as const satisfies InputOptionNodesConfig
 
-  private pendingUpdates = new Map<string, NodeValue>()
-  private updateScheduled = false
-
   private handleShot: ShotHandler = ({ input, engine, midiEvent }) => {
     engine.fireShot(input.targetNodeId, { _midiEvent: midiEvent })
   }
@@ -133,22 +130,6 @@ export class MidiInput implements IPlugin {
     return null
   }
 
-  private scheduleUpdate(storeState: EngineStateWithActions) {
-    if (this.updateScheduled) return
-
-    this.updateScheduled = true
-    requestAnimationFrame(() => {
-      // Apply all pending updates
-      this.pendingUpdates.forEach((value, nodeId) => {
-        storeState.updateNodeValue(nodeId, value)
-      })
-
-      // Clear pending updates
-      this.pendingUpdates.clear()
-      this.updateScheduled = false
-    })
-  }
-
   constructor(engine: HedronEngine) {
     const store = engine.getStore()
 
@@ -194,9 +175,7 @@ export class MidiInput implements IPlugin {
               return
             }
 
-            // Queue the update instead of applying immediately to avoid flooding the store with multiple per frame
-            this.pendingUpdates.set(input.targetNodeId, value)
-            this.scheduleUpdate(storeState)
+            storeState.updateNodeValue(input.targetNodeId, value)
           }
         },
       )
