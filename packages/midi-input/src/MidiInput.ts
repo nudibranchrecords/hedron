@@ -9,9 +9,9 @@ import {
   ConfigToOptionsType,
   Param,
   EngineStateWithActions,
-} from '@hedron/engine'
-import { MIDIEvent, MidiManager, MidiMessageType } from '@hedron/midi-manager'
-import { NodeParamEnum } from 'node_modules/@hedron/engine/dist'
+} from '@hedron-gl/engine'
+import { MIDIEvent, MidiManager, MidiMessageType } from '@hedron-gl/midi-manager'
+import { NodeParamEnum } from 'node_modules/@hedron-gl/engine/dist'
 
 const noteLetters = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B']
 
@@ -33,6 +33,12 @@ type ValueHander<T = Param> = (params: {
   targetNode: T
   targetNodeValue: NodeValue
 }) => NodeValue | null
+
+type ShotHandler = (params: {
+  input: Input
+  engine: HedronEngine
+  midiEvent: MIDIEventWithValue
+}) => void
 
 export class MidiInput implements IPlugin {
   public readonly id = 'midi-input'
@@ -76,6 +82,10 @@ export class MidiInput implements IPlugin {
 
   private pendingUpdates = new Map<string, NodeValue>()
   private updateScheduled = false
+
+  private handleShot: ShotHandler = ({ input, engine, midiEvent }) => {
+    engine.fireShot(input.targetNodeId, { _midiEvent: midiEvent })
+  }
 
   private handleEnum: ValueHander<NodeParamEnum> = ({
     midiEvent,
@@ -157,12 +167,18 @@ export class MidiInput implements IPlugin {
             event.type === optionNodes.type &&
             event.value !== undefined
           ) {
+            if (targetNode.nodeType === 'shot') {
+              this.handleShot({ input, engine, midiEvent: event as MIDIEventWithValue })
+              return
+            }
+
             const value = {
               enum: this.handleEnum,
               boolean: this.handleBoolean,
               number: this.handleNumber,
               string: this.handleUnsupported,
               rgb: this.handleUnsupported,
+              vector2: this.handleUnsupported,
               vector3: this.handleUnsupported,
             }[targetNode.valueType]({
               midiEvent: event as MIDIEventWithValue,

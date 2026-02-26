@@ -1,11 +1,11 @@
 import { SetterCreator } from '@store/types'
+import { deleteNode } from '@store/shared/deleteCascade'
 
 export const createDeleteSketch: SetterCreator<'deleteSketch'> =
   (setState) => (instanceId: string) =>
     setState((state) => {
-      state.sketches[instanceId].paramIds.forEach((paramId) => {
-        delete state.nodes[paramId]
-        delete state.nodeValues[paramId]
+      state.sketches[instanceId].nodeIds.forEach((nodeId) => {
+        deleteNode(state, nodeId)
       })
 
       delete state.sketches[instanceId]

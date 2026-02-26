@@ -16,14 +16,16 @@
   overflow: hidden;
   position: relative;
   border-radius: var(--borderRadiusSubtle);
+  -webkit-tap-highlight-color: transparent;
 }
 
 .canvas {
-  cursor: pointer;
   position: absolute;
   left: 0;
   right: 0;
   z-index: 1;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: none;
 }
 
 .numberInputContainer {

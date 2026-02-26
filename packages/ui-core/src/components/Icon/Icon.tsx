@@ -23,7 +23,7 @@ export type IconName =
   | 'edit'
   | 'play_arrow'
   | 'pause'
-  | 'menu'
+  | 'more_horiz'
   | 'fullscreen'
   | 'video_camera_back'
   | 'photo_camera_back'
@@ -31,10 +31,15 @@ export type IconName =
   | 'error'
   | 'arrow_upward'
   | 'arrow_downward'
+  | 'frame_bug'
+  | 'cable'
+  | 'settings'
+  | 'drag_pan'
 
 export const sketchIcon: IconName = 'token'
 export const sceneIcon: IconName = 'panorama'
 export const paramIcon: IconName = 'tune'
+export const inputIcon: IconName = 'cable'
 
 export interface IconProps extends React.HTMLAttributes<HTMLSpanElement> {
   name: IconName

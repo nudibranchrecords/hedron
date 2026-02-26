@@ -1,0 +1,162 @@
+.errorPanel {
+  padding: 16px;
+  color: var(--dangerColor);
+  text-align: center;
+}
+
+.controllerList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.activeCard {
+  animation: flash 0.3s ease;
+}
+
+.activeCardSubtle {
+  animation: flashSubtle 0.3s ease;
+}
+
+@keyframes flash {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+    background-color: var(--actionColor2);
+  }
+}
+
+@keyframes flashSubtle {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    background-color: rgba(100, 150, 255, 0.15);
+  }
+}
+
+.controllerHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  gap: 12px;
+}
+
+.controllerAssignment {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.indexLabel {
+  font-size: 12px;
+  color: var(--color-text-textColorLight2);
+}
+
+.indexSelect {
+  padding: 4px 8px;
+  background: var(--bgColorDark4);
+  border: 2px solid var(--lineColor1);
+  border-radius: 4px;
+  color: var(--textColorLight1);
+  font-size: 12px;
+}
+
+.nodeList {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.nodeItem {
+  padding: 6px 8px;
+  background: var(--bgColorDark4);
+  border-radius: 4px;
+  font-size: 12px;
+  color: var(--textColorLight1);
+  transition: background-color 0.3s ease;
+}
+
+.activeNodeItem {
+  animation: flashNode 0.3s ease;
+}
+
+@keyframes flashNode {
+  0%,
+  100% {
+    background: var(--bgColorDark4);
+  }
+  50% {
+    background: var(--actionColor2);
+  }
+}
+
+.emptyMessage {
+  padding: 8px;
+  text-align: center;
+  color: var(--textColorLight2);
+  font-size: 12px;
+  font-style: italic;
+}
+
+.lastEvent {
+  padding: 8px;
+  margin-bottom: 8px;
+  background: var(--bgColorDark3);
+  border-left: 3px solid var(--actionColor2);
+  border-radius: 4px;
+  font-size: 12px;
+  color: var(--textColorLight1);
+  font-family: monospace;
+}
+
+.notRegistered {
+  color: var(--textColorLight2);
+  font-style: italic;
+}
+
+.sketchName {
+  color: var(--textColorLight2);
+}
+
+.debugSection {
+  margin-top: 16px;
+}
+
+.debugMessages {
+  margin-top: 8px;
+  background: var(--bgColorDark4);
+  border: 2px solid var(--lineColor1);
+  border-radius: 4px;
+  padding: 12px;
+  max-height: 200px;
+  overflow-y: auto;
+  font-family: monospace;
+  font-size: 11px;
+  color: var(--textColorLight1);
+}
+
+.debugMessage {
+  padding: 4px 0;
+  border-bottom: 1px solid var(--lineColor2);
+}
+
+.debugMessage:last-child {
+  border-bottom: none;
+}
+
+.timestamp {
+  color: var(--textColorLight2);
+  margin-right: 8px;
+}
+
+.noGamepads {
+  padding: 32px;
+  text-align: center;
+  color: var(--textColorLight2);
+}

@@ -7,9 +7,9 @@ import {
   Input,
   InputOptionNodesConfig,
   IPlugin,
-  Node,
   NodeValue,
-} from '@hedron/engine'
+  Param,
+} from '@hedron-gl/engine'
 
 const TAU = Math.PI * 2
 const lerp = (v0: number, v1: number, t: number) => (1 - t) * v0 + t * v1
@@ -19,8 +19,10 @@ type ValueHander = (params: {
   input: Input
   storeState: EngineState
   optionNodes: ConfigToOptionsType<typeof LFOInput.prototype.optionNodesConfig>
-  targetNode: Node
+  targetNode: Param
 }) => NodeValue | null
+
+type ShotHandler = (params: { delta: number; input: Input; engine: HedronEngine }) => void
 
 export class LFOInput implements IPlugin {
   public readonly id = 'lfo-input'
@@ -120,6 +122,18 @@ export class LFOInput implements IPlugin {
 
   private inputLatches: Record<string, boolean> = {}
 
+  private handleShot: ShotHandler = ({ delta, input, engine }) => {
+    const val = Math.sin(delta)
+    if (val > 0 && !this.inputLatches[input.id]) {
+      this.inputLatches[input.id] = true
+
+      engine.fireShot(input.targetNodeId)
+      return
+    } else if (val <= 0) {
+      this.inputLatches[input.id] = false
+    }
+  }
+
   private handleEnum: ValueHander = ({ delta, input, storeState }) => {
     if (Math.sin(delta) > 0) {
       if (this.inputLatches[input.id]) {
@@ -167,15 +181,29 @@ export class LFOInput implements IPlugin {
 
     const tick = () => {
       requestAnimationFrame(() => {
+        if (!clock.isRunning) {
+          tick()
+          return
+        }
+
         const storeState = store.getState()
         handleEachInput<typeof this.optionNodesConfig>(
           storeState,
           this.inputType,
           ({ input, optionNodes, targetNode }) => {
+            const delta = (clock.beatDelta * optionNodes.frequency + optionNodes.phase) * TAU
+
+            if (targetNode.nodeType === 'shot') {
+              this.handleShot({
+                delta,
+                input,
+                engine,
+              })
+              return
+            }
+
             // TODO: This can be handled by `onInput` once we have `isEnabled` as a generic option
             if (!optionNodes.isEnabled) return
-
-            const delta = (clock.beatDelta * optionNodes.frequency + optionNodes.phase) * TAU
 
             const value = {
               enum: this.handleEnum,
@@ -183,6 +211,7 @@ export class LFOInput implements IPlugin {
               number: this.handleNumber,
               string: this.handleUnsupported,
               rgb: this.handleUnsupported,
+              vector2: this.handleUnsupported,
               vector3: this.handleUnsupported,
             }[targetNode.valueType]({
               delta,

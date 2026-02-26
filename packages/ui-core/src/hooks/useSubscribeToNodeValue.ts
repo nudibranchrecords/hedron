@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react'
-import { NodeParamWithChildren, NodeValue } from '@hedron/engine'
+import { NodeParamWithChildren, NodeValue } from '@hedron-gl/engine'
 import { useEngineStore, useEngineStoreWithContext } from '@hooks/storeHooks'
 
 export const useSubscribeToNodeValue = <T extends NodeValue>(
@@ -14,6 +14,10 @@ export const useSubscribeToNodeValue = <T extends NodeValue>(
     const unsubscribe = engineStore.subscribe(
       (state) => state.nodeValues[nodeId],
       (value) => {
+        // Sometimes this can be undefined briefly if a node is deleted
+        if (value === undefined) {
+          return
+        }
         callbackRef.current(value as T)
       },
       {

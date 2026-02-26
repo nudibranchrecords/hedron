@@ -1,4 +1,4 @@
-# @hedron/app-store
+# @hedron-gl/app-store
 
 Zustand-based application state store for Hedron. Separate from the engine store, which does most of the heavy lifting, this is focused on small state things which are app specific.
 
@@ -12,4 +12,4 @@ Zustand-based application state store for Hedron. Separate from the engine store
 
 ## Usage
 
-Most usage would actually be via `useAppStore` imported from `@hedron/ui-core`
+Most usage would actually be via `useAppStore` imported from `@hedron-gl/ui-core`

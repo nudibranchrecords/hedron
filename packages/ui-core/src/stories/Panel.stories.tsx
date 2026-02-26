@@ -2,7 +2,14 @@ import type { Meta, StoryObj } from '@storybook/react'
 
 import { fn } from '@storybook/test'
 import { WithControlGrid } from './NodeControl.stories'
-import { Panel, PanelActions, PanelBody, PanelHeader } from '@components/Panel/Panel'
+import { Icon } from '@components/Icon/Icon'
+import {
+  Panel,
+  PanelActions,
+  PanelBody,
+  PanelHeader,
+  PanelSubHeader,
+} from '@components/Panel/Panel'
 import { Button } from '@components/Button/Button'
 
 const meta = {
@@ -199,6 +206,14 @@ export const BottomPanel: Story = {
           Position X Input
         </PanelHeader>
         <PanelBody>
+          <PanelSubHeader title="Subheader Title" iconName="info">
+            <Button size="slim" type="ghost" className="mr-auto" onClick={fn()}>
+              <Icon name="edit" />
+            </Button>
+            <Button size="slim" type="ghost" onClick={fn()}>
+              <Icon name="delete" />
+            </Button>
+          </PanelSubHeader>
           <WithControlGrid />
         </PanelBody>
       </Panel>

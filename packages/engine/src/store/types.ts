@@ -1,10 +1,11 @@
 import { StoreApi } from 'zustand'
+import { ShotArgsObject } from '@HedronEngine/types'
 
 export interface SketchState {
   id: string
   title: string
   moduleId: string
-  paramIds: string[]
+  nodeIds: string[]
   isBroken?: boolean
 }
 
@@ -14,24 +15,23 @@ export type Sketches = { [key: string]: SketchState }
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type SketchModule = any
 
+export type NodeType = 'param' | 'shot'
+
 export interface NodeBase {
   id: string
   key: string
+  groupIndex: number
+  nodeType: NodeType
 }
-
-export const NodeTypesWithChildren = ['vector3', 'rgb'] as const
-export type NodeTypeWithChildren = (typeof NodeTypesWithChildren)[number]
 
 export interface NodeParamBase extends NodeBase {
-  type: 'param'
   title: string
-  groupIndex: number | null
+  nodeType: 'param'
 }
 
-export interface NodeParamWithChildren extends NodeParamBase {
+export interface NodeParamWithChildrenBase extends NodeParamBase {
+  nodeType: 'param'
   childNodeIds: string[]
-  valueType: NodeTypeWithChildren
-  defaultValue: [number, number, number]
 }
 
 export interface NodeParamNumber extends NodeParamBase {
@@ -57,12 +57,17 @@ export interface NodeParamEnum extends NodeParamBase {
   options: EnumOption[]
 }
 
-export interface NodeParamVector3 extends NodeParamWithChildren {
+export interface NodeParamVector3 extends NodeParamWithChildrenBase {
   valueType: 'vector3'
   defaultValue: [number, number, number]
 }
 
-export interface NodeParamRGB extends NodeParamWithChildren {
+export interface NodeParamVector2 extends NodeParamWithChildrenBase {
+  valueType: 'vector2'
+  defaultValue: [number, number]
+}
+
+export interface NodeParamRGB extends NodeParamWithChildrenBase {
   valueType: 'rgb'
   defaultValue: [number, number, number]
 }
@@ -73,19 +78,37 @@ export type Param =
   | NodeParamNumber
   | NodeParamEnum
   | NodeParamVector3
+  | NodeParamVector2
   | NodeParamRGB
 
-export type Node = Param
+export type NodeParamWithChildren = NodeParamVector3 | NodeParamRGB | NodeParamVector2
+export type ParamValueTypeWithChildren = NodeParamWithChildren['valueType']
+
+export type Shot = NodeBase & {
+  nodeType: 'shot'
+  title: string
+}
+
+export type Node = Param | Shot
 export type Nodes = { [key: string]: Node }
 
-export type NodeValue = number | boolean | string
+export type NodeValue = number | boolean | string | ShotArgsObject
 export type NodeValues = { [key: string]: NodeValue }
-export type NodeValueType = Node['valueType']
+export type NodeValueType = Param['valueType'] | null
+
+// Record ensures every ParamValueTypeWithChildren member is listed — adding a new
+// type that extends NodeParamWithChildrenBase will cause a compile error here if
+// it isn't included.
+const paramValueTypesWithChildren: Record<ParamValueTypeWithChildren, true> = {
+  vector3: true,
+  vector2: true,
+  rgb: true,
+}
 
 export const isNodeTypeWithChildren = (
   nodeValueType: NodeValueType,
-): nodeValueType is NodeTypeWithChildren => {
-  return NodeTypesWithChildren.includes(nodeValueType as NodeTypeWithChildren)
+): nodeValueType is ParamValueTypeWithChildren => {
+  return nodeValueType != null && nodeValueType in paramValueTypesWithChildren
 }
 
 // Utility type guard to check if a node has child nodes
@@ -94,6 +117,7 @@ export const hasChildNodes = (node: Node): node is NodeParamWithChildren => {
 }
 
 export interface SketchConfigParamBase {
+  nodeType?: 'param'
   key: string
   title?: string
   /**
@@ -131,6 +155,11 @@ export interface SketchConfigParamVector3 extends SketchConfigParamBase {
   defaultValue: [number, number, number]
 }
 
+export interface SketchConfigParamVector2 extends SketchConfigParamBase {
+  valueType: 'vector2'
+  defaultValue: [number, number]
+}
+
 export interface SketchConfigParamRGB extends SketchConfigParamBase {
   valueType: 'rgb'
   defaultValue: [number, number, number]
@@ -141,40 +170,61 @@ export type SketchConfigParam =
   | SketchConfigParamBoolean
   | SketchConfigParamString
   | SketchConfigParamEnum
+  | SketchConfigParamVector2
   | SketchConfigParamVector3
   | SketchConfigParamRGB
+
+export type SketchConfigShot = {
+  key: string
+  title?: string
+}
 
 export type EnsureRequiredValueType<T> = T extends { valueType?: infer V }
   ? Omit<T, 'valueType'> & { valueType: V }
   : T
 
-export type SketchConfigParamImported = EnsureRequiredValueType<SketchConfigParam> & {
-  groupIndex: number | null
+export type SketchConfigItemImported<T> = T & {
+  groupIndex: number
   title: string
-  params: (SketchConfigParam | SketchConfigGroup)[]
 }
 
-export interface SketchConfigGroup {
+export type SketchConfigParamImported = SketchConfigItemImported<
+  EnsureRequiredValueType<SketchConfigParam>
+> & { nodeType: 'param' }
+
+export type SketchConfigShotImported = SketchConfigItemImported<SketchConfigShot> & {
+  nodeType: 'shot'
+}
+
+export type SketchConfigNodeImported = SketchConfigParamImported | SketchConfigShotImported
+
+export interface SketchConfigNodeGroup {
+  groupTitle?: string
+  children: (SketchConfigParam | SketchConfigShot)[]
+}
+
+export interface SketchConfigParamGroup {
   groupTitle?: string
   params: SketchConfigParam[]
 }
 
-export interface SketchConfigGroupImported extends SketchConfigGroup {
-  groupTitle: string
-  groupIndex: number
+export interface SketchConfigShotGroup {
+  groupTitle?: string
+  shots: SketchConfigShot[]
 }
 
 // As the user defines the config, it can be a mix of params and groups
 export interface SketchConfigRaw {
   title?: string
   description?: string
-  params?: (SketchConfigParam | SketchConfigGroup)[]
+  params?: (SketchConfigParam | SketchConfigParamGroup)[]
+  shots?: (SketchConfigShot | SketchConfigShotGroup)[]
 }
 
 export interface SketchConfigImported {
   title: string
   description?: string
-  params: SketchConfigParamImported[]
+  nodes: SketchConfigNodeImported[]
   groupInfo: { groupTitle: string }[]
 }
 
@@ -218,7 +268,7 @@ export type EngineState = EngineData & AuxState
 interface Actions {
   addSketch: (moduleId: string) => string
   updateSketch: (instanceId: string, sketchState: Partial<SketchState>) => void
-  updateSketchParams: (instanceId: string) => void
+  reconcileSketchNodes: (instanceId: string) => void
   deleteSketch: (instanceId: string) => void
   moveSketchUp: (instanceId: string) => void
   moveSketchDown: (instanceId: string) => void
@@ -232,6 +282,7 @@ interface Actions {
     inputConfig: Omit<Input, 'id' | 'optionNodeIds'>,
     optionsNodeConfig: InputOptionNodesConfig,
   ) => string
+  deleteInput: (inputId: string) => void
 }
 
 export type EngineStateWithActions = EngineData & AuxState & Actions

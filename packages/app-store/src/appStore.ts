@@ -3,9 +3,24 @@ import { StoreApi } from 'zustand'
 import { devtools, persist, subscribeWithSelector } from 'zustand/middleware'
 import { immer } from 'zustand/middleware/immer'
 import type {} from '@redux-devtools/extension' // required for devtools typing
-import { EngineData } from '@hedron/engine'
+import { EngineData } from '@hedron-gl/engine'
 
-export type DialogId = 'sketchModules'
+export type DialogId = 'sketchModules' | 'sketchesServerBuildResult'
+
+export interface BuildMessage {
+  text: string
+  location?: {
+    file: string
+    line: number
+    column: number
+    lineText: string
+  } | null
+}
+
+export interface BuildResult {
+  errors: BuildMessage[]
+  warnings: BuildMessage[]
+}
 
 export interface SaveItem {
   title: string
@@ -20,12 +35,10 @@ export interface ProjectData {
   engine: EngineData
   app: {
     sketchesDir: string
-    // TODO: activeSketchId should be part of the save state
-    // but causing errors when Hedron opens directly on a sketch
-    // activeSketchId: string | null
-    selectedNodes: { [sketchId: string]: string }
-    selectedInputs: { [inputId: string]: string }
-    openedParamGroups: { [sketchId: string]: Record<number, boolean> }
+    activeSketchId: string | null
+    selectedNodes: { [sketchId: string]: string | null }
+    selectedInputs: { [inputId: string]: string | null }
+    openedControlGroups: { [sketchId: string]: Record<number, boolean> }
   }
 }
 
@@ -33,20 +46,23 @@ export interface AppState {
   activeSketchId: string | null // TODO: should be part of ProjectData
   selectedNodes: ProjectData['app']['selectedNodes']
   selectedInputs: ProjectData['app']['selectedInputs']
-  openedParamGroups: ProjectData['app']['openedParamGroups']
+  openedControlGroups: ProjectData['app']['openedControlGroups']
   sketchesDir: string | null
   globalDialogId: DialogId | null
   currentSavePath: string | null
   saveList: SaveItem[]
-  setSelectedNode: (sketchID: string | null, nodeId: string) => void
-  setSelectedInput: (nodeId: string, inputId: string) => void
-  setOpenedParamGroup: (sketchId: string, groupIndex: number, isOpen: boolean) => void
+  sketchesServerBuildResult: BuildResult | null
+  setSelectedNode: (sketchID: string, nodeId: string | null) => void
+  setSelectedInput: (nodeId: string, inputId: string | null) => void
+  setOpenedControlGroup: (sketchId: string, groupIndex: number, isOpen: boolean) => void
   setActiveSketchId: (id: string) => void
   setSketchesDir: (dir: string) => void
   setGlobalDialogId: (id: DialogId | null) => void
   setCurrentSavePath: (path: string) => void
   addToSaveList: (path: SaveItem) => void
   removeFromSaveList: (path: string) => void
+  setSketchesServerBuildResult: (result: BuildResult | null) => void
+  cleanupStaleReferences: (engineData: EngineData) => void
 }
 
 export type SetState = StoreApi<AppState>['setState']
@@ -73,8 +89,9 @@ export const createAppStore = () =>
             currentSavePath: null,
             selectedNodes: {},
             selectedInputs: {},
-            openedParamGroups: {},
+            openedControlGroups: {},
             saveList: [],
+            sketchesServerBuildResult: null,
             setActiveSketchId: (id: string) => {
               set((state) => {
                 state.activeSketchId = id
@@ -109,28 +126,63 @@ export const createAppStore = () =>
                 }
               })
             },
-            setSelectedNode: (sketchID, nodeId) => {
+            setSketchesServerBuildResult: (result: BuildResult | null) => {
               set((state) => {
-                let catId = sketchID
-                if (!catId) {
-                  // Some nodes wont have a relevant sketch ID, for now we store them under "aux"
-                  catId = 'aux'
-                }
-
-                state.selectedNodes[catId] = nodeId
+                state.sketchesServerBuildResult = result
               })
             },
-            setSelectedInput: (nodeId: string, inputId: string) => {
+            setSelectedNode: (sketchID, nodeId) => {
+              set((state) => {
+                state.selectedNodes[sketchID] = nodeId
+              })
+            },
+            setSelectedInput: (nodeId, inputId) => {
               set((state) => {
                 state.selectedInputs[nodeId] = inputId
               })
             },
-            setOpenedParamGroup: (sketchId: string, groupIndex: number, isOpen: boolean) => {
+            setOpenedControlGroup: (sketchId: string, groupIndex: number, isOpen: boolean) => {
               set((state) => {
-                if (!state.openedParamGroups[sketchId]) {
-                  state.openedParamGroups[sketchId] = {}
+                if (!state.openedControlGroups[sketchId]) {
+                  state.openedControlGroups[sketchId] = {}
                 }
-                state.openedParamGroups[sketchId][groupIndex] = isOpen
+                state.openedControlGroups[sketchId][groupIndex] = isOpen
+              })
+            },
+            cleanupStaleReferences: (engineData: EngineData) => {
+              set((state) => {
+                const validNodeIds = new Set(Object.keys(engineData.nodes))
+                const validInputIds = new Set(Object.keys(engineData.inputs))
+                const validSketchIds = new Set(Object.keys(engineData.sketches))
+
+                for (const sketchId of Object.keys(state.selectedNodes)) {
+                  if (!validSketchIds.has(sketchId)) {
+                    delete state.selectedNodes[sketchId]
+                    continue
+                  }
+
+                  const selectedNodeId = state.selectedNodes[sketchId]
+                  if (selectedNodeId && !validNodeIds.has(selectedNodeId)) {
+                    delete state.selectedNodes[sketchId]
+                  }
+                }
+
+                for (const selectedNodeId of Object.keys(state.selectedInputs)) {
+                  const selectedInputId = state.selectedInputs[selectedNodeId]
+                  if (
+                    !validNodeIds.has(selectedNodeId) ||
+                    !selectedInputId ||
+                    !validInputIds.has(selectedInputId)
+                  ) {
+                    delete state.selectedInputs[selectedNodeId]
+                  }
+                }
+
+                for (const sketchId of Object.keys(state.openedControlGroups)) {
+                  if (!validSketchIds.has(sketchId)) {
+                    delete state.openedControlGroups[sketchId]
+                  }
+                }
               })
             },
           })),

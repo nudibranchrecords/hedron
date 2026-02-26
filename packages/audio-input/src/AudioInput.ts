@@ -1,4 +1,4 @@
-import { handleEachInput, HedronEngine, InputOptionNodesConfig, IPlugin } from '@hedron/engine'
+import { handleEachInput, HedronEngine, InputOptionNodesConfig, IPlugin } from '@hedron-gl/engine'
 import { AudioDeviceManager } from './AudioDeviceManager'
 import { AudioAnalyzer, AudioData, FrequencyBand, BAND_COLORS } from './AudioAnalyzer'
 import { lerp } from './AudioUtils'
@@ -515,6 +515,7 @@ export class AudioInput implements IPlugin {
       this.inputType,
       ({ input, optionNodes, targetNode }) => {
         if (!optionNodes.isEnabled) return
+        if (targetNode.nodeType === 'shot') return
         if (targetNode.valueType !== 'number') return
 
         // If audio data is available, use the appropriate frequency band based on the option

@@ -1,6 +1,6 @@
 import React from 'react'
-import { HedronEngine } from '@hedron/engine'
-import { ControlGrid, Param, Panel, PanelHeader, PanelBody } from '@hedron/ui-core'
+import { HedronEngine } from '@hedron-gl/engine'
+import { ControlGrid, NodeContainer, Panel, PanelHeader, PanelBody } from '@hedron-gl/ui-core'
 import { AudioInput } from './AudioInput'
 import styles from './AudioGlobalPanel.module.css'
 import { AudioDebugPanel } from './AudioDebugPanel'
@@ -35,7 +35,7 @@ export const AudioGlobalPanel: React.FC<AudioGlobalPanelProps> = ({ engine }) =>
         <FreqPreview audioPlugin={audioPlugin} />
         <ControlGrid className={styles.controlGrid}>
           {globalOptionNodeIds.map((id: string) => (
-            <Param key={id} paramId={id} />
+            <NodeContainer key={id} nodeId={id} />
           ))}
         </ControlGrid>
         <AudioDebugPanel audioPlugin={audioPlugin} />

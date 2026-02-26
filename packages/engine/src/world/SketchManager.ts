@@ -2,6 +2,7 @@ import { Group } from 'three'
 import { Pass } from 'postprocessing'
 import { PassNode } from 'three/webgpu'
 import { type ShaderNodeObject } from 'three/tsl'
+import { ShotArgsObject } from '@HedronEngine/types'
 import { SketchModule } from '@store/types'
 import { getDebugScene } from '@world/debugScene'
 import { EngineScene } from '@world/EngineScene'
@@ -12,6 +13,10 @@ type SketchUpdateParams = {
   params: { [key: string]: unknown }
   scene: EngineScene
 }
+
+type SketchShotFunc = (
+  args: Omit<SketchUpdateParams, 'deltaFrame' | 'deltaTime'> & { shotArgs: ShotArgsObject },
+) => void
 
 enum SketchErrorType {
   Create = 'Create',
@@ -34,7 +39,7 @@ export type SketchInstance = {
    * It should clean up any resources, event listeners, or references it holds.
    */
   dispose(engineScene: EngineScene): () => void
-}
+} & Record<string, SketchShotFunc>
 
 export type SketchInstanceMap = Map<string, SketchInstance>
 

@@ -1,5 +1,5 @@
 import { forwardRef, useCallback, useImperativeHandle, useRef } from 'react'
-import { NodeEnumValue } from '@hedron/engine'
+import { NodeEnumValue } from '@hedron-gl/engine'
 import c from './EnumDropdown.module.css'
 
 export type EnumDropdownHandle = {
@@ -27,7 +27,7 @@ export const EnumDropdown = forwardRef<EnumDropdownHandle, EnumDropdownProps>(fu
   }, [])
 
   const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    onValueChange(event.target.value)
+    onValueChange(values[event.target.selectedIndex].value)
   }
 
   useImperativeHandle(ref, () => {

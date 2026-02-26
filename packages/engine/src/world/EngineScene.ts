@@ -1,7 +1,7 @@
 import { Pass, RenderPass } from 'postprocessing'
-import { PerspectiveCamera, Scene } from 'three'
+import { PerspectiveCamera, Scene, WebGLRenderer } from 'three'
 import { pass, type ShaderNodeObject } from 'three/tsl'
-import { PassNode, PostProcessing } from 'three/webgpu'
+import { PassNode, PostProcessing, WebGPURenderer } from 'three/webgpu'
 import { SketchInstanceError, SketchInstanceMap } from '@world/SketchManager'
 import { RendererType } from '@HedronEngine/types'
 
@@ -12,16 +12,20 @@ export class EngineScene {
   public sketches: SketchInstanceMap = new Map()
   private renderPass: RenderPass | undefined
   private renderPass_webGPU: ShaderNodeObject<PassNode> | undefined
+  public renderer: WebGLRenderer | WebGPURenderer
   public rendererType: RendererType
   private onSketchInstanceError: SketchInstanceError
 
   constructor({
     rendererType,
     onSketchInstanceError,
+    renderer,
   }: {
     rendererType: RendererType
     onSketchInstanceError: SketchInstanceError
+    renderer: WebGLRenderer | WebGPURenderer
   }) {
+    this.renderer = renderer
     this.rendererType = rendererType
     this.onSketchInstanceError = onSketchInstanceError
     this.scene = new Scene()
