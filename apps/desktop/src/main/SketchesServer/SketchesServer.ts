@@ -6,6 +6,7 @@ import * as esbuild from 'esbuild'
 import { emptyDirSync } from 'fs-extra'
 import { getPort } from 'get-port-please'
 import { createGlobalVarModuleFiles, watchWithDebounce } from './utils'
+import { deleteUnwantedOutputs } from './deleteUnwantedOutputs'
 import { FileWatchEvents } from '@shared/Events'
 import { getEsbuild } from '@main/getUnpackedModules'
 
@@ -106,11 +107,20 @@ export class SketchesServer extends EventEmitter {
         {
           name: 'on-end',
           setup: (build): void => {
+            build.initialOptions.metafile = true
             build.onEnd((result) => {
               const filteredWarnings = result.warnings.filter(
                 // Glob warnings are ok to ignore, as its looking for both .ts and .js files, but there will always be one of them missing
                 (warning) => warning.id !== 'empty-glob',
               )
+
+              const outputs = result.metafile?.outputs
+
+              // Delete index.js and config.js files not one level deep
+              if (outputs) {
+                const outputKeys = Object.keys(outputs)
+                deleteUnwantedOutputs(outputKeys)
+              }
 
               // Emit build result with errors and warnings
               this.emit(FileWatchEvents.buildResult, {
