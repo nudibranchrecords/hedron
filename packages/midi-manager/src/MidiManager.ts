@@ -9,6 +9,7 @@ export enum MidiMessageType {
   Start = 0xfa,
   Continue = 0xfb,
   Stop = 0xfc,
+  ActiveSensing = 0xfe,
   // Status byte for messages with channel, with channel nibble masked out
   NoteOff = 0x80,
   NoteOn = 0x90,
@@ -24,6 +25,7 @@ export const midiMessageNames: Record<MidiMessageType, string> = {
   [MidiMessageType.Start]: 'Start',
   [MidiMessageType.Continue]: 'Continue',
   [MidiMessageType.Stop]: 'Stop',
+  [MidiMessageType.ActiveSensing]: 'Active Sensing',
   [MidiMessageType.NoteOff]: 'Note Off',
   [MidiMessageType.NoteOn]: 'Note On',
   [MidiMessageType.PolyphonicKeyPressure]: 'Polyphonic Key Pressure (Aftertouch)',
@@ -188,7 +190,8 @@ export class MidiManager {
     this.learnPromise = new Promise((resolve) => {
       this.learnResolve = resolve
       this.learnListener = (event: MIDIEvent) => {
-        if (event.type === MidiMessageType.Clock) return
+        if (event.type === MidiMessageType.Clock || event.type === MidiMessageType.ActiveSensing)
+          return
         resolve(event)
         this.learnResolve = undefined
         this.cancelMidiLearn()
