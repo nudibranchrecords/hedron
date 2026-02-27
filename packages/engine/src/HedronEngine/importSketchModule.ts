@@ -1,4 +1,5 @@
 import { Result } from './types'
+import { safeImport } from './importUtils'
 import { ensureConfig } from '@store/shared/ensureConfig'
 import {
   SketchConfigRaw,
@@ -104,37 +105,42 @@ export const importSketchModule = async (
 
     // Get the sketch module
     const sketchPath = `${baseUrl}/${moduleId}/index.js?${cacheBust}`
-    if ((await fetch(sketchPath)).status !== 200) {
-      return Promise.reject(`Sketch module not found: ${sketchPath}`)
+
+    const sketchImport = await safeImport(
+      sketchPath,
+      `Failed to import sketch module: ${sketchPath}`,
+    )
+    if (!sketchImport.ok) {
+      return { success: false, error: sketchImport.error, data: undefined }
     }
-    const sketchModule = await import(/* @vite-ignore */ sketchPath)
-    const module: SketchModule = sketchModule.default
+
+    const module: SketchModule = sketchImport.module.default
 
     const processConfigOptions = {
       fallBackTitle: moduleId,
     }
 
-    // Get the sketch config
-    const configPath = `${baseUrl}/${moduleId}/config.js?${cacheBust}`
     let config: SketchConfigImported
-    if ((await fetch(configPath)).status !== 200) {
-      // No config file found
-      // Try instancing the sketch, and call getConfig() on it
-      const tempModule = new module(undefined)
-      const unprocessedConfig = tempModule.getConfig?.() as SketchConfigRaw | undefined
 
-      tempModule.dispose?.()
+    // First try to get config from static getConfig()
+    const unprocessedConfigFromGetConfig = module.getConfig?.() as SketchConfigRaw | undefined
 
-      if (unprocessedConfig) {
-        config = processConfig(unprocessedConfig, processConfigOptions)
-      } else {
-        return Promise.reject(
-          `Sketch config not found: ${configPath} and no valid getConfig() function found in sketch`,
-        )
-      }
+    if (unprocessedConfigFromGetConfig) {
+      config = processConfig(unprocessedConfigFromGetConfig, processConfigOptions)
     } else {
-      const configModule = await import(/* @vite-ignore */ configPath)
-      config = processConfig(configModule.default as SketchConfigRaw, processConfigOptions)
+      // If no getConfig(), try to import config.js
+      const configPath = `${baseUrl}/${moduleId}/config.js?${cacheBust}`
+
+      const configImport = await safeImport(
+        configPath,
+        `Failed to import sketch config: ${configPath}`,
+      )
+      if (configImport.ok) {
+        config = processConfig(configImport.module.default as SketchConfigRaw, processConfigOptions)
+      } else {
+        // Generate empty config if config.js is not found, allowing for no config sketches
+        config = processConfig({}, processConfigOptions)
+      }
     }
 
     return {
@@ -148,7 +154,6 @@ export const importSketchModule = async (
     }
   } catch (error) {
     console.error(error)
-
     return {
       data: undefined,
       success: false,

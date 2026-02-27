@@ -6,15 +6,21 @@ import { SketchesServer } from '@main/SketchesServer/SketchesServer'
 // Track the current server instance
 let currentSketchesServer: SketchesServer | null = null
 
+// Look for top level sketch directories and return module IDs (directory names)
 const getInitialModuleIds = async (dirPath: string): Promise<string[]> => {
   const moduleIds: string[] = []
   const dir = await fs.promises.opendir(dirPath)
   for await (const dirent of dir) {
     if (dirent.isDirectory()) {
-      moduleIds.push(dirent.name)
+      const subdir = `${dirPath}/${dirent.name}`
+      const hasIndexTs = fs.existsSync(`${subdir}/index.ts`)
+      const hasIndexJs = fs.existsSync(`${subdir}/index.js`)
+      // Only consider it a sketch module if it has an index.ts or index.js file
+      if (hasIndexTs || hasIndexJs) {
+        moduleIds.push(dirent.name)
+      }
     }
   }
-
   return moduleIds
 }
 

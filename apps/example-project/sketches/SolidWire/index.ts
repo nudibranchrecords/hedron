@@ -245,7 +245,7 @@ export default class Solid {
     return edges
   }
 
-  getConfig() {
+  static getConfig() {
     return {
       title: 'Solid Wire',
       category: 'simple',
