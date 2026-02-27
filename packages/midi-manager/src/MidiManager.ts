@@ -83,6 +83,9 @@ export class MidiManager {
    */
   public onMidiMessage: Signal<MIDIEvent> = new Signal<MIDIEvent>()
 
+  /**
+   * Create a new MidiManager and begin searching for MIDI devices.
+   */
   constructor() {
     this.findMidiDevices()
   }
@@ -151,7 +154,7 @@ export class MidiManager {
    * Finds all MIDI devices connected to the system, and sets up events listeners for both the devices and the midi access (add/remove).
    * @returns A promise that resolves when the MIDI devices have been found.
    */
-  public findMidiDevices = async (): Promise<void> => {
+  public async findMidiDevices(): Promise<void> {
     if (!navigator.requestMIDIAccess) {
       console.error('Web MIDI API is not supported in this browser.')
       return
@@ -170,6 +173,10 @@ export class MidiManager {
   private learnResolve: ((event: MIDIEvent | null) => void) | undefined
   private learnListener: ((event: MIDIEvent) => void) | undefined
 
+  /**
+   * Start a MIDI learn process and return the learned MIDI event, or undefined if canceled.
+   * @returns A promise that resolves with the learned MIDIEvent, or undefined if learning was canceled.
+   */
   public async midiLearn(): Promise<MIDIEvent | undefined> {
     const event = await this.beginMidiLearn()
     if (!event) {
@@ -228,6 +235,12 @@ export class MidiManager {
     return messageType
   }
 
+  /**
+   * Send raw MIDI data bytes to the given MIDIOutput, optionally scheduling them for a future time.
+   * @param device The MIDI output device to send data to.
+   * @param data The raw MIDI data bytes to send.
+   * @param targetTime Optional target time in milliseconds to schedule the message.
+   */
   public sendMidiMessageRaw(device: MIDIOutput, data: number[], targetTime?: number): void {
     if (targetTime === undefined) {
       device.send(data)
@@ -236,7 +249,14 @@ export class MidiManager {
     }
   }
 
-  public sendMidiMessage(device: MIDIOutput, event: MIDIEvent): void {
+  /**
+   * Send a MIDIEvent to the specified MIDIOutput, constructing the appropriate status and data bytes.
+   * Handles message length differences (e.g., Program Change uses one data byte).
+   * @param device The MIDI output device to send the event to.
+   * @param event The MIDIEvent to send (contains channel, type, note, and optional value).
+   * @param targetTime Optional target time in milliseconds to schedule the message.
+   */
+  public sendMidiMessage(device: MIDIOutput, event: MIDIEvent, targetTime?: number): void {
     // Construct the status byte with channel
     const status = event.type | (event.channel & 0x0f)
     const data1 = event.note
@@ -255,36 +275,26 @@ export class MidiManager {
         message = new Uint8Array([status, data1, data2])
         break
     }
-    device.send(message)
+    if (targetTime === undefined) {
+      device.send(message)
+    } else {
+      device.send(message, targetTime)
+    }
   }
 
-  public async sendMidiNoteOn(device: MIDIOutput, note: number, velocity: number): Promise<void> {
-    this.sendMidiMessage(device, {
-      channel: 0,
-      device,
-      type: MidiMessageType.NoteOn,
-      note,
-      value: velocity,
-    })
-  }
-
-  public async sendMidiNoteOff(device: MIDIOutput, note: number, velocity: number): Promise<void> {
-    this.sendMidiMessage(device, {
-      channel: 0,
-      device,
-      type: MidiMessageType.NoteOff,
-      note,
-      value: velocity,
-    })
-  }
-
-  public async sendMidiNoteOnOff(
+  /**
+   * Send a Note On message (channel 0) to the specified MIDI output.
+   * @param device The MIDI output device to send the note to.
+   * @param note The MIDI note number (0-127).
+   * @param velocity The velocity of the note (0-127).
+   * @param channel MIDI channel to use (0-15). Defaults to 0.
+   */
+  public sendMidiNoteOn(
     device: MIDIOutput,
     note: number,
     velocity: number,
-    duration: number,
     channel: number = 0,
-  ): Promise<void> {
+  ): void {
     this.sendMidiMessage(device, {
       channel,
       device,
@@ -292,35 +302,69 @@ export class MidiManager {
       note,
       value: velocity,
     })
+  }
 
-    setTimeout(() => {
-      this.sendMidiMessage(device, {
+  /**
+   * Send a Note Off message (channel 0) to the specified MIDI output.
+   * @param device The MIDI output device to send the note off to.
+   * @param note The MIDI note number (0-127).
+   * @param velocity The release velocity of the note (0-127).
+   * @param channel MIDI channel to use (0-15). Defaults to 0.
+   */
+  public sendMidiNoteOff(
+    device: MIDIOutput,
+    note: number,
+    velocity: number,
+    channel: number = 0,
+  ): void {
+    this.sendMidiMessage(device, {
+      channel,
+      device,
+      type: MidiMessageType.NoteOff,
+      note,
+      value: velocity,
+    })
+  }
+
+  /**
+   * Send a Note On followed by a Note Off after the specified duration.
+   * @param device The MIDI output device to send messages to.
+   * @param note The MIDI note number (0-127).
+   * @param velocity The velocity for both Note On and Note Off (0-127).
+   * @param duration Duration in milliseconds before sending the Note Off.
+   * @param channel MIDI channel to use (0-15). Defaults to 0.
+   * @param targetTime Optional target time (DOMHighResTimeStamp) to schedule the Note On.
+   */
+  public sendMidiNoteOnOff(
+    device: MIDIOutput,
+    note: number,
+    velocity: number,
+    duration: number,
+    channel: number = 0,
+    targetTime?: number,
+  ): void {
+    const sendTime = targetTime ?? performance.now()
+    this.sendMidiMessage(
+      device,
+      {
+        channel,
+        device,
+        type: MidiMessageType.NoteOn,
+        note,
+        value: velocity,
+      },
+      sendTime,
+    )
+    this.sendMidiMessage(
+      device,
+      {
         device,
         channel,
         type: MidiMessageType.NoteOff,
         note,
         value: velocity,
-      })
-    }, duration)
-  }
-
-  /**
-   * Sends a timestamped MIDI note to the given output, for precise timing.
-   * @param output The MIDI output to send the note to.
-   * @param note The MIDI note number.
-   * @param velocity The velocity of the note.
-   * @param duration The duration to hold the note before sending a Note Off message.
-   * @param targetTime The target time in milliseconds to send the note.
-   */
-  public sendMidiNoteAtMS(
-    output: MIDIOutput,
-    channel: number,
-    note: number,
-    velocity: number,
-    duration: number,
-    targetTime: number,
-  ): void {
-    output.send([MidiMessageType.NoteOn | (channel & 0x0f), note, velocity], targetTime)
-    output.send([MidiMessageType.NoteOff | (channel & 0x0f), note, velocity], targetTime + duration)
+      },
+      sendTime + duration,
+    )
   }
 }
