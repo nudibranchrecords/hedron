@@ -1,6 +1,7 @@
-import { useCallback, useState } from 'react'
+import { useCallback, useState, useMemo } from 'react'
 import { HedronEngine, Input } from '@hedron-gl/engine'
-import { Button, ControlGrid, NodeContainer } from '@hedron-gl/ui-core'
+import { MIDIEvent, MidiManager } from '@hedron-gl/midi-manager'
+import { Button, ControlGrid, NodeContainer, useEngineStore } from '@hedron-gl/ui-core'
 import { MidiInput } from './MidiInput'
 
 interface IProps {
@@ -14,13 +15,13 @@ const useMidiLearn = (input: Input, engine: HedronEngine) => {
 
   // TODO: May not need this "as" if we have HedronEngineWithPlugin<MidiInput>
   const plugin = engine.plugins['midi-input'] as MidiInput
-  const midiManager = plugin.midiManager
+  const midiManager: MidiManager = plugin.midiManager
 
   const runMidiLearn = useCallback(async () => {
     setIsLearning(true)
     midiManager
       .midiLearn()
-      .then((event) => {
+      .then((event: MIDIEvent | undefined) => {
         if (!event) {
           setIsLearning(false)
           return
@@ -68,13 +69,29 @@ const useMidiLearn = (input: Input, engine: HedronEngine) => {
  */
 export const MidiInputPanel = ({ input, engine }: IProps) => {
   const { isLearning, runMidiLearn, cancelMidiLearn } = useMidiLearn(input, engine)
+  const nodes = useEngineStore((s) => s.nodes)
+  const nodeValues = useEngineStore((s) => s.nodeValues)
+
+  const overrideNodeId = useMemo(
+    () => input.optionNodeIds.find((id) => nodes[id]?.key === 'override'),
+    [input.optionNodeIds, nodes],
+  )
+
+  const overrideEnabled = overrideNodeId ? Boolean(nodeValues[overrideNodeId]) : false
 
   return (
     <div>
       <ControlGrid className="mb-xl">
-        {input.optionNodeIds.map((id) => (
-          <NodeContainer key={id} nodeId={id} />
-        ))}
+        {input.optionNodeIds
+          .filter((id) => {
+            const node = nodes[id]
+            if (!node) return false
+            if (node.key === 'overrideValue') return overrideEnabled
+            return true
+          })
+          .map((id) => (
+            <NodeContainer key={id} nodeId={id} />
+          ))}
       </ControlGrid>
 
       {isLearning ? (

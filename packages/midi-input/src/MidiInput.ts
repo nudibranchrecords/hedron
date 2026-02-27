@@ -14,7 +14,6 @@ import { MIDIEvent, MidiManager, MidiMessageType } from '@hedron-gl/midi-manager
 import { NodeParamEnum } from 'node_modules/@hedron-gl/engine/dist'
 
 const noteLetters = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B']
-
 const midiNotes: string[] = new Array(128)
 
 for (let i = 0; i < 128; i++) {
@@ -70,9 +69,14 @@ export class MidiInput implements IPlugin {
       ],
     },
     {
+      key: 'override',
+      title: 'Use Override',
+      valueType: 'boolean',
+      defaultValue: false,
+    },
+    {
       key: 'overrideValue',
       title: 'Override Value',
-      description: 'Override the incoming MIDI value with this value (0-127). Set to a negative value to use the actual MIDI value.',
       valueType: 'number',
       defaultValue: -1,
       sliderMin: -1,
@@ -82,6 +86,17 @@ export class MidiInput implements IPlugin {
 
   private handleShot: ShotHandler = ({ input, engine, midiEvent }) => {
     engine.fireShot(input.targetNodeId, { _midiEvent: midiEvent })
+  }
+
+  private getValue(
+    optionNodes: ConfigToOptionsType<typeof MidiInput.prototype.optionNodesConfig>,
+    midiEvent: MIDIEventWithValue,
+  ) {
+    const value =
+      !optionNodes.override || optionNodes.overrideValue < 0
+        ? midiEvent.value
+        : optionNodes.overrideValue
+    return value
   }
 
   private handleEnum: ValueHander<NodeParamEnum> = ({
@@ -96,7 +111,7 @@ export class MidiInput implements IPlugin {
       case MidiMessageType.NoteOff:
         return getNextEnumValue(input.targetNodeId)(storeState)
       default: {
-        const value = optionNodes.overrideValue < 0 ? midiEvent.value : optionNodes.overrideValue
+        const value = this.getValue(optionNodes, midiEvent)
         return targetNode.options[Math.floor((value / 127) * (targetNode.options.length - 1))].value
       }
     }
@@ -108,7 +123,7 @@ export class MidiInput implements IPlugin {
       case MidiMessageType.NoteOff:
         return !targetNodeValue
       default: {
-        const value = optionNodes.overrideValue < 0 ? midiEvent.value : optionNodes.overrideValue
+        const value = this.getValue(optionNodes, midiEvent)
         return value > 0
       }
     }
@@ -118,7 +133,7 @@ export class MidiInput implements IPlugin {
     const sliderMin = (storeState.nodeValues[`${input.targetNodeId}-sliderMin`] as number) ?? 0
     const sliderMax = (storeState.nodeValues[`${input.targetNodeId}-sliderMax`] as number) ?? 1
 
-    const value = optionNodes.overrideValue < 0 ? midiEvent.value : optionNodes.overrideValue
+    const value = this.getValue(optionNodes, midiEvent)
     return (value / 127) * (sliderMax - sliderMin) + sliderMin
   }
 
