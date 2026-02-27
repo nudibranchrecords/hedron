@@ -46,6 +46,12 @@ export type MIDIEvent = {
   value?: number
 }
 
+type SmoothingEntry = {
+  target: number
+  current: number
+  callback: (value: number) => void
+}
+
 /**
  * A class that handles MIDI input devices and messages.
  */
@@ -53,6 +59,14 @@ export class MidiManager {
   public readonly name: string = 'MIDI'
   public readonly description: string = 'Handles MIDI input devices and messages.'
 
+  /**
+   * Smoothing factor for MIDI values (0 = no smoothing, closer to 1 = more smoothing)
+   */
+  public SMOOTHING = 0.9
+  /**
+   * Threshold for stopping smoothing when close enough to target
+   */
+  private readonly SMOOTHING_THRESHOLD = 0.001
   /**
    * The list of MIDI input devices connected to the system.
    */
@@ -82,12 +96,17 @@ export class MidiManager {
    * A callback that is called when a MIDI message is received.
    */
   public onMidiMessage: Signal<MIDIEvent> = new Signal<MIDIEvent>()
+  /**
+   * Map of smoothed values being tracked
+   */
+  private smoothedValues: Map<string, SmoothingEntry> = new Map()
 
   /**
    * Create a new MidiManager and begin searching for MIDI devices.
    */
   constructor() {
     this.findMidiDevices()
+    this.startUpdateLoop()
   }
 
   /**
@@ -161,7 +180,7 @@ export class MidiManager {
     }
 
     try {
-      this.midiAccess = await navigator.requestMIDIAccess()
+      this.midiAccess = await navigator.requestMIDIAccess({ sysex: true })
       this.midiAccess.addEventListener('statechange', this.updateDevices)
       this.updateDevices()
     } catch (error) {
@@ -233,6 +252,73 @@ export class MidiManager {
     }
 
     return messageType
+  }
+
+  /**
+   * Sets a value to be smoothed over time
+   * @param key Unique identifier for this smoothed value
+   * @param targetValue The target value to smooth towards
+   * @param callback Function to call with the smoothed value
+   */
+  public setSmoothedValue(
+    key: string,
+    targetValue: number,
+    callback: (value: number) => void,
+  ): void {
+    const existing = this.smoothedValues.get(key)
+
+    if (existing) {
+      // Update target but keep current smoothed value
+      existing.target = targetValue
+      existing.callback = callback
+    } else {
+      // New smoothed value - start at target (first value is instant)
+      this.smoothedValues.set(key, {
+        target: targetValue,
+        current: targetValue,
+        callback,
+      })
+      // Call immediately with the initial value
+      callback(targetValue)
+    }
+  }
+
+  /**
+   * Starts the update loop for smoothing values
+   */
+  private startUpdateLoop(): void {
+    const update = () => {
+      this.updateSmoothedValues()
+      requestAnimationFrame(update)
+    }
+    requestAnimationFrame(update)
+  }
+
+  /**
+   * Updates all smoothed values, lerping towards their targets
+   */
+  private updateSmoothedValues(): void {
+    const toRemove: string[] = []
+
+    this.smoothedValues.forEach((entry, key) => {
+      const { target, current, callback } = entry
+      const delta = target - current
+
+      // Check if we're close enough to stop smoothing
+      if (Math.abs(delta) < this.SMOOTHING_THRESHOLD) {
+        // Set final value and mark for removal
+        callback(target)
+        toRemove.push(key)
+      } else {
+        // Lerp towards target
+        const newValue = current * this.SMOOTHING + target * (1 - this.SMOOTHING)
+        entry.current = newValue
+        callback(newValue)
+      }
+    })
+
+    // Remove entries that have reached their target
+    toRemove.forEach((key) => this.smoothedValues.delete(key))
   }
 
   /**

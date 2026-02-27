@@ -45,6 +45,16 @@ export class MidiInput implements IPlugin {
   public readonly inputType = 'midi'
   public readonly description = 'Handles MIDI input devices and messages.'
   public readonly midiManager = new MidiManager()
+  public readonly globalOptionNodesConfig = [
+    {
+      key: 'smoothing',
+      title: 'Smoothing',
+      valueType: 'number',
+      defaultValue: 0.9,
+      sliderMin: 0,
+      sliderMax: 0.99,
+    },
+  ] as const satisfies InputOptionNodesConfig
   public readonly optionNodesConfig = [
     {
       key: 'channel',
@@ -133,8 +143,16 @@ export class MidiInput implements IPlugin {
     const sliderMin = (storeState.nodeValues[`${input.targetNodeId}-sliderMin`] as number) ?? 0
     const sliderMax = (storeState.nodeValues[`${input.targetNodeId}-sliderMax`] as number) ?? 1
 
-    const value = this.getValue(optionNodes, midiEvent)
-    return (value / 127) * (sliderMax - sliderMin) + sliderMin
+    const targetValue =
+      (this.getValue(optionNodes, midiEvent) / 127) * (sliderMax - sliderMin) + sliderMin
+
+    // Use MidiManager's smoothing system
+    this.midiManager.setSmoothedValue(input.id, targetValue, (smoothedValue: number) => {
+      storeState.updateNodeValue(input.targetNodeId, smoothedValue)
+    })
+
+    // Return null to prevent immediate update in the event handler
+    return null
   }
 
   private handleUnsupported: ValueHander = ({ input, targetNode, midiEvent }) => {
@@ -147,6 +165,22 @@ export class MidiInput implements IPlugin {
 
   constructor(engine: HedronEngine) {
     const store = engine.getStore()
+
+    // Update smoothing value from global options
+    const updateSmoothing = () => {
+      const storeState = store.getState()
+      const smoothingNodeId = `${this.id}-global-smoothing`
+      const smoothingValue = storeState.nodeValues[smoothingNodeId] as number | undefined
+      this.midiManager.SMOOTHING = smoothingValue ?? 0.9
+    }
+
+    // Initial update
+    updateSmoothing()
+
+    // Subscribe to state changes to update smoothing
+    store.subscribe(() => {
+      updateSmoothing()
+    })
 
     this.midiManager.onMidiMessage.add((event) => {
       const storeState = store.getState()
@@ -186,11 +220,11 @@ export class MidiInput implements IPlugin {
               targetNodeValue,
             })
 
-            if (value === null) {
-              return
+            // For numbers, handleNumber returns null and uses smoothing system
+            // For other types, update directly
+            if (value !== null) {
+              storeState.updateNodeValue(input.targetNodeId, value)
             }
-
-            storeState.updateNodeValue(input.targetNodeId, value)
           }
         },
       )
