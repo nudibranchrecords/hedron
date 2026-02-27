@@ -32,26 +32,27 @@ export const SelectedNode = () => {
   const setSelectedInputId = useAppStore((state) => state.setSelectedInput)
 
   const currentInput = useEngineStore((state) =>
-    selectedInputId ? state.inputs[selectedInputId] : null,
+    selectedInputId ? state.nodes[selectedInputId] : null,
   )
 
   const inputs = useInputsWithNode(selectedNode.id)
 
   // TODO: Fix types here, maybe we need a "@hedron-gl/plugins" package to handle this sort of thing?
   // @ts-expect-error -- needs work
-  const PluginView = currentInput && pluginViews.inputPanel[currentInput?.type]
+  const PluginView = currentInput && pluginViews.inputPanel[currentInput?.inputType]
 
   const availableInputs = useMemo(
     () =>
       Object.values(engine.plugins).map((plugin) => ({
         label: plugin.name,
         onClick: () => {
-          const numAlready = inputs.filter((input) => input.type === plugin.inputType).length
+          const numAlready = inputs.filter((input) => input.inputType === plugin.inputType).length
 
           const input = {
-            type: plugin.inputType,
+            inputType: plugin.inputType,
             targetNodeId: selectedNode.id,
             title: `${plugin.inputType} ${numAlready + 1}`,
+            parentId: selectedNode.id,
           }
 
           const id = addInput(input, plugin.optionNodesConfig)
@@ -63,7 +64,7 @@ export const SelectedNode = () => {
 
   const onDeleteCurrentInput = useCallback(() => {
     if (currentInput) {
-      engineStore.getState().deleteInput(currentInput.id)
+      engineStore.getState().deleteNode(currentInput.id)
 
       if (inputs.length > 1) {
         // Select remaining input after deletion

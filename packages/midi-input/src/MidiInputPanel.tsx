@@ -32,7 +32,7 @@ const useMidiLearn = (input: Input, engine: HedronEngine) => {
         // Update each option node with the learned values
         input.optionNodeIds.forEach((nodeId) => {
           const node = state.nodes[nodeId]
-          if (!node) return
+          if (!node || node.nodeType !== 'param') return
 
           switch (node.key) {
             case 'channel':

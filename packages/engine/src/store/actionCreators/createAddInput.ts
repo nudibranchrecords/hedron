@@ -27,6 +27,7 @@ export const createAddInput: SetterCreator<'addInput'> =
         optionNodeIds,
         childrenIds: optionNodeIds,
         id,
+        nodeType: 'input',
       }
     })
 

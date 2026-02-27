@@ -17,9 +17,7 @@ export type SketchModule = any
 
 export interface NodeBase {
   id: string
-  key: string
   title: string
-  groupIndex: number
   parentId: string | null
   childrenIds: string[]
   optionNodeIds: string[]
@@ -27,6 +25,8 @@ export interface NodeBase {
 
 export interface ParamBase extends NodeBase {
   nodeType: 'param'
+  key: string
+  groupIndex: number
 }
 
 export interface ParamVectorBase extends ParamBase {
@@ -84,6 +84,8 @@ export type ParamVectorValueType = ParamVector['valueType']
 
 export type Shot = NodeBase & {
   nodeType: 'shot'
+  key: string
+  groupIndex: number
 }
 
 export type Node = Param | Shot | Input
@@ -266,7 +268,7 @@ interface Actions {
   loadProject: (project: EngineData) => void
   reset: () => void
   addInput: (
-    inputConfig: Omit<Input, 'id' | 'optionNodeIds'>,
+    inputConfig: Omit<Input, 'id' | 'optionNodeIds' | 'childrenIds' | 'nodeType'>,
     optionsNodeConfig: NodeConfig[],
   ) => string
   deleteNode: (nodeId: string) => void

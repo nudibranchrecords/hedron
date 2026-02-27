@@ -31,7 +31,7 @@ const useGamepadLearn = (input: Input, engine: HedronEngine) => {
         // Update each option node with the learned values
         input.optionNodeIds.forEach((nodeId) => {
           const node = state.nodes[nodeId]
-          if (!node) return
+          if (!node || node.nodeType !== 'param') return
           switch (node.key) {
             case 'controllerIndex':
               state.updateNodeValue(nodeId, event.controllerIndex)
@@ -76,11 +76,11 @@ export const GamepadInputPanel = ({ input, engine }: IProps) => {
   const nodeValues = useEngineStore((state) => state.nodeValues)
 
   const inputTypeNode = useMemo(
-    () => input.optionNodeIds.find((id) => nodes[id]?.key === 'inputType'),
+    () => input.optionNodeIds.find((id) => 'key' in nodes[id] && nodes[id].key === 'inputType'),
     [input.optionNodeIds, nodes],
   )
   const axisModeNode = useMemo(
-    () => input.optionNodeIds.find((id) => nodes[id]?.key === 'axisMode'),
+    () => input.optionNodeIds.find((id) => 'key' in nodes[id] && nodes[id].key === 'axisMode'),
     [input.optionNodeIds, nodes],
   )
 
@@ -94,6 +94,11 @@ export const GamepadInputPanel = ({ input, engine }: IProps) => {
     () =>
       input.optionNodeIds.filter((id) => {
         const node = nodes[id]
+
+        if (!('key' in node)) {
+          return false
+        }
+
         // Hide triggerOn for axis inputs
         if (node?.key === 'triggerOn' && inputTypeValue === GamepadInputType.Axis) {
           return false

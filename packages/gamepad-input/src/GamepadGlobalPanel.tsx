@@ -164,12 +164,14 @@ const findMatchingInputsForEvent = (
       if (input.nodeType !== 'input' || input.inputType !== 'gamepad') return false
 
       const controllerIndexNode = input.optionNodeIds.find(
-        (nodeId: string) => nodes[nodeId]?.key === 'controllerIndex',
+        (nodeId: string) => 'key' in nodes[nodeId] && nodes[nodeId].key === 'controllerIndex',
       )
       const inputTypeNode = input.optionNodeIds.find(
-        (nodeId: string) => nodes[nodeId]?.key === 'inputType',
+        (nodeId: string) => 'key' in nodes[nodeId] && nodes[nodeId].key === 'inputType',
       )
-      const indexNode = input.optionNodeIds.find((nodeId: string) => nodes[nodeId]?.key === 'index')
+      const indexNode = input.optionNodeIds.find(
+        (nodeId: string) => 'key' in nodes[nodeId] && nodes[nodeId].key === 'index',
+      )
 
       if (!controllerIndexNode || !inputTypeNode || !indexNode) return false
 
@@ -230,7 +232,7 @@ const getInputsForController = (
     if (node.nodeType !== 'input' || node.inputType !== 'gamepad') return false
 
     const controllerIndexNode = node.optionNodeIds.find(
-      (nodeId: string) => nodes[nodeId]?.key === 'controllerIndex',
+      (nodeId: string) => 'key' in nodes[nodeId] && nodes[nodeId].key === 'controllerIndex',
     )
     if (!controllerIndexNode) return false
 
@@ -433,9 +435,11 @@ const ControllerItem: React.FC<ControllerItemProps> = ({
 
     const matchingInput = controllerInputs.find((input) => {
       const inputTypeNode = input.optionNodeIds.find(
-        (nodeId: string) => nodes[nodeId]?.key === 'inputType',
+        (nodeId: string) => 'key' in nodes[nodeId] && nodes[nodeId].key === 'inputType',
       )
-      const indexNode = input.optionNodeIds.find((nodeId: string) => nodes[nodeId]?.key === 'index')
+      const indexNode = input.optionNodeIds.find(
+        (nodeId: string) => 'key' in nodes[nodeId] && nodes[nodeId].key === 'index',
+      )
 
       if (!inputTypeNode || !indexNode) return false
 
@@ -519,6 +523,11 @@ const ControllerItem: React.FC<ControllerItemProps> = ({
                     let type, index: number | string | undefined
                     input.optionNodeIds.forEach((nodeId) => {
                       const node = nodes[nodeId]
+
+                      if (!('key' in node)) {
+                        return false
+                      }
+
                       if (node.key === 'inputType') {
                         type = nodeValues[nodeId] as number
                       } else if (node.key === 'index') {

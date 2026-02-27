@@ -78,6 +78,13 @@ export const getOptionNodesFromIds = <T extends readonly any[]>(
   const options = {} as OptionsType
   ids.forEach((id) => {
     const node = state.nodes[id]
+
+    if (node.nodeType === 'input') {
+      console.warn(
+        `Node ${node.title}: ${node.id} is an input node. Input nodes cannot be used as option nodes for plugins.`,
+      )
+      return
+    }
     ;(options as Record<string, unknown>)[node.key] = state.nodeValues[id]
   })
   return options
