@@ -229,7 +229,11 @@ export class MidiManager {
   }
 
   public sendMidiMessageRaw(device: MIDIOutput, data: number[], targetTime?: number): void {
-    device.send(data, targetTime ?? performance.now())
+    if (targetTime === undefined) {
+      device.send(data)
+    } else {
+      device.send(data, targetTime)
+    }
   }
 
   public sendMidiMessage(device: MIDIOutput, event: MIDIEvent): void {
@@ -238,7 +242,19 @@ export class MidiManager {
     const data1 = event.note
     const data2 = event.value ?? 0
 
-    const message = new Uint8Array([status, data1, data2])
+    let message: Uint8Array
+
+    // Some MIDI message types (e.g., Program Change, Channel Pressure) only use
+    // one data byte and should therefore be sent as 2-byte messages.
+    switch (event.type & 0xf0) {
+      case MidiMessageType.ProgramChange:
+      case MidiMessageType.ChannelPressure:
+        message = new Uint8Array([status, data1])
+        break
+      default:
+        message = new Uint8Array([status, data1, data2])
+        break
+    }
     device.send(message)
   }
 

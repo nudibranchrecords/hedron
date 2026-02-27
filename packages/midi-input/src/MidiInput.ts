@@ -72,7 +72,7 @@ export class MidiInput implements IPlugin {
     {
       key: 'overrideValue',
       title: 'Override Value',
-      // description: 'Override the incoming MIDI value with this value (0-127). Set to a negative value to use the actual MIDI value.',
+      description: 'Override the incoming MIDI value with this value (0-127). Set to a negative value to use the actual MIDI value.',
       valueType: 'number',
       defaultValue: -1,
       sliderMin: -1,
