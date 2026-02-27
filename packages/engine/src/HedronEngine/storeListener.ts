@@ -1,3 +1,4 @@
+import { shallow } from 'zustand/shallow'
 import { EngineStore } from '@store/engineStore'
 
 interface StoreListenerConfig {
@@ -5,6 +6,7 @@ interface StoreListenerConfig {
   onSketchAdded: (instanceId: string, moduleId: string) => void
   onSketchRemoved: (instanceId: string) => void
   onNodeRemoved: (nodeId: string) => void
+  onSketchesReordered: (instanceIds: string[]) => void
 }
 
 export const listenToStore = ({
@@ -12,21 +14,29 @@ export const listenToStore = ({
   onSketchAdded,
   onSketchRemoved,
   onNodeRemoved,
+  onSketchesReordered,
 }: StoreListenerConfig) => {
   const unsubscribeSketches = store.subscribe(
     (state) => state.sketches,
     (sketches, previousSketches) => {
-      Object.keys(previousSketches).forEach((prevId) => {
+      const prevKeys = Object.keys(previousSketches)
+      const newKeys = Object.keys(sketches)
+
+      prevKeys.forEach((prevId) => {
         if (!sketches[prevId]) {
           onSketchRemoved(prevId)
         }
       })
 
-      Object.keys(sketches).forEach((id) => {
+      newKeys.forEach((id) => {
         if (!previousSketches[id]) {
           onSketchAdded(id, sketches[id].moduleId)
         }
       })
+
+      if (!shallow(prevKeys, newKeys)) {
+        onSketchesReordered(newKeys)
+      }
     },
   )
 

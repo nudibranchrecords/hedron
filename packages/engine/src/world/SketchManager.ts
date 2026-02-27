@@ -110,6 +110,20 @@ export class SketchManager {
     this.sketchInstances.delete(instanceId)
   }
 
+  public reorderSketchesInScene = (sketchInstanceIds: string[]): void => {
+    const oldMap = this.sketchInstances
+    this.sketchInstances = new Map()
+
+    sketchInstanceIds.forEach((id) => {
+      const sketchInstance = oldMap.get(id)
+      if (sketchInstance) {
+        this.sketchInstances.set(id, sketchInstance)
+      } else {
+        console.warn(`Sketch instance with id ${id} not found during reorder.`)
+      }
+    })
+  }
+
   public getSketchInstances = () => {
     return this.sketchInstances
   }
