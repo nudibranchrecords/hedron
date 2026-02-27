@@ -1,5 +1,5 @@
 import { addNode } from '@store/shared/addNode'
-import { deleteNode } from '@store/shared/deleteCascade'
+import { deleteNode } from '@store/shared/deleteNode'
 import { Node, SetterCreator } from '@store/types'
 import { createUniqueId } from '@utils/createUniqueId'
 
@@ -29,7 +29,8 @@ export const createReconcileSketchNodes: SetterCreator<'reconcileSketchNodes'> =
         // If no existing node, create a new one.
         if (!nodeId) {
           nodeId = createUniqueId()
-          addNode(state, nodeId, nodeConfig)
+          // TODO: We're handing sketchId as a parentId but sketches aren't yet nodes (this might break things...)
+          addNode(state, nodeId, sketchId, nodeConfig)
         } else if (state.nodes[nodeId]) {
           // Update the existing node with any changes from the config.
           state.nodes[nodeId] = {

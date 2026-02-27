@@ -2,14 +2,14 @@ import {
   IPlugin,
   handleEachInput,
   EngineStore,
-  NodeParamEnum,
-  NodeParamBoolean,
-  NodeParamNumber,
-  NodeParamString,
-  NodeParamRGB,
-  NodeParamVector3,
+  ParamEnum,
+  ParamBoolean,
+  ParamNumber,
+  ParamString,
+  ParamRGB,
+  ParamVector2,
+  ParamVector3,
   HedronEngine,
-  NodeParamVector2,
 } from '@hedron-gl/engine'
 import { GamepadManager } from './GamepadManager'
 import { GamepadEvent, GamepadInputType, AxisMode, ValueHandler, ShotHandler } from './GamepadTypes'
@@ -60,13 +60,13 @@ export class GamepadInput implements IPlugin {
    */
   public handlers: {
     handleShot: ShotHandler
-    enum: ValueHandler<NodeParamEnum>
-    boolean: ValueHandler<NodeParamBoolean>
-    number: ValueHandler<NodeParamNumber>
-    string: ValueHandler<NodeParamString>
-    rgb: ValueHandler<NodeParamRGB>
-    vector2: ValueHandler<NodeParamVector2>
-    vector3: ValueHandler<NodeParamVector3>
+    enum: ValueHandler<ParamEnum>
+    boolean: ValueHandler<ParamBoolean>
+    number: ValueHandler<ParamNumber>
+    string: ValueHandler<ParamString>
+    rgb: ValueHandler<ParamRGB>
+    vector2: ValueHandler<ParamVector2>
+    vector3: ValueHandler<ParamVector3>
   }
 
   constructor(engine: HedronEngine) {

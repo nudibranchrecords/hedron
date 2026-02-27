@@ -1,27 +1,14 @@
 import { Result } from './types'
+import { ensureConfig } from '@store/shared/ensureConfig'
 import {
   SketchConfigRaw,
   SketchConfigImported,
   SketchModule,
   SketchModuleItem,
-  SketchConfigParamImported,
   SketchConfigParam,
   SketchConfigShot,
 } from '@store/types'
 import { createUniqueId } from '@utils/createUniqueId'
-
-const ensureParamImported = (
-  param: SketchConfigParam,
-): Omit<SketchConfigParamImported, 'groupIndex'> => {
-  const valueType = param.valueType ?? 'number'
-
-  return {
-    ...param,
-    valueType,
-    title: param.title ?? param.key,
-    nodeType: 'param',
-  }
-}
 
 interface ProcessConfigOptions {
   fallBackTitle: string
@@ -48,11 +35,7 @@ export const processConfig = (
           groupTitle: param.groupTitle ?? `Group ${groupIndex}`,
         }
 
-        flattenedNodes.push(
-          ...param.params.map(
-            (p) => ({ ...ensureParamImported(p), groupIndex }) as SketchConfigParamImported,
-          ),
-        )
+        flattenedNodes.push(...param.params.map((p) => ensureConfig(p, groupIndex)))
       } else {
         ungroupedParams.push(param)
       }
@@ -66,11 +49,7 @@ export const processConfig = (
         groupTitle: groupIndex === 0 ? 'Params' : `Ungrouped Params`,
       }
 
-      flattenedNodes.push(
-        ...ungroupedParams.map(
-          (p) => ({ ...ensureParamImported(p), groupIndex }) as SketchConfigParamImported,
-        ),
-      )
+      flattenedNodes.push(...ungroupedParams.map((p) => ensureConfig(p, groupIndex)))
     }
   }
 
@@ -85,12 +64,7 @@ export const processConfig = (
         }
 
         flattenedNodes.push(
-          ...shot.shots.map((s) => ({
-            ...s,
-            groupIndex,
-            title: s.title ?? s.key,
-            nodeType: 'shot' as const,
-          })),
+          ...shot.shots.map((s) => ensureConfig({ ...s, nodeType: 'shot' }, groupIndex)),
         )
       } else {
         ungroupedShots.push(shot)
@@ -106,12 +80,7 @@ export const processConfig = (
       }
 
       flattenedNodes.push(
-        ...ungroupedShots.map((s) => ({
-          ...s,
-          groupIndex,
-          title: s.title ?? s.key,
-          nodeType: 'shot' as const,
-        })),
+        ...ungroupedShots.map((s) => ensureConfig({ ...s, nodeType: 'shot' }, groupIndex)),
       )
     }
   }

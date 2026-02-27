@@ -2,8 +2,8 @@ import {
   EngineState,
   EngineStateWithActions,
   Input,
-  InputOptionNodesConfig,
   Node,
+  NodeConfig,
   NodeValue,
 } from '@store/types'
 
@@ -34,12 +34,12 @@ export interface IPlugin {
   /**
    * Config to generate option nodes. Follows same structure as sketch params config.
    */
-  optionNodesConfig: InputOptionNodesConfig
+  optionNodesConfig: NodeConfig[]
 
   /**
    * Config to generate global option nodes. Follows same structure as sketch params config.
    */
-  globalOptionNodesConfig?: InputOptionNodesConfig
+  globalOptionNodesConfig?: NodeConfig[]
 
   /**
    * Optional callback called after engine initialization (project load, sketches folder selection)
@@ -100,21 +100,28 @@ export const handleEachInput = <T extends readonly any[]>(
   }: {
     input: Input
     optionNodes: ConfigToOptionsType<T>
-    targetNode: Node
+    targetNode: Exclude<Node, Input>
     targetNodeValue: NodeValue
   }) => void,
 ) => {
-  const inputs = Object.values(storeState.inputs)
+  const allNodes = Object.values(storeState.nodes)
 
   // TODO: Not very performant, we might want to cache inputs somehow
-  inputs.forEach((input) => {
-    if (input.type !== inputType) return
+  allNodes.forEach((input) => {
+    if (input.nodeType !== 'input' || input.inputType !== inputType) return
 
     const targetNode = storeState.nodes[input.targetNodeId]
 
     if (!targetNode) {
       // Node may not exist if deleting a sketch/param didn't clean up properly
       // TODO: special log level for checking this
+      return
+    }
+
+    if (targetNode.nodeType === 'input') {
+      console.warn(
+        `Input ${input.title}: ${input.id} is trying to target another input ${targetNode.title}: ${targetNode.id}. This is not supported.`,
+      )
       return
     }
 

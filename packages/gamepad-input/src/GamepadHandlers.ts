@@ -1,12 +1,12 @@
 import {
   getNextEnumValue,
-  NodeParamEnum,
-  NodeParamBoolean,
-  NodeParamNumber,
-  NodeParamString,
-  NodeParamRGB,
-  NodeParamVector3,
-  NodeParamVector2,
+  ParamEnum,
+  ParamBoolean,
+  ParamNumber,
+  ParamString,
+  ParamRGB,
+  ParamVector3,
+  ParamVector2,
 } from '@hedron-gl/engine'
 import {
   GamepadInputType,
@@ -112,7 +112,7 @@ export function createGamepadHandlers(dependencies: {
   /**
    * Handles enum inputs from gamepad events.
    */
-  const handleEnum: ValueHandler<NodeParamEnum> = ({
+  const handleEnum: ValueHandler<ParamEnum> = ({
     gamepadEvent,
     input,
     storeState,
@@ -136,7 +136,7 @@ export function createGamepadHandlers(dependencies: {
   /**
    * Handles boolean inputs from gamepad events.
    */
-  const handleBoolean: ValueHandler<NodeParamBoolean> = ({
+  const handleBoolean: ValueHandler<ParamBoolean> = ({
     gamepadEvent,
     targetNodeValue,
     optionNodes,
@@ -168,7 +168,7 @@ export function createGamepadHandlers(dependencies: {
   /**
    * Handles number inputs from gamepad events.
    */
-  const handleNumber: ValueHandler<NodeParamNumber> = ({
+  const handleNumber: ValueHandler<ParamNumber> = ({
     gamepadEvent,
     storeState,
     input,
@@ -221,7 +221,7 @@ export function createGamepadHandlers(dependencies: {
   /**
    * Handles unsupported string value types from gamepad events, logging a warning.
    */
-  const handleUnsupportedString: ValueHandler<NodeParamString> = ({
+  const handleUnsupportedString: ValueHandler<ParamString> = ({
     input,
     targetNode,
     gamepadEvent,
@@ -236,7 +236,18 @@ export function createGamepadHandlers(dependencies: {
   /**
    * Handles unsupported RGB value types from gamepad events, logging a warning.
    */
-  const handleUnsupportedRGB: ValueHandler<NodeParamRGB> = ({
+  const handleUnsupportedRGB: ValueHandler<ParamRGB> = ({ input, targetNode, gamepadEvent }) => {
+    console.warn(
+      `Gamepad Input: Unsupported value type for node ${input.targetNodeId}. Value: ${gamepadEvent.value}, Type: ${targetNode.valueType}`,
+    )
+
+    return null
+  }
+
+  /**
+   * Handles unsupported Vector2 value types from gamepad events, logging a warning.
+   */
+  const handleUnsupportedVector2: ValueHandler<ParamVector2> = ({
     input,
     targetNode,
     gamepadEvent,
@@ -251,22 +262,7 @@ export function createGamepadHandlers(dependencies: {
   /**
    * Handles unsupported Vector3 value types from gamepad events, logging a warning.
    */
-  const handleUnsupportedVector2: ValueHandler<NodeParamVector2> = ({
-    input,
-    targetNode,
-    gamepadEvent,
-  }) => {
-    console.warn(
-      `Gamepad Input: Unsupported value type for node ${input.targetNodeId}. Value: ${gamepadEvent.value}, Type: ${targetNode.valueType}`,
-    )
-
-    return null
-  }
-
-  /**
-   * Handles unsupported Vector3 value types from gamepad events, logging a warning.
-   */
-  const handleUnsupportedVector3: ValueHandler<NodeParamVector3> = ({
+  const handleUnsupportedVector3: ValueHandler<ParamVector3> = ({
     input,
     targetNode,
     gamepadEvent,

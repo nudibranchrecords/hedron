@@ -19,6 +19,10 @@ import {
 import { useEngineStore } from '@hooks/storeHooks'
 
 const getInputElement = (node: NodeType) => {
+  if (node.nodeType === 'input') {
+    return "NodeContainer: Tried to render an input node, this isn't supported. Node ID: " + node.id
+  }
+
   if (node.nodeType === 'shot') {
     return <Shot id={node.id} />
   }

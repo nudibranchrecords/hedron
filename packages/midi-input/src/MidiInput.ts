@@ -1,7 +1,6 @@
 import {
   getNextEnumValue,
   HedronEngine,
-  InputOptionNodesConfig,
   IPlugin,
   NodeValue,
   handleEachInput,
@@ -9,9 +8,10 @@ import {
   Input,
   ConfigToOptionsType,
   Param,
+  ParamEnum,
+  NodeConfig,
 } from '@hedron-gl/engine'
 import { MIDIEvent, MidiManager, MidiMessageType } from '@hedron-gl/midi-manager'
-import { NodeParamEnum } from 'node_modules/@hedron-gl/engine/dist'
 
 const noteLetters = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B']
 
@@ -69,18 +69,13 @@ export class MidiInput implements IPlugin {
         { value: MidiMessageType.ControlChange, label: 'Control Change' },
       ],
     },
-  ] as const satisfies InputOptionNodesConfig
+  ] as const satisfies NodeConfig[]
 
   private handleShot: ShotHandler = ({ input, engine, midiEvent }) => {
     engine.fireShot(input.targetNodeId, { _midiEvent: midiEvent })
   }
 
-  private handleEnum: ValueHander<NodeParamEnum> = ({
-    midiEvent,
-    input,
-    storeState,
-    targetNode,
-  }) => {
+  private handleEnum: ValueHander<ParamEnum> = ({ midiEvent, input, storeState, targetNode }) => {
     switch (midiEvent.type) {
       case MidiMessageType.NoteOn:
       case MidiMessageType.NoteOff:

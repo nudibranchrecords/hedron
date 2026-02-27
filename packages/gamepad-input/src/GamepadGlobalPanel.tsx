@@ -63,7 +63,6 @@ const useConnectedGamepads = (gamepadPlugin: GamepadInput | undefined) => {
 // Custom hook to manage gamepad events (flashing and debug messages)
 const useGamepadEvents = (
   gamepadPlugin: GamepadInput | undefined,
-  inputs: Record<string, Input>,
   nodes: Record<string, Node>,
   nodeValues: Record<string, NodeValue>,
 ) => {
@@ -88,7 +87,7 @@ const useGamepadEvents = (
       )
 
       // Find matching inputs and flash them
-      const matchingInputIds = findMatchingInputsForEvent(event, inputs, nodes, nodeValues)
+      const matchingInputIds = findMatchingInputsForEvent(event, nodes, nodeValues)
       flashInputs(matchingInputIds, setFlashingInputs)
 
       // Flash controller card at reduced capacity
@@ -132,7 +131,7 @@ const useGamepadEvents = (
 
     gamepadPlugin.gamepadManager.onGamepadEvent.add(handleEvent)
     return () => gamepadPlugin.gamepadManager.onGamepadEvent.remove(handleEvent)
-  }, [gamepadPlugin, inputs, nodes, nodeValues])
+  }, [gamepadPlugin, nodes, nodeValues])
 
   return { flashingInputs, flashingControllers, lastEventPerController }
 }
@@ -157,13 +156,12 @@ const findPhysicalIndicesForLogicalController = (
 // Helper: Find inputs that match a gamepad event
 const findMatchingInputsForEvent = (
   event: GamepadEvent,
-  inputs: Record<string, Input>,
   nodes: Record<string, Node>,
   nodeValues: Record<string, NodeValue>,
 ): string[] => {
-  return Object.values(inputs)
+  return Object.values(nodes)
     .filter((input) => {
-      if (input.type !== 'gamepad') return false
+      if (input.nodeType !== 'input' || input.inputType !== 'gamepad') return false
 
       const controllerIndexNode = input.optionNodeIds.find(
         (nodeId: string) => nodes[nodeId]?.key === 'controllerIndex',
@@ -225,28 +223,26 @@ const flashInputs = (
 // Helper: Get inputs for a specific controller
 const getInputsForController = (
   controllerIndex: number,
-  inputs: Record<string, Input>,
   nodes: Record<string, Node>,
   engine: HedronEngine,
-) => {
-  return Object.values(inputs).filter((input) => {
-    if (input.type !== 'gamepad') return false
+): Input[] => {
+  return Object.values(nodes).filter((node) => {
+    if (node.nodeType !== 'input' || node.inputType !== 'gamepad') return false
 
-    const controllerIndexNode = input.optionNodeIds.find(
+    const controllerIndexNode = node.optionNodeIds.find(
       (nodeId: string) => nodes[nodeId]?.key === 'controllerIndex',
     )
     if (!controllerIndexNode) return false
 
     const controllerIndexValue = engine.getStore().getState().nodeValues[controllerIndexNode]
     return controllerIndexValue === controllerIndex
-  })
+  }) as Input[]
 }
 
 export const GamepadGlobalPanel: React.FC<GamepadGlobalPanelProps> = ({ engine }) => {
   const gamepadPlugin = engine.plugins['gamepad-input'] as GamepadInput | undefined
   const [expandedControllers, setExpandedControllers] = useState<Set<number>>(new Set())
 
-  const inputs = useEngineStore((state) => state.inputs)
   const nodes = useEngineStore((state) => state.nodes)
   const nodeValues = useEngineStore((state) => state.nodeValues)
   const sketches = useEngineStore((state) => state.sketches)
@@ -254,7 +250,6 @@ export const GamepadGlobalPanel: React.FC<GamepadGlobalPanelProps> = ({ engine }
   const { connectedGamepads, setConnectedGamepads } = useConnectedGamepads(gamepadPlugin)
   const { flashingInputs, flashingControllers, lastEventPerController } = useGamepadEvents(
     gamepadPlugin,
-    inputs,
     nodes,
     nodeValues,
   )
@@ -314,7 +309,6 @@ export const GamepadGlobalPanel: React.FC<GamepadGlobalPanelProps> = ({ engine }
           expandedControllers={expandedControllers}
           flashingInputs={flashingInputs}
           flashingControllers={flashingControllers}
-          inputs={inputs}
           nodes={nodes}
           nodeValues={nodeValues}
           sketches={sketches}
@@ -355,7 +349,6 @@ interface ControllerListProps {
   expandedControllers: Set<number>
   flashingInputs: Set<string>
   flashingControllers: Set<number>
-  inputs: Record<string, Input>
   nodes: Record<string, Node>
   nodeValues: Record<string, NodeValue>
   sketches: Record<string, { id: string; title: string; nodeIds: string[] }>
@@ -370,7 +363,6 @@ const ControllerList: React.FC<ControllerListProps> = ({
   expandedControllers,
   flashingInputs,
   flashingControllers,
-  inputs,
   nodes,
   nodeValues,
   sketches,
@@ -384,12 +376,7 @@ const ControllerList: React.FC<ControllerListProps> = ({
       {connectedGamepads.map((gamepad) => {
         const isExpanded = expandedControllers.has(gamepad.physicalIndex)
         const isFlashing = flashingControllers.has(gamepad.physicalIndex)
-        const controllerInputs = getInputsForController(
-          gamepad.assignedIndex,
-          inputs,
-          nodes,
-          engine,
-        )
+        const controllerInputs = getInputsForController(gamepad.assignedIndex, nodes, engine)
 
         return (
           <ControllerItem
