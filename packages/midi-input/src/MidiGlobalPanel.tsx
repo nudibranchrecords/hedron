@@ -155,7 +155,7 @@ export const MidiGlobalPanel: React.FC<MidiGlobalPanelProps> = ({ engine }) => {
                     className={msg.affectedNodeName ? styles.affectedNode : styles.unmappedNode}
                   >
                     {msg.affectedNodeName
-                      ? `${msg.affectedNodeName} - ${msg.sketchName}`
+                      ? `${msg.sketchName} - ${msg.affectedNodeName}`
                       : 'No Mapping'}
                   </span>
                   <span className={styles.details}>
