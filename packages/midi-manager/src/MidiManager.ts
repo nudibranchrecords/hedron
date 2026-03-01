@@ -66,10 +66,12 @@ export class MidiManager {
   /**
    * Threshold for stopping smoothing when close enough to target
    */
+
   private readonly SMOOTHING_THRESHOLD = 0.001
   /**
    * The list of MIDI input devices connected to the system.
    */
+
   public inputDevices: MIDIInput[] = []
 
   /**
