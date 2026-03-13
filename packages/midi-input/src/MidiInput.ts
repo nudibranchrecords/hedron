@@ -177,7 +177,7 @@ export class MidiInput implements IPlugin {
       const storeState = store.getState()
       const smoothingNodeId = `${this.id}-global-smoothing`
       const smoothingValue = storeState.nodeValues[smoothingNodeId] as number | undefined
-      this.midiManager.SMOOTHING = smoothingValue ?? 0.9
+      this.midiManager.smoothing = smoothingValue ?? 0.9
     }
 
     // Initial update

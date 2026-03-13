@@ -53,6 +53,11 @@ type SmoothingEntry = {
 }
 
 /**
+ * Threshold for stopping smoothing when close enough to target
+ */
+const SMOOTHING_THRESHOLD = 0.001
+
+/**
  * A class that handles MIDI input devices and messages.
  */
 export class MidiManager {
@@ -62,12 +67,8 @@ export class MidiManager {
   /**
    * Smoothing factor for MIDI values (0 = no smoothing, closer to 1 = more smoothing)
    */
-  public SMOOTHING = 0.9
-  /**
-   * Threshold for stopping smoothing when close enough to target
-   */
+  public smoothing = 0.9
 
-  private readonly SMOOTHING_THRESHOLD = 0.001
   /**
    * The list of MIDI input devices connected to the system.
    */
@@ -298,13 +299,13 @@ export class MidiManager {
       const delta = target - current
 
       // Check if we're close enough to stop smoothing
-      if (Math.abs(delta) < this.SMOOTHING_THRESHOLD) {
+      if (Math.abs(delta) < SMOOTHING_THRESHOLD) {
         // Set final value and mark for removal
         callback(target)
         toRemove.push(key)
       } else {
         // Lerp towards target
-        const newValue = current * this.SMOOTHING + target * (1 - this.SMOOTHING)
+        const newValue = current * this.smoothing + target * (1 - this.smoothing)
         entry.current = newValue
         callback(newValue)
       }
