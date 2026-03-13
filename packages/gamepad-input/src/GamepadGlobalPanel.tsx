@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react'
-import { HedronEngine, Input, Node, NodeValue } from '@hedron-gl/engine'
+import { findNodeWithKeyFromIdList, HedronEngine, Input, Node, NodeValue } from '@hedron-gl/engine'
 import {
   Panel,
   PanelHeader,
@@ -163,21 +163,20 @@ const findMatchingInputsForEvent = (
     .filter((input) => {
       if (input.nodeType !== 'input' || input.inputType !== 'gamepad') return false
 
-      const controllerIndexNode = input.optionNodeIds.find(
-        (nodeId: string) => 'key' in nodes[nodeId] && nodes[nodeId].key === 'controllerIndex',
+      const controllerIndexNode = findNodeWithKeyFromIdList(
+        nodes,
+        'controllerIndex',
+        input.optionNodeIds,
       )
-      const inputTypeNode = input.optionNodeIds.find(
-        (nodeId: string) => 'key' in nodes[nodeId] && nodes[nodeId].key === 'inputType',
-      )
-      const indexNode = input.optionNodeIds.find(
-        (nodeId: string) => 'key' in nodes[nodeId] && nodes[nodeId].key === 'index',
-      )
+
+      const inputTypeNode = findNodeWithKeyFromIdList(nodes, 'inputType', input.optionNodeIds)
+      const indexNode = findNodeWithKeyFromIdList(nodes, 'index', input.optionNodeIds)
 
       if (!controllerIndexNode || !inputTypeNode || !indexNode) return false
 
-      const controllerIndex = nodeValues[controllerIndexNode]
-      const inputType = nodeValues[inputTypeNode]
-      const index = nodeValues[indexNode]
+      const controllerIndex = nodeValues[controllerIndexNode.id]
+      const inputType = nodeValues[inputTypeNode.id]
+      const index = nodeValues[indexNode.id]
 
       return (
         controllerIndex === event.controllerIndex &&
@@ -231,12 +230,15 @@ const getInputsForController = (
   return Object.values(nodes).filter((node) => {
     if (node.nodeType !== 'input' || node.inputType !== 'gamepad') return false
 
-    const controllerIndexNode = node.optionNodeIds.find(
-      (nodeId: string) => 'key' in nodes[nodeId] && nodes[nodeId].key === 'controllerIndex',
+    const controllerIndexNode = findNodeWithKeyFromIdList(
+      nodes,
+      'controllerIndex',
+      node.optionNodeIds,
     )
+
     if (!controllerIndexNode) return false
 
-    const controllerIndexValue = engine.getStore().getState().nodeValues[controllerIndexNode]
+    const controllerIndexValue = engine.getStore().getState().nodeValues[controllerIndexNode.id]
     return controllerIndexValue === controllerIndex
   }) as Input[]
 }
@@ -434,17 +436,13 @@ const ControllerItem: React.FC<ControllerItemProps> = ({
     if (!lastEvent) return null
 
     const matchingInput = controllerInputs.find((input) => {
-      const inputTypeNode = input.optionNodeIds.find(
-        (nodeId: string) => 'key' in nodes[nodeId] && nodes[nodeId].key === 'inputType',
-      )
-      const indexNode = input.optionNodeIds.find(
-        (nodeId: string) => 'key' in nodes[nodeId] && nodes[nodeId].key === 'index',
-      )
+      const inputTypeNode = findNodeWithKeyFromIdList(nodes, 'inputType', input.optionNodeIds)
+      const indexNode = findNodeWithKeyFromIdList(nodes, 'index', input.optionNodeIds)
 
       if (!inputTypeNode || !indexNode) return false
 
-      const inputType = nodeValues[inputTypeNode]
-      const index = nodeValues[indexNode]
+      const inputType = nodeValues[inputTypeNode.id]
+      const index = nodeValues[indexNode.id]
 
       return inputType === lastEvent.inputType && index === lastEvent.index
     })

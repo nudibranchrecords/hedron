@@ -1,3 +1,4 @@
+import { findNodeWithKeyFromIdList } from '@utils/findNodeWithKeyFromIdList'
 import { addNode } from '@store/shared/addNode'
 import { deleteNode } from '@store/shared/deleteNode'
 import { Node, SetterCreator } from '@store/types'
@@ -24,10 +25,12 @@ export const createReconcileSketchNodes: SetterCreator<'reconcileSketchNodes'> =
       // 1. Add new nodes that are in the config but not in the current sketch.
       for (const nodeConfig of config.nodes) {
         // Find existing node for this key, if any.
-        let nodeId = Array.from(existingIds).find((id) => {
-          const node = state.nodes[id]
-          return 'key' in node && node.key === nodeConfig.key
-        })
+
+        let nodeId = findNodeWithKeyFromIdList(
+          state.nodes,
+          nodeConfig.key,
+          Array.from(existingIds),
+        )?.id
 
         // If no existing node, create a new one.
         if (!nodeId) {

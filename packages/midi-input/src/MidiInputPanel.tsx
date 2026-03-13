@@ -1,5 +1,5 @@
 import { useCallback, useState, useMemo } from 'react'
-import { HedronEngine, Input } from '@hedron-gl/engine'
+import { findNodeWithKeyFromIdList, HedronEngine, Input } from '@hedron-gl/engine'
 import { MIDIEvent, MidiManager } from '@hedron-gl/midi-manager'
 import { Button, ControlGrid, NodeContainer, useEngineStore } from '@hedron-gl/ui-core'
 import { MidiInput } from './MidiInput'
@@ -73,7 +73,7 @@ export const MidiInputPanel = ({ input, engine }: IProps) => {
   const nodeValues = useEngineStore((s) => s.nodeValues)
 
   const overrideNodeId = useMemo(
-    () => input.optionNodeIds.find((id) => 'key' in nodes[id] && nodes[id]?.key === 'override'),
+    () => findNodeWithKeyFromIdList(nodes, 'overrideValue', input.optionNodeIds)?.id,
     [input.optionNodeIds, nodes],
   )
 
