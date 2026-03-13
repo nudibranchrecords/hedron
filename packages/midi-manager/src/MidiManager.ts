@@ -64,15 +64,23 @@ export class MidiManager {
   public readonly name: string = 'MIDI'
   public readonly description: string = 'Handles MIDI input devices and messages.'
 
+  private _smoothing = 0.9
+
   /**
    * Smoothing factor for MIDI values (0 = no smoothing, closer to 1 = more smoothing)
    */
-  public smoothing = 0.9
+  public get smoothing(): number {
+    return this._smoothing
+  }
+
+  public set smoothing(value: number) {
+    // Never allow smoothing of 1, as that would cause values to never update
+    this._smoothing = Math.max(0, Math.min(0.99, value))
+  }
 
   /**
    * The list of MIDI input devices connected to the system.
    */
-
   public inputDevices: MIDIInput[] = []
 
   /**
