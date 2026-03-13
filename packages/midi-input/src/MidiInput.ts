@@ -153,9 +153,14 @@ export class MidiInput implements IPlugin {
       (this.getValue(optionNodes, midiEvent) / 127) * (sliderMax - sliderMin) + sliderMin
 
     // Use MidiManager's smoothing system
-    this.midiManager.setSmoothedValue(input.id, currVal, targetValue, (smoothedValue: number) => {
-      storeState.updateNodeValue(input.targetNodeId, smoothedValue)
-    })
+    this.midiManager.setSmoothedValue(
+      input.id,
+      currVal as number,
+      targetValue,
+      (smoothedValue: number) => {
+        storeState.updateNodeValue(input.targetNodeId, smoothedValue)
+      },
+    )
 
     // Return null to prevent immediate update in the event handler
     return null
