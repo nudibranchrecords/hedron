@@ -29,6 +29,8 @@ export const createAddInput: SetterCreator<'addInput'> =
         id,
         nodeType: 'input',
       }
+
+      state.nodes[inputConfig.targetNodeId].childrenIds.push(id)
     })
 
     return id

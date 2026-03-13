@@ -34,7 +34,7 @@ const _addNodeToState = (
   state: EngineState,
   nodeId: string,
   parentId: string | null,
-  childrenIds: string[],
+  optionNodeIds: string[],
   config: AddNodeConfig,
 ) => {
   if (config.nodeType === 'shot') {
@@ -44,8 +44,8 @@ const _addNodeToState = (
       nodeType: 'shot',
       title: config.title ?? config.key,
       parentId,
-      childrenIds: childrenIds,
-      optionNodeIds: [],
+      childrenIds: optionNodeIds,
+      optionNodeIds,
     }
 
     return state.nodes[nodeId]
@@ -66,8 +66,8 @@ const _addNodeToState = (
     title,
     hidden,
     parentId,
-    childrenIds: [],
-    optionNodeIds: [],
+    childrenIds: optionNodeIds,
+    optionNodeIds,
   }
 
   switch (valueType) {
@@ -128,7 +128,11 @@ const _addSliderMinAndMaxNodesToState = (
       groupIndex: 0,
       title: 'Slider Max',
     })
+
+    return [`${paramId}-sliderMin`, `${paramId}-sliderMax`]
   }
+
+  return []
 }
 
 export const addNode = (
@@ -152,10 +156,15 @@ export const addNode = (
       nodeType: 'param',
       title: config.title ?? config.key,
       vectorComponentIds,
+      childrenIds: vectorComponentIds,
     } as ParamVector
 
     for (const [index, childNodeId] of vectorComponentIds.entries()) {
-      _addNodeToState(state, childNodeId, nodeId, [], {
+      const optionNodeIds = _addSliderMinAndMaxNodesToState(state, childNodeId, {
+        valueType: 'number',
+      })
+
+      _addNodeToState(state, childNodeId, nodeId, optionNodeIds, {
         groupIndex: 0,
         nodeType: 'param',
         title: keys[index],
@@ -163,15 +172,14 @@ export const addNode = (
         valueType: 'number',
         defaultValue: config.defaultValue[index],
       })
-      _addSliderMinAndMaxNodesToState(state, childNodeId, {
-        valueType: 'number',
-      })
     }
   } else {
-    _addNodeToState(state, nodeId, parentId, [], config)
+    let optionNodeIds: string[] = []
 
     if (config.nodeType === 'param') {
-      _addSliderMinAndMaxNodesToState(state, nodeId, config)
+      optionNodeIds = _addSliderMinAndMaxNodesToState(state, nodeId, config)
     }
+
+    _addNodeToState(state, nodeId, parentId, optionNodeIds, config)
   }
 }
