@@ -139,7 +139,13 @@ export class MidiInput implements IPlugin {
     }
   }
 
-  private handleNumber: ValueHander = ({ midiEvent, storeState, input, optionNodes }) => {
+  private handleNumber: ValueHander = ({
+    midiEvent,
+    storeState,
+    input,
+    optionNodes,
+    targetNodeValue: currVal,
+  }) => {
     const sliderMin = (storeState.nodeValues[`${input.targetNodeId}-sliderMin`] as number) ?? 0
     const sliderMax = (storeState.nodeValues[`${input.targetNodeId}-sliderMax`] as number) ?? 1
 
@@ -147,7 +153,7 @@ export class MidiInput implements IPlugin {
       (this.getValue(optionNodes, midiEvent) / 127) * (sliderMax - sliderMin) + sliderMin
 
     // Use MidiManager's smoothing system
-    this.midiManager.setSmoothedValue(input.id, targetValue, (smoothedValue: number) => {
+    this.midiManager.setSmoothedValue(input.id, currVal, targetValue, (smoothedValue: number) => {
       storeState.updateNodeValue(input.targetNodeId, smoothedValue)
     })
 

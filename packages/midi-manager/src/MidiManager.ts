@@ -259,30 +259,21 @@ export class MidiManager {
   /**
    * Sets a value to be smoothed over time
    * @param key Unique identifier for this smoothed value
-   * @param targetValue The target value to smooth towards
+   * @param current The current value to start smoothing from
+   * @param target The target value to smooth towards
    * @param callback Function to call with the smoothed value
    */
   public setSmoothedValue(
     key: string,
-    targetValue: number,
+    current: number,
+    target: number,
     callback: (value: number) => void,
   ): void {
-    const existing = this.smoothedValues.get(key)
-
-    if (existing) {
-      // Update target but keep current smoothed value
-      existing.target = targetValue
-      existing.callback = callback
-    } else {
-      // New smoothed value - start at target (first value is instant)
-      this.smoothedValues.set(key, {
-        target: targetValue,
-        current: targetValue,
-        callback,
-      })
-      // Call immediately with the initial value
-      callback(targetValue)
-    }
+    this.smoothedValues.set(key, {
+      current,
+      target,
+      callback,
+    })
   }
 
   /**
