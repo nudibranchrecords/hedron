@@ -1,5 +1,5 @@
 import { deleteNode } from '@store/shared/deleteNode'
 import { SetterCreator } from '@store/types'
 
-export const createDeleteInput: SetterCreator<'deleteNode'> = (setState) => (inputId: string) =>
-  setState((state) => deleteNode(state, inputId))
+export const createDeleteNode: SetterCreator<'deleteNode'> = (setState) => (nodeId: string) =>
+  setState((state) => deleteNode(state, nodeId))
