@@ -32,7 +32,10 @@ export type SketchInstance = {
 
   getPasses?: (engineScene: EngineScene) => Pass[]
 
-  getWebGPUPass?: (prevPass: ShaderNodeObject<PassNode>) => ShaderNodeObject<PassNode>
+  getWebGPUPass?: (
+    prevPass: ShaderNodeObject<PassNode>,
+    renderPassNode: ShaderNodeObject<PassNode>,
+  ) => ShaderNodeObject<PassNode>
 
   /**
    * Called when the sketch is removed from the scene.
