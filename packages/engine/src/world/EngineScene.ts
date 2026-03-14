@@ -81,12 +81,13 @@ export class EngineScene {
       return
     }
 
-    let prevPass = this.renderPass_webGPU!
+    const renderPassNode = this.renderPass_webGPU!
+    let prevPass: ShaderNodeObject<PassNode> = renderPassNode
 
     sketchInstances.forEach((sketchInstance) => {
       if (sketchInstance.getWebGPUPass) {
         try {
-          const nextPass = sketchInstance.getWebGPUPass(prevPass)
+          const nextPass = sketchInstance.getWebGPUPass(prevPass, renderPassNode)
           prevPass = nextPass
         } catch (error) {
           this.onSketchInstanceError(sketchInstance.id)
