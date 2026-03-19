@@ -1,12 +1,13 @@
-import { Node } from '@store/types'
+import { Node, Nodes } from '@store/types'
 
 export const findNodeWithKeyFromIdList = (
-  allNodes: Record<string, Node>,
+  allNodes: Nodes,
   key: string,
   idListToSearch: string[],
 ): Node | null => {
   const id = idListToSearch.find(
-    (nodeId: string) => 'key' in allNodes[nodeId] && allNodes[nodeId].key === key,
+    (nodeId: string) =>
+      allNodes[nodeId] && 'key' in allNodes[nodeId] && allNodes[nodeId]!.key === key,
   )
-  return id ? allNodes[id] : null
+  return id ? allNodes[id]! : null
 }

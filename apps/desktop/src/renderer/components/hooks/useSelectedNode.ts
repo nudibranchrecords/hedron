@@ -10,5 +10,5 @@ export const useSelectedNode = (): Node | null => {
     activeSketch ? state.selectedNodes[activeSketch.id] : null,
   )
 
-  return useEngineStore((state) => (selectedNodeId ? state.nodes[selectedNodeId] : null))
+  return useEngineStore((state) => (selectedNodeId ? (state.nodes[selectedNodeId] ?? null) : null))
 }

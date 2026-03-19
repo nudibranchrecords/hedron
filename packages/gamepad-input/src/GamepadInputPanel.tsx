@@ -89,7 +89,7 @@ export const GamepadInputPanel = ({ input, engine }: IProps) => {
       input.optionNodeIds.filter((id) => {
         const node = nodes[id]
 
-        if (!('key' in node)) {
+        if (!node || !('key' in node)) {
           return false
         }
 

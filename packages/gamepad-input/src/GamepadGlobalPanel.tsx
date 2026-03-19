@@ -1,5 +1,14 @@
 import React, { useState, useEffect, useCallback } from 'react'
-import { findNodeWithKeyFromIdList, HedronEngine, Input, Node, NodeValue } from '@hedron-gl/engine'
+import {
+  findNodeWithKeyFromIdList,
+  HedronEngine,
+  Input,
+  Node,
+  Nodes,
+  nodesAsArray,
+  NodeValue,
+  NodeValues,
+} from '@hedron-gl/engine'
 import {
   Panel,
   PanelHeader,
@@ -63,8 +72,8 @@ const useConnectedGamepads = (gamepadPlugin: GamepadInput | undefined) => {
 // Custom hook to manage gamepad events (flashing and debug messages)
 const useGamepadEvents = (
   gamepadPlugin: GamepadInput | undefined,
-  nodes: Record<string, Node>,
-  nodeValues: Record<string, NodeValue>,
+  nodes: Nodes,
+  nodeValues: NodeValues,
 ) => {
   const [flashingInputs, setFlashingInputs] = useState<Set<string>>(new Set())
   const [flashingControllers, setFlashingControllers] = useState<Set<number>>(new Set())
@@ -156,10 +165,10 @@ const findPhysicalIndicesForLogicalController = (
 // Helper: Find inputs that match a gamepad event
 const findMatchingInputsForEvent = (
   event: GamepadEvent,
-  nodes: Record<string, Node>,
-  nodeValues: Record<string, NodeValue>,
+  nodes: Nodes,
+  nodeValues: NodeValues,
 ): string[] => {
-  return Object.values(nodes)
+  return nodesAsArray(nodes)
     .filter((input) => {
       if (input.nodeType !== 'input' || input.inputType !== 'gamepad') return false
 
@@ -224,10 +233,10 @@ const flashInputs = (
 // Helper: Get inputs for a specific controller
 const getInputsForController = (
   controllerIndex: number,
-  nodes: Record<string, Node>,
+  nodes: Nodes,
   engine: HedronEngine,
 ): Input[] => {
-  return Object.values(nodes).filter((node) => {
+  return nodesAsArray(nodes).filter((node) => {
     if (node.nodeType !== 'input' || node.inputType !== 'gamepad') return false
 
     const controllerIndexNode = findNodeWithKeyFromIdList(
@@ -353,8 +362,8 @@ interface ControllerListProps {
   expandedControllers: Set<number>
   flashingInputs: Set<string>
   flashingControllers: Set<number>
-  nodes: Record<string, Node>
-  nodeValues: Record<string, NodeValue>
+  nodes: Nodes
+  nodeValues: NodeValues
   sketches: Record<string, { id: string; title: string; nodeIds: string[] }>
   engine: HedronEngine
   toggleExpanded: (physicalIndex: number) => void
@@ -410,8 +419,8 @@ interface ControllerItemProps {
   isFlashing: boolean
   flashingInputs: Set<string>
   controllerInputs: Input[]
-  nodes: Record<string, Node>
-  nodeValues: Record<string, NodeValue>
+  nodes: Nodes
+  nodeValues: NodeValues
   sketches: Record<string, { id: string; title: string; nodeIds: string[] }>
   toggleExpanded: (physicalIndex: number) => void
   handleControllerAssignment: (physicalIndex: number, logicalIndex: number) => void
@@ -522,7 +531,7 @@ const ControllerItem: React.FC<ControllerItemProps> = ({
                     input.optionNodeIds.forEach((nodeId) => {
                       const node = nodes[nodeId]
 
-                      if (!('key' in node)) {
+                      if (!node || !('key' in node)) {
                         return false
                       }
 

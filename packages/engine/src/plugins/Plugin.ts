@@ -1,3 +1,4 @@
+import { nodesAsArray } from '../utils/nodesAsArray'
 import {
   EngineState,
   EngineStateWithActions,
@@ -79,7 +80,13 @@ export const getOptionNodesFromIds = <T extends readonly any[]>(
   ids.forEach((id) => {
     const node = state.nodes[id]
 
-    if (node.nodeType === 'input') {
+    if (!node) {
+      // Node may not exist if deleting a sketch/param didn't clean up properly
+      console.warn(`Option node with id ${id} not found in state.`)
+      return
+    }
+
+    if (node?.nodeType === 'input') {
       console.warn(
         `Node ${node.title}: ${node.id} is an input node. Input nodes cannot be used as option nodes for plugins.`,
       )
@@ -111,7 +118,7 @@ export const handleEachInput = <T extends readonly any[]>(
     targetNodeValue: NodeValue
   }) => void,
 ) => {
-  const allNodes = Object.values(storeState.nodes)
+  const allNodes = nodesAsArray(storeState.nodes)
 
   // TODO: Not very performant, we might want to cache inputs somehow
   allNodes.forEach((input) => {
@@ -133,6 +140,12 @@ export const handleEachInput = <T extends readonly any[]>(
     }
 
     const targetNodeValue = storeState.nodeValues[input.targetNodeId]
+
+    if (!targetNodeValue) {
+      // Node may not exist if deleting a sketch/param didn't clean up properly
+      // TODO: special log level for checking this
+      return
+    }
 
     const optionNodes = getOptionNodesFromIds<T>(storeState, input.optionNodeIds)
 

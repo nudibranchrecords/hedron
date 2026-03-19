@@ -126,7 +126,7 @@ export function createGamepadHandlers(dependencies: {
         (optionNodes.triggerOn === 'up' && !gamepadEvent.isPressed)
       if (!shouldTrigger) return null
 
-      return getNextEnumValue(input.targetNodeId)(storeState)
+      return getNextEnumValue(input.targetNodeId)(storeState) ?? null
     } else {
       return targetNode.options[Math.floor(gamepadEvent.value * (targetNode.options.length - 1))]
         .value

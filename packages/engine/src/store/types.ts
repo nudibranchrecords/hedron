@@ -89,11 +89,11 @@ export type Shot = NodeBase & {
 }
 
 export type Node = Param | Shot | Input
-export type Nodes = { [key: string]: Node }
+export type Nodes = Partial<Record<string, Node>>
 export type NodeType = Node['nodeType']
 
 export type NodeValue = number | boolean | string | ShotArgsObject
-export type NodeValues = { [key: string]: NodeValue }
+export type NodeValues = Partial<Record<string, NodeValue>>
 export type ParamValueType = Param['valueType'] | null
 
 // Record ensures every ParamValueTypeWithChildren member is listed — adding a new

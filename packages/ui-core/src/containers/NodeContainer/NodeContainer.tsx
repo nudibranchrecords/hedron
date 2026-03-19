@@ -60,6 +60,10 @@ export const NodeContainer = ({
     onClick?.(nodeId)
   }, [nodeId, onClick])
 
+  if (!node) {
+    return <i>Node with id {nodeId} not found</i>
+  }
+
   if (node.nodeType === 'input') {
     return "NodeContainer: Tried to render an input node, this isn't supported. Node ID: " + node.id
   }

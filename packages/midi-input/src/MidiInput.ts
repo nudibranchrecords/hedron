@@ -109,7 +109,7 @@ export class MidiInput implements IPlugin {
     switch (midiEvent.type) {
       case MidiMessageType.NoteOn:
       case MidiMessageType.NoteOff:
-        return getNextEnumValue(input.targetNodeId)(storeState)
+        return getNextEnumValue(input.targetNodeId)(storeState) ?? null
       default: {
         const value = this.getValue(optionNodes, midiEvent)
         return targetNode.options[Math.floor((value / 127) * (targetNode.options.length - 1))].value
