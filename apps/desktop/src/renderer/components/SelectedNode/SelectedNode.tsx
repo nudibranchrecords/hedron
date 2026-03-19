@@ -15,7 +15,7 @@ import { useCallback, useMemo } from 'react'
 import c from './SelectedNode.module.css'
 import { useSelectedNode } from '@components/hooks/useSelectedNode'
 import { pluginViews, engine, engineStore } from '@renderer/engine'
-import { useInputsWithNode } from '@components/hooks/useInput'
+import { useInputsWithNode } from '@components/hooks/useInputsWithNode'
 
 export const SelectedNode = () => {
   const selectedNode = useSelectedNode()
