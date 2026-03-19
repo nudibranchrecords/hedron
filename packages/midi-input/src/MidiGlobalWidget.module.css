@@ -1,0 +1,32 @@
+.midiGlobalButton {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background: var(--color-bg-secondary, #2a2a2a);
+  border: 1px solid var(--color-border, #444);
+  border-radius: 4px;
+  color: var(--color-text, #fff);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.midiGlobalButton:hover {
+  background: var(--color-bg-hover, #333);
+  border-color: var(--color-border-hover, #666);
+}
+
+.midiGlobalButton.active {
+  background: var(--color-primary, #0066cc);
+  border-color: var(--color-primary-dark, #0052a3);
+}
+
+.icon {
+  font-size: 18px;
+  line-height: 1;
+}
+
+.label {
+  font-size: 14px;
+  font-weight: 500;
+}
