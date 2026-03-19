@@ -1,5 +1,4 @@
 import { Input, Node } from '@hedron-gl/engine'
-import { useCallback } from 'react'
 import { ParamNumber } from './ParamNumber/ParamNumber'
 import { ParamBoolean } from './ParamBoolean/ParamBoolean'
 import { ParamEnum } from './ParamEnum/ParamEnum'
@@ -17,8 +16,9 @@ import {
   NodeControlInfo,
   NodeControlInputCount,
 } from '@components/NodeControl/NodeControl'
-import { useEngineStore } from '@hooks/storeHooks'
+import { useEngineStore, useAppStore } from '@hooks/storeHooks'
 import { useInputCount } from '@hooks/useInputCount'
+import { useOnSelectNode } from '@hooks/useOnSelectNode'
 
 const getInputElement = (node: Exclude<Node, Input>) => {
   if (node.nodeType === 'shot') {
@@ -45,21 +45,14 @@ const getInputElement = (node: Exclude<Node, Input>) => {
   }
 }
 
-export const NodeContainer = ({
-  onClick,
-  isActive,
-  nodeId,
-}: {
-  onClick?: (nodeId: string) => void
-  isActive?: boolean
-  nodeId: string
-}) => {
+export const NodeContainer = ({ nodeId }: { nodeId: string }) => {
   const node = useEngineStore((state) => state.nodes[nodeId])
   const inputCount = useInputCount(nodeId)
-
-  const _onClick = useCallback(() => {
-    onClick?.(nodeId)
-  }, [nodeId, onClick])
+  const activeSketchId = useAppStore((state) => state.activeSketchId)
+  const isActive = useAppStore((state) =>
+    activeSketchId ? state.selectedNodes[activeSketchId] === nodeId : false,
+  )
+  const onSelectNode = useOnSelectNode(activeSketchId ?? '', nodeId)
 
   if (!node) {
     return <i>Node with id {nodeId} not found</i>
@@ -70,7 +63,7 @@ export const NodeContainer = ({
   }
 
   return (
-    <NodeControl key={node.key} onClick={_onClick} isActive={isActive}>
+    <NodeControl key={node.key} onClick={onSelectNode} isActive={isActive}>
       <NodeControlMain>
         <NodeControlInfo>
           <NodeControlTitle>{node.title}</NodeControlTitle>
