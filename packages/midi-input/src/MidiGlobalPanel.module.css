@@ -1,0 +1,106 @@
+.errorPanel {
+  padding: 16px;
+  color: var(--dangerColor);
+  text-align: center;
+}
+
+.section {
+  margin-top: 24px;
+}
+
+.sectionTitle {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 12px;
+  color: var(--textColorLight1);
+}
+
+.deviceList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.deviceItem {
+  padding: 8px 12px;
+  background: var(--bgColorDark4);
+  border: 2px solid var(--lineColor1);
+  border-radius: 4px;
+  font-size: 13px;
+  color: var(--textColorLight1);
+}
+
+.emptyMessage {
+  padding: 16px;
+  text-align: center;
+  color: var(--textColorLight2);
+  font-size: 12px;
+  font-style: italic;
+}
+
+.logContainer {
+  background: var(--bgColorDark4);
+  border: 2px solid var(--lineColor1);
+  border-radius: 4px;
+  padding: 8px;
+  max-height: 100px;
+  overflow-y: auto;
+  font-family: monospace;
+  font-size: 11px;
+}
+
+.logMessage {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 8px;
+  border-bottom: 1px solid var(--lineColor2);
+  color: var(--textColorLight1);
+}
+
+.logMessage:last-child {
+  border-bottom: none;
+}
+
+.timestamp {
+  color: var(--textColorLight2);
+  font-size: 10px;
+  min-width: 80px;
+}
+
+.device {
+  color: var(--actionColor1);
+  font-weight: 600;
+  min-width: 120px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.type {
+  color: var(--textColorLight2);
+  min-width: 100px;
+}
+
+.details {
+  color: var(--textColorLight1);
+  min-width: 150px;
+}
+
+.affectedNode {
+  color: var(--successColor);
+  font-weight: 600;
+  min-width: 150px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.unmappedNode {
+  color: var(--textColorLight2);
+  font-style: italic;
+  min-width: 150px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
