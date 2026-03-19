@@ -1,4 +1,4 @@
-import { nodesAsArray } from '../utils/nodesAsArray'
+import { nodesAsArray } from '@utils/nodesAsArray'
 import {
   EngineState,
   EngineStateWithActions,
