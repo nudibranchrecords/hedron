@@ -68,6 +68,29 @@
   margin-left: auto;
 }
 
+.breadcrumbs {
+  display: flex;
+  align-items: center;
+  gap: var(--gapSmall);
+  overflow: hidden;
+}
+
+.breadcrumbItem {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.breadcrumbClickable {
+  cursor: pointer;
+  text-decoration: dotted underline;
+}
+
+.breadcrumbSeparator {
+  opacity: 0.4;
+  flex-shrink: 0;
+}
+
 .slim {
   .body,
   .header {

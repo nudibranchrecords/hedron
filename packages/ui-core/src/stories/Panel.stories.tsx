@@ -9,6 +9,7 @@ import {
   PanelBody,
   PanelHeader,
   PanelSubHeader,
+  PanelBreadcrumbs,
 } from '@components/Panel/Panel'
 import { Button } from '@components/Button/Button'
 
@@ -214,6 +215,47 @@ export const BottomPanel: Story = {
               <Icon name="delete" />
             </Button>
           </PanelSubHeader>
+          <WithControlGrid />
+        </PanelBody>
+      </Panel>
+    )
+  },
+}
+
+export const WithBreadcrumbs: Story = {
+  render: () => {
+    return (
+      <Panel>
+        <PanelHeader iconName="tune" buttonOnClick={fn()}>
+          <PanelBreadcrumbs
+            items={[
+              { label: 'Logo', id: 'sketch-1', onClick: fn() },
+              { label: 'Speed', id: 'param-1' },
+            ]}
+          />
+        </PanelHeader>
+        <PanelBody>
+          <p>Panel content with breadcrumbs in the header.</p>
+        </PanelBody>
+      </Panel>
+    )
+  },
+}
+
+export const WithClickableBreadcrumbs: Story = {
+  render: () => {
+    return (
+      <Panel snugPosition="bottom" spacing="slim" width="full">
+        <PanelHeader iconName="tune" buttonOnClick={fn()}>
+          <PanelBreadcrumbs
+            items={[
+              { label: 'My Awesome Sketch', id: 'sketch-1', onClick: fn() },
+              { label: 'Material Settings', id: 'group-1', onClick: fn() },
+              { label: 'Diffuse Color', id: 'param-1' },
+            ]}
+          />
+        </PanelHeader>
+        <PanelBody>
           <WithControlGrid />
         </PanelBody>
       </Panel>
