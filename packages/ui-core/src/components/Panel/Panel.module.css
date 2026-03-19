@@ -83,7 +83,8 @@
 
 .breadcrumbClickable {
   cursor: pointer;
-  text-decoration: dotted underline;
+  text-decoration: dotted underline 1px;
+  text-underline-offset: 2px;
 }
 
 .breadcrumbSeparator {
