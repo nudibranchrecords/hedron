@@ -141,7 +141,7 @@ export const handleEachInput = <T extends readonly any[]>(
 
     const targetNodeValue = storeState.nodeValues[input.targetNodeId]
 
-    if (!targetNodeValue) {
+    if (targetNodeValue === undefined) {
       // Node may not exist if deleting a sketch/param didn't clean up properly
       // TODO: special log level for checking this
       return
