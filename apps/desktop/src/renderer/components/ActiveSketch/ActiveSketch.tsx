@@ -8,7 +8,6 @@ import {
   PanelHeader,
   PopoutMenu,
   HedronErrorBoundary,
-  useAppStore,
   useOnSelectNode,
   NodeContainer,
 } from '@hedron-gl/ui-core'
@@ -21,18 +20,6 @@ import { SketchControls } from '@components/SketchControls/SketchControls'
 import { useGroupedNodes } from '@components/hooks/useGroupedNodes'
 import { useSelectedNode } from '@components/hooks/useSelectedNode'
 import { SelectedNode } from '@components/SelectedNode/SelectedNode'
-
-interface ControlItemProps {
-  node: Node
-  sketchId: string
-}
-
-const ControlItem = ({ node, sketchId }: ControlItemProps) => {
-  const isActive = useAppStore((state) => state.selectedNodes[sketchId] === node.id)
-  const onSelectNode = useOnSelectNode(sketchId, node.id)
-
-  return <NodeContainer onClick={onSelectNode} nodeId={node.id} isActive={isActive} />
-}
 
 export const ActiveSketch = () => {
   const activeSketch = useActiveSketch()
@@ -78,7 +65,7 @@ export const ActiveSketch = () => {
           <SketchControls
             sketchId={activeSketch.id}
             nodeGroups={nodeGroups}
-            ControlItem={ControlItem}
+            ControlItem={({ node }) => <NodeContainer nodeId={node.id} />}
           />
         </div>
 
