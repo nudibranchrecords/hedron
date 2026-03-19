@@ -1,3 +1,4 @@
+import { Node } from '@hedron-gl/engine'
 import {
   Button,
   ViewHeader,
@@ -6,20 +7,36 @@ import {
   Panel,
   PanelBody,
   PanelHeader,
+  PanelBreadcrumbs,
   PopoutMenu,
   HedronErrorBoundary,
   useOnSelectNode,
   NodeContainer,
 } from '@hedron-gl/ui-core'
 
-import { Node } from '@hedron-gl/engine'
 import c from './ActiveSketch.module.css'
 import { useActiveSketch } from '@components/hooks/useActiveSketch'
 import { engineStore } from '@renderer/engine'
 import { SketchControls } from '@components/SketchControls/SketchControls'
 import { useGroupedNodes } from '@components/hooks/useGroupedNodes'
 import { useSelectedNode } from '@components/hooks/useSelectedNode'
+import { useNodeBreadcrumbs } from '@components/hooks/useNodeBreadcrumbs'
 import { SelectedNode } from '@components/SelectedNode/SelectedNode'
+
+const SelectedNodePanel = ({ node, onClose }: { node: Node; onClose: () => void }) => {
+  const breadcrumbs = useNodeBreadcrumbs(node.id)
+
+  return (
+    <Panel snugPosition="bottom" spacing="slim" width="full" className={c.bottomPanel}>
+      <PanelHeader iconName={paramIcon} buttonOnClick={onClose}>
+        <PanelBreadcrumbs items={breadcrumbs} />
+      </PanelHeader>
+      <PanelBody>
+        <SelectedNode />
+      </PanelBody>
+    </Panel>
+  )
+}
 
 export const ActiveSketch = () => {
   const activeSketch = useActiveSketch()
@@ -69,16 +86,7 @@ export const ActiveSketch = () => {
           />
         </div>
 
-        {selectedNode && (
-          <Panel snugPosition="bottom" spacing="slim" width="full" className={c.bottomPanel}>
-            <PanelHeader iconName={paramIcon} buttonOnClick={closeSelectedNodePanel}>
-              {selectedNode.title}
-            </PanelHeader>
-            <PanelBody>
-              <SelectedNode />
-            </PanelBody>
-          </Panel>
-        )}
+        {selectedNode && <SelectedNodePanel node={selectedNode} onClose={closeSelectedNodePanel} />}
       </HedronErrorBoundary>
     </div>
   )
