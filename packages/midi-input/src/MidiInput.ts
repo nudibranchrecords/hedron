@@ -54,7 +54,7 @@ export class MidiInput implements IPlugin {
       sliderMin: 0,
       sliderMax: 0.99,
     },
-  ] as const satisfies InputOptionNodesConfig
+  ] as const satisfies NodeConfig[]
   public readonly optionNodesConfig = [
     {
       key: 'channel',
