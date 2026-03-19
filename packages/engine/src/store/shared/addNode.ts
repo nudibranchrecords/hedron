@@ -157,6 +157,8 @@ export const addNode = (
       title: config.title ?? config.key,
       vectorComponentIds,
       childrenIds: vectorComponentIds,
+      parentId,
+      optionNodeIds: [],
     } as ParamVector
 
     for (const [index, childNodeId] of vectorComponentIds.entries()) {
