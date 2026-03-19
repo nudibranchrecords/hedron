@@ -1,3 +1,4 @@
+import React from 'react'
 import c from './Panel.module.css'
 import { Button } from '@components/Button/Button'
 import { Icon, IconName } from '@components/Icon/Icon'
@@ -55,6 +56,32 @@ export const PanelHeader = ({
     {buttonOnClick && (
       <Button className={c.button} iconName={buttonIcon} type="ghost" onClick={buttonOnClick} />
     )}
+  </div>
+)
+
+export interface BreadcrumbItem {
+  label: string
+  id: string
+  onClick?: () => void
+}
+
+export interface PanelBreadcrumbsProps {
+  items: BreadcrumbItem[]
+}
+
+export const PanelBreadcrumbs = ({ items }: PanelBreadcrumbsProps) => (
+  <div className={c.breadcrumbs}>
+    {items.map((item, i) => (
+      <React.Fragment key={item.id}>
+        {i > 0 && <span className={c.breadcrumbSeparator}>/</span>}
+        <span
+          className={`${c.breadcrumbItem} ${item.onClick ? c.breadcrumbClickable : ''}`}
+          onClick={item.onClick}
+        >
+          {item.label}
+        </span>
+      </React.Fragment>
+    ))}
   </div>
 )
 
