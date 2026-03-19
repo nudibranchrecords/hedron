@@ -1,9 +1,10 @@
+import { nodesAsArray } from '@utils/nodesAsArray'
 import {
   EngineState,
   EngineStateWithActions,
   Input,
-  InputOptionNodesConfig,
   Node,
+  NodeConfig,
   NodeValue,
 } from '@store/types'
 
@@ -34,12 +35,12 @@ export interface IPlugin {
   /**
    * Config to generate option nodes. Follows same structure as sketch params config.
    */
-  optionNodesConfig: InputOptionNodesConfig
+  optionNodesConfig: NodeConfig[]
 
   /**
    * Config to generate global option nodes. Follows same structure as sketch params config.
    */
-  globalOptionNodesConfig?: InputOptionNodesConfig
+  globalOptionNodesConfig?: NodeConfig[]
 
   /**
    * Optional callback called after engine initialization (project load, sketches folder selection)
@@ -78,6 +79,19 @@ export const getOptionNodesFromIds = <T extends readonly any[]>(
   const options = {} as OptionsType
   ids.forEach((id) => {
     const node = state.nodes[id]
+
+    if (!node) {
+      // Node may not exist if deleting a sketch/param didn't clean up properly
+      console.warn(`Option node with id ${id} not found in state.`)
+      return
+    }
+
+    if (node?.nodeType === 'input') {
+      console.warn(
+        `Node ${node.title}: ${node.id} is an input node. Input nodes cannot be used as option nodes for plugins.`,
+      )
+      return
+    }
     ;(options as Record<string, unknown>)[node.key] = state.nodeValues[id]
   })
   return options
@@ -100,15 +114,15 @@ export const handleEachInput = <T extends readonly any[]>(
   }: {
     input: Input
     optionNodes: ConfigToOptionsType<T>
-    targetNode: Node
+    targetNode: Exclude<Node, Input>
     targetNodeValue: NodeValue
   }) => void,
 ) => {
-  const inputs = Object.values(storeState.inputs)
+  const allNodes = nodesAsArray(storeState.nodes)
 
   // TODO: Not very performant, we might want to cache inputs somehow
-  inputs.forEach((input) => {
-    if (input.type !== inputType) return
+  allNodes.forEach((input) => {
+    if (input.nodeType !== 'input' || input.inputType !== inputType) return
 
     const targetNode = storeState.nodes[input.targetNodeId]
 
@@ -118,7 +132,20 @@ export const handleEachInput = <T extends readonly any[]>(
       return
     }
 
+    if (targetNode.nodeType === 'input') {
+      console.warn(
+        `Input ${input.title}: ${input.id} is trying to target another input ${targetNode.title}: ${targetNode.id}. This is not supported.`,
+      )
+      return
+    }
+
     const targetNodeValue = storeState.nodeValues[input.targetNodeId]
+
+    if (targetNodeValue === undefined) {
+      // Node may not exist if deleting a sketch/param didn't clean up properly
+      // TODO: special log level for checking this
+      return
+    }
 
     const optionNodes = getOptionNodesFromIds<T>(storeState, input.optionNodeIds)
 

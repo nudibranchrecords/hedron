@@ -1,5 +1,12 @@
 import React, { useState, useEffect, useCallback } from 'react'
-import { HedronEngine, Input, Node, NodeValue } from '@hedron-gl/engine'
+import {
+  findNodeWithKeyFromIdList,
+  HedronEngine,
+  Input,
+  Nodes,
+  nodesAsArray,
+  NodeValues,
+} from '@hedron-gl/engine'
 import {
   Panel,
   PanelHeader,
@@ -63,9 +70,8 @@ const useConnectedGamepads = (gamepadPlugin: GamepadInput | undefined) => {
 // Custom hook to manage gamepad events (flashing and debug messages)
 const useGamepadEvents = (
   gamepadPlugin: GamepadInput | undefined,
-  inputs: Record<string, Input>,
-  nodes: Record<string, Node>,
-  nodeValues: Record<string, NodeValue>,
+  nodes: Nodes,
+  nodeValues: NodeValues,
 ) => {
   const [flashingInputs, setFlashingInputs] = useState<Set<string>>(new Set())
   const [flashingControllers, setFlashingControllers] = useState<Set<number>>(new Set())
@@ -88,7 +94,7 @@ const useGamepadEvents = (
       )
 
       // Find matching inputs and flash them
-      const matchingInputIds = findMatchingInputsForEvent(event, inputs, nodes, nodeValues)
+      const matchingInputIds = findMatchingInputsForEvent(event, nodes, nodeValues)
       flashInputs(matchingInputIds, setFlashingInputs)
 
       // Flash controller card at reduced capacity
@@ -132,7 +138,7 @@ const useGamepadEvents = (
 
     gamepadPlugin.gamepadManager.onGamepadEvent.add(handleEvent)
     return () => gamepadPlugin.gamepadManager.onGamepadEvent.remove(handleEvent)
-  }, [gamepadPlugin, inputs, nodes, nodeValues])
+  }, [gamepadPlugin, nodes, nodeValues])
 
   return { flashingInputs, flashingControllers, lastEventPerController }
 }
@@ -157,27 +163,27 @@ const findPhysicalIndicesForLogicalController = (
 // Helper: Find inputs that match a gamepad event
 const findMatchingInputsForEvent = (
   event: GamepadEvent,
-  inputs: Record<string, Input>,
-  nodes: Record<string, Node>,
-  nodeValues: Record<string, NodeValue>,
+  nodes: Nodes,
+  nodeValues: NodeValues,
 ): string[] => {
-  return Object.values(inputs)
+  return nodesAsArray(nodes)
     .filter((input) => {
-      if (input.type !== 'gamepad') return false
+      if (input.nodeType !== 'input' || input.inputType !== 'gamepad') return false
 
-      const controllerIndexNode = input.optionNodeIds.find(
-        (nodeId: string) => nodes[nodeId]?.key === 'controllerIndex',
+      const controllerIndexNode = findNodeWithKeyFromIdList(
+        nodes,
+        'controllerIndex',
+        input.optionNodeIds,
       )
-      const inputTypeNode = input.optionNodeIds.find(
-        (nodeId: string) => nodes[nodeId]?.key === 'inputType',
-      )
-      const indexNode = input.optionNodeIds.find((nodeId: string) => nodes[nodeId]?.key === 'index')
+
+      const inputTypeNode = findNodeWithKeyFromIdList(nodes, 'inputType', input.optionNodeIds)
+      const indexNode = findNodeWithKeyFromIdList(nodes, 'index', input.optionNodeIds)
 
       if (!controllerIndexNode || !inputTypeNode || !indexNode) return false
 
-      const controllerIndex = nodeValues[controllerIndexNode]
-      const inputType = nodeValues[inputTypeNode]
-      const index = nodeValues[indexNode]
+      const controllerIndex = nodeValues[controllerIndexNode.id]
+      const inputType = nodeValues[inputTypeNode.id]
+      const index = nodeValues[indexNode.id]
 
       return (
         controllerIndex === event.controllerIndex &&
@@ -225,28 +231,29 @@ const flashInputs = (
 // Helper: Get inputs for a specific controller
 const getInputsForController = (
   controllerIndex: number,
-  inputs: Record<string, Input>,
-  nodes: Record<string, Node>,
+  nodes: Nodes,
   engine: HedronEngine,
-) => {
-  return Object.values(inputs).filter((input) => {
-    if (input.type !== 'gamepad') return false
+): Input[] => {
+  return nodesAsArray(nodes).filter((node) => {
+    if (node.nodeType !== 'input' || node.inputType !== 'gamepad') return false
 
-    const controllerIndexNode = input.optionNodeIds.find(
-      (nodeId: string) => nodes[nodeId]?.key === 'controllerIndex',
+    const controllerIndexNode = findNodeWithKeyFromIdList(
+      nodes,
+      'controllerIndex',
+      node.optionNodeIds,
     )
+
     if (!controllerIndexNode) return false
 
-    const controllerIndexValue = engine.getStore().getState().nodeValues[controllerIndexNode]
+    const controllerIndexValue = engine.getStore().getState().nodeValues[controllerIndexNode.id]
     return controllerIndexValue === controllerIndex
-  })
+  }) as Input[]
 }
 
 export const GamepadGlobalPanel: React.FC<GamepadGlobalPanelProps> = ({ engine }) => {
   const gamepadPlugin = engine.plugins['gamepad-input'] as GamepadInput | undefined
   const [expandedControllers, setExpandedControllers] = useState<Set<number>>(new Set())
 
-  const inputs = useEngineStore((state) => state.inputs)
   const nodes = useEngineStore((state) => state.nodes)
   const nodeValues = useEngineStore((state) => state.nodeValues)
   const sketches = useEngineStore((state) => state.sketches)
@@ -254,7 +261,6 @@ export const GamepadGlobalPanel: React.FC<GamepadGlobalPanelProps> = ({ engine }
   const { connectedGamepads, setConnectedGamepads } = useConnectedGamepads(gamepadPlugin)
   const { flashingInputs, flashingControllers, lastEventPerController } = useGamepadEvents(
     gamepadPlugin,
-    inputs,
     nodes,
     nodeValues,
   )
@@ -314,7 +320,6 @@ export const GamepadGlobalPanel: React.FC<GamepadGlobalPanelProps> = ({ engine }
           expandedControllers={expandedControllers}
           flashingInputs={flashingInputs}
           flashingControllers={flashingControllers}
-          inputs={inputs}
           nodes={nodes}
           nodeValues={nodeValues}
           sketches={sketches}
@@ -355,9 +360,8 @@ interface ControllerListProps {
   expandedControllers: Set<number>
   flashingInputs: Set<string>
   flashingControllers: Set<number>
-  inputs: Record<string, Input>
-  nodes: Record<string, Node>
-  nodeValues: Record<string, NodeValue>
+  nodes: Nodes
+  nodeValues: NodeValues
   sketches: Record<string, { id: string; title: string; nodeIds: string[] }>
   engine: HedronEngine
   toggleExpanded: (physicalIndex: number) => void
@@ -370,7 +374,6 @@ const ControllerList: React.FC<ControllerListProps> = ({
   expandedControllers,
   flashingInputs,
   flashingControllers,
-  inputs,
   nodes,
   nodeValues,
   sketches,
@@ -384,12 +387,7 @@ const ControllerList: React.FC<ControllerListProps> = ({
       {connectedGamepads.map((gamepad) => {
         const isExpanded = expandedControllers.has(gamepad.physicalIndex)
         const isFlashing = flashingControllers.has(gamepad.physicalIndex)
-        const controllerInputs = getInputsForController(
-          gamepad.assignedIndex,
-          inputs,
-          nodes,
-          engine,
-        )
+        const controllerInputs = getInputsForController(gamepad.assignedIndex, nodes, engine)
 
         return (
           <ControllerItem
@@ -419,8 +417,8 @@ interface ControllerItemProps {
   isFlashing: boolean
   flashingInputs: Set<string>
   controllerInputs: Input[]
-  nodes: Record<string, Node>
-  nodeValues: Record<string, NodeValue>
+  nodes: Nodes
+  nodeValues: NodeValues
   sketches: Record<string, { id: string; title: string; nodeIds: string[] }>
   toggleExpanded: (physicalIndex: number) => void
   handleControllerAssignment: (physicalIndex: number, logicalIndex: number) => void
@@ -445,15 +443,13 @@ const ControllerItem: React.FC<ControllerItemProps> = ({
     if (!lastEvent) return null
 
     const matchingInput = controllerInputs.find((input) => {
-      const inputTypeNode = input.optionNodeIds.find(
-        (nodeId: string) => nodes[nodeId]?.key === 'inputType',
-      )
-      const indexNode = input.optionNodeIds.find((nodeId: string) => nodes[nodeId]?.key === 'index')
+      const inputTypeNode = findNodeWithKeyFromIdList(nodes, 'inputType', input.optionNodeIds)
+      const indexNode = findNodeWithKeyFromIdList(nodes, 'index', input.optionNodeIds)
 
       if (!inputTypeNode || !indexNode) return false
 
-      const inputType = nodeValues[inputTypeNode]
-      const index = nodeValues[indexNode]
+      const inputType = nodeValues[inputTypeNode.id]
+      const index = nodeValues[indexNode.id]
 
       return inputType === lastEvent.inputType && index === lastEvent.index
     })
@@ -532,6 +528,11 @@ const ControllerItem: React.FC<ControllerItemProps> = ({
                     let type, index: number | string | undefined
                     input.optionNodeIds.forEach((nodeId) => {
                       const node = nodes[nodeId]
+
+                      if (!node || !('key' in node)) {
+                        return false
+                      }
+
                       if (node.key === 'inputType') {
                         type = nodeValues[nodeId] as number
                       } else if (node.key === 'index') {

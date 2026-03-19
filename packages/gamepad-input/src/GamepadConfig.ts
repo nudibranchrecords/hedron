@@ -1,4 +1,4 @@
-import { InputOptionNodesConfig } from '@hedron-gl/engine'
+import { NodeConfig } from '@hedron-gl/engine'
 import { GamepadInputType, ButtonMode, AxisMode } from './GamepadTypes'
 
 export const globalOptionNodesConfig = [
@@ -34,7 +34,7 @@ export const globalOptionNodesConfig = [
     sliderMin: 0,
     sliderMax: 0.99,
   },
-] as const satisfies InputOptionNodesConfig
+] as const satisfies NodeConfig[]
 
 export const optionNodesConfig = [
   {
@@ -119,4 +119,4 @@ export const optionNodesConfig = [
     sliderMin: 0,
     sliderMax: 1,
   },
-] as const satisfies InputOptionNodesConfig
+] as const satisfies NodeConfig[]

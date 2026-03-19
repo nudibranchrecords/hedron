@@ -1,5 +1,5 @@
 import { useRef } from 'react'
-import { NodeParamEnum } from '@hedron-gl/engine'
+import { ParamEnum as ParamEnumType } from '@hedron-gl/engine'
 import { useEngineStore } from '@hooks/storeHooks'
 import { useOnNodeValueChange } from '@hooks/useOnNodeValueChange'
 import { useSubscribeToNodeValue } from '@hooks/useSubscribeToNodeValue'
@@ -12,7 +12,7 @@ interface ParamEnumProps {
 export const ParamEnum = ({ id }: ParamEnumProps) => {
   const ref = useRef<EnumDropdownHandle>(null)
   const onValueChange = useOnNodeValueChange(id)
-  const node = useEngineStore((state) => state.nodes[id]) as NodeParamEnum
+  const node = useEngineStore((state) => state.nodes[id]) as ParamEnumType
 
   useSubscribeToNodeValue<string>(id, (value) => {
     ref.current?.setValue(value)

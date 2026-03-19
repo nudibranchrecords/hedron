@@ -1,11 +1,11 @@
 import { useMemo } from 'react'
 import { useEngineStore } from '@hedron-gl/ui-core'
-import { Node } from '@hedron-gl/engine'
+import { Param, Shot } from '@hedron-gl/engine'
 
 type GroupedNodes = {
   groupTitle: string
   groupIndex: number
-  children: Node[]
+  children: (Param | Shot)[]
 }
 
 export const useGroupedNodes = (nodeIds: string[], moduleId: string) => {
@@ -16,7 +16,7 @@ export const useGroupedNodes = (nodeIds: string[], moduleId: string) => {
     const groups = [] as GroupedNodes[]
 
     nodeIds.forEach((id) => {
-      const node = nodes[id]
+      const node = nodes[id] as Param | Shot
 
       const groupIndex = node.groupIndex
 

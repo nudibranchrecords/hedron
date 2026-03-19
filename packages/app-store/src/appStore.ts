@@ -152,7 +152,6 @@ export const createAppStore = () =>
             cleanupStaleReferences: (engineData: EngineData) => {
               set((state) => {
                 const validNodeIds = new Set(Object.keys(engineData.nodes))
-                const validInputIds = new Set(Object.keys(engineData.inputs))
                 const validSketchIds = new Set(Object.keys(engineData.sketches))
 
                 for (const sketchId of Object.keys(state.selectedNodes)) {
@@ -172,7 +171,7 @@ export const createAppStore = () =>
                   if (
                     !validNodeIds.has(selectedNodeId) ||
                     !selectedInputId ||
-                    !validInputIds.has(selectedInputId)
+                    !validNodeIds.has(selectedInputId)
                   ) {
                     delete state.selectedInputs[selectedNodeId]
                   }

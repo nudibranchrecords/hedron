@@ -1,4 +1,4 @@
-import { NodeParamVector2 } from '@hedron-gl/engine'
+import { ParamVector2 as ParamVector2Type } from '@hedron-gl/engine'
 import c from './ParamVector2.module.css'
 import { ParamNumber } from '@containers/NodeContainer/ParamNumber/ParamNumber'
 import { useEngineStore } from '@hooks/storeHooks'
@@ -8,13 +8,13 @@ interface ParamVector2Props {
 }
 
 export const ParamVector2 = ({ id }: ParamVector2Props) => {
-  const node = useEngineStore((state) => state.nodes[id] as NodeParamVector2)
+  const node = useEngineStore((state) => state.nodes[id] as ParamVector2Type)
 
-  const { childNodeIds } = node
+  const { vectorComponentIds } = node
 
   return (
     <div className={c.container}>
-      {childNodeIds.map((childId) => (
+      {vectorComponentIds.map((childId) => (
         <div key={childId} className={c.item}>
           <ParamNumber key={childId} id={childId} />
         </div>

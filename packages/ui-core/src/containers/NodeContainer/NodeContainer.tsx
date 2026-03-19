@@ -1,4 +1,4 @@
-import { type Node as NodeType } from '@hedron-gl/engine'
+import { Input, Node } from '@hedron-gl/engine'
 import { useCallback } from 'react'
 import { ParamNumber } from './ParamNumber/ParamNumber'
 import { ParamBoolean } from './ParamBoolean/ParamBoolean'
@@ -18,7 +18,7 @@ import {
 } from '@components/NodeControl/NodeControl'
 import { useEngineStore } from '@hooks/storeHooks'
 
-const getInputElement = (node: NodeType) => {
+const getInputElement = (node: Exclude<Node, Input>) => {
   if (node.nodeType === 'shot') {
     return <Shot id={node.id} />
   }
@@ -59,6 +59,15 @@ export const NodeContainer = ({
   const _onClick = useCallback(() => {
     onClick?.(nodeId)
   }, [nodeId, onClick])
+
+  if (!node) {
+    return <i>Node with id {nodeId} not found</i>
+  }
+
+  if (node.nodeType === 'input') {
+    return "NodeContainer: Tried to render an input node, this isn't supported. Node ID: " + node.id
+  }
+
   return (
     <NodeControl key={node.key} onClick={_onClick} isActive={isActive} layout={layout}>
       <NodeControlMain>

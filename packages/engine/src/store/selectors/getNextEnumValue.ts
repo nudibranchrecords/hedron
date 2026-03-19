@@ -1,8 +1,8 @@
-import { EngineState, NodeEnumValue, NodeParamEnum } from '@store/types'
+import { EngineState, NodeEnumValue, ParamEnum } from '@store/types'
 
 export const getNextEnumValue = (targetNodeId: string) => (state: EngineState) => {
   const paramVal = state.nodeValues[targetNodeId]
-  const param = state.nodes[targetNodeId] as NodeParamEnum | undefined
+  const param = state.nodes[targetNodeId] as ParamEnum | undefined
 
   if (!param) {
     console.warn(`No param found for node ${targetNodeId}`)

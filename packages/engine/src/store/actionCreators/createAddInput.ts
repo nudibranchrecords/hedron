@@ -1,5 +1,6 @@
+import { ensureConfig } from '@store/shared/ensureConfig'
 import { addNode } from '@store/shared/addNode'
-import { SetterCreator, SketchConfigParamImported } from '@store/types'
+import { SetterCreator } from '@store/types'
 import { createUniqueId } from '@utils/createUniqueId'
 
 export const createAddInput: SetterCreator<'addInput'> =
@@ -13,27 +14,24 @@ export const createAddInput: SetterCreator<'addInput'> =
         const optionNodeId = createUniqueId()
         optionNodeIds.push(optionNodeId)
 
-        const cfgImported = {
-          ...cfg,
-          valueType: cfg.valueType ?? 'number',
-          groupIndex: 0,
-          title: cfg.title ?? cfg.key,
-          nodeType: 'param',
-          // TODO: This casting is not ideal, issues tie in with `addNode` type messiness
-        } as SketchConfigParamImported
+        const cfgImported = ensureConfig(cfg)
 
-        addNode(state, optionNodeId, cfgImported)
+        addNode(state, optionNodeId, id, cfgImported)
       }
 
-      if (state.inputs[id]) {
+      if (state.nodes[id]) {
         return
       }
-      state.inputs[id] = {
+      state.nodes[id] = {
         ...inputConfig,
         optionNodeIds,
+        childrenIds: optionNodeIds,
         id,
-        // TODO: Give inputs an (optional) sketchId so option nodes can be selected and displayed in bottom sketch panel
+        nodeType: 'input',
       }
+
+      // Add children Ids to target node (so that cleanup works if target node is deleted)
+      state.nodes[inputConfig.targetNodeId]?.childrenIds.push(id)
     })
 
     return id
