@@ -1,6 +1,12 @@
 import { useCallback, useState, useMemo } from 'react'
-import { findNodeWithKeyFromIdList, HedronEngine, Input } from '@hedron-gl/engine'
-import { Button, ControlGrid, NodeContainer, useEngineStore } from '@hedron-gl/ui-core'
+import { HedronEngine, Input } from '@hedron-gl/engine'
+import {
+  Button,
+  ControlGrid,
+  NodeContainer,
+  useEngineStore,
+  useOptionNodeByKey,
+} from '@hedron-gl/ui-core'
 import { GamepadInput } from './GamepadInput'
 import { GamepadEvent, AxisMode, GamepadInputType } from './GamepadTypes'
 
@@ -75,8 +81,8 @@ export const GamepadInputPanel = ({ input, engine }: IProps) => {
   const nodes = useEngineStore((state) => state.nodes)
   const nodeValues = useEngineStore((state) => state.nodeValues)
 
-  const inputTypeNode = findNodeWithKeyFromIdList(nodes, 'inputType', input.optionNodeIds)
-  const axisModeNode = findNodeWithKeyFromIdList(nodes, 'axisMode', input.optionNodeIds)
+  const inputTypeNode = useOptionNodeByKey(input, 'inputType')
+  const axisModeNode = useOptionNodeByKey(input, 'axisMode')
 
   const inputTypeValue = inputTypeNode ? nodeValues[inputTypeNode.id] : null
   const axisModeValue = axisModeNode ? nodeValues[axisModeNode.id] : null
