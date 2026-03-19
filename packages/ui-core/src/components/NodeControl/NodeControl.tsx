@@ -5,20 +5,15 @@ import {
   useWasMouseDownOnInnerContext,
   useMouseDownOnInner,
 } from './wasMouseDownOnInner'
+import { Icon, inputIcon } from '@components/Icon/Icon'
 
 export interface NodeControlProps {
   isActive?: boolean
   children: React.ReactNode
   onClick?: () => void
-  layout?: 'horizontal' | 'vertical'
 }
 
-export const NodeControl = ({
-  isActive,
-  children,
-  onClick,
-  layout = 'horizontal',
-}: NodeControlProps) => {
+export const NodeControl = ({ isActive, children, onClick }: NodeControlProps) => {
   const wasMouseDownOnInner = useWasMouseDownOnInnerContext()
 
   const handleClick = useCallback(() => {
@@ -30,7 +25,7 @@ export const NodeControl = ({
 
   return (
     <MouseDownContext.Provider value={wasMouseDownOnInner}>
-      <div onClick={handleClick} className={`${c.wrapper} ${isActive && 'active'} ${c[layout]}`}>
+      <div onClick={handleClick} className={`${c.wrapper} ${isActive && 'active'}`}>
         {children}
       </div>
     </MouseDownContext.Provider>
@@ -52,6 +47,28 @@ export interface NodeControlTitleProps {
 export const NodeControlTitle = ({ children }: NodeControlTitleProps) => (
   <div className={c.title}>{children}</div>
 )
+
+export interface NodeControlInfoProps {
+  children: React.ReactNode
+}
+
+export const NodeControlInfo = ({ children }: NodeControlInfoProps) => (
+  <div className={c.info}>{children}</div>
+)
+
+export interface NodeControlInputCountProps {
+  inputCount: number
+}
+
+export const NodeControlInputCount = ({ inputCount }: NodeControlInputCountProps) => {
+  if (inputCount === 0) return null
+  return (
+    <div className={c.inputCount}>
+      <Icon name={inputIcon} className={c.inputCountIcon} />
+      {inputCount}
+    </div>
+  )
+}
 
 export interface NodeControlInnerProps {
   children: React.ReactNode

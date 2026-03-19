@@ -13,10 +13,12 @@ import {
   NodeControl,
   NodeControlInner,
   NodeControlMain,
-  NodeControlProps,
   NodeControlTitle,
+  NodeControlInfo,
+  NodeControlInputCount,
 } from '@components/NodeControl/NodeControl'
 import { useEngineStore } from '@hooks/storeHooks'
+import { useInputCount } from '@hooks/useInputCount'
 
 const getInputElement = (node: Exclude<Node, Input>) => {
   if (node.nodeType === 'shot') {
@@ -47,14 +49,13 @@ export const NodeContainer = ({
   onClick,
   isActive,
   nodeId,
-  layout,
 }: {
   onClick?: (nodeId: string) => void
   isActive?: boolean
   nodeId: string
-  layout?: NodeControlProps['layout']
 }) => {
   const node = useEngineStore((state) => state.nodes[nodeId])
+  const inputCount = useInputCount(nodeId)
 
   const _onClick = useCallback(() => {
     onClick?.(nodeId)
@@ -69,9 +70,12 @@ export const NodeContainer = ({
   }
 
   return (
-    <NodeControl key={node.key} onClick={_onClick} isActive={isActive} layout={layout}>
+    <NodeControl key={node.key} onClick={_onClick} isActive={isActive}>
       <NodeControlMain>
-        <NodeControlTitle>{node.title}</NodeControlTitle>
+        <NodeControlInfo>
+          <NodeControlTitle>{node.title}</NodeControlTitle>
+          <NodeControlInputCount inputCount={inputCount} />
+        </NodeControlInfo>
         <NodeControlInner>{getInputElement(node)}</NodeControlInner>
       </NodeControlMain>
     </NodeControl>
