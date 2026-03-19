@@ -1,5 +1,5 @@
 import { useCallback, useState, useMemo } from 'react'
-import { HedronEngine, Input } from '@hedron-gl/engine'
+import { findNodeWithKeyFromIdList, HedronEngine, Input } from '@hedron-gl/engine'
 import { MIDIEvent, MidiManager } from '@hedron-gl/midi-manager'
 import { Button, ControlGrid, NodeContainer, useEngineStore } from '@hedron-gl/ui-core'
 import { MidiInput } from './MidiInput'
@@ -33,7 +33,7 @@ const useMidiLearn = (input: Input, engine: HedronEngine) => {
         // Update each option node with the learned values
         input.optionNodeIds.forEach((nodeId) => {
           const node = state.nodes[nodeId]
-          if (!node) return
+          if (!node || node.nodeType !== 'param') return
 
           switch (node.key) {
             case 'channel':
@@ -73,7 +73,7 @@ export const MidiInputPanel = ({ input, engine }: IProps) => {
   const nodeValues = useEngineStore((s) => s.nodeValues)
 
   const overrideNodeId = useMemo(
-    () => input.optionNodeIds.find((id) => nodes[id]?.key === 'override'),
+    () => findNodeWithKeyFromIdList(nodes, 'overrideValue', input.optionNodeIds)?.id,
     [input.optionNodeIds, nodes],
   )
 
@@ -85,7 +85,7 @@ export const MidiInputPanel = ({ input, engine }: IProps) => {
         {input.optionNodeIds
           .filter((id) => {
             const node = nodes[id]
-            if (!node) return false
+            if (!node || !('key' in node)) return false
             if (node.key === 'overrideValue') return overrideEnabled
             return true
           })

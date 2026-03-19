@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react'
-import { NodeParamWithChildren, NodeValue } from '@hedron-gl/engine'
+import { ParamVector, NodeValue } from '@hedron-gl/engine'
 import { useEngineStore, useEngineStoreWithContext } from '@hooks/storeHooks'
 
 export const useSubscribeToNodeValue = <T extends NodeValue>(
@@ -36,7 +36,7 @@ export const useSubscribeToNodeChildrenValues = <T extends NodeValue>(
   callback: (value: T[]) => void,
 ) => {
   const engineStore = useEngineStoreWithContext()
-  const { childNodeIds } = useEngineStore((state) => state.nodes[nodeId] as NodeParamWithChildren)
+  const { vectorComponentIds } = useEngineStore((state) => state.nodes[nodeId] as ParamVector)
 
   const callbackRef = useRef(callback)
   callbackRef.current = callback
@@ -45,7 +45,7 @@ export const useSubscribeToNodeChildrenValues = <T extends NodeValue>(
     const unsubscribeFuncs: (() => void)[] = []
 
     const unsubscribe = engineStore.subscribe(
-      (state) => childNodeIds.map((id) => state.nodeValues[id]),
+      (state) => vectorComponentIds.map((id) => state.nodeValues[id]),
       (childNodeValues) => {
         callbackRef.current(childNodeValues as T[])
       },
@@ -59,5 +59,5 @@ export const useSubscribeToNodeChildrenValues = <T extends NodeValue>(
     return () => {
       unsubscribe()
     }
-  }, [childNodeIds, engineStore, nodeId])
+  }, [vectorComponentIds, engineStore, nodeId])
 }

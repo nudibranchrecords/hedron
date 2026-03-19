@@ -1,4 +1,4 @@
-import { handleEachInput, HedronEngine, InputOptionNodesConfig, IPlugin } from '@hedron-gl/engine'
+import { handleEachInput, HedronEngine, IPlugin, NodeConfig } from '@hedron-gl/engine'
 import { AudioDeviceManager } from './AudioDeviceManager'
 import { AudioAnalyzer, AudioData, FrequencyBand, BAND_COLORS } from './AudioAnalyzer'
 import { lerp } from './AudioUtils'
@@ -104,7 +104,7 @@ export class AudioInput implements IPlugin {
         hidden: true,
       },
     ]),
-  ] as const satisfies InputOptionNodesConfig
+  ] as const satisfies NodeConfig[]
 
   public readonly optionNodesConfig = [
     {
@@ -152,7 +152,7 @@ export class AudioInput implements IPlugin {
       sliderMin: 0,
       sliderMax: 1,
     },
-  ] as const satisfies InputOptionNodesConfig
+  ] as const satisfies NodeConfig[]
 
   /**
    * Audio data containing the analyzer and visualization resources

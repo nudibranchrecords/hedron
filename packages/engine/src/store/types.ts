@@ -15,115 +15,116 @@ export type Sketches = { [key: string]: SketchState }
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type SketchModule = any
 
-export type NodeType = 'param' | 'shot'
-
 export interface NodeBase {
   id: string
+  title: string
+  parentId: string | null
+  childrenIds: string[]
+  optionNodeIds: string[]
+}
+
+export interface ParamBase extends NodeBase {
+  nodeType: 'param'
   key: string
   groupIndex: number
-  nodeType: NodeType
 }
 
-export interface NodeParamBase extends NodeBase {
-  title: string
+export interface ParamVectorBase extends ParamBase {
   nodeType: 'param'
+  vectorComponentIds: string[]
 }
 
-export interface NodeParamWithChildrenBase extends NodeParamBase {
-  nodeType: 'param'
-  childNodeIds: string[]
-}
-
-export interface NodeParamNumber extends NodeParamBase {
+export interface ParamNumber extends ParamBase {
   valueType: 'number'
   defaultValue: number
-  sliderMin?: number
-  sliderMax?: number
 }
 
-export interface NodeParamBoolean extends NodeParamBase {
+export interface ParamBoolean extends ParamBase {
   valueType: 'boolean'
   defaultValue: boolean
 }
 
-export interface NodeParamString extends NodeParamBase {
+export interface ParamString extends ParamBase {
   valueType: 'string'
   defaultValue: string
 }
 
-export interface NodeParamEnum extends NodeParamBase {
+export interface ParamEnum extends ParamBase {
   valueType: 'enum'
   defaultValue: NodeEnumValue
   options: EnumOption[]
 }
 
-export interface NodeParamVector3 extends NodeParamWithChildrenBase {
-  valueType: 'vector3'
-  defaultValue: [number, number, number]
-}
-
-export interface NodeParamVector2 extends NodeParamWithChildrenBase {
+export interface ParamVector2 extends ParamVectorBase {
   valueType: 'vector2'
   defaultValue: [number, number]
 }
 
-export interface NodeParamRGB extends NodeParamWithChildrenBase {
+export interface ParamVector3 extends ParamVectorBase {
+  valueType: 'vector3'
+  defaultValue: [number, number, number]
+}
+
+export interface ParamRGB extends ParamVectorBase {
   valueType: 'rgb'
   defaultValue: [number, number, number]
 }
 
 export type Param =
-  | NodeParamBoolean
-  | NodeParamString
-  | NodeParamNumber
-  | NodeParamEnum
-  | NodeParamVector3
-  | NodeParamVector2
-  | NodeParamRGB
+  | ParamBoolean
+  | ParamString
+  | ParamNumber
+  | ParamEnum
+  | ParamVector2
+  | ParamVector3
+  | ParamRGB
 
-export type NodeParamWithChildren = NodeParamVector3 | NodeParamRGB | NodeParamVector2
-export type ParamValueTypeWithChildren = NodeParamWithChildren['valueType']
+export type ParamVector = ParamVector2 | ParamVector3 | ParamRGB
+export type ParamVectorValueType = ParamVector['valueType']
 
 export type Shot = NodeBase & {
   nodeType: 'shot'
-  title: string
+  key: string
+  groupIndex: number
 }
 
-export type Node = Param | Shot
-export type Nodes = { [key: string]: Node }
+export type Node = Param | Shot | Input
+export type Nodes = Partial<Record<string, Node>>
+export type NodeType = Node['nodeType']
 
 export type NodeValue = number | boolean | string | ShotArgsObject
-export type NodeValues = { [key: string]: NodeValue }
-export type NodeValueType = Param['valueType'] | null
+export type NodeValues = Partial<Record<string, NodeValue>>
+export type ParamValueType = Param['valueType'] | null
 
 // Record ensures every ParamValueTypeWithChildren member is listed — adding a new
 // type that extends NodeParamWithChildrenBase will cause a compile error here if
 // it isn't included.
-const paramValueTypesWithChildren: Record<ParamValueTypeWithChildren, true> = {
+const paramValueTypesWithChildren: Record<ParamVectorValueType, true> = {
   vector3: true,
   vector2: true,
   rgb: true,
 }
 
-export const isNodeTypeWithChildren = (
-  nodeValueType: NodeValueType,
-): nodeValueType is ParamValueTypeWithChildren => {
+export const isParamVectorValueType = (
+  nodeValueType: ParamValueType,
+): nodeValueType is ParamVectorValueType => {
   return nodeValueType != null && nodeValueType in paramValueTypesWithChildren
 }
 
-// Utility type guard to check if a node has child nodes
-export const hasChildNodes = (node: Node): node is NodeParamWithChildren => {
-  return 'childNodeIds' in node
+export const isParamVector = (node: Node): node is ParamVector => {
+  return node.nodeType === 'param' && node.valueType in paramValueTypesWithChildren
 }
 
-export interface SketchConfigParamBase {
-  nodeType?: 'param'
+interface SketchConfigNodeBase {
   key: string
   title?: string
-  /**
-   * If true, this node will not appear in the UI but will still be saved/loaded
-   */
   hidden?: boolean
+}
+
+export type SketchConfigShot = SketchConfigNodeBase
+
+export interface SketchConfigParamBase extends SketchConfigNodeBase {
+  nodeType?: 'param'
 }
 
 export interface SketchConfigParamNumber extends SketchConfigParamBase {
@@ -173,11 +174,6 @@ export type SketchConfigParam =
   | SketchConfigParamVector2
   | SketchConfigParamVector3
   | SketchConfigParamRGB
-
-export type SketchConfigShot = {
-  key: string
-  title?: string
-}
 
 export type EnsureRequiredValueType<T> = T extends { valueType?: infer V }
   ? Omit<T, 'valueType'> & { valueType: V }
@@ -238,25 +234,18 @@ export type SketchModules = { [key: string]: SketchModuleItem }
 
 export type EnumOption = { value: NodeEnumValue; label: string }
 
-export type InputOptionNodesConfig = readonly SketchConfigParam[]
+export type NodeConfig = SketchConfigParam | (SketchConfigShot & { nodeType: 'shot' })
 
-export interface Input {
-  id: string
-  title: string
-  type: 'midi' | 'gamepad' | string
+export interface Input extends NodeBase {
+  nodeType: 'input'
+  inputType: string
   targetNodeId: string
-  optionNodeIds: string[]
-  // sketchID is optional because not all inputs relate to sketches
-  sketchId?: string
 }
-
-export type Inputs = { [key: string]: Input }
 
 export interface EngineData {
   sketches: Sketches
   nodes: Nodes
   nodeValues: NodeValues
-  inputs: Inputs
 }
 
 interface AuxState {
@@ -279,10 +268,10 @@ interface Actions {
   loadProject: (project: EngineData) => void
   reset: () => void
   addInput: (
-    inputConfig: Omit<Input, 'id' | 'optionNodeIds'>,
-    optionsNodeConfig: InputOptionNodesConfig,
+    inputConfig: Omit<Input, 'id' | 'optionNodeIds' | 'childrenIds' | 'nodeType'>,
+    optionsNodeConfig: NodeConfig[],
   ) => string
-  deleteInput: (inputId: string) => void
+  deleteNode: (nodeId: string) => void
 }
 
 export type EngineStateWithActions = EngineData & AuxState & Actions

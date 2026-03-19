@@ -1,5 +1,5 @@
 import { SetterCreator } from '@store/types'
-import { deleteNode } from '@store/shared/deleteCascade'
+import { deleteNode } from '@store/shared/deleteNode'
 
 export const createDeleteSketch: SetterCreator<'deleteSketch'> =
   (setState) => (instanceId: string) =>

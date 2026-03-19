@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { HedronEngine } from '@hedron-gl/engine'
+import { findNodeWithKeyFromIdList, HedronEngine, Param, Shot } from '@hedron-gl/engine'
 import {
   Panel,
   PanelHeader,
@@ -32,7 +32,6 @@ export const MidiGlobalPanel: React.FC<MidiGlobalPanelProps> = ({ engine }) => {
   const [midiLog, setMidiLog] = useState<MidiLogMessage[]>([])
   const [connectedDevices, setConnectedDevices] = useState<string[]>([])
 
-  const inputs = useEngineStore((state) => state.inputs)
   const nodes = useEngineStore((state) => state.nodes)
   const nodeValues = useEngineStore((state) => state.nodeValues)
   const sketches = useEngineStore((state) => state.sketches)
@@ -74,27 +73,26 @@ export const MidiGlobalPanel: React.FC<MidiGlobalPanelProps> = ({ engine }) => {
       let affectedNodeName: string | undefined
       let sketchName: string | undefined
 
-      Object.values(inputs).forEach((input) => {
-        if (input.type !== 'midi') return
+      // TODO: Like all other inputs, this strategy of looping through all inputs is very inefficient (could have 1000s of nodes in a project)
+      Object.values(nodes).forEach((input) => {
+        if (input?.nodeType !== 'input' || input.inputType !== 'midi') return
 
-        const channelNode = input.optionNodeIds.find(
-          (nodeId: string) => nodes[nodeId]?.key === 'channel',
-        )
-        const noteNode = input.optionNodeIds.find((nodeId: string) => nodes[nodeId]?.key === 'note')
-        const typeNode = input.optionNodeIds.find((nodeId: string) => nodes[nodeId]?.key === 'type')
+        const channelNode = findNodeWithKeyFromIdList(nodes, 'channel', input.optionNodeIds)
+        const noteNode = findNodeWithKeyFromIdList(nodes, 'note', input.optionNodeIds)
+        const typeNode = findNodeWithKeyFromIdList(nodes, 'type', input.optionNodeIds)
 
         if (!channelNode || !noteNode || !typeNode) return
 
-        const channelValue = nodeValues[channelNode]
-        const noteValue = nodeValues[noteNode]
-        const typeValue = nodeValues[typeNode]
+        const channelValue = nodeValues[channelNode.id]
+        const noteValue = nodeValues[noteNode.id]
+        const typeValue = nodeValues[typeNode.id]
 
         if (
           channelValue === event.channel &&
           noteValue === event.note &&
           typeValue === event.type
         ) {
-          const targetNode = nodes[input.targetNodeId]
+          const targetNode = nodes[input.targetNodeId] as Param | Shot
           if (targetNode) {
             affectedNodeName = targetNode.title || targetNode.key
 
@@ -128,7 +126,7 @@ export const MidiGlobalPanel: React.FC<MidiGlobalPanelProps> = ({ engine }) => {
     return () => {
       midiPlugin.midiManager.onMidiMessage.remove(handleMidiMessage)
     }
-  }, [midiPlugin, inputs, nodes, nodeValues, sketches])
+  }, [midiPlugin, nodes, nodeValues, sketches])
 
   const globalNodeId = `${midiPlugin.id}-global`
 

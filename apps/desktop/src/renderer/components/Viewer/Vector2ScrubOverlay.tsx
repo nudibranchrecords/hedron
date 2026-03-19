@@ -26,7 +26,7 @@ export const Vector2ScrubOverlay = () => {
 
         const vec2 = [x, y]
 
-        selectedNode.childNodeIds.forEach((id, i) => {
+        selectedNode.vectorComponentIds.forEach((id, i) => {
           const oldVal = nodeValues[id] as number
           const sliderMin = (nodeValues[`${id}-sliderMin`] as number | undefined) ?? 0
           const sliderMax = (nodeValues[`${id}-sliderMax`] as number | undefined) ?? 1

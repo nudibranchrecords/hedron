@@ -11,7 +11,8 @@ export const createAddSketch: SetterCreator<'addSketch'> = (setState) => (module
     for (const nodeConfig of config.nodes) {
       const id = createUniqueId()
       nodeIds.push(id)
-      addNode(state, id, nodeConfig)
+      // TODO: We're handing newSketchId as a parentId but sketches aren't yet nodes (this might break things...)
+      addNode(state, id, newSketchId, nodeConfig)
     }
 
     state.sketches[newSketchId] = {

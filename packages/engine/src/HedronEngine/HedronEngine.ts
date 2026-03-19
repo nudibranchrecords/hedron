@@ -3,6 +3,7 @@ import { type Clock } from '@hedron-gl/clock'
 import { listenToStore } from './storeListener'
 import { CanvasSizeMode, RendererType, Result, ShotArgsObject } from './types'
 import { importSketchModule } from './importSketchModule'
+import { ensureConfig } from '@store/shared/ensureConfig'
 import { flushNodeValueBuffer } from '@store/actionCreators/updateNodeValue'
 import { getSketchShotNodes } from '@store/selectors/getSketchShotNodes'
 import { initializeGlobalVars } from '@globalVars'
@@ -11,7 +12,7 @@ import { stripForSave } from '@utils/stripForSave'
 import { Renderer } from '@world/Renderer'
 import { SketchInstance, SketchInstanceError, SketchManager } from '@world/SketchManager'
 import { createDebugScene } from '@world/debugScene'
-import { EngineData, SketchModuleItem, SketchConfigParamImported } from '@store/types'
+import { EngineData, SketchModuleItem } from '@store/types'
 import { getSketchesOfModuleId } from '@store/selectors/getSketchesOfModuleId'
 import { createEngineStore, EngineStore } from '@store/engineStore'
 import { getSketchParamValues } from '@store/selectors/getSketchParamValues'
@@ -94,15 +95,10 @@ export class HedronEngine {
         }
 
         // Create proper imported config with required fields
-        const cfgImported: SketchConfigParamImported = {
-          ...cfg,
-          valueType: cfg.valueType ?? 'number',
-          groupIndex: 0,
-          title: cfg.title ?? cfg.key,
-        } as SketchConfigParamImported
+        const cfgImported = ensureConfig(cfg)
 
         // Add the node to the store using the shared addNode utility
-        addNode(state, nodeId, cfgImported)
+        addNode(state, nodeId, null, cfgImported)
       }
     })
   }

@@ -1,17 +1,17 @@
 import {
   getNextEnumValue,
   HedronEngine,
-  InputOptionNodesConfig,
   IPlugin,
   NodeValue,
   handleEachInput,
   Input,
   ConfigToOptionsType,
   Param,
+  ParamEnum,
+  NodeConfig,
   EngineStateWithActions,
 } from '@hedron-gl/engine'
 import { MIDIEvent, MidiManager, MidiMessageType } from '@hedron-gl/midi-manager'
-import { NodeParamEnum } from 'node_modules/@hedron-gl/engine/dist'
 
 const noteLetters = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B']
 const midiNotes: string[] = new Array(128)
@@ -54,7 +54,7 @@ export class MidiInput implements IPlugin {
       sliderMin: 0,
       sliderMax: 0.99,
     },
-  ] as const satisfies InputOptionNodesConfig
+  ] as const satisfies NodeConfig[]
   public readonly optionNodesConfig = [
     {
       key: 'channel',
@@ -92,7 +92,7 @@ export class MidiInput implements IPlugin {
       sliderMin: -1,
       sliderMax: 127,
     },
-  ] as const satisfies InputOptionNodesConfig
+  ] as const satisfies NodeConfig[]
 
   private handleShot: ShotHandler = ({ input, engine, midiEvent }) => {
     engine.fireShot(input.targetNodeId, { _midiEvent: midiEvent })
@@ -109,7 +109,7 @@ export class MidiInput implements IPlugin {
     return value
   }
 
-  private handleEnum: ValueHander<NodeParamEnum> = ({
+  private handleEnum: ValueHander<ParamEnum> = ({
     midiEvent,
     input,
     storeState,
@@ -119,7 +119,7 @@ export class MidiInput implements IPlugin {
     switch (midiEvent.type) {
       case MidiMessageType.NoteOn:
       case MidiMessageType.NoteOff:
-        return getNextEnumValue(input.targetNodeId)(storeState)
+        return getNextEnumValue(input.targetNodeId)(storeState) ?? null
       default: {
         const value = this.getValue(optionNodes, midiEvent)
         return targetNode.options[Math.floor((value / 127) * (targetNode.options.length - 1))].value

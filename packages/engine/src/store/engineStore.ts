@@ -3,6 +3,7 @@ import { devtools, subscribeWithSelector } from 'zustand/middleware'
 import { immer } from 'zustand/middleware/immer'
 
 import type {} from '@redux-devtools/extension' // required for devtools typing
+import { createDeleteNode } from './actionCreators/createDeleteNode'
 import { EngineStateWithActions } from '@store/types'
 import { initialState } from '@store/initialState'
 import { createAddSketch } from '@store/actionCreators/addSketch'
@@ -17,7 +18,6 @@ import {
 import { createReset } from '@store/actionCreators/reset'
 import { createLoadProject } from '@store/actionCreators/loadProject'
 import { createAddInput } from '@store/actionCreators/createAddInput'
-import { createDeleteInput } from '@store/actionCreators/createDeleteInput'
 import { createUpdateSketch } from '@store/actionCreators/updateSketch'
 import { createMoveSketchDown, createMoveSketchUp } from '@store/actionCreators/moveSketchOrder'
 
@@ -25,7 +25,7 @@ export const createEngineStore = () =>
   createStore<EngineStateWithActions>()(
     subscribeWithSelector(
       devtools(
-        immer((set) => ({
+        immer<EngineStateWithActions>((set) => ({
           ...initialState,
           addSketch: createAddSketch(set),
           updateSketch: createUpdateSketch(set),
@@ -40,7 +40,7 @@ export const createEngineStore = () =>
           reset: createReset(set),
           loadProject: createLoadProject(set),
           addInput: createAddInput(set),
-          deleteInput: createDeleteInput(set),
+          deleteNode: createDeleteNode(set),
         })),
         {
           name: 'Hedron Engine',

@@ -5,8 +5,8 @@ import {
   handleEachInput,
   HedronEngine,
   Input,
-  InputOptionNodesConfig,
   IPlugin,
+  NodeConfig,
   NodeValue,
   Param,
 } from '@hedron-gl/engine'
@@ -118,7 +118,7 @@ export class LFOInput implements IPlugin {
       valueType: 'number',
       defaultValue: 1,
     },
-  ] as const satisfies InputOptionNodesConfig
+  ] as const satisfies NodeConfig[]
 
   private inputLatches: Record<string, boolean> = {}
 
@@ -141,7 +141,7 @@ export class LFOInput implements IPlugin {
       }
 
       this.inputLatches[input.id] = true
-      return getNextEnumValue(input.targetNodeId)(storeState)
+      return getNextEnumValue(input.targetNodeId)(storeState) ?? null
     } else {
       this.inputLatches[input.id] = false
       return null

@@ -1,4 +1,4 @@
-import { EngineState, hasChildNodes } from '@store/types'
+import { EngineState, isParamVector } from '@store/types'
 
 // Get the values of the parameters of a sketch, dealing with child nodes
 export const getSketchParamValues = (state: EngineState, sketchId: string) => {
@@ -9,13 +9,18 @@ export const getSketchParamValues = (state: EngineState, sketchId: string) => {
 
   sketch.nodeIds.forEach((id) => {
     const node = nodes[id]
+
+    if (node?.nodeType !== 'param') {
+      return
+    }
+
     const { key } = node
 
     let value
 
-    if (hasChildNodes(node)) {
+    if (isParamVector(node)) {
       // Return an array of values for nodes with child nodes
-      const childNodeIds = node.childNodeIds
+      const childNodeIds = node.vectorComponentIds
       value = childNodeIds.map((childNodeId) => nodeValues[childNodeId])
     } else {
       value = nodeValues[id]
