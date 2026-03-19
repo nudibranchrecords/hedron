@@ -14,9 +14,9 @@ export const createAddInput: SetterCreator<'addInput'> =
         const optionNodeId = createUniqueId()
         optionNodeIds.push(optionNodeId)
 
-        const cfgImorted = ensureConfig(cfg)
+        const cfgImported = ensureConfig(cfg)
 
-        addNode(state, optionNodeId, id, cfgImorted)
+        addNode(state, optionNodeId, id, cfgImported)
       }
 
       if (state.nodes[id]) {
