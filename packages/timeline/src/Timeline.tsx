@@ -1,5 +1,7 @@
 import { useCallback, useRef } from 'react'
 import c from './Timeline.module.css'
+import '@hedron-gl/ui-core/base.css'
+import '@hedron-gl/ui-core/fonts.css'
 import type { Timeline as TimelineData } from './types'
 
 export interface TimelineProps {

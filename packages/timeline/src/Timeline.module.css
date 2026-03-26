@@ -7,6 +7,9 @@
   border-radius: 4px;
   overflow: hidden;
   user-select: none;
+
+  --playheadColor: var(--actionColor1);
+  --keyframeColor: white;
 }
 
 .header {
@@ -22,7 +25,7 @@
 
 .trackArea {
   display: grid;
-  grid-template-columns: 60px 1fr;
+  grid-template-columns: 100px 1fr;
   position: relative;
   width: 100%;
   height: calc(100% - 28px);
@@ -33,7 +36,7 @@
   top: 0;
   bottom: 0;
   width: 1px;
-  background: #ff4444;
+  background: var(--playheadColor);
   pointer-events: none;
   z-index: 2;
 }
@@ -47,7 +50,7 @@
   height: 0;
   border-left: 4px solid transparent;
   border-right: 4px solid transparent;
-  border-top: 6px solid #ff4444;
+  border-top: 6px solid var(--playheadColor);
 }
 
 .ruler {
@@ -84,7 +87,7 @@
 .trackHeader {
   display: flex;
   align-items: center;
-  padding-left: 4px;
+  padding: 0 1rem;
   font-size: 10px;
   color: #888;
   white-space: nowrap;
@@ -100,8 +103,7 @@
   position: absolute;
   width: 8px;
   height: 8px;
-  background: #5599ff;
-  border: 1px solid #77bbff;
+  background: var(--keyframeColor);
   border-radius: 2px;
   transform: translate(-50%, -50%) rotate(45deg);
   top: 50%;
@@ -110,5 +112,5 @@
 }
 
 .keyframe:hover {
-  background: #77bbff;
+  background: var(--keyframeColor);
 }
