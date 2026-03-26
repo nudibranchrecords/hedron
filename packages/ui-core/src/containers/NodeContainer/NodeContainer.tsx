@@ -52,7 +52,7 @@ export const NodeContainer = ({ nodeId }: { nodeId: string }) => {
   const isActive = useAppStore((state) =>
     activeSketchId ? state.selectedNodes[activeSketchId] === nodeId : false,
   )
-  const onSelectNode = useOnSelectNode(activeSketchId ?? '', nodeId)
+  const onSelectNode = useOnSelectNode(activeSketchId, nodeId)
 
   if (!node) {
     return <i>Node with id {nodeId} not found</i>
