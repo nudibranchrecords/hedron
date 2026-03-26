@@ -5,7 +5,9 @@
     "jsx": "react-jsx",
     "baseUrl": ".",
     "paths": {
-      "@components/*": ["src/*"]
+      "@components/*": ["src/components/*"],
+      "@types/*": ["src/types/*"],
+      "@types": ["src/types"]
     }
   }
 }

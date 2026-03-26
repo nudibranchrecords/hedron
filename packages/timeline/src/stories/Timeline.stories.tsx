@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { useState, useEffect } from 'react'
-import { Timeline } from '@components/Timeline'
-import type { Timeline as TimelineData } from '@components/types'
+import { Timeline } from '@components/Timeline/Timeline'
+import type { Timeline as TimelineData } from '@types'
 
 const meta = {
   title: 'Timeline',
@@ -88,7 +88,7 @@ export const Interactive = () => {
               ...track,
               keyframes: [
                 ...track.keyframes,
-                { id: `kf-${Date.now()}`, time, valueType: 'boolean', value: true },
+                { id: `kf-${Date.now()}`, time, valueType: 'boolean' as const, value: true },
               ].sort((a, b) => a.time - b.time),
             }
           : track,
