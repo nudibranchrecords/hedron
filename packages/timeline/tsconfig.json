@@ -3,6 +3,9 @@
   "include": ["src/**/*"],
   "compilerOptions": {
     "jsx": "react-jsx",
-    "baseUrl": "."
+    "baseUrl": ".",
+    "paths": {
+      "@components/*": ["src/*"]
+    }
   }
 }
