@@ -73,6 +73,16 @@
   height: 24px;
 }
 
+.activeRegion {
+  position: absolute;
+  top: 50%;
+  height: 2px;
+  transform: translateY(-50%);
+  background: var(--keyframeColor);
+  opacity: 0.4;
+  pointer-events: none;
+}
+
 .playhead {
   position: absolute;
   top: 0;
