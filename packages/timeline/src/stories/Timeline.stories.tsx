@@ -79,9 +79,27 @@ export const Interactive = () => {
     }))
   }
 
+  const handleKeyframeInsert = (trackId: string, time: number) => {
+    setTimeline((prev) => ({
+      ...prev,
+      tracks: prev.tracks.map((track) =>
+        track.id === trackId
+          ? {
+              ...track,
+              keyframes: [
+                ...track.keyframes,
+                { id: `kf-${Date.now()}`, time, valueType: 'boolean', value: true },
+              ].sort((a, b) => a.time - b.time),
+            }
+          : track,
+      ),
+    }))
+  }
+
   return (
     <div>
       <p style={{ color: '#aaa', fontSize: '12px', marginBottom: '8px' }}>
+        Click a track header to select it. Press &quot;i&quot; to insert a keyframe at the playhead.
         Click a keyframe to select it, then press &quot;x&quot; to delete.
       </p>
       <Timeline
@@ -89,6 +107,7 @@ export const Interactive = () => {
         playheadPosition={playheadPosition}
         onPlayheadChange={setPlayheadPosition}
         onKeyframeDelete={handleKeyframeDelete}
+        onKeyframeInsert={handleKeyframeInsert}
       />
     </div>
   )
