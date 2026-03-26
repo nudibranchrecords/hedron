@@ -1,6 +1,6 @@
 import type { Meta } from '@storybook/react'
 import { fn } from '@storybook/test'
-import { useEffect, useRef, useState } from 'react'
+import { Fragment, useEffect, useRef, useState } from 'react'
 import { useInterval } from 'usehooks-ts'
 import { EnumDropdown, EnumDropdownHandle } from '@components/EnumDropdown/EnumDropdown'
 import {
@@ -226,38 +226,23 @@ export const WithControlGrid = () => {
   return (
     <ControlGrid>
       {params.map(([title, type], i) => (
-        <>
+        <Fragment key={i}>
           {type === 'number' && (
-            <Number
-              key={i}
-              title={title}
-              isActive={activeId === i}
-              onClick={() => setActiveId(i)}
-            />
+            <Number title={title} isActive={activeId === i} onClick={() => setActiveId(i)} />
           )}
           {type === 'boolean' && (
-            <Boolean
-              key={i}
-              title={title}
-              isActive={activeId === i}
-              onClick={() => setActiveId(i)}
-            />
+            <Boolean title={title} isActive={activeId === i} onClick={() => setActiveId(i)} />
           )}
           {type === 'color' && (
-            <Color key={i} title={title} isActive={activeId === i} onClick={() => setActiveId(i)} />
+            <Color title={title} isActive={activeId === i} onClick={() => setActiveId(i)} />
           )}
           {type === 'enum' && (
-            <Enum key={i} title={title} isActive={activeId === i} onClick={() => setActiveId(i)} />
+            <Enum title={title} isActive={activeId === i} onClick={() => setActiveId(i)} />
           )}
           {type === 'trigger' && (
-            <Trigger
-              key={i}
-              title={title}
-              isActive={activeId === i}
-              onClick={() => setActiveId(i)}
-            />
+            <Trigger title={title} isActive={activeId === i} onClick={() => setActiveId(i)} />
           )}
-        </>
+        </Fragment>
       ))}
     </ControlGrid>
   )
