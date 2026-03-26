@@ -1,7 +1,11 @@
+/* eslint-disable storybook/context-in-play-function */
+
 import type { Meta, StoryObj } from '@storybook/react'
-import { useState, useEffect } from 'react'
-import { Timeline } from '@components/Timeline/Timeline'
-import type { Timeline as TimelineData } from '@types'
+import { useState, useEffect, useRef } from 'react'
+import { TimelineManager } from '@/TimelineManager'
+import type { TrackValues } from '@/TimelineManager'
+import { Timeline } from '@/components/Timeline/Timeline'
+import type { Timeline as TimelineData } from '@/types'
 
 const meta = {
   title: 'Timeline',
@@ -54,6 +58,8 @@ export const WithKeyframes: Story = {
 
 export const Interactive = () => {
   const [playheadPosition, setPlayheadPosition] = useState(0)
+  const [playing, setPlaying] = useState(false)
+  const [trackValues, setTrackValues] = useState<TrackValues>({})
   const [timeline, setTimeline] = useState<TimelineData>({
     durationMs: 10000,
     tracks: [
@@ -61,13 +67,69 @@ export const Interactive = () => {
         id: 'track-1',
         label: 'Visibility',
         keyframes: [
-          { id: 'kf-1', time: 1000, valueType: 'boolean', value: true },
-          { id: 'kf-2', time: 4000, valueType: 'boolean', value: false },
-          { id: 'kf-3', time: 7000, valueType: 'boolean', value: true },
+          { id: 'kf-v1', time: 0, valueType: 'boolean', value: true },
+          { id: 'kf-v2', time: 3000, valueType: 'boolean', value: false },
+          { id: 'kf-v3', time: 6000, valueType: 'boolean', value: true },
+        ],
+      },
+      {
+        id: 'track-2',
+        label: 'Strobe',
+        keyframes: [
+          { id: 'kf-s1', time: 1000, valueType: 'boolean', value: true },
+          { id: 'kf-s2', time: 2000, valueType: 'boolean', value: false },
+          { id: 'kf-s3', time: 4000, valueType: 'boolean', value: true },
+          { id: 'kf-s4', time: 5000, valueType: 'boolean', value: false },
+          { id: 'kf-s5', time: 7000, valueType: 'boolean', value: true },
+          { id: 'kf-s6', time: 8000, valueType: 'boolean', value: false },
+        ],
+      },
+      {
+        id: 'track-3',
+        label: 'Invert',
+        keyframes: [
+          { id: 'kf-i1', time: 2500, valueType: 'boolean', value: true },
+          { id: 'kf-i2', time: 7500, valueType: 'boolean', value: false },
         ],
       },
     ],
   })
+
+  const managerRef = useRef<TimelineManager | null>(null)
+
+  useEffect(() => {
+    const manager = new TimelineManager(timeline)
+    managerRef.current = manager
+
+    manager.onUpdate((changed) => {
+      setTrackValues((prev) => ({ ...prev, ...changed }))
+      setPlayheadPosition(manager.getPosition())
+    })
+
+    return () => manager.dispose()
+  }, [timeline])
+
+  useEffect(() => {
+    managerRef.current?.setData(timeline)
+  }, [timeline])
+
+  const handlePlayPause = () => {
+    const manager = managerRef.current
+    if (!manager) return
+    if (playing) {
+      manager.pause()
+    } else {
+      manager.play()
+    }
+    setPlaying(!playing)
+  }
+
+  const handlePlayheadChange = (time: number) => {
+    managerRef.current?.goTo(time)
+    setPlayheadPosition(time)
+    setPlaying(false)
+    managerRef.current?.pause()
+  }
 
   const handleKeyframeDelete = (keyframeId: string) => {
     setTimeline((prev) => ({
@@ -98,44 +160,9 @@ export const Interactive = () => {
 
   return (
     <div>
-      <p style={{ color: '#aaa', fontSize: '12px', marginBottom: '8px' }}>
-        Click a track header to select it. Press &quot;i&quot; to insert a keyframe at the playhead.
-        Click a keyframe to select it, then press &quot;x&quot; to delete.
-      </p>
-      <Timeline
-        timeline={timeline}
-        playheadPosition={playheadPosition}
-        onPlayheadChange={setPlayheadPosition}
-        onKeyframeDelete={handleKeyframeDelete}
-        onKeyframeInsert={handleKeyframeInsert}
-      />
-    </div>
-  )
-}
-
-export const Playing = () => {
-  const [playheadPosition, setPlayheadPosition] = useState(0)
-  const [playing, setPlaying] = useState(true)
-  const durationMs = 10000
-
-  useEffect(() => {
-    if (!playing) return
-    const start = performance.now() - playheadPosition
-    let raf: number
-    const tick = (now: number) => {
-      const elapsed = now - start
-      setPlayheadPosition(elapsed % durationMs)
-      raf = requestAnimationFrame(tick)
-    }
-    raf = requestAnimationFrame(tick)
-    return () => cancelAnimationFrame(raf)
-  }, [playing, playheadPosition, durationMs])
-
-  return (
-    <div>
-      <div style={{ marginBottom: '8px' }}>
+      <div style={{ marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '12px' }}>
         <button
-          onClick={() => setPlaying(!playing)}
+          onClick={handlePlayPause}
           style={{
             background: '#444',
             color: '#fff',
@@ -147,30 +174,29 @@ export const Playing = () => {
         >
           {playing ? 'Pause' : 'Play'}
         </button>
+        <span style={{ color: '#aaa', fontSize: '12px' }}>
+          Click a track header to select it. Press &quot;i&quot; to insert a keyframe at the
+          playhead. Click a keyframe to select it, then press &quot;x&quot; to delete.
+        </span>
       </div>
       <Timeline
-        timeline={{
-          durationMs,
-          tracks: [
-            {
-              id: 'track-1',
-              label: 'Enabled',
-              keyframes: [
-                { id: 'kf-1', time: 500, valueType: 'boolean', value: true },
-                { id: 'kf-2', time: 2500, valueType: 'boolean', value: false },
-                { id: 'kf-3', time: 5000, valueType: 'boolean', value: true },
-                { id: 'kf-4', time: 7500, valueType: 'boolean', value: false },
-                { id: 'kf-5', time: 9500, valueType: 'boolean', value: true },
-              ],
-            },
-          ],
-        }}
+        timeline={timeline}
         playheadPosition={playheadPosition}
-        onPlayheadChange={(t) => {
-          setPlayheadPosition(t)
-          setPlaying(false)
-        }}
+        onPlayheadChange={handlePlayheadChange}
+        onKeyframeDelete={handleKeyframeDelete}
+        onKeyframeInsert={handleKeyframeInsert}
       />
+      <div style={{ marginTop: '12px', fontFamily: 'monospace', fontSize: '12px', color: '#ccc' }}>
+        <div style={{ marginBottom: '4px', color: '#888' }}>Track Values:</div>
+        {timeline.tracks.map((track) => (
+          <div key={track.id} style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+            <span style={{ color: '#888' }}>{track.label}:</span>
+            <span style={{ color: trackValues[track.id] ? '#4f4' : '#f44' }}>
+              {String(trackValues[track.id] ?? false)}
+            </span>
+          </div>
+        ))}
+      </div>
     </div>
   )
 }
@@ -194,45 +220,5 @@ export const LongDuration: Story = {
       ],
     },
     playheadPosition: 45000,
-  },
-}
-
-export const MultipleTracks: Story = {
-  args: {
-    timeline: {
-      durationMs: 10000,
-      tracks: [
-        {
-          id: 'track-1',
-          label: 'Visibility',
-          keyframes: [
-            { id: 'kf-v1', time: 0, valueType: 'boolean', value: true },
-            { id: 'kf-v2', time: 3000, valueType: 'boolean', value: false },
-            { id: 'kf-v3', time: 6000, valueType: 'boolean', value: true },
-          ],
-        },
-        {
-          id: 'track-2',
-          label: 'Strobe',
-          keyframes: [
-            { id: 'kf-s1', time: 1000, valueType: 'boolean', value: true },
-            { id: 'kf-s2', time: 2000, valueType: 'boolean', value: false },
-            { id: 'kf-s3', time: 4000, valueType: 'boolean', value: true },
-            { id: 'kf-s4', time: 5000, valueType: 'boolean', value: false },
-            { id: 'kf-s5', time: 7000, valueType: 'boolean', value: true },
-            { id: 'kf-s6', time: 8000, valueType: 'boolean', value: false },
-          ],
-        },
-        {
-          id: 'track-3',
-          label: 'Invert',
-          keyframes: [
-            { id: 'kf-i1', time: 2500, valueType: 'boolean', value: true },
-            { id: 'kf-i2', time: 7500, valueType: 'boolean', value: false },
-          ],
-        },
-      ],
-    },
-    playheadPosition: 4000,
   },
 }
