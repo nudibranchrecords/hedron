@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { useState, useEffect, useCallback } from 'react'
-import { Timeline } from '../Timeline'
-import type { Keyframe } from '../Timeline'
+import { Timeline } from '@components/Timeline'
+import type { Keyframe } from '@components/Timeline'
 
 const meta = {
   title: 'Timeline',
