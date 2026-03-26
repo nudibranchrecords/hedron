@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react'
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect } from 'react'
 import { Timeline } from '@components/Timeline'
 import type { Timeline as TimelineData } from '@components/types'
 
@@ -40,10 +40,10 @@ export const WithKeyframes: Story = {
           id: 'track-1',
           label: 'Visibility',
           keyframes: [
-            { time: 1000, valueType: 'boolean', value: true },
-            { time: 3000, valueType: 'boolean', value: false },
-            { time: 5500, valueType: 'boolean', value: true },
-            { time: 8000, valueType: 'boolean', value: false },
+            { id: 'kf-1', time: 1000, valueType: 'boolean', value: true },
+            { id: 'kf-2', time: 3000, valueType: 'boolean', value: false },
+            { id: 'kf-3', time: 5500, valueType: 'boolean', value: true },
+            { id: 'kf-4', time: 8000, valueType: 'boolean', value: false },
           ],
         },
       ],
@@ -61,35 +61,34 @@ export const Interactive = () => {
         id: 'track-1',
         label: 'Visibility',
         keyframes: [
-          { time: 1000, valueType: 'boolean', value: true },
-          { time: 4000, valueType: 'boolean', value: false },
-          { time: 7000, valueType: 'boolean', value: true },
+          { id: 'kf-1', time: 1000, valueType: 'boolean', value: true },
+          { id: 'kf-2', time: 4000, valueType: 'boolean', value: false },
+          { id: 'kf-3', time: 7000, valueType: 'boolean', value: true },
         ],
       },
     ],
   })
 
-  const handleKeyframeClick = useCallback((trackId: string, keyframeIndex: number) => {
+  const handleKeyframeDelete = (keyframeId: string) => {
     setTimeline((prev) => ({
       ...prev,
-      tracks: prev.tracks.map((track) =>
-        track.id === trackId
-          ? { ...track, keyframes: track.keyframes.filter((_, i) => i !== keyframeIndex) }
-          : track,
-      ),
+      tracks: prev.tracks.map((track) => ({
+        ...track,
+        keyframes: track.keyframes.filter((kf) => kf.id !== keyframeId),
+      })),
     }))
-  }, [])
+  }
 
   return (
     <div>
       <p style={{ color: '#aaa', fontSize: '12px', marginBottom: '8px' }}>
-        Click the track to move the playhead. Click a keyframe to remove it.
+        Click a keyframe to select it, then press &quot;x&quot; to delete.
       </p>
       <Timeline
         timeline={timeline}
         playheadPosition={playheadPosition}
         onPlayheadChange={setPlayheadPosition}
-        onKeyframeClick={handleKeyframeClick}
+        onKeyframeDelete={handleKeyframeDelete}
       />
     </div>
   )
@@ -138,11 +137,11 @@ export const Playing = () => {
               id: 'track-1',
               label: 'Enabled',
               keyframes: [
-                { time: 500, valueType: 'boolean', value: true },
-                { time: 2500, valueType: 'boolean', value: false },
-                { time: 5000, valueType: 'boolean', value: true },
-                { time: 7500, valueType: 'boolean', value: false },
-                { time: 9500, valueType: 'boolean', value: true },
+                { id: 'kf-1', time: 500, valueType: 'boolean', value: true },
+                { id: 'kf-2', time: 2500, valueType: 'boolean', value: false },
+                { id: 'kf-3', time: 5000, valueType: 'boolean', value: true },
+                { id: 'kf-4', time: 7500, valueType: 'boolean', value: false },
+                { id: 'kf-5', time: 9500, valueType: 'boolean', value: true },
               ],
             },
           ],
@@ -166,11 +165,11 @@ export const LongDuration: Story = {
           id: 'track-1',
           label: 'Active',
           keyframes: [
-            { time: 10000, valueType: 'boolean', value: true },
-            { time: 30000, valueType: 'boolean', value: false },
-            { time: 60000, valueType: 'boolean', value: true },
-            { time: 90000, valueType: 'boolean', value: false },
-            { time: 110000, valueType: 'boolean', value: true },
+            { id: 'kf-1', time: 10000, valueType: 'boolean', value: true },
+            { id: 'kf-2', time: 30000, valueType: 'boolean', value: false },
+            { id: 'kf-3', time: 60000, valueType: 'boolean', value: true },
+            { id: 'kf-4', time: 90000, valueType: 'boolean', value: false },
+            { id: 'kf-5', time: 110000, valueType: 'boolean', value: true },
           ],
         },
       ],
@@ -188,29 +187,29 @@ export const MultipleTracks: Story = {
           id: 'track-1',
           label: 'Visibility',
           keyframes: [
-            { time: 0, valueType: 'boolean', value: true },
-            { time: 3000, valueType: 'boolean', value: false },
-            { time: 6000, valueType: 'boolean', value: true },
+            { id: 'kf-v1', time: 0, valueType: 'boolean', value: true },
+            { id: 'kf-v2', time: 3000, valueType: 'boolean', value: false },
+            { id: 'kf-v3', time: 6000, valueType: 'boolean', value: true },
           ],
         },
         {
           id: 'track-2',
           label: 'Strobe',
           keyframes: [
-            { time: 1000, valueType: 'boolean', value: true },
-            { time: 2000, valueType: 'boolean', value: false },
-            { time: 4000, valueType: 'boolean', value: true },
-            { time: 5000, valueType: 'boolean', value: false },
-            { time: 7000, valueType: 'boolean', value: true },
-            { time: 8000, valueType: 'boolean', value: false },
+            { id: 'kf-s1', time: 1000, valueType: 'boolean', value: true },
+            { id: 'kf-s2', time: 2000, valueType: 'boolean', value: false },
+            { id: 'kf-s3', time: 4000, valueType: 'boolean', value: true },
+            { id: 'kf-s4', time: 5000, valueType: 'boolean', value: false },
+            { id: 'kf-s5', time: 7000, valueType: 'boolean', value: true },
+            { id: 'kf-s6', time: 8000, valueType: 'boolean', value: false },
           ],
         },
         {
           id: 'track-3',
           label: 'Invert',
           keyframes: [
-            { time: 2500, valueType: 'boolean', value: true },
-            { time: 7500, valueType: 'boolean', value: false },
+            { id: 'kf-i1', time: 2500, valueType: 'boolean', value: true },
+            { id: 'kf-i2', time: 7500, valueType: 'boolean', value: false },
           ],
         },
       ],
