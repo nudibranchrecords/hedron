@@ -28,8 +28,13 @@ export function Timeline({
     (e: React.MouseEvent<HTMLDivElement>) => {
       if (!trackAreaRef.current || !onPlayheadChange) return
       const rect = trackAreaRef.current.getBoundingClientRect()
-      const x = e.clientX - rect.left
-      const time = (x / rect.width) * durationMs
+      const headerWidth = parseFloat(
+        getComputedStyle(trackAreaRef.current).getPropertyValue('--trackHeaderWidth'),
+      )
+      const trackWidth = rect.width - headerWidth
+      const x = e.clientX - rect.left - headerWidth
+      if (x < 0) return
+      const time = (x / trackWidth) * durationMs
       onPlayheadChange(Math.max(0, Math.min(durationMs, time)))
     },
     [durationMs, onPlayheadChange],
@@ -57,12 +62,14 @@ export function Timeline({
           {(playheadPosition / 1000).toFixed(1)}s / {durationSec}s
         </span>
       </div>
-      <div className={c.trackArea} ref={trackAreaRef} onClick={handleTrackClick}>
+      <div className={c.body} ref={trackAreaRef} onClick={handleTrackClick}>
         <div className={c.ruler}>{rulerMarks}</div>
         {tracks.map((track) => (
-          <div key={track.id} className={c.keyframeTrack}>
-            <div className={c.trackHeader}>{track.label}</div>
-            <div className={c.trackBody}>
+          <>
+            <div key={`h-${track.id}`} className={c.trackHeader}>
+              {track.label}
+            </div>
+            <div key={`b-${track.id}`} className={c.trackBody}>
               {track.keyframes.map((kf, i) => {
                 const percent = (kf.time / durationMs) * 100
                 return (
@@ -78,9 +85,12 @@ export function Timeline({
                 )
               })}
             </div>
-          </div>
+          </>
         ))}
-        <div className={c.playhead} style={{ left: `${playheadPercent}%` }} />
+        <div
+          className={c.playhead}
+          style={{ '--playheadPercent': playheadPercent / 100 } as React.CSSProperties}
+        />
       </div>
     </div>
   )
