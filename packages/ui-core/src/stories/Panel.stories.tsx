@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react'
+import type { Decorator, Meta, StoryObj } from '@storybook/react'
 
 import { fn } from '@storybook/test'
 import { WithControlGrid } from './NodeControl.stories'
@@ -12,6 +12,20 @@ import {
   PanelBreadcrumbs,
 } from '@components/Panel/Panel'
 import { Button } from '@components/Button/Button'
+
+const bottomDecorator: Decorator = (Story) => {
+  return (
+    <div
+      style={{
+        height: '100vh',
+        display: 'flex',
+        alignItems: 'flex-end',
+      }}
+    >
+      <Story />
+    </div>
+  )
+}
 
 const meta = {
   title: 'Panel',
@@ -185,21 +199,7 @@ export const BottomPanel: Story = {
   parameters: {
     layout: 'fullscreen',
   },
-  decorators: [
-    (Story) => {
-      return (
-        <div
-          style={{
-            height: '100vh',
-            display: 'flex',
-            alignItems: 'flex-end',
-          }}
-        >
-          <Story />
-        </div>
-      )
-    },
-  ],
+  decorators: [bottomDecorator],
   render: () => {
     return (
       <Panel snugPosition="bottom" spacing="slim" width="full">
@@ -222,10 +222,14 @@ export const BottomPanel: Story = {
   },
 }
 
-export const WithBreadcrumbs: Story = {
+export const BottomPanelWithBreadcrumbs: Story = {
+  parameters: {
+    layout: 'fullscreen',
+  },
+  decorators: [bottomDecorator],
   render: () => {
     return (
-      <Panel>
+      <Panel snugPosition="bottom" spacing="slim" width="full">
         <PanelHeader iconName="tune" buttonOnClick={fn()}>
           <PanelBreadcrumbs
             items={[
@@ -243,6 +247,10 @@ export const WithBreadcrumbs: Story = {
 }
 
 export const WithClickableBreadcrumbs: Story = {
+  parameters: {
+    layout: 'fullscreen',
+  },
+  decorators: [bottomDecorator],
   render: () => {
     return (
       <Panel snugPosition="bottom" spacing="slim" width="full">
