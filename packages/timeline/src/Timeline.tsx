@@ -1,4 +1,4 @@
-import { useCallback, useRef } from 'react'
+import { useCallback, useRef, useState } from 'react'
 import c from './Timeline.module.css'
 import '@hedron-gl/ui-core/base.css'
 import '@hedron-gl/ui-core/fonts.css'
@@ -23,6 +23,7 @@ export function Timeline({
 }: TimelineProps) {
   const { durationMs, tracks } = timeline
   const trackAreaRef = useRef<HTMLDivElement>(null)
+  const [selectedTrack, setSelectedTrack] = useState<string | null>(null)
 
   const handleTrackClick = useCallback(
     (e: React.MouseEvent<HTMLDivElement>) => {
@@ -64,29 +65,32 @@ export function Timeline({
       </div>
       <div className={c.body} ref={trackAreaRef} onClick={handleTrackClick}>
         <div className={c.ruler}>{rulerMarks}</div>
-        {tracks.map((track) => (
-          <>
-            <div key={`h-${track.id}`} className={c.trackHeader}>
-              {track.label}
+        {tracks.map((track) => {
+          const isSelected = selectedTrack === track.id
+          return (
+            <div key={track.id} className={`${c.track} ${isSelected ? c.trackSelected : ''}`}>
+              <div className={c.trackHeader} onClick={() => setSelectedTrack(track.id)}>
+                {track.label}
+              </div>
+              <div className={c.trackBody}>
+                {track.keyframes.map((kf, i) => {
+                  const percent = (kf.time / durationMs) * 100
+                  return (
+                    <div
+                      key={i}
+                      className={c.keyframe}
+                      style={{ left: `${percent}%` }}
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        onKeyframeClick?.(track.id, i)
+                      }}
+                    />
+                  )
+                })}
+              </div>
             </div>
-            <div key={`b-${track.id}`} className={c.trackBody}>
-              {track.keyframes.map((kf, i) => {
-                const percent = (kf.time / durationMs) * 100
-                return (
-                  <div
-                    key={i}
-                    className={c.keyframe}
-                    style={{ left: `${percent}%` }}
-                    onClick={(e) => {
-                      e.stopPropagation()
-                      onKeyframeClick?.(track.id, i)
-                    }}
-                  />
-                )
-              })}
-            </div>
-          </>
-        ))}
+          )
+        })}
         <div
           className={c.playhead}
           style={{ '--playheadPercent': playheadPercent / 100 } as React.CSSProperties}

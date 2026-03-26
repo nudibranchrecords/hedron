@@ -41,8 +41,21 @@
   position: relative;
 }
 
+.track {
+  display: grid;
+  grid-column: 1 / -1;
+  grid-template-columns: subgrid;
+}
+
+.trackSelected {
+  background: rgba(255, 255, 255, 0.05);
+
+  .trackHeader {
+    color: #ccc;
+  }
+}
+
 .trackHeader {
-  grid-column: 1;
   display: flex;
   align-items: center;
   padding: 0 1rem;
@@ -52,10 +65,10 @@
   overflow: hidden;
   text-overflow: ellipsis;
   height: 24px;
+  cursor: pointer;
 }
 
 .trackBody {
-  grid-column: 2;
   position: relative;
   height: 24px;
 }
@@ -83,13 +96,6 @@
   border-top: 6px solid var(--playheadColor);
 }
 
-.ruler {
-  display: flex;
-  height: 16px;
-  border-bottom: 1px solid #333;
-  position: relative;
-}
-
 .rulerMark {
   position: absolute;
   top: 0;
@@ -104,23 +110,6 @@
   font-size: 9px;
   color: #666;
   margin-left: 3px;
-}
-
-.trackHeader {
-  display: flex;
-  align-items: center;
-  padding: 0 1rem;
-  font-size: 10px;
-  color: #888;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  height: 24px;
-}
-
-.trackBody {
-  position: relative;
-  height: 24px;
 }
 
 .keyframe {
