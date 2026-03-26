@@ -1,4 +1,6 @@
 export interface Keyframe {
+  /** Unique identifier for this keyframe */
+  id: string
   /** Position on the timeline in milliseconds */
   time: number
   /** The value type determines how this keyframe behaves */

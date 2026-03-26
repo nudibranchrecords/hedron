@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import c from './Timeline.module.css'
 import '@hedron-gl/ui-core/base.css'
 import '@hedron-gl/ui-core/fonts.css'
@@ -11,19 +11,31 @@ export interface TimelineProps {
   playheadPosition?: number
   /** Called when the user clicks on the track area to set the playhead */
   onPlayheadChange?: (time: number) => void
-  /** Called when a keyframe is clicked */
-  onKeyframeClick?: (trackId: string, keyframeIndex: number) => void
+  /** Called when a keyframe should be deleted */
+  onKeyframeDelete?: (keyframeId: string) => void
 }
 
 export function Timeline({
   timeline,
   playheadPosition = 0,
   onPlayheadChange,
-  onKeyframeClick,
+  onKeyframeDelete,
 }: TimelineProps) {
   const { durationMs, tracks } = timeline
   const trackAreaRef = useRef<HTMLDivElement>(null)
   const [selectedTrack, setSelectedTrack] = useState<string | null>(null)
+  const [selectedKeyframe, setSelectedKeyframe] = useState<string | null>(null)
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'x' && selectedKeyframe) {
+        onKeyframeDelete?.(selectedKeyframe)
+        setSelectedKeyframe(null)
+      }
+    }
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [selectedKeyframe, onKeyframeDelete])
 
   const handleTrackClick = useCallback(
     (e: React.MouseEvent<HTMLDivElement>) => {
@@ -73,16 +85,17 @@ export function Timeline({
                 {track.label}
               </div>
               <div className={c.trackBody}>
-                {track.keyframes.map((kf, i) => {
+                {track.keyframes.map((kf) => {
                   const percent = (kf.time / durationMs) * 100
+                  const isKeyframeSelected = selectedKeyframe === kf.id
                   return (
                     <div
-                      key={i}
-                      className={c.keyframe}
+                      key={kf.id}
+                      className={`${c.keyframe} ${isKeyframeSelected ? c.keyframeSelected : ''}`}
                       style={{ left: `${percent}%` }}
                       onClick={(e) => {
                         e.stopPropagation()
-                        onKeyframeClick?.(track.id, i)
+                        setSelectedKeyframe(isKeyframeSelected ? null : kf.id)
                       }}
                     />
                   )

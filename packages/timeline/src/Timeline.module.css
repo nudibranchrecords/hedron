@@ -116,14 +116,20 @@
   position: absolute;
   width: 8px;
   height: 8px;
-  background: var(--keyframeColor);
+  border: 1px solid;
+  border-color: var(--keyframeColor);
   border-radius: 2px;
   transform: translate(-50%, -50%) rotate(45deg);
   top: 50%;
   cursor: pointer;
   z-index: 1;
-}
+  opacity: 0.8;
 
-.keyframe:hover {
-  background: var(--keyframeColor);
+  &:hover {
+    opacity: 1;
+  }
+
+  &.keyframeSelected {
+    background: var(--keyframeColor);
+  }
 }
