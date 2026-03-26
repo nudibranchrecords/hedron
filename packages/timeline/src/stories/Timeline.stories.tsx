@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { useState, useEffect, useCallback } from 'react'
 import { Timeline } from '@components/Timeline'
-import type { Keyframe } from '@components/Timeline'
+import type { Timeline as TimelineData } from '@components/types'
 
 const meta = {
   title: 'Timeline',
@@ -23,35 +23,61 @@ type Story = StoryObj<typeof meta>
 
 export const Default: Story = {
   args: {
-    duration: 10,
+    timeline: {
+      durationMs: 10000,
+      tracks: [],
+    },
     playheadPosition: 0,
-    keyframes: [],
   },
 }
 
 export const WithKeyframes: Story = {
   args: {
-    duration: 10,
-    playheadPosition: 3.5,
-    keyframes: [
-      { time: 1, value: 0.5 },
-      { time: 3, value: 1.0 },
-      { time: 5.5, value: 0.2 },
-      { time: 8, value: 0.8 },
-    ],
+    timeline: {
+      durationMs: 10000,
+      tracks: [
+        {
+          id: 'track-1',
+          label: 'Visibility',
+          keyframes: [
+            { time: 1000, valueType: 'boolean', value: true },
+            { time: 3000, valueType: 'boolean', value: false },
+            { time: 5500, valueType: 'boolean', value: true },
+            { time: 8000, valueType: 'boolean', value: false },
+          ],
+        },
+      ],
+    },
+    playheadPosition: 3500,
   },
 }
 
 export const Interactive = () => {
   const [playheadPosition, setPlayheadPosition] = useState(0)
-  const [keyframes, setKeyframes] = useState<Keyframe[]>([
-    { time: 1, value: 0.5 },
-    { time: 4, value: 1.0 },
-    { time: 7, value: 0.3 },
-  ])
+  const [timeline, setTimeline] = useState<TimelineData>({
+    durationMs: 10000,
+    tracks: [
+      {
+        id: 'track-1',
+        label: 'Visibility',
+        keyframes: [
+          { time: 1000, valueType: 'boolean', value: true },
+          { time: 4000, valueType: 'boolean', value: false },
+          { time: 7000, valueType: 'boolean', value: true },
+        ],
+      },
+    ],
+  })
 
-  const handleKeyframeClick = useCallback((index: number) => {
-    setKeyframes((prev) => prev.filter((_, i) => i !== index))
+  const handleKeyframeClick = useCallback((trackId: string, keyframeIndex: number) => {
+    setTimeline((prev) => ({
+      ...prev,
+      tracks: prev.tracks.map((track) =>
+        track.id === trackId
+          ? { ...track, keyframes: track.keyframes.filter((_, i) => i !== keyframeIndex) }
+          : track,
+      ),
+    }))
   }, [])
 
   return (
@@ -60,9 +86,8 @@ export const Interactive = () => {
         Click the track to move the playhead. Click a keyframe to remove it.
       </p>
       <Timeline
-        duration={10}
+        timeline={timeline}
         playheadPosition={playheadPosition}
-        keyframes={keyframes}
         onPlayheadChange={setPlayheadPosition}
         onKeyframeClick={handleKeyframeClick}
       />
@@ -73,20 +98,20 @@ export const Interactive = () => {
 export const Playing = () => {
   const [playheadPosition, setPlayheadPosition] = useState(0)
   const [playing, setPlaying] = useState(true)
-  const duration = 10
+  const durationMs = 10000
 
   useEffect(() => {
     if (!playing) return
-    const start = performance.now() - playheadPosition * 1000
+    const start = performance.now() - playheadPosition
     let raf: number
     const tick = (now: number) => {
-      const elapsed = (now - start) / 1000
-      setPlayheadPosition(elapsed % duration)
+      const elapsed = now - start
+      setPlayheadPosition(elapsed % durationMs)
       raf = requestAnimationFrame(tick)
     }
     raf = requestAnimationFrame(tick)
     return () => cancelAnimationFrame(raf)
-  }, [playing, playheadPosition, duration])
+  }, [playing, playheadPosition, durationMs])
 
   return (
     <div>
@@ -106,15 +131,23 @@ export const Playing = () => {
         </button>
       </div>
       <Timeline
-        duration={duration}
+        timeline={{
+          durationMs,
+          tracks: [
+            {
+              id: 'track-1',
+              label: 'Enabled',
+              keyframes: [
+                { time: 500, valueType: 'boolean', value: true },
+                { time: 2500, valueType: 'boolean', value: false },
+                { time: 5000, valueType: 'boolean', value: true },
+                { time: 7500, valueType: 'boolean', value: false },
+                { time: 9500, valueType: 'boolean', value: true },
+              ],
+            },
+          ],
+        }}
         playheadPosition={playheadPosition}
-        keyframes={[
-          { time: 0.5, value: 0 },
-          { time: 2.5, value: 1 },
-          { time: 5, value: 0.5 },
-          { time: 7.5, value: 0.8 },
-          { time: 9.5, value: 0.2 },
-        ]}
         onPlayheadChange={(t) => {
           setPlayheadPosition(t)
           setPlaying(false)
@@ -126,14 +159,62 @@ export const Playing = () => {
 
 export const LongDuration: Story = {
   args: {
-    duration: 120,
-    playheadPosition: 45,
-    keyframes: [
-      { time: 10, value: 0.5 },
-      { time: 30, value: 1.0 },
-      { time: 60, value: 0.2 },
-      { time: 90, value: 0.8 },
-      { time: 110, value: 0.4 },
-    ],
+    timeline: {
+      durationMs: 120000,
+      tracks: [
+        {
+          id: 'track-1',
+          label: 'Active',
+          keyframes: [
+            { time: 10000, valueType: 'boolean', value: true },
+            { time: 30000, valueType: 'boolean', value: false },
+            { time: 60000, valueType: 'boolean', value: true },
+            { time: 90000, valueType: 'boolean', value: false },
+            { time: 110000, valueType: 'boolean', value: true },
+          ],
+        },
+      ],
+    },
+    playheadPosition: 45000,
+  },
+}
+
+export const MultipleTracks: Story = {
+  args: {
+    timeline: {
+      durationMs: 10000,
+      tracks: [
+        {
+          id: 'track-1',
+          label: 'Visibility',
+          keyframes: [
+            { time: 0, valueType: 'boolean', value: true },
+            { time: 3000, valueType: 'boolean', value: false },
+            { time: 6000, valueType: 'boolean', value: true },
+          ],
+        },
+        {
+          id: 'track-2',
+          label: 'Strobe',
+          keyframes: [
+            { time: 1000, valueType: 'boolean', value: true },
+            { time: 2000, valueType: 'boolean', value: false },
+            { time: 4000, valueType: 'boolean', value: true },
+            { time: 5000, valueType: 'boolean', value: false },
+            { time: 7000, valueType: 'boolean', value: true },
+            { time: 8000, valueType: 'boolean', value: false },
+          ],
+        },
+        {
+          id: 'track-3',
+          label: 'Invert',
+          keyframes: [
+            { time: 2500, valueType: 'boolean', value: true },
+            { time: 7500, valueType: 'boolean', value: false },
+          ],
+        },
+      ],
+    },
+    playheadPosition: 4000,
   },
 }

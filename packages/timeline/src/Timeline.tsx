@@ -1,31 +1,25 @@
 import { useCallback, useRef } from 'react'
-import styles from './Timeline.module.css'
-
-export interface Keyframe {
-  time: number
-  value: number
-}
+import c from './Timeline.module.css'
+import type { Timeline as TimelineData } from './types'
 
 export interface TimelineProps {
-  /** Total duration in seconds */
-  duration?: number
+  /** Timeline data */
+  timeline: TimelineData
   /** Current playhead position in seconds */
   playheadPosition?: number
-  /** Keyframes to display on the timeline */
-  keyframes?: Keyframe[]
   /** Called when the user clicks on the track area to set the playhead */
   onPlayheadChange?: (time: number) => void
   /** Called when a keyframe is clicked */
-  onKeyframeClick?: (index: number) => void
+  onKeyframeClick?: (trackId: string, keyframeIndex: number) => void
 }
 
 export function Timeline({
-  duration = 10,
+  timeline,
   playheadPosition = 0,
-  keyframes = [],
   onPlayheadChange,
   onKeyframeClick,
 }: TimelineProps) {
+  const { durationMs, tracks } = timeline
   const trackAreaRef = useRef<HTMLDivElement>(null)
 
   const handleTrackClick = useCallback(
@@ -33,52 +27,58 @@ export function Timeline({
       if (!trackAreaRef.current || !onPlayheadChange) return
       const rect = trackAreaRef.current.getBoundingClientRect()
       const x = e.clientX - rect.left
-      const time = (x / rect.width) * duration
-      onPlayheadChange(Math.max(0, Math.min(duration, time)))
+      const time = (x / rect.width) * durationMs
+      onPlayheadChange(Math.max(0, Math.min(durationMs, time)))
     },
-    [duration, onPlayheadChange],
+    [durationMs, onPlayheadChange],
   )
 
-  const playheadPercent = (playheadPosition / duration) * 100
+  const playheadPercent = (playheadPosition / durationMs) * 100
 
+  const durationSec = durationMs / 1000
   const rulerMarks = []
-  const step = duration <= 10 ? 1 : duration <= 60 ? 5 : 10
-  for (let t = 0; t <= duration; t += step) {
-    const percent = (t / duration) * 100
+  const step = durationSec <= 10 ? 1 : durationSec <= 60 ? 5 : 10
+  for (let t = 0; t <= durationSec; t += step) {
+    const percent = (t / durationSec) * 100
     rulerMarks.push(
-      <div key={t} className={styles.rulerMark} style={{ left: `${percent}%` }}>
-        <span className={styles.rulerLabel}>{t}s</span>
+      <div key={t} className={c.rulerMark} style={{ left: `${percent}%` }}>
+        <span className={c.rulerLabel}>{t}s</span>
       </div>,
     )
   }
 
   return (
-    <div className={styles.timeline}>
-      <div className={styles.header}>
+    <div className={c.timeline}>
+      <div className={c.header}>
         <span>Timeline</span>
         <span>
-          {playheadPosition.toFixed(1)}s / {duration}s
+          {(playheadPosition / 1000).toFixed(1)}s / {durationSec}s
         </span>
       </div>
-      <div className={styles.trackArea} ref={trackAreaRef} onClick={handleTrackClick}>
-        <div className={styles.ruler}>{rulerMarks}</div>
-        <div className={styles.keyframeTrack}>
-          {keyframes.map((kf, i) => {
-            const percent = (kf.time / duration) * 100
-            return (
-              <div
-                key={i}
-                className={styles.keyframe}
-                style={{ left: `${percent}%` }}
-                onClick={(e) => {
-                  e.stopPropagation()
-                  onKeyframeClick?.(i)
-                }}
-              />
-            )
-          })}
-        </div>
-        <div className={styles.playhead} style={{ left: `${playheadPercent}%` }} />
+      <div className={c.trackArea} ref={trackAreaRef} onClick={handleTrackClick}>
+        <div className={c.ruler}>{rulerMarks}</div>
+        {tracks.map((track) => (
+          <div key={track.id} className={c.keyframeTrack}>
+            <div className={c.trackHeader}>{track.label}</div>
+            <div className={c.trackBody}>
+              {track.keyframes.map((kf, i) => {
+                const percent = (kf.time / durationMs) * 100
+                return (
+                  <div
+                    key={i}
+                    className={c.keyframe}
+                    style={{ left: `${percent}%` }}
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      onKeyframeClick?.(track.id, i)
+                    }}
+                  />
+                )
+              })}
+            </div>
+          </div>
+        ))}
+        <div className={c.playhead} style={{ left: `${playheadPercent}%` }} />
       </div>
     </div>
   )
