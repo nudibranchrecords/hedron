@@ -13,6 +13,8 @@ export interface TimelineProps {
   onPlayheadChange?: (time: number) => void
   /** Called when a keyframe should be deleted */
   onKeyframeDelete?: (keyframeId: string) => void
+  /** Called when a keyframe should be inserted on a track at a given time */
+  onKeyframeInsert?: (trackId: string, time: number) => void
 }
 
 export function Timeline({
@@ -20,6 +22,7 @@ export function Timeline({
   playheadPosition = 0,
   onPlayheadChange,
   onKeyframeDelete,
+  onKeyframeInsert,
 }: TimelineProps) {
   const { durationMs, tracks } = timeline
   const trackAreaRef = useRef<HTMLDivElement>(null)
@@ -32,10 +35,13 @@ export function Timeline({
         onKeyframeDelete?.(selectedKeyframe)
         setSelectedKeyframe(null)
       }
+      if (e.key === 'i' && selectedTrack) {
+        onKeyframeInsert?.(selectedTrack, playheadPosition)
+      }
     }
     window.addEventListener('keydown', handleKeyDown)
     return () => window.removeEventListener('keydown', handleKeyDown)
-  }, [selectedKeyframe, onKeyframeDelete])
+  }, [selectedKeyframe, onKeyframeDelete, selectedTrack, playheadPosition, onKeyframeInsert])
 
   const handleTrackClick = useCallback(
     (e: React.MouseEvent<HTMLDivElement>) => {
