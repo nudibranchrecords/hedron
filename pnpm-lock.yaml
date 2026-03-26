@@ -423,6 +423,61 @@ importers:
 
   packages/midi-manager: {}
 
+  packages/timeline:
+    dependencies:
+      '@hedron-gl/engine':
+        specifier: ^1.0.0-alpha.4
+        version: link:../engine
+      '@hedron-gl/ui-core':
+        specifier: ^1.0.0-alpha.4
+        version: link:../ui-core
+      react:
+        specifier: ^18.3.1
+        version: 18.3.1
+      react-dom:
+        specifier: ^18.3.1
+        version: 18.3.1(react@18.3.1)
+    devDependencies:
+      '@chromatic-com/storybook':
+        specifier: ^1.8.0
+        version: 1.9.0(react@18.3.1)
+      '@storybook/addon-essentials':
+        specifier: ^8.2.9
+        version: 8.6.14(@types/react@18.3.28)(storybook@8.6.15(prettier@3.8.1))
+      '@storybook/addon-interactions':
+        specifier: ^8.2.9
+        version: 8.6.14(storybook@8.6.15(prettier@3.8.1))
+      '@storybook/addon-links':
+        specifier: ^8.2.9
+        version: 8.6.15(react@18.3.1)(storybook@8.6.15(prettier@3.8.1))
+      '@storybook/blocks':
+        specifier: ^8.2.9
+        version: 8.6.14(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(storybook@8.6.15(prettier@3.8.1))
+      '@storybook/react':
+        specifier: ^8.2.9
+        version: 8.6.15(@storybook/test@8.6.15(storybook@8.6.15(prettier@3.8.1)))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(storybook@8.6.15(prettier@3.8.1))(typescript@5.9.3)
+      '@storybook/react-vite':
+        specifier: ^8.2.9
+        version: 8.6.15(@storybook/test@8.6.15(storybook@8.6.15(prettier@3.8.1)))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(rollup@4.57.1)(storybook@8.6.15(prettier@3.8.1))(typescript@5.9.3)(vite@7.3.1(@types/node@25.2.1)(yaml@2.8.2))
+      '@storybook/test':
+        specifier: ^8.2.9
+        version: 8.6.15(storybook@8.6.15(prettier@3.8.1))
+      '@vitejs/plugin-react':
+        specifier: ^4.3.4
+        version: 4.7.0(vite@7.3.1(@types/node@25.2.1)(yaml@2.8.2))
+      storybook:
+        specifier: ^8.2.9
+        version: 8.6.15(prettier@3.8.1)
+      vite:
+        specifier: ^7.3.1
+        version: 7.3.1(@types/node@25.2.1)(yaml@2.8.2)
+      vite-plugin-dts:
+        specifier: ^4.5.3
+        version: 4.5.4(@types/node@25.2.1)(rollup@4.57.1)(typescript@5.9.3)(vite@7.3.1(@types/node@25.2.1)(yaml@2.8.2))
+      vite-tsconfig-paths:
+        specifier: ^5.1.4
+        version: 5.1.4(typescript@5.9.3)(vite@7.3.1(@types/node@25.2.1)(yaml@2.8.2))
+
   packages/ui-core:
     dependencies:
       '@floating-ui/react-dom':
@@ -3976,7 +4031,7 @@ packages:
   glob@8.1.0:
     resolution: {integrity: sha512-r8hpEjiQEYlF2QU0df3dS+nxxSIreXQS1qRhMJM0Q5NDdR386C7jb7Hwwod8Fgiuex+k0GFjgft18yvxm5XoCQ==}
     engines: {node: '>=12'}
-    deprecated: Glob versions prior to v9 are no longer supported
+    deprecated: Old versions of glob are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me
 
   glob@9.3.5:
     resolution: {integrity: sha512-e1LleDykUz2Iu+MTYdkSsuWX8lvAjAcs0Xef0lNIu0S2wOAzuTxCJtcd9S3cijlwYF18EsU3rzb8jPVobxDh9Q==}
@@ -11221,7 +11276,7 @@ snapshots:
 
   log-symbols@4.1.0:
     dependencies:
-      chalk: 4.1.0
+      chalk: 4.1.2
       is-unicode-supported: 0.1.0
 
   loose-envify@1.4.0:
@@ -11788,7 +11843,7 @@ snapshots:
   ora@5.3.0:
     dependencies:
       bl: 4.1.0
-      chalk: 4.1.0
+      chalk: 4.1.2
       cli-cursor: 3.1.0
       cli-spinners: 2.6.1
       is-interactive: 1.0.0
