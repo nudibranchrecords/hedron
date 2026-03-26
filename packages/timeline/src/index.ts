@@ -1,3 +1,3 @@
-export { Timeline } from './Timeline'
-export type { TimelineProps } from './Timeline'
+export { Timeline } from './components/Timeline/Timeline'
+export type { TimelineProps } from './components/Timeline/Timeline'
 export type { Timeline as TimelineData, TimelineTrack, Keyframe } from './types'
