@@ -15,6 +15,7 @@ import {
 
 import { Node } from '@hedron-gl/engine'
 import c from './ActiveSketch.module.css'
+import { openSketchSourceFile } from './openSketchSourceFile'
 import { useActiveSketch } from '@components/hooks/useActiveSketch'
 import { engineStore } from '@renderer/engine'
 import { SketchControls } from '@components/SketchControls/SketchControls'
@@ -62,6 +63,11 @@ export const ActiveSketch = () => {
               label: 'Move Down',
               icon: 'arrow_downward',
               onClick: () => engineStore.getState().moveSketchDown(activeSketch.id),
+            },
+            {
+              label: 'Open Source',
+              icon: 'code',
+              onClick: () => openSketchSourceFile(activeSketch.moduleId),
             },
             {
               label: 'Delete Sketch',
