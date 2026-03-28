@@ -43,8 +43,8 @@ const _addNodeToState = (
       id: nodeId,
       nodeType: 'shot',
       title: config.title ?? config.key,
-      parentId,
-      childrenIds: optionNodeIds,
+      parentIds: parentId ? [parentId] : [],
+      childIds: optionNodeIds,
       optionNodeIds,
     }
 
@@ -65,8 +65,8 @@ const _addNodeToState = (
     nodeType: 'param' as const,
     title,
     hidden,
-    parentId,
-    childrenIds: optionNodeIds,
+    parentIds: parentId ? [parentId] : [],
+    childIds: optionNodeIds,
     optionNodeIds,
   }
 
@@ -156,8 +156,8 @@ export const addNode = (
       nodeType: 'param',
       title: config.title ?? config.key,
       vectorComponentIds,
-      childrenIds: vectorComponentIds,
-      parentId,
+      childIds: vectorComponentIds,
+      parentIds: parentId ? [parentId] : [],
       optionNodeIds: [],
     } as ParamVector
 

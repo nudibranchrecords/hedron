@@ -18,8 +18,8 @@ export type SketchModule = any
 export interface NodeBase {
   id: string
   title: string
-  parentId: string | null
-  childrenIds: string[]
+  parentIds: string[]
+  childIds: string[]
   optionNodeIds: string[]
 }
 
@@ -268,7 +268,7 @@ interface Actions {
   loadProject: (project: EngineData) => void
   reset: () => void
   addInput: (
-    inputConfig: Omit<Input, 'id' | 'optionNodeIds' | 'childrenIds' | 'nodeType'>,
+    inputConfig: Omit<Input, 'id' | 'optionNodeIds' | 'childIds' | 'nodeType'>,
     optionsNodeConfig: NodeConfig[],
   ) => string
   deleteNode: (nodeId: string) => void
