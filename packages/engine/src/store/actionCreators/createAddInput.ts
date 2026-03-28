@@ -25,13 +25,13 @@ export const createAddInput: SetterCreator<'addInput'> =
       state.nodes[id] = {
         ...inputConfig,
         optionNodeIds,
-        childrenIds: optionNodeIds,
+        childIds: optionNodeIds,
         id,
         nodeType: 'input',
       }
 
       // Add children Ids to target node (so that cleanup works if target node is deleted)
-      state.nodes[inputConfig.targetNodeId]?.childrenIds.push(id)
+      state.nodes[inputConfig.targetNodeId]?.childIds.push(id)
     })
 
     return id

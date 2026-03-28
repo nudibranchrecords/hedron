@@ -52,7 +52,7 @@ export const SelectedNode = () => {
             inputType: plugin.inputType,
             targetNodeId: selectedNode.id,
             title: `${plugin.inputType} ${numAlready + 1}`,
-            parentId: selectedNode.id,
+            parentIds: [selectedNode.id],
           }
 
           const id = addInput(input, plugin.optionNodesConfig)
