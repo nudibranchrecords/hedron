@@ -20,7 +20,9 @@ export const AudioInputPanel = ({ input, engine }: IProps) => {
   const audioPlugin = engine.plugins[AudioInput.ID] as AudioInput | undefined
 
   // Log selected frequency band from input options
-  const frequencyOption = input.optionNodeIds.find((id: string) => id.includes('frequency'))
+  const frequencyOption = input.childGroups.optionNodeIds.find((id: string) =>
+    id.includes('frequency'),
+  )
   if (frequencyOption) {
     console.log('[AudioInputPanel] Selected frequency band option:', frequencyOption)
   }
@@ -74,7 +76,7 @@ export const AudioInputPanel = ({ input, engine }: IProps) => {
       )}
 
       <ControlGrid className="mb-xl">
-        {input.optionNodeIds.map((id: string) => (
+        {input.childGroups.optionNodeIds.map((id: string) => (
           <NodeContainer key={id} nodeId={id} />
         ))}
       </ControlGrid>

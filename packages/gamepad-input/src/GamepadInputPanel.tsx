@@ -35,7 +35,7 @@ const useGamepadLearn = (input: Input, engine: HedronEngine) => {
         const state = store.getState()
 
         // Update each option node with the learned values
-        input.optionNodeIds.forEach((nodeId) => {
+        input.childGroups.optionNodeIds.forEach((nodeId) => {
           const node = state.nodes[nodeId]
           if (!node || node.nodeType !== 'param') return
           switch (node.key) {
@@ -59,7 +59,7 @@ const useGamepadLearn = (input: Input, engine: HedronEngine) => {
       .finally(() => {
         setIsLearning(false)
       })
-  }, [engine, input.optionNodeIds, gamepadManager])
+  }, [engine, input.childGroups.optionNodeIds, gamepadManager])
 
   const cancelGamepadLearn = useCallback(() => {
     gamepadManager.cancelGamepadLearn()
@@ -92,7 +92,7 @@ export const GamepadInputPanel = ({ input, engine }: IProps) => {
   // Memoize filtered node IDs to prevent unnecessary recalculations
   const visibleOptionNodeIds = useMemo(
     () =>
-      input.optionNodeIds.filter((id) => {
+      input.childGroups.optionNodeIds.filter((id) => {
         const node = nodes[id]
 
         if (!node || !('key' in node)) {
@@ -131,7 +131,7 @@ export const GamepadInputPanel = ({ input, engine }: IProps) => {
         }
         return true
       }),
-    [input.optionNodeIds, nodes, inputTypeValue, axisModeValue, targetNodeValueType],
+    [input.childGroups.optionNodeIds, nodes, inputTypeValue, axisModeValue, targetNodeValueType],
   )
 
   return (

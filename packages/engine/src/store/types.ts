@@ -15,12 +15,17 @@ export type Sketches = { [key: string]: SketchState }
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type SketchModule = any
 
+interface ChildGroups {
+  [key: string]: string[]
+  optionNodeIds: string[]
+  inputNodeIds: string[]
+}
+
 export interface NodeBase {
   id: string
   title: string
   parentIds: string[]
-  childIds: string[]
-  optionNodeIds: string[]
+  childGroups: ChildGroups
 }
 
 export interface ParamBase extends NodeBase {
@@ -31,7 +36,9 @@ export interface ParamBase extends NodeBase {
 
 export interface ParamVectorBase extends ParamBase {
   nodeType: 'param'
-  vectorComponentIds: string[]
+  childGroups: ChildGroups & {
+    vectorComponentIds: string[]
+  }
 }
 
 export interface ParamNumber extends ParamBase {
@@ -268,7 +275,7 @@ interface Actions {
   loadProject: (project: EngineData) => void
   reset: () => void
   addInput: (
-    inputConfig: Omit<Input, 'id' | 'optionNodeIds' | 'childIds' | 'nodeType'>,
+    inputConfig: Omit<Input, 'id' | 'optionNodeIds' | 'childGroups' | 'nodeType'>,
     optionsNodeConfig: NodeConfig[],
   ) => string
   deleteNode: (nodeId: string) => void

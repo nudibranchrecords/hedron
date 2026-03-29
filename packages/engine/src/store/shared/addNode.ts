@@ -44,8 +44,7 @@ const _addNodeToState = (
       nodeType: 'shot',
       title: config.title ?? config.key,
       parentIds: parentId ? [parentId] : [],
-      childIds: optionNodeIds,
-      optionNodeIds,
+      childGroups: { optionNodeIds, inputNodeIds: [] },
     }
 
     return state.nodes[nodeId]
@@ -66,8 +65,7 @@ const _addNodeToState = (
     title,
     hidden,
     parentIds: parentId ? [parentId] : [],
-    childIds: optionNodeIds,
-    optionNodeIds,
+    childGroups: { optionNodeIds, inputNodeIds: [] },
   }
 
   switch (valueType) {
@@ -155,10 +153,8 @@ export const addNode = (
       id: nodeId,
       nodeType: 'param',
       title: config.title ?? config.key,
-      vectorComponentIds,
-      childIds: vectorComponentIds,
+      childGroups: { optionNodeIds: [], inputNodeIds: [], vectorComponentIds },
       parentIds: parentId ? [parentId] : [],
-      optionNodeIds: [],
     } as ParamVector
 
     for (const [index, childNodeId] of vectorComponentIds.entries()) {

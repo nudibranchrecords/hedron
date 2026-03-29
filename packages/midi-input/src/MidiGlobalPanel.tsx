@@ -77,9 +77,13 @@ export const MidiGlobalPanel: React.FC<MidiGlobalPanelProps> = ({ engine }) => {
       Object.values(nodes).forEach((input) => {
         if (input?.nodeType !== 'input' || input.inputType !== 'midi') return
 
-        const channelNode = findNodeWithKeyFromIdList(nodes, 'channel', input.optionNodeIds)
-        const noteNode = findNodeWithKeyFromIdList(nodes, 'note', input.optionNodeIds)
-        const typeNode = findNodeWithKeyFromIdList(nodes, 'type', input.optionNodeIds)
+        const channelNode = findNodeWithKeyFromIdList(
+          nodes,
+          'channel',
+          input.childGroups.optionNodeIds,
+        )
+        const noteNode = findNodeWithKeyFromIdList(nodes, 'note', input.childGroups.optionNodeIds)
+        const typeNode = findNodeWithKeyFromIdList(nodes, 'type', input.childGroups.optionNodeIds)
 
         if (!channelNode || !noteNode || !typeNode) return
 
