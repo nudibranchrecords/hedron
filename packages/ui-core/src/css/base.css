@@ -23,9 +23,13 @@ body {
 }
 
 button {
-  text-shadow: var(--textShadow);
   font-family: inherit;
+  text-shadow: inherit;
+  background: transparent;
+  color: inherit;
+  font-size: inherit;
   cursor: pointer;
+  padding: 0;
 }
 
 a {
