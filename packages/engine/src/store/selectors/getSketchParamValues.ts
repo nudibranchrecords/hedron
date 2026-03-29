@@ -20,7 +20,7 @@ export const getSketchParamValues = (state: EngineState, sketchId: string) => {
 
     if (isParamVector(node)) {
       // Return an array of values for nodes with child nodes
-      const childNodeIds = node.vectorComponentIds
+      const childNodeIds = node.childGroups.vectorComponentIds
       value = childNodeIds.map((childNodeId) => nodeValues[childNodeId])
     } else {
       value = nodeValues[id]

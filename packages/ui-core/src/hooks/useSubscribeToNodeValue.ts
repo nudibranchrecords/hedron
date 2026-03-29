@@ -36,7 +36,9 @@ export const useSubscribeToNodeChildrenValues = <T extends NodeValue>(
   callback: (value: T[]) => void,
 ) => {
   const engineStore = useEngineStoreWithContext()
-  const { vectorComponentIds } = useEngineStore((state) => state.nodes[nodeId] as ParamVector)
+  const {
+    childGroups: { vectorComponentIds },
+  } = useEngineStore((state) => state.nodes[nodeId] as ParamVector)
 
   const callbackRef = useRef(callback)
   callbackRef.current = callback

@@ -12,7 +12,7 @@ interface ParamRGBProps {
 export const ParamColor = ({ id }: ParamRGBProps) => {
   const ref = useRef<ColorPickerHandle>(null)
   const node = useEngineStore((state) => state.nodes[id] as ParamRGB)
-  const { vectorComponentIds } = node
+  const { vectorComponentIds } = node.childGroups
 
   useSubscribeToNodeChildrenValues<number>(id, (value) => {
     ref.current?.updateColor(value as [number, number, number])

@@ -31,7 +31,7 @@ const useMidiLearn = (input: Input, engine: HedronEngine) => {
         const state = store.getState()
 
         // Update each option node with the learned values
-        input.optionNodeIds.forEach((nodeId) => {
+        input.childGroups.optionNodeIds.forEach((nodeId) => {
           const node = state.nodes[nodeId]
           if (!node || node.nodeType !== 'param') return
 
@@ -51,7 +51,7 @@ const useMidiLearn = (input: Input, engine: HedronEngine) => {
       .finally(() => {
         setIsLearning(false)
       })
-  }, [engine, input.optionNodeIds, midiManager])
+  }, [engine, input.childGroups.optionNodeIds, midiManager])
 
   const cancelMidiLearn = useCallback(() => {
     midiManager.cancelMidiLearn()
@@ -73,8 +73,8 @@ export const MidiInputPanel = ({ input, engine }: IProps) => {
   const nodeValues = useEngineStore((s) => s.nodeValues)
 
   const overrideNodeId = useMemo(
-    () => findNodeWithKeyFromIdList(nodes, 'overrideValue', input.optionNodeIds)?.id,
-    [input.optionNodeIds, nodes],
+    () => findNodeWithKeyFromIdList(nodes, 'overrideValue', input.childGroups.optionNodeIds)?.id,
+    [input.childGroups.optionNodeIds, nodes],
   )
 
   const overrideEnabled = overrideNodeId ? Boolean(nodeValues[overrideNodeId]) : false
@@ -82,7 +82,7 @@ export const MidiInputPanel = ({ input, engine }: IProps) => {
   return (
     <div>
       <ControlGrid className="mb-xl">
-        {input.optionNodeIds
+        {input.childGroups.optionNodeIds
           .filter((id) => {
             const node = nodes[id]
             if (!node || !('key' in node)) return false

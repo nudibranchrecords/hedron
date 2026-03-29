@@ -147,7 +147,7 @@ export const handleEachInput = <T extends readonly any[]>(
       return
     }
 
-    const optionNodes = getOptionNodesFromIds<T>(storeState, input.optionNodeIds)
+    const optionNodes = getOptionNodesFromIds<T>(storeState, input.childGroups.optionNodeIds)
 
     callback({ input, optionNodes, targetNode, targetNodeValue })
   })

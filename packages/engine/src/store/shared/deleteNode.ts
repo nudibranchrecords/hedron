@@ -7,7 +7,11 @@ export const deleteNode = (state: EngineState, nodeId: string) => {
     for (const parentId of node.parentIds) {
       const parentNode = state.nodes[parentId]
       if (parentNode) {
-        parentNode.childIds = parentNode.childIds.filter((id) => id !== nodeId)
+        for (const groupKey in parentNode.childGroups) {
+          parentNode.childGroups[groupKey] = parentNode.childGroups[groupKey].filter(
+            (id) => id !== nodeId,
+          )
+        }
       }
     }
 
@@ -16,8 +20,10 @@ export const deleteNode = (state: EngineState, nodeId: string) => {
     delete state.nodeValues[nodeId]
 
     // Delete all child nodes recursively
-    for (const childNodeId of node.childIds) {
-      deleteNode(state, childNodeId)
+    for (const groupKey in node.childGroups) {
+      for (const childNodeId of node.childGroups[groupKey]) {
+        deleteNode(state, childNodeId)
+      }
     }
   }
 }
