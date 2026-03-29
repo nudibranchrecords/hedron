@@ -39,11 +39,11 @@ export const Number = ({ title = 'Short Name', isActive, onClick }: BasicProps) 
   const ref = useRef<FloatSliderHandle>(null)
 
   useEffect(() => {
-    ref.current?.updateValue(Math.random() * 1)
+    ref.current?.updateValue(Math.random())
   }, [])
 
   useInterval(() => {
-    ref.current!.updateValue(Math.random() * 1)
+    ref.current!.updateValue(Math.random())
   }, 3000)
   return (
     <NodeControl isActive={isActive} onClick={onClick}>
@@ -61,7 +61,7 @@ export const NumberMinMaxPositive = ({ title = 'Short Name', isActive, onClick }
   const ref = useRef<FloatSliderHandle>(null)
 
   useEffect(() => {
-    ref.current?.updateValue(Math.random() * 1)
+    ref.current?.updateValue(Math.random())
   }, [])
 
   return (
@@ -80,7 +80,7 @@ export const NumberMinMaxNegative = ({ title = 'Short Name', isActive, onClick }
   const ref = useRef<FloatSliderHandle>(null)
 
   useEffect(() => {
-    ref.current?.updateValue(Math.random() * 1)
+    ref.current?.updateValue(Math.random())
   }, [])
 
   return (
@@ -99,11 +99,11 @@ export const NumberTextOnly = ({ title = 'Short Name', isActive, onClick }: Basi
   const ref = useRef<NumberInputHandle>(null)
 
   useEffect(() => {
-    ref.current?.updateValue(Math.random() * 1)
+    ref.current?.updateValue(Math.random())
   }, [])
 
   useInterval(() => {
-    ref.current!.updateValue(Math.random() * 1)
+    ref.current!.updateValue(Math.random())
   }, 3000)
 
   return (
@@ -261,7 +261,7 @@ export const NumberReversed = ({ title = 'Short Name', isActive, onClick }: Basi
   const ref = useRef<FloatSliderHandle>(null)
 
   useEffect(() => {
-    ref.current?.updateValue(Math.random() * 1)
+    ref.current?.updateValue(Math.random())
   }, [])
 
   return (
@@ -280,7 +280,7 @@ export const NumberWithInputCount = ({ title = 'Brightness', isActive, onClick }
   const ref = useRef<FloatSliderHandle>(null)
 
   useEffect(() => {
-    ref.current?.updateValue(Math.random() * 1)
+    ref.current?.updateValue(Math.random())
   }, [])
 
   return (
