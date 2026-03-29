@@ -1,3 +1,4 @@
+import React from 'react'
 import c from './Panel.module.css'
 import { Button } from '@components/Button/Button'
 import { Icon, IconName } from '@components/Icon/Icon'
@@ -48,14 +49,41 @@ export const PanelHeader = ({
   buttonIcon = 'close',
   buttonOnClick,
 }: PanelHeaderProps) => (
-  <div className={c.header}>
+  <header className={c.header}>
     {iconName && <Icon name={iconName} className={c.icon} />}
-    <h2>{children}</h2>
+    <div className={c.headerTitle}>{children}</div>
 
     {buttonOnClick && (
       <Button className={c.button} iconName={buttonIcon} type="ghost" onClick={buttonOnClick} />
     )}
-  </div>
+  </header>
+)
+
+export interface BreadcrumbItem {
+  label: string
+  id: string
+  onClick?: () => void
+}
+
+export interface PanelBreadcrumbsProps {
+  items: BreadcrumbItem[]
+}
+
+export const PanelBreadcrumbs = ({ items }: PanelBreadcrumbsProps) => (
+  <nav className={c.breadcrumbs} aria-label="Breadcrumbs">
+    {items.map((item, i) => (
+      <React.Fragment key={item.id}>
+        {i > 0 && <span className={c.breadcrumbSeparator}>/</span>}
+        {item.onClick ? (
+          <button className={`${c.breadcrumbItem} ${c.breadcrumbClickable}`} onClick={item.onClick}>
+            {item.label}
+          </button>
+        ) : (
+          <span className={c.breadcrumbItem}>{item.label}</span>
+        )}
+      </React.Fragment>
+    ))}
+  </nav>
 )
 
 export const PanelSubHeader = ({
