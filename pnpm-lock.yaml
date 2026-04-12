@@ -141,6 +141,9 @@ importers:
       '@hedron-gl/midi-input':
         specifier: ^1.0.0-alpha.4
         version: link:../../packages/midi-input
+      '@hedron-gl/timeline':
+        specifier: ^1.0.0-alpha.4
+        version: link:../../packages/timeline
       '@hedron-gl/ui-core':
         specifier: ^1.0.0-alpha.4
         version: link:../../packages/ui-core
