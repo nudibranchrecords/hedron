@@ -7,6 +7,7 @@ import {
   SketchConfigShotImported,
   ParamVector,
   isParamVectorValueType,
+  CustomNodeImported,
 } from '@store/types'
 import { createUniqueId } from '@utils/createUniqueId'
 
@@ -16,7 +17,10 @@ const keysLookup: Record<ParamVectorValueType, string[]> = {
   rgb: ['r', 'g', 'b'],
 }
 
-type AddNodeConfig = EnsureRequiredValueType<SketchConfigParamImported> | SketchConfigShotImported
+type AddNodeConfig =
+  | EnsureRequiredValueType<SketchConfigParamImported>
+  | SketchConfigShotImported
+  | CustomNodeImported
 
 // Exclude param types that have children (vector3, rgb)
 type ParamConfigNonVector = Exclude<
@@ -37,11 +41,24 @@ const _addNodeToState = (
   optionNodeIds: string[],
   config: AddNodeConfig,
 ) => {
+  if (config.isCustomNode) {
+    state.nodes[nodeId] = {
+      ...config,
+      id: nodeId,
+      title: config.title ?? config.key,
+      parentIds: parentId ? [parentId] : [],
+      childGroups: { optionNodeIds, inputNodeIds: [] },
+    }
+
+    return state.nodes[nodeId]
+  }
+
   if (config.nodeType === 'shot') {
     state.nodes[nodeId] = {
       ...config,
       id: nodeId,
       nodeType: 'shot',
+      isCustomNode: false,
       title: config.title ?? config.key,
       parentIds: parentId ? [parentId] : [],
       childGroups: { optionNodeIds, inputNodeIds: [] },
@@ -62,6 +79,7 @@ const _addNodeToState = (
     key,
     groupIndex,
     nodeType: 'param' as const,
+    isCustomNode: false as const,
     title,
     hidden,
     parentIds: parentId ? [parentId] : [],
@@ -139,7 +157,9 @@ export const addNode = (
   parentId: string | null,
   config: AddNodeConfig,
 ) => {
-  if (config.nodeType === 'param' && isParamVectorValueType(config.valueType)) {
+  if (config.isCustomNode) {
+    _addNodeToState(state, nodeId, parentId, [], config)
+  } else if (config.nodeType === 'param' && isParamVectorValueType(config.valueType)) {
     if (!Array.isArray(config.defaultValue)) {
       throw new Error(`Expected defaultValue to be an array for ${config.valueType} type`)
     }

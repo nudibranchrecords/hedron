@@ -13,6 +13,13 @@ export const ensureConfig = (
     groupIndex,
   }
 
+  if (nodeConfig.isCustomNode) {
+    return {
+      ...nodeConfig,
+      ...base,
+    } as SketchConfigNodeImported
+  }
+
   switch (nodeType) {
     case 'param': {
       // We force the imported version of this type to make typing much easier
@@ -37,5 +44,8 @@ export const ensureConfig = (
         nodeType: 'shot',
       }
     }
+
+    default:
+      throw new Error(`Unexpected nodeType: ${nodeType}`)
   }
 }
