@@ -26,6 +26,8 @@ export interface NodeBase {
   title: string
   parentIds: string[]
   childGroups: ChildGroups
+  isCustomNode: false
+  hidden?: boolean
 }
 
 export interface ParamBase extends NodeBase {
@@ -95,7 +97,7 @@ export type Shot = NodeBase & {
   groupIndex: number
 }
 
-export type Node = Param | Shot | Input
+export type Node = Param | Shot | Input | CustomNode
 export type Nodes = Partial<Record<string, Node>>
 export type NodeType = Node['nodeType']
 
@@ -119,12 +121,15 @@ export const isParamVectorValueType = (
 }
 
 export const isParamVector = (node: Node): node is ParamVector => {
-  return node.nodeType === 'param' && node.valueType in paramValueTypesWithChildren
+  return (
+    !node.isCustomNode && node.nodeType === 'param' && node.valueType in paramValueTypesWithChildren
+  )
 }
 
 interface SketchConfigNodeBase {
   key: string
   title?: string
+  isCustomNode?: false
   hidden?: boolean
 }
 
@@ -199,7 +204,12 @@ export type SketchConfigShotImported = SketchConfigItemImported<SketchConfigShot
   nodeType: 'shot'
 }
 
-export type SketchConfigNodeImported = SketchConfigParamImported | SketchConfigShotImported
+export type CustomNodeImported = SketchConfigItemImported<CustomNode>
+
+export type SketchConfigNodeImported =
+  | SketchConfigParamImported
+  | SketchConfigShotImported
+  | CustomNodeImported
 
 export interface SketchConfigNodeGroup {
   groupTitle?: string
@@ -241,7 +251,14 @@ export type SketchModules = { [key: string]: SketchModuleItem }
 
 export type EnumOption = { value: NodeEnumValue; label: string }
 
-export type NodeConfig = SketchConfigParam | (SketchConfigShot & { nodeType: 'shot' })
+export type CustomNode = Omit<NodeBase, 'isCustomNode'> & {
+  // TODO: do we need to always have a "key"? Needed for creating global option nodes but shouldn't always be necessary — maybe make it optional and only require it for global option nodes?
+  key: string
+  nodeType: string
+  isCustomNode: true
+}
+
+export type NodeConfig = SketchConfigParam | (SketchConfigShot & { nodeType: 'shot' }) | CustomNode
 
 export interface Input extends NodeBase {
   nodeType: 'input'
