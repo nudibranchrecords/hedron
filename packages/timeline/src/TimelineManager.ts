@@ -1,11 +1,11 @@
-import type { Timeline, TimelineTrack, Keyframe } from '@/types'
+import type { TimelineNode, TimelineTrack, Keyframe } from '@/types'
 
 export type TrackValues = Record<string, boolean>
 
 export type OnUpdateCallback = (values: TrackValues) => void
 
 export class TimelineManager {
-  private timeline: Timeline
+  private timeline: TimelineNode
   private position = 0
   private playing = false
   private rafId: number | null = null
@@ -15,7 +15,7 @@ export class TimelineManager {
   private sortedKeyframesCache: Map<string, Keyframe[]> = new Map()
   private lastKeyframeIndex: Map<string, number> = new Map()
 
-  constructor(timeline: Timeline) {
+  constructor(timeline: TimelineNode) {
     this.timeline = timeline
     this.buildCache()
   }
@@ -122,7 +122,7 @@ export class TimelineManager {
     this.emitUpdate()
   }
 
-  setData(timeline: Timeline) {
+  setData(timeline: TimelineNode) {
     this.timeline = timeline
     this.buildCache()
     this.emitUpdate()

@@ -1,6 +1,19 @@
 import { StoreApi } from 'zustand'
 import { ShotArgsObject } from '@HedronEngine/types'
 
+export type JsonValue<
+  D extends number = 8, // max depth
+  A extends Array<0> = [], // accumulator
+> =
+  | null
+  | boolean
+  | number
+  | string
+  | (A['length'] extends D ? unknown : Array<JsonValue<D, [0, ...A]>>) // arrays
+  | (A['length'] extends D ? unknown : { [k: string]: JsonValue<D, [0, ...A]> }) // objects
+
+export type JsonObject = Record<string, JsonValue>
+
 export interface SketchState {
   id: string
   title: string
@@ -23,17 +36,37 @@ interface ChildGroups {
 
 export interface NodeBase {
   id: string
-  title: string
   parentIds: string[]
   childGroups: ChildGroups
-  isCustomNode: false
-  hidden?: boolean
+  isCustomNode?: boolean
 }
 
-export interface ParamBase extends NodeBase {
+export interface AppNode extends NodeBase {
+  isCustomNode: false
+}
+
+export interface CustomNode extends NodeBase {
+  isCustomNode: true
+  nodeType: string
+  customData: JsonObject
+}
+
+export type CustomNodeAsConfig<T extends CustomNode> = Omit<
+  T,
+  'id' | 'parentIds' | 'childGroups' | 'title'
+> & {
+  customChildGroups: { [key: string]: string[] }
+}
+
+export type CustomNodeConfig = CustomNodeAsConfig<CustomNode>
+
+export interface ParamBase extends AppNode {
   nodeType: 'param'
+  title: string
   key: string
   groupIndex: number
+  hidden?: boolean
+  isCustomNode: false
 }
 
 export interface ParamVectorBase extends ParamBase {
@@ -91,9 +124,11 @@ export type Param =
 export type ParamVector = ParamVector2 | ParamVector3 | ParamRGB
 export type ParamVectorValueType = ParamVector['valueType']
 
-export type Shot = NodeBase & {
+export type Shot = AppNode & {
   nodeType: 'shot'
+  title: string
   key: string
+  hidden?: boolean
   groupIndex: number
 }
 
@@ -204,12 +239,11 @@ export type SketchConfigShotImported = SketchConfigItemImported<SketchConfigShot
   nodeType: 'shot'
 }
 
-export type CustomNodeImported = SketchConfigItemImported<CustomNode>
+export type CustomNodeImported = CustomNodeConfig & {
+  customChildGroups: { [key: string]: string[] }
+}
 
-export type SketchConfigNodeImported =
-  | SketchConfigParamImported
-  | SketchConfigShotImported
-  | CustomNodeImported
+export type SketchConfigNodeImported = SketchConfigParamImported | SketchConfigShotImported
 
 export interface SketchConfigNodeGroup {
   groupTitle?: string
@@ -251,16 +285,9 @@ export type SketchModules = { [key: string]: SketchModuleItem }
 
 export type EnumOption = { value: NodeEnumValue; label: string }
 
-export type CustomNode = Omit<NodeBase, 'isCustomNode'> & {
-  // TODO: do we need to always have a "key"? Needed for creating global option nodes but shouldn't always be necessary — maybe make it optional and only require it for global option nodes?
-  key: string
-  nodeType: string
-  isCustomNode: true
-}
+export type NodeConfig = SketchConfigParam | (SketchConfigShot & { nodeType: 'shot' })
 
-export type NodeConfig = SketchConfigParam | (SketchConfigShot & { nodeType: 'shot' }) | CustomNode
-
-export interface Input extends NodeBase {
+export interface Input extends AppNode {
   nodeType: 'input'
   inputType: string
   targetNodeId: string
@@ -292,8 +319,8 @@ interface Actions {
   loadProject: (project: EngineData) => void
   reset: () => void
   addInput: (
-    inputConfig: Omit<Input, 'id' | 'optionNodeIds' | 'childGroups' | 'nodeType'>,
-    optionsNodeConfig: NodeConfig[],
+    inputConfig: Omit<Input, 'id' | 'optionNodeIds' | 'childGroups' | 'nodeType' | 'isCustomNode'>,
+    optionsNodeConfig?: NodeConfig[],
   ) => string
   deleteNode: (nodeId: string) => void
 }

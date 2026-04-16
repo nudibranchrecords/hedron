@@ -15,7 +15,7 @@ export const TimelineGlobalWidget: React.FC<TimelineGlobalWidgetProps> = ({ isOp
       onClick={onToggle}
       title="Timeline"
     >
-      <span className={styles.icon}>🎹</span>
+      <span className={styles.icon}>🔹</span>
       <span className={styles.label}>Timeline</span>
     </button>
   )

@@ -10,7 +10,7 @@ export const getSketchParamValues = (state: EngineState, sketchId: string) => {
   sketch.nodeIds.forEach((id) => {
     const node = nodes[id]
 
-    if (node?.nodeType !== 'param') {
+    if (node?.nodeType !== 'param' || node?.isCustomNode) {
       return
     }
 

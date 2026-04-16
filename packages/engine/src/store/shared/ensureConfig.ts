@@ -8,16 +8,10 @@ export const ensureConfig = (
   groupIndex: number = 0,
 ): SketchConfigNodeImported => {
   const nodeType = nodeConfig.nodeType ?? 'param'
+
   const base = {
     title: nodeConfig.title ?? nodeConfig.key,
     groupIndex,
-  }
-
-  if (nodeConfig.isCustomNode) {
-    return {
-      ...nodeConfig,
-      ...base,
-    } as SketchConfigNodeImported
   }
 
   switch (nodeType) {

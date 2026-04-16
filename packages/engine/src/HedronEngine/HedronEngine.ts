@@ -12,7 +12,7 @@ import { stripForSave } from '@utils/stripForSave'
 import { Renderer } from '@world/Renderer'
 import { SketchInstance, SketchInstanceError, SketchManager } from '@world/SketchManager'
 import { createDebugScene } from '@world/debugScene'
-import { EngineData, SketchModuleItem } from '@store/types'
+import { CustomNode, CustomNodeAsConfig, EngineData, SketchModuleItem } from '@store/types'
 import { getSketchesOfModuleId } from '@store/selectors/getSketchesOfModuleId'
 import { createEngineStore, EngineStore } from '@store/engineStore'
 import { getSketchParamValues } from '@store/selectors/getSketchParamValues'
@@ -108,6 +108,16 @@ export class HedronEngine {
     // Make plugins available in the global window object for debugging
     window.__HEDRON = window.__HEDRON || {}
     window.__HEDRON.plugins = this.plugins
+  }
+
+  public addCustomNode<T extends CustomNode>(
+    nodeId: string,
+    parentId: string | null,
+    config: Omit<CustomNodeAsConfig<T>, 'isCustomNode'>,
+  ) {
+    this.store.setState((state) => {
+      addNode(state, nodeId, parentId, { ...config, isCustomNode: true })
+    })
   }
 
   /**
@@ -313,6 +323,7 @@ export class HedronEngine {
   }
 
   /**
+   * @deprecated - Plugins should be using onEngineInitialize
    * Ensures global option nodes exist for all registered plugins
    * This should be called when the engine is ready to use plugin global options
    */
@@ -320,7 +331,13 @@ export class HedronEngine {
     // For each registered plugin, ensure global option nodes exist
     Object.values(this.plugins).forEach((plugin) => {
       this.createGlobalOptionNodesForPlugin(plugin)
-      plugin.onEngineInitialize?.()
+      plugin.onEngineInitialize?.(this)
+    })
+  }
+
+  public initiatePlugins() {
+    Object.values(this.plugins).forEach((plugin) => {
+      plugin.onEngineInitialize?.(this)
     })
   }
 
