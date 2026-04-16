@@ -26,8 +26,6 @@ export const SelectedNode = () => {
     )
   }
 
-  const addInput = useEngineStore((state) => state.addInput)
-
   const selectedInputId = useAppStore((state) => state.selectedInputs[selectedNode.id])
   const setSelectedInputId = useAppStore((state) => state.setSelectedInput)
 
@@ -46,20 +44,12 @@ export const SelectedNode = () => {
       Object.values(engine.plugins).map((plugin) => ({
         label: plugin.name,
         onClick: () => {
-          const numAlready = inputs.filter((input) => input.inputType === plugin.inputType).length
+          const id = engine.addInput(plugin.inputType, selectedNode.id)
 
-          const input = {
-            inputType: plugin.inputType,
-            targetNodeId: selectedNode.id,
-            title: `${plugin.inputType} ${numAlready + 1}`,
-            parentIds: [selectedNode.id],
-          }
-
-          const id = addInput(input, plugin.optionNodesConfig)
           setSelectedInputId(selectedNode.id, id)
         },
       })),
-    [addInput, inputs, selectedNode.id, setSelectedInputId],
+    [selectedNode.id, setSelectedInputId],
   )
 
   const onDeleteCurrentInput = useCallback(() => {

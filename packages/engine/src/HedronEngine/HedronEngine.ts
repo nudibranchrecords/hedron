@@ -120,6 +120,36 @@ export class HedronEngine {
     })
   }
 
+  public addInput(inputType: string, targetNodeId: string) {
+    const plugin = Object.values(this.plugins).find((p) => p.inputType === inputType)
+
+    if (!plugin) {
+      console.error(`No plugin found for input type ${inputType}`)
+      return
+    }
+
+    const state = this.store.getState()
+
+    const targetNode = state.nodes[targetNodeId]
+
+    const numAlready = targetNode?.childGroups?.inputs?.length ?? 0
+
+    const input = {
+      inputType: plugin.inputType,
+      targetNodeId,
+      title: `${plugin.inputType} ${numAlready + 1}`,
+      parentIds: [targetNodeId],
+    }
+
+    const addInput = this.store.getState().addInput
+
+    const inputId = addInput(input)
+
+    plugin.onNewInput?.(this, inputId)
+
+    return inputId
+  }
+
   /**
    * Get the node IDs for a plugin's global option nodes
    * @param pluginId The ID of the plugin
