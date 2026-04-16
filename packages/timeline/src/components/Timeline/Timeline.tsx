@@ -2,11 +2,14 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import c from './Timeline.module.css'
 import '@hedron-gl/ui-core/base.css'
 import '@hedron-gl/ui-core/fonts.css'
-import type { TimelineNode as TimelineData } from '@/types'
+import { TimelineTrack } from '@/types'
 
 export interface TimelineProps {
   /** Timeline data */
-  timeline: TimelineData
+  timeline: {
+    durationMs: number
+    tracks: TimelineTrack[]
+  }
   /** Current playhead position in seconds */
   playheadPosition?: number
   /** Called when the user clicks on the track area to set the playhead */

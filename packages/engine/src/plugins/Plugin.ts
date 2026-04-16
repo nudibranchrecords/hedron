@@ -50,6 +50,11 @@ export interface IPlugin {
    * Useful for plugins that need to sync their state after the store is populated
    */
   onEngineInitialize?: (engine: HedronEngine) => void
+
+  /**
+   * Optional callback called after each input for this plugin is added
+   */
+  onNewInput?: (engine: HedronEngine, inputId: string) => void
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
