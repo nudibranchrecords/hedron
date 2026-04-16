@@ -1,4 +1,4 @@
-import { CustomNode, Input, Node, Param as ParamType, Shot as ShotType } from '@hedron-gl/engine'
+import { Param as ParamType, Shot as ShotType } from '@hedron-gl/engine'
 import { ParamNumber } from './ParamNumber/ParamNumber'
 import { ParamBoolean } from './ParamBoolean/ParamBoolean'
 import { ParamEnum } from './ParamEnum/ParamEnum'
