@@ -26,6 +26,7 @@ export const handleSketchesDialog = async () => {
   await startEngineWithSketchesDir(sketchesDir)
 
   engine.ensureGlobalOptionNodes()
+  engine.initiatePlugins()
 }
 
 export const handleLoadProjectDialog = async (projectPath?: string) => {
@@ -56,6 +57,8 @@ export const handleLoadProjectDialog = async (projectPath?: string) => {
 
   // Add/remove shots from sketches based on their current module configs, in case files were updated since last load
   engine.reconcileAllSketchNodes()
+
+  engine.initiatePlugins()
 
   appStore.getState().cleanupStaleReferences(engine.getSaveData())
 }

@@ -1,3 +1,5 @@
+import { CustomNode } from '@hedron-gl/engine'
+
 export interface Keyframe {
   id: string
   time: number
@@ -11,7 +13,12 @@ export interface TimelineTrack {
   keyframes: Keyframe[]
 }
 
-export interface Timeline {
-  durationMs: number
-  tracks: TimelineTrack[]
+export interface TimelineNode extends CustomNode {
+  nodeType: 'timeline'
+  customData: {
+    durationMs: number
+  }
+  childGroups: CustomNode['childGroups'] & {
+    trackIds: string[]
+  }
 }

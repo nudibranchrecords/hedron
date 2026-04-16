@@ -5,7 +5,7 @@ import { useState, useEffect, useRef } from 'react'
 import { TimelineManager } from '@/TimelineManager'
 import type { TrackValues } from '@/TimelineManager'
 import { Timeline } from '@/components/Timeline/Timeline'
-import type { Timeline as TimelineData } from '@/types'
+import type { TimelineNode as TimelineData } from '@/types'
 
 const meta = {
   title: 'Timeline',

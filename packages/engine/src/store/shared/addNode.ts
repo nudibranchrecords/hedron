@@ -42,12 +42,13 @@ const _addNodeToState = (
   config: AddNodeConfig,
 ) => {
   if (config.isCustomNode) {
+    const { customChildGroups, ...rest } = config
+
     state.nodes[nodeId] = {
-      ...config,
+      ...rest,
       id: nodeId,
-      title: config.title ?? config.key,
       parentIds: parentId ? [parentId] : [],
-      childGroups: { optionNodeIds, inputNodeIds: [] },
+      childGroups: { optionNodeIds, inputNodeIds: [], ...customChildGroups },
     }
 
     return state.nodes[nodeId]

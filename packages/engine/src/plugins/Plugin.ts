@@ -1,3 +1,4 @@
+import { HedronEngine } from '@HedronEngine/HedronEngine'
 import { nodesAsArray } from '@utils/nodesAsArray'
 import {
   EngineState,
@@ -33,11 +34,13 @@ export interface IPlugin {
   description: string
 
   /**
+   * @deprecated prefer `onNewInput` to create option nodes
    * Config to generate option nodes. Follows same structure as sketch params config.
    */
-  optionNodesConfig: NodeConfig[]
+  optionNodesConfig?: NodeConfig[]
 
   /**
+   * @deprecated prefer `onEngineInitialize` to create global plugin option nodes
    * Config to generate global option nodes. Follows same structure as sketch params config.
    */
   globalOptionNodesConfig?: NodeConfig[]
@@ -46,7 +49,7 @@ export interface IPlugin {
    * Optional callback called after engine initialization (project load, sketches folder selection)
    * Useful for plugins that need to sync their state after the store is populated
    */
-  onEngineInitialize?: () => void
+  onEngineInitialize?: (engine: HedronEngine) => void
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -88,7 +91,7 @@ export const getOptionNodesFromIds = <T extends readonly any[]>(
 
     if (node.isCustomNode || node.nodeType === 'input') {
       console.warn(
-        `Node ${node.title}: ${node.id} is an input node. Input nodes cannot be used as option nodes for plugins.`,
+        `Node ${node.id} is an input node. Input nodes cannot be used as option nodes for plugins.`,
       )
       return
     }
@@ -134,7 +137,7 @@ export const handleEachInput = <T extends readonly any[]>(
 
     if (targetNode.isCustomNode || targetNode.nodeType === 'input') {
       console.warn(
-        `Input ${input.title}: ${input.id} is trying to target another input ${targetNode.title}: ${targetNode.id}. This is not supported.`,
+        `Input ${input.id} is trying to target another input ${targetNode.id}. This is not supported.`,
       )
       return
     }

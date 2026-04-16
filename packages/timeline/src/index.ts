@@ -1,6 +1,6 @@
 export { Timeline } from './components/Timeline/Timeline'
 export type { TimelineProps } from './components/Timeline/Timeline'
-export type { Timeline as TimelineData, TimelineTrack, Keyframe } from './types'
+export type { TimelineNode as TimelineData, TimelineTrack, Keyframe } from './types'
 export { TimelineManager } from './TimelineManager'
 export type { TrackValues, OnUpdateCallback } from './TimelineManager'
 export { TimelineInput } from './TimelineInput'

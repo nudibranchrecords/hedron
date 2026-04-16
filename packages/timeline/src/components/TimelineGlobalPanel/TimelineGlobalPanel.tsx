@@ -2,7 +2,7 @@ import React from 'react'
 import { HedronEngine } from '@hedron-gl/engine'
 import { Panel, PanelHeader, PanelBody, useEngineStore } from '@hedron-gl/ui-core'
 import { Timeline } from '@/components/Timeline/Timeline'
-import type { Timeline as TimelineData } from '@/types'
+import type { TimelineNode as TimelineData } from '@/types'
 
 interface TimelineGlobalPanelProps {
   engine: HedronEngine
