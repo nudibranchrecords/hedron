@@ -7,7 +7,16 @@ export interface Keyframe {
   value: boolean
 }
 
-export interface TimelineTrack {
+/** Store node type for a timeline track */
+export interface TimelineTrackNode extends CustomNode {
+  nodeType: 'timeline-track'
+  customData: {
+    keyframes: Keyframe[]
+  }
+}
+
+/** Plain display/manager type — decoupled from the store */
+export interface TimelineManagerTrack {
   id: string
   label: string
   keyframes: Keyframe[]
@@ -15,7 +24,7 @@ export interface TimelineTrack {
 
 export interface TimelineManagerData {
   durationMs: number
-  tracks: TimelineTrack[]
+  tracks: TimelineManagerTrack[]
 }
 
 export interface TimelineNode extends CustomNode {

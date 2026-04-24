@@ -2,13 +2,13 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import c from './Timeline.module.css'
 import '@hedron-gl/ui-core/base.css'
 import '@hedron-gl/ui-core/fonts.css'
-import { TimelineTrack } from '@/types'
+import { TimelineManagerTrack } from '@/types'
 
 export interface TimelineProps {
   /** Timeline data */
   timeline: {
     durationMs: number
-    tracks: TimelineTrack[]
+    tracks: TimelineManagerTrack[]
   }
   /** Current playhead position in seconds */
   playheadPosition?: number
