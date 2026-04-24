@@ -12,12 +12,18 @@ import { stripForSave } from '@utils/stripForSave'
 import { Renderer } from '@world/Renderer'
 import { SketchInstance, SketchInstanceError, SketchManager } from '@world/SketchManager'
 import { createDebugScene } from '@world/debugScene'
-import { CustomNode, CustomNodeAsConfig, EngineData, SketchModuleItem } from '@store/types'
+import {
+  CustomNode,
+  CustomNodeAsConfig,
+  EngineData,
+  NodeConfig,
+  SketchModuleItem,
+} from '@store/types'
 import { getSketchesOfModuleId } from '@store/selectors/getSketchesOfModuleId'
 import { createEngineStore, EngineStore } from '@store/engineStore'
 import { getSketchParamValues } from '@store/selectors/getSketchParamValues'
 import { EngineScene } from '@world/EngineScene'
-import { addNode } from '@store/shared/addNode'
+import { addNode, EngineAddNodeConfig } from '@store/shared/addNode'
 
 export class HedronEngine {
   public rendererType: RendererType
@@ -110,13 +116,17 @@ export class HedronEngine {
     window.__HEDRON.plugins = this.plugins
   }
 
-  public addCustomNode<T extends CustomNode>(
+  public addNode<T extends CustomNode>(
     nodeId: string,
     parentId: string | null,
-    config: Omit<CustomNodeAsConfig<T>, 'isCustomNode'>,
+    config: EngineAddNodeConfig<T>,
   ) {
     this.store.setState((state) => {
-      addNode(state, nodeId, parentId, { ...config, isCustomNode: true })
+      if (config.isCustomNode) {
+        addNode(state, nodeId, parentId, config as CustomNodeAsConfig<T>)
+      } else {
+        addNode(state, nodeId, parentId, ensureConfig(config as NodeConfig))
+      }
     })
   }
 

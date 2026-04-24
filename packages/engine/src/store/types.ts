@@ -239,10 +239,6 @@ export type SketchConfigShotImported = SketchConfigItemImported<SketchConfigShot
   nodeType: 'shot'
 }
 
-export type CustomNodeImported = CustomNodeConfig & {
-  customChildGroups: { [key: string]: string[] }
-}
-
 export type SketchConfigNodeImported = SketchConfigParamImported | SketchConfigShotImported
 
 export interface SketchConfigNodeGroup {

@@ -7,7 +7,9 @@ import {
   SketchConfigShotImported,
   ParamVector,
   isParamVectorValueType,
-  CustomNodeImported,
+  CustomNodeAsConfig,
+  CustomNode,
+  NodeConfig,
 } from '@store/types'
 import { createUniqueId } from '@utils/createUniqueId'
 
@@ -17,10 +19,30 @@ const keysLookup: Record<ParamVectorValueType, string[]> = {
   rgb: ['r', 'g', 'b'],
 }
 
-type AddNodeConfig =
+export type AddNodeConfig<T extends CustomNode = CustomNode> =
   | EnsureRequiredValueType<SketchConfigParamImported>
   | SketchConfigShotImported
-  | CustomNodeImported
+  | CustomNodeAsConfig<T>
+
+/**
+ * Narrows AddNodeConfig to only custom node configs. Use this when you want type safety
+ * for a specific custom node type. E.g., engine.addNode<TimelineNode>(id, parent, config)
+ * will enforce that config matches TimelineNode's structure.
+ */
+export type CustomNodeAddConfig<T extends CustomNode = CustomNode> = Extract<
+  AddNodeConfig<T>,
+  { isCustomNode: true }
+>
+
+/**
+ * The config type accepted by HedronEngine.addNode. Non-custom nodes use the liberal NodeConfig
+ * form (missing properties filled in by ensureConfig). Custom nodes are typed by T.
+ * When a specific custom node type is provided (e.g. TimelineNode), only that custom node
+ * config is accepted — the NodeConfig branch is excluded.
+ */
+export type EngineAddNodeConfig<T extends CustomNode = CustomNode> = [CustomNode] extends [T]
+  ? NodeConfig | CustomNodeAsConfig<T>
+  : CustomNodeAsConfig<T>
 
 // Exclude param types that have children (vector3, rgb)
 type ParamConfigNonVector = Exclude<
@@ -39,7 +61,7 @@ const _addNodeToState = (
   nodeId: string,
   parentId: string | null,
   optionNodeIds: string[],
-  config: AddNodeConfig,
+  config: AddNodeConfig<CustomNode>,
 ) => {
   if (config.isCustomNode) {
     const { customChildGroups, ...rest } = config
