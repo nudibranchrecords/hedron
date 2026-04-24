@@ -13,6 +13,11 @@ export interface TimelineTrack {
   keyframes: Keyframe[]
 }
 
+export interface TimelineManagerData {
+  durationMs: number
+  tracks: TimelineTrack[]
+}
+
 export interface TimelineNode extends CustomNode {
   nodeType: 'timeline'
   customData: {

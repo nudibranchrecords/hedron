@@ -1,11 +1,11 @@
-import type { TimelineNode, TimelineTrack, Keyframe } from '@/types'
+import type { TimelineManagerData, TimelineTrack, Keyframe } from '@/types'
 
 export type TrackValues = Record<string, boolean>
 
 export type OnUpdateCallback = (values: TrackValues) => void
 
 export class TimelineManager {
-  private timeline: TimelineNode
+  private timelineData: TimelineManagerData
   private position = 0
   private playing = false
   private rafId: number | null = null
@@ -15,15 +15,15 @@ export class TimelineManager {
   private sortedKeyframesCache: Map<string, Keyframe[]> = new Map()
   private lastKeyframeIndex: Map<string, number> = new Map()
 
-  constructor(timeline: TimelineNode) {
-    this.timeline = timeline
+  constructor(timeline: TimelineManagerData) {
+    this.timelineData = timeline
     this.buildCache()
   }
 
   private buildCache() {
     this.sortedKeyframesCache.clear()
     this.resetKeyframeIndexes()
-    for (const track of this.timeline.tracks) {
+    for (const track of this.timelineData.tracks) {
       this.sortedKeyframesCache.set(
         track.id,
         [...track.keyframes].sort((a, b) => a.time - b.time),
@@ -51,7 +51,7 @@ export class TimelineManager {
 
   private computeValues(): TrackValues {
     const values: TrackValues = {}
-    for (const track of this.timeline.tracks) {
+    for (const track of this.timelineData.tracks) {
       values[track.id] = this.getTrackValue(track)
     }
     return values
@@ -79,13 +79,13 @@ export class TimelineManager {
 
     if (this.lastFrameTime !== null) {
       const delta = now - this.lastFrameTime
-      this.position = Math.min(this.position + delta, this.timeline.durationMs)
+      this.position = Math.min(this.position + delta, this.timelineData.durationMs)
     }
     this.lastFrameTime = now
 
     this.emitUpdate()
 
-    if (this.position >= this.timeline.durationMs) {
+    if (this.position >= this.timelineData.durationMs) {
       this.playing = false
       this.lastFrameTime = null
       this.resetKeyframeIndexes()
@@ -97,7 +97,7 @@ export class TimelineManager {
 
   play() {
     if (this.playing) return
-    if (this.position >= this.timeline.durationMs) {
+    if (this.position >= this.timelineData.durationMs) {
       this.position = 0
       this.resetKeyframeIndexes()
     }
@@ -116,14 +116,14 @@ export class TimelineManager {
   }
 
   goTo(timeMs: number) {
-    this.position = Math.max(0, Math.min(timeMs, this.timeline.durationMs))
+    this.position = Math.max(0, Math.min(timeMs, this.timelineData.durationMs))
     this.lastFrameTime = null
     this.resetKeyframeIndexes()
     this.emitUpdate()
   }
 
-  setData(timeline: TimelineNode) {
-    this.timeline = timeline
+  setData(timeline: TimelineManagerData) {
+    this.timelineData = timeline
     this.buildCache()
     this.emitUpdate()
   }
