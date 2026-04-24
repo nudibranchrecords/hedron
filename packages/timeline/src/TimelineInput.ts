@@ -11,8 +11,7 @@ export class TimelineInput implements IPlugin {
 
   onEngineInitialize(engine: HedronEngine) {
     const timelineNodeId = `${this.id}-default-timeline`
-    // TODO: Ensure this only gets added once, either with logic here or in the engine's addCustomNode method
-    engine.addNode<TimelineNode>(timelineNodeId, null, {
+    engine.addNodeOnce<TimelineNode>(timelineNodeId, null, {
       isCustomNode: true,
       nodeType: 'timeline',
       customData: {
@@ -22,6 +21,19 @@ export class TimelineInput implements IPlugin {
         trackIds: [],
       },
     })
+
+    engine.addOptionNodes(timelineNodeId, [
+      {
+        key: 'playheadPosition',
+        valueType: 'number',
+        defaultValue: 0,
+      },
+      {
+        key: 'isPlaying',
+        valueType: 'boolean',
+        defaultValue: false,
+      },
+    ])
   }
 
   onNewInput(engine: HedronEngine, inputId: string) {

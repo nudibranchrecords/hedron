@@ -130,6 +130,34 @@ export class HedronEngine {
     })
   }
 
+  public addNodeOnce<T extends CustomNode>(
+    nodeId: string,
+    parentId: string | null,
+    config: EngineAddNodeConfig<T>,
+  ) {
+    if (this.store.getState().nodes[nodeId]) return
+    this.addNode(nodeId, parentId, config)
+  }
+
+  public addOptionNodes(parentId: string, configs: NodeConfig[]) {
+    this.store.setState((state) => {
+      const parentNode = state.nodes[parentId]
+      if (!parentNode) {
+        console.error(`addOptionNodes: node "${parentId}" not found`)
+        return
+      }
+
+      for (const cfg of configs) {
+        const nodeId = `${parentId}-option-${cfg.key}`
+        if (state.nodes[nodeId]) continue
+
+        const cfgImported = ensureConfig(cfg)
+        addNode(state, nodeId, parentId, cfgImported)
+        parentNode.childGroups.optionNodeIds.push(nodeId)
+      }
+    })
+  }
+
   public addInput(inputType: string, targetNodeId: string) {
     const plugin = Object.values(this.plugins).find((p) => p.inputType === inputType)
 
