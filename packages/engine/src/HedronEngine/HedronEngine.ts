@@ -139,7 +139,10 @@ export class HedronEngine {
     this.addNode(nodeId, parentId, config)
   }
 
-  public addOptionNodes(parentId: string, configs: NodeConfig[]) {
+  public addOptionNodes<T extends CustomNode = CustomNode>(
+    parentId: string,
+    configs: (NodeConfig | CustomNodeAsConfig<T>)[],
+  ) {
     this.store.setState((state) => {
       const parentNode = state.nodes[parentId]
       if (!parentNode) {
@@ -148,11 +151,16 @@ export class HedronEngine {
       }
 
       for (const cfg of configs) {
-        const nodeId = `${parentId}-option-${cfg.key}`
+        const nodeId = cfg.isCustomNode
+          ? `${parentId}-option-${(cfg as CustomNodeAsConfig<T>).nodeType}` // TODO: unsafe because nodeType might not be unique among options
+          : `${parentId}-option-${(cfg as NodeConfig).key}`
         if (state.nodes[nodeId]) continue
 
-        const cfgImported = ensureConfig(cfg)
-        addNode(state, nodeId, parentId, cfgImported)
+        if (cfg.isCustomNode) {
+          addNode(state, nodeId, parentId, cfg as CustomNodeAsConfig<T>)
+        } else {
+          addNode(state, nodeId, parentId, ensureConfig(cfg as NodeConfig))
+        }
         parentNode.childGroups.optionNodeIds.push(nodeId)
       }
     })

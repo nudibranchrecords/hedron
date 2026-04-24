@@ -1,19 +1,6 @@
 import { StoreApi } from 'zustand'
 import { ShotArgsObject } from '@HedronEngine/types'
 
-export type JsonValue<
-  D extends number = 8, // max depth
-  A extends Array<0> = [], // accumulator
-> =
-  | null
-  | boolean
-  | number
-  | string
-  | (A['length'] extends D ? unknown : Array<JsonValue<D, [0, ...A]>>) // arrays
-  | (A['length'] extends D ? unknown : { [k: string]: JsonValue<D, [0, ...A]> }) // objects
-
-export type JsonObject = Record<string, JsonValue>
-
 export interface SketchState {
   id: string
   title: string
@@ -48,7 +35,7 @@ export interface AppNode extends NodeBase {
 export interface CustomNode extends NodeBase {
   isCustomNode: true
   nodeType: string
-  customData: JsonObject
+  customData: Record<string, unknown>
 }
 
 export type CustomNodeAsConfig<T extends CustomNode> = Omit<
@@ -287,6 +274,7 @@ export interface Input extends AppNode {
   nodeType: 'input'
   inputType: string
   targetNodeId: string
+  title: string
 }
 
 export interface EngineData {

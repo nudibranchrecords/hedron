@@ -1,5 +1,5 @@
 import { HedronEngine, IPlugin } from '@hedron-gl/engine'
-import { TimelineNode } from './types'
+import { TimelineNode, TimelineTrackNode } from './types'
 
 export class TimelineInput implements IPlugin {
   public readonly id = 'timeline-input'
@@ -43,5 +43,21 @@ export class TimelineInput implements IPlugin {
     store.setState((state) => {
       state.nodes[timelineNodeId]?.childGroups.trackIds.push(inputId)
     })
+
+    engine.addOptionNodes<TimelineTrackNode>(inputId, [
+      {
+        isCustomNode: true,
+        nodeType: 'timeline-track',
+        customData: {
+          keyframes: [],
+        },
+        customChildGroups: {},
+      },
+      {
+        key: 'isPlaying',
+        valueType: 'boolean',
+        defaultValue: false,
+      },
+    ])
   }
 }

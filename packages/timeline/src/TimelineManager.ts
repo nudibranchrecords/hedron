@@ -1,4 +1,4 @@
-import type { TimelineManagerData, TimelineTrack, Keyframe } from '@/types'
+import type { TimelineManagerData, TimelineManagerTrack, Keyframe } from '@/types'
 
 export type TrackValues = Record<string, boolean>
 
@@ -35,7 +35,7 @@ export class TimelineManager {
     this.lastKeyframeIndex.clear()
   }
 
-  private getTrackValue(track: TimelineTrack): boolean {
+  private getTrackValue(track: TimelineManagerTrack): boolean {
     const sorted = this.sortedKeyframesCache.get(track.id) ?? []
     const startIndex = this.lastKeyframeIndex.get(track.id) ?? 0
     let value = startIndex > 0 ? sorted[startIndex - 1].value : false
