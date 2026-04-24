@@ -20,7 +20,7 @@ export const useTimelineData = () => {
 
     const trackIds = timelineNode.childGroups.trackIds ?? []
     const tracks: TimelineManagerTrack[] = trackIds
-      .map((inputId) => {
+      .map((inputId): TimelineManagerTrack | null => {
         const inputNode = nodes[inputId] as Input | undefined
         if (!inputNode) return null
         const trackNode = nodes[`${inputId}-option-timeline-track`] as TimelineTrackNode | undefined
@@ -28,7 +28,8 @@ export const useTimelineData = () => {
           id: inputId,
           label: inputNode.title,
           keyframes: trackNode?.customData.keyframes ?? [],
-        } satisfies TimelineManagerTrack
+          targetNodeId: inputNode.targetNodeId,
+        }
       })
       .filter((t): t is TimelineManagerTrack => t !== null)
 

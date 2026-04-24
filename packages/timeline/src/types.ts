@@ -20,6 +20,7 @@ export interface TimelineManagerTrack {
   id: string
   label: string
   keyframes: Keyframe[]
+  targetNodeId?: string
 }
 
 export interface TimelineManagerData {
