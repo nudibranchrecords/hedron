@@ -1,7 +1,7 @@
 import { createContext, useContext } from 'react'
 import { useStore } from 'zustand'
 import { AppStore, AppState } from '@hedron-gl/app-store'
-import { EngineStore, EngineStateWithActions } from '@hedron-gl/engine'
+import { CustomSetState, EngineStore, EngineStateWithActions } from '@hedron-gl/engine'
 
 export const AppStoreContext = createContext<AppStore | null>(null)
 
@@ -24,6 +24,10 @@ export const AppStoreProvider = AppStoreContext.Provider
 
 export const EngineStoreContext = createContext<EngineStore | null>(null)
 
+type EngineStoreWithTypedSetState = Omit<EngineStore, 'setState'> & {
+  setState: CustomSetState
+}
+
 export const useEngineStoreWithContext = () => {
   const engineStore = useContext(EngineStoreContext)
 
@@ -31,7 +35,7 @@ export const useEngineStoreWithContext = () => {
     throw new Error('Missing EngineStoreProvider')
   }
 
-  return engineStore
+  return engineStore as EngineStoreWithTypedSetState
 }
 
 export const useEngineStore = <T>(selector: (state: EngineStateWithActions) => T) => {
