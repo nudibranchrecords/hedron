@@ -1,5 +1,10 @@
 import { StoreApi } from 'zustand'
+import { Group } from 'three'
+import { Pass } from 'postprocessing'
+import { PassNode } from 'three/webgpu'
+import { type ShaderNodeObject } from 'three/tsl'
 import { ShotArgsObject } from '@HedronEngine/types'
+import { EngineScene } from '@world/EngineScene'
 
 export interface SketchState {
   id: string
@@ -11,9 +16,43 @@ export interface SketchState {
 
 export type Sketches = { [key: string]: SketchState }
 
-// TODO: How to type this??
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type SketchModule = any
+type SketchUpdateParams = {
+  deltaFrame: number
+  deltaTime: number
+  params: { [key: string]: unknown }
+  scene: EngineScene
+}
+
+type SketchShotFunc = (
+  args: Omit<SketchUpdateParams, 'deltaFrame' | 'deltaTime'> & { shotArgs: ShotArgsObject },
+) => void
+
+export type SketchInstance = {
+  id: string
+  update: (arg: SketchUpdateParams) => void
+  root?: Group
+
+  getPasses?: (engineScene: EngineScene) => Pass[]
+
+  getWebGPUPass?: (
+    prevPass: ShaderNodeObject<PassNode>,
+    renderPassNode: ShaderNodeObject<PassNode>,
+  ) => ShaderNodeObject<PassNode>
+
+  dispose(engineScene: EngineScene): () => void
+} & Record<string, SketchShotFunc>
+
+export type SketchInstanceMap = Map<string, SketchInstance>
+export type SketchInstanceErrorType = 'Create' | 'Dispose'
+export type SketchInstanceError = (
+  sketchInstanceId: string,
+  errorType?: SketchInstanceErrorType,
+) => void
+
+export type SketchModule = {
+  new (scene: EngineScene): SketchInstance
+  getConfig?: () => SketchConfigRaw
+}
 
 interface ChildGroups {
   [key: string]: string[]

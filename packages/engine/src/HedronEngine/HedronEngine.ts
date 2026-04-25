@@ -10,13 +10,15 @@ import { initializeGlobalVars } from '@globalVars'
 import { IPlugin } from '@plugins/Plugin'
 import { stripForSave } from '@utils/stripForSave'
 import { Renderer } from '@world/Renderer'
-import { SketchInstance, SketchInstanceError, SketchManager } from '@world/SketchManager'
+import { SketchManager } from '@world/SketchManager'
 import { createDebugScene } from '@world/debugScene'
 import {
   CustomNode,
   CustomNodeAsConfig,
   EngineData,
   NodeConfig,
+  SketchInstanceError,
+  SketchInstance,
   SketchModuleItem,
 } from '@store/types'
 import { getSketchesOfModuleId } from '@store/selectors/getSketchesOfModuleId'
