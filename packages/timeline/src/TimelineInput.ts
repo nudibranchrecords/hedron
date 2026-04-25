@@ -53,11 +53,6 @@ export class TimelineInput implements IPlugin {
         },
         customChildGroups: {},
       },
-      {
-        key: 'isPlaying',
-        valueType: 'boolean',
-        defaultValue: false,
-      },
     ])
   }
 }
