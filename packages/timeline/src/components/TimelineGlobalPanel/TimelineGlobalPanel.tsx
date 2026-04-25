@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react'
-import { HedronEngine } from '@hedron-gl/engine'
+import { EngineStateWithActions, HedronEngine } from '@hedron-gl/engine'
 import {
   Panel,
   PanelHeader,
@@ -40,7 +40,7 @@ export const TimelineGlobalPanel: React.FC<TimelineGlobalPanelProps> = () => {
 
   const handleKeyframeDelete = useCallback(
     (keyframeId: string) => {
-      engineStore.setState((state) => {
+      engineStore.setState((state: EngineStateWithActions) => {
         for (const track of timeline.tracks) {
           const trackNodeId = `${track.id}-option-timeline-track`
           const trackNode = state.nodes[trackNodeId] as TimelineTrackNode | undefined
@@ -59,19 +59,30 @@ export const TimelineGlobalPanel: React.FC<TimelineGlobalPanelProps> = () => {
 
   const handleKeyframeInsert = useCallback(
     (trackId: string, time: number) => {
-      const keyframe = {
-        id: crypto.randomUUID(),
-        time,
-        valueType: 'boolean' as const,
-        value: true,
-      }
-
-      engineStore.setState((state) => {
+      engineStore.setState((state: EngineStateWithActions) => {
+        // TODO: This should just be the input node with customData.keyframes
         const trackNode = state.nodes[`${trackId}-option-timeline-track`] as
           | TimelineTrackNode
           | undefined
+
         if (!trackNode) {
           return
+        }
+
+        const inputNode = state.nodes[trackId]
+
+        console.log(trackId)
+        if (!inputNode || inputNode.isCustomNode || inputNode.nodeType !== 'input') {
+          return
+        }
+
+        const targetNodeValue = state.nodeValues[inputNode.targetNodeId]
+
+        const keyframe = {
+          id: crypto.randomUUID(),
+          time,
+          valueType: 'boolean' as const,
+          value: targetNodeValue === true,
         }
 
         trackNode.customData.keyframes.push(keyframe)
