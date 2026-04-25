@@ -38,11 +38,13 @@ export const TimelineGlobalPanel: React.FC<TimelineGlobalPanelProps> = () => {
     [manager, updateNodeValue],
   )
 
+  // TODO: Move these into their own handlers to keep the component neat
   const handleKeyframeDelete = useCallback(
     (keyframeId: string) => {
       engineStore.setState((state: EngineStateWithActions) => {
         for (const track of timeline.tracks) {
           const trackNodeId = `${track.id}-option-timeline-track`
+          // TODO: This should just be the input node with customData.keyframes
           const trackNode = state.nodes[trackNodeId] as TimelineTrackNode | undefined
           if (!trackNode) continue
 
@@ -57,6 +59,7 @@ export const TimelineGlobalPanel: React.FC<TimelineGlobalPanelProps> = () => {
     [engineStore, timeline.tracks],
   )
 
+  // TODO: Move these into their own handlers to keep the component neat
   const handleKeyframeInsert = useCallback(
     (trackId: string, time: number) => {
       engineStore.setState((state: EngineStateWithActions) => {
