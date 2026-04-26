@@ -39,12 +39,8 @@ export class TimelineInput implements IPlugin {
 
   onNewInput(engine: HedronEngine, inputId: string) {
     const timelineNodeId = `${this.id}-default-timeline`
-    const store = engine.getStore()
 
-    store.setState((state) => {
-      // TODO: Have a proper way to set child/parent relationship. We're not setting parentId on the input here...
-      state.nodes[timelineNodeId]?.childGroups.trackIds.push(inputId)
-    })
+    engine.addParentToNode(inputId, timelineNodeId, 'trackIds')
 
     engine.setNodeCustomData(inputId, {
       keyframes: [],
