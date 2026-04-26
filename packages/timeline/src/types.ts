@@ -1,4 +1,4 @@
-import { CustomNode } from '@hedron-gl/engine'
+import { Input, CustomNode } from '@hedron-gl/engine'
 
 export interface Keyframe {
   id: string
@@ -8,9 +8,9 @@ export interface Keyframe {
 }
 
 /** Store node type for a timeline track */
-export interface TimelineTrackNode extends CustomNode {
-  nodeType: 'timeline-track'
-  customData: {
+export type TimelineTrackInput = Input & {
+  inputType: 'timeline-track'
+  customData?: {
     keyframes: Keyframe[]
   }
 }

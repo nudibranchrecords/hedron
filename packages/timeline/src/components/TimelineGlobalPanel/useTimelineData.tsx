@@ -2,8 +2,7 @@ import { useMemo } from 'react'
 
 import { useEngineStore } from '@hedron-gl/ui-core'
 
-import type { Input } from '@hedron-gl/engine'
-import type { TimelineNode, TimelineManagerTrack, TimelineTrackNode } from '@/types'
+import type { TimelineNode, TimelineManagerTrack, TimelineTrackInput } from '@/types'
 
 const TIMELINE_NODE_ID = 'timeline-input-default-timeline'
 
@@ -21,18 +20,17 @@ export const useTimelineData = () => {
     const trackIds = timelineNode.childGroups.trackIds ?? []
     const tracks: TimelineManagerTrack[] = trackIds
       .map((inputId): TimelineManagerTrack | null => {
-        const inputNode = nodes[inputId] as Input | undefined
+        const inputNode = nodes[inputId] as TimelineTrackInput | undefined
         if (!inputNode) return null
 
         const targetNode = nodes[inputNode.targetNodeId]
 
         if (!targetNode) return null
 
-        const trackNode = nodes[`${inputId}-option-timeline-track`] as TimelineTrackNode | undefined
         return {
           id: inputId,
           label: targetNode.title,
-          keyframes: trackNode?.customData.keyframes ?? [],
+          keyframes: inputNode.customData?.keyframes ?? [],
           targetNodeId: inputNode.targetNodeId,
         }
       })

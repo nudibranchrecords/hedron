@@ -65,17 +65,21 @@ export interface NodeBase {
   title: string
   parentIds: string[]
   childGroups: ChildGroups
+  // @deprecated - remove before PR is merged
   isCustomNode?: boolean
+  /** Allows plugins to attach custom arbitrary data to any node.
+   * Best for special cases where params don't make sense (e.g. timeline keyframe data) */
+  customData?: Record<string, unknown>
 }
 
 export interface AppNode extends NodeBase {
   isCustomNode: false
 }
 
+// @deprecated - remove before PR is merged
 export interface CustomNode extends NodeBase {
   isCustomNode: true
   nodeType: string
-  customData: Record<string, unknown>
 }
 
 export type CustomNodeAsConfig<T extends CustomNode> = Omit<
@@ -312,7 +316,6 @@ export interface Input extends AppNode {
   nodeType: 'input'
   inputType: string
   targetNodeId: string
-  title: string
 }
 
 export interface EngineData {

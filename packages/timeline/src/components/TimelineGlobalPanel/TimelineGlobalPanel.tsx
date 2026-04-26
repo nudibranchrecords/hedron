@@ -1,17 +1,10 @@
 import React, { useCallback } from 'react'
-import { EngineStateWithActions, HedronEngine } from '@hedron-gl/engine'
-import {
-  Panel,
-  PanelHeader,
-  PanelBody,
-  NodeContainer,
-  useEngineStore,
-  useEngineStoreWithContext,
-} from '@hedron-gl/ui-core'
+import { HedronEngine } from '@hedron-gl/engine'
+import { Panel, PanelHeader, PanelBody, NodeContainer, useEngineStore } from '@hedron-gl/ui-core'
 import { useTimelineData } from './useTimelineData'
 import { useTimelineManager } from './useTimelineManager'
 import { Timeline } from '@/components/Timeline/Timeline'
-import type { TimelineTrackNode } from '@/types'
+import type { Keyframe, TimelineTrackInput } from '@/types'
 
 const TIMELINE_NODE_ID = 'timeline-input-default-timeline'
 const IS_PLAYING_NODE_ID = `${TIMELINE_NODE_ID}-option-isPlaying`
@@ -21,10 +14,9 @@ interface TimelineGlobalPanelProps {
   engine: HedronEngine
 }
 
-export const TimelineGlobalPanel: React.FC<TimelineGlobalPanelProps> = () => {
+export const TimelineGlobalPanel: React.FC<TimelineGlobalPanelProps> = ({ engine }) => {
   const timeline = useTimelineData()
   const manager = useTimelineManager(timeline)
-  const engineStore = useEngineStoreWithContext()
   const updateNodeValue = useEngineStore((state) => state.updateNodeValue)
   const playheadPosition = useEngineStore(
     (state) => state.nodeValues[PLAYHEAD_POSITION_NODE_ID] as number | undefined,
@@ -41,58 +33,48 @@ export const TimelineGlobalPanel: React.FC<TimelineGlobalPanelProps> = () => {
   // TODO: Move these into their own handlers to keep the component neat
   const handleKeyframeDelete = useCallback(
     (keyframeId: string) => {
-      engineStore.setState((state: EngineStateWithActions) => {
-        for (const track of timeline.tracks) {
-          const trackNodeId = `${track.id}-option-timeline-track`
-          // TODO: This should just be the input node with customData.keyframes
-          const trackNode = state.nodes[trackNodeId] as TimelineTrackNode | undefined
-          if (!trackNode) continue
+      for (const track of timeline.tracks) {
+        const inputNode = engine.getNode<TimelineTrackInput>(track.id)
 
-          const nextKeyframes = trackNode.customData.keyframes.filter((kf) => kf.id !== keyframeId)
-          if (nextKeyframes.length === trackNode.customData.keyframes.length) continue
+        if (!inputNode) continue
 
-          trackNode.customData.keyframes = nextKeyframes
-          return
-        }
-      })
+        const currentKeyframes: Keyframe[] = inputNode.customData?.keyframes ?? []
+        const nextKeyframes = currentKeyframes.filter((kf) => kf.id !== keyframeId)
+
+        if (nextKeyframes.length === currentKeyframes.length) continue
+
+        engine.setNodeCustomData(track.id, { keyframes: nextKeyframes })
+        return
+      }
     },
-    [engineStore, timeline.tracks],
+    [engine, timeline.tracks],
   )
 
   // TODO: Move these into their own handlers to keep the component neat
   const handleKeyframeInsert = useCallback(
     (trackId: string, time: number) => {
-      engineStore.setState((state: EngineStateWithActions) => {
-        // TODO: This should just be the input node with customData.keyframes
-        const trackNode = state.nodes[`${trackId}-option-timeline-track`] as
-          | TimelineTrackNode
-          | undefined
+      const inputNode = engine.getNode<TimelineTrackInput>(trackId)
 
-        if (!trackNode) {
-          return
-        }
+      if (!inputNode || inputNode.isCustomNode || inputNode.nodeType !== 'input') {
+        return
+      }
 
-        const inputNode = state.nodes[trackId]
+      const targetNodeValue = engine.getNodeValue(inputNode.targetNodeId)
 
-        console.log(trackId)
-        if (!inputNode || inputNode.isCustomNode || inputNode.nodeType !== 'input') {
-          return
-        }
+      const keyframe = {
+        id: crypto.randomUUID(),
+        time,
+        valueType: 'boolean' as const,
+        value: targetNodeValue === true,
+      }
 
-        const targetNodeValue = state.nodeValues[inputNode.targetNodeId]
+      const nextKeyframes: Keyframe[] = [...(inputNode.customData?.keyframes ?? []), keyframe].sort(
+        (a, b) => a.time - b.time,
+      )
 
-        const keyframe = {
-          id: crypto.randomUUID(),
-          time,
-          valueType: 'boolean' as const,
-          value: targetNodeValue === true,
-        }
-
-        trackNode.customData.keyframes.push(keyframe)
-        trackNode.customData.keyframes.sort((a, b) => a.time - b.time)
-      })
+      engine.setNodeCustomData(trackId, { keyframes: nextKeyframes })
     },
-    [engineStore],
+    [engine],
   )
 
   return (
