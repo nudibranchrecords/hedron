@@ -1,5 +1,5 @@
 import { HedronEngine, IPlugin } from '@hedron-gl/engine'
-import { TimelineNode, TimelineTrackNode } from './types'
+import { TimelineNode } from './types'
 
 export class TimelineInput implements IPlugin {
   public readonly id = 'timeline-input'
@@ -12,6 +12,7 @@ export class TimelineInput implements IPlugin {
   onEngineInitialize(engine: HedronEngine) {
     const timelineNodeId = `${this.id}-default-timeline`
     engine.addNodeOnce<TimelineNode>(timelineNodeId, null, {
+      title: 'Default Timeline',
       isCustomNode: true,
       nodeType: 'timeline',
       customData: {
