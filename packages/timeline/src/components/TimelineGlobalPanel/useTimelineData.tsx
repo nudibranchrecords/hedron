@@ -23,10 +23,15 @@ export const useTimelineData = () => {
       .map((inputId): TimelineManagerTrack | null => {
         const inputNode = nodes[inputId] as Input | undefined
         if (!inputNode) return null
+
+        const targetNode = nodes[inputNode.targetNodeId]
+
+        if (!targetNode) return null
+
         const trackNode = nodes[`${inputId}-option-timeline-track`] as TimelineTrackNode | undefined
         return {
           id: inputId,
-          label: inputNode.title,
+          label: targetNode.title, // TODO: reintroduce title for all nodes
           keyframes: trackNode?.customData.keyframes ?? [],
           targetNodeId: inputNode.targetNodeId,
         }
