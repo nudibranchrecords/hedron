@@ -222,6 +222,12 @@ export class HedronEngine {
 
     const inputId = addInput(input)
 
+    /**
+     * FIXME: Once `optionNodesConfig` is removed, we wont need this
+     * All plugins will use `onNewInput` to add these manually
+     * */
+    this.addOptionNodes(inputId, plugin.optionNodesConfig ?? [])
+
     plugin.onNewInput?.(this, inputId)
 
     return inputId
