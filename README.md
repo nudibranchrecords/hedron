@@ -41,7 +41,3 @@ HEDRON_RENDERER_TYPE=webgpu
 ```
 
 The `.env` file is gitignored, so your local configuration won't be committed to the repository.
-
-# Experimental Features
-
-Access [Experimental Features](./EXPERIMENTAL_FEATURES.md) via the command line, these are features created during show prep, and are not yet complete in terms of funcationality/UI.
