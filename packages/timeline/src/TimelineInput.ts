@@ -45,15 +45,8 @@ export class TimelineInput implements IPlugin {
       state.nodes[timelineNodeId]?.childGroups.trackIds.push(inputId)
     })
 
-    engine.addOptionNodes<TimelineTrackNode>(inputId, [
-      {
-        isCustomNode: true,
-        nodeType: 'timeline-track',
-        customData: {
-          keyframes: [],
-        },
-        customChildGroups: {},
-      },
-    ])
+    engine.setNodeCustomData(inputId, {
+      keyframes: [],
+    })
   }
 }

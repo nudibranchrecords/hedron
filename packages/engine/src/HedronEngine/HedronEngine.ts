@@ -16,7 +16,9 @@ import {
   CustomNode,
   CustomNodeAsConfig,
   EngineData,
+  Node,
   NodeConfig,
+  NodeValue,
   SketchInstanceError,
   SketchInstance,
   SketchModuleItem,
@@ -166,6 +168,29 @@ export class HedronEngine {
         parentNode.childGroups.optionNodeIds.push(nodeId)
       }
     })
+  }
+
+  public setNodeCustomData(nodeId: string, customData: Record<string, unknown>) {
+    this.store.setState((state) => {
+      const node = state.nodes[nodeId]
+      if (!node) {
+        console.error(`setNodeCustomData: node "${nodeId}" not found`)
+        return
+      }
+
+      node.customData = {
+        ...node.customData,
+        ...customData,
+      }
+    })
+  }
+
+  public getNode<T extends Node = Node>(nodeId: string): T | undefined {
+    return this.store.getState().nodes[nodeId] as T | undefined
+  }
+
+  public getNodeValue(nodeId: string): NodeValue | undefined {
+    return this.store.getState().nodeValues[nodeId]
   }
 
   public addInput(inputType: string, targetNodeId: string) {
