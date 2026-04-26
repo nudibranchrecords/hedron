@@ -31,7 +31,7 @@ export const useTimelineData = () => {
         const trackNode = nodes[`${inputId}-option-timeline-track`] as TimelineTrackNode | undefined
         return {
           id: inputId,
-          label: targetNode.title, // TODO: reintroduce title for all nodes
+          label: targetNode.title,
           keyframes: trackNode?.customData.keyframes ?? [],
           targetNodeId: inputNode.targetNodeId,
         }
