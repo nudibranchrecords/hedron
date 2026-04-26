@@ -62,6 +62,7 @@ interface ChildGroups {
 
 export interface NodeBase {
   id: string
+  title: string
   parentIds: string[]
   childGroups: ChildGroups
   isCustomNode?: boolean
@@ -79,7 +80,7 @@ export interface CustomNode extends NodeBase {
 
 export type CustomNodeAsConfig<T extends CustomNode> = Omit<
   T,
-  'id' | 'parentIds' | 'childGroups' | 'title'
+  'id' | 'parentIds' | 'childGroups'
 > & {
   customChildGroups: { [key: string]: string[] }
 }
@@ -88,7 +89,6 @@ export type CustomNodeConfig = CustomNodeAsConfig<CustomNode>
 
 export interface ParamBase extends AppNode {
   nodeType: 'param'
-  title: string
   key: string
   groupIndex: number
   hidden?: boolean
@@ -152,7 +152,6 @@ export type ParamVectorValueType = ParamVector['valueType']
 
 export type Shot = AppNode & {
   nodeType: 'shot'
-  title: string
   key: string
   hidden?: boolean
   groupIndex: number
