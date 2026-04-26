@@ -193,6 +193,10 @@ export class HedronEngine {
     return this.store.getState().nodeValues[nodeId]
   }
 
+  public setNodeValue(nodeId: string, value: NodeValue): void {
+    this.store.getState().updateNodeValue(nodeId, value)
+  }
+
   public addInput(inputType: string, targetNodeId: string) {
     const plugin = Object.values(this.plugins).find((p) => p.inputType === inputType)
 

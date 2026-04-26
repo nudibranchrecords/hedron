@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 
-import { useEngineStore } from '@hedron-gl/ui-core'
+import { useEngineStore, useEngineStoreShallow } from '@hedron-gl/ui-core'
 
 import type { TimelineNode, TimelineManagerTrack, TimelineTrackInput } from '@/types'
 
@@ -10,20 +10,27 @@ export const useTimelineData = () => {
   const timelineNode = useEngineStore((state) => state.nodes[TIMELINE_NODE_ID]) as
     | TimelineNode
     | undefined
-  const nodes = useEngineStore((state) => state.nodes)
+  const trackIds = useMemo(() => timelineNode?.childGroups.trackIds ?? [], [timelineNode])
+
+  const trackNodes = useEngineStoreShallow((state) =>
+    trackIds.map((inputId) => state.nodes[inputId] as TimelineTrackInput | undefined),
+  )
+
+  const targetNodes = useEngineStoreShallow((state) =>
+    trackNodes.map((trackNode) => (trackNode ? state.nodes[trackNode.targetNodeId] : undefined)),
+  )
 
   return useMemo(() => {
     if (!timelineNode) {
       return { durationMs: 60000, tracks: [] }
     }
 
-    const trackIds = timelineNode.childGroups.trackIds ?? []
     const tracks: TimelineManagerTrack[] = trackIds
-      .map((inputId): TimelineManagerTrack | null => {
-        const inputNode = nodes[inputId] as TimelineTrackInput | undefined
+      .map((inputId, index): TimelineManagerTrack | null => {
+        const inputNode = trackNodes[index]
         if (!inputNode) return null
 
-        const targetNode = nodes[inputNode.targetNodeId]
+        const targetNode = targetNodes[index]
 
         if (!targetNode) return null
 
@@ -40,5 +47,5 @@ export const useTimelineData = () => {
       durationMs: timelineNode.customData.durationMs,
       tracks,
     }
-  }, [timelineNode, nodes])
+  }, [timelineNode, trackIds, trackNodes, targetNodes])
 }
