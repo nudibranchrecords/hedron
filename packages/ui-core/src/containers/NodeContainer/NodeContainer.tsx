@@ -58,7 +58,7 @@ export const NodeContainer = ({ nodeId }: { nodeId: string }) => {
     return <i>Node with id {nodeId} not found</i>
   }
 
-  if (node.isCustomNode) {
+  if (node.nodeType === 'custom') {
     return "NodeContainer: Tried to render a custom node, this isn't supported. Node ID: " + node.id
   }
 

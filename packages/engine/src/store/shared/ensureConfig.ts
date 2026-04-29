@@ -39,6 +39,12 @@ export const ensureConfig = (
       }
     }
 
+    case 'custom': {
+      //TODO
+
+      return nodeConfig
+    }
+
     default:
       throw new Error(`Unexpected nodeType: ${nodeType}`)
   }

@@ -7,9 +7,7 @@ import {
   SketchConfigShotImported,
   ParamVector,
   isParamVectorValueType,
-  CustomNodeAsConfig,
   CustomNode,
-  NodeConfig,
 } from '@store/types'
 import { createUniqueId } from '@utils/createUniqueId'
 
@@ -19,30 +17,10 @@ const keysLookup: Record<ParamVectorValueType, string[]> = {
   rgb: ['r', 'g', 'b'],
 }
 
-export type AddNodeConfig<T extends CustomNode = CustomNode> =
+export type AddNodeConfig =
   | EnsureRequiredValueType<SketchConfigParamImported>
   | SketchConfigShotImported
-  | CustomNodeAsConfig<T>
-
-/**
- * Narrows AddNodeConfig to only custom node configs. Use this when you want type safety
- * for a specific custom node type. E.g., engine.addNode<TimelineNode>(id, parent, config)
- * will enforce that config matches TimelineNode's structure.
- */
-export type CustomNodeAddConfig<T extends CustomNode = CustomNode> = Extract<
-  AddNodeConfig<T>,
-  { isCustomNode: true }
->
-
-/**
- * The config type accepted by HedronEngine.addNode. Non-custom nodes use the liberal NodeConfig
- * form (missing properties filled in by ensureConfig). Custom nodes are typed by T.
- * When a specific custom node type is provided (e.g. TimelineNode), only that custom node
- * config is accepted — the NodeConfig branch is excluded.
- */
-export type EngineAddNodeConfig<T extends CustomNode = CustomNode> = [CustomNode] extends [T]
-  ? NodeConfig | CustomNodeAsConfig<T>
-  : CustomNodeAsConfig<T>
+  | CustomNode
 
 // Exclude param types that have children (vector3, rgb)
 type ParamConfigNonVector = Exclude<
@@ -61,16 +39,16 @@ const _addNodeToState = (
   nodeId: string,
   parentId: string | null,
   optionNodeIds: string[],
-  config: AddNodeConfig<CustomNode>,
+  config: AddNodeConfig,
 ) => {
-  if (config.isCustomNode) {
-    const { customChildGroups, ...rest } = config
+  if (config.nodeType === 'custom') {
+    const { childGroups, ...rest } = config
 
     state.nodes[nodeId] = {
       ...rest,
       id: nodeId,
       parentIds: parentId ? [parentId] : [],
-      childGroups: { optionNodeIds, inputNodeIds: [], ...customChildGroups },
+      childGroups,
     }
 
     return state.nodes[nodeId]
@@ -81,7 +59,6 @@ const _addNodeToState = (
       ...config,
       id: nodeId,
       nodeType: 'shot',
-      isCustomNode: false,
       title: config.title ?? config.key,
       parentIds: parentId ? [parentId] : [],
       childGroups: { optionNodeIds, inputNodeIds: [] },
@@ -102,7 +79,6 @@ const _addNodeToState = (
     key,
     groupIndex,
     nodeType: 'param' as const,
-    isCustomNode: false as const,
     title,
     hidden,
     parentIds: parentId ? [parentId] : [],
@@ -180,9 +156,7 @@ export const addNode = (
   parentId: string | null,
   config: AddNodeConfig,
 ) => {
-  if (config.isCustomNode) {
-    _addNodeToState(state, nodeId, parentId, [], config)
-  } else if (config.nodeType === 'param' && isParamVectorValueType(config.valueType)) {
+  if (config.nodeType === 'param' && isParamVectorValueType(config.valueType)) {
     if (!Array.isArray(config.defaultValue)) {
       throw new Error(`Expected defaultValue to be an array for ${config.valueType} type`)
     }

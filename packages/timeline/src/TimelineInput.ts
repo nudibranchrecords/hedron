@@ -1,5 +1,4 @@
 import { HedronEngine, IPlugin } from '@hedron-gl/engine'
-import { TimelineNode } from './types'
 
 export class TimelineInput implements IPlugin {
   public readonly id = 'timeline-input'
@@ -11,14 +10,19 @@ export class TimelineInput implements IPlugin {
 
   onEngineInitialize(engine: HedronEngine) {
     const timelineNodeId = `${this.id}-default-timeline`
-    engine.addNodeOnce<TimelineNode>(timelineNodeId, null, {
+    engine.addNodeOnce(timelineNodeId, null, {
       title: 'Default Timeline',
-      isCustomNode: true,
-      nodeType: 'timeline',
+      nodeType: 'custom',
+      customNodeType: 'timeline',
       customData: {
         durationMs: 60000,
       },
-      customChildGroups: {
+      // TODO: With proper config typing we wouldn't need all this boilerplate config
+      id: timelineNodeId,
+      parentIds: [],
+      childGroups: {
+        optionNodeIds: [],
+        inputNodeIds: [],
         trackIds: [],
       },
     })

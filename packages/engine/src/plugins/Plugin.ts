@@ -94,7 +94,15 @@ export const getOptionNodesFromIds = <T extends readonly any[]>(
       return
     }
 
-    if (node.isCustomNode || node.nodeType === 'input') {
+    if (node.nodeType === 'custom') {
+      console.warn(
+        `Node ${node.id} is a custom node. Custom nodes cannot be used as option nodes for plugins.`,
+      )
+
+      return
+    }
+
+    if (node.nodeType === 'input') {
       console.warn(
         `Node ${node.id} is an input node. Input nodes cannot be used as option nodes for plugins.`,
       )
@@ -130,7 +138,7 @@ export const handleEachInput = <T extends readonly any[]>(
 
   // TODO: Not very performant, we might want to cache inputs somehow
   allNodes.forEach((input) => {
-    if (input.isCustomNode || input.nodeType !== 'input' || input.inputType !== inputType) return
+    if (input.nodeType !== 'input' || input.inputType !== inputType) return
 
     const targetNode = storeState.nodes[input.targetNodeId]
 
@@ -140,7 +148,7 @@ export const handleEachInput = <T extends readonly any[]>(
       return
     }
 
-    if (targetNode.isCustomNode || targetNode.nodeType === 'input') {
+    if (targetNode.nodeType === 'input') {
       console.warn(
         `Input ${input.id} is trying to target another input ${targetNode.id}. This is not supported.`,
       )
