@@ -29,7 +29,7 @@ export interface TimelineManagerData {
 }
 
 export interface TimelineNode extends CustomNode {
-  nodeType: 'timeline'
+  customNodeType: 'timeline'
   customData: {
     durationMs: number
   }

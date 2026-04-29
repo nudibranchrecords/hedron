@@ -3,6 +3,7 @@ import { type Clock } from '@hedron-gl/clock'
 import { listenToStore } from './storeListener'
 import { CanvasSizeMode, RendererType, Result, ShotArgsObject } from './types'
 import { importSketchModule } from './importSketchModule'
+import { createUniqueId } from '@utils/createUniqueId'
 import { ensureConfig } from '@store/shared/ensureConfig'
 import { flushNodeValueBuffer } from '@store/actionCreators/updateNodeValue'
 import { getSketchShotNodes } from '@store/selectors/getSketchShotNodes'
@@ -14,7 +15,6 @@ import { SketchManager } from '@world/SketchManager'
 import { createDebugScene } from '@world/debugScene'
 import {
   CustomNode,
-  CustomNodeAsConfig,
   EngineData,
   Node,
   NodeConfig,
@@ -27,7 +27,7 @@ import { getSketchesOfModuleId } from '@store/selectors/getSketchesOfModuleId'
 import { createEngineStore, EngineStore } from '@store/engineStore'
 import { getSketchParamValues } from '@store/selectors/getSketchParamValues'
 import { EngineScene } from '@world/EngineScene'
-import { addNode, EngineAddNodeConfig } from '@store/shared/addNode'
+import { addNode, AddNodeConfig } from '@store/shared/addNode'
 
 export class HedronEngine {
   public rendererType: RendererType
@@ -120,33 +120,18 @@ export class HedronEngine {
     window.__HEDRON.plugins = this.plugins
   }
 
-  public addNode<T extends CustomNode>(
-    nodeId: string,
-    parentId: string | null,
-    config: EngineAddNodeConfig<T>,
-  ) {
+  public addNode(nodeId: string, parentId: string | null, config: AddNodeConfig) {
     this.store.setState((state) => {
-      if (config.isCustomNode) {
-        addNode(state, nodeId, parentId, config as CustomNodeAsConfig<T>)
-      } else {
-        addNode(state, nodeId, parentId, ensureConfig(config as NodeConfig))
-      }
+      addNode(state, nodeId, parentId, ensureConfig(config as NodeConfig))
     })
   }
 
-  public addNodeOnce<T extends CustomNode>(
-    nodeId: string,
-    parentId: string | null,
-    config: EngineAddNodeConfig<T>,
-  ) {
+  public addNodeOnce(nodeId: string, parentId: string | null, config: AddNodeConfig) {
     if (this.store.getState().nodes[nodeId]) return
     this.addNode(nodeId, parentId, config)
   }
 
-  public addOptionNodes<T extends CustomNode = CustomNode>(
-    parentId: string,
-    configs: (NodeConfig | CustomNodeAsConfig<T>)[],
-  ) {
+  public addOptionNodes(parentId: string, configs: NodeConfig[]) {
     this.store.setState((state) => {
       const parentNode = state.nodes[parentId]
       if (!parentNode) {
@@ -155,16 +140,11 @@ export class HedronEngine {
       }
 
       for (const cfg of configs) {
-        const nodeId = cfg.isCustomNode
-          ? `${parentId}-option-${(cfg as CustomNodeAsConfig<T>).nodeType}` // TODO: unsafe because nodeType might not be unique among options
-          : `${parentId}-option-${(cfg as NodeConfig).key}`
+        const nodeId = createUniqueId()
         if (state.nodes[nodeId]) continue
 
-        if (cfg.isCustomNode) {
-          addNode(state, nodeId, parentId, cfg as CustomNodeAsConfig<T>)
-        } else {
-          addNode(state, nodeId, parentId, ensureConfig(cfg as NodeConfig))
-        }
+        addNode(state, nodeId, parentId, ensureConfig(cfg))
+
         parentNode.childGroups.optionNodeIds.push(nodeId)
       }
     })

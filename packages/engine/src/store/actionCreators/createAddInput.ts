@@ -31,7 +31,6 @@ export const createAddInput: SetterCreator<'addInput'> =
         },
         id,
         nodeType: 'input',
-        isCustomNode: false,
       }
 
       // Add children Ids to target node (so that cleanup works if target node is deleted)

@@ -65,38 +65,17 @@ export interface NodeBase {
   title: string
   parentIds: string[]
   childGroups: ChildGroups
-  // @deprecated - remove before PR is merged
-  isCustomNode?: boolean
+
   /** Allows plugins to attach custom arbitrary data to any node.
    * Best for special cases where params don't make sense (e.g. timeline keyframe data) */
   customData?: Record<string, unknown>
 }
 
-export interface AppNode extends NodeBase {
-  isCustomNode: false
-}
-
-// @deprecated - remove before PR is merged
-export interface CustomNode extends NodeBase {
-  isCustomNode: true
-  nodeType: string
-}
-
-export type CustomNodeAsConfig<T extends CustomNode> = Omit<
-  T,
-  'id' | 'parentIds' | 'childGroups'
-> & {
-  customChildGroups: { [key: string]: string[] }
-}
-
-export type CustomNodeConfig = CustomNodeAsConfig<CustomNode>
-
-export interface ParamBase extends AppNode {
+export interface ParamBase extends NodeBase {
   nodeType: 'param'
   key: string
   groupIndex: number
   hidden?: boolean
-  isCustomNode: false
 }
 
 export interface ParamVectorBase extends ParamBase {
@@ -154,11 +133,16 @@ export type Param =
 export type ParamVector = ParamVector2 | ParamVector3 | ParamRGB
 export type ParamVectorValueType = ParamVector['valueType']
 
-export type Shot = AppNode & {
+export type Shot = NodeBase & {
   nodeType: 'shot'
   key: string
   hidden?: boolean
   groupIndex: number
+}
+
+export type CustomNode = NodeBase & {
+  nodeType: 'custom'
+  customNodeType: string
 }
 
 export type Node = Param | Shot | Input | CustomNode
@@ -185,15 +169,12 @@ export const isParamVectorValueType = (
 }
 
 export const isParamVector = (node: Node): node is ParamVector => {
-  return (
-    !node.isCustomNode && node.nodeType === 'param' && node.valueType in paramValueTypesWithChildren
-  )
+  return node.nodeType === 'param' && node.valueType in paramValueTypesWithChildren
 }
 
 interface SketchConfigNodeBase {
   key: string
   title?: string
-  isCustomNode?: false
   hidden?: boolean
 }
 
@@ -312,7 +293,7 @@ export type EnumOption = { value: NodeEnumValue; label: string }
 
 export type NodeConfig = SketchConfigParam | (SketchConfigShot & { nodeType: 'shot' })
 
-export interface Input extends AppNode {
+export interface Input extends NodeBase {
   nodeType: 'input'
   inputType: string
   targetNodeId: string
@@ -344,7 +325,7 @@ interface Actions {
   loadProject: (project: EngineData) => void
   reset: () => void
   addInput: (
-    inputConfig: Omit<Input, 'id' | 'optionNodeIds' | 'childGroups' | 'nodeType' | 'isCustomNode'>,
+    inputConfig: Omit<Input, 'id' | 'optionNodeIds' | 'childGroups' | 'nodeType'>,
     optionsNodeConfig?: NodeConfig[],
   ) => string
   deleteNode: (nodeId: string) => void

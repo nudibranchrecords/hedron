@@ -44,7 +44,7 @@ export const useTimelineHandlers = ({ engine, manager, timeline }: UseTimelineHa
     (trackId: string, time: number) => {
       const inputNode = engine.getNode<TimelineTrackInput>(trackId)
 
-      if (!inputNode || inputNode.isCustomNode || inputNode.nodeType !== 'input') {
+      if (!inputNode || inputNode.nodeType !== 'input') {
         return
       }
 
