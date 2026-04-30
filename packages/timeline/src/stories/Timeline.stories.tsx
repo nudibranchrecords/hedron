@@ -61,6 +61,7 @@ export const Interactive = () => {
   const [playing, setPlaying] = useState(false)
   const [trackValues, setTrackValues] = useState<TrackValues>({})
   const [timeline, setTimeline] = useState<TimelineManagerData>({
+    durationMs: 10000,
     tracks: [
       {
         id: 'track-1',
