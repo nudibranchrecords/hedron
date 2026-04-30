@@ -36,7 +36,7 @@ engine.registerPlugin(new MidiInput(engine))
 engine.registerPlugin(new LFOInput(engine))
 engine.registerPlugin(new AudioInput(engine))
 engine.registerPlugin(new GamepadInput(engine))
-engine.registerPlugin(new TimelineInput(engine))
+engine.registerPlugin(new TimelineInput())
 
 export const pluginViews = {
   inputPanel: {

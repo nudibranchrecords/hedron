@@ -45,6 +45,7 @@ export const SelectedNode = () => {
         label: plugin.name,
         onClick: () => {
           const id = engine.addInput(plugin.inputType, selectedNode.id)
+          if (!id) return
 
           setSelectedInputId(selectedNode.id, id)
         },

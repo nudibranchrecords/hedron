@@ -4,9 +4,10 @@ import {
   EngineState,
   EngineStateWithActions,
   Input,
-  Node,
   NodeConfig,
   NodeValue,
+  Param,
+  Shot,
 } from '@store/types'
 
 /**
@@ -130,7 +131,7 @@ export const handleEachInput = <T extends readonly any[]>(
   }: {
     input: Input
     optionNodes: ConfigToOptionsType<T>
-    targetNode: Exclude<Node, Input>
+    targetNode: Param | Shot
     targetNodeValue: NodeValue
   }) => void,
 ) => {
@@ -151,6 +152,13 @@ export const handleEachInput = <T extends readonly any[]>(
     if (targetNode.nodeType === 'input') {
       console.warn(
         `Input ${input.id} is trying to target another input ${targetNode.id}. This is not supported.`,
+      )
+      return
+    }
+
+    if (targetNode.nodeType === 'custom') {
+      console.warn(
+        `Input ${input.id} is trying to target a custom node ${targetNode.id}. This is not supported.`,
       )
       return
     }

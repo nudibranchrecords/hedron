@@ -6,8 +6,6 @@ export class TimelineInput implements IPlugin {
   public readonly inputType = 'timeline-track'
   public readonly description = 'Timeline-based input for automating parameters over time.'
 
-  // constructor(engine: HedronEngine) {}
-
   onEngineInitialize(engine: HedronEngine) {
     const timelineNodeId = `${this.id}-default-timeline`
     engine.addNodeOnce(timelineNodeId, null, {
