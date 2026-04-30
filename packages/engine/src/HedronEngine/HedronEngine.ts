@@ -14,7 +14,6 @@ import { Renderer } from '@world/Renderer'
 import { SketchManager } from '@world/SketchManager'
 import { createDebugScene } from '@world/debugScene'
 import {
-  CustomNode,
   EngineData,
   Node,
   NodeConfig,

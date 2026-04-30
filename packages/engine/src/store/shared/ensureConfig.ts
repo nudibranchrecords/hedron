@@ -1,12 +1,22 @@
-import { NodeConfig, SketchConfigNodeImported, SketchConfigParamImported } from '@store/types'
+import {
+  CustomNode,
+  NodeConfig,
+  SketchConfigNodeImported,
+  SketchConfigParamImported,
+} from '@store/types'
 
 /*
   Fills in gaps in user defined configs such as a missing `valueType` for number params, or a missing `title` for any node.
 */
 export const ensureConfig = (
-  nodeConfig: NodeConfig,
+  nodeConfig: NodeConfig | CustomNode,
   groupIndex: number = 0,
-): SketchConfigNodeImported => {
+): SketchConfigNodeImported | CustomNode => {
+  if (nodeConfig.nodeType === 'custom') {
+    // FIXME: We currently have to pass custom nodes without any missing properties
+    return nodeConfig
+  }
+
   const nodeType = nodeConfig.nodeType ?? 'param'
 
   const base = {
@@ -37,12 +47,6 @@ export const ensureConfig = (
         ...base,
         nodeType: 'shot',
       }
-    }
-
-    case 'custom': {
-      //TODO
-
-      return nodeConfig
     }
 
     default:
