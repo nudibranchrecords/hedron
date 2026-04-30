@@ -30,9 +30,6 @@ export interface TimelineManagerData {
 
 export interface TimelineNode extends CustomNode {
   customNodeType: 'timeline'
-  customData: {
-    durationMs: number
-  }
   childGroups: CustomNode['childGroups'] & {
     trackIds: string[]
   }
