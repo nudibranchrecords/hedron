@@ -21,6 +21,8 @@ import {
   SketchInstanceError,
   SketchInstance,
   SketchModuleItem,
+  Param,
+  Shot,
 } from '@store/types'
 import { getSketchesOfModuleId } from '@store/selectors/getSketchesOfModuleId'
 import { createEngineStore, EngineStore } from '@store/engineStore'
@@ -139,11 +141,15 @@ export class HedronEngine {
       }
 
       for (const cfg of configs) {
+        const optionNodeExists = parentNode.childGroups.optionNodeIds.some((id) => {
+          const node = state.nodes[id] as Param | Shot | undefined
+          return node?.key === cfg.key
+        })
+
+        if (optionNodeExists) continue
+
         const nodeId = createUniqueId()
-        if (state.nodes[nodeId]) continue
-
         addNode(state, nodeId, parentId, ensureConfig(cfg))
-
         parentNode.childGroups.optionNodeIds.push(nodeId)
       }
     })
