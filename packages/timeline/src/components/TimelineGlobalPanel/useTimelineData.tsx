@@ -6,6 +6,8 @@ import type { TimelineNode, TimelineManagerTrack, TimelineTrackInput } from '@/t
 
 const TIMELINE_NODE_ID = 'timeline-input-default-timeline'
 
+const TIMELINE_DURATION = 10000
+
 export const useTimelineData = () => {
   const timelineNode = useEngineStore((state) => state.nodes[TIMELINE_NODE_ID]) as
     | TimelineNode
@@ -22,7 +24,7 @@ export const useTimelineData = () => {
 
   return useMemo(() => {
     if (!timelineNode) {
-      return { durationMs: 60000, tracks: [] }
+      return { tracks: [], durationMs: TIMELINE_DURATION }
     }
 
     const tracks: TimelineManagerTrack[] = trackIds
@@ -44,8 +46,8 @@ export const useTimelineData = () => {
       .filter((t): t is TimelineManagerTrack => t !== null)
 
     return {
-      durationMs: timelineNode.customData.durationMs,
       tracks,
+      durationMs: TIMELINE_DURATION,
     }
   }, [timelineNode, trackIds, trackNodes, targetNodes])
 }

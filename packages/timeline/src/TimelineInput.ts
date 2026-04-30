@@ -14,9 +14,6 @@ export class TimelineInput implements IPlugin {
       title: 'Default Timeline',
       nodeType: 'custom',
       customNodeType: 'timeline',
-      customData: {
-        durationMs: 60000,
-      },
       // TODO: With proper config typing we wouldn't need all this boilerplate config
       id: timelineNodeId,
       parentIds: [],

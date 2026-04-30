@@ -5,7 +5,7 @@ import { useState, useEffect, useRef } from 'react'
 import { TimelineManager } from '@/TimelineManager'
 import type { TrackValues } from '@/TimelineManager'
 import { Timeline } from '@/components/Timeline/Timeline'
-import type { TimelineNode as TimelineData } from '@/types'
+import type { TimelineManagerData } from '@/types'
 
 const meta = {
   title: 'Timeline',
@@ -60,8 +60,7 @@ export const Interactive = () => {
   const [playheadPosition, setPlayheadPosition] = useState(0)
   const [playing, setPlaying] = useState(false)
   const [trackValues, setTrackValues] = useState<TrackValues>({})
-  const [timeline, setTimeline] = useState<TimelineData>({
-    durationMs: 10000,
+  const [timeline, setTimeline] = useState<TimelineManagerData>({
     tracks: [
       {
         id: 'track-1',
