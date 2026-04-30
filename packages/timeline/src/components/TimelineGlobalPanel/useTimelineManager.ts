@@ -3,7 +3,6 @@ import { useEngineStore, useNodeOptionNodes } from '@hedron-gl/ui-core'
 import { TimelineManager } from '@/TimelineManager'
 
 const TIMELINE_NODE_ID = 'timeline-input-default-timeline'
-const PLAYHEAD_POSITION_NODE_ID = `${TIMELINE_NODE_ID}-option-playheadPosition`
 
 export const useTimelineManager = (
   timelineData: Parameters<typeof TimelineManager.prototype.setData>[0],
@@ -15,17 +14,18 @@ export const useTimelineManager = (
   }, [manager, timelineData])
 
   const optionNodes = useNodeOptionNodes(TIMELINE_NODE_ID)
-  const isPlayingNode = optionNodes['isPlaying']
-  const isPlaying = useEngineStore((state) => state.nodeValues[isPlayingNode?.id]) as
-    | boolean
-    | undefined
+  const isPlayingNode = optionNodes['isPlaying']!
+  const playHeadPositionNode = optionNodes['playheadPosition']!
+  const isPlaying = useEngineStore(
+    (state) => state.nodeValues[isPlayingNode?.id] as boolean | undefined,
+  )
 
   const updateNodeValue = useEngineStore((state) => state.updateNodeValue)
   const updateMultipleNodeValues = useEngineStore((state) => state.updateMultipleNodeValues)
 
   useEffect(() => {
     manager.onUpdate((changed) => {
-      updateNodeValue(PLAYHEAD_POSITION_NODE_ID, manager.getPosition())
+      updateNodeValue(playHeadPositionNode.id, manager.getPosition())
 
       const changedTrackIds = Object.keys(changed)
       if (changedTrackIds.length > 0) {
@@ -40,7 +40,13 @@ export const useTimelineManager = (
         )
       }
     })
-  }, [manager, timelineData.tracks, updateMultipleNodeValues, updateNodeValue])
+  }, [
+    manager,
+    playHeadPositionNode.id,
+    timelineData.tracks,
+    updateMultipleNodeValues,
+    updateNodeValue,
+  ])
 
   useEffect(() => {
     if (isPlaying) {
