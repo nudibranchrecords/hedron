@@ -5,7 +5,7 @@ import {
   ControlGrid,
   NodeContainer,
   useEngineStore,
-  useOptionNodeByKey,
+  useNodeOptionNodes,
 } from '@hedron-gl/ui-core'
 import { GamepadInput } from './GamepadInput'
 import { GamepadEvent, AxisMode, GamepadInputType } from './GamepadTypes'
@@ -81,8 +81,10 @@ export const GamepadInputPanel = ({ input, engine }: IProps) => {
   const nodes = useEngineStore((state) => state.nodes)
   const nodeValues = useEngineStore((state) => state.nodeValues)
 
-  const inputTypeNode = useOptionNodeByKey(input, 'inputType')
-  const axisModeNode = useOptionNodeByKey(input, 'axisMode')
+  const optionNodes = useNodeOptionNodes(input.id)
+
+  const inputTypeNode = optionNodes['inputType']
+  const axisModeNode = optionNodes['axisMode']
 
   const inputTypeValue = inputTypeNode ? nodeValues[inputTypeNode.id] : null
   const axisModeValue = axisModeNode ? nodeValues[axisModeNode.id] : null
