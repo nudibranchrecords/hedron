@@ -31,9 +31,7 @@ export const useNodeBreadcrumbs = (nodeId: string): BreadcrumbItem[] => {
       currentId =
         node.parentIds.find((id) => {
           const nodeType = nodes[id]?.nodeType
-          // Only consider parent nodes that are of type 'param', 'shot', or 'input' for breadcrumb navigation
-          // (e.g. NOT some plugin type, such as 'timeline')
-          return nodeType === 'param' || nodeType === 'shot' || nodeType === 'input'
+          return nodeType && nodeType !== 'custom'
         }) || null
     }
 
