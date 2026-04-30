@@ -1,3 +1,4 @@
+import React from 'react'
 import { HedronEngine } from '@hedron-gl/engine'
 
 import styles from './TimelineGlobalWidget.module.css'
