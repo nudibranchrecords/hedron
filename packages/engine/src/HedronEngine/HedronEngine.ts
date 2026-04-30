@@ -205,7 +205,11 @@ export class HedronEngine {
     return this.store.getState().nodeValues[nodeId]
   }
 
-  public setNodeValue(nodeId: string, value: NodeValue): void {
+  public setNodeValue(nodeId: string | undefined, value: NodeValue): void {
+    if (!nodeId) {
+      console.error('setNodeValue: nodeId is undefined')
+      return
+    }
     this.store.getState().updateNodeValue(nodeId, value)
   }
 

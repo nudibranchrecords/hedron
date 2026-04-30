@@ -13,7 +13,6 @@ import { useTimelineManager } from './useTimelineManager'
 import { Timeline } from '@/components/Timeline/Timeline'
 
 const TIMELINE_NODE_ID = 'timeline-input-default-timeline'
-const PLAYHEAD_POSITION_NODE_ID = `${TIMELINE_NODE_ID}-option-playheadPosition`
 
 interface TimelineGlobalPanelProps {
   engine: HedronEngine
@@ -22,9 +21,7 @@ interface TimelineGlobalPanelProps {
 export const TimelineGlobalPanel: React.FC<TimelineGlobalPanelProps> = ({ engine }) => {
   const timeline = useTimelineData()
   const manager = useTimelineManager(timeline)
-  const playheadPosition = useEngineStore(
-    (state) => state.nodeValues[PLAYHEAD_POSITION_NODE_ID] as number | undefined,
-  )
+
   const { handlePlayheadChange, handleKeyframeDelete, handleKeyframeInsert } = useTimelineHandlers({
     engine,
     manager,
@@ -32,7 +29,12 @@ export const TimelineGlobalPanel: React.FC<TimelineGlobalPanelProps> = ({ engine
   })
 
   const optionNodes = useNodeOptionNodes(TIMELINE_NODE_ID)
-  const isPlayingNode = optionNodes['isPlaying']
+  const isPlayingNode = optionNodes['isPlaying']!
+  const playHeadPositionNode = optionNodes['playheadPosition']!
+
+  const playheadPosition = useEngineStore(
+    (state) => state.nodeValues[playHeadPositionNode.id] as number | undefined,
+  )
 
   return (
     <Panel>
