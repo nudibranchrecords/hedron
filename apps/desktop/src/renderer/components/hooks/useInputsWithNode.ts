@@ -1,14 +1,14 @@
-import { Input, nodesAsArray } from '@hedron-gl/engine'
+import { Input } from '@hedron-gl/engine'
 import { useEngineStore } from '@hedron-gl/ui-core'
 import { useShallow } from 'zustand/react/shallow'
 
-export const useInputsWithNode = (nodeId: string): Input[] => {
+export const useInputsWithNode = (parentId: string): Input[] => {
   return useEngineStore(
-    useShallow(
-      (state) =>
-        nodesAsArray(state.nodes).filter(
-          (node) => node.nodeType === 'input' && node.targetNodeId === nodeId,
-        ) as Input[],
-    ),
+    useShallow((state) => {
+      const parentNode = state.nodes[parentId]
+      const inputIds = parentNode?.childGroups.inputNodeIds || []
+      const inputs = inputIds.map((id) => state.nodes[id]).filter((node): node is Input => !!node)
+      return inputs
+    }),
   )
 }
