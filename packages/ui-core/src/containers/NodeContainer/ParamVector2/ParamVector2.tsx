@@ -1,7 +1,7 @@
 import { ParamVector2 as ParamVector2Type } from '@hedron-gl/engine'
 import c from './ParamVector2.module.css'
 import { ParamNumber } from '@containers/NodeContainer/ParamNumber/ParamNumber'
-import { useEngineStore } from '@hooks/storeHooks'
+import { useEngineStore } from '@hooks/engineHooks'
 
 interface ParamVector2Props {
   id: string

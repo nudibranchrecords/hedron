@@ -283,6 +283,7 @@ export class GamepadInput implements IPlugin {
           optionNodes,
           // @ts-expect-error - TS can't infer that handler matches node type
           targetNode,
+          // @ts-expect-error - TS can't infer that handler matches node type
           targetNodeValue,
         })
 

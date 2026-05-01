@@ -1,7 +1,7 @@
 import { useRef } from 'react'
 import { useInterval } from 'usehooks-ts'
 import { useOnNodeValueChange } from '@hooks/useOnNodeValueChange'
-import { useEngineStoreWithContext } from '@hooks/storeHooks'
+import { useEngine } from '@hooks/engineHooks'
 import { TextInput, TextInputHandle } from '@components/TextInput/TextInput'
 
 interface ParamNumberProps {
@@ -11,10 +11,10 @@ interface ParamNumberProps {
 export const ParamString = ({ id }: ParamNumberProps) => {
   const ref = useRef<TextInputHandle>(null)
   const onValueChange = useOnNodeValueChange(id)
-  const engineStore = useEngineStoreWithContext()
+  const engine = useEngine()
 
   useInterval(() => {
-    const nodeValue = engineStore.getState().nodeValues[id]
+    const nodeValue = engine.getStore().getState().nodeValues[id]
     if (typeof nodeValue !== 'string') {
       throw new Error('TextInput value was not a string')
     }

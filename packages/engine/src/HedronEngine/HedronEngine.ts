@@ -37,7 +37,8 @@ export class HedronEngine {
   private sketchesUrl: string | null = null
   private sketchManager: SketchManager
   public plugins: Record<string, IPlugin> = {}
-  private registeredShots: Record<string, () => void> = {}
+  private registeredShots: Record<string, (args: ShotArgsObject) => void> = {}
+  private shotListeners: Record<string, (() => void)[]> = {}
   private onFrameStart?: () => void
   private onFrameEnd?: () => void
   public clock?: Clock
@@ -274,19 +275,12 @@ export class HedronEngine {
 
   public registerShot(shotId: string, shotFunc: (value: ShotArgsObject) => void) {
     this.unregisterShot(shotId) // Unregister existing shot if it exists to avoid duplicates
-    this.registeredShots[shotId] = this.store.subscribe(
-      (state) => state.nodeValues[shotId] as ShotArgsObject,
-      shotFunc,
-    )
+    this.registeredShots[shotId] = shotFunc
   }
 
   // This method is private, because we're automatically unregistering shots when nodes are removed from the store
   private unregisterShot(shotId: string) {
-    const unsubscribe = this.registeredShots[shotId]
-    if (unsubscribe) {
-      unsubscribe()
-      delete this.registeredShots[shotId]
-    }
+    delete this.registeredShots[shotId]
   }
 
   private registerAllSketchShots(sketchId: string, sketchInstance: SketchInstance) {
@@ -305,10 +299,24 @@ export class HedronEngine {
     })
   }
 
+  /**
+   * Registers a shot listener, which fires whenever a shot has just fired. Useful for UI to respond to shots being fired (e.g. blinking a trigger pad).
+   * Returns an unsubscribe function to remove the listener
+   */
+  public registerShotListener(shotId: string, listener: () => void) {
+    if (!this.shotListeners[shotId]) {
+      this.shotListeners[shotId] = []
+    }
+    this.shotListeners[shotId].push(listener)
+
+    return () => {
+      this.shotListeners[shotId] = this.shotListeners[shotId].filter((l) => l !== listener)
+    }
+  }
+
   public fireShot(shotId: string, shotArgs?: ShotArgsObject) {
-    // We don't directly call the shot function, instead we update the node value and let the store listener handle it
-    // We're spreading the args to create a new object reference, to ensire the store listener detects a change
-    this.store.getState().updateNodeValue(shotId, shotArgs ? { ...shotArgs } : {})
+    this.registeredShots[shotId]?.(shotArgs ?? {})
+    this.shotListeners[shotId]?.forEach((listener) => listener())
   }
 
   /**

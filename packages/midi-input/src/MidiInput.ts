@@ -228,6 +228,7 @@ export class MidiInput implements IPlugin {
               optionNodes,
               // @ts-expect-error -- TS isn't smart enough to infer the correct node type
               targetNode,
+              // @ts-expect-error -- TS isn't smart enough to infer the correct node type
               targetNodeValue,
             })
 

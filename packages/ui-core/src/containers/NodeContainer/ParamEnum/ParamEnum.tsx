@@ -1,6 +1,6 @@
 import { useRef } from 'react'
 import { ParamEnum as ParamEnumType } from '@hedron-gl/engine'
-import { useEngineStore } from '@hooks/storeHooks'
+import { useEngineStore } from '@hooks/engineHooks'
 import { useOnNodeValueChange } from '@hooks/useOnNodeValueChange'
 import { useSubscribeToNodeValue } from '@hooks/useSubscribeToNodeValue'
 import { EnumDropdown, EnumDropdownHandle } from '@components/EnumDropdown/EnumDropdown'

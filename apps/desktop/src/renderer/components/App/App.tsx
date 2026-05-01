@@ -1,4 +1,4 @@
-import { AppStoreProvider, EngineStoreProvider, WidgetStrip, useAppStore } from '@hedron-gl/ui-core'
+import { AppStoreProvider, EngineProvider, WidgetStrip, useAppStore } from '@hedron-gl/ui-core'
 import c from './App.module.css'
 import { useHandleDrag } from './useHandleDrag'
 import { GlobalClock } from '@components/GlobalClock/GlobalClock'
@@ -8,7 +8,7 @@ import { VideoControls } from '@components/VideoControls/VideoControls'
 import { Viewer } from '@components/Viewer'
 import { WorkArea } from '@components/WorkArea/WorkArea'
 import { appStore } from '@renderer/appStore'
-import { engine, engineStore, pluginViews } from '@renderer/engine'
+import { engine, pluginViews } from '@renderer/engine'
 
 const AppContent = (): JSX.Element => {
   const sketchesDir = useAppStore((state) => state.sketchesDir)
@@ -60,9 +60,9 @@ const AppContent = (): JSX.Element => {
 export const App = (): JSX.Element => {
   return (
     <AppStoreProvider value={appStore}>
-      <EngineStoreProvider value={engineStore}>
+      <EngineProvider value={engine}>
         <AppContent />
-      </EngineStoreProvider>
+      </EngineProvider>
     </AppStoreProvider>
   )
 }

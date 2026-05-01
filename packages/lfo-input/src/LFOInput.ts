@@ -124,6 +124,7 @@ export class LFOInput implements IPlugin {
 
   private handleShot: ShotHandler = ({ delta, input, engine }) => {
     const val = Math.sin(delta)
+
     if (val > 0 && !this.inputLatches[input.id]) {
       this.inputLatches[input.id] = true
 

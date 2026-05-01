@@ -128,12 +128,19 @@ export const handleEachInput = <T extends readonly any[]>(
   callback: ({
     input,
     optionNodes,
-  }: {
-    input: Input
-    optionNodes: ConfigToOptionsType<T>
-    targetNode: Param | Shot
-    targetNodeValue: NodeValue
-  }) => void,
+  }:
+    | {
+        input: Input
+        optionNodes: ConfigToOptionsType<T>
+        targetNode: Param
+        targetNodeValue: NodeValue
+      }
+    | {
+        input: Input
+        optionNodes: ConfigToOptionsType<T>
+        targetNode: Shot
+        targetNodeValue?: never
+      }) => void,
 ) => {
   const allNodes = nodesAsArray(storeState.nodes)
 
@@ -163,16 +170,20 @@ export const handleEachInput = <T extends readonly any[]>(
       return
     }
 
-    const targetNodeValue = storeState.nodeValues[input.targetNodeId]
-
-    if (targetNodeValue === undefined) {
-      // Node may not exist if deleting a sketch/param didn't clean up properly
-      // TODO: special log level for checking this
-      return
-    }
-
     const optionNodes = getOptionNodesFromIds<T>(storeState, input.childGroups.optionNodeIds)
 
-    callback({ input, optionNodes, targetNode, targetNodeValue })
+    if (targetNode.nodeType === 'param') {
+      const targetNodeValue = storeState.nodeValues[input.targetNodeId]
+
+      if (targetNodeValue === undefined) {
+        // Node may not exist if deleting a sketch/param didn't clean up properly
+        // TODO: special log level for checking this
+        return
+      }
+
+      callback({ input, optionNodes, targetNode, targetNodeValue })
+    } else if (targetNode.nodeType === 'shot') {
+      callback({ input, optionNodes, targetNode })
+    }
   })
 }
