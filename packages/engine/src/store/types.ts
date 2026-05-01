@@ -149,8 +149,8 @@ export type Node = Param | Shot | Input | CustomNode
 export type Nodes = Partial<Record<string, Node>>
 export type NodeType = Node['nodeType']
 
-export type NodeValue = number | boolean | string
-export type NodeValues = Partial<Record<string, NodeValue>>
+export type ParamValue = number | boolean | string
+export type ParamValues = Partial<Record<string, ParamValue>>
 export type ParamValueType = Param['valueType'] | null
 
 // Record ensures every ParamValueTypeWithChildren member is listed — adding a new
@@ -163,9 +163,9 @@ const paramValueTypesWithChildren: Record<ParamVectorValueType, true> = {
 }
 
 export const isParamVectorValueType = (
-  nodeValueType: ParamValueType,
-): nodeValueType is ParamVectorValueType => {
-  return nodeValueType != null && nodeValueType in paramValueTypesWithChildren
+  paramValueType: ParamValueType,
+): paramValueType is ParamVectorValueType => {
+  return paramValueType != null && paramValueType in paramValueTypesWithChildren
 }
 
 export const isParamVector = (node: Node): node is ParamVector => {
@@ -305,7 +305,7 @@ export interface Input extends NodeBase {
 export interface EngineData {
   sketches: Sketches
   nodes: Nodes
-  nodeValues: NodeValues
+  paramValues: ParamValues
 }
 
 interface AuxState {
@@ -322,8 +322,8 @@ interface Actions {
   moveSketchUp: (instanceId: string) => void
   moveSketchDown: (instanceId: string) => void
   setSketchModuleItem: (newItem: SketchModuleItem) => void
-  updateNodeValue: (nodeId: string, value: NodeValue) => void
-  updateMultipleNodeValues: (nodeIds: string[], values: NodeValue[]) => void
+  updateParamValue: (paramId: string, value: ParamValue) => void
+  updateMultipleParamValues: (paramIds: string[], values: ParamValue[]) => void
   deleteSketchModule: (moduleId: string) => void
   loadProject: (project: EngineData) => void
   reset: () => void

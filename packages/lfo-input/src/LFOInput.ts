@@ -7,7 +7,7 @@ import {
   Input,
   IPlugin,
   NodeConfig,
-  NodeValue,
+  ParamValue,
   Param,
 } from '@hedron-gl/engine'
 
@@ -20,7 +20,7 @@ type ValueHander = (params: {
   storeState: EngineState
   optionNodes: ConfigToOptionsType<typeof LFOInput.prototype.optionNodesConfig>
   targetNode: Param
-}) => NodeValue | null
+}) => ParamValue | null
 
 type ShotHandler = (params: { delta: number; input: Input; engine: HedronEngine }) => void
 
@@ -194,6 +194,9 @@ export class LFOInput implements IPlugin {
           ({ input, optionNodes, targetNode }) => {
             const delta = (clock.beatDelta * optionNodes.frequency + optionNodes.phase) * TAU
 
+            // TODO: This can be handled by `onInput` once we have `isEnabled` as a generic option
+            if (!optionNodes.isEnabled) return
+
             if (targetNode.nodeType === 'shot') {
               this.handleShot({
                 delta,
@@ -202,9 +205,6 @@ export class LFOInput implements IPlugin {
               })
               return
             }
-
-            // TODO: This can be handled by `onInput` once we have `isEnabled` as a generic option
-            if (!optionNodes.isEnabled) return
 
             const value = {
               enum: this.handleEnum,
@@ -226,7 +226,7 @@ export class LFOInput implements IPlugin {
               return
             }
 
-            storeState.updateNodeValue(input.targetNodeId, value)
+            storeState.updateParamValue(input.targetNodeId, value)
           },
         )
 

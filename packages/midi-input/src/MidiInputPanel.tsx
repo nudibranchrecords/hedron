@@ -37,13 +37,13 @@ const useMidiLearn = (input: Input, engine: HedronEngine) => {
 
           switch (node.key) {
             case 'channel':
-              state.updateNodeValue(nodeId, event.channel)
+              state.updateParamValue(nodeId, event.channel)
               break
             case 'note':
-              state.updateNodeValue(nodeId, event.note)
+              state.updateParamValue(nodeId, event.note)
               break
             case 'type':
-              state.updateNodeValue(nodeId, event.type)
+              state.updateParamValue(nodeId, event.type)
               break
           }
         })
@@ -70,14 +70,14 @@ const useMidiLearn = (input: Input, engine: HedronEngine) => {
 export const MidiInputPanel = ({ input, engine }: IProps) => {
   const { isLearning, runMidiLearn, cancelMidiLearn } = useMidiLearn(input, engine)
   const nodes = useEngineStore((s) => s.nodes)
-  const nodeValues = useEngineStore((s) => s.nodeValues)
+  const paramValues = useEngineStore((s) => s.paramValues)
 
   const overrideNodeId = useMemo(
     () => findNodeWithKeyFromIdList(nodes, 'overrideValue', input.childGroups.optionNodeIds)?.id,
     [input.childGroups.optionNodeIds, nodes],
   )
 
-  const overrideEnabled = overrideNodeId ? Boolean(nodeValues[overrideNodeId]) : false
+  const overrideEnabled = overrideNodeId ? Boolean(paramValues[overrideNodeId]) : false
 
   return (
     <div>

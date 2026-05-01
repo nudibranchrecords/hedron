@@ -5,7 +5,7 @@ import { CanvasSizeMode, RendererType, Result, ShotArgsObject } from './types'
 import { importSketchModule } from './importSketchModule'
 import { createUniqueId } from '@utils/createUniqueId'
 import { ensureConfig } from '@store/shared/ensureConfig'
-import { flushNodeValueBuffer } from '@store/actionCreators/updateNodeValue'
+import { flushParamValueBuffer } from '@store/actionCreators/updateParamValue'
 import { getSketchShotNodes } from '@store/selectors/getSketchShotNodes'
 import { initializeGlobalVars } from '@globalVars'
 import { IPlugin } from '@plugins/Plugin'
@@ -17,7 +17,7 @@ import {
   EngineData,
   Node,
   NodeConfig,
-  NodeValue,
+  ParamValue,
   SketchInstanceError,
   SketchInstance,
   SketchModuleItem,
@@ -207,16 +207,16 @@ export class HedronEngine {
     return this.store.getState().nodes[nodeId] as T | undefined
   }
 
-  public getNodeValue(nodeId: string): NodeValue | undefined {
-    return this.store.getState().nodeValues[nodeId]
+  public getParamValue(nodeId: string): ParamValue | undefined {
+    return this.store.getState().paramValues[nodeId]
   }
 
-  public setNodeValue(nodeId: string | undefined, value: NodeValue): void {
+  public setParamValue(nodeId: string | undefined, value: ParamValue): void {
     if (!nodeId) {
-      console.error('setNodeValue: nodeId is undefined')
+      console.error('setParamValue: nodeId is undefined')
       return
     }
-    this.store.getState().updateNodeValue(nodeId, value)
+    this.store.getState().updateParamValue(nodeId, value)
   }
 
   public addInput(inputType: string, targetNodeId: string) {
@@ -518,7 +518,7 @@ export class HedronEngine {
    */
   private advanceFrame(engineScene: EngineScene, deltaTime: number) {
     // Flush buffered node value updates before processing the frame
-    flushNodeValueBuffer(this.store.setState)
+    flushParamValueBuffer(this.store.setState)
 
     const state = this.store.getState()
     const sketchInstances =

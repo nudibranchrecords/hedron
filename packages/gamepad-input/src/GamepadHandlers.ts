@@ -138,7 +138,7 @@ export function createGamepadHandlers(dependencies: {
    */
   const handleBoolean: ValueHandler<ParamBoolean> = ({
     gamepadEvent,
-    targetNodeValue,
+    targetParamValue,
     optionNodes,
   }) => {
     if (optionNodes.inputType === GamepadInputType.Button) {
@@ -149,7 +149,7 @@ export function createGamepadHandlers(dependencies: {
           (optionNodes.triggerOn === 'up' && !gamepadEvent.isPressed)
         if (!shouldTrigger) return null
 
-        return !targetNodeValue
+        return !targetParamValue
       }
 
       // For hold mode, follow the button state
@@ -174,8 +174,8 @@ export function createGamepadHandlers(dependencies: {
     input,
     optionNodes,
   }) => {
-    const sliderMin = (storeState.nodeValues[`${input.targetNodeId}-sliderMin`] as number) ?? 0
-    const sliderMax = (storeState.nodeValues[`${input.targetNodeId}-sliderMax`] as number) ?? 1
+    const sliderMin = (storeState.paramValues[`${input.targetNodeId}-sliderMin`] as number) ?? 0
+    const sliderMax = (storeState.paramValues[`${input.targetNodeId}-sliderMax`] as number) ?? 1
 
     // For button inputs, check if toggle mode is enabled
     if (

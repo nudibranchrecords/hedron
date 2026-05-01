@@ -107,7 +107,7 @@ const _addNodeToState = (
       (typeof defaultValue === 'string' || typeof defaultValue === 'number')) ||
     (valueType === 'string' && typeof defaultValue === 'string')
   ) {
-    state.nodeValues[nodeId] = defaultValue
+    state.paramValues[nodeId] = defaultValue
   } else {
     throw new Error(
       `valueType of param ${key}: ${valueType} does not match defaultValue: ${defaultValue}`,

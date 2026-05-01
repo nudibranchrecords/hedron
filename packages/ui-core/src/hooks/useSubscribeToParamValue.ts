@@ -1,8 +1,8 @@
 import { useEffect, useRef } from 'react'
-import { ParamVector, NodeValue } from '@hedron-gl/engine'
+import { ParamVector, ParamValue } from '@hedron-gl/engine'
 import { useEngineStore, useEngine } from '@hooks/engineHooks'
 
-export const useSubscribeToNodeValue = <T extends NodeValue>(
+export const useSubscribeToParamValue = <T extends ParamValue>(
   nodeId: string,
   callback: (value: T) => void,
 ) => {
@@ -12,7 +12,7 @@ export const useSubscribeToNodeValue = <T extends NodeValue>(
 
   useEffect(() => {
     const unsubscribe = engine.getStore().subscribe(
-      (state) => state.nodeValues[nodeId],
+      (state) => state.paramValues[nodeId],
       (value) => {
         // Sometimes this can be undefined briefly if a node is deleted
         if (value === undefined) {
@@ -31,7 +31,7 @@ export const useSubscribeToNodeValue = <T extends NodeValue>(
   }, [engine, nodeId])
 }
 
-export const useSubscribeToNodeChildrenValues = <T extends NodeValue>(
+export const useSubscribeToNodeChildrenValues = <T extends ParamValue>(
   nodeId: string,
   callback: (value: T[]) => void,
 ) => {
@@ -47,9 +47,9 @@ export const useSubscribeToNodeChildrenValues = <T extends NodeValue>(
     const unsubscribeFuncs: (() => void)[] = []
 
     const unsubscribe = engine.getStore().subscribe(
-      (state) => vectorComponentIds.map((id) => state.nodeValues[id]),
-      (childNodeValues) => {
-        callbackRef.current(childNodeValues as T[])
+      (state) => vectorComponentIds.map((id) => state.paramValues[id]),
+      (childParamValues) => {
+        callbackRef.current(childParamValues as T[])
       },
       {
         fireImmediately: true,
