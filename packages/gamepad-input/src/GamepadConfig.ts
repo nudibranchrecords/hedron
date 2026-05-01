@@ -1,8 +1,9 @@
-import { NodeConfig } from '@hedron-gl/engine'
+import { IPlugin } from '@hedron-gl/engine'
 import { GamepadInputType, ButtonMode, AxisMode } from './GamepadTypes'
 
 export const globalOptionNodesConfig = [
   {
+    nodeType: 'param',
     key: 'axisSmoothing',
     title: 'Axis Smoothing',
     valueType: 'number',
@@ -11,6 +12,7 @@ export const globalOptionNodesConfig = [
     sliderMax: 0.99,
   },
   {
+    nodeType: 'param',
     key: 'axisDeadZone',
     title: 'Axis Dead Zone',
     valueType: 'number',
@@ -19,6 +21,7 @@ export const globalOptionNodesConfig = [
     sliderMax: 0.5,
   },
   {
+    nodeType: 'param',
     key: 'axisCap',
     title: 'Axis Cap',
     valueType: 'number',
@@ -27,6 +30,7 @@ export const globalOptionNodesConfig = [
     sliderMax: 1,
   },
   {
+    nodeType: 'param',
     key: 'buttonSmoothing',
     title: 'Button Smoothing',
     valueType: 'number',
@@ -34,22 +38,25 @@ export const globalOptionNodesConfig = [
     sliderMin: 0,
     sliderMax: 0.99,
   },
-] as const satisfies NodeConfig[]
+] as const satisfies IPlugin['globalOptionNodesConfig']
 
 export const optionNodesConfig = [
   {
+    nodeType: 'param',
     key: 'isEnabled',
     title: 'Enabled',
     valueType: 'boolean',
     defaultValue: true,
   },
   {
+    nodeType: 'param',
     key: 'controllerIndex',
     valueType: 'enum',
     options: Array.from({ length: 4 }, (_, i) => ({ value: i, label: `Controller ${i + 1}` })),
     defaultValue: 0,
   },
   {
+    nodeType: 'param',
     key: 'inputType',
     valueType: 'enum',
     options: [
@@ -59,12 +66,14 @@ export const optionNodesConfig = [
     defaultValue: GamepadInputType.Button,
   },
   {
+    nodeType: 'param',
     key: 'index',
     valueType: 'enum',
     options: Array.from({ length: 20 }, (_, i) => ({ value: i, label: `${i}` })),
     defaultValue: 0,
   },
   {
+    nodeType: 'param',
     key: 'secondaryIndex',
     title: 'Secondary Index',
     valueType: 'enum',
@@ -72,6 +81,7 @@ export const optionNodesConfig = [
     defaultValue: 1,
   },
   {
+    nodeType: 'param',
     key: 'triggerOn',
     valueType: 'enum',
     options: [
@@ -81,6 +91,7 @@ export const optionNodesConfig = [
     defaultValue: 'down',
   },
   {
+    nodeType: 'param',
     key: 'buttonMode',
     title: 'Button Mode',
     valueType: 'enum',
@@ -91,6 +102,7 @@ export const optionNodesConfig = [
     defaultValue: ButtonMode.Hold,
   },
   {
+    nodeType: 'param',
     key: 'axisMode',
     title: 'Axis Mode',
     valueType: 'enum',
@@ -102,6 +114,7 @@ export const optionNodesConfig = [
     defaultValue: AxisMode.Single,
   },
   {
+    nodeType: 'param',
     key: 'gateButtonIndex',
     title: 'Gate Button',
     valueType: 'enum',
@@ -112,6 +125,7 @@ export const optionNodesConfig = [
     defaultValue: -1,
   },
   {
+    nodeType: 'param',
     key: 'angleOffset',
     title: 'Angle Offset',
     valueType: 'number',
@@ -119,4 +133,4 @@ export const optionNodesConfig = [
     sliderMin: 0,
     sliderMax: 1,
   },
-] as const satisfies NodeConfig[]
+] as const satisfies IPlugin['optionNodesConfig']

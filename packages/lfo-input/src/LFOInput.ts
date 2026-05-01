@@ -6,7 +6,6 @@ import {
   HedronEngine,
   Input,
   IPlugin,
-  NodeConfig,
   ParamValue,
   Param,
 } from '@hedron-gl/engine'
@@ -33,11 +32,13 @@ export class LFOInput implements IPlugin {
   public readonly optionNodesConfig = [
     {
       key: 'isEnabled',
+      nodeType: 'param',
       valueType: 'boolean',
       defaultValue: true,
     },
     {
       key: 'frequency',
+      nodeType: 'param',
       valueType: 'enum',
       defaultValue: 1,
       options: [
@@ -89,6 +90,7 @@ export class LFOInput implements IPlugin {
     },
     {
       key: 'waveType',
+      nodeType: 'param',
       valueType: 'enum',
       defaultValue: 'sine',
       options: [
@@ -100,25 +102,29 @@ export class LFOInput implements IPlugin {
     },
     {
       key: 'amplitude',
+      nodeType: 'param',
       valueType: 'number',
       defaultValue: 1,
     },
     {
       key: 'phase',
+      nodeType: 'param',
       valueType: 'number',
       defaultValue: 0,
     },
     {
       key: 'min',
+      nodeType: 'param',
       valueType: 'number',
       defaultValue: 0,
     },
     {
       key: 'max',
+      nodeType: 'param',
       valueType: 'number',
       defaultValue: 1,
     },
-  ] as const satisfies NodeConfig[]
+  ] as const satisfies IPlugin['optionNodesConfig']
 
   private inputLatches: Record<string, boolean> = {}
 

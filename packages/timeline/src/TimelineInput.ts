@@ -10,25 +10,20 @@ export class TimelineInput implements IPlugin {
     const timelineNodeId = `${this.id}-default-timeline`
     engine.addNodeOnce(timelineNodeId, null, {
       title: 'Default Timeline',
+      key: 'default-timeline',
       nodeType: 'custom',
       customNodeType: 'timeline',
-      // TODO: With proper config typing we wouldn't need all this boilerplate config
-      id: timelineNodeId,
-      parentIds: [],
-      childGroups: {
-        optionNodeIds: [],
-        inputNodeIds: [],
-        trackIds: [],
-      },
     })
 
     engine.addOptionNodes(timelineNodeId, [
       {
+        nodeType: 'param',
         key: 'playheadPosition',
         valueType: 'number',
         defaultValue: 0,
       },
       {
+        nodeType: 'param',
         key: 'isPlaying',
         valueType: 'boolean',
         defaultValue: false,

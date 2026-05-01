@@ -4,10 +4,11 @@ import {
   EngineState,
   EngineStateWithActions,
   Input,
-  NodeConfig,
   ParamValue,
   Param,
   Shot,
+  ConfigParam,
+  ConfigShot,
 } from '@store/types'
 
 /**
@@ -38,13 +39,13 @@ export interface IPlugin {
    * @deprecated prefer `onNewInput` to create option nodes
    * Config to generate option nodes. Follows same structure as sketch params config.
    */
-  optionNodesConfig?: NodeConfig[]
+  optionNodesConfig?: (ConfigParam | ConfigShot)[]
 
   /**
    * @deprecated prefer `onEngineInitialize` to create global plugin option nodes
    * Config to generate global option nodes. Follows same structure as sketch params config.
    */
-  globalOptionNodesConfig?: NodeConfig[]
+  globalOptionNodesConfig?: (ConfigParam | ConfigShot)[]
 
   /**
    * Optional callback called after engine initialization (project load, sketches folder selection)
