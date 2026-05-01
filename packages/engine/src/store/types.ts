@@ -149,7 +149,7 @@ export type Node = Param | Shot | Input | CustomNode
 export type Nodes = Partial<Record<string, Node>>
 export type NodeType = Node['nodeType']
 
-export type NodeValue = number | boolean | string | ShotArgsObject
+export type NodeValue = number | boolean | string
 export type NodeValues = Partial<Record<string, NodeValue>>
 export type ParamValueType = Param['valueType'] | null
 
