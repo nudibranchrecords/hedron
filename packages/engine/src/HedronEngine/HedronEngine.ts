@@ -4,7 +4,7 @@ import { listenToStore } from './storeListener'
 import { CanvasSizeMode, RendererType, Result, ShotArgsObject } from './types'
 import { importSketchModule } from './importSketchModule'
 import { createUniqueId } from '@utils/createUniqueId'
-import { ensureConfig } from '@store/shared/ensureConfig'
+import { ensureNodeConfig } from '@store/shared/ensureConfig'
 import { flushParamValueBuffer } from '@store/actionCreators/updateParamValue'
 import { getSketchShotNodes } from '@store/selectors/getSketchShotNodes'
 import { initializeGlobalVars } from '@globalVars'
@@ -16,19 +16,21 @@ import { createDebugScene } from '@world/debugScene'
 import {
   EngineData,
   Node,
-  NodeConfig,
   ParamValue,
   SketchInstanceError,
   SketchInstance,
   SketchModuleItem,
   Param,
   Shot,
+  ConfigParam,
+  ConfigShot,
+  ConfigCustomNode,
 } from '@store/types'
 import { getSketchesOfModuleId } from '@store/selectors/getSketchesOfModuleId'
 import { createEngineStore, EngineStore } from '@store/engineStore'
 import { getSketchParamValues } from '@store/selectors/getSketchParamValues'
 import { EngineScene } from '@world/EngineScene'
-import { addNode, AddNodeConfig } from '@store/shared/addNode'
+import { addNode } from '@store/shared/addNode'
 
 export class HedronEngine {
   public rendererType: RendererType
@@ -107,7 +109,7 @@ export class HedronEngine {
         }
 
         // Create proper imported config with required fields
-        const cfgImported = ensureConfig(cfg)
+        const cfgImported = ensureNodeConfig(cfg)
 
         // Add the node to the store using the shared addNode utility
         addNode(state, nodeId, null, cfgImported)
@@ -122,18 +124,26 @@ export class HedronEngine {
     window.__HEDRON.plugins = this.plugins
   }
 
-  public addNode(nodeId: string, parentId: string | null, config: AddNodeConfig) {
+  public addNode(
+    nodeId: string,
+    parentId: string | null,
+    config: ConfigParam | ConfigShot | ConfigCustomNode,
+  ) {
     this.store.setState((state) => {
-      addNode(state, nodeId, parentId, ensureConfig(config as NodeConfig))
+      addNode(state, nodeId, parentId, ensureNodeConfig(config))
     })
   }
 
-  public addNodeOnce(nodeId: string, parentId: string | null, config: AddNodeConfig) {
+  public addNodeOnce(
+    nodeId: string,
+    parentId: string | null,
+    config: ConfigParam | ConfigShot | ConfigCustomNode,
+  ) {
     if (this.store.getState().nodes[nodeId]) return
     this.addNode(nodeId, parentId, config)
   }
 
-  public addOptionNodes(parentId: string, configs: NodeConfig[]) {
+  public addOptionNodes(parentId: string, configs: (ConfigParam | ConfigShot)[]) {
     this.store.setState((state) => {
       const parentNode = state.nodes[parentId]
       if (!parentNode) {
@@ -150,7 +160,7 @@ export class HedronEngine {
         if (optionNodeExists) continue
 
         const nodeId = createUniqueId()
-        addNode(state, nodeId, parentId, ensureConfig(cfg))
+        addNode(state, nodeId, parentId, ensureNodeConfig(cfg))
         parentNode.childGroups.optionNodeIds.push(nodeId)
       }
     })
@@ -192,12 +202,10 @@ export class HedronEngine {
       }
 
       const childGroup = parentNode.childGroups[childGroupKey]
-      if (!childGroup) {
-        console.error(`addParentToNode: childGroup "${childGroupKey}" not found on "${parentId}"`)
-        return
-      }
 
-      if (!childGroup.includes(nodeId)) {
+      if (!childGroup) {
+        parentNode.childGroups[childGroupKey] = [nodeId]
+      } else if (!childGroup.includes(nodeId)) {
         childGroup.push(nodeId)
       }
     })

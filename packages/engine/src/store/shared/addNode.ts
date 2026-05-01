@@ -2,12 +2,12 @@ import {
   EngineState,
   EnsureRequiredValueType,
   ParamVectorValueType,
-  SketchConfigParamImported,
+  ConfigParamImported,
   ParamValueType,
-  SketchConfigShotImported,
+  ConfigShotImported,
   ParamVector,
   isParamVectorValueType,
-  CustomNode,
+  ConfigCustomNodeImported,
 } from '@store/types'
 import { createUniqueId } from '@utils/createUniqueId'
 
@@ -17,19 +17,16 @@ const keysLookup: Record<ParamVectorValueType, string[]> = {
   rgb: ['r', 'g', 'b'],
 }
 
-export type AddNodeConfig =
-  | EnsureRequiredValueType<SketchConfigParamImported>
-  | SketchConfigShotImported
-  | CustomNode
+type AddNodeConfig = ConfigParamImported | ConfigShotImported | ConfigCustomNodeImported
 
 // Exclude param types that have children (vector3, rgb)
 type ParamConfigNonVector = Exclude<
-  EnsureRequiredValueType<SketchConfigParamImported>,
+  EnsureRequiredValueType<ConfigParamImported>,
   { valueType: ParamVectorValueType }
 >
 
 const isParamNonVectorConfig = (
-  config: EnsureRequiredValueType<SketchConfigParamImported>,
+  config: EnsureRequiredValueType<ConfigParamImported>,
 ): config is ParamConfigNonVector => {
   return !isParamVectorValueType(config.valueType)
 }
@@ -42,13 +39,12 @@ const _addNodeToState = (
   config: AddNodeConfig,
 ) => {
   if (config.nodeType === 'custom') {
-    const { childGroups, ...rest } = config
-
     state.nodes[nodeId] = {
-      ...rest,
+      ...config,
       id: nodeId,
+      title: config.title ?? config.key,
       parentIds: parentId ? [parentId] : [],
-      childGroups,
+      childGroups: { optionNodeIds, inputNodeIds: [] },
     }
 
     return state.nodes[nodeId]

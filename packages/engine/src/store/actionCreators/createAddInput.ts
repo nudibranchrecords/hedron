@@ -1,4 +1,4 @@
-import { ensureConfig } from '@store/shared/ensureConfig'
+import { ensureNodeConfig } from '@store/shared/ensureConfig'
 import { addNode } from '@store/shared/addNode'
 import { SetterCreator } from '@store/types'
 import { createUniqueId } from '@utils/createUniqueId'
@@ -15,7 +15,7 @@ export const createAddInput: SetterCreator<'addInput'> =
         const optionNodeId = createUniqueId()
         optionNodeIds.push(optionNodeId)
 
-        const cfgImported = ensureConfig(cfg)
+        const cfgImported = ensureNodeConfig(cfg)
 
         addNode(state, optionNodeId, id, cfgImported)
       }

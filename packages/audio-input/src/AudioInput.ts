@@ -1,4 +1,4 @@
-import { handleEachInput, HedronEngine, IPlugin, NodeConfig } from '@hedron-gl/engine'
+import { handleEachInput, HedronEngine, IPlugin } from '@hedron-gl/engine'
 import { AudioDeviceManager } from './AudioDeviceManager'
 import { AudioAnalyzer, AudioData, FrequencyBand, BAND_COLORS } from './AudioAnalyzer'
 import { lerp } from './AudioUtils'
@@ -32,6 +32,7 @@ export class AudioInput implements IPlugin {
   ]
   public readonly globalOptionNodesConfig = [
     {
+      nodeType: 'param',
       key: 'masterVolume',
       title: 'Master Volume',
       valueType: 'number',
@@ -40,6 +41,7 @@ export class AudioInput implements IPlugin {
       sliderMax: 2.0,
     },
     {
+      nodeType: 'param',
       key: 'smoothing',
       title: 'Smoothing',
       valueType: 'number',
@@ -48,6 +50,7 @@ export class AudioInput implements IPlugin {
       sliderMax: 0.999,
     },
     {
+      nodeType: 'param',
       key: 'normalizeLevels',
       title: 'Normalize Levels',
       valueType: 'number',
@@ -56,6 +59,7 @@ export class AudioInput implements IPlugin {
       sliderMax: 1.0,
     },
     {
+      nodeType: 'param',
       key: 'levelsFalloff',
       title: 'Levels Falloff',
       valueType: 'number',
@@ -64,6 +68,7 @@ export class AudioInput implements IPlugin {
       sliderMax: 2.0,
     },
     {
+      nodeType: 'param',
       key: 'levelsPower',
       title: 'Levels Power',
       valueType: 'number',
@@ -72,6 +77,7 @@ export class AudioInput implements IPlugin {
       sliderMax: 5.0,
     },
     {
+      nodeType: 'param',
       key: 'maxLevelFalloffMultiplier',
       title: 'Max Level Falloff Multiplier',
       valueType: 'number',
@@ -80,6 +86,7 @@ export class AudioInput implements IPlugin {
       sliderMax: 1.0,
     },
     {
+      nodeType: 'param',
       key: 'maxLevelMinimum',
       title: 'Max Level Minimum',
       valueType: 'number',
@@ -90,6 +97,7 @@ export class AudioInput implements IPlugin {
     // Generate hidden band configuration nodes from DEFAULT_BANDS
     ...AudioInput.DEFAULT_BANDS.flatMap((band, index) => [
       {
+        nodeType: 'param' as const,
         key: `band${index}CenterFreq`,
         title: `Band ${index} Center Frequency`,
         valueType: 'number' as const,
@@ -97,6 +105,7 @@ export class AudioInput implements IPlugin {
         hidden: true,
       },
       {
+        nodeType: 'param' as const,
         key: `band${index}Q`,
         title: `Band ${index} Q Factor`,
         valueType: 'number' as const,
@@ -104,16 +113,18 @@ export class AudioInput implements IPlugin {
         hidden: true,
       },
     ]),
-  ] as const satisfies NodeConfig[]
+  ] as const satisfies IPlugin['globalOptionNodesConfig']
 
   public readonly optionNodesConfig = [
     {
+      nodeType: 'param',
       key: 'isEnabled',
       title: 'Enabled',
       valueType: 'boolean',
       defaultValue: true,
     },
     {
+      nodeType: 'param',
       key: 'frequency',
       valueType: 'enum',
       defaultValue: 1,
@@ -137,6 +148,7 @@ export class AudioInput implements IPlugin {
       ],
     },
     {
+      nodeType: 'param',
       key: 'min',
       valueType: 'number',
       defaultValue: 0,
@@ -145,6 +157,7 @@ export class AudioInput implements IPlugin {
       sliderMax: 1,
     },
     {
+      nodeType: 'param',
       key: 'max',
       valueType: 'number',
       defaultValue: 1,
@@ -152,7 +165,7 @@ export class AudioInput implements IPlugin {
       sliderMin: 0,
       sliderMax: 1,
     },
-  ] as const satisfies NodeConfig[]
+  ] as const satisfies IPlugin['optionNodesConfig']
 
   /**
    * Audio data containing the analyzer and visualization resources

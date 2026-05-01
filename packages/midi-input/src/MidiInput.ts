@@ -8,7 +8,6 @@ import {
   ConfigToOptionsType,
   Param,
   ParamEnum,
-  NodeConfig,
   EngineStateWithActions,
 } from '@hedron-gl/engine'
 import { MIDIEvent, MidiManager, MidiMessageType } from '@hedron-gl/midi-manager'
@@ -47,6 +46,7 @@ export class MidiInput implements IPlugin {
   public readonly midiManager = new MidiManager()
   public readonly globalOptionNodesConfig = [
     {
+      nodeType: 'param',
       key: 'smoothing',
       title: 'Smoothing',
       valueType: 'number',
@@ -54,21 +54,24 @@ export class MidiInput implements IPlugin {
       sliderMin: 0,
       sliderMax: 0.99,
     },
-  ] as const satisfies NodeConfig[]
+  ] as const satisfies IPlugin['globalOptionNodesConfig']
   public readonly optionNodesConfig = [
     {
+      nodeType: 'param',
       key: 'channel',
       valueType: 'enum',
       options: Array.from({ length: 16 }, (_, i) => ({ value: i, label: `${i + 1}` })),
       defaultValue: 1,
     },
     {
+      nodeType: 'param',
       key: 'note',
       valueType: 'enum',
       options: midiNotes.map((label, i) => ({ value: i, label })),
       defaultValue: 1,
     },
     {
+      nodeType: 'param',
       key: 'type',
       valueType: 'enum',
       defaultValue: MidiMessageType.ControlChange,
@@ -79,12 +82,14 @@ export class MidiInput implements IPlugin {
       ],
     },
     {
+      nodeType: 'param',
       key: 'override',
       title: 'Use Override',
       valueType: 'boolean',
       defaultValue: false,
     },
     {
+      nodeType: 'param',
       key: 'overrideValue',
       title: 'Override Value',
       valueType: 'number',
@@ -92,7 +97,7 @@ export class MidiInput implements IPlugin {
       sliderMin: -1,
       sliderMax: 127,
     },
-  ] as const satisfies NodeConfig[]
+  ] as const satisfies IPlugin['optionNodesConfig']
 
   private handleShot: ShotHandler = ({ input, engine, midiEvent }) => {
     engine.fireShot(input.targetNodeId, { _midiEvent: midiEvent })
