@@ -17,15 +17,15 @@ export const useTimelineManager = (
   const isPlayingNode = optionNodes['isPlaying']!
   const playHeadPositionNode = optionNodes['playheadPosition']!
   const isPlaying = useEngineStore(
-    (state) => state.nodeValues[isPlayingNode?.id] as boolean | undefined,
+    (state) => state.paramValues[isPlayingNode?.id] as boolean | undefined,
   )
 
-  const updateNodeValue = useEngineStore((state) => state.updateNodeValue)
-  const updateMultipleNodeValues = useEngineStore((state) => state.updateMultipleNodeValues)
+  const updateParamValue = useEngineStore((state) => state.updateParamValue)
+  const updateMultipleParamValues = useEngineStore((state) => state.updateMultipleParamValues)
 
   useEffect(() => {
     manager.onUpdate((changed) => {
-      updateNodeValue(playHeadPositionNode.id, manager.getPosition())
+      updateParamValue(playHeadPositionNode.id, manager.getPosition())
 
       const changedTrackIds = Object.keys(changed)
       if (changedTrackIds.length > 0) {
@@ -34,7 +34,7 @@ export const useTimelineManager = (
             timelineData.tracks.find((track) => track.id === trackId)?.targetNodeId ?? trackId,
         )
 
-        updateMultipleNodeValues(
+        updateMultipleParamValues(
           changedTargetNodeIds,
           changedTrackIds.map((trackId) => changed[trackId]),
         )
@@ -44,8 +44,8 @@ export const useTimelineManager = (
     manager,
     playHeadPositionNode.id,
     timelineData.tracks,
-    updateMultipleNodeValues,
-    updateNodeValue,
+    updateMultipleParamValues,
+    updateParamValue,
   ])
 
   useEffect(() => {

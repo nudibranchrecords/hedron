@@ -1,7 +1,7 @@
 import { EngineState, NodeEnumValue, ParamEnum } from '@store/types'
 
 export const getNextEnumValue = (targetNodeId: string) => (state: EngineState) => {
-  const paramVal = state.nodeValues[targetNodeId]
+  const paramVal = state.paramValues[targetNodeId]
   const param = state.nodes[targetNodeId] as ParamEnum | undefined
 
   if (!param) {

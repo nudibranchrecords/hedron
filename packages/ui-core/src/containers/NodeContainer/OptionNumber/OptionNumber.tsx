@@ -1,7 +1,7 @@
 import { useRef } from 'react'
 
-import { useOnNodeValueChange } from '@hooks/useOnNodeValueChange'
-import { useSubscribeToNodeValue } from '@hooks/useSubscribeToNodeValue'
+import { useOnParamValueChange } from '@hooks/useOnParamValueChange'
+import { useSubscribeToParamValue } from '@hooks/useSubscribeToParamValue'
 import { NumberInput, NumberInputHandle } from '@components/NumberInput/NumberInput'
 import {
   NodeControl,
@@ -17,11 +17,11 @@ interface ParamNumberProps {
 }
 
 export const OptionNumber = ({ paramId, optionKey, optionTitle }: ParamNumberProps) => {
-  const onValueChange = useOnNodeValueChange(`${paramId}-${optionKey}`)
+  const onValueChange = useOnParamValueChange(`${paramId}-${optionKey}`)
 
   const ref = useRef<NumberInputHandle>(null)
 
-  useSubscribeToNodeValue<number>(`${paramId}-${optionKey}`, (value) => {
+  useSubscribeToParamValue<number>(`${paramId}-${optionKey}`, (value) => {
     ref.current?.updateValue(value)
   })
 

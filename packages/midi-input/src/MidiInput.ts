@@ -2,7 +2,7 @@ import {
   getNextEnumValue,
   HedronEngine,
   IPlugin,
-  NodeValue,
+  ParamValue,
   handleEachInput,
   Input,
   ConfigToOptionsType,
@@ -30,8 +30,8 @@ type ValueHander<T = Param> = (params: {
   storeState: EngineStateWithActions
   optionNodes: ConfigToOptionsType<typeof MidiInput.prototype.optionNodesConfig>
   targetNode: T
-  targetNodeValue: NodeValue
-}) => NodeValue | null
+  targetParamValue: ParamValue
+}) => ParamValue | null
 
 type ShotHandler = (params: {
   input: Input
@@ -127,11 +127,11 @@ export class MidiInput implements IPlugin {
     }
   }
 
-  private handleBoolean: ValueHander = ({ midiEvent, optionNodes, targetNodeValue }) => {
+  private handleBoolean: ValueHander = ({ midiEvent, optionNodes, targetParamValue }) => {
     switch (midiEvent.type) {
       case MidiMessageType.NoteOn:
       case MidiMessageType.NoteOff:
-        return !targetNodeValue
+        return !targetParamValue
       default: {
         const value = this.getValue(optionNodes, midiEvent)
         return value > 0
@@ -144,10 +144,10 @@ export class MidiInput implements IPlugin {
     storeState,
     input,
     optionNodes,
-    targetNodeValue: currVal,
+    targetParamValue: currVal,
   }) => {
-    const sliderMin = (storeState.nodeValues[`${input.targetNodeId}-sliderMin`] as number) ?? 0
-    const sliderMax = (storeState.nodeValues[`${input.targetNodeId}-sliderMax`] as number) ?? 1
+    const sliderMin = (storeState.paramValues[`${input.targetNodeId}-sliderMin`] as number) ?? 0
+    const sliderMax = (storeState.paramValues[`${input.targetNodeId}-sliderMax`] as number) ?? 1
 
     const targetValue =
       (this.getValue(optionNodes, midiEvent) / 127) * (sliderMax - sliderMin) + sliderMin
@@ -158,7 +158,7 @@ export class MidiInput implements IPlugin {
       currVal as number,
       targetValue,
       (smoothedValue: number) => {
-        storeState.updateNodeValue(input.targetNodeId, smoothedValue)
+        storeState.updateParamValue(input.targetNodeId, smoothedValue)
       },
     )
 
@@ -181,7 +181,7 @@ export class MidiInput implements IPlugin {
     const updateSmoothing = () => {
       const storeState = store.getState()
       const smoothingNodeId = `${this.id}-global-smoothing`
-      const smoothingValue = storeState.nodeValues[smoothingNodeId] as number | undefined
+      const smoothingValue = storeState.paramValues[smoothingNodeId] as number | undefined
       this.midiManager.smoothing = smoothingValue ?? 0.9
     }
 
@@ -201,7 +201,7 @@ export class MidiInput implements IPlugin {
       handleEachInput<typeof this.optionNodesConfig>(
         storeState,
         'midi',
-        ({ input, optionNodes, targetNode, targetNodeValue }) => {
+        ({ input, optionNodes, targetNode, targetParamValue }) => {
           if (
             event.channel === optionNodes.channel &&
             event.note === optionNodes.note &&
@@ -229,13 +229,13 @@ export class MidiInput implements IPlugin {
               // @ts-expect-error -- TS isn't smart enough to infer the correct node type
               targetNode,
               // @ts-expect-error -- TS isn't smart enough to infer the correct node type
-              targetNodeValue,
+              targetParamValue,
             })
 
             // For numbers, handleNumber returns null and uses smoothing system
             // For other types, update directly
             if (value !== null) {
-              storeState.updateNodeValue(input.targetNodeId, value)
+              storeState.updateParamValue(input.targetNodeId, value)
             }
           }
         },

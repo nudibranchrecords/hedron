@@ -1,7 +1,7 @@
 import { useRef } from 'react'
-import { useOnNodeValueChange } from '@hooks/useOnNodeValueChange'
+import { useOnParamValueChange } from '@hooks/useOnParamValueChange'
 import { useEngineStore } from '@hooks/engineHooks'
-import { useSubscribeToNodeValue } from '@hooks/useSubscribeToNodeValue'
+import { useSubscribeToParamValue } from '@hooks/useSubscribeToParamValue'
 import { OptionNumber } from '@containers/NodeContainer/OptionNumber/OptionNumber'
 import { FloatSlider, FloatSliderHandle } from '@components/FloatSlider/FloatSlider'
 import { ControlGrid } from '@components/ControlGrid/ControlGrid'
@@ -12,12 +12,12 @@ interface ParamNumberProps {
 
 export const ParamNumber = ({ id }: ParamNumberProps) => {
   const ref = useRef<FloatSliderHandle>(null)
-  const onValueChange = useOnNodeValueChange(id)
+  const onValueChange = useOnParamValueChange(id)
 
-  const minValue = useEngineStore((state) => state.nodeValues[`${id}-sliderMin`])
-  const maxValue = useEngineStore((state) => state.nodeValues[`${id}-sliderMax`])
+  const minValue = useEngineStore((state) => state.paramValues[`${id}-sliderMin`])
+  const maxValue = useEngineStore((state) => state.paramValues[`${id}-sliderMax`])
 
-  useSubscribeToNodeValue<number>(id, (value) => {
+  useSubscribeToParamValue<number>(id, (value) => {
     ref.current?.updateValue(value)
   })
 
