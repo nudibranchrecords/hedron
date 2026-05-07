@@ -11,9 +11,8 @@ import {
 import { useTimelineData } from './useTimelineData'
 import { useTimelineHandlers } from './useTimelineHandlers'
 import { useTimelineManager } from './useTimelineManager'
+import { DEFAULT_TIMELINE_ID } from '@/constants'
 import { Timeline } from '@/components/Timeline/Timeline'
-
-const TIMELINE_NODE_ID = 'timeline-input-default-timeline'
 
 interface TimelineGlobalPanelProps {
   engine: HedronEngine
@@ -29,11 +28,11 @@ export const TimelineGlobalPanel: React.FC<TimelineGlobalPanelProps> = ({ engine
     timeline,
   })
 
-  const optionNodes = useNodeOptionNodes(TIMELINE_NODE_ID)
+  const optionNodes = useNodeOptionNodes(DEFAULT_TIMELINE_ID)
   const isPlayingNode = optionNodes['isPlaying']!
-  const playHeadPositionNode = optionNodes['playheadPosition']!
+  const playHeadPositionNode = optionNodes['playheadPositionMs']!
 
-  const playheadPosition = useEngineStore(
+  const playheadPositionMs = useEngineStore(
     (state) => state.paramValues[playHeadPositionNode.id] as number | undefined,
   )
 
@@ -42,13 +41,16 @@ export const TimelineGlobalPanel: React.FC<TimelineGlobalPanelProps> = ({ engine
       <PanelHeader>Timeline</PanelHeader>
       <PanelBody>
         <NodeContainer nodeId={isPlayingNode.id} />
-        <Timeline
-          timeline={timeline}
-          playheadPosition={playheadPosition}
-          onPlayheadChange={handlePlayheadChange}
-          onKeyframeDelete={handleKeyframeDelete}
-          onKeyframeInsert={handleKeyframeInsert}
-        />
+        <div className="mb-xl">
+          <Timeline
+            timeline={timeline}
+            playheadPositionMs={playheadPositionMs}
+            onPlayheadChange={handlePlayheadChange}
+            onKeyframeDelete={handleKeyframeDelete}
+            onKeyframeInsert={handleKeyframeInsert}
+          />
+        </div>
+        Click track name to select track. Insert keyframe: [i]. Delete keyframe: [x].
       </PanelBody>
     </Panel>
   )

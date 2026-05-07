@@ -1,7 +1,14 @@
 export interface ChildGroups {
-  [key: string]: string[] | undefined
   optionNodeIds: string[]
   inputNodeIds: string[]
+}
+
+/**
+ * ChildGroupsLoose can be used with "as" when we want to allow for custom properties on ChildGroups,
+ * without compromising type safety for the known properties.
+ */
+export interface ChildGroupsLoose extends ChildGroups {
+  [key: string]: string[]
 }
 
 export interface NodeBase {
