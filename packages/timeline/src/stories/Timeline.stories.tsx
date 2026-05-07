@@ -31,7 +31,7 @@ export const Default: Story = {
       durationMs: 10000,
       tracks: [],
     },
-    playheadPosition: 0,
+    playheadPositionMs: 0,
   },
 }
 
@@ -52,12 +52,12 @@ export const WithKeyframes: Story = {
         },
       ],
     },
-    playheadPosition: 3500,
+    playheadPositionMs: 3500,
   },
 }
 
 export const Interactive = () => {
-  const [playheadPosition, setPlayheadPosition] = useState(0)
+  const [playheadPositionMs, setPlayheadPositionMs] = useState(0)
   const [playing, setPlaying] = useState(false)
   const [trackValues, setTrackValues] = useState<TrackValues>({})
   const [timeline, setTimeline] = useState<TimelineManagerData>({
@@ -103,7 +103,7 @@ export const Interactive = () => {
 
     manager.onUpdate((changed) => {
       setTrackValues((prev) => ({ ...prev, ...changed }))
-      setPlayheadPosition(manager.getPosition())
+      setPlayheadPositionMs(manager.getPosition())
     })
 
     return () => manager.dispose()
@@ -126,7 +126,7 @@ export const Interactive = () => {
 
   const handlePlayheadChange = (time: number) => {
     managerRef.current?.goTo(time)
-    setPlayheadPosition(time)
+    setPlayheadPositionMs(time)
     setPlaying(false)
     managerRef.current?.pause()
   }
@@ -181,7 +181,7 @@ export const Interactive = () => {
       </div>
       <Timeline
         timeline={timeline}
-        playheadPosition={playheadPosition}
+        playheadPositionMs={playheadPositionMs}
         onPlayheadChange={handlePlayheadChange}
         onKeyframeDelete={handleKeyframeDelete}
         onKeyframeInsert={handleKeyframeInsert}
@@ -219,6 +219,6 @@ export const LongDuration: Story = {
         },
       ],
     },
-    playheadPosition: 45000,
+    playheadPositionMs: 45000,
   },
 }

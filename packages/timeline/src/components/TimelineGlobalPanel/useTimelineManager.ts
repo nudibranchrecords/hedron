@@ -15,7 +15,7 @@ export const useTimelineManager = (
 
   const optionNodes = useNodeOptionNodes(TIMELINE_NODE_ID)
   const isPlayingNode = optionNodes['isPlaying']!
-  const playHeadPositionNode = optionNodes['playheadPosition']!
+  const playHeadPositionNode = optionNodes['playheadPositionMs']!
   const isPlaying = useEngineStore(
     (state) => state.nodeValues[isPlayingNode?.id] as boolean | undefined,
   )

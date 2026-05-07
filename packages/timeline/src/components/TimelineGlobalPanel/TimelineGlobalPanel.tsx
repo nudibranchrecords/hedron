@@ -31,9 +31,9 @@ export const TimelineGlobalPanel: React.FC<TimelineGlobalPanelProps> = ({ engine
 
   const optionNodes = useNodeOptionNodes(TIMELINE_NODE_ID)
   const isPlayingNode = optionNodes['isPlaying']!
-  const playHeadPositionNode = optionNodes['playheadPosition']!
+  const playHeadPositionNode = optionNodes['playheadPositionMs']!
 
-  const playheadPosition = useEngineStore(
+  const playheadPositionMs = useEngineStore(
     (state) => state.nodeValues[playHeadPositionNode.id] as number | undefined,
   )
 
@@ -44,7 +44,7 @@ export const TimelineGlobalPanel: React.FC<TimelineGlobalPanelProps> = ({ engine
         <NodeContainer nodeId={isPlayingNode.id} />
         <Timeline
           timeline={timeline}
-          playheadPosition={playheadPosition}
+          playheadPositionMs={playheadPositionMs}
           onPlayheadChange={handlePlayheadChange}
           onKeyframeDelete={handleKeyframeDelete}
           onKeyframeInsert={handleKeyframeInsert}

@@ -10,8 +10,8 @@ export interface TimelineProps {
     durationMs: number
     tracks: TimelineManagerTrack[]
   }
-  /** Current playhead position in seconds */
-  playheadPosition?: number
+  /** Current playhead position in milliseconds */
+  playheadPositionMs?: number
   /** Called when the user clicks on the track area to set the playhead */
   onPlayheadChange?: (time: number) => void
   /** Called when a keyframe should be deleted */
@@ -22,7 +22,7 @@ export interface TimelineProps {
 
 export function Timeline({
   timeline,
-  playheadPosition = 0,
+  playheadPositionMs = 0,
   onPlayheadChange,
   onKeyframeDelete,
   onKeyframeInsert,
@@ -39,12 +39,12 @@ export function Timeline({
         setSelectedKeyframe(null)
       }
       if (e.key === 'i' && selectedTrack) {
-        onKeyframeInsert?.(selectedTrack, playheadPosition)
+        onKeyframeInsert?.(selectedTrack, playheadPositionMs)
       }
     }
     window.addEventListener('keydown', handleKeyDown)
     return () => window.removeEventListener('keydown', handleKeyDown)
-  }, [selectedKeyframe, onKeyframeDelete, selectedTrack, playheadPosition, onKeyframeInsert])
+  }, [selectedKeyframe, onKeyframeDelete, selectedTrack, playheadPositionMs, onKeyframeInsert])
 
   const handleTrackClick = useCallback(
     (e: React.MouseEvent<HTMLDivElement>) => {
@@ -62,7 +62,7 @@ export function Timeline({
     [durationMs, onPlayheadChange],
   )
 
-  const playheadPercent = (playheadPosition / durationMs) * 100
+  const playheadPercent = (playheadPositionMs / durationMs) * 100
 
   const durationSec = durationMs / 1000
   const rulerMarks = []
@@ -81,7 +81,7 @@ export function Timeline({
       <div className={c.header}>
         <span>Timeline</span>
         <span>
-          {(playheadPosition / 1000).toFixed(1)}s / {durationSec}s
+          {(playheadPositionMs / 1000).toFixed(1)}s / {durationSec}s
         </span>
       </div>
       <div className={c.body} ref={trackAreaRef} onClick={handleTrackClick}>
