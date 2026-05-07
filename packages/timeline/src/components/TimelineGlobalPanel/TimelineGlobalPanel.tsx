@@ -7,6 +7,7 @@ import {
   NodeContainer,
   useEngineStore,
   useNodeOptionNodes,
+  useAppStore,
 } from '@hedron-gl/ui-core'
 import { useTimelineData } from './useTimelineData'
 import { useTimelineHandlers } from './useTimelineHandlers'
@@ -21,6 +22,8 @@ interface TimelineGlobalPanelProps {
 export const TimelineGlobalPanel: React.FC<TimelineGlobalPanelProps> = ({ engine }) => {
   const timeline = useTimelineData()
   const manager = useTimelineManager(timeline)
+  // TODO: Nicer way to get a resource
+  const resourcesUrl = useAppStore((state) => state.resourcesUrl)
 
   const { handlePlayheadChange, handleKeyframeDelete, handleKeyframeInsert } = useTimelineHandlers({
     engine,
@@ -41,6 +44,7 @@ export const TimelineGlobalPanel: React.FC<TimelineGlobalPanelProps> = ({ engine
       <PanelHeader>Timeline</PanelHeader>
       <PanelBody>
         <NodeContainer nodeId={isPlayingNode.id} />
+        <audio src={`${resourcesUrl}/120-4-4.mp3`} controls style={{ width: '100%' }} />
         <div className="mb-xl">
           <Timeline
             timeline={timeline}

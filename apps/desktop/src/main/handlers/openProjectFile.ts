@@ -41,11 +41,15 @@ export const openProjectFile = async (projectPath?: string): Promise<OpenProject
       return { result: 'error', error: 'Could not find associated sketches folder for project' }
     }
 
+    // Resources dir is always a folder named 'resources' next to the sketches directory
+    const resourcesDirAbsolute = path.resolve(path.dirname(sketchesDirAbsolute), 'resources')
+
     // Return both the JSON data and the sketches directory path (if it exists)
     return {
       result: 'success',
       projectData,
       sketchesDirAbsolute,
+      resourcesDirAbsolute,
       savePath: projectPath,
     }
   } catch (err) {

@@ -52,6 +52,8 @@ export interface AppState {
   currentSavePath: string | null
   saveList: SaveItem[]
   sketchesServerBuildResult: BuildResult | null
+  resourcesUrl: string | null
+  resourcesFiles: string[]
   setSelectedNode: (sketchID: string, nodeId: string | null) => void
   setSelectedInput: (nodeId: string, inputId: string | null) => void
   setOpenedControlGroup: (sketchId: string, groupIndex: number, isOpen: boolean) => void
@@ -62,6 +64,8 @@ export interface AppState {
   addToSaveList: (path: SaveItem) => void
   removeFromSaveList: (path: string) => void
   setSketchesServerBuildResult: (result: BuildResult | null) => void
+  addResourceFile: (fileName: string) => void
+  removeResourceFile: (fileName: string) => void
   cleanupStaleReferences: (engineData: EngineData) => void
 }
 
@@ -92,6 +96,8 @@ export const createAppStore = () =>
             openedControlGroups: {},
             saveList: [],
             sketchesServerBuildResult: null,
+            resourcesUrl: null,
+            resourcesFiles: [],
             setActiveSketchId: (id: string) => {
               set((state) => {
                 state.activeSketchId = id
@@ -129,6 +135,18 @@ export const createAppStore = () =>
             setSketchesServerBuildResult: (result: BuildResult | null) => {
               set((state) => {
                 state.sketchesServerBuildResult = result
+              })
+            },
+            addResourceFile: (fileName: string) => {
+              set((state) => {
+                if (!state.resourcesFiles.includes(fileName)) {
+                  state.resourcesFiles.push(fileName)
+                }
+              })
+            },
+            removeResourceFile: (fileName: string) => {
+              set((state) => {
+                state.resourcesFiles = state.resourcesFiles.filter((f) => f !== fileName)
               })
             },
             setSelectedNode: (sketchID, nodeId) => {

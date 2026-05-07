@@ -5,6 +5,7 @@ import {
   openProjectFileDialog,
   openSketchesDirDialog,
   saveProjectFileDialog,
+  startResourcesServer,
   startSketchesServer,
 } from '@renderer/ipc/mainThreadTalk'
 
@@ -41,9 +42,12 @@ export const handleLoadProjectDialog = async (projectPath?: string) => {
     return
   }
 
-  const { sketchesDirAbsolute, projectData, savePath } = response
+  const { sketchesDirAbsolute, projectData, savePath, resourcesDirAbsolute } = response
 
   await startEngineWithSketchesDir(sketchesDirAbsolute)
+
+  const { url: resourcesUrl, fileNames: resourcesFiles } =
+    await startResourcesServer(resourcesDirAbsolute)
 
   engineStore.getState().loadProject(projectData.engine)
 
@@ -52,6 +56,8 @@ export const handleLoadProjectDialog = async (projectPath?: string) => {
   appStore.setState((state: AppState) => ({
     ...state,
     currentSavePath: savePath,
+    resourcesUrl,
+    resourcesFiles,
     ...projectData.app,
   }))
 
