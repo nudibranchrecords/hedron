@@ -3,13 +3,12 @@ import { useMemo } from 'react'
 import { useEngineStore, useEngineStoreShallow } from '@hedron-gl/ui-core'
 
 import type { TimelineNode, TimelineManagerTrack, TimelineTrackInput } from '@/types'
-
-const TIMELINE_NODE_ID = 'timeline-input-default-timeline'
+import { DEFAULT_TIMELINE_ID } from '@/constants'
 
 const TIMELINE_DURATION = 10000
 
 export const useTimelineData = () => {
-  const timelineNode = useEngineStore((state) => state.nodes[TIMELINE_NODE_ID]) as
+  const timelineNode = useEngineStore((state) => state.nodes[DEFAULT_TIMELINE_ID]) as
     | TimelineNode
     | undefined
   const trackIds = useMemo(() => timelineNode?.childGroups.trackIds ?? [], [timelineNode])
