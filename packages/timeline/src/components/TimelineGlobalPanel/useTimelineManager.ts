@@ -1,8 +1,7 @@
 import { useEffect, useMemo } from 'react'
 import { useEngineStore, useNodeOptionNodes } from '@hedron-gl/ui-core'
 import { TimelineManager } from '@/TimelineManager'
-
-const TIMELINE_NODE_ID = 'timeline-input-default-timeline'
+import { DEFAULT_TIMELINE_ID } from '@/constants'
 
 export const useTimelineManager = (
   timelineData: Parameters<typeof TimelineManager.prototype.setData>[0],
@@ -13,7 +12,7 @@ export const useTimelineManager = (
     manager.setData(timelineData)
   }, [manager, timelineData])
 
-  const optionNodes = useNodeOptionNodes(TIMELINE_NODE_ID)
+  const optionNodes = useNodeOptionNodes(DEFAULT_TIMELINE_ID)
   const isPlayingNode = optionNodes['isPlaying']!
   const playHeadPositionNode = optionNodes['playheadPositionMs']!
   const isPlaying = useEngineStore(
