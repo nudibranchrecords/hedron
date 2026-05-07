@@ -13,13 +13,6 @@ export class TimelineInput implements IPlugin {
       key: 'default-timeline',
       nodeType: 'custom',
       customNodeType: 'timeline',
-      // TODO: With proper config typing we wouldn't need all this boilerplate config
-      id: DEFAULT_TIMELINE_ID,
-      parentIds: [],
-      childGroups: {
-        optionNodeIds: [],
-        inputNodeIds: [],
-      },
     })
 
     engine.addOptionNodes(DEFAULT_TIMELINE_ID, [
