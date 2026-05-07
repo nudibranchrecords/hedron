@@ -41,13 +41,16 @@ export const TimelineGlobalPanel: React.FC<TimelineGlobalPanelProps> = ({ engine
       <PanelHeader>Timeline</PanelHeader>
       <PanelBody>
         <NodeContainer nodeId={isPlayingNode.id} />
-        <Timeline
-          timeline={timeline}
-          playheadPositionMs={playheadPositionMs}
-          onPlayheadChange={handlePlayheadChange}
-          onKeyframeDelete={handleKeyframeDelete}
-          onKeyframeInsert={handleKeyframeInsert}
-        />
+        <div className="mb-xl">
+          <Timeline
+            timeline={timeline}
+            playheadPositionMs={playheadPositionMs}
+            onPlayheadChange={handlePlayheadChange}
+            onKeyframeDelete={handleKeyframeDelete}
+            onKeyframeInsert={handleKeyframeInsert}
+          />
+        </div>
+        Click track name to select track. Insert keyframe: [i]. Delete keyframe: [x].
       </PanelBody>
     </Panel>
   )
