@@ -23,6 +23,7 @@ import {
   SketchModuleItem,
   Param,
   Shot,
+  ChildGroupsLoose,
 } from '@store/types'
 import { getSketchesOfModuleId } from '@store/selectors/getSketchesOfModuleId'
 import { createEngineStore, EngineStore } from '@store/engineStore'
@@ -186,7 +187,7 @@ export class HedronEngine {
         return
       }
 
-      const childGroup = parentNode.childGroups[childGroupKey]
+      const childGroup = (parentNode.childGroups as ChildGroupsLoose)[childGroupKey]
       if (!childGroup) {
         console.error(`addParentToNode: childGroup "${childGroupKey}" not found on "${parentId}"`)
         return
