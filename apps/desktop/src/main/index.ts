@@ -1,3 +1,4 @@
+import path from 'path'
 import { app, BrowserWindow, dialog, ipcMain, screen, session } from 'electron'
 import { electronApp, optimizer } from '@electron-toolkit/utils'
 import { REDUX_DEVTOOLS, installExtension } from '@tomjs/electron-devtools-installer'
@@ -7,12 +8,14 @@ import {
   DialogEvents,
   FileEvents,
   OpenProjectResponse,
+  ResourceEvents,
   SaveProjectResponse,
   SketchEvents,
 } from '@shared/Events'
 import { updateDisplayMenu, updateMenu } from '@main/menu'
 import { createWindow } from '@main/mainWindow'
 import { startSketchesServer } from '@main/handleSketchFiles'
+import { startResourcesServer } from '@main/handleResourceFiles'
 import { saveProjectFile } from '@main/handlers/saveProjectFile'
 import { openProjectFile } from '@main/handlers/openProjectFile'
 import { openFolder } from '@main/handlers/openFolder'
@@ -114,6 +117,10 @@ ipcMain.handle(FileEvents.OpenFolder, async (_, folderPath: string) => {
 
 ipcMain.handle(SketchEvents.StartSketchesServer, async (_, sketchesDir: string) => {
   return await startSketchesServer(sketchesDir)
+})
+
+ipcMain.handle(ResourceEvents.StartResourcesServer, async (_, resourcesDir: string) => {
+  return await startResourcesServer(resourcesDir)
 })
 
 ipcMain.handle(FrameEvents.SaveFrame, saveFrameHandler)

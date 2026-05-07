@@ -1,6 +1,6 @@
 import { engine } from '@renderer/engine'
 import { handleLoadProjectDialog, handleSaveProjectDialog } from '@renderer/handlers/fileHandlers'
-import { AppMenuEvents, AppMenuEventsItem, SketchEvents } from '@shared/Events'
+import { AppMenuEvents, AppMenuEventsItem, ResourceEvents, SketchEvents } from '@shared/Events'
 import { appStore, BuildResult } from '@renderer/appStore'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -35,6 +35,18 @@ listen(SketchEvents.BuildResult, (result: BuildResult) => {
       state.setGlobalDialogId(null)
     }
   }
+})
+
+listen(ResourceEvents.AddResourceFile, (fileName: string) => {
+  appStore.getState().addResourceFile(fileName)
+})
+
+listen(ResourceEvents.RemoveResourceFile, (fileName: string) => {
+  appStore.getState().removeResourceFile(fileName)
+})
+
+listen(ResourceEvents.ChangeResourceFile, (_fileName: string) => {
+  // File content changed — no list update needed, consumers re-fetch from URL
 })
 
 listen(AppMenuEvents.AppMenuClick, (item: AppMenuEventsItem) => {

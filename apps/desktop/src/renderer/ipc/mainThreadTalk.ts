@@ -3,6 +3,8 @@ import {
   DialogEvents,
   FileEvents,
   OpenProjectResponse,
+  ResourceEvents,
+  ResourcesServerResponse,
   SaveProjectResponse,
   SketchesServerResponse,
   SketchEvents,
@@ -49,6 +51,15 @@ export const startSketchesServer = (sketchesDirPath: string) =>
   new Promise<SketchesServerResponse>((resolve) => {
     window.electronApi.ipcRenderer
       .invoke(SketchEvents.StartSketchesServer, sketchesDirPath)
+      .then((response) => {
+        resolve(response)
+      })
+  })
+
+export const startResourcesServer = (resourcesDirPath: string) =>
+  new Promise<ResourcesServerResponse>((resolve) => {
+    window.electronApi.ipcRenderer
+      .invoke(ResourceEvents.StartResourcesServer, resourcesDirPath)
       .then((response) => {
         resolve(response)
       })

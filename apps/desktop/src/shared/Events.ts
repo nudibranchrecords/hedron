@@ -52,6 +52,7 @@ type ResponseError = {
 type OpenProjectResponseSuccess = {
   result: 'success'
   sketchesDirAbsolute: string
+  resourcesDirAbsolute: string
   savePath: string
   projectData: ProjectData
 }
@@ -72,4 +73,16 @@ export enum FileWatchEvents {
   unlink = 'unlink',
   add = 'add',
   buildResult = 'buildResult',
+}
+
+export enum ResourceEvents {
+  StartResourcesServer = 'start-resources-server',
+  AddResourceFile = 'add-resource-file',
+  RemoveResourceFile = 'remove-resource-file',
+  ChangeResourceFile = 'change-resource-file',
+}
+
+export interface ResourcesServerResponse {
+  fileNames: string[]
+  url: string | null
 }
