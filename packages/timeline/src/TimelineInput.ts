@@ -18,7 +18,6 @@ export class TimelineInput implements IPlugin {
       childGroups: {
         optionNodeIds: [],
         inputNodeIds: [],
-        trackIds: [],
       },
     })
 
