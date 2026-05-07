@@ -24,7 +24,7 @@ export class TimelineInput implements IPlugin {
 
     engine.addOptionNodes(timelineNodeId, [
       {
-        key: 'playheadPosition',
+        key: 'playheadPositionMs',
         valueType: 'number',
         defaultValue: 0,
       },

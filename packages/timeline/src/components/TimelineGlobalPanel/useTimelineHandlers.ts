@@ -14,7 +14,7 @@ interface UseTimelineHandlersParams {
 
 export const useTimelineHandlers = ({ engine, manager, timeline }: UseTimelineHandlersParams) => {
   const optionNodes = useNodeOptionNodes(TIMELINE_NODE_ID)
-  const playheadPosNodeId = optionNodes['playheadPosition']?.id
+  const playheadPosNodeId = optionNodes['playheadPositionMs']?.id
 
   const handlePlayheadChange = useCallback(
     (time: number) => {
