@@ -1,8 +1,7 @@
 import { useEffect, useMemo } from 'react'
-import { useEngineStore, useNodeOptionNodes } from '@hedron-gl/ui-core'
+import { useEngineStore, useNodeOptionNodes, useSubscribeToParamValue } from '@hedron-gl/ui-core'
 import { TimelineManager } from '@/TimelineManager'
-
-const TIMELINE_NODE_ID = 'timeline-input-default-timeline'
+import { DEFAULT_TIMELINE_ID } from '@/constants'
 
 export const useTimelineManager = (
   timelineData: Parameters<typeof TimelineManager.prototype.setData>[0],
@@ -13,17 +12,29 @@ export const useTimelineManager = (
     manager.setData(timelineData)
   }, [manager, timelineData])
 
-  const optionNodes = useNodeOptionNodes(TIMELINE_NODE_ID)
-  const isPlayingNode = optionNodes['isPlaying']!
-  const playHeadPositionNode = optionNodes['playheadPosition']!
-  const isPlaying = useEngineStore(
-    (state) => state.paramValues[isPlayingNode?.id] as boolean | undefined,
-  )
+  const optionNodes = useNodeOptionNodes(DEFAULT_TIMELINE_ID)
+
+  const playHeadPositionNode = optionNodes['playheadPositionMs']
 
   const updateParamValue = useEngineStore((state) => state.updateParamValue)
   const updateMultipleParamValues = useEngineStore((state) => state.updateMultipleParamValues)
 
+  useSubscribeToParamValue<boolean>(optionNodes['isPlaying']?.id, (isPlaying) => {
+    if (isPlaying) {
+      manager.play()
+    } else {
+      manager.pause()
+    }
+  })
+
   useEffect(() => {
+    if (!playHeadPositionNode?.id) {
+      console.warn(
+        'Playhead position node not found, something went wrong with the timeline manager setup. Timeline will not update playhead position.',
+      )
+      return
+    }
+
     manager.onUpdate((changed) => {
       updateParamValue(playHeadPositionNode.id, manager.getPosition())
 
@@ -42,19 +53,11 @@ export const useTimelineManager = (
     })
   }, [
     manager,
-    playHeadPositionNode.id,
+    playHeadPositionNode?.id,
     timelineData.tracks,
     updateMultipleParamValues,
     updateParamValue,
   ])
-
-  useEffect(() => {
-    if (isPlaying) {
-      manager.play()
-    } else {
-      manager.pause()
-    }
-  }, [isPlaying, manager])
 
   useEffect(() => {
     return () => manager.dispose()

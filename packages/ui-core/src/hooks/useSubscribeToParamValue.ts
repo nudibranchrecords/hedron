@@ -3,7 +3,7 @@ import { ParamVector, ParamValue } from '@hedron-gl/engine'
 import { useEngineStore, useEngine } from '@hooks/engineHooks'
 
 export const useSubscribeToParamValue = <T extends ParamValue>(
-  nodeId: string,
+  nodeId: string | undefined,
   callback: (value: T) => void,
 ) => {
   const engine = useEngine()
@@ -11,6 +11,10 @@ export const useSubscribeToParamValue = <T extends ParamValue>(
   callbackRef.current = callback
 
   useEffect(() => {
+    if (!nodeId) {
+      return
+    }
+
     const unsubscribe = engine.getStore().subscribe(
       (state) => state.paramValues[nodeId],
       (value) => {

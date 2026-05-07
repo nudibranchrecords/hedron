@@ -10,7 +10,13 @@ export const useNodeOptionNodes = (parentId: string): Record<string, Param | und
       const parentNode = state.nodes[parentId]
       const optionNodeIds = parentNode?.childGroups.optionNodeIds || []
       optionNodeIds.forEach((id) => {
-        const node = state.nodes[id] as Param
+        const node = state.nodes[id] as Param | null
+
+        if (node?.nodeType !== 'param') {
+          console.warn(`useNodeOptionNodes: node "${id}" doesn't exist or is not a param node`)
+          return
+        }
+
         optionNodes[node.key] = node
       })
 

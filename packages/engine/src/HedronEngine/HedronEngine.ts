@@ -25,6 +25,7 @@ import {
   ConfigParam,
   ConfigShot,
   ConfigCustomNode,
+  ChildGroupsLoose,
 } from '@store/types'
 import { getSketchesOfModuleId } from '@store/selectors/getSketchesOfModuleId'
 import { createEngineStore, EngineStore } from '@store/engineStore'
@@ -181,32 +182,35 @@ export class HedronEngine {
     })
   }
 
-  /** Adds `parentId` to `nodeId.parentIds` and appends `nodeId` to the given `childGroupKey` on the parent. */
-  public addParentToNode(nodeId: string, parentId: string, childGroupKey: string) {
+  /** Adds `parentId` to `childId.parentIds` and appends `childId` to the given `childGroupKey` on the parent. */
+  public addChildToNode(parentId: string, childGroupKey: string, childId: string) {
     this.store.setState((state) => {
-      const node = state.nodes[nodeId]
+      const childNode = state.nodes[childId]
       const parentNode = state.nodes[parentId]
 
-      if (!node) {
-        console.error(`addParentToNode: node "${nodeId}" not found`)
+      if (!childNode) {
+        console.error(`addChildToNode: node "${childId}" not found`)
         return
       }
 
       if (!parentNode) {
-        console.error(`addParentToNode: parent node "${parentId}" not found`)
+        console.error(`addChildToNode: parent node "${parentId}" not found`)
         return
       }
 
-      if (!node.parentIds.includes(parentId)) {
-        node.parentIds.push(parentId)
+      const childGroups = parentNode.childGroups as ChildGroupsLoose
+
+      let childGroup = childGroups[childGroupKey]
+      if (!childGroup) {
+        childGroup = childGroups[childGroupKey] = []
       }
 
-      const childGroup = parentNode.childGroups[childGroupKey]
+      if (!childNode.parentIds.includes(parentId)) {
+        childNode.parentIds.push(parentId)
+      }
 
-      if (!childGroup) {
-        parentNode.childGroups[childGroupKey] = [nodeId]
-      } else if (!childGroup.includes(nodeId)) {
-        childGroup.push(nodeId)
+      if (!childGroup.includes(childId)) {
+        childGroup.push(childId)
       }
     })
   }
@@ -239,7 +243,7 @@ export class HedronEngine {
 
     const targetNode = state.nodes[targetNodeId]
 
-    const numAlready = targetNode?.childGroups?.inputs?.length ?? 0
+    const numAlready = targetNode?.childGroups?.inputNodeIds?.length ?? 0
 
     const input = {
       inputType: plugin.inputType,
@@ -481,7 +485,6 @@ export class HedronEngine {
     // For each registered plugin, ensure global option nodes exist
     Object.values(this.plugins).forEach((plugin) => {
       this.createGlobalOptionNodesForPlugin(plugin)
-      plugin.onEngineInitialize?.(this)
     })
   }
 
