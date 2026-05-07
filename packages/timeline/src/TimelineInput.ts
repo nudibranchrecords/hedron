@@ -36,6 +36,7 @@ export class TimelineInput implements IPlugin {
   }
 
   onNewInput(engine: HedronEngine, inputId: string) {
-    engine.addParentToNode(inputId, DEFAULT_TIMELINE_ID, 'trackIds')
+    // Input ID is only a child of the target node, we also need to make it a child of the timeline node so it shows up in the timeline UI
+    engine.addChildToNode(DEFAULT_TIMELINE_ID, 'trackIds', inputId)
   }
 }

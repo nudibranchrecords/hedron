@@ -171,19 +171,19 @@ export class HedronEngine {
     })
   }
 
-  /** Adds `parentId` to `nodeId.parentIds` and appends `nodeId` to the given `childGroupKey` on the parent. */
-  public addParentToNode(nodeId: string, parentId: string, childGroupKey: string) {
+  /** Adds `parentId` to `childId.parentIds` and appends `childId` to the given `childGroupKey` on the parent. */
+  public addChildToNode(parentId: string, childGroupKey: string, childId: string) {
     this.store.setState((state) => {
-      const node = state.nodes[nodeId]
+      const childNode = state.nodes[childId]
       const parentNode = state.nodes[parentId]
 
-      if (!node) {
-        console.error(`addParentToNode: node "${nodeId}" not found`)
+      if (!childNode) {
+        console.error(`addChildToNode: node "${childId}" not found`)
         return
       }
 
       if (!parentNode) {
-        console.error(`addParentToNode: parent node "${parentId}" not found`)
+        console.error(`addChildToNode: parent node "${parentId}" not found`)
         return
       }
 
@@ -194,12 +194,12 @@ export class HedronEngine {
         childGroup = childGroups[childGroupKey] = []
       }
 
-      if (!node.parentIds.includes(parentId)) {
-        node.parentIds.push(parentId)
+      if (!childNode.parentIds.includes(parentId)) {
+        childNode.parentIds.push(parentId)
       }
 
-      if (!childGroup.includes(nodeId)) {
-        childGroup.push(nodeId)
+      if (!childGroup.includes(childId)) {
+        childGroup.push(childId)
       }
     })
   }
