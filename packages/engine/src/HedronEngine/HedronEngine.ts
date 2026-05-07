@@ -187,10 +187,11 @@ export class HedronEngine {
         return
       }
 
-      const childGroup = (parentNode.childGroups as ChildGroupsLoose)[childGroupKey]
+      const childGroups = parentNode.childGroups as ChildGroupsLoose
+
+      let childGroup = childGroups[childGroupKey]
       if (!childGroup) {
-        console.error(`addParentToNode: childGroup "${childGroupKey}" not found on "${parentId}"`)
-        return
+        childGroup = childGroups[childGroupKey] = []
       }
 
       if (!node.parentIds.includes(parentId)) {
