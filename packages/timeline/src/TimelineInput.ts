@@ -39,9 +39,5 @@ export class TimelineInput implements IPlugin {
     const timelineNodeId = `${this.id}-default-timeline`
 
     engine.addParentToNode(inputId, timelineNodeId, 'trackIds')
-
-    engine.setNodeCustomData(inputId, {
-      keyframes: [],
-    })
   }
 }
