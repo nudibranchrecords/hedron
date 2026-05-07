@@ -1,5 +1,5 @@
 import { useEffect, useMemo } from 'react'
-import { useEngineStore, useNodeOptionNodes } from '@hedron-gl/ui-core'
+import { useEngineStore, useNodeOptionNodes, useSubscribeToNodeValue } from '@hedron-gl/ui-core'
 import { TimelineManager } from '@/TimelineManager'
 import { DEFAULT_TIMELINE_ID } from '@/constants'
 
@@ -13,16 +13,28 @@ export const useTimelineManager = (
   }, [manager, timelineData])
 
   const optionNodes = useNodeOptionNodes(DEFAULT_TIMELINE_ID)
-  const isPlayingNode = optionNodes['isPlaying']!
-  const playHeadPositionNode = optionNodes['playheadPositionMs']!
-  const isPlaying = useEngineStore(
-    (state) => state.nodeValues[isPlayingNode?.id] as boolean | undefined,
-  )
+
+  const playHeadPositionNode = optionNodes['playheadPositionMs']
 
   const updateNodeValue = useEngineStore((state) => state.updateNodeValue)
   const updateMultipleNodeValues = useEngineStore((state) => state.updateMultipleNodeValues)
 
+  useSubscribeToNodeValue<boolean>(optionNodes['isPlaying']?.id, (isPlaying) => {
+    if (isPlaying) {
+      manager.play()
+    } else {
+      manager.pause()
+    }
+  })
+
   useEffect(() => {
+    if (!playHeadPositionNode?.id) {
+      console.warn(
+        'Playhead position node not found, something went wrong with the timeline manager setup. Timeline will not update playhead position.',
+      )
+      return
+    }
+
     manager.onUpdate((changed) => {
       updateNodeValue(playHeadPositionNode.id, manager.getPosition())
 
@@ -41,19 +53,11 @@ export const useTimelineManager = (
     })
   }, [
     manager,
-    playHeadPositionNode.id,
+    playHeadPositionNode?.id,
     timelineData.tracks,
     updateMultipleNodeValues,
     updateNodeValue,
   ])
-
-  useEffect(() => {
-    if (isPlaying) {
-      manager.play()
-    } else {
-      manager.pause()
-    }
-  }, [isPlaying, manager])
 
   useEffect(() => {
     return () => manager.dispose()
