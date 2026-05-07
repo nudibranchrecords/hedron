@@ -186,14 +186,14 @@ export class HedronEngine {
         return
       }
 
-      if (!node.parentIds.includes(parentId)) {
-        node.parentIds.push(parentId)
-      }
-
       const childGroup = parentNode.childGroups[childGroupKey]
       if (!childGroup) {
         console.error(`addParentToNode: childGroup "${childGroupKey}" not found on "${parentId}"`)
         return
+      }
+
+      if (!node.parentIds.includes(parentId)) {
+        node.parentIds.push(parentId)
       }
 
       if (!childGroup.includes(nodeId)) {
