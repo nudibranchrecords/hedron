@@ -39,13 +39,13 @@ export interface IPlugin {
    * @deprecated prefer `onNewInput` to create option nodes
    * Config to generate option nodes. Follows same structure as sketch params config.
    */
-  optionNodesConfig?: (ConfigParam | ConfigShot)[]
+  optionNodesConfig?: readonly (ConfigParam | ConfigShot)[]
 
   /**
    * @deprecated prefer `onEngineInitialize` to create global plugin option nodes
    * Config to generate global option nodes. Follows same structure as sketch params config.
    */
-  globalOptionNodesConfig?: (ConfigParam | ConfigShot)[]
+  globalOptionNodesConfig?: readonly (ConfigParam | ConfigShot)[]
 
   /**
    * Optional callback called after engine initialization (project load, sketches folder selection)

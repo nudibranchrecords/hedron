@@ -3,7 +3,9 @@ import { useShallow } from 'zustand/react/shallow'
 import { useEngineStore } from '@hooks/engineHooks'
 
 /** Returns option nodes for a given parent node ID, as a key pair object based on each option node's key property */
-export const useNodeOptionNodes = (parentId: string): Record<string, Param | undefined> => {
+export const useNodeOptionNodes = <OptionNodes extends Record<string, Param | undefined>>(
+  parentId: string,
+): OptionNodes => {
   return useEngineStore(
     useShallow((state) => {
       const optionNodes: Record<string, Param | undefined> = {}
@@ -20,7 +22,7 @@ export const useNodeOptionNodes = (parentId: string): Record<string, Param | und
         optionNodes[node.key] = node
       })
 
-      return optionNodes
+      return optionNodes as OptionNodes
     }),
   )
 }

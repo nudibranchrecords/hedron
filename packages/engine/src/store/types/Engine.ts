@@ -33,7 +33,7 @@ interface Actions {
   reset: () => void
   addInput: (
     inputConfig: Omit<Input, 'id' | 'optionNodeIds' | 'childGroups' | 'nodeType'>,
-    optionsNodeConfig?: (ConfigParam | ConfigShot)[],
+    optionsNodeConfig?: readonly (ConfigParam | ConfigShot)[],
   ) => string
   deleteNode: (nodeId: string) => void
 }

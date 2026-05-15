@@ -144,7 +144,7 @@ export class HedronEngine {
     this.addNode(nodeId, parentId, config)
   }
 
-  public addOptionNodes(parentId: string, configs: (ConfigParam | ConfigShot)[]) {
+  public addOptionNodes(parentId: string, configs: readonly (ConfigParam | ConfigShot)[]) {
     this.store.setState((state) => {
       const parentNode = state.nodes[parentId]
       if (!parentNode) {
