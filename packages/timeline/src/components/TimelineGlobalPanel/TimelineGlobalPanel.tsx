@@ -14,6 +14,7 @@ import { useTimelineHandlers } from './useTimelineHandlers'
 import { useTimelineManager } from './useTimelineManager'
 import { DEFAULT_TIMELINE_ID } from '@/constants'
 import { Timeline } from '@/components/Timeline/Timeline'
+import { TimelineOptionNodes } from '@/TimelineInput'
 
 interface TimelineGlobalPanelProps {
   engine: HedronEngine
@@ -30,7 +31,7 @@ export const TimelineGlobalPanel: React.FC<TimelineGlobalPanelProps> = ({ engine
     timeline,
   })
 
-  const optionNodes = useNodeOptionNodes(DEFAULT_TIMELINE_ID)
+  const optionNodes = useNodeOptionNodes<TimelineOptionNodes>(DEFAULT_TIMELINE_ID)
   const isPlayingNode = optionNodes['isPlaying']!
   const playHeadPositionNode = optionNodes['playheadPositionMs']!
 
