@@ -22,7 +22,7 @@ interface TimelineGlobalPanelProps {
 export const TimelineGlobalPanel: React.FC<TimelineGlobalPanelProps> = ({ engine }) => {
   const timeline = useTimelineData()
   const manager = useTimelineManager(timeline)
-  const resourcesUrl = useResource('120-4-4.mp3')
+  const audioUrl = useResource('120-4-4.mp3')
 
   const { handlePlayheadChange, handleKeyframeDelete, handleKeyframeInsert } = useTimelineHandlers({
     engine,
@@ -43,7 +43,7 @@ export const TimelineGlobalPanel: React.FC<TimelineGlobalPanelProps> = ({ engine
       <PanelHeader>Timeline</PanelHeader>
       <PanelBody>
         <NodeContainer nodeId={isPlayingNode.id} />
-        <audio src={resourcesUrl} controls style={{ width: '100%' }} />
+        <audio src={audioUrl} controls style={{ width: '100%' }} />
         <div className="mb-xl">
           <Timeline
             timeline={timeline}
