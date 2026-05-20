@@ -2,6 +2,7 @@ import type { Meta } from '@storybook/react'
 import { fn } from '@storybook/test'
 import { Fragment, useEffect, useRef, useState } from 'react'
 import { useInterval } from 'usehooks-ts'
+import { ParamFileValue } from '@hedron-gl/engine'
 import { FilePicker } from '@components/FilePicker/FilePicker'
 import { EnumDropdown, EnumDropdownHandle } from '@components/EnumDropdown/EnumDropdown'
 import {
@@ -206,15 +207,20 @@ export const Trigger = ({ title = 'Trigger Pad', isActive, onClick }: BasicProps
 }
 
 export const File = ({ title = 'File Picker', isActive, onClick }: BasicProps) => {
+  const [file, setFile] = useState<ParamFileValue>({ fileName: null, fileType: null })
+
   return (
     <NodeControl isActive={isActive} onClick={onClick}>
       <NodeControlMain>
         <NodeControlTitle>{title}</NodeControlTitle>
         <NodeControlInner>
           <FilePicker
-            availableFiles={[]}
-            currentFile={{ fileName: null, fileType: null }}
-            onFileChange={() => {}}
+            availableFiles={[
+              { fileName: 'MyFile.png', fileType: 'image' },
+              { fileName: 'MyOtherFile.mp4', fileType: 'video' },
+            ]}
+            currentFile={file}
+            onFileChange={setFile}
           />
         </NodeControlInner>
       </NodeControlMain>

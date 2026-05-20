@@ -23,3 +23,21 @@
 .panel {
   width: 50%;
 }
+
+.fileList {
+  display: flex;
+  flex-direction: column;
+
+  button {
+    text-align: left;
+    display: block;
+    width: 100%;
+    padding: 0.5rem;
+    border-radius: var(--borderRadiusLarge);
+    cursor: pointer;
+
+    &:hover {
+      background: var(--bgColorDark4);
+    }
+  }
+}
