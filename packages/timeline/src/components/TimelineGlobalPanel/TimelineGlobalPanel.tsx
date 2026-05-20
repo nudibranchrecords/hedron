@@ -5,9 +5,9 @@ import {
   PanelHeader,
   PanelBody,
   NodeContainer,
-  useEngineStore,
   useNodeOptionNodes,
   useResource,
+  useParamValue,
 } from '@hedron-gl/ui-core'
 import { useTimelineData } from './useTimelineData'
 import { useTimelineHandlers } from './useTimelineHandlers'
@@ -23,7 +23,6 @@ interface TimelineGlobalPanelProps {
 export const TimelineGlobalPanel: React.FC<TimelineGlobalPanelProps> = ({ engine }) => {
   const timeline = useTimelineData()
   const manager = useTimelineManager(timeline)
-  const audioUrl = useResource('120-4-4.mp3')
 
   const { handlePlayheadChange, handleKeyframeDelete, handleKeyframeInsert } = useTimelineHandlers({
     engine,
@@ -34,10 +33,12 @@ export const TimelineGlobalPanel: React.FC<TimelineGlobalPanelProps> = ({ engine
   const optionNodes = useNodeOptionNodes<TimelineOptionNodes>(DEFAULT_TIMELINE_ID)
   const isPlayingNode = optionNodes['isPlaying']!
   const playHeadPositionNode = optionNodes['playheadPositionMs']!
+  const audioFilename = useParamValue<string>(optionNodes['audioUrl']!.id)
 
-  const playheadPositionMs = useEngineStore(
-    (state) => state.paramValues[playHeadPositionNode.id] as number | undefined,
-  )
+  const audioUrl = useResource(audioFilename)
+
+  // Not very performant to be updating state on every frame, later we'll want to do this imperatively using useSubscribeToParamValue
+  const playheadPositionMs = useParamValue<number>(playHeadPositionNode.id)
 
   return (
     <Panel>
