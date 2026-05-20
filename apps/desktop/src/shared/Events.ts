@@ -93,7 +93,12 @@ export enum ResourceEvents {
   ChangeResourceFile = 'change-resource-file',
 }
 
+export interface ResourceFileData {
+  fileName: string
+  fileType: string
+}
+
 export interface ResourcesServerResponse {
-  fileNames: string[]
+  files: Record<string, ResourceFileData>
   url: string | null
 }

@@ -1,20 +1,25 @@
 import fs from 'fs'
-import { FileWatchEvents, ResourceEvents, ResourcesServerResponse } from '@shared/Events'
+import {
+  FileWatchEvents,
+  ResourceEvents,
+  ResourcesServerResponse,
+  ResourceFileData,
+} from '@shared/Events'
 import { sendToMainWindow } from '@main/mainWindow'
 import { ResourcesServer } from '@main/ResourcesServer/ResourcesServer'
 
 // Track the current server instance
 let currentResourcesServer: ResourcesServer | null = null
 
-const getInitialFileNames = async (dirPath: string): Promise<string[]> => {
-  const fileNames: string[] = []
+const getInitialFiles = async (dirPath: string): Promise<Record<string, ResourceFileData>> => {
+  const files: Record<string, ResourceFileData> = {}
   const dir = await fs.promises.opendir(dirPath)
   for await (const dirent of dir) {
     if (dirent.isFile()) {
-      fileNames.push(dirent.name)
+      files[dirent.name] = { fileName: dirent.name, fileType: 'unknown' }
     }
   }
-  return fileNames
+  return files
 }
 
 export const startResourcesServer = async (dirPath: string): Promise<ResourcesServerResponse> => {
@@ -30,14 +35,14 @@ export const startResourcesServer = async (dirPath: string): Promise<ResourcesSe
     const stats = fs.statSync(dirPath)
     if (!stats.isDirectory()) {
       console.warn(`[HEDRON] Resources path exists but is not a directory: ${dirPath}`)
-      return { url: null, fileNames: [] }
+      return { url: null, files: {} }
     }
   } catch {
     console.warn(`[HEDRON] Resources path does not exist: ${dirPath}`)
-    return { url: null, fileNames: [] }
+    return { url: null, files: {} }
   }
 
-  const fileNames = await getInitialFileNames(dirPath)
+  const files = await getInitialFiles(dirPath)
   const resourcesServer = new ResourcesServer()
   currentResourcesServer = resourcesServer
 
@@ -64,5 +69,5 @@ export const startResourcesServer = async (dirPath: string): Promise<ResourcesSe
 
   const url = `http://${host}:${port}`
 
-  return { url, fileNames }
+  return { url, files }
 }
