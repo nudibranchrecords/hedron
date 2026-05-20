@@ -9,18 +9,13 @@ import {
   startSketchesServer,
 } from '@renderer/ipc/mainThreadTalk'
 
-const toResourceFilesMap = (fileNames: string[]) =>
-  Object.fromEntries(
-    fileNames.map((fileName) => [fileName, { fileName, fileType: 'unknown' as const }]),
-  )
-
 const startEngineWithSketchesDir = async (
   sketchesDirPath: string,
   resourcesDirAbsolute: string,
 ) => {
   const { moduleIds, url } = await startSketchesServer(sketchesDirPath)
 
-  const { url: resourcesUrl, fileNames: resourcesFiles } =
+  const { url: resourcesUrl, files: resourcesFiles } =
     await startResourcesServer(resourcesDirAbsolute)
 
   await engine.importSketchModulesFromIds(url, moduleIds)
@@ -30,7 +25,7 @@ const startEngineWithSketchesDir = async (
 
   return {
     resourcesUrl,
-    resourcesFiles: toResourceFilesMap(resourcesFiles),
+    resourcesFiles,
   }
 }
 
