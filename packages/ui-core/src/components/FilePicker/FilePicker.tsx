@@ -26,7 +26,22 @@ export const FilePicker = ({ onFileChange, currentFile, availableFiles }: FilePi
         <Dialog onBackgroundClick={() => setIsOpen(false)}>
           <Panel className={css.panel}>
             <PanelHeader>Choose File</PanelHeader>
-            <PanelBody>hi</PanelBody>
+            <PanelBody>
+              <ul className={css.fileList}>
+                {availableFiles.map((file) => (
+                  <li key={file.fileName}>
+                    <button
+                      onClick={() => {
+                        onFileChange(file)
+                        setIsOpen(false)
+                      }}
+                    >
+                      {file.fileName}
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </PanelBody>
           </Panel>
         </Dialog>
       )}
