@@ -147,6 +147,7 @@ export class HedronEngine {
   public addOptionNodes(parentId: string, configs: readonly (ConfigParam | ConfigShot)[]) {
     this.store.setState((state) => {
       const parentNode = state.nodes[parentId]
+
       if (!parentNode) {
         console.error(`addOptionNodes: node "${parentId}" not found`)
         return

@@ -9,22 +9,49 @@ import {
   startSketchesServer,
 } from '@renderer/ipc/mainThreadTalk'
 
-const startEngineWithSketchesDir = async (sketchesDirPath: string) => {
+const toResourceFilesMap = (fileNames: string[]) =>
+  Object.fromEntries(
+    fileNames.map((fileName) => [fileName, { fileName, fileType: 'unknown' as const }]),
+  )
+
+const startEngineWithSketchesDir = async (
+  sketchesDirPath: string,
+  resourcesDirAbsolute: string,
+) => {
   const { moduleIds, url } = await startSketchesServer(sketchesDirPath)
+
+  const { url: resourcesUrl, fileNames: resourcesFiles } =
+    await startResourcesServer(resourcesDirAbsolute)
 
   await engine.importSketchModulesFromIds(url, moduleIds)
   engine.startStoreListener()
 
   engine.run()
+
+  return {
+    resourcesUrl,
+    resourcesFiles: toResourceFilesMap(resourcesFiles),
+  }
 }
 
 export const handleSketchesDialog = async () => {
-  const sketchesDir = await openSketchesDirDialog()
+  const response = await openSketchesDirDialog()
 
-  if (!sketchesDir) return
+  if (response.result !== 'success') return
 
-  appStore.getState().setSketchesDir(sketchesDir)
-  await startEngineWithSketchesDir(sketchesDir)
+  const { sketchesDirAbsolute, resourcesDirAbsolute } = response
+
+  const { resourcesUrl, resourcesFiles } = await startEngineWithSketchesDir(
+    sketchesDirAbsolute,
+    resourcesDirAbsolute,
+  )
+
+  appStore.setState((state: AppState) => ({
+    ...state,
+    sketchesDir: sketchesDirAbsolute,
+    resourcesUrl,
+    resourcesFiles,
+  }))
 
   engine.ensureGlobalOptionNodes()
   engine.initiatePlugins()
@@ -44,10 +71,10 @@ export const handleLoadProjectDialog = async (projectPath?: string) => {
 
   const { sketchesDirAbsolute, projectData, savePath, resourcesDirAbsolute } = response
 
-  await startEngineWithSketchesDir(sketchesDirAbsolute)
-
-  const { url: resourcesUrl, fileNames: resourcesFiles } =
-    await startResourcesServer(resourcesDirAbsolute)
+  const { resourcesUrl, resourcesFiles } = await startEngineWithSketchesDir(
+    sketchesDirAbsolute,
+    resourcesDirAbsolute,
+  )
 
   engineStore.getState().loadProject(projectData.engine)
 

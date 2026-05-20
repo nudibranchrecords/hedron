@@ -1,5 +1,5 @@
 import React from 'react'
-import { HedronEngine } from '@hedron-gl/engine'
+import { HedronEngine, ParamFileValue } from '@hedron-gl/engine'
 import {
   Panel,
   PanelHeader,
@@ -8,6 +8,9 @@ import {
   useNodeOptionNodes,
   useResource,
   useParamValue,
+  FilePicker,
+  useUpdateParamValue,
+  useAppStore,
 } from '@hedron-gl/ui-core'
 import { useTimelineData } from './useTimelineData'
 import { useTimelineHandlers } from './useTimelineHandlers'
@@ -33,9 +36,17 @@ export const TimelineGlobalPanel: React.FC<TimelineGlobalPanelProps> = ({ engine
   const optionNodes = useNodeOptionNodes<TimelineOptionNodes>(DEFAULT_TIMELINE_ID)
   const isPlayingNode = optionNodes['isPlaying']!
   const playHeadPositionNode = optionNodes['playheadPositionMs']!
-  const audioFilename = useParamValue<string>(optionNodes['audioUrl']!.id)
 
-  const audioUrl = useResource(audioFilename)
+  const audioUrlNode = optionNodes['audioUrl']!
+
+  const audioFilename = useParamValue<ParamFileValue>(audioUrlNode.id)
+  const updateParamValue = useUpdateParamValue()
+
+  const audioUrl = useResource(audioFilename.fileName)
+
+  const files = useAppStore((state) => state.resourcesFiles)
+
+  const fileList = Object.values(files)
 
   // Not very performant to be updating state on every frame, later we'll want to do this imperatively using useSubscribeToParamValue
   const playheadPositionMs = useParamValue<number>(playHeadPositionNode.id)
@@ -45,7 +56,14 @@ export const TimelineGlobalPanel: React.FC<TimelineGlobalPanelProps> = ({ engine
       <PanelHeader>Timeline</PanelHeader>
       <PanelBody>
         <NodeContainer nodeId={isPlayingNode.id} />
-        <audio src={audioUrl} controls style={{ width: '100%' }} />
+        <FilePicker
+          currentFile={audioFilename}
+          onFileChange={(file) => {
+            updateParamValue(audioUrlNode.id, file)
+          }}
+          availableFiles={fileList}
+        />
+        {audioUrl && <audio src={audioUrl} controls style={{ width: '100%' }} />}
         <div className="mb-xl">
           <Timeline
             timeline={timeline}

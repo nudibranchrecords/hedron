@@ -1,6 +1,7 @@
 import { ProjectData } from '@hedron-gl/app-store'
 import {
   DialogEvents,
+  OpenSketchesDirResponse,
   FileEvents,
   OpenProjectResponse,
   ResourceEvents,
@@ -11,12 +12,10 @@ import {
 } from '@shared/Events'
 
 export const openSketchesDirDialog = () =>
-  new Promise<string | undefined>((resolve) => {
-    window.electronApi.ipcRenderer
-      .invoke(DialogEvents.OpenSketchesDirDialog)
-      .then((sketchesDirPath) => {
-        resolve(sketchesDirPath)
-      })
+  new Promise<OpenSketchesDirResponse>((resolve) => {
+    window.electronApi.ipcRenderer.invoke(DialogEvents.OpenSketchesDirDialog).then((response) => {
+      resolve(response)
+    })
   })
 
 export const openProjectFileDialog = (projectPath?: string | null) =>

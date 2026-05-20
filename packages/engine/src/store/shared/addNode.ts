@@ -94,6 +94,14 @@ const _addNodeToState = (
     case 'enum':
       state.nodes[nodeId] = { ...baseNode, valueType, defaultValue, options: config.options }
       break
+    case 'file':
+      state.nodes[nodeId] = {
+        ...baseNode,
+        valueType,
+        defaultValue,
+        acceptedFileTypes: config.acceptedFileTypes,
+      }
+      break
   }
 
   if (
@@ -101,7 +109,11 @@ const _addNodeToState = (
     (valueType === 'boolean' && typeof defaultValue === 'boolean') ||
     (valueType === 'enum' &&
       (typeof defaultValue === 'string' || typeof defaultValue === 'number')) ||
-    (valueType === 'string' && typeof defaultValue === 'string')
+    (valueType === 'string' && typeof defaultValue === 'string') ||
+    (valueType === 'file' &&
+      typeof defaultValue === 'object' &&
+      'fileName' in defaultValue &&
+      'fileType' in defaultValue)
   ) {
     state.paramValues[nodeId] = defaultValue
   } else {

@@ -220,6 +220,7 @@ export class LFOInput implements IPlugin {
               rgb: this.handleUnsupported,
               vector2: this.handleUnsupported,
               vector3: this.handleUnsupported,
+              file: this.handleUnsupported,
             }[targetNode.valueType]({
               delta,
               input,
