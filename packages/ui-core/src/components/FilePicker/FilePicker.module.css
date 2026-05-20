@@ -1,0 +1,25 @@
+:root {
+  --mainBgColor: var(--bgColorDark4);
+}
+
+:global(.themeLevel1) {
+  --mainBgColor: var(--bgColorDark3);
+}
+
+.wrapper {
+  width: 100%;
+  background: var(--mainBgColor);
+  padding-left: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  min-height: 1rem;
+  height: 100%;
+  overflow: hidden;
+  position: relative;
+  border-radius: var(--borderRadiusSubtle);
+}
+
+.panel {
+  width: 50%;
+}

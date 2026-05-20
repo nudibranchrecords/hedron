@@ -20,6 +20,12 @@ export const TIMELINE_OPTION_NODE_CONFIGS = defineOptionNodeConfigs([
     valueType: 'boolean',
     defaultValue: false,
   },
+  {
+    nodeType: 'param',
+    key: 'audioUrl',
+    valueType: 'file',
+    defaultValue: { fileType: null, fileName: null },
+  },
 ])
 
 // We can use TimelineOptionNodes for strong typing when using useNodeOptionNodes

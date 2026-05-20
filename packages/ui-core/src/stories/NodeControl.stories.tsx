@@ -2,6 +2,7 @@ import type { Meta } from '@storybook/react'
 import { fn } from '@storybook/test'
 import { Fragment, useEffect, useRef, useState } from 'react'
 import { useInterval } from 'usehooks-ts'
+import { FilePicker } from '@components/FilePicker/FilePicker'
 import { EnumDropdown, EnumDropdownHandle } from '@components/EnumDropdown/EnumDropdown'
 import {
   NodeControl,
@@ -198,6 +199,23 @@ export const Trigger = ({ title = 'Trigger Pad', isActive, onClick }: BasicProps
         <NodeControlTitle>{title}</NodeControlTitle>
         <NodeControlInner>
           <TriggerPad ref={ref} onMouseDown={onPadClick} />
+        </NodeControlInner>
+      </NodeControlMain>
+    </NodeControl>
+  )
+}
+
+export const File = ({ title = 'File Picker', isActive, onClick }: BasicProps) => {
+  return (
+    <NodeControl isActive={isActive} onClick={onClick}>
+      <NodeControlMain>
+        <NodeControlTitle>{title}</NodeControlTitle>
+        <NodeControlInner>
+          <FilePicker
+            availableFiles={[]}
+            currentFile={{ fileName: null, fileType: null }}
+            onFileChange={() => {}}
+          />
         </NodeControlInner>
       </NodeControlMain>
     </NodeControl>

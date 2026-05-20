@@ -35,11 +35,13 @@ export type IconName =
   | 'cable'
   | 'settings'
   | 'drag_pan'
+  | 'draft'
 
 export const sketchIcon: IconName = 'token'
 export const sceneIcon: IconName = 'panorama'
 export const paramIcon: IconName = 'tune'
 export const inputIcon: IconName = 'cable'
+export const fileIcon: IconName = 'draft'
 
 export interface IconProps extends React.HTMLAttributes<HTMLSpanElement> {
   name: IconName

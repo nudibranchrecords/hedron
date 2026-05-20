@@ -53,6 +53,30 @@ export type ConfigParamString = AsConfig<ParamString>
 export type ParamEnumValue = string | number
 export type ParamEnumOption = { value: ParamEnumValue; label: string }
 
+export interface ParamFileValueEmpty {
+  fileType: null
+  fileName: null
+}
+export interface ParamFileValueSelected {
+  // TODO: We should probably type fileType
+  fileType: string
+  fileName: string
+}
+
+export type ParamFileValue = ParamFileValueEmpty | ParamFileValueSelected
+
+export interface ParamFile extends ParamBase {
+  valueType: 'file'
+  defaultValue: ParamFileValue
+  // TODO: would probably want to mirror the HTML file input here?
+  // Made this while offline so couldn't check so easily
+  acceptedFileTypes?: string[] | null
+}
+
+export type ConfigParamFile = AsConfig<ParamFile> & {
+  acceptedFileTypes?: string[] | null
+}
+
 export interface ParamEnum extends ParamBase {
   valueType: 'enum'
   defaultValue: ParamEnumValue
@@ -91,6 +115,7 @@ export type Param =
   | ParamVector2
   | ParamVector3
   | ParamRGB
+  | ParamFile
 
 export type ConfigParam =
   | ConfigParamBoolean
@@ -100,6 +125,7 @@ export type ConfigParam =
   | ConfigParamVector2
   | ConfigParamVector3
   | ConfigParamRGB
+  | ConfigParamFile
 
 /** Preserves literal keys/valueTypes when defining option node config arrays. */
 export const defineOptionNodeConfigs = <const TConfigs extends readonly ConfigParam[]>(
