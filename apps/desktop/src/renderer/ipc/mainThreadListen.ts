@@ -45,9 +45,10 @@ listen(ResourceEvents.RemoveResourceFile, (fileName: string) => {
   appStore.getState().removeResourceFile(fileName)
 })
 
-listen(ResourceEvents.ChangeResourceFile, (_fileName: string) => {
-  // File content changed — no list update needed, consumers re-fetch from URL
-})
+// TODO: We might want some way of letting plugins know a resource has been updated
+// listen(ResourceEvents.ChangeResourceFile, (_fileName: string) => {
+//   // File content changed — no list update needed, consumers re-fetch from URL
+// })
 
 listen(AppMenuEvents.AppMenuClick, (item: AppMenuEventsItem) => {
   switch (item) {

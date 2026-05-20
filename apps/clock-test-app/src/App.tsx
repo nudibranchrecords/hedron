@@ -20,7 +20,7 @@ const $y = (id: string, y: number) =>
 let shouldCirclePulse = true
 
 function App() {
-  const clockRef = useRef<Clock>()
+  const clockRef = useRef<Clock>(null)
 
   useEffect(() => {
     clockRef.current = new Clock(DEFAULT_BPM)
@@ -36,7 +36,7 @@ function App() {
     let raf = 0
 
     const midiClockListener = new MidiClockListener({
-      onPulse: clockRef.current.sendTimingPulse,
+      onPulse: clockRef.current!.sendTimingPulse,
       onStart: clockRef.current.startOnNextTimingPulse,
       onStop: () => {
         clockRef.current!.stop()

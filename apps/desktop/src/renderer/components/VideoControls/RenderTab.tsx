@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import type { ReactElement } from 'react'
 import { Button } from '@hedron-gl/ui-core'
 import c from './VideoControls.module.css'
 
@@ -30,7 +31,7 @@ interface RenderTabProps {
   setRenderSettings: React.Dispatch<React.SetStateAction<RenderSettings>>
 }
 
-export function RenderTab({ renderSettings, setRenderSettings }: RenderTabProps): JSX.Element {
+export function RenderTab({ renderSettings, setRenderSettings }: RenderTabProps): ReactElement {
   const [isRendering, setIsRendering] = useState(false)
   const [progress, setProgress] = useState(0)
   const [renderingStatus, setRenderingStatus] = useState('Preparing...')

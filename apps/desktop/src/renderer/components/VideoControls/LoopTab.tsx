@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import type { ReactElement } from 'react'
 import { Button } from '@hedron-gl/ui-core'
 import c from './VideoControls.module.css'
 import { engine } from '@renderer/engine'
@@ -22,7 +23,7 @@ interface LoopTabProps {
   setLoopSettings: React.Dispatch<React.SetStateAction<LoopSettings>>
 }
 
-export function LoopTab({ loopSettings, setLoopSettings }: LoopTabProps): JSX.Element {
+export function LoopTab({ loopSettings, setLoopSettings }: LoopTabProps): ReactElement {
   const [loopActive, setLoopActive] = useState(false)
   const [currentLoopTime, setCurrentLoopTime] = useState(0)
 

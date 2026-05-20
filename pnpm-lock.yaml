@@ -5,8 +5,8 @@ settings:
   excludeLinksFromLockfile: false
 
 overrides:
-  react: ^18.3.1
-  react-dom: ^18.3.1
+  react: ^19.0.0
+  react-dom: ^19.0.0
 
 importers:
 
@@ -28,11 +28,11 @@ importers:
         specifier: ^1.0.8
         version: 1.0.13
       '@types/react':
-        specifier: ^18.3.1
-        version: 18.3.28
+        specifier: ^19.0.0
+        version: 19.2.15
       '@types/react-dom':
-        specifier: ^18.3.1
-        version: 18.3.7(@types/react@18.3.28)
+        specifier: ^19.0.0
+        version: 19.2.3(@types/react@19.2.15)
       '@vitejs/plugin-react':
         specifier: ^4.3.4
         version: 4.7.0(vite@7.3.1(@types/node@25.2.1)(yaml@2.8.2))
@@ -67,11 +67,11 @@ importers:
         specifier: ^3.4.2
         version: 3.8.1
       react:
-        specifier: ^18.3.1
-        version: 18.3.1
+        specifier: ^19.0.0
+        version: 19.2.6
       react-dom:
-        specifier: ^18.3.1
-        version: 18.3.1(react@18.3.1)
+        specifier: ^19.0.0
+        version: 19.2.6(react@19.2.6)
       tsup:
         specifier: ^8.3.6
         version: 8.5.1(@microsoft/api-extractor@7.56.2(@types/node@25.2.1))(postcss@8.5.6)(typescript@5.9.3)(yaml@2.8.2)
@@ -179,10 +179,10 @@ importers:
         version: 0.178.0
       usehooks-ts:
         specifier: ^3.1.1
-        version: 3.1.1(react@18.3.1)
+        version: 3.1.1(react@19.2.6)
       zustand:
         specifier: ^5.0.8
-        version: 5.0.11(@types/react@18.3.28)(immer@10.2.0)(react@18.3.1)
+        version: 5.0.11(@types/react@19.2.15)(immer@10.2.0)(react@19.2.6)
     devDependencies:
       '@types/fs-extra':
         specifier: ^11.0.4
@@ -235,7 +235,7 @@ importers:
         version: 2.1.1
       zustand:
         specifier: ^5.0.8
-        version: 5.0.11(@types/react@18.3.28)(immer@10.2.0)(react@18.3.1)
+        version: 5.0.11(@types/react@19.2.15)(immer@10.2.0)(react@19.2.6)
 
   apps/web-example:
     dependencies:
@@ -277,11 +277,11 @@ importers:
         specifier: ^10.1.1
         version: 10.2.0
       react:
-        specifier: ^18.3.1
-        version: 18.3.1
+        specifier: ^19.0.0
+        version: 19.2.6
       zustand:
         specifier: ^5.0.8
-        version: 5.0.11(@types/react@18.3.28)(immer@10.2.0)(react@18.3.1)
+        version: 5.0.11(@types/react@19.2.15)(immer@10.2.0)(react@19.2.6)
     devDependencies:
       '@types/node':
         specifier: ^25.0.0
@@ -302,17 +302,17 @@ importers:
         specifier: ^1.0.0-alpha.4
         version: link:../ui-core
       react:
-        specifier: ^18.3.1
-        version: 18.3.1
+        specifier: ^19.0.0
+        version: 19.2.6
       react-dom:
-        specifier: ^18.3.1
-        version: 18.3.1(react@18.3.1)
+        specifier: ^19.0.0
+        version: 19.2.6(react@19.2.6)
       three:
         specifier: ^0.178.0
         version: 0.178.0
       zustand:
         specifier: ^5.0.8
-        version: 5.0.11(@types/react@18.3.28)(immer@10.2.0)(react@18.3.1)
+        version: 5.0.11(@types/react@19.2.15)(immer@10.2.0)(react@19.2.6)
     devDependencies:
       '@types/three':
         specifier: ^0.178.1
@@ -335,8 +335,8 @@ importers:
   packages/engine:
     dependencies:
       '@types/react':
-        specifier: ^18.3.1
-        version: 18.3.28
+        specifier: ^19.0.0
+        version: 19.2.15
       immer:
         specifier: ^10.1.1
         version: 10.2.0
@@ -347,8 +347,8 @@ importers:
         specifier: 6.37.8
         version: 6.37.8(three@0.178.0)
       react:
-        specifier: ^18.3.1
-        version: 18.3.1
+        specifier: ^19.0.0
+        version: 19.2.6
       three:
         specifier: ^0.178.0
         version: 0.178.0
@@ -357,7 +357,7 @@ importers:
         version: 2.0.2
       zustand:
         specifier: ^5.0.8
-        version: 5.0.11(@types/react@18.3.28)(immer@10.2.0)(react@18.3.1)
+        version: 5.0.11(@types/react@19.2.15)(immer@10.2.0)(react@19.2.6)
     devDependencies:
       '@hedron-gl/clock':
         specifier: ^1.0.0-alpha.4
@@ -390,14 +390,14 @@ importers:
         specifier: ^1.0.0-alpha.4
         version: link:../ui-core
       react:
-        specifier: ^18.3.1
-        version: 18.3.1
+        specifier: ^19.0.0
+        version: 19.2.6
       react-dom:
-        specifier: ^18.3.1
-        version: 18.3.1(react@18.3.1)
+        specifier: ^19.0.0
+        version: 19.2.6(react@19.2.6)
       zustand:
         specifier: ^5.0.8
-        version: 5.0.11(@types/react@18.3.28)(immer@10.2.0)(react@18.3.1)
+        version: 5.0.11(@types/react@19.2.15)(immer@10.2.0)(react@19.2.6)
     devDependencies:
       '@vitejs/plugin-react':
         specifier: ^4.3.4
@@ -435,33 +435,33 @@ importers:
         specifier: ^1.0.0-alpha.4
         version: link:../ui-core
       react:
-        specifier: ^18.3.1
-        version: 18.3.1
+        specifier: ^19.0.0
+        version: 19.2.6
       react-dom:
-        specifier: ^18.3.1
-        version: 18.3.1(react@18.3.1)
+        specifier: ^19.0.0
+        version: 19.2.6(react@19.2.6)
     devDependencies:
       '@chromatic-com/storybook':
         specifier: ^1.8.0
-        version: 1.9.0(react@18.3.1)
+        version: 1.9.0(react@19.2.6)
       '@storybook/addon-essentials':
         specifier: ^8.2.9
-        version: 8.6.14(@types/react@18.3.28)(storybook@8.6.15(prettier@3.8.1))
+        version: 8.6.14(@types/react@19.2.15)(storybook@8.6.15(prettier@3.8.1))
       '@storybook/addon-interactions':
         specifier: ^8.2.9
         version: 8.6.14(storybook@8.6.15(prettier@3.8.1))
       '@storybook/addon-links':
         specifier: ^8.2.9
-        version: 8.6.15(react@18.3.1)(storybook@8.6.15(prettier@3.8.1))
+        version: 8.6.15(react@19.2.6)(storybook@8.6.15(prettier@3.8.1))
       '@storybook/blocks':
         specifier: ^8.2.9
-        version: 8.6.14(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(storybook@8.6.15(prettier@3.8.1))
+        version: 8.6.14(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(storybook@8.6.15(prettier@3.8.1))
       '@storybook/react':
         specifier: ^8.2.9
-        version: 8.6.15(@storybook/test@8.6.15(storybook@8.6.15(prettier@3.8.1)))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(storybook@8.6.15(prettier@3.8.1))(typescript@5.9.3)
+        version: 8.6.15(@storybook/test@8.6.15(storybook@8.6.15(prettier@3.8.1)))(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(storybook@8.6.15(prettier@3.8.1))(typescript@5.9.3)
       '@storybook/react-vite':
         specifier: ^8.2.9
-        version: 8.6.15(@storybook/test@8.6.15(storybook@8.6.15(prettier@3.8.1)))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(rollup@4.57.1)(storybook@8.6.15(prettier@3.8.1))(typescript@5.9.3)(vite@7.3.1(@types/node@25.2.1)(yaml@2.8.2))
+        version: 8.6.15(@storybook/test@8.6.15(storybook@8.6.15(prettier@3.8.1)))(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(rollup@4.57.1)(storybook@8.6.15(prettier@3.8.1))(typescript@5.9.3)(vite@7.3.1(@types/node@25.2.1)(yaml@2.8.2))
       '@storybook/test':
         specifier: ^8.2.9
         version: 8.6.15(storybook@8.6.15(prettier@3.8.1))
@@ -485,56 +485,56 @@ importers:
     dependencies:
       '@floating-ui/react-dom':
         specifier: ^2.1.2
-        version: 2.1.7(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        version: 2.1.7(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
       '@hedron-gl/app-store':
         specifier: ^1.0.0-alpha.4
         version: link:../app-store
       '@uiw/react-color':
         specifier: ^2.3.4
-        version: 2.9.4(@babel/runtime@7.28.6)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        version: 2.9.4(@babel/runtime@7.28.6)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
       material-symbols:
         specifier: ^0.40.2
         version: 0.40.2
       react:
-        specifier: ^18.3.1
-        version: 18.3.1
+        specifier: ^19.0.0
+        version: 19.2.6
       react-dom:
-        specifier: ^18.3.1
-        version: 18.3.1(react@18.3.1)
+        specifier: ^19.0.0
+        version: 19.2.6(react@19.2.6)
       react-error-boundary:
         specifier: ^4.1.2
-        version: 4.1.2(react@18.3.1)
+        version: 4.1.2(react@19.2.6)
       usehooks-ts:
         specifier: ^3.1.1
-        version: 3.1.1(react@18.3.1)
+        version: 3.1.1(react@19.2.6)
       zustand:
         specifier: ^5.0.8
-        version: 5.0.11(@types/react@18.3.28)(immer@10.2.0)(react@18.3.1)
+        version: 5.0.11(@types/react@19.2.15)(immer@10.2.0)(react@19.2.6)
     devDependencies:
       '@chromatic-com/storybook':
         specifier: ^1.8.0
-        version: 1.9.0(react@18.3.1)
+        version: 1.9.0(react@19.2.6)
       '@hedron-gl/engine':
         specifier: ^1.0.0-alpha.4
         version: link:../engine
       '@storybook/addon-essentials':
         specifier: ^8.2.9
-        version: 8.6.14(@types/react@18.3.28)(storybook@8.6.15(prettier@3.8.1))
+        version: 8.6.14(@types/react@19.2.15)(storybook@8.6.15(prettier@3.8.1))
       '@storybook/addon-interactions':
         specifier: ^8.2.9
         version: 8.6.14(storybook@8.6.15(prettier@3.8.1))
       '@storybook/addon-links':
         specifier: ^8.2.9
-        version: 8.6.15(react@18.3.1)(storybook@8.6.15(prettier@3.8.1))
+        version: 8.6.15(react@19.2.6)(storybook@8.6.15(prettier@3.8.1))
       '@storybook/blocks':
         specifier: ^8.2.9
-        version: 8.6.14(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(storybook@8.6.15(prettier@3.8.1))
+        version: 8.6.14(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(storybook@8.6.15(prettier@3.8.1))
       '@storybook/react':
         specifier: ^8.2.9
-        version: 8.6.15(@storybook/test@8.6.15(storybook@8.6.15(prettier@3.8.1)))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(storybook@8.6.15(prettier@3.8.1))(typescript@5.9.3)
+        version: 8.6.15(@storybook/test@8.6.15(storybook@8.6.15(prettier@3.8.1)))(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(storybook@8.6.15(prettier@3.8.1))(typescript@5.9.3)
       '@storybook/react-vite':
         specifier: ^8.2.9
-        version: 8.6.15(@storybook/test@8.6.15(storybook@8.6.15(prettier@3.8.1)))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(rollup@4.57.1)(storybook@8.6.15(prettier@3.8.1))(typescript@5.9.3)(vite@7.3.1(@types/node@25.2.1)(yaml@2.8.2))
+        version: 8.6.15(@storybook/test@8.6.15(storybook@8.6.15(prettier@3.8.1)))(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(rollup@4.57.1)(storybook@8.6.15(prettier@3.8.1))(typescript@5.9.3)(vite@7.3.1(@types/node@25.2.1)(yaml@2.8.2))
       '@storybook/test':
         specifier: ^8.2.9
         version: 8.6.15(storybook@8.6.15(prettier@3.8.1))
@@ -1227,8 +1227,8 @@ packages:
   '@floating-ui/react-dom@2.1.7':
     resolution: {integrity: sha512-0tLRojf/1Go2JgEVm+3Frg9A3IW8bJgKgdO0BN5RkF//ufuz2joZM63Npau2ff3J6lUVYgDSNzNkR+aH3IVfjg==}
     peerDependencies:
-      react: ^18.3.1
-      react-dom: ^18.3.1
+      react: ^19.0.0
+      react-dom: ^19.0.0
 
   '@floating-ui/utils@0.2.10':
     resolution: {integrity: sha512-aGTxbpbg8/b5JfU1HXSrbH3wXZuLPJcNEcZQFMxLs3oSzgtVu6nFPkbbGGUvBcUjKV2YyB9Wxxabo+HEH9tcRQ==}
@@ -1470,7 +1470,7 @@ packages:
     resolution: {integrity: sha512-f++rKLQgUVYDAtECQ6fn/is15GkEH9+nZPM3MS0RcxVqoTfawHvDlSCH7JbMhAM6uJ32v3eXLvLmLvjGu7PTQw==}
     peerDependencies:
       '@types/react': '>=16'
-      react: ^18.3.1
+      react: ^19.0.0
 
   '@microsoft/api-extractor-model@7.32.2':
     resolution: {integrity: sha512-Ussc25rAalc+4JJs9HNQE7TuO9y6jpYQX9nWD1DhqUzYPBr3Lr7O9intf+ZY8kD5HnIqeIRJX7ccCT0QyBy2Ww==}
@@ -1968,7 +1968,7 @@ packages:
   '@storybook/addon-links@8.6.15':
     resolution: {integrity: sha512-abRWnDPBTwnj6sQYfAjUnYCNuUQbrVLLOyuormbDUqOcvZ+OqehNYo4BKXx0/lz61h0A2dOD1IuDo40uWyYVFQ==}
     peerDependencies:
-      react: ^18.3.1
+      react: ^19.0.0
       storybook: ^8.6.15
     peerDependenciesMeta:
       react:
@@ -1997,8 +1997,8 @@ packages:
   '@storybook/blocks@8.6.14':
     resolution: {integrity: sha512-rBMHAfA39AGHgkrDze4RmsnQTMw1ND5fGWobr9pDcJdnDKWQWNRD7Nrlxj0gFlN3n4D9lEZhWGdFrCbku7FVAQ==}
     peerDependencies:
-      react: ^18.3.1
-      react-dom: ^18.3.1
+      react: ^19.0.0
+      react-dom: ^19.0.0
       storybook: ^8.6.14
     peerDependenciesMeta:
       react:
@@ -2045,8 +2045,8 @@ packages:
     resolution: {integrity: sha512-hcFZIjW8yQz8O8//2WTIXylm5Xsgc+lW9ISLgUk1xGmptIJQRdlhVIXCpSyLrQaaRiyhQRaVg7l3BD9S216BHw==}
     engines: {node: '>=14.0.0'}
     peerDependencies:
-      react: ^18.3.1
-      react-dom: ^18.3.1
+      react: ^19.0.0
+      react-dom: ^19.0.0
 
   '@storybook/instrumenter@8.6.14':
     resolution: {integrity: sha512-iG4MlWCcz1L7Yu8AwgsnfVAmMbvyRSk700Mfy2g4c8y5O+Cv1ejshE1LBBsCwHgkuqU0H4R0qu4g23+6UnUemQ==}
@@ -2071,15 +2071,15 @@ packages:
   '@storybook/react-dom-shim@8.6.14':
     resolution: {integrity: sha512-0hixr3dOy3f3M+HBofp3jtMQMS+sqzjKNgl7Arfuj3fvjmyXOks/yGjDImySR4imPtEllvPZfhiQNlejheaInw==}
     peerDependencies:
-      react: ^18.3.1
-      react-dom: ^18.3.1
+      react: ^19.0.0
+      react-dom: ^19.0.0
       storybook: ^8.6.14
 
   '@storybook/react-dom-shim@8.6.15':
     resolution: {integrity: sha512-m2trBmmd4iom1qwrp1F109zjRDc0cPaHYhDQxZR4Qqdz8pYevYJTlipDbH/K4NVB6Rn687RT29OoOPfJh6vkFA==}
     peerDependencies:
-      react: ^18.3.1
-      react-dom: ^18.3.1
+      react: ^19.0.0
+      react-dom: ^19.0.0
       storybook: ^8.6.15
 
   '@storybook/react-vite@8.6.15':
@@ -2087,8 +2087,8 @@ packages:
     engines: {node: '>=18.0.0'}
     peerDependencies:
       '@storybook/test': 8.6.15
-      react: ^18.3.1
-      react-dom: ^18.3.1
+      react: ^19.0.0
+      react-dom: ^19.0.0
       storybook: ^8.6.15
       vite: ^4.0.0 || ^5.0.0 || ^6.0.0
     peerDependenciesMeta:
@@ -2100,8 +2100,8 @@ packages:
     engines: {node: '>=18.0.0'}
     peerDependencies:
       '@storybook/test': 8.6.15
-      react: ^18.3.1
-      react-dom: ^18.3.1
+      react: ^19.0.0
+      react-dom: ^19.0.0
       storybook: ^8.6.15
       typescript: '>= 4.2.x'
     peerDependenciesMeta:
@@ -2264,16 +2264,13 @@ packages:
   '@types/plist@3.0.5':
     resolution: {integrity: sha512-E6OCaRmAe4WDmWNsL/9RMqdkkzDCY1etutkflWk4c+AcjDU07Pcz1fQwTX0TQz+Pxqn9i4L1TU3UFpjnrcDgxA==}
 
-  '@types/prop-types@15.7.15':
-    resolution: {integrity: sha512-F6bEyamV9jKGAFBEmlQnesRPGOQqS2+Uwi0Em15xenOxHaf2hv6L8YCVn3rPdPJOiJfPiCnLIRyvwVaqMY3MIw==}
-
-  '@types/react-dom@18.3.7':
-    resolution: {integrity: sha512-MEe3UeoENYVFXzoXEWsvcpg6ZvlrFNlOQ7EOsvhI3CfAXwzPfO8Qwuxd40nepsYKqyyVQnTdEfv68q91yLcKrQ==}
+  '@types/react-dom@19.2.3':
+    resolution: {integrity: sha512-jp2L/eY6fn+KgVVQAOqYItbF0VY/YApe5Mz2F0aykSO8gx31bYCZyvSeYxCHKvzHG5eZjc+zyaS5BrBWya2+kQ==}
     peerDependencies:
-      '@types/react': ^18.0.0
+      '@types/react': ^19.2.0
 
-  '@types/react@18.3.28':
-    resolution: {integrity: sha512-z9VXpC7MWrhfWipitjNdgCauoMLRdIILQsAEV+ZesIzBq/oUlxk0m3ApZuMFCXdnS4U7KrI+l3WRUEGQ8K1QKw==}
+  '@types/react@19.2.15':
+    resolution: {integrity: sha512-eRwcGNHve+E8qtEQSSRl6urh+rFop4v8gm6O8rGv25CodbvFdLjA1vVQ1KkiFE0w0UPOnb8tDiFKL5lp0rtY5Q==}
 
   '@types/resolve@1.20.6':
     resolution: {integrity: sha512-A4STmOXPhMUtHH+S6ymgE2GiBSMqf4oTvcQZMcHzokuTLVYzXTB8ttjcgxOVaAp2lGwEdzZ0J+cRbbeevQj1UQ==}
@@ -2396,85 +2393,85 @@ packages:
     resolution: {integrity: sha512-TgPdJ79PCHYT1R6h9EC3f4dXCFjPA0XigiCTmPlwMpY5CEcXs6as6yYkPPYwlOpvKRtroQuRCPtXuMbjtHRmTQ==}
     peerDependencies:
       '@babel/runtime': '>=7.19.0'
-      react: ^18.3.1
-      react-dom: ^18.3.1
+      react: ^19.0.0
+      react-dom: ^19.0.0
 
   '@uiw/react-color-block@2.9.4':
     resolution: {integrity: sha512-XIfWcgT4MqYCFv0K1IALvou9FAe5uRW97u5Xwso4vKMfmtL8U7Z698vxyVw2YiK9E+mURin7jgTlPPQj/iJ5EA==}
     peerDependencies:
       '@babel/runtime': '>=7.19.0'
-      react: ^18.3.1
-      react-dom: ^18.3.1
+      react: ^19.0.0
+      react-dom: ^19.0.0
 
   '@uiw/react-color-chrome@2.9.4':
     resolution: {integrity: sha512-5kPcjDBzncY93PndfWaaxgY9k8Ve3Q6t+Zr7cVeGFJ2TTivFPgwbhySw4PTvNeCPl1bkl/Gy/FAaxSqd8fPQyA==}
     peerDependencies:
       '@babel/runtime': '>=7.19.0'
-      react: ^18.3.1
-      react-dom: ^18.3.1
+      react: ^19.0.0
+      react-dom: ^19.0.0
 
   '@uiw/react-color-circle@2.9.4':
     resolution: {integrity: sha512-LhKOG4qi/pGtWXBujmXb9/Is3ekCtFNn1+Yw4q7xprGD8KhELkUQDCV2PDS4gOOLWJoj+bhD/qICGzfv9b9REQ==}
     peerDependencies:
       '@babel/runtime': '>=7.19.0'
-      react: ^18.3.1
-      react-dom: ^18.3.1
+      react: ^19.0.0
+      react-dom: ^19.0.0
 
   '@uiw/react-color-colorful@2.9.4':
     resolution: {integrity: sha512-eN/VdFI+JNQJz1F3rSAo91pToGIruCI6SGTojQGi3NMQD0g22x5iybB+LVsAExGIOqJDfV6E9wVinxfy4HNa6g==}
     peerDependencies:
       '@babel/runtime': '>=7.19.0'
-      react: ^18.3.1
-      react-dom: ^18.3.1
+      react: ^19.0.0
+      react-dom: ^19.0.0
 
   '@uiw/react-color-compact@2.9.4':
     resolution: {integrity: sha512-8wo+DPle5WtJIMg3aZjeneA7xnTaNYkoWpBygoOcgsxZnkraOzHRzdOZk+yvzIaL3pOWMmTTOiRJDL9CAc2HfQ==}
     peerDependencies:
       '@babel/runtime': '>=7.19.0'
-      react: ^18.3.1
-      react-dom: ^18.3.1
+      react: ^19.0.0
+      react-dom: ^19.0.0
 
   '@uiw/react-color-editable-input-hsla@2.9.4':
     resolution: {integrity: sha512-UfWkaTyjbKYAzDurxh82GUHaa+SdD0T9nCmEfwCMztEskdWQt+fBwbv+jTjXoSkPE8maDwR6Nxl8o1SOWGW9NQ==}
     peerDependencies:
       '@babel/runtime': '>=7.19.0'
-      react: ^18.3.1
-      react-dom: ^18.3.1
+      react: ^19.0.0
+      react-dom: ^19.0.0
 
   '@uiw/react-color-editable-input-rgba@2.9.4':
     resolution: {integrity: sha512-3x5MHEKIt4jDh1ZBvAUWausNBJWIoDZSe40n39rfXcAzS7EzvrP+uxap6CuY3OBF4BINUXuQSU3FubME/n2kXA==}
     peerDependencies:
       '@babel/runtime': '>=7.19.0'
-      react: ^18.3.1
-      react-dom: ^18.3.1
+      react: ^19.0.0
+      react-dom: ^19.0.0
 
   '@uiw/react-color-editable-input@2.9.4':
     resolution: {integrity: sha512-xmSZZ5OGi/ErbRFYafo8n2N7Df5Ti81/Y7BELA/HAz6ax4Bjtwg6tI461RgvKXutK5Xk0J5n21BHrTP+ydInrQ==}
     peerDependencies:
       '@babel/runtime': '>=7.19.0'
-      react: ^18.3.1
-      react-dom: ^18.3.1
+      react: ^19.0.0
+      react-dom: ^19.0.0
 
   '@uiw/react-color-github@2.9.4':
     resolution: {integrity: sha512-3qok2mTJy+g8f6JDMa28IPSwxQlgrYUfhvs1GFhhOUjHPGMGyMMTWqDvbcBl1nfyrfnXRP/uAgGrmNZJrJx/yw==}
     peerDependencies:
       '@babel/runtime': '>=7.19.0'
-      react: ^18.3.1
-      react-dom: ^18.3.1
+      react: ^19.0.0
+      react-dom: ^19.0.0
 
   '@uiw/react-color-hue@2.9.4':
     resolution: {integrity: sha512-C5bHJ5MMBTkzTFXDWBjVQMOkcoqFMK9Uw3fd4KojYL7GMSSDd1eOlMaHoz2HfRPd5WplCyAMovB4YqHsWcDWew==}
     peerDependencies:
       '@babel/runtime': '>=7.19.0'
-      react: ^18.3.1
-      react-dom: ^18.3.1
+      react: ^19.0.0
+      react-dom: ^19.0.0
 
   '@uiw/react-color-material@2.9.4':
     resolution: {integrity: sha512-vWJbawpEINRi7QSdRuscZKqz3eWK/7ldQNzzDLJt/RvXNaR8+GvYrxoZMvXk4Bs6N0a4bjbbLx4ADTKuQKEAlw==}
     peerDependencies:
       '@babel/runtime': '>=7.19.0'
-      react: ^18.3.1
-      react-dom: ^18.3.1
+      react: ^19.0.0
+      react-dom: ^19.0.0
 
   '@uiw/react-color-name@2.9.4':
     resolution: {integrity: sha512-wNucdzoz7rTg02AOXUd1AexI4YX+fbAAA+jrr0We3cWAiBTgiIDMjRNRiO2CysmW84ijvkB8MZpluTmZmCw+2g==}
@@ -2485,57 +2482,57 @@ packages:
     resolution: {integrity: sha512-i8v64erhWT22REQ+yABdXRlbRsyaG1EvKKpib61cMCHyrVqatEirUpjp5pUfqObvvlBBj9YMSpPYeVkjNzE+0g==}
     peerDependencies:
       '@babel/runtime': '>=7.19.0'
-      react: ^18.3.1
-      react-dom: ^18.3.1
+      react: ^19.0.0
+      react-dom: ^19.0.0
 
   '@uiw/react-color-shade-slider@2.9.4':
     resolution: {integrity: sha512-F09aPS5HIyBGHB9KVqQp4EzAdLy4O5BKYt8ruKFgl4Z3XqCBAEbU0sAjIVO5ZtYd0a1YM7K8UAS8TJy2yIuX2w==}
     peerDependencies:
       '@babel/runtime': '>=7.19.0'
-      react: ^18.3.1
-      react-dom: ^18.3.1
+      react: ^19.0.0
+      react-dom: ^19.0.0
 
   '@uiw/react-color-sketch@2.9.4':
     resolution: {integrity: sha512-BmeiqtT3ZR1F4xuEvqPzCjolcAurO/3NZGddL9WPy2gBH98zgoX6DKhWlbabdj9g0cJEY6dME3ah1/q31rYDZw==}
     peerDependencies:
       '@babel/runtime': '>=7.19.0'
-      react: ^18.3.1
-      react-dom: ^18.3.1
+      react: ^19.0.0
+      react-dom: ^19.0.0
 
   '@uiw/react-color-slider@2.9.4':
     resolution: {integrity: sha512-X3ZwXF4tR+gjYieMHH7rL7JJ6XLlMHhi6rF8/bfJHPTrKLglHJqlK76EqKENGjnWnHXaSdvgVeMuiGGvs5g1cg==}
     peerDependencies:
       '@babel/runtime': '>=7.19.0'
-      react: ^18.3.1
-      react-dom: ^18.3.1
+      react: ^19.0.0
+      react-dom: ^19.0.0
 
   '@uiw/react-color-swatch@2.9.4':
     resolution: {integrity: sha512-BoeLB8P7MMaXwDk90TSHI+NfPw8uVeVKkiIFH1Lo7Qx6tm0XwCd5OvTSKe907VTqjT8FGK5VfqlR2ExXWl8AXQ==}
     peerDependencies:
       '@babel/runtime': '>=7.19.0'
-      react: ^18.3.1
-      react-dom: ^18.3.1
+      react: ^19.0.0
+      react-dom: ^19.0.0
 
   '@uiw/react-color-wheel@2.9.4':
     resolution: {integrity: sha512-ofLdt6yLu00gZDFOASJaetRGwfmTM5Flr262+E3I2cpLtq8iVkMu/ohs0k613Y1gT/LWaXEZwcWXkFrAdDpsLA==}
     peerDependencies:
       '@babel/runtime': '>=7.19.0'
-      react: ^18.3.1
-      react-dom: ^18.3.1
+      react: ^19.0.0
+      react-dom: ^19.0.0
 
   '@uiw/react-color@2.9.4':
     resolution: {integrity: sha512-WLIjt3VQVika9vtVKgDCrVyVK/NizP918HNcKCY2Vz0dF22CIw8Ut0O8/ClQcLrMwysAVMVv1pnrgnnux+gLgQ==}
     peerDependencies:
       '@babel/runtime': '>=7.19.0'
-      react: ^18.3.1
-      react-dom: ^18.3.1
+      react: ^19.0.0
+      react-dom: ^19.0.0
 
   '@uiw/react-drag-event-interactive@2.9.4':
     resolution: {integrity: sha512-I5AZquK4C4LN24OvixRwk4krFaEYAGOaGRD3pgtByfQv4br3igb/94wt3cxz/EMKSzOM1aSAH857ipHBYpOSXg==}
     peerDependencies:
       '@babel/runtime': '>=7.19.0'
-      react: ^18.3.1
-      react-dom: ^18.3.1
+      react: ^19.0.0
+      react-dom: ^19.0.0
 
   '@ungap/structured-clone@1.3.0':
     resolution: {integrity: sha512-WmoN8qaIAo7WTYWbAZuG8PYEhn5fkz7dZrqTBZ7dtt//lL2Gwms1IcnQ5yHqjDfX8Ft5j4YzDM23f87zBfDe9g==}
@@ -5485,7 +5482,7 @@ packages:
     resolution: {integrity: sha512-5MdGUcqxrTU26I2EU7ltkWPwxvucQTuqMm8dUz72z2YMqTD6s9vMcDUysk7n9jnC+lXuCPeJJ7Knf98VEYE9Rg==}
     engines: {node: '>=16'}
     peerDependencies:
-      react: ^18.3.1
+      react: ^19.0.0
 
   react-docgen-typescript@2.4.0:
     resolution: {integrity: sha512-ZtAp5XTO5HRzQctjPU0ybY0RRCQO19X/8fxn3w7y2VVTUbGHDKULPTL4ky3vB05euSgG5NpALhEhDPvQ56wvXg==}
@@ -5496,15 +5493,15 @@ packages:
     resolution: {integrity: sha512-hlSJDQ2synMPKFZOsKo9Hi8WWZTC7POR8EmWvTSjow+VDgKzkmjQvFm2fk0tmRw+f0vTOIYKlarR0iL4996pdg==}
     engines: {node: '>=16.14.0'}
 
-  react-dom@18.3.1:
-    resolution: {integrity: sha512-5m4nQKp+rZRb09LNH59GM4BxTh9251/ylbKIbpe7TpGxfJ+9kv6BLkLBXIjjspbgbnIBNqlI23tRnTWT0snUIw==}
+  react-dom@19.2.6:
+    resolution: {integrity: sha512-0prMI+hvBbPjsWnxDLxlCGyM8PN6UuWjEUCYmZhO67xIV9Xasa/r/vDnq+Xyq4Lo27g8QSbO5YzARu0D1Sps3g==}
     peerDependencies:
-      react: ^18.3.1
+      react: ^19.0.0
 
   react-error-boundary@4.1.2:
     resolution: {integrity: sha512-GQDxZ5Jd+Aq/qUxbCm1UtzmL/s++V7zKgE8yMktJiCQXCCFZnMZh9ng+6/Ne6PjNSXH0L9CjeOEREfRnq6Duag==}
     peerDependencies:
-      react: ^18.3.1
+      react: ^19.0.0
 
   react-is@16.13.1:
     resolution: {integrity: sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==}
@@ -5519,8 +5516,8 @@ packages:
     resolution: {integrity: sha512-z6F7K9bV85EfseRCp2bzrpyQ0Gkw1uLoCel9XBVWPg/TjRj94SkJzUTGfOa4bs7iJvBWtQG0Wq7wnI0syw3EBQ==}
     engines: {node: '>=0.10.0'}
 
-  react@18.3.1:
-    resolution: {integrity: sha512-wS+hAgJShR0KhEvPJArfuPVN1+Hz1t0Y6n5jLrGQbkb4urgPE/0Rve+1kMB1v/oWgHgm4WIcV+i7F2pTVj+2iQ==}
+  react@19.2.6:
+    resolution: {integrity: sha512-sfWGGfavi0xr8Pg0sVsyHMAOziVYKgPLNrS7ig+ivMNb3wbCBw3KxtflsGBAwD3gYQlE/AEZsTLgToRrSCjb0Q==}
     engines: {node: '>=0.10.0'}
 
   read-binary-file-arch@1.0.6:
@@ -5709,8 +5706,8 @@ packages:
     resolution: {integrity: sha512-1n3r/tGXO6b6VXMdFT54SHzT9ytu9yr7TaELowdYpMqY/Ao7EnlQGmAQ1+RatX7Tkkdm6hONI2owqNx2aZj5Sw==}
     engines: {node: '>=11.0.0'}
 
-  scheduler@0.23.2:
-    resolution: {integrity: sha512-UOShsPwz7NrMUqhR6t0hWjFduvOzbtv7toDH1/hIrfRNIDBnnBWd0CwJTGvTpngVlmwGCdP9/Zl/tVrDqcuYzQ==}
+  scheduler@0.27.0:
+    resolution: {integrity: sha512-eNv+WrVbKu1f3vbYJT/xtiF5syA5HPIMtf9IgY/nKg0sWqzAUEvqY/xm7OcZc/qafLx/iO9FgOmeSAp4v5ti/Q==}
 
   semver-compare@1.0.0:
     resolution: {integrity: sha512-YM3/ITh2MJ5MtzaM429anh+x2jiLVjqILF4m4oyQB18W7Ggea7BfqdH/wGMK7dDiMghv/6WG7znWMwUDzJiXow==}
@@ -6304,7 +6301,7 @@ packages:
     resolution: {integrity: sha512-I4diPp9Cq6ieSUH2wu+fDAVQO43xwtulo+fKEidHUwZPnYImbtkTjzIJYcDcJqxgmX31GVqNFURodvcgHcW0pA==}
     engines: {node: '>=16.15.0'}
     peerDependencies:
-      react: ^18.3.1
+      react: ^19.0.0
 
   utf8-byte-length@1.0.5:
     resolution: {integrity: sha512-Xn0w3MtiQ6zoz2vFyUVruaCL53O/DwUvkEeOvj+uulMm0BkUGYWmBYVyElqZaSLhY6ZD0ulfU3aBra2aVT4xfA==}
@@ -6551,7 +6548,7 @@ packages:
     peerDependencies:
       '@types/react': '>=18.0.0'
       immer: '>=9.0.6'
-      react: ^18.3.1
+      react: ^19.0.0
       use-sync-external-store: '>=1.2.0'
     peerDependenciesMeta:
       '@types/react':
@@ -6688,12 +6685,12 @@ snapshots:
       '@babel/helper-string-parser': 7.27.1
       '@babel/helper-validator-identifier': 7.28.5
 
-  '@chromatic-com/storybook@1.9.0(react@18.3.1)':
+  '@chromatic-com/storybook@1.9.0(react@19.2.6)':
     dependencies:
       chromatic: 11.29.0
       filesize: 10.1.6
       jsonfile: 6.2.0
-      react-confetti: 6.4.0(react@18.3.1)
+      react-confetti: 6.4.0(react@19.2.6)
       strip-ansi: 7.1.2
     transitivePeerDependencies:
       - '@chromatic-com/cypress'
@@ -7118,11 +7115,11 @@ snapshots:
       '@floating-ui/core': 1.7.4
       '@floating-ui/utils': 0.2.10
 
-  '@floating-ui/react-dom@2.1.7(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
+  '@floating-ui/react-dom@2.1.7(react-dom@19.2.6(react@19.2.6))(react@19.2.6)':
     dependencies:
       '@floating-ui/dom': 1.7.5
-      react: 18.3.1
-      react-dom: 18.3.1(react@18.3.1)
+      react: 19.2.6
+      react-dom: 19.2.6(react@19.2.6)
 
   '@floating-ui/utils@0.2.10': {}
 
@@ -7421,11 +7418,11 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@mdx-js/react@3.1.1(@types/react@18.3.28)(react@18.3.1)':
+  '@mdx-js/react@3.1.1(@types/react@19.2.15)(react@19.2.6)':
     dependencies:
       '@types/mdx': 2.0.13
-      '@types/react': 18.3.28
-      react: 18.3.1
+      '@types/react': 19.2.15
+      react: 19.2.6
 
   '@microsoft/api-extractor-model@7.32.2(@types/node@25.2.1)':
     dependencies:
@@ -7962,25 +7959,25 @@ snapshots:
       storybook: 8.6.15(prettier@3.8.1)
       ts-dedent: 2.2.0
 
-  '@storybook/addon-docs@8.6.14(@types/react@18.3.28)(storybook@8.6.15(prettier@3.8.1))':
+  '@storybook/addon-docs@8.6.14(@types/react@19.2.15)(storybook@8.6.15(prettier@3.8.1))':
     dependencies:
-      '@mdx-js/react': 3.1.1(@types/react@18.3.28)(react@18.3.1)
-      '@storybook/blocks': 8.6.14(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(storybook@8.6.15(prettier@3.8.1))
+      '@mdx-js/react': 3.1.1(@types/react@19.2.15)(react@19.2.6)
+      '@storybook/blocks': 8.6.14(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(storybook@8.6.15(prettier@3.8.1))
       '@storybook/csf-plugin': 8.6.14(storybook@8.6.15(prettier@3.8.1))
-      '@storybook/react-dom-shim': 8.6.14(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(storybook@8.6.15(prettier@3.8.1))
-      react: 18.3.1
-      react-dom: 18.3.1(react@18.3.1)
+      '@storybook/react-dom-shim': 8.6.14(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(storybook@8.6.15(prettier@3.8.1))
+      react: 19.2.6
+      react-dom: 19.2.6(react@19.2.6)
       storybook: 8.6.15(prettier@3.8.1)
       ts-dedent: 2.2.0
     transitivePeerDependencies:
       - '@types/react'
 
-  '@storybook/addon-essentials@8.6.14(@types/react@18.3.28)(storybook@8.6.15(prettier@3.8.1))':
+  '@storybook/addon-essentials@8.6.14(@types/react@19.2.15)(storybook@8.6.15(prettier@3.8.1))':
     dependencies:
       '@storybook/addon-actions': 8.6.14(storybook@8.6.15(prettier@3.8.1))
       '@storybook/addon-backgrounds': 8.6.14(storybook@8.6.15(prettier@3.8.1))
       '@storybook/addon-controls': 8.6.14(storybook@8.6.15(prettier@3.8.1))
-      '@storybook/addon-docs': 8.6.14(@types/react@18.3.28)(storybook@8.6.15(prettier@3.8.1))
+      '@storybook/addon-docs': 8.6.14(@types/react@19.2.15)(storybook@8.6.15(prettier@3.8.1))
       '@storybook/addon-highlight': 8.6.14(storybook@8.6.15(prettier@3.8.1))
       '@storybook/addon-measure': 8.6.14(storybook@8.6.15(prettier@3.8.1))
       '@storybook/addon-outline': 8.6.14(storybook@8.6.15(prettier@3.8.1))
@@ -8005,13 +8002,13 @@ snapshots:
       storybook: 8.6.15(prettier@3.8.1)
       ts-dedent: 2.2.0
 
-  '@storybook/addon-links@8.6.15(react@18.3.1)(storybook@8.6.15(prettier@3.8.1))':
+  '@storybook/addon-links@8.6.15(react@19.2.6)(storybook@8.6.15(prettier@3.8.1))':
     dependencies:
       '@storybook/global': 5.0.0
       storybook: 8.6.15(prettier@3.8.1)
       ts-dedent: 2.2.0
     optionalDependencies:
-      react: 18.3.1
+      react: 19.2.6
 
   '@storybook/addon-measure@8.6.14(storybook@8.6.15(prettier@3.8.1))':
     dependencies:
@@ -8034,14 +8031,14 @@ snapshots:
       memoizerific: 1.11.3
       storybook: 8.6.15(prettier@3.8.1)
 
-  '@storybook/blocks@8.6.14(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(storybook@8.6.15(prettier@3.8.1))':
+  '@storybook/blocks@8.6.14(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(storybook@8.6.15(prettier@3.8.1))':
     dependencies:
-      '@storybook/icons': 1.6.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      '@storybook/icons': 1.6.0(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
       storybook: 8.6.15(prettier@3.8.1)
       ts-dedent: 2.2.0
     optionalDependencies:
-      react: 18.3.1
-      react-dom: 18.3.1(react@18.3.1)
+      react: 19.2.6
+      react-dom: 19.2.6(react@19.2.6)
 
   '@storybook/builder-vite@8.6.15(storybook@8.6.15(prettier@3.8.1))(vite@7.3.1(@types/node@25.2.1)(yaml@2.8.2))':
     dependencies:
@@ -8092,10 +8089,10 @@ snapshots:
 
   '@storybook/global@5.0.0': {}
 
-  '@storybook/icons@1.6.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
+  '@storybook/icons@1.6.0(react-dom@19.2.6(react@19.2.6))(react@19.2.6)':
     dependencies:
-      react: 18.3.1
-      react-dom: 18.3.1(react@18.3.1)
+      react: 19.2.6
+      react-dom: 19.2.6(react@19.2.6)
 
   '@storybook/instrumenter@8.6.14(storybook@8.6.15(prettier@3.8.1))':
     dependencies:
@@ -8117,29 +8114,29 @@ snapshots:
     dependencies:
       storybook: 8.6.15(prettier@3.8.1)
 
-  '@storybook/react-dom-shim@8.6.14(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(storybook@8.6.15(prettier@3.8.1))':
+  '@storybook/react-dom-shim@8.6.14(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(storybook@8.6.15(prettier@3.8.1))':
     dependencies:
-      react: 18.3.1
-      react-dom: 18.3.1(react@18.3.1)
+      react: 19.2.6
+      react-dom: 19.2.6(react@19.2.6)
       storybook: 8.6.15(prettier@3.8.1)
 
-  '@storybook/react-dom-shim@8.6.15(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(storybook@8.6.15(prettier@3.8.1))':
+  '@storybook/react-dom-shim@8.6.15(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(storybook@8.6.15(prettier@3.8.1))':
     dependencies:
-      react: 18.3.1
-      react-dom: 18.3.1(react@18.3.1)
+      react: 19.2.6
+      react-dom: 19.2.6(react@19.2.6)
       storybook: 8.6.15(prettier@3.8.1)
 
-  '@storybook/react-vite@8.6.15(@storybook/test@8.6.15(storybook@8.6.15(prettier@3.8.1)))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(rollup@4.57.1)(storybook@8.6.15(prettier@3.8.1))(typescript@5.9.3)(vite@7.3.1(@types/node@25.2.1)(yaml@2.8.2))':
+  '@storybook/react-vite@8.6.15(@storybook/test@8.6.15(storybook@8.6.15(prettier@3.8.1)))(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(rollup@4.57.1)(storybook@8.6.15(prettier@3.8.1))(typescript@5.9.3)(vite@7.3.1(@types/node@25.2.1)(yaml@2.8.2))':
     dependencies:
       '@joshwooding/vite-plugin-react-docgen-typescript': 0.5.0(typescript@5.9.3)(vite@7.3.1(@types/node@25.2.1)(yaml@2.8.2))
       '@rollup/pluginutils': 5.3.0(rollup@4.57.1)
       '@storybook/builder-vite': 8.6.15(storybook@8.6.15(prettier@3.8.1))(vite@7.3.1(@types/node@25.2.1)(yaml@2.8.2))
-      '@storybook/react': 8.6.15(@storybook/test@8.6.15(storybook@8.6.15(prettier@3.8.1)))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(storybook@8.6.15(prettier@3.8.1))(typescript@5.9.3)
+      '@storybook/react': 8.6.15(@storybook/test@8.6.15(storybook@8.6.15(prettier@3.8.1)))(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(storybook@8.6.15(prettier@3.8.1))(typescript@5.9.3)
       find-up: 5.0.0
       magic-string: 0.30.21
-      react: 18.3.1
+      react: 19.2.6
       react-docgen: 7.1.1
-      react-dom: 18.3.1(react@18.3.1)
+      react-dom: 19.2.6(react@19.2.6)
       resolve: 1.22.11
       storybook: 8.6.15(prettier@3.8.1)
       tsconfig-paths: 4.2.0
@@ -8151,16 +8148,16 @@ snapshots:
       - supports-color
       - typescript
 
-  '@storybook/react@8.6.15(@storybook/test@8.6.15(storybook@8.6.15(prettier@3.8.1)))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(storybook@8.6.15(prettier@3.8.1))(typescript@5.9.3)':
+  '@storybook/react@8.6.15(@storybook/test@8.6.15(storybook@8.6.15(prettier@3.8.1)))(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(storybook@8.6.15(prettier@3.8.1))(typescript@5.9.3)':
     dependencies:
       '@storybook/components': 8.6.15(storybook@8.6.15(prettier@3.8.1))
       '@storybook/global': 5.0.0
       '@storybook/manager-api': 8.6.15(storybook@8.6.15(prettier@3.8.1))
       '@storybook/preview-api': 8.6.15(storybook@8.6.15(prettier@3.8.1))
-      '@storybook/react-dom-shim': 8.6.15(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(storybook@8.6.15(prettier@3.8.1))
+      '@storybook/react-dom-shim': 8.6.15(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(storybook@8.6.15(prettier@3.8.1))
       '@storybook/theming': 8.6.15(storybook@8.6.15(prettier@3.8.1))
-      react: 18.3.1
-      react-dom: 18.3.1(react@18.3.1)
+      react: 19.2.6
+      react-dom: 19.2.6(react@19.2.6)
       storybook: 8.6.15(prettier@3.8.1)
     optionalDependencies:
       '@storybook/test': 8.6.15(storybook@8.6.15(prettier@3.8.1))
@@ -8349,15 +8346,12 @@ snapshots:
       xmlbuilder: 15.1.1
     optional: true
 
-  '@types/prop-types@15.7.15': {}
-
-  '@types/react-dom@18.3.7(@types/react@18.3.28)':
+  '@types/react-dom@19.2.3(@types/react@19.2.15)':
     dependencies:
-      '@types/react': 18.3.28
+      '@types/react': 19.2.15
 
-  '@types/react@18.3.28':
+  '@types/react@19.2.15':
     dependencies:
-      '@types/prop-types': 15.7.15
       csstype: 3.2.3
 
   '@types/resolve@1.20.6': {}
@@ -8518,111 +8512,111 @@ snapshots:
     dependencies:
       '@babel/runtime': 7.28.6
 
-  '@uiw/react-color-alpha@2.9.4(@babel/runtime@7.28.6)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
+  '@uiw/react-color-alpha@2.9.4(@babel/runtime@7.28.6)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)':
     dependencies:
       '@babel/runtime': 7.28.6
       '@uiw/color-convert': 2.9.4(@babel/runtime@7.28.6)
-      '@uiw/react-drag-event-interactive': 2.9.4(@babel/runtime@7.28.6)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      react: 18.3.1
-      react-dom: 18.3.1(react@18.3.1)
+      '@uiw/react-drag-event-interactive': 2.9.4(@babel/runtime@7.28.6)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
+      react: 19.2.6
+      react-dom: 19.2.6(react@19.2.6)
 
-  '@uiw/react-color-block@2.9.4(@babel/runtime@7.28.6)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
+  '@uiw/react-color-block@2.9.4(@babel/runtime@7.28.6)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)':
     dependencies:
       '@babel/runtime': 7.28.6
       '@uiw/color-convert': 2.9.4(@babel/runtime@7.28.6)
-      '@uiw/react-color-editable-input': 2.9.4(@babel/runtime@7.28.6)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      '@uiw/react-color-swatch': 2.9.4(@babel/runtime@7.28.6)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      react: 18.3.1
-      react-dom: 18.3.1(react@18.3.1)
+      '@uiw/react-color-editable-input': 2.9.4(@babel/runtime@7.28.6)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
+      '@uiw/react-color-swatch': 2.9.4(@babel/runtime@7.28.6)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
+      react: 19.2.6
+      react-dom: 19.2.6(react@19.2.6)
 
-  '@uiw/react-color-chrome@2.9.4(@babel/runtime@7.28.6)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
+  '@uiw/react-color-chrome@2.9.4(@babel/runtime@7.28.6)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)':
     dependencies:
       '@babel/runtime': 7.28.6
       '@uiw/color-convert': 2.9.4(@babel/runtime@7.28.6)
-      '@uiw/react-color-alpha': 2.9.4(@babel/runtime@7.28.6)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      '@uiw/react-color-editable-input': 2.9.4(@babel/runtime@7.28.6)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      '@uiw/react-color-editable-input-hsla': 2.9.4(@babel/runtime@7.28.6)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      '@uiw/react-color-editable-input-rgba': 2.9.4(@babel/runtime@7.28.6)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      '@uiw/react-color-github': 2.9.4(@babel/runtime@7.28.6)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      '@uiw/react-color-hue': 2.9.4(@babel/runtime@7.28.6)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      '@uiw/react-color-saturation': 2.9.4(@babel/runtime@7.28.6)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      react: 18.3.1
-      react-dom: 18.3.1(react@18.3.1)
+      '@uiw/react-color-alpha': 2.9.4(@babel/runtime@7.28.6)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
+      '@uiw/react-color-editable-input': 2.9.4(@babel/runtime@7.28.6)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
+      '@uiw/react-color-editable-input-hsla': 2.9.4(@babel/runtime@7.28.6)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
+      '@uiw/react-color-editable-input-rgba': 2.9.4(@babel/runtime@7.28.6)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
+      '@uiw/react-color-github': 2.9.4(@babel/runtime@7.28.6)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
+      '@uiw/react-color-hue': 2.9.4(@babel/runtime@7.28.6)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
+      '@uiw/react-color-saturation': 2.9.4(@babel/runtime@7.28.6)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
+      react: 19.2.6
+      react-dom: 19.2.6(react@19.2.6)
 
-  '@uiw/react-color-circle@2.9.4(@babel/runtime@7.28.6)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
+  '@uiw/react-color-circle@2.9.4(@babel/runtime@7.28.6)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)':
     dependencies:
       '@babel/runtime': 7.28.6
       '@uiw/color-convert': 2.9.4(@babel/runtime@7.28.6)
-      '@uiw/react-color-swatch': 2.9.4(@babel/runtime@7.28.6)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      react: 18.3.1
-      react-dom: 18.3.1(react@18.3.1)
+      '@uiw/react-color-swatch': 2.9.4(@babel/runtime@7.28.6)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
+      react: 19.2.6
+      react-dom: 19.2.6(react@19.2.6)
 
-  '@uiw/react-color-colorful@2.9.4(@babel/runtime@7.28.6)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
+  '@uiw/react-color-colorful@2.9.4(@babel/runtime@7.28.6)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)':
     dependencies:
       '@babel/runtime': 7.28.6
       '@uiw/color-convert': 2.9.4(@babel/runtime@7.28.6)
-      '@uiw/react-color-alpha': 2.9.4(@babel/runtime@7.28.6)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      '@uiw/react-color-hue': 2.9.4(@babel/runtime@7.28.6)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      '@uiw/react-color-saturation': 2.9.4(@babel/runtime@7.28.6)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      react: 18.3.1
-      react-dom: 18.3.1(react@18.3.1)
+      '@uiw/react-color-alpha': 2.9.4(@babel/runtime@7.28.6)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
+      '@uiw/react-color-hue': 2.9.4(@babel/runtime@7.28.6)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
+      '@uiw/react-color-saturation': 2.9.4(@babel/runtime@7.28.6)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
+      react: 19.2.6
+      react-dom: 19.2.6(react@19.2.6)
 
-  '@uiw/react-color-compact@2.9.4(@babel/runtime@7.28.6)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
+  '@uiw/react-color-compact@2.9.4(@babel/runtime@7.28.6)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)':
     dependencies:
       '@babel/runtime': 7.28.6
       '@uiw/color-convert': 2.9.4(@babel/runtime@7.28.6)
-      '@uiw/react-color-editable-input': 2.9.4(@babel/runtime@7.28.6)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      '@uiw/react-color-editable-input-rgba': 2.9.4(@babel/runtime@7.28.6)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      '@uiw/react-color-swatch': 2.9.4(@babel/runtime@7.28.6)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      react: 18.3.1
-      react-dom: 18.3.1(react@18.3.1)
+      '@uiw/react-color-editable-input': 2.9.4(@babel/runtime@7.28.6)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
+      '@uiw/react-color-editable-input-rgba': 2.9.4(@babel/runtime@7.28.6)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
+      '@uiw/react-color-swatch': 2.9.4(@babel/runtime@7.28.6)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
+      react: 19.2.6
+      react-dom: 19.2.6(react@19.2.6)
 
-  '@uiw/react-color-editable-input-hsla@2.9.4(@babel/runtime@7.28.6)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
+  '@uiw/react-color-editable-input-hsla@2.9.4(@babel/runtime@7.28.6)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)':
     dependencies:
       '@babel/runtime': 7.28.6
       '@uiw/color-convert': 2.9.4(@babel/runtime@7.28.6)
-      '@uiw/react-color-editable-input-rgba': 2.9.4(@babel/runtime@7.28.6)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      react: 18.3.1
-      react-dom: 18.3.1(react@18.3.1)
+      '@uiw/react-color-editable-input-rgba': 2.9.4(@babel/runtime@7.28.6)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
+      react: 19.2.6
+      react-dom: 19.2.6(react@19.2.6)
 
-  '@uiw/react-color-editable-input-rgba@2.9.4(@babel/runtime@7.28.6)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
+  '@uiw/react-color-editable-input-rgba@2.9.4(@babel/runtime@7.28.6)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)':
     dependencies:
       '@babel/runtime': 7.28.6
       '@uiw/color-convert': 2.9.4(@babel/runtime@7.28.6)
-      '@uiw/react-color-editable-input': 2.9.4(@babel/runtime@7.28.6)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      react: 18.3.1
-      react-dom: 18.3.1(react@18.3.1)
+      '@uiw/react-color-editable-input': 2.9.4(@babel/runtime@7.28.6)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
+      react: 19.2.6
+      react-dom: 19.2.6(react@19.2.6)
 
-  '@uiw/react-color-editable-input@2.9.4(@babel/runtime@7.28.6)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
+  '@uiw/react-color-editable-input@2.9.4(@babel/runtime@7.28.6)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)':
     dependencies:
       '@babel/runtime': 7.28.6
-      react: 18.3.1
-      react-dom: 18.3.1(react@18.3.1)
+      react: 19.2.6
+      react-dom: 19.2.6(react@19.2.6)
 
-  '@uiw/react-color-github@2.9.4(@babel/runtime@7.28.6)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
-    dependencies:
-      '@babel/runtime': 7.28.6
-      '@uiw/color-convert': 2.9.4(@babel/runtime@7.28.6)
-      '@uiw/react-color-swatch': 2.9.4(@babel/runtime@7.28.6)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      react: 18.3.1
-      react-dom: 18.3.1(react@18.3.1)
-
-  '@uiw/react-color-hue@2.9.4(@babel/runtime@7.28.6)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
+  '@uiw/react-color-github@2.9.4(@babel/runtime@7.28.6)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)':
     dependencies:
       '@babel/runtime': 7.28.6
       '@uiw/color-convert': 2.9.4(@babel/runtime@7.28.6)
-      '@uiw/react-color-alpha': 2.9.4(@babel/runtime@7.28.6)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      react: 18.3.1
-      react-dom: 18.3.1(react@18.3.1)
+      '@uiw/react-color-swatch': 2.9.4(@babel/runtime@7.28.6)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
+      react: 19.2.6
+      react-dom: 19.2.6(react@19.2.6)
 
-  '@uiw/react-color-material@2.9.4(@babel/runtime@7.28.6)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
+  '@uiw/react-color-hue@2.9.4(@babel/runtime@7.28.6)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)':
     dependencies:
       '@babel/runtime': 7.28.6
       '@uiw/color-convert': 2.9.4(@babel/runtime@7.28.6)
-      '@uiw/react-color-editable-input': 2.9.4(@babel/runtime@7.28.6)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      '@uiw/react-color-editable-input-rgba': 2.9.4(@babel/runtime@7.28.6)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      react: 18.3.1
-      react-dom: 18.3.1(react@18.3.1)
+      '@uiw/react-color-alpha': 2.9.4(@babel/runtime@7.28.6)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
+      react: 19.2.6
+      react-dom: 19.2.6(react@19.2.6)
+
+  '@uiw/react-color-material@2.9.4(@babel/runtime@7.28.6)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)':
+    dependencies:
+      '@babel/runtime': 7.28.6
+      '@uiw/color-convert': 2.9.4(@babel/runtime@7.28.6)
+      '@uiw/react-color-editable-input': 2.9.4(@babel/runtime@7.28.6)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
+      '@uiw/react-color-editable-input-rgba': 2.9.4(@babel/runtime@7.28.6)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
+      react: 19.2.6
+      react-dom: 19.2.6(react@19.2.6)
 
   '@uiw/react-color-name@2.9.4(@babel/runtime@7.28.6)':
     dependencies:
@@ -8630,89 +8624,89 @@ snapshots:
       colors-named: 1.0.4
       colors-named-hex: 1.0.3
 
-  '@uiw/react-color-saturation@2.9.4(@babel/runtime@7.28.6)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
+  '@uiw/react-color-saturation@2.9.4(@babel/runtime@7.28.6)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)':
     dependencies:
       '@babel/runtime': 7.28.6
       '@uiw/color-convert': 2.9.4(@babel/runtime@7.28.6)
-      '@uiw/react-drag-event-interactive': 2.9.4(@babel/runtime@7.28.6)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      react: 18.3.1
-      react-dom: 18.3.1(react@18.3.1)
+      '@uiw/react-drag-event-interactive': 2.9.4(@babel/runtime@7.28.6)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
+      react: 19.2.6
+      react-dom: 19.2.6(react@19.2.6)
 
-  '@uiw/react-color-shade-slider@2.9.4(@babel/runtime@7.28.6)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
+  '@uiw/react-color-shade-slider@2.9.4(@babel/runtime@7.28.6)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)':
     dependencies:
       '@babel/runtime': 7.28.6
       '@uiw/color-convert': 2.9.4(@babel/runtime@7.28.6)
-      '@uiw/react-color-alpha': 2.9.4(@babel/runtime@7.28.6)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      react: 18.3.1
-      react-dom: 18.3.1(react@18.3.1)
+      '@uiw/react-color-alpha': 2.9.4(@babel/runtime@7.28.6)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
+      react: 19.2.6
+      react-dom: 19.2.6(react@19.2.6)
 
-  '@uiw/react-color-sketch@2.9.4(@babel/runtime@7.28.6)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
+  '@uiw/react-color-sketch@2.9.4(@babel/runtime@7.28.6)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)':
     dependencies:
       '@babel/runtime': 7.28.6
       '@uiw/color-convert': 2.9.4(@babel/runtime@7.28.6)
-      '@uiw/react-color-alpha': 2.9.4(@babel/runtime@7.28.6)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      '@uiw/react-color-editable-input': 2.9.4(@babel/runtime@7.28.6)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      '@uiw/react-color-editable-input-rgba': 2.9.4(@babel/runtime@7.28.6)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      '@uiw/react-color-hue': 2.9.4(@babel/runtime@7.28.6)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      '@uiw/react-color-saturation': 2.9.4(@babel/runtime@7.28.6)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      '@uiw/react-color-swatch': 2.9.4(@babel/runtime@7.28.6)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      react: 18.3.1
-      react-dom: 18.3.1(react@18.3.1)
+      '@uiw/react-color-alpha': 2.9.4(@babel/runtime@7.28.6)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
+      '@uiw/react-color-editable-input': 2.9.4(@babel/runtime@7.28.6)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
+      '@uiw/react-color-editable-input-rgba': 2.9.4(@babel/runtime@7.28.6)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
+      '@uiw/react-color-hue': 2.9.4(@babel/runtime@7.28.6)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
+      '@uiw/react-color-saturation': 2.9.4(@babel/runtime@7.28.6)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
+      '@uiw/react-color-swatch': 2.9.4(@babel/runtime@7.28.6)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
+      react: 19.2.6
+      react-dom: 19.2.6(react@19.2.6)
 
-  '@uiw/react-color-slider@2.9.4(@babel/runtime@7.28.6)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
+  '@uiw/react-color-slider@2.9.4(@babel/runtime@7.28.6)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)':
     dependencies:
       '@babel/runtime': 7.28.6
       '@uiw/color-convert': 2.9.4(@babel/runtime@7.28.6)
-      '@uiw/react-color-alpha': 2.9.4(@babel/runtime@7.28.6)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      react: 18.3.1
-      react-dom: 18.3.1(react@18.3.1)
+      '@uiw/react-color-alpha': 2.9.4(@babel/runtime@7.28.6)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
+      react: 19.2.6
+      react-dom: 19.2.6(react@19.2.6)
 
-  '@uiw/react-color-swatch@2.9.4(@babel/runtime@7.28.6)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
+  '@uiw/react-color-swatch@2.9.4(@babel/runtime@7.28.6)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)':
     dependencies:
       '@babel/runtime': 7.28.6
       '@uiw/color-convert': 2.9.4(@babel/runtime@7.28.6)
-      react: 18.3.1
-      react-dom: 18.3.1(react@18.3.1)
+      react: 19.2.6
+      react-dom: 19.2.6(react@19.2.6)
 
-  '@uiw/react-color-wheel@2.9.4(@babel/runtime@7.28.6)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
+  '@uiw/react-color-wheel@2.9.4(@babel/runtime@7.28.6)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)':
     dependencies:
       '@babel/runtime': 7.28.6
       '@uiw/color-convert': 2.9.4(@babel/runtime@7.28.6)
-      '@uiw/react-drag-event-interactive': 2.9.4(@babel/runtime@7.28.6)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      react: 18.3.1
-      react-dom: 18.3.1(react@18.3.1)
+      '@uiw/react-drag-event-interactive': 2.9.4(@babel/runtime@7.28.6)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
+      react: 19.2.6
+      react-dom: 19.2.6(react@19.2.6)
 
-  '@uiw/react-color@2.9.4(@babel/runtime@7.28.6)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
+  '@uiw/react-color@2.9.4(@babel/runtime@7.28.6)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)':
     dependencies:
       '@babel/runtime': 7.28.6
       '@uiw/color-convert': 2.9.4(@babel/runtime@7.28.6)
-      '@uiw/react-color-alpha': 2.9.4(@babel/runtime@7.28.6)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      '@uiw/react-color-block': 2.9.4(@babel/runtime@7.28.6)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      '@uiw/react-color-chrome': 2.9.4(@babel/runtime@7.28.6)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      '@uiw/react-color-circle': 2.9.4(@babel/runtime@7.28.6)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      '@uiw/react-color-colorful': 2.9.4(@babel/runtime@7.28.6)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      '@uiw/react-color-compact': 2.9.4(@babel/runtime@7.28.6)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      '@uiw/react-color-editable-input': 2.9.4(@babel/runtime@7.28.6)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      '@uiw/react-color-editable-input-hsla': 2.9.4(@babel/runtime@7.28.6)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      '@uiw/react-color-editable-input-rgba': 2.9.4(@babel/runtime@7.28.6)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      '@uiw/react-color-github': 2.9.4(@babel/runtime@7.28.6)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      '@uiw/react-color-hue': 2.9.4(@babel/runtime@7.28.6)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      '@uiw/react-color-material': 2.9.4(@babel/runtime@7.28.6)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      '@uiw/react-color-alpha': 2.9.4(@babel/runtime@7.28.6)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
+      '@uiw/react-color-block': 2.9.4(@babel/runtime@7.28.6)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
+      '@uiw/react-color-chrome': 2.9.4(@babel/runtime@7.28.6)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
+      '@uiw/react-color-circle': 2.9.4(@babel/runtime@7.28.6)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
+      '@uiw/react-color-colorful': 2.9.4(@babel/runtime@7.28.6)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
+      '@uiw/react-color-compact': 2.9.4(@babel/runtime@7.28.6)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
+      '@uiw/react-color-editable-input': 2.9.4(@babel/runtime@7.28.6)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
+      '@uiw/react-color-editable-input-hsla': 2.9.4(@babel/runtime@7.28.6)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
+      '@uiw/react-color-editable-input-rgba': 2.9.4(@babel/runtime@7.28.6)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
+      '@uiw/react-color-github': 2.9.4(@babel/runtime@7.28.6)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
+      '@uiw/react-color-hue': 2.9.4(@babel/runtime@7.28.6)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
+      '@uiw/react-color-material': 2.9.4(@babel/runtime@7.28.6)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
       '@uiw/react-color-name': 2.9.4(@babel/runtime@7.28.6)
-      '@uiw/react-color-saturation': 2.9.4(@babel/runtime@7.28.6)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      '@uiw/react-color-shade-slider': 2.9.4(@babel/runtime@7.28.6)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      '@uiw/react-color-sketch': 2.9.4(@babel/runtime@7.28.6)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      '@uiw/react-color-slider': 2.9.4(@babel/runtime@7.28.6)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      '@uiw/react-color-swatch': 2.9.4(@babel/runtime@7.28.6)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      '@uiw/react-color-wheel': 2.9.4(@babel/runtime@7.28.6)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      react: 18.3.1
-      react-dom: 18.3.1(react@18.3.1)
+      '@uiw/react-color-saturation': 2.9.4(@babel/runtime@7.28.6)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
+      '@uiw/react-color-shade-slider': 2.9.4(@babel/runtime@7.28.6)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
+      '@uiw/react-color-sketch': 2.9.4(@babel/runtime@7.28.6)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
+      '@uiw/react-color-slider': 2.9.4(@babel/runtime@7.28.6)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
+      '@uiw/react-color-swatch': 2.9.4(@babel/runtime@7.28.6)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
+      '@uiw/react-color-wheel': 2.9.4(@babel/runtime@7.28.6)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
+      react: 19.2.6
+      react-dom: 19.2.6(react@19.2.6)
 
-  '@uiw/react-drag-event-interactive@2.9.4(@babel/runtime@7.28.6)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
+  '@uiw/react-drag-event-interactive@2.9.4(@babel/runtime@7.28.6)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)':
     dependencies:
       '@babel/runtime': 7.28.6
-      react: 18.3.1
-      react-dom: 18.3.1(react@18.3.1)
+      react: 19.2.6
+      react-dom: 19.2.6(react@19.2.6)
 
   '@ungap/structured-clone@1.3.0': {}
 
@@ -12190,9 +12184,9 @@ snapshots:
 
   quick-lru@5.1.1: {}
 
-  react-confetti@6.4.0(react@18.3.1):
+  react-confetti@6.4.0(react@19.2.6):
     dependencies:
-      react: 18.3.1
+      react: 19.2.6
       tween-functions: 1.2.0
 
   react-docgen-typescript@2.4.0(typescript@5.9.3):
@@ -12214,16 +12208,15 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  react-dom@18.3.1(react@18.3.1):
+  react-dom@19.2.6(react@19.2.6):
     dependencies:
-      loose-envify: 1.4.0
-      react: 18.3.1
-      scheduler: 0.23.2
+      react: 19.2.6
+      scheduler: 0.27.0
 
-  react-error-boundary@4.1.2(react@18.3.1):
+  react-error-boundary@4.1.2(react@19.2.6):
     dependencies:
       '@babel/runtime': 7.28.6
-      react: 18.3.1
+      react: 19.2.6
 
   react-is@16.13.1: {}
 
@@ -12233,9 +12226,7 @@ snapshots:
 
   react-refresh@0.17.0: {}
 
-  react@18.3.1:
-    dependencies:
-      loose-envify: 1.4.0
+  react@19.2.6: {}
 
   read-binary-file-arch@1.0.6:
     dependencies:
@@ -12471,9 +12462,7 @@ snapshots:
 
   sax@1.4.4: {}
 
-  scheduler@0.23.2:
-    dependencies:
-      loose-envify: 1.4.0
+  scheduler@0.27.0: {}
 
   semver-compare@1.0.0:
     optional: true
@@ -13129,10 +13118,10 @@ snapshots:
     dependencies:
       punycode: 2.3.1
 
-  usehooks-ts@3.1.1(react@18.3.1):
+  usehooks-ts@3.1.1(react@19.2.6):
     dependencies:
       lodash.debounce: 4.0.8
-      react: 18.3.1
+      react: 19.2.6
 
   utf8-byte-length@1.0.5: {}
 
@@ -13378,8 +13367,8 @@ snapshots:
 
   yoctocolors-cjs@2.1.3: {}
 
-  zustand@5.0.11(@types/react@18.3.28)(immer@10.2.0)(react@18.3.1):
+  zustand@5.0.11(@types/react@19.2.15)(immer@10.2.0)(react@19.2.6):
     optionalDependencies:
-      '@types/react': 18.3.28
+      '@types/react': 19.2.15
       immer: 10.2.0
-      react: 18.3.1
+      react: 19.2.6

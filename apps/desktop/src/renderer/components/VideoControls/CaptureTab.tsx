@@ -1,4 +1,5 @@
 import { Button } from '@hedron-gl/ui-core'
+import type { ReactElement } from 'react'
 
 // Include the global type definitions
 declare global {
@@ -7,7 +8,7 @@ declare global {
   }
 }
 
-export function CaptureTab(): JSX.Element {
+export function CaptureTab(): ReactElement {
   // Function to capture a single frame
   const handleCapture = () => {
     window.saveFrame()

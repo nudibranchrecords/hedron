@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import type { ReactElement } from 'react'
 import { Button, Icon, MiniTabs, MiniTabsItem } from '@hedron-gl/ui-core'
 import c from './VideoControls.module.css'
 import { CaptureTab } from './CaptureTab'
@@ -23,7 +24,7 @@ const defaultLoopSettings: LoopSettings = {
 // Tabs
 type TabType = 'render' | 'capture' | 'loop'
 
-export function VideoControls(): JSX.Element {
+export function VideoControls(): ReactElement {
   const [isOpen, setIsOpen] = useState(false)
   const [activeTab, setActiveTab] = useState<TabType>('render')
   const [renderSettings, setRenderSettings] = useState<RenderSettings>(defaultRenderSettings)

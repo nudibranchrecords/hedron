@@ -2,7 +2,7 @@ import { useEffect, useRef, type RefObject } from 'react'
 import { clearGlobalCursor, CursorCSSValue, setGlobalCursor } from '@utils/setGlobalCursor'
 
 export const useElementScrub = (
-  elRef: RefObject<HTMLElement>,
+  elRef: RefObject<HTMLElement | null>,
   onDrag: (delta: { x: number; y: number }) => void,
   cursorCSSValue?: CursorCSSValue,
 ) => {

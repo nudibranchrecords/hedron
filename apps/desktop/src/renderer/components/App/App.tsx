@@ -1,4 +1,5 @@
 import { AppStoreProvider, EngineProvider, WidgetStrip, useAppStore } from '@hedron-gl/ui-core'
+import type { ReactElement } from 'react'
 import c from './App.module.css'
 import { useHandleDrag } from './useHandleDrag'
 import { GlobalClock } from '@components/GlobalClock/GlobalClock'
@@ -10,7 +11,7 @@ import { WorkArea } from '@components/WorkArea/WorkArea'
 import { appStore } from '@renderer/appStore'
 import { engine, pluginViews } from '@renderer/engine'
 
-const AppContent = (): JSX.Element => {
+const AppContent = (): ReactElement => {
   const sketchesDir = useAppStore((state) => state.sketchesDir)
   const isProjectLoaded = sketchesDir !== null
 
@@ -57,7 +58,7 @@ const AppContent = (): JSX.Element => {
   )
 }
 
-export const App = (): JSX.Element => {
+export const App = (): ReactElement => {
   return (
     <AppStoreProvider value={appStore}>
       <EngineProvider value={engine}>

@@ -1,10 +1,11 @@
 import { useCallback } from 'react'
+import type { ReactElement } from 'react'
 
 import c from './styles.module.css'
 import { Vector2ScrubOverlay } from './Vector2ScrubOverlay'
 import { engine } from '@renderer/engine'
 
-export const Viewer = (): JSX.Element => {
+export const Viewer = (): ReactElement => {
   const containerRef = useCallback((node: HTMLElement | null) => {
     if (node !== null) {
       engine.createCanvas(node)
