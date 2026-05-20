@@ -6,6 +6,7 @@ import { ProjectData } from '@hedron-gl/app-store'
 import { saveFrameHandler, saveFrameSequenceHandler } from './handlers/frameHandlers'
 import {
   DialogEvents,
+  OpenSketchesDirResponse,
   FileEvents,
   OpenProjectResponse,
   ResourceEvents,
@@ -89,12 +90,23 @@ app.on('window-all-closed', () => {
   }
 })
 
-ipcMain.handle(DialogEvents.OpenSketchesDirDialog, async () => {
+ipcMain.handle(DialogEvents.OpenSketchesDirDialog, async (): Promise<OpenSketchesDirResponse> => {
   const result = await dialog.showOpenDialog({
     properties: ['openDirectory'],
   })
 
-  return result.filePaths[0]
+  if (result.canceled || result.filePaths.length === 0) {
+    return { result: 'canceled' }
+  }
+
+  const sketchesDirAbsolute = result.filePaths[0]
+  const resourcesDirAbsolute = path.resolve(path.dirname(sketchesDirAbsolute), 'resources')
+
+  return {
+    result: 'success',
+    sketchesDirAbsolute,
+    resourcesDirAbsolute,
+  }
 })
 
 ipcMain.handle(

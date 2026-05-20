@@ -157,7 +157,7 @@ export type OptionNodesFromConfigs<TConfigs extends readonly OptionNodeConfigLik
     | undefined
 }
 
-export type ParamValue = number | boolean | string
+export type ParamValue = number | boolean | string | ParamFileValue
 export type ParamValues = Partial<Record<string, ParamValue>>
 export type ParamValueType = Param['valueType'] | null
 

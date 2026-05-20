@@ -7,6 +7,7 @@ import {
   ParamRGB,
   ParamVector3,
   ParamVector2,
+  ParamFile,
 } from '@hedron-gl/engine'
 import {
   GamepadInputType,
@@ -274,6 +275,17 @@ export function createGamepadHandlers(dependencies: {
     return null
   }
 
+  /**
+   * Handles unsupported file value types from gamepad events, logging a warning.
+   */
+  const handleUnsupportedFile: ValueHandler<ParamFile> = ({ input, targetNode, gamepadEvent }) => {
+    console.warn(
+      `Gamepad Input: Unsupported value type for node ${input.targetNodeId}. Value: ${gamepadEvent.value}, Type: ${targetNode.valueType}`,
+    )
+
+    return null
+  }
+
   return {
     handleShot,
     handleEnum,
@@ -283,5 +295,6 @@ export function createGamepadHandlers(dependencies: {
     handleUnsupportedRGB,
     handleUnsupportedVector2,
     handleUnsupportedVector3,
+    handleUnsupportedFile,
   }
 }

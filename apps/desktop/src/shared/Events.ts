@@ -49,6 +49,12 @@ type ResponseError = {
   error: string
 }
 
+type OpenSketchesDirResponseSuccess = {
+  result: 'success'
+  sketchesDirAbsolute: string
+  resourcesDirAbsolute: string
+}
+
 type OpenProjectResponseSuccess = {
   result: 'success'
   sketchesDirAbsolute: string
@@ -65,6 +71,11 @@ type SaveProjectResponseSuccess = {
 }
 
 export type OpenProjectResponse = OpenProjectResponseSuccess | ResponseError | ResponseCanceled
+
+export type OpenSketchesDirResponse =
+  | OpenSketchesDirResponseSuccess
+  | ResponseError
+  | ResponseCanceled
 
 export type SaveProjectResponse = SaveProjectResponseSuccess | ResponseError | ResponseCanceled
 

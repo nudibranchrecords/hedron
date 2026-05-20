@@ -53,7 +53,7 @@ export interface AppState {
   saveList: SaveItem[]
   sketchesServerBuildResult: BuildResult | null
   resourcesUrl: string | null
-  resourcesFiles: string[]
+  resourcesFiles: Record<string, { fileName: string; fileType: string }>
   setSelectedNode: (sketchID: string, nodeId: string | null) => void
   setSelectedInput: (nodeId: string, inputId: string | null) => void
   setOpenedControlGroup: (sketchId: string, groupIndex: number, isOpen: boolean) => void
@@ -86,7 +86,7 @@ export const createAppStore = () =>
     persist(
       subscribeWithSelector(
         devtools(
-          immer((set) => ({
+          immer<AppState>((set) => ({
             activeSketchId: null,
             sketchesDir: null,
             globalDialogId: null,
@@ -97,7 +97,7 @@ export const createAppStore = () =>
             saveList: [],
             sketchesServerBuildResult: null,
             resourcesUrl: null,
-            resourcesFiles: [],
+            resourcesFiles: {},
             setActiveSketchId: (id: string) => {
               set((state) => {
                 state.activeSketchId = id
@@ -139,14 +139,14 @@ export const createAppStore = () =>
             },
             addResourceFile: (fileName: string) => {
               set((state) => {
-                if (!state.resourcesFiles.includes(fileName)) {
-                  state.resourcesFiles.push(fileName)
+                if (!state.resourcesFiles[fileName]) {
+                  state.resourcesFiles[fileName] = { fileName, fileType: 'unknown' }
                 }
               })
             },
             removeResourceFile: (fileName: string) => {
               set((state) => {
-                state.resourcesFiles = state.resourcesFiles.filter((f) => f !== fileName)
+                delete state.resourcesFiles[fileName]
               })
             },
             setSelectedNode: (sketchID, nodeId) => {
