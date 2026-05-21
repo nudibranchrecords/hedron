@@ -8,7 +8,8 @@
     "paths": {
       "@shared/*": ["src/shared/*"],
       "@main/*": ["src/main/*"],
-      "@resources/*": ["resources/*"]
+      "@resources/*": ["resources/*"],
+      "@utils/*": ["src/main/utils/*"]
     }
   }
 }

@@ -54,12 +54,12 @@ export type ParamEnumValue = string | number
 export type ParamEnumOption = { value: ParamEnumValue; label: string }
 
 export interface ParamFileValueEmpty {
-  fileType: null
+  contentType: null
   fileName: null
 }
 export interface ParamFileValueSelected {
-  // TODO: We should probably type fileType
-  fileType: string
+  // TODO: We should probably type contentType
+  contentType: string
   fileName: string
 }
 
@@ -68,13 +68,11 @@ export type ParamFileValue = ParamFileValueEmpty | ParamFileValueSelected
 export interface ParamFile extends ParamBase {
   valueType: 'file'
   defaultValue: ParamFileValue
-  // TODO: would probably want to mirror the HTML file input here?
-  // Made this while offline so couldn't check so easily
-  acceptedFileTypes?: string[] | null
+  accept?: string[] | null
 }
 
 export type ConfigParamFile = AsConfig<ParamFile> & {
-  acceptedFileTypes?: string[] | null
+  accept?: string[] | null
 }
 
 export interface ParamEnum extends ParamBase {

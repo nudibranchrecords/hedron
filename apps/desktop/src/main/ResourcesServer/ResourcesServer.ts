@@ -4,27 +4,10 @@ import fs from 'fs'
 import path from 'path'
 import chokidar, { FSWatcher } from 'chokidar'
 import { getPort } from 'get-port-please'
+import { getContentTypeFromFileName } from '@utils/getContentTypeFromFileName'
 import { FileWatchEvents } from '@shared/Events'
 
 const HOST = process.platform.startsWith('win') ? 'localhost' : '0.0.0.0'
-
-const MIME_TYPES: Record<string, string> = {
-  '.png': 'image/png',
-  '.jpg': 'image/jpeg',
-  '.jpeg': 'image/jpeg',
-  '.gif': 'image/gif',
-  '.svg': 'image/svg+xml',
-  '.webp': 'image/webp',
-  '.mp3': 'audio/mpeg',
-  '.wav': 'audio/wav',
-  '.ogg': 'audio/ogg',
-  '.mp4': 'video/mp4',
-  '.webm': 'video/webm',
-  '.json': 'application/json',
-  '.glb': 'model/gltf-binary',
-  '.gltf': 'model/gltf+json',
-  '.hdr': 'application/octet-stream',
-}
 
 export class ResourcesServer extends EventEmitter {
   private server?: http.Server
@@ -61,11 +44,8 @@ export class ResourcesServer extends EventEmitter {
           return
         }
 
-        const ext = path.extname(fileName).toLowerCase()
-        const contentType = MIME_TYPES[ext] ?? 'application/octet-stream'
-
         res.writeHead(200, {
-          'Content-Type': contentType,
+          'Content-Type': getContentTypeFromFileName(fileName),
           'Access-Control-Allow-Origin': '*',
           'Cache-Control': 'no-cache',
         })

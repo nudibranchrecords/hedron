@@ -1,4 +1,5 @@
 import fs from 'fs'
+import { getContentTypeFromFileName } from '@utils/getContentTypeFromFileName'
 import {
   FileWatchEvents,
   ResourceEvents,
@@ -16,7 +17,10 @@ const getInitialFiles = async (dirPath: string): Promise<Record<string, Resource
   const dir = await fs.promises.opendir(dirPath)
   for await (const dirent of dir) {
     if (dirent.isFile()) {
-      files[dirent.name] = { fileName: dirent.name, fileType: 'unknown' }
+      files[dirent.name] = {
+        fileName: dirent.name,
+        contentType: getContentTypeFromFileName(dirent.name),
+      }
     }
   }
   return files
@@ -52,9 +56,9 @@ export const startResourcesServer = async (dirPath: string): Promise<ResourcesSe
 
   console.log(`[HEDRON] Resources server started at http://${host}:${port}`)
 
-  resourcesServer.on(FileWatchEvents.add, (fileName: string) => {
-    console.log(`resource file added: ${fileName}`)
-    sendToMainWindow(ResourceEvents.AddResourceFile, fileName)
+  resourcesServer.on(FileWatchEvents.add, (fileName: string, contentType: string) => {
+    console.log(`resource file added: ${fileName} with content type: ${contentType}`)
+    sendToMainWindow(ResourceEvents.AddResourceFile, [fileName, contentType])
   })
 
   resourcesServer.on(FileWatchEvents.unlink, (fileName: string) => {

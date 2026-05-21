@@ -95,7 +95,7 @@ export enum ResourceEvents {
 
 export interface ResourceFileData {
   fileName: string
-  fileType: string
+  contentType: string
 }
 
 export interface ResourcesServerResponse {

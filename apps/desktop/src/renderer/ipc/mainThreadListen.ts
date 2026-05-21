@@ -37,9 +37,8 @@ listen(SketchEvents.BuildResult, (result: BuildResult) => {
   }
 })
 
-listen(ResourceEvents.AddResourceFile, (fileName: string) => {
-  console.log(fileName)
-  appStore.getState().addResourceFile(fileName)
+listen(ResourceEvents.AddResourceFile, ([fileName, contentType]: [string, string]) => {
+  appStore.getState().addResourceFile(fileName, contentType)
 })
 
 listen(ResourceEvents.RemoveResourceFile, (fileName: string) => {

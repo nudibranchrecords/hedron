@@ -24,7 +24,7 @@ export const TIMELINE_OPTION_NODE_CONFIGS = defineOptionNodeConfigs([
     nodeType: 'param',
     key: 'audioUrl',
     valueType: 'file',
-    defaultValue: { fileType: null, fileName: null },
+    defaultValue: { contentType: null, fileName: null },
   },
 ])
 
