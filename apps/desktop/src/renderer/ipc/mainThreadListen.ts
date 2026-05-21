@@ -38,11 +38,11 @@ listen(SketchEvents.BuildResult, (result: BuildResult) => {
 })
 
 listen(ResourceEvents.AddResourceFile, ([fileName, contentType]: [string, string]) => {
-  appStore.getState().addResourceFile(fileName, contentType)
+  engine.addResource(fileName, contentType)
 })
 
 listen(ResourceEvents.RemoveResourceFile, (fileName: string) => {
-  appStore.getState().removeResourceFile(fileName)
+  engine.removeResource(fileName)
 })
 
 // TODO: we may a `updateResourceFile` event that uses a checksum to compare against

@@ -15,18 +15,18 @@ const startEngineWithSketchesDir = async (
 ) => {
   const { moduleIds, url } = await startSketchesServer(sketchesDirPath)
 
-  const { url: resourcesUrl, files: resourcesFiles } =
-    await startResourcesServer(resourcesDirAbsolute)
+  const { url: resourcesUrl, files: resources } = await startResourcesServer(resourcesDirAbsolute)
 
   await engine.importSketchModulesFromIds(url, moduleIds)
   engine.startStoreListener()
 
+  Object.values(resources).forEach(({ fileName, contentType }) => {
+    engine.addResource(fileName, contentType)
+  })
+
   engine.run()
 
-  return {
-    resourcesUrl,
-    resourcesFiles,
-  }
+  return { resourcesUrl }
 }
 
 export const handleSketchesDialog = async () => {
@@ -36,7 +36,7 @@ export const handleSketchesDialog = async () => {
 
   const { sketchesDirAbsolute, resourcesDirAbsolute } = response
 
-  const { resourcesUrl, resourcesFiles } = await startEngineWithSketchesDir(
+  const { resourcesUrl } = await startEngineWithSketchesDir(
     sketchesDirAbsolute,
     resourcesDirAbsolute,
   )
@@ -45,7 +45,6 @@ export const handleSketchesDialog = async () => {
     ...state,
     sketchesDir: sketchesDirAbsolute,
     resourcesUrl,
-    resourcesFiles,
   }))
 
   engine.ensureGlobalOptionNodes()

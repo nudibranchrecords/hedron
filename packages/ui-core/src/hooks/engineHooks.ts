@@ -60,7 +60,8 @@ export const useEngineStoreShallow = <T>(selector: (state: EngineStateWithAction
 
 export const EngineProvider = EngineContext.Provider
 
-export const useResource = (filename: string | null) => {
+export const useResourcePath = (filename: string | null) => {
   const resourcesUrl = useAppStore((state) => state.resourcesUrl)
-  return filename ? `${resourcesUrl}/${filename}` : null
+  const file = useEngineStore((state) => (filename ? state.resources[filename] : null))
+  return file?.fileName ? `${resourcesUrl}/${file.fileName}` : null
 }
