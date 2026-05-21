@@ -5,9 +5,9 @@ import {
   PanelBody,
   NodeContainer,
   useNodeOptionNodes,
-  useResource,
   useParamValue,
   ControlGrid,
+  useResourcePath,
 } from '@hedron-gl/ui-core'
 import { useTimelineData } from './useTimelineData'
 import { useTimelineHandlers } from './useTimelineHandlers'
@@ -38,7 +38,7 @@ export const TimelineGlobalPanel: React.FC<TimelineGlobalPanelProps> = ({ engine
 
   const audioFilename = useParamValue<ParamFileValue>(audioUrlNode.id)
 
-  const audioUrl = useResource(audioFilename.fileName)
+  const audioPath = useResourcePath(audioFilename.fileName)
 
   // Not very performant to be updating state on every frame, later we'll want to do this imperatively using useSubscribeToParamValue
   const playheadPositionMs = useParamValue<number>(playHeadPositionNode.id)
@@ -51,7 +51,7 @@ export const TimelineGlobalPanel: React.FC<TimelineGlobalPanelProps> = ({ engine
           <NodeContainer nodeId={isPlayingNode.id} />
           <NodeContainer nodeId={audioUrlNode.id} />
         </ControlGrid>
-        {audioUrl && <audio src={audioUrl} controls style={{ width: '100%' }} />}
+        {audioPath && <audio src={audioPath} controls style={{ width: '100%' }} />}
         <div className="mb-xl">
           <Timeline
             timeline={timeline}

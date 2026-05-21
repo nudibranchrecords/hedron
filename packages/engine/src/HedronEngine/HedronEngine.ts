@@ -3,6 +3,7 @@ import { type Clock } from '@hedron-gl/clock'
 import { listenToStore } from './storeListener'
 import { CanvasSizeMode, RendererType, Result, ShotArgsObject } from './types'
 import { importSketchModule } from './importSketchModule'
+import { addResource, removeResource } from '@store/actions/resources'
 import { createUniqueId } from '@utils/createUniqueId'
 import { ensureNodeConfig } from '@store/shared/ensureConfig'
 import { flushParamValueBuffer } from '@store/actionCreators/updateParamValue'
@@ -213,6 +214,19 @@ export class HedronEngine {
       if (!childGroup.includes(childId)) {
         childGroup.push(childId)
       }
+    })
+  }
+
+  public addResource(fileName: string, contentType: string) {
+    console.log(fileName)
+    this.store.setState((state) => {
+      addResource(state, fileName, contentType)
+    })
+  }
+
+  public removeResource(fileName: string) {
+    this.store.setState((state) => {
+      removeResource(state, fileName)
     })
   }
 

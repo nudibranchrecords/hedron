@@ -65,7 +65,8 @@ export class ResourcesServer extends EventEmitter {
       depth: 0, // flat — only top-level files
     })
 
-    this.watcher.on(FileWatchEvents.add, (filePath) => {
+    this.watcher.on(FileWatchEvents.add, (filePath, stats) => {
+      console.log(stats)
       this.emit(FileWatchEvents.add, path.basename(filePath))
     })
 
