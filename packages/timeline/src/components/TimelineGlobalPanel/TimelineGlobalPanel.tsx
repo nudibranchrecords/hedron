@@ -1,4 +1,3 @@
-import React from 'react'
 import { HedronEngine, ParamFileValue } from '@hedron-gl/engine'
 import {
   Panel,
