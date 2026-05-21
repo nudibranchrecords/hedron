@@ -65,7 +65,7 @@ export const handleLoadProjectDialog = async (projectPath?: string) => {
 
   const { sketchesDirAbsolute, projectData, savePath, resourcesDirAbsolute } = response
 
-  const { resourcesUrl, resourcesFiles } = await startEngineWithSketchesDir(
+  const { resourcesUrl } = await startEngineWithSketchesDir(
     sketchesDirAbsolute,
     resourcesDirAbsolute,
   )
@@ -78,7 +78,6 @@ export const handleLoadProjectDialog = async (projectPath?: string) => {
     ...state,
     currentSavePath: savePath,
     resourcesUrl,
-    resourcesFiles,
     ...projectData.app,
   }))
 
