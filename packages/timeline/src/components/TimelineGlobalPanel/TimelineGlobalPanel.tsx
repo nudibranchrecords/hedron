@@ -20,7 +20,7 @@ interface TimelineGlobalPanelProps {
   engine: HedronEngine
 }
 
-export const TimelineGlobalPanel: React.FC<TimelineGlobalPanelProps> = ({ engine }) => {
+export const TimelineGlobalPanel = ({ engine }: TimelineGlobalPanelProps) => {
   const timeline = useTimelineData()
   const manager = useTimelineManager(timeline)
 
