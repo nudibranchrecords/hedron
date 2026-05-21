@@ -11,6 +11,10 @@ import {
   FilePicker,
   useUpdateParamValue,
   useAppStore,
+  NodeControl,
+  NodeControlMain,
+  ControlGrid,
+  NodeControlInner,
 } from '@hedron-gl/ui-core'
 import { useTimelineData } from './useTimelineData'
 import { useTimelineHandlers } from './useTimelineHandlers'
@@ -55,14 +59,23 @@ export const TimelineGlobalPanel: React.FC<TimelineGlobalPanelProps> = ({ engine
     <Panel>
       <PanelHeader>Timeline</PanelHeader>
       <PanelBody>
-        <NodeContainer nodeId={isPlayingNode.id} />
-        <FilePicker
-          currentFile={audioFilename}
-          onFileChange={(file) => {
-            updateParamValue(audioUrlNode.id, file)
-          }}
-          availableFiles={fileList}
-        />
+        <ControlGrid>
+          <NodeContainer nodeId={isPlayingNode.id} />
+          <NodeControl>
+            <NodeControlMain>
+              <NodeControlInner>
+                <FilePicker
+                  currentFile={audioFilename}
+                  accept={['audio/*']}
+                  onFileChange={(file) => {
+                    updateParamValue(audioUrlNode.id, file)
+                  }}
+                  availableFiles={fileList}
+                />
+              </NodeControlInner>
+            </NodeControlMain>
+          </NodeControl>
+        </ControlGrid>
         {audioUrl && <audio src={audioUrl} controls style={{ width: '100%' }} />}
         <div className="mb-xl">
           <Timeline

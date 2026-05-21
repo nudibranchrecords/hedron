@@ -206,7 +206,24 @@ export const Trigger = ({ title = 'Trigger Pad', isActive, onClick }: BasicProps
   )
 }
 
-export const File = ({ title = 'File Picker', isActive, onClick }: BasicProps) => {
+const fileList = [
+  { fileName: 'MyFile.png', contentType: 'image/png' },
+  { fileName: 'cover-art.JPG', contentType: 'image/jpeg' },
+  { fileName: 'Loop.WAV', contentType: 'audio/wav' },
+  { fileName: 'MyFile.mp3', contentType: 'audio/mpeg' },
+  { fileName: 'voice-note.m4a', contentType: 'audio/mp4' },
+  { fileName: 'MyOtherFile.mp4', contentType: 'video/mp4' },
+  { fileName: 'trailer.webm', contentType: 'video/webm' },
+  { fileName: 'Patch.PDF', contentType: 'application/pdf' },
+  { fileName: 'session.hedron', contentType: 'application/json' },
+  { fileName: 'notes.txt', contentType: 'text/plain' },
+]
+
+interface FileStoryProps extends BasicProps {
+  accept?: string[] | null
+}
+
+const FileStory = ({ title = 'File Picker', isActive, onClick, accept }: FileStoryProps) => {
   const [file, setFile] = useState<ParamFileValue>({ fileName: null, contentType: null })
 
   return (
@@ -215,17 +232,48 @@ export const File = ({ title = 'File Picker', isActive, onClick }: BasicProps) =
         <NodeControlTitle>{title}</NodeControlTitle>
         <NodeControlInner>
           <FilePicker
-            availableFiles={[
-              { fileName: 'MyFile.png', contentType: 'image/*' },
-              { fileName: 'MyOtherFile.mp4', contentType: 'video/*' },
-            ]}
+            availableFiles={fileList}
             currentFile={file}
             onFileChange={setFile}
+            accept={accept}
           />
         </NodeControlInner>
       </NodeControlMain>
     </NodeControl>
   )
+}
+
+export const File = ({ title = 'File Picker', isActive, onClick }: BasicProps) => {
+  return <FileStory title={title} isActive={isActive} onClick={onClick} />
+}
+
+export const FileImagesAndMp3 = ({ title = 'Images + MP3', isActive, onClick }: BasicProps) => {
+  return (
+    <FileStory title={title} isActive={isActive} onClick={onClick} accept={['image/*', '.mp3']} />
+  )
+}
+
+export const FileAudioOnly = ({ title = 'Audio Only', isActive, onClick }: BasicProps) => {
+  return <FileStory title={title} isActive={isActive} onClick={onClick} accept={['audio/*']} />
+}
+
+export const FileExactMimeAndExtension = ({
+  title = 'PDF + MP4',
+  isActive,
+  onClick,
+}: BasicProps) => {
+  return (
+    <FileStory
+      title={title}
+      isActive={isActive}
+      onClick={onClick}
+      accept={['application/pdf', '.mp4']}
+    />
+  )
+}
+
+export const FileVideoOnly = ({ title = 'Video Only', isActive, onClick }: BasicProps) => {
+  return <FileStory title={title} isActive={isActive} onClick={onClick} accept={['video/*']} />
 }
 
 const params = [
