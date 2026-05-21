@@ -7,13 +7,7 @@ import {
   useNodeOptionNodes,
   useResource,
   useParamValue,
-  FilePicker,
-  useUpdateParamValue,
-  useAppStore,
-  NodeControl,
-  NodeControlMain,
   ControlGrid,
-  NodeControlInner,
 } from '@hedron-gl/ui-core'
 import { useTimelineData } from './useTimelineData'
 import { useTimelineHandlers } from './useTimelineHandlers'
@@ -43,13 +37,8 @@ export const TimelineGlobalPanel: React.FC<TimelineGlobalPanelProps> = ({ engine
   const audioUrlNode = optionNodes['audioUrl']!
 
   const audioFilename = useParamValue<ParamFileValue>(audioUrlNode.id)
-  const updateParamValue = useUpdateParamValue()
 
   const audioUrl = useResource(audioFilename.fileName)
-
-  const files = useAppStore((state) => state.resourcesFiles)
-
-  const fileList = Object.values(files)
 
   // Not very performant to be updating state on every frame, later we'll want to do this imperatively using useSubscribeToParamValue
   const playheadPositionMs = useParamValue<number>(playHeadPositionNode.id)
@@ -60,20 +49,7 @@ export const TimelineGlobalPanel: React.FC<TimelineGlobalPanelProps> = ({ engine
       <PanelBody>
         <ControlGrid>
           <NodeContainer nodeId={isPlayingNode.id} />
-          <NodeControl>
-            <NodeControlMain>
-              <NodeControlInner>
-                <FilePicker
-                  currentFile={audioFilename}
-                  accept={['audio/*']}
-                  onFileChange={(file) => {
-                    updateParamValue(audioUrlNode.id, file)
-                  }}
-                  availableFiles={fileList}
-                />
-              </NodeControlInner>
-            </NodeControlMain>
-          </NodeControl>
+          <NodeContainer nodeId={audioUrlNode.id} />
         </ControlGrid>
         {audioUrl && <audio src={audioUrl} controls style={{ width: '100%' }} />}
         <div className="mb-xl">

@@ -23,6 +23,12 @@ export const useAppStore = <T>(selector: (state: AppState) => T) => {
   return useStore(appStore, selector)
 }
 
+/** Selects a slice from the app store and applies shallow equality to reduce rerenders. */
+export const useAppStoreShallow = <T>(selector: (state: AppState) => T) => {
+  const appStore = useAppStoreWithContext()
+  return useStore(appStore, useShallow(selector))
+}
+
 export const AppStoreProvider = AppStoreContext.Provider
 
 export const EngineContext = createContext<HedronEngine | null>(null)
