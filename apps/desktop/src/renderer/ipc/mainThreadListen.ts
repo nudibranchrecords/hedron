@@ -46,9 +46,11 @@ listen(ResourceEvents.RemoveResourceFile, (fileName: string) => {
   appStore.getState().removeResourceFile(fileName)
 })
 
-listen(ResourceEvents.ChangeResourceFile, (_fileName: string) => {
-  // File content changed — no list update needed, consumers re-fetch from URL
-})
+// TODO: we may a `updateResourceFile` event that uses a checksum to compare against
+// if the file was changed, we could do some cachebusting trick on the fileName property to ensure a new http request is made
+// listen(ResourceEvents.ChangeResourceFile, (_fileName: string) => {
+//   // File content changed — no list update needed, consumers re-fetch from URL
+// })
 
 listen(AppMenuEvents.AppMenuClick, (item: AppMenuEventsItem) => {
   switch (item) {
