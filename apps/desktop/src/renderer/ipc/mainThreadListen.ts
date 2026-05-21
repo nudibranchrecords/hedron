@@ -37,19 +37,23 @@ listen(SketchEvents.BuildResult, (result: BuildResult) => {
   }
 })
 
-listen(ResourceEvents.AddResourceFile, ([fileName, contentType]: [string, string]) => {
-  engine.addResource(fileName, contentType)
-})
+listen(
+  ResourceEvents.AddResourceFile,
+  ([fileName, contentType, lastUpdated]: [string, string, number]) => {
+    engine.addResource(fileName, contentType, lastUpdated)
+  },
+)
 
 listen(ResourceEvents.RemoveResourceFile, (fileName: string) => {
   engine.removeResource(fileName)
 })
 
-// TODO: we may a `updateResourceFile` event that uses a checksum to compare against
-// if the file was changed, we could do some cachebusting trick on the fileName property to ensure a new http request is made
-// listen(ResourceEvents.ChangeResourceFile, (_fileName: string) => {
-//   // File content changed — no list update needed, consumers re-fetch from URL
-// })
+listen(
+  ResourceEvents.ChangeResourceFile,
+  ([fileName, contentType, lastUpdated]: [string, string, number]) => {
+    engine.addResource(fileName, contentType, lastUpdated)
+  },
+)
 
 listen(AppMenuEvents.AppMenuClick, (item: AppMenuEventsItem) => {
   switch (item) {

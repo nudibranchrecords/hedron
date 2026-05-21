@@ -217,10 +217,10 @@ export class HedronEngine {
     })
   }
 
-  public addResource(fileName: string, contentType: string) {
+  public addResource(fileName: string, contentType: string, lastUpdated: number = Date.now()) {
     console.log(fileName)
     this.store.setState((state) => {
-      addResource(state, fileName, contentType)
+      addResource(state, fileName, contentType, lastUpdated)
     })
   }
 

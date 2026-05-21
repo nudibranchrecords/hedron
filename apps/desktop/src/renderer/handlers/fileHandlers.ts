@@ -20,8 +20,8 @@ const startEngineWithSketchesDir = async (
   await engine.importSketchModulesFromIds(url, moduleIds)
   engine.startStoreListener()
 
-  Object.values(resources).forEach(({ fileName, contentType }) => {
-    engine.addResource(fileName, contentType)
+  Object.values(resources).forEach(({ fileName, contentType, lastUpdated }) => {
+    engine.addResource(fileName, contentType, lastUpdated)
   })
 
   engine.run()

@@ -1,10 +1,12 @@
 import fs from 'fs'
+import path from 'path'
 import { getContentTypeFromFileName } from '@utils/getContentTypeFromFileName'
 import {
   FileWatchEvents,
   ResourceEvents,
   ResourcesServerResponse,
   ResourceFileData,
+  ResourceFileWatchData,
 } from '@shared/Events'
 import { sendToMainWindow } from '@main/mainWindow'
 import { ResourcesServer } from '@main/ResourcesServer/ResourcesServer'
@@ -17,9 +19,12 @@ const getInitialFiles = async (dirPath: string): Promise<Record<string, Resource
   const dir = await fs.promises.opendir(dirPath)
   for await (const dirent of dir) {
     if (dirent.isFile()) {
+      const filePath = path.join(dirPath, dirent.name)
+      const stats = await fs.promises.stat(filePath)
       files[dirent.name] = {
         fileName: dirent.name,
         contentType: getContentTypeFromFileName(dirent.name),
+        lastUpdated: stats.mtimeMs,
       }
     }
   }
@@ -56,10 +61,10 @@ export const startResourcesServer = async (dirPath: string): Promise<ResourcesSe
 
   console.log(`[HEDRON] Resources server started at http://${host}:${port}`)
 
-  resourcesServer.on(FileWatchEvents.add, (fileName: string) => {
+  resourcesServer.on(FileWatchEvents.add, ({ fileName, lastUpdated }: ResourceFileWatchData) => {
     const contentType = getContentTypeFromFileName(fileName)
     console.log(`resource file added: ${fileName} with content type: ${contentType}`)
-    sendToMainWindow(ResourceEvents.AddResourceFile, [fileName, contentType])
+    sendToMainWindow(ResourceEvents.AddResourceFile, [fileName, contentType, lastUpdated])
   })
 
   resourcesServer.on(FileWatchEvents.unlink, (fileName: string) => {
@@ -67,9 +72,10 @@ export const startResourcesServer = async (dirPath: string): Promise<ResourcesSe
     sendToMainWindow(ResourceEvents.RemoveResourceFile, fileName)
   })
 
-  resourcesServer.on(FileWatchEvents.change, (fileName: string) => {
+  resourcesServer.on(FileWatchEvents.change, ({ fileName, lastUpdated }: ResourceFileWatchData) => {
+    const contentType = getContentTypeFromFileName(fileName)
     console.log(`resource file changed: ${fileName}`)
-    sendToMainWindow(ResourceEvents.ChangeResourceFile, fileName)
+    sendToMainWindow(ResourceEvents.ChangeResourceFile, [fileName, contentType, lastUpdated])
   })
 
   const url = `http://${host}:${port}`

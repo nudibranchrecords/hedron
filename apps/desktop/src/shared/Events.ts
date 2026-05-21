@@ -96,6 +96,12 @@ export enum ResourceEvents {
 export interface ResourceFileData {
   fileName: string
   contentType: string
+  lastUpdated: number
+}
+
+export interface ResourceFileWatchData {
+  fileName: string
+  lastUpdated: number
 }
 
 export interface ResourcesServerResponse {

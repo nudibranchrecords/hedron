@@ -1,6 +1,6 @@
 import { StoreApi } from 'zustand'
 import { Sketch, Sketches, SketchModuleItem, SketchModules } from './Sketch'
-import { ConfigParam, ParamFileValueNonEmpty, ParamValue, ParamValues } from './Param'
+import { ConfigParam, ParamValue, ParamValues } from './Param'
 import { Input } from './Input'
 import { ConfigShot } from './Shot'
 import { Nodes } from './Node'
@@ -9,7 +9,7 @@ export interface EngineData {
   sketches: Sketches
   nodes: Nodes
   paramValues: ParamValues
-  resources: Record<string, ParamFileValueNonEmpty>
+  resources: Record<string, { fileName: string; contentType: string; lastUpdated: number }>
 }
 
 interface AuxState {
