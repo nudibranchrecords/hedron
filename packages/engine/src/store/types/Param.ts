@@ -57,13 +57,12 @@ export interface ParamFileValueEmpty {
   contentType: null
   fileName: null
 }
-export interface ParamFileValueSelected {
-  // TODO: We should probably type contentType
+export interface ParamFileValueNonEmpty {
   contentType: string
   fileName: string
 }
 
-export type ParamFileValue = ParamFileValueEmpty | ParamFileValueSelected
+export type ParamFileValue = ParamFileValueEmpty | ParamFileValueNonEmpty
 
 export interface ParamFile extends ParamBase {
   valueType: 'file'
