@@ -207,7 +207,7 @@ export const Trigger = ({ title = 'Trigger Pad', isActive, onClick }: BasicProps
 }
 
 export const File = ({ title = 'File Picker', isActive, onClick }: BasicProps) => {
-  const [file, setFile] = useState<ParamFileValue>({ fileName: null, fileType: null })
+  const [file, setFile] = useState<ParamFileValue>({ fileName: null, contentType: null })
 
   return (
     <NodeControl isActive={isActive} onClick={onClick}>
@@ -216,8 +216,8 @@ export const File = ({ title = 'File Picker', isActive, onClick }: BasicProps) =
         <NodeControlInner>
           <FilePicker
             availableFiles={[
-              { fileName: 'MyFile.png', fileType: 'image' },
-              { fileName: 'MyOtherFile.mp4', fileType: 'video' },
+              { fileName: 'MyFile.png', contentType: 'image/*' },
+              { fileName: 'MyOtherFile.mp4', contentType: 'video/*' },
             ]}
             currentFile={file}
             onFileChange={setFile}

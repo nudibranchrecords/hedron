@@ -99,7 +99,7 @@ const _addNodeToState = (
         ...baseNode,
         valueType,
         defaultValue,
-        acceptedFileTypes: config.acceptedFileTypes,
+        accept: config.accept,
       }
       break
   }
@@ -113,7 +113,7 @@ const _addNodeToState = (
     (valueType === 'file' &&
       typeof defaultValue === 'object' &&
       'fileName' in defaultValue &&
-      'fileType' in defaultValue)
+      'contentType' in defaultValue)
   ) {
     state.paramValues[nodeId] = defaultValue
   } else {
