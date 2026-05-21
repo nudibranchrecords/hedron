@@ -24,11 +24,18 @@ export const FilePicker = ({
   // TODO: With popovers we wont need to explicitly manage state
   const [isOpen, setIsOpen] = useState(false)
   const filteredAvailableFiles = filterAvailableFiles(availableFiles, accept)
+  const isMissing =
+    currentFile.fileName && !availableFiles.some((file) => file.fileName === currentFile.fileName)
+
+  const iconName = isMissing ? 'error' : fileIcon
 
   return (
     <>
-      <button className={css.wrapper} onClick={() => setIsOpen(true)}>
-        <Icon name={fileIcon} /> {currentFile.fileName || 'Select File'}
+      <button
+        className={`${css.wrapper} ${isMissing ? css.missing : ''}`}
+        onClick={() => setIsOpen(true)}
+      >
+        <Icon name={iconName} /> {currentFile.fileName || 'Select File'}
       </button>
       {isOpen && (
         <Dialog onBackgroundClick={() => setIsOpen(false)}>
