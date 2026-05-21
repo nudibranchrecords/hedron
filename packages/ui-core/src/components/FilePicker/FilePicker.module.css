@@ -20,6 +20,10 @@
   border-radius: var(--borderRadiusSubtle);
 }
 
+.missing {
+  color: var(--errorTextColor);
+}
+
 .panel {
   width: 50%;
 }

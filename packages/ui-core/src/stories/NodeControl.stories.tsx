@@ -221,10 +221,19 @@ const fileList = [
 
 interface FileStoryProps extends BasicProps {
   accept?: string[] | null
+  startingFile?: ParamFileValue
 }
 
-const FileStory = ({ title = 'File Picker', isActive, onClick, accept }: FileStoryProps) => {
-  const [file, setFile] = useState<ParamFileValue>({ fileName: null, contentType: null })
+const FileStory = ({
+  title = 'File Picker',
+  isActive,
+  onClick,
+  accept,
+  startingFile,
+}: FileStoryProps) => {
+  const [file, setFile] = useState<ParamFileValue>(
+    startingFile || { fileName: null, contentType: null },
+  )
 
   return (
     <NodeControl isActive={isActive} onClick={onClick}>
@@ -247,6 +256,17 @@ export const File = ({ title = 'File Picker', isActive, onClick }: BasicProps) =
   return <FileStory title={title} isActive={isActive} onClick={onClick} />
 }
 
+export const FileMissing = ({ title = 'Video Only', isActive, onClick }: BasicProps) => {
+  return (
+    <FileStory
+      title={title}
+      isActive={isActive}
+      onClick={onClick}
+      startingFile={{ fileName: 'missing.mp4', contentType: 'video/mp4' }}
+    />
+  )
+}
+
 export const FileImagesAndMp3 = ({ title = 'Images + MP3', isActive, onClick }: BasicProps) => {
   return (
     <FileStory title={title} isActive={isActive} onClick={onClick} accept={['image/*', '.mp3']} />
@@ -254,7 +274,15 @@ export const FileImagesAndMp3 = ({ title = 'Images + MP3', isActive, onClick }: 
 }
 
 export const FileAudioOnly = ({ title = 'Audio Only', isActive, onClick }: BasicProps) => {
-  return <FileStory title={title} isActive={isActive} onClick={onClick} accept={['audio/*']} />
+  return (
+    <FileStory
+      title={title}
+      isActive={isActive}
+      onClick={onClick}
+      accept={['audio/*']}
+      startingFile={{ fileName: 'Loop.WAV', contentType: 'audio/wav' }}
+    />
+  )
 }
 
 export const FileExactMimeAndExtension = ({
