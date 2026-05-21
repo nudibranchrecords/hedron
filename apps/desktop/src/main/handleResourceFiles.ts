@@ -56,7 +56,8 @@ export const startResourcesServer = async (dirPath: string): Promise<ResourcesSe
 
   console.log(`[HEDRON] Resources server started at http://${host}:${port}`)
 
-  resourcesServer.on(FileWatchEvents.add, (fileName: string, contentType: string) => {
+  resourcesServer.on(FileWatchEvents.add, (fileName: string) => {
+    const contentType = getContentTypeFromFileName(fileName)
     console.log(`resource file added: ${fileName} with content type: ${contentType}`)
     sendToMainWindow(ResourceEvents.AddResourceFile, [fileName, contentType])
   })
