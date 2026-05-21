@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { ParamFileValue, ParamFileValueSelected } from '@hedron-gl/engine'
+import { ParamFileValue, ParamFileValueNonEmpty } from '@hedron-gl/engine'
 import css from './FilePicker.module.css'
 import { Dialog } from '@components/Dialog/Dialog'
 import { Panel, PanelBody, PanelHeader } from '@components/Panel/Panel'
@@ -8,7 +8,7 @@ import { fileIcon, Icon } from '@components/Icon/Icon'
 interface FilePickerProps {
   currentFile: ParamFileValue
   onFileChange: (val: ParamFileValue) => void
-  availableFiles: ParamFileValueSelected[]
+  availableFiles: ParamFileValueNonEmpty[]
 }
 
 // TODO: After upgrading to React 19 we can use popover API to simplify dialogs
