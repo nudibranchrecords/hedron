@@ -20,13 +20,9 @@ const startEngineWithSketchesDir = async (
   await engine.importSketchModulesFromIds(url, moduleIds)
   engine.startStoreListener()
 
-  Object.values(resources).forEach(({ fileName, contentType, lastUpdated }) => {
-    engine.addResource(fileName, contentType, lastUpdated)
-  })
-
   engine.run()
 
-  return { resourcesUrl }
+  return { resourcesUrl, resources }
 }
 
 export const handleSketchesDialog = async () => {
@@ -36,7 +32,7 @@ export const handleSketchesDialog = async () => {
 
   const { sketchesDirAbsolute, resourcesDirAbsolute } = response
 
-  const { resourcesUrl } = await startEngineWithSketchesDir(
+  const { resourcesUrl, resources } = await startEngineWithSketchesDir(
     sketchesDirAbsolute,
     resourcesDirAbsolute,
   )
@@ -46,6 +42,8 @@ export const handleSketchesDialog = async () => {
     sketchesDir: sketchesDirAbsolute,
     resourcesUrl,
   }))
+
+  engine.setResources(resources)
 
   engine.ensureGlobalOptionNodes()
   engine.initiatePlugins()
@@ -65,12 +63,15 @@ export const handleLoadProjectDialog = async (projectPath?: string) => {
 
   const { sketchesDirAbsolute, projectData, savePath, resourcesDirAbsolute } = response
 
-  const { resourcesUrl } = await startEngineWithSketchesDir(
+  const { resourcesUrl, resources } = await startEngineWithSketchesDir(
     sketchesDirAbsolute,
     resourcesDirAbsolute,
   )
 
   engineStore.getState().loadProject(projectData.engine)
+
+  // Overwrite project with whatever resources were actually found
+  engine.setResources(resources)
 
   engine.ensureGlobalOptionNodes()
 

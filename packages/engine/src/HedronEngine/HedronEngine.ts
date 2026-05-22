@@ -217,6 +217,15 @@ export class HedronEngine {
     })
   }
 
+  public setResources(
+    resources: Record<string, { fileName: string; contentType: string; lastUpdated: number }>,
+  ) {
+    this.store.setState((state) => ({
+      ...state,
+      resources,
+    }))
+  }
+
   public addResource(fileName: string, contentType: string, lastUpdated: number = Date.now()) {
     console.log(fileName)
     this.store.setState((state) => {
