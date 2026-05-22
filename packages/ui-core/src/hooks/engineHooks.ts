@@ -63,5 +63,5 @@ export const EngineProvider = EngineContext.Provider
 export const useResourcePath = (filename: string | null) => {
   const resourcesUrl = useAppStore((state) => state.resourcesUrl)
   const file = useEngineStore((state) => (filename ? state.resources[filename] : null))
-  return file?.fileName ? `${resourcesUrl}/${file.fileName}` : null
+  return file?.fileName ? `${resourcesUrl}/${file.fileName}?${file.lastUpdated}` : null
 }
