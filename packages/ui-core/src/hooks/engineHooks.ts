@@ -3,6 +3,7 @@ import { useStore } from 'zustand'
 import { useShallow } from 'zustand/react/shallow'
 import { AppStore, AppState } from '@hedron-gl/app-store'
 import { EngineStateWithActions, HedronEngine } from '@hedron-gl/engine'
+import { useParamValue } from './useParamValue'
 
 export const AppStoreContext = createContext<AppStore | null>(null)
 
@@ -63,5 +64,10 @@ export const EngineProvider = EngineContext.Provider
 export const useResourcePath = (filename: string | null) => {
   const resourcesUrl = useAppStore((state) => state.resourcesUrl)
   const file = useEngineStore((state) => (filename ? state.resources[filename] : null))
-  return file?.fileName ? `${resourcesUrl}/${file.fileName}?${file.lastUpdated}` : null
+  return file?.fileName ? `${resourcesUrl}/${file.fileName}?${file.lastModified}` : null
+}
+
+export const useResourcePathFromParamFile = (paramId: string) => {
+  const resourceFilename = useParamValue<string | null>(paramId)
+  return useResourcePath(resourceFilename)
 }

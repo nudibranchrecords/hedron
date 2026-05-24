@@ -112,8 +112,8 @@ const _addNodeToState = (
     (valueType === 'string' && typeof defaultValue === 'string') ||
     (valueType === 'file' &&
       typeof defaultValue === 'object' &&
-      'fileName' in defaultValue &&
-      'contentType' in defaultValue)
+      typeof defaultValue === 'string') ||
+    defaultValue === null
   ) {
     state.paramValues[nodeId] = defaultValue
   } else {

@@ -4,12 +4,13 @@ import { ConfigParam, ParamValue, ParamValues } from './Param'
 import { Input } from './Input'
 import { ConfigShot } from './Shot'
 import { Nodes } from './Node'
+import { Resources } from './Resources'
 
 export interface EngineData {
   sketches: Sketches
   nodes: Nodes
   paramValues: ParamValues
-  resources: Record<string, { fileName: string; contentType: string; lastUpdated: number }>
+  resources: Resources
 }
 
 interface AuxState {

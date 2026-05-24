@@ -1,3 +1,4 @@
+import { Resource } from '@hedron-gl/engine'
 import { ProjectData } from './types'
 
 export enum SketchEvents {
@@ -93,18 +94,7 @@ export enum ResourceEvents {
   ChangeResourceFile = 'change-resource-file',
 }
 
-export interface ResourceFileData {
-  fileName: string
-  contentType: string
-  lastUpdated: number
-}
-
-export interface ResourceFileWatchData {
-  fileName: string
-  lastUpdated: number
-}
-
 export interface ResourcesServerResponse {
-  files: Record<string, ResourceFileData>
+  files: Record<string, Resource>
   url: string | null
 }

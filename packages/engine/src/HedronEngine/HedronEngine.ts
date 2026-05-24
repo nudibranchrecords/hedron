@@ -27,6 +27,7 @@ import {
   ConfigShot,
   ConfigCustomNode,
   ChildGroupsLoose,
+  Resources,
 } from '@store/types'
 import { getSketchesOfModuleId } from '@store/selectors/getSketchesOfModuleId'
 import { createEngineStore, EngineStore } from '@store/engineStore'
@@ -217,19 +218,17 @@ export class HedronEngine {
     })
   }
 
-  public setResources(
-    resources: Record<string, { fileName: string; contentType: string; lastUpdated: number }>,
-  ) {
+  public setResources(resources: Resources) {
     this.store.setState((state) => ({
       ...state,
       resources,
     }))
   }
 
-  public addResource(fileName: string, contentType: string, lastUpdated: number = Date.now()) {
+  public addResource(fileName: string, contentType: string, lastModified: number = Date.now()) {
     console.log(fileName)
     this.store.setState((state) => {
-      addResource(state, fileName, contentType, lastUpdated)
+      addResource(state, fileName, contentType, lastModified)
     })
   }
 

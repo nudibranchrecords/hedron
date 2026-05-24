@@ -13,7 +13,7 @@ export class ResourcesServer extends EventEmitter {
   private server?: http.Server
   private watcher?: FSWatcher
 
-  private getLastUpdated = async (filePath: string, stats?: fs.Stats): Promise<number> => {
+  private getLastModified = async (filePath: string, stats?: fs.Stats): Promise<number> => {
     if (typeof stats?.mtimeMs === 'number') {
       return stats.mtimeMs
     }
@@ -79,8 +79,8 @@ export class ResourcesServer extends EventEmitter {
     })
 
     this.watcher.on(FileWatchEvents.add, async (filePath, stats) => {
-      const lastUpdated = await this.getLastUpdated(filePath, stats)
-      this.emit(FileWatchEvents.add, { fileName: path.basename(filePath), lastUpdated })
+      const lastModified = await this.getLastModified(filePath, stats)
+      this.emit(FileWatchEvents.add, { fileName: path.basename(filePath), lastModified })
     })
 
     this.watcher.on(FileWatchEvents.unlink, (filePath) => {
@@ -88,8 +88,8 @@ export class ResourcesServer extends EventEmitter {
     })
 
     this.watcher.on(FileWatchEvents.change, async (filePath) => {
-      const lastUpdated = await this.getLastUpdated(filePath)
-      this.emit(FileWatchEvents.change, { fileName: path.basename(filePath), lastUpdated })
+      const lastModified = await this.getLastModified(filePath)
+      this.emit(FileWatchEvents.change, { fileName: path.basename(filePath), lastModified })
     })
 
     console.log({ host: HOST, port })

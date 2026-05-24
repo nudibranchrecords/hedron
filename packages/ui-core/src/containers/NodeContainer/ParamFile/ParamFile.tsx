@@ -16,8 +16,8 @@ export const ParamFile = ({ id }: ParamFileProps) => {
 
   return (
     <FilePicker
-      currentFile={currentFile}
-      onFileChange={onFileChange}
+      currentFileName={currentFile}
+      onFileNameChange={onFileChange}
       availableFiles={availableFiles}
       accept={node.accept}
     />

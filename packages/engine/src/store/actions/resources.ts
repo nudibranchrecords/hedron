@@ -4,12 +4,12 @@ export const addResource = (
   state: EngineState,
   fileName: string,
   contentType: string,
-  lastUpdated: number,
+  lastModified: number,
 ) => {
   state.resources[fileName] = {
     fileName,
     contentType,
-    lastUpdated,
+    lastModified,
   }
 }
 

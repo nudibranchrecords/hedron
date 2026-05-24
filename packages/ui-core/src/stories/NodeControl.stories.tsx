@@ -207,16 +207,16 @@ export const Trigger = ({ title = 'Trigger Pad', isActive, onClick }: BasicProps
 }
 
 const fileList = [
-  { fileName: 'MyFile.png', contentType: 'image/png' },
-  { fileName: 'cover-art.JPG', contentType: 'image/jpeg' },
-  { fileName: 'Loop.WAV', contentType: 'audio/wav' },
-  { fileName: 'MyFile.mp3', contentType: 'audio/mpeg' },
-  { fileName: 'voice-note.m4a', contentType: 'audio/mp4' },
-  { fileName: 'MyOtherFile.mp4', contentType: 'video/mp4' },
-  { fileName: 'trailer.webm', contentType: 'video/webm' },
-  { fileName: 'Patch.PDF', contentType: 'application/pdf' },
-  { fileName: 'session.hedron', contentType: 'application/json' },
-  { fileName: 'notes.txt', contentType: 'text/plain' },
+  { fileName: 'MyFile.png', contentType: 'image/png', lastModified: 0 },
+  { fileName: 'cover-art.JPG', contentType: 'image/jpeg', lastModified: 0 },
+  { fileName: 'Loop.WAV', contentType: 'audio/wav', lastModified: 0 },
+  { fileName: 'MyFile.mp3', contentType: 'audio/mpeg', lastModified: 0 },
+  { fileName: 'voice-note.m4a', contentType: 'audio/mp4', lastModified: 0 },
+  { fileName: 'MyOtherFile.mp4', contentType: 'video/mp4', lastModified: 0 },
+  { fileName: 'trailer.webm', contentType: 'video/webm', lastModified: 0 },
+  { fileName: 'Patch.PDF', contentType: 'application/pdf', lastModified: 0 },
+  { fileName: 'session.hedron', contentType: 'application/json', lastModified: 0 },
+  { fileName: 'notes.txt', contentType: 'text/plain', lastModified: 0 },
 ]
 
 interface FileStoryProps extends BasicProps {
@@ -231,9 +231,7 @@ const FileStory = ({
   accept,
   startingFile,
 }: FileStoryProps) => {
-  const [file, setFile] = useState<ParamFileValue>(
-    startingFile || { fileName: null, contentType: null },
-  )
+  const [file, setFile] = useState<ParamFileValue>(startingFile || null)
 
   return (
     <NodeControl isActive={isActive} onClick={onClick}>
@@ -242,8 +240,8 @@ const FileStory = ({
         <NodeControlInner>
           <FilePicker
             availableFiles={fileList}
-            currentFile={file}
-            onFileChange={setFile}
+            currentFileName={file}
+            onFileNameChange={setFile}
             accept={accept}
           />
         </NodeControlInner>
@@ -258,12 +256,7 @@ export const File = ({ title = 'File Picker', isActive, onClick }: BasicProps) =
 
 export const FileMissing = ({ title = 'Video Only', isActive, onClick }: BasicProps) => {
   return (
-    <FileStory
-      title={title}
-      isActive={isActive}
-      onClick={onClick}
-      startingFile={{ fileName: 'missing.mp4', contentType: 'video/mp4' }}
-    />
+    <FileStory title={title} isActive={isActive} onClick={onClick} startingFile="missing.mp4" />
   )
 }
 
@@ -280,7 +273,7 @@ export const FileAudioOnly = ({ title = 'Audio Only', isActive, onClick }: Basic
       isActive={isActive}
       onClick={onClick}
       accept={['audio/*']}
-      startingFile={{ fileName: 'Loop.WAV', contentType: 'audio/wav' }}
+      startingFile="Loop.WAV"
     />
   )
 }

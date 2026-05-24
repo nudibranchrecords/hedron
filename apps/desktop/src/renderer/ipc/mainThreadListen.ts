@@ -39,8 +39,8 @@ listen(SketchEvents.BuildResult, (result: BuildResult) => {
 
 listen(
   ResourceEvents.AddResourceFile,
-  ([fileName, contentType, lastUpdated]: [string, string, number]) => {
-    engine.addResource(fileName, contentType, lastUpdated)
+  ([fileName, contentType, lastModified]: [string, string, number]) => {
+    engine.addResource(fileName, contentType, lastModified)
   },
 )
 
@@ -50,8 +50,8 @@ listen(ResourceEvents.RemoveResourceFile, (fileName: string) => {
 
 listen(
   ResourceEvents.ChangeResourceFile,
-  ([fileName, contentType, lastUpdated]: [string, string, number]) => {
-    engine.addResource(fileName, contentType, lastUpdated)
+  ([fileName, contentType, lastModified]: [string, string, number]) => {
+    engine.addResource(fileName, contentType, lastModified)
   },
 )
 

@@ -1,8 +1,8 @@
-import { ParamFileValueNonEmpty } from '@hedron-gl/engine'
+import { Resource } from '@hedron-gl/engine'
 
 const ACCEPTED_TOP_LEVEL_TYPES = new Set(['audio', 'image', 'video'])
 
-const matchesAcceptToken = (file: ParamFileValueNonEmpty, acceptToken: string) => {
+const matchesAcceptToken = (file: Resource, acceptToken: string) => {
   const normalizedToken = acceptToken.trim().toLowerCase()
   if (!normalizedToken) {
     return false
@@ -23,10 +23,7 @@ const matchesAcceptToken = (file: ParamFileValueNonEmpty, acceptToken: string) =
   return file.contentType.toLowerCase() === normalizedToken
 }
 
-export const filterAvailableFiles = (
-  availableFiles: ParamFileValueNonEmpty[],
-  accept?: string[] | null,
-) => {
+export const filterAvailableFiles = (availableFiles: Resource[], accept?: string[] | null) => {
   if (!accept?.length) {
     return availableFiles
   }

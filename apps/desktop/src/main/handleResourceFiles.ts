@@ -1,21 +1,16 @@
 import fs from 'fs'
 import path from 'path'
+import { Resource } from '@hedron-gl/engine'
 import { getContentTypeFromFileName } from '@utils/getContentTypeFromFileName'
-import {
-  FileWatchEvents,
-  ResourceEvents,
-  ResourcesServerResponse,
-  ResourceFileData,
-  ResourceFileWatchData,
-} from '@shared/Events'
+import { FileWatchEvents, ResourceEvents, ResourcesServerResponse } from '@shared/Events'
 import { sendToMainWindow } from '@main/mainWindow'
 import { ResourcesServer } from '@main/ResourcesServer/ResourcesServer'
 
 // Track the current server instance
 let currentResourcesServer: ResourcesServer | null = null
 
-const getInitialFiles = async (dirPath: string): Promise<Record<string, ResourceFileData>> => {
-  const files: Record<string, ResourceFileData> = {}
+const getInitialFiles = async (dirPath: string): Promise<Record<string, Resource>> => {
+  const files: Record<string, Resource> = {}
   const dir = await fs.promises.opendir(dirPath)
   for await (const dirent of dir) {
     if (dirent.isFile()) {
@@ -24,7 +19,7 @@ const getInitialFiles = async (dirPath: string): Promise<Record<string, Resource
       files[dirent.name] = {
         fileName: dirent.name,
         contentType: getContentTypeFromFileName(dirent.name),
-        lastUpdated: stats.mtimeMs,
+        lastModified: stats.mtimeMs,
       }
     }
   }
@@ -61,10 +56,10 @@ export const startResourcesServer = async (dirPath: string): Promise<ResourcesSe
 
   console.log(`[HEDRON] Resources server started at http://${host}:${port}`)
 
-  resourcesServer.on(FileWatchEvents.add, ({ fileName, lastUpdated }: ResourceFileWatchData) => {
+  resourcesServer.on(FileWatchEvents.add, ({ fileName, lastModified }: Resource) => {
     const contentType = getContentTypeFromFileName(fileName)
     console.log(`resource file added: ${fileName} with content type: ${contentType}`)
-    sendToMainWindow(ResourceEvents.AddResourceFile, [fileName, contentType, lastUpdated])
+    sendToMainWindow(ResourceEvents.AddResourceFile, [fileName, contentType, lastModified])
   })
 
   resourcesServer.on(FileWatchEvents.unlink, (fileName: string) => {
@@ -72,10 +67,10 @@ export const startResourcesServer = async (dirPath: string): Promise<ResourcesSe
     sendToMainWindow(ResourceEvents.RemoveResourceFile, fileName)
   })
 
-  resourcesServer.on(FileWatchEvents.change, ({ fileName, lastUpdated }: ResourceFileWatchData) => {
+  resourcesServer.on(FileWatchEvents.change, ({ fileName, lastModified }: Resource) => {
     const contentType = getContentTypeFromFileName(fileName)
     console.log(`resource file changed: ${fileName}`)
-    sendToMainWindow(ResourceEvents.ChangeResourceFile, [fileName, contentType, lastUpdated])
+    sendToMainWindow(ResourceEvents.ChangeResourceFile, [fileName, contentType, lastModified])
   })
 
   const url = `http://${host}:${port}`

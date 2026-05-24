@@ -53,22 +53,13 @@ export type ConfigParamString = AsConfig<ParamString>
 export type ParamEnumValue = string | number
 export type ParamEnumOption = { value: ParamEnumValue; label: string }
 
-export interface ParamFileValueEmpty {
-  contentType: null
-  fileName: null
-}
-export interface ParamFileValueNonEmpty {
-  contentType: string
-  fileName: string
-}
-
-export type ParamFileValue = ParamFileValueEmpty | ParamFileValueNonEmpty
-
 export interface ParamFile extends ParamBase {
   valueType: 'file'
-  defaultValue: ParamFileValue
+  defaultValue: string | null
   accept?: string[] | null
 }
+
+export type ParamFileValue = null | string
 
 export type ConfigParamFile = AsConfig<ParamFile> & {
   accept?: string[] | null
@@ -154,7 +145,7 @@ export type OptionNodesFromConfigs<TConfigs extends readonly OptionNodeConfigLik
     | undefined
 }
 
-export type ParamValue = number | boolean | string | ParamFileValue
+export type ParamValue = number | boolean | string | null
 export type ParamValues = Partial<Record<string, ParamValue>>
 export type ParamValueType = Param['valueType'] | null
 

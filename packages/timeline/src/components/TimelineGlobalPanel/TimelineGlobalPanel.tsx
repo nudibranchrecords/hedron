@@ -1,4 +1,4 @@
-import { HedronEngine, ParamFileValue } from '@hedron-gl/engine'
+import { HedronEngine } from '@hedron-gl/engine'
 import {
   Panel,
   PanelHeader,
@@ -7,7 +7,7 @@ import {
   useNodeOptionNodes,
   useParamValue,
   ControlGrid,
-  useResourcePath,
+  useResourcePathFromParamFile,
 } from '@hedron-gl/ui-core'
 import { useTimelineData } from './useTimelineData'
 import { useTimelineHandlers } from './useTimelineHandlers'
@@ -36,9 +36,7 @@ export const TimelineGlobalPanel = ({ engine }: TimelineGlobalPanelProps) => {
 
   const audioUrlNode = optionNodes['audioUrl']!
 
-  const audioFilename = useParamValue<ParamFileValue>(audioUrlNode.id)
-
-  const audioPath = useResourcePath(audioFilename.fileName)
+  const audioPath = useResourcePathFromParamFile(audioUrlNode.id)
 
   // Not very performant to be updating state on every frame, later we'll want to do this imperatively using useSubscribeToParamValue
   const playheadPositionMs = useParamValue<number>(playHeadPositionNode.id)
