@@ -6,7 +6,7 @@
   --mainBgColor: var(--bgColorDark3);
 }
 
-.wrapper {
+.fileButton {
   width: 100%;
   background: var(--mainBgColor);
   padding-left: 0.5rem;
@@ -39,6 +39,9 @@
     padding: 0.5rem;
     border-radius: var(--borderRadiusLarge);
     cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
 
     &:hover {
       background: var(--bgColorDark4);

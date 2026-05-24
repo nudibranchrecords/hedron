@@ -1,17 +1,30 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { ParamFileValue, Resource } from '@hedron-gl/engine'
 import { createPortal } from 'react-dom'
 import css from './FilePicker.module.css'
 import { filterAvailableFiles } from './filterAvailableFiles'
 import { Dialog } from '@components/Dialog/Dialog'
 import { Panel, PanelBody, PanelHeader } from '@components/Panel/Panel'
-import { fileIcon, Icon } from '@components/Icon/Icon'
+import { audioFileIcon, fileIcon, Icon, imageFileIcon, videoFileIcon } from '@components/Icon/Icon'
 
 interface FilePickerProps {
   currentFileName: ParamFileValue
   onFileNameChange: (fileName: ParamFileValue) => void
   availableFiles: Resource[]
   accept?: string[] | null
+}
+
+const iconNameLookup = (contentType: string) => {
+  if (contentType.startsWith('image/')) {
+    return imageFileIcon
+  }
+  if (contentType.startsWith('audio/')) {
+    return audioFileIcon
+  }
+  if (contentType.startsWith('video/')) {
+    return videoFileIcon
+  }
+  return fileIcon
 }
 
 // TODO: After upgrading to React 19 we can use popover API to simplify dialogs
@@ -25,15 +38,20 @@ export const FilePicker = ({
   // TODO: With popovers we wont need to explicitly manage state
   const [isOpen, setIsOpen] = useState(false)
   const filteredAvailableFiles = filterAvailableFiles(availableFiles, accept)
+
+  const currentFile = useMemo(() => {
+    return availableFiles.find((file) => file.fileName === currentFileName)
+  }, [availableFiles, currentFileName])
+
   const isMissing =
     currentFileName && !availableFiles.some((file) => file.fileName === currentFileName)
 
-  const iconName = isMissing ? 'error' : fileIcon
+  const iconName = isMissing ? 'error' : iconNameLookup(currentFile?.contentType || '')
 
   return (
     <>
       <button
-        className={`${css.wrapper} ${isMissing ? css.missing : ''}`}
+        className={`${css.fileButton} ${isMissing ? css.missing : ''}`}
         onClick={() => setIsOpen(true)}
       >
         <Icon name={iconName} /> {currentFileName || 'Select File'}
@@ -54,7 +72,7 @@ export const FilePicker = ({
                           setIsOpen(false)
                         }}
                       >
-                        {file.fileName}
+                        <Icon name={iconNameLookup(file.contentType)} /> {file.fileName}
                       </button>
                     </li>
                   ))}
