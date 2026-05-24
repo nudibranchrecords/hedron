@@ -110,10 +110,7 @@ const _addNodeToState = (
     (valueType === 'enum' &&
       (typeof defaultValue === 'string' || typeof defaultValue === 'number')) ||
     (valueType === 'string' && typeof defaultValue === 'string') ||
-    (valueType === 'file' &&
-      typeof defaultValue === 'object' &&
-      typeof defaultValue === 'string') ||
-    defaultValue === null
+    (valueType === 'file' && (typeof defaultValue === 'string' || defaultValue === null))
   ) {
     state.paramValues[nodeId] = defaultValue
   } else {
