@@ -1,4 +1,4 @@
-import { createContext, useContext } from 'react'
+import { createContext, useContext, useEffect } from 'react'
 import { useStore } from 'zustand'
 import { useShallow } from 'zustand/react/shallow'
 import { AppStore, AppState } from '@hedron-gl/app-store'
@@ -64,7 +64,18 @@ export const EngineProvider = EngineContext.Provider
 export const useResourcePath = (filename: string | null) => {
   const resourcesUrl = useAppStore((state) => state.resourcesUrl)
   const file = useEngineStore((state) => (filename ? state.resources[filename] : null))
-  return file?.fileName ? `${resourcesUrl}/${file.fileName}?${file.lastModified}` : null
+
+  useEffect(() => {
+    if (!resourcesUrl) {
+      console.warn(
+        'Resources URL is not set in the app store. Please set it to be able to load resources.',
+      )
+    }
+  }, [resourcesUrl])
+
+  return file?.fileName && resourcesUrl
+    ? `${resourcesUrl}/${file.fileName}?${file.lastModified}`
+    : null
 }
 
 export const useResourcePathFromParamFile = (paramId: string) => {
