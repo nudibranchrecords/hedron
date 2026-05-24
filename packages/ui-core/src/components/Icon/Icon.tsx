@@ -16,7 +16,6 @@ export type IconName =
   | 'delete'
   | 'description'
   | 'draft'
-  | 'draft'
   | 'drag_pan'
   | 'edit'
   | 'error'
