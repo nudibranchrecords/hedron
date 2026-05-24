@@ -94,7 +94,6 @@ export const createAppStore = () =>
             saveList: [],
             sketchesServerBuildResult: null,
             resourcesUrl: null,
-            resourcesFiles: {},
             setActiveSketchId: (id: string) => {
               set((state) => {
                 state.activeSketchId = id
