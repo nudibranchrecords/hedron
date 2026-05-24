@@ -6,4 +6,5 @@ export const initialState: EngineState = {
   paramValues: {},
   sketchModules: {},
   resources: {},
+  resourcesUrl: null,
 }

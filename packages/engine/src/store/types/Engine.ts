@@ -15,6 +15,7 @@ export interface EngineData {
 
 interface AuxState {
   sketchModules: SketchModules
+  resourcesUrl: string | null
 }
 
 export type EngineState = EngineData & AuxState

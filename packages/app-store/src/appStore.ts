@@ -52,7 +52,6 @@ export interface AppState {
   currentSavePath: string | null
   saveList: SaveItem[]
   sketchesServerBuildResult: BuildResult | null
-  resourcesUrl: string | null
   setSelectedNode: (sketchID: string, nodeId: string | null) => void
   setSelectedInput: (nodeId: string, inputId: string | null) => void
   setOpenedControlGroup: (sketchId: string, groupIndex: number, isOpen: boolean) => void
@@ -93,7 +92,6 @@ export const createAppStore = () =>
             openedControlGroups: {},
             saveList: [],
             sketchesServerBuildResult: null,
-            resourcesUrl: null,
             setActiveSketchId: (id: string) => {
               set((state) => {
                 state.activeSketchId = id

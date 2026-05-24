@@ -219,9 +219,14 @@ export class HedronEngine {
   }
 
   public setResources(resources: Resources) {
-    this.store.setState((state) => ({
-      ...state,
+    this.store.setState(() => ({
       resources,
+    }))
+  }
+
+  public setResourcesUrl(resourcesUrl: string | null) {
+    this.store.setState(() => ({
+      resourcesUrl,
     }))
   }
 
@@ -322,7 +327,10 @@ export class HedronEngine {
 
     shotNodes.forEach((shotNode) => {
       this.registerShot(shotNode.id, (shotArgs) => {
-        const params = getSketchParamValues(this.store.getState(), sketchId)
+        const state = this.store.getState()
+        const params = getSketchParamValues(state, sketchId, {
+          resourcesUrl: state.resourcesUrl,
+        })
 
         sketchInstance?.[shotNode.key]?.({
           params,
@@ -563,7 +571,9 @@ export class HedronEngine {
     }
 
     Object.keys(state.sketches).forEach((sketchId) => {
-      const paramValues = getSketchParamValues(state, sketchId)
+      const paramValues = getSketchParamValues(state, sketchId, {
+        resourcesUrl: state.resourcesUrl,
+      })
       const instance = sketchInstances.get(sketchId)
       if (instance?.getPasses) {
         try {

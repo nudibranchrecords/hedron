@@ -62,7 +62,7 @@ export const useEngineStoreShallow = <T>(selector: (state: EngineStateWithAction
 export const EngineProvider = EngineContext.Provider
 
 export const useResourcePath = (filename: string | null) => {
-  const resourcesUrl = useAppStore((state) => state.resourcesUrl)
+  const resourcesUrl = useEngineStore((state) => state.resourcesUrl)
   const file = useEngineStore((state) => (filename ? state.resources[filename] : null))
 
   useEffect(() => {

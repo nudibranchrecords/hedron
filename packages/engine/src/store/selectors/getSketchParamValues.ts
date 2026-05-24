@@ -1,7 +1,11 @@
 import { EngineState, isParamVector, ParamValue } from '@store/types'
 
 // Get the values of the parameters of a sketch, dealing with child nodes
-export const getSketchParamValues = (state: EngineState, sketchId: string) => {
+export const getSketchParamValues = (
+  state: EngineState,
+  sketchId: string,
+  config: { resourcesUrl: string | null },
+) => {
   const { sketches, paramValues, nodes } = state
   const sketchParamValues: Record<string, ParamValue | (ParamValue | undefined)[] | undefined> = {}
   const sketch = sketches[sketchId]
@@ -23,6 +27,14 @@ export const getSketchParamValues = (state: EngineState, sketchId: string) => {
       value = childNodeIds.map((childNodeId) => paramValues[childNodeId])
     } else {
       value = paramValues[id]
+    }
+
+    switch (node.valueType) {
+      case 'file': {
+        if (config.resourcesUrl) {
+          value = `${config.resourcesUrl}/${value}`
+        }
+      }
     }
 
     sketchParamValues[key] = value

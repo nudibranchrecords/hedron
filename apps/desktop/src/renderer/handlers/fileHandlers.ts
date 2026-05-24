@@ -20,9 +20,10 @@ const startEngineWithSketchesDir = async (
   await engine.importSketchModulesFromIds(url, moduleIds)
   engine.startStoreListener()
 
-  engine.run()
+  engine.setResources(resources)
+  engine.setResourcesUrl(resourcesUrl)
 
-  return { resourcesUrl, resources }
+  engine.run()
 }
 
 export const handleSketchesDialog = async () => {
@@ -32,18 +33,12 @@ export const handleSketchesDialog = async () => {
 
   const { sketchesDirAbsolute, resourcesDirAbsolute } = response
 
-  const { resourcesUrl, resources } = await startEngineWithSketchesDir(
-    sketchesDirAbsolute,
-    resourcesDirAbsolute,
-  )
+  await startEngineWithSketchesDir(sketchesDirAbsolute, resourcesDirAbsolute)
 
   appStore.setState((state: AppState) => ({
     ...state,
     sketchesDir: sketchesDirAbsolute,
-    resourcesUrl,
   }))
-
-  engine.setResources(resources)
 
   engine.ensureGlobalOptionNodes()
   engine.initiatePlugins()
@@ -63,22 +58,15 @@ export const handleLoadProjectDialog = async (projectPath?: string) => {
 
   const { sketchesDirAbsolute, projectData, savePath, resourcesDirAbsolute } = response
 
-  const { resourcesUrl, resources } = await startEngineWithSketchesDir(
-    sketchesDirAbsolute,
-    resourcesDirAbsolute,
-  )
+  await startEngineWithSketchesDir(sketchesDirAbsolute, resourcesDirAbsolute)
 
   engineStore.getState().loadProject(projectData.engine)
-
-  // Overwrite project with whatever resources were actually found
-  engine.setResources(resources)
 
   engine.ensureGlobalOptionNodes()
 
   appStore.setState((state: AppState) => ({
     ...state,
     currentSavePath: savePath,
-    resourcesUrl,
     ...projectData.app,
   }))
 
