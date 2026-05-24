@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { ParamFileValue, Resource } from '@hedron-gl/engine'
+import { createPortal } from 'react-dom'
 import css from './FilePicker.module.css'
 import { filterAvailableFiles } from './filterAvailableFiles'
 import { Dialog } from '@components/Dialog/Dialog'
@@ -37,29 +38,32 @@ export const FilePicker = ({
       >
         <Icon name={iconName} /> {currentFileName || 'Select File'}
       </button>
-      {isOpen && (
-        <Dialog onBackgroundClick={() => setIsOpen(false)}>
-          <Panel className={css.panel}>
-            <PanelHeader>Choose File</PanelHeader>
-            <PanelBody>
-              <ul className={css.fileList}>
-                {filteredAvailableFiles.map((file) => (
-                  <li key={file.fileName}>
-                    <button
-                      onClick={() => {
-                        onFileNameChange(file.fileName)
-                        setIsOpen(false)
-                      }}
-                    >
-                      {file.fileName}
-                    </button>
-                  </li>
-                ))}
-              </ul>
-            </PanelBody>
-          </Panel>
-        </Dialog>
-      )}
+      {isOpen &&
+        // TODO: With popovers we wont need a portal
+        createPortal(
+          <Dialog onBackgroundClick={() => setIsOpen(false)}>
+            <Panel className={css.panel}>
+              <PanelHeader>Choose File</PanelHeader>
+              <PanelBody>
+                <ul className={css.fileList}>
+                  {filteredAvailableFiles.map((file) => (
+                    <li key={file.fileName}>
+                      <button
+                        onClick={() => {
+                          onFileNameChange(file.fileName)
+                          setIsOpen(false)
+                        }}
+                      >
+                        {file.fileName}
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              </PanelBody>
+            </Panel>
+          </Dialog>,
+          document.body,
+        )}
     </>
   )
 }
