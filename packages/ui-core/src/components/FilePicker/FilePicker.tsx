@@ -65,7 +65,10 @@ export const FilePicker = ({
               <PanelBody>
                 <ul className={css.fileList}>
                   {filteredAvailableFiles.map((file) => (
-                    <li key={file.fileName}>
+                    <li
+                      key={file.fileName}
+                      className={file.fileName === currentFileName ? css.selectedFile : ''}
+                    >
                       <button
                         onClick={() => {
                           onFileNameChange(file.fileName)
