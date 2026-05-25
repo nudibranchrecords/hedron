@@ -122,8 +122,8 @@ export class TimelineManager {
     this.emitUpdate()
   }
 
-  setData(timeline: TimelineManagerData) {
-    this.timelineData = timeline
+  setTracks(tracks: TimelineManagerTrack[]) {
+    this.timelineData.tracks = tracks
     this.buildCache()
     this.emitUpdate()
   }

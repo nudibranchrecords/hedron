@@ -4,6 +4,7 @@ import { useShallow } from 'zustand/react/shallow'
 import { AppStore, AppState } from '@hedron-gl/app-store'
 import { EngineStateWithActions, HedronEngine } from '@hedron-gl/engine'
 import { useParamValue } from './useParamValue'
+import { useDeepEqual } from './useDeepEqual'
 
 export const AppStoreContext = createContext<AppStore | null>(null)
 
@@ -57,6 +58,12 @@ export const useEngineStoreShallow = <T>(selector: (state: EngineStateWithAction
   const engineStore = useEngine().getStore()
 
   return useStore(engineStore, useShallow(selector))
+}
+
+export const useEngineStoreDeepEqual = <T>(selector: (state: EngineStateWithActions) => T) => {
+  const engineStore = useEngine().getStore()
+
+  return useStore(engineStore, useDeepEqual(selector))
 }
 
 export const EngineProvider = EngineContext.Provider

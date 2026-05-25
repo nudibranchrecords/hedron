@@ -1,13 +1,8 @@
-import { useEffect, useRef } from 'react'
-import { useEngine, useEngineStore, useNodeOptionNodes } from '@hedron-gl/ui-core'
+import { useEngine } from '@hedron-gl/ui-core'
 
-import { TimelineManager } from '@/TimelineManager'
 import { TimelineInput } from '@/TimelineInput'
 
-export const useTimelineManager = (
-  timelineId: string,
-  timelineData: Parameters<typeof TimelineManager.prototype.setData>[0],
-) => {
+export const useTimelineManager = (timelineId: string) => {
   const engine = useEngine()
   const manager = engine
     .getPlugin<TimelineInput>('timeline-input')
@@ -18,12 +13,6 @@ export const useTimelineManager = (
       'Could not find TimelineManager instance on TimelineInput plugin. Timeline will not function.',
     )
   }
-
-  const managerRef = useRef<TimelineManager>(manager)
-
-  useEffect(() => {
-    managerRef.current.setData(timelineData)
-  }, [engine, timelineData, timelineId])
 
   return manager
 }

@@ -536,6 +536,10 @@ export class HedronEngine {
     return this.store
   }
 
+  public getStoreState() {
+    return this.store.getState()
+  }
+
   public getSaveData(): EngineData {
     return stripForSave(this.store.getState())
   }

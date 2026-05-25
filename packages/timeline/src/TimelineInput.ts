@@ -1,13 +1,13 @@
 import {
   defineOptionNodeConfigs,
   HedronEngine,
-  Input,
   IPlugin,
+  isEqual,
   OptionNodesFromConfigs,
 } from '@hedron-gl/engine'
 import { DEFAULT_TIMELINE_ID } from './constants'
 import { TimelineManager } from './TimelineManager'
-import type { TimelineManagerTrack, TimelineNode, TimelineTrackInput } from './types'
+import { getTimelineTracks } from './selectors/getTimelineTracks'
 
 // defineOptionNodeConfigs is only needed if we want nice TS node name inference in other parts of the plugin
 export const TIMELINE_OPTION_NODE_CONFIGS = defineOptionNodeConfigs([
@@ -64,28 +64,17 @@ export class TimelineInput implements IPlugin {
       const isPlaying = engine.getNodeOptionNode(timelineId, 'isPlaying')
       const playHeadPositionNode = engine.getNodeOptionNode(timelineId, 'playheadPositionMs')
 
-      const getTimelineTracks = (): TimelineManagerTrack[] => {
-        const timelineNode = engine.getNode<TimelineNode>(timelineId)
-        const trackIds = timelineNode?.childGroups.trackIds ?? []
+      const tracks = getTimelineTracks(engine.getStoreState(), timelineId)
+      manager.setTracks(tracks)
 
-        return trackIds
-          .map((inputId): TimelineManagerTrack | null => {
-            const inputNode = engine.getNode<TimelineTrackInput>(inputId)
-            if (!inputNode) return null
-
-            const targetNodeId = (inputNode as Input).targetNodeId
-            const targetNode = targetNodeId ? engine.getNode(targetNodeId) : undefined
-            if (!targetNode) return null
-
-            return {
-              id: inputId,
-              label: targetNode.title,
-              keyframes: inputNode.customData?.keyframes ?? [],
-              targetNodeId,
-            }
-          })
-          .filter((track): track is TimelineManagerTrack => track !== null)
-      }
+      engine.getStore().subscribe(
+        (state) => getTimelineTracks(state, timelineId),
+        (tracks, prevTracks) => {
+          if (!isEqual(tracks, prevTracks)) {
+            manager.setTracks(tracks)
+          }
+        },
+      )
 
       engine.subscribeToParamValue(isPlaying.id, (isPlaying) => {
         if (isPlaying) {
@@ -100,7 +89,7 @@ export class TimelineInput implements IPlugin {
 
         const changedTrackIds = Object.keys(changed)
         if (changedTrackIds.length > 0) {
-          const tracks = getTimelineTracks()
+          const tracks = getTimelineTracks(engine.getStoreState(), timelineId)
           const changedTargetNodeIds = changedTrackIds.map(
             (trackId) => tracks.find((track) => track.id === trackId)?.targetNodeId ?? trackId,
           )

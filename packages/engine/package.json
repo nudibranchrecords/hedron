@@ -46,6 +46,7 @@
     "access": "public"
   },
   "dependencies": {
+    "fast-is-equal": "^1.2.7",
     "immer": "^10.1.1",
     "lodash.debounce": "^4.0.8",
     "uid": "^2.0.2",

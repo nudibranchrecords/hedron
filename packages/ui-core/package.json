@@ -47,6 +47,7 @@
     "@floating-ui/react-dom": "^2.1.2",
     "@hedron-gl/app-store": "^1.0.0-alpha.4",
     "@uiw/react-color": "^2.3.4",
+    "fast-is-equal": "^1.2.7",
     "material-symbols": "^0.40.2",
     "react-error-boundary": "^4.1.2",
     "usehooks-ts": "^3.1.1",
