@@ -22,7 +22,7 @@ interface TimelineGlobalPanelProps {
 
 export const TimelineGlobalPanel = ({ engine }: TimelineGlobalPanelProps) => {
   const timeline = useTimelineData()
-  const manager = useTimelineManager(timeline)
+  const manager = useTimelineManager(DEFAULT_TIMELINE_ID, timeline)
 
   const { handlePlayheadChange, handleKeyframeDelete, handleKeyframeInsert } = useTimelineHandlers({
     engine,

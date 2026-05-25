@@ -1,31 +1,36 @@
-import { useEffect, useMemo } from 'react'
-import { useEngineStore, useNodeOptionNodes, useSubscribeToParamValue } from '@hedron-gl/ui-core'
+import { useEffect, useRef } from 'react'
+import { useEngine, useEngineStore, useNodeOptionNodes } from '@hedron-gl/ui-core'
+
 import { TimelineManager } from '@/TimelineManager'
-import { DEFAULT_TIMELINE_ID } from '@/constants'
+import { TimelineInput } from '@/TimelineInput'
 
 export const useTimelineManager = (
+  timelineId: string,
   timelineData: Parameters<typeof TimelineManager.prototype.setData>[0],
 ) => {
-  const manager = useMemo(() => new TimelineManager(timelineData), [timelineData])
+  const engine = useEngine()
+  const manager = engine
+    .getPlugin<TimelineInput>('timeline-input')
+    ?.timelineManagers.get(timelineId)
+
+  if (!manager) {
+    throw new Error(
+      'Could not find TimelineManager instance on TimelineInput plugin. Timeline will not function.',
+    )
+  }
+
+  const managerRef = useRef<TimelineManager>(manager)
 
   useEffect(() => {
-    manager.setData(timelineData)
-  }, [manager, timelineData])
+    managerRef.current.setData(timelineData)
+  }, [engine, timelineData, timelineId])
 
-  const optionNodes = useNodeOptionNodes(DEFAULT_TIMELINE_ID)
+  const optionNodes = useNodeOptionNodes(timelineId)
 
   const playHeadPositionNode = optionNodes['playheadPositionMs']
 
   const updateParamValue = useEngineStore((state) => state.updateParamValue)
   const updateMultipleParamValues = useEngineStore((state) => state.updateMultipleParamValues)
-
-  useSubscribeToParamValue<boolean>(optionNodes['isPlaying']?.id, (isPlaying) => {
-    if (isPlaying) {
-      manager.play()
-    } else {
-      manager.pause()
-    }
-  })
 
   useEffect(() => {
     if (!playHeadPositionNode?.id) {
@@ -35,8 +40,8 @@ export const useTimelineManager = (
       return
     }
 
-    manager.onUpdate((changed) => {
-      updateParamValue(playHeadPositionNode.id, manager.getPosition())
+    managerRef.current.onUpdate((changed) => {
+      updateParamValue(playHeadPositionNode.id, managerRef.current.getPosition())
 
       const changedTrackIds = Object.keys(changed)
       if (changedTrackIds.length > 0) {
@@ -58,10 +63,6 @@ export const useTimelineManager = (
     updateMultipleParamValues,
     updateParamValue,
   ])
-
-  useEffect(() => {
-    return () => manager.dispose()
-  }, [manager])
 
   return manager
 }

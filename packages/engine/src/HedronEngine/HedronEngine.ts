@@ -465,6 +465,10 @@ export class HedronEngine {
     this.renderer.passesNeedUpdate_webGPU = true
   }
 
+  public subscribeToParamValue(nodeId: string, callback: (value: ParamValue | undefined) => void) {
+    return this.store.subscribe((state) => state.paramValues[nodeId], callback)
+  }
+
   /**
    * Reconciles all sketches in the engine store to ensure their nodes match their module configurations (e.g. add/remove params and shots).
    * Useful after loading a project.
@@ -738,7 +742,7 @@ export class HedronEngine {
    * @param id The ID of the plugin to retrieve
    * @returns The plugin if it has been registered, undefined otherwise
    */
-  public getPlugin(id: string): IPlugin | undefined {
-    return this.plugins[id]
+  public getPlugin<T extends IPlugin>(id: string): T | undefined {
+    return this.plugins[id] as T | undefined
   }
 }
