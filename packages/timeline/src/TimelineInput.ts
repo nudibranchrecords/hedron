@@ -3,7 +3,6 @@ import {
   HedronEngine,
   IPlugin,
   OptionNodesFromConfigs,
-  Param,
 } from '@hedron-gl/engine'
 import { DEFAULT_TIMELINE_ID } from './constants'
 import { TimelineManager } from './TimelineManager'
@@ -59,18 +58,10 @@ export class TimelineInput implements IPlugin {
       }),
     )
 
-    this.timelineManagers.forEach((manager, id) => {
-      console.log(manager)
-      const state = engine.getStore().getState()
-      const timelineNode = state.nodes[id]
-      // const playheadPositionMs = timelineNode?.childGroups.optionNodeIds
-      //   .map((optionNodeId) => state.nodes[optionNodeId])
-      //   .find((node) => node?.key === 'playheadPositionMs')
-      const isPlaying = timelineNode?.childGroups.optionNodeIds
-        .map((optionNodeId) => state.nodes[optionNodeId] as Param)
-        .find((node) => node?.key === 'isPlaying')
+    this.timelineManagers.forEach((manager, timelineId) => {
+      const isPlaying = engine.getNodeOptionNode(timelineId, 'isPlaying')
 
-      engine.subscribeToParamValue(isPlaying!.id, (isPlaying) => {
+      engine.subscribeToParamValue(isPlaying.id, (isPlaying) => {
         if (isPlaying) {
           manager.play()
         } else {

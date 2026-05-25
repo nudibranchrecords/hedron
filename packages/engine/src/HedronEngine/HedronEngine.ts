@@ -250,6 +250,32 @@ export class HedronEngine {
     return this.store.getState().paramValues[nodeId]
   }
 
+  public getNodeOptionNode(nodeId: string, optionKey: string): Param | Shot {
+    const node = this.getNode(nodeId)
+    if (!node) {
+      throw new Error(`getNodeOptionNode: node "${nodeId}" not found`)
+    }
+
+    const optionNodeId = node.childGroups.optionNodeIds.find((id) => {
+      const optionNode = this.getNode<Param | Shot>(id)
+      return optionNode?.key === optionKey
+    })
+
+    if (!optionNodeId) {
+      throw new Error(
+        `getNodeOptionNode: option node with key "${optionKey}" not found for node "${nodeId}"`,
+      )
+    }
+
+    const optionNode = this.getNode<Param | Shot>(optionNodeId)
+
+    if (!optionNode) {
+      throw new Error(`getNodeOptionNode: option node "${optionNodeId}" not found`)
+    }
+
+    return optionNode
+  }
+
   public setParamValue(nodeId: string | undefined, value: ParamValue): void {
     if (!nodeId) {
       console.error('setParamValue: nodeId is undefined')
