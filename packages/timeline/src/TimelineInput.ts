@@ -1,11 +1,13 @@
 import {
   defineOptionNodeConfigs,
   HedronEngine,
+  Input,
   IPlugin,
   OptionNodesFromConfigs,
 } from '@hedron-gl/engine'
 import { DEFAULT_TIMELINE_ID } from './constants'
 import { TimelineManager } from './TimelineManager'
+import type { TimelineManagerTrack, TimelineNode, TimelineTrackInput } from './types'
 
 // defineOptionNodeConfigs is only needed if we want nice TS node name inference in other parts of the plugin
 export const TIMELINE_OPTION_NODE_CONFIGS = defineOptionNodeConfigs([
@@ -60,12 +62,53 @@ export class TimelineInput implements IPlugin {
 
     this.timelineManagers.forEach((manager, timelineId) => {
       const isPlaying = engine.getNodeOptionNode(timelineId, 'isPlaying')
+      const playHeadPositionNode = engine.getNodeOptionNode(timelineId, 'playheadPositionMs')
+
+      const getTimelineTracks = (): TimelineManagerTrack[] => {
+        const timelineNode = engine.getNode<TimelineNode>(timelineId)
+        const trackIds = timelineNode?.childGroups.trackIds ?? []
+
+        return trackIds
+          .map((inputId): TimelineManagerTrack | null => {
+            const inputNode = engine.getNode<TimelineTrackInput>(inputId)
+            if (!inputNode) return null
+
+            const targetNodeId = (inputNode as Input).targetNodeId
+            const targetNode = targetNodeId ? engine.getNode(targetNodeId) : undefined
+            if (!targetNode) return null
+
+            return {
+              id: inputId,
+              label: targetNode.title,
+              keyframes: inputNode.customData?.keyframes ?? [],
+              targetNodeId,
+            }
+          })
+          .filter((track): track is TimelineManagerTrack => track !== null)
+      }
 
       engine.subscribeToParamValue(isPlaying.id, (isPlaying) => {
         if (isPlaying) {
           manager.play()
         } else {
           manager.pause()
+        }
+      })
+
+      manager.onUpdate((changed) => {
+        engine.setParamValue(playHeadPositionNode.id, manager.getPosition())
+
+        const changedTrackIds = Object.keys(changed)
+        if (changedTrackIds.length > 0) {
+          const tracks = getTimelineTracks()
+          const changedTargetNodeIds = changedTrackIds.map(
+            (trackId) => tracks.find((track) => track.id === trackId)?.targetNodeId ?? trackId,
+          )
+
+          engine.setMultipleParamValues(
+            changedTargetNodeIds,
+            changedTrackIds.map((trackId) => changed[trackId]),
+          )
         }
       })
     })

@@ -25,44 +25,5 @@ export const useTimelineManager = (
     managerRef.current.setData(timelineData)
   }, [engine, timelineData, timelineId])
 
-  const optionNodes = useNodeOptionNodes(timelineId)
-
-  const playHeadPositionNode = optionNodes['playheadPositionMs']
-
-  const updateParamValue = useEngineStore((state) => state.updateParamValue)
-  const updateMultipleParamValues = useEngineStore((state) => state.updateMultipleParamValues)
-
-  useEffect(() => {
-    if (!playHeadPositionNode?.id) {
-      console.warn(
-        'Playhead position node not found, something went wrong with the timeline manager setup. Timeline will not update playhead position.',
-      )
-      return
-    }
-
-    managerRef.current.onUpdate((changed) => {
-      updateParamValue(playHeadPositionNode.id, managerRef.current.getPosition())
-
-      const changedTrackIds = Object.keys(changed)
-      if (changedTrackIds.length > 0) {
-        const changedTargetNodeIds = changedTrackIds.map(
-          (trackId) =>
-            timelineData.tracks.find((track) => track.id === trackId)?.targetNodeId ?? trackId,
-        )
-
-        updateMultipleParamValues(
-          changedTargetNodeIds,
-          changedTrackIds.map((trackId) => changed[trackId]),
-        )
-      }
-    })
-  }, [
-    manager,
-    playHeadPositionNode?.id,
-    timelineData.tracks,
-    updateMultipleParamValues,
-    updateParamValue,
-  ])
-
   return manager
 }

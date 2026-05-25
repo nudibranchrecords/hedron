@@ -284,6 +284,10 @@ export class HedronEngine {
     this.store.getState().updateParamValue(nodeId, value)
   }
 
+  public setMultipleParamValues(nodeIds: string[], values: ParamValue[]): void {
+    this.store.getState().updateMultipleParamValues(nodeIds, values)
+  }
+
   public addInput(inputType: string, targetNodeId: string) {
     const plugin = Object.values(this.plugins).find((p) => p.inputType === inputType)
 
