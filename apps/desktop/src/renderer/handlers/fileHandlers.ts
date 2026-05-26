@@ -24,6 +24,8 @@ const startEngineWithSketchesDir = async (
   engine.setResourcesUrl(resourcesUrl)
 
   engine.run()
+
+  return { resources, resourcesUrl }
 }
 
 export const handleSketchesDialog = async () => {
@@ -58,9 +60,10 @@ export const handleLoadProjectDialog = async (projectPath?: string) => {
 
   const { sketchesDirAbsolute, projectData, savePath, resourcesDirAbsolute } = response
 
-  await startEngineWithSketchesDir(sketchesDirAbsolute, resourcesDirAbsolute)
+  const { resources } = await startEngineWithSketchesDir(sketchesDirAbsolute, resourcesDirAbsolute)
 
-  engineStore.getState().loadProject(projectData.engine)
+  // Load project and overwrite resources with newly loaded ones
+  engineStore.getState().loadProject({ ...projectData.engine, resources })
 
   engine.ensureGlobalOptionNodes()
 
