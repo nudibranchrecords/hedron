@@ -24,6 +24,7 @@ export class TimelineManager {
     this.sortedKeyframesCache.clear()
     this.resetKeyframeIndexes()
     for (const track of this.timelineData.tracks) {
+      if (track.trackType !== 'keyframe') continue
       this.sortedKeyframesCache.set(
         track.id,
         [...track.keyframes].sort((a, b) => a.time - b.time),
