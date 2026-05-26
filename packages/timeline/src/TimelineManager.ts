@@ -1,4 +1,9 @@
-import type { TimelineManagerData, TimelineManagerTrack, Keyframe } from '@/types'
+import type {
+  TimelineManagerData,
+  TimelineManagerTrack,
+  Keyframe,
+  TimelineManagerAudioTrack,
+} from '@/types'
 
 export type TrackValues = Record<string, boolean>
 
@@ -85,6 +90,21 @@ export class TimelineManager {
     this.onUpdateCallback?.(changed)
   }
 
+  private getAudioTracksWithAudio(): {
+    track: TimelineManagerAudioTrack
+    audio: HTMLAudioElement
+  }[] {
+    return this.timelineData.tracks
+      .filter(
+        (track): track is TimelineManagerAudioTrack =>
+          track.trackType === 'audio' && this.audioCache.has(track.id),
+      )
+      .map((track) => ({
+        track,
+        audio: this.audioCache.get(track.id)!,
+      }))
+  }
+
   private tick = (now: number) => {
     if (!this.playing) return
 
@@ -117,14 +137,9 @@ export class TimelineManager {
     this.rafId = requestAnimationFrame(this.tick)
 
     // Play audio tracks
-    for (const track of this.timelineData.tracks) {
-      if (track.trackType === 'audio') {
-        const audio = this.audioCache.get(track.id)
-        if (audio) {
-          audio.currentTime = this.position / 1000
-          audio.play()
-        }
-      }
+    for (const { audio } of this.getAudioTracksWithAudio()) {
+      audio.currentTime = this.position / 1000
+      audio.play()
     }
   }
 
@@ -137,13 +152,8 @@ export class TimelineManager {
     }
 
     // Pause audio tracks
-    for (const track of this.timelineData.tracks) {
-      if (track.trackType === 'audio') {
-        const audio = this.audioCache.get(track.id)
-        if (audio) {
-          audio.pause()
-        }
-      }
+    for (const { audio } of this.getAudioTracksWithAudio()) {
+      audio.pause()
     }
   }
 
@@ -152,6 +162,11 @@ export class TimelineManager {
     this.lastFrameTime = null
     this.resetKeyframeIndexes()
     this.emitUpdate()
+
+    // Seek audio tracks
+    for (const { audio } of this.getAudioTracksWithAudio()) {
+      audio.currentTime = this.position / 1000
+    }
   }
 
   setTracks(tracks: TimelineManagerTrack[]) {

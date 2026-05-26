@@ -40,7 +40,7 @@ export const getTimelineTracks = (
       id: DEFAULT_AUDIO_TRACK_ID,
       label: fileValue,
       trackType: 'audio',
-      audioUrl: fileValue,
+      audioUrl: `${state.resourcesUrl}/${fileValue}`,
     })
   }
   /// end hack
