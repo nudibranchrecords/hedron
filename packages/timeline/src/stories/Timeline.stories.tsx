@@ -2,6 +2,8 @@
 
 import type { Meta, StoryObj } from '@storybook/react'
 import { useState, useEffect, useRef } from 'react'
+// eslint-disable-next-line no-restricted-imports
+import audioUrl from '../../../../apps/example-project/resources/120-4-4.mp3'
 import { TimelineManager } from '@/TimelineManager'
 import type { TrackValues } from '@/TimelineManager'
 import { Timeline } from '@/components/Timeline/Timeline'
@@ -64,6 +66,12 @@ export const Interactive = () => {
   const [timeline, setTimeline] = useState<TimelineManagerData>({
     durationMs: 10000,
     tracks: [
+      {
+        id: 'track-audio',
+        label: 'test.mp3',
+        trackType: 'audio',
+        audioUrl: audioUrl,
+      },
       {
         id: 'track-1',
         label: 'Visibility',

@@ -13,6 +13,7 @@ export class TimelineManager {
   private onUpdateCallback: OnUpdateCallback | null = null
   private cachedValues: TrackValues = {}
   private sortedKeyframesCache: Map<string, Keyframe[]> = new Map()
+  private audioCache: Map<string, HTMLAudioElement> = new Map()
   private lastKeyframeIndex: Map<string, number> = new Map()
 
   constructor(timeline: TimelineManagerData) {
@@ -24,11 +25,20 @@ export class TimelineManager {
     this.sortedKeyframesCache.clear()
     this.resetKeyframeIndexes()
     for (const track of this.timelineData.tracks) {
-      if (track.trackType !== 'keyframe') continue
-      this.sortedKeyframesCache.set(
-        track.id,
-        [...track.keyframes].sort((a, b) => a.time - b.time),
-      )
+      switch (track.trackType) {
+        case 'audio':
+          if (!this.audioCache.has(track.id)) {
+            const audio = new Audio(track.audioUrl)
+            this.audioCache.set(track.id, audio)
+          }
+          break
+        case 'keyframe':
+          this.sortedKeyframesCache.set(
+            track.id,
+            [...track.keyframes].sort((a, b) => a.time - b.time),
+          )
+          break
+      }
     }
   }
 
@@ -105,6 +115,17 @@ export class TimelineManager {
     this.playing = true
     this.lastFrameTime = null
     this.rafId = requestAnimationFrame(this.tick)
+
+    // Play audio tracks
+    for (const track of this.timelineData.tracks) {
+      if (track.trackType === 'audio') {
+        const audio = this.audioCache.get(track.id)
+        if (audio) {
+          audio.currentTime = this.position / 1000
+          audio.play()
+        }
+      }
+    }
   }
 
   pause() {
@@ -113,6 +134,16 @@ export class TimelineManager {
     if (this.rafId !== null) {
       cancelAnimationFrame(this.rafId)
       this.rafId = null
+    }
+
+    // Pause audio tracks
+    for (const track of this.timelineData.tracks) {
+      if (track.trackType === 'audio') {
+        const audio = this.audioCache.get(track.id)
+        if (audio) {
+          audio.pause()
+        }
+      }
     }
   }
 

@@ -38,7 +38,7 @@ export const getTimelineTracks = (
   if (fileValue) {
     tracks.unshift({
       id: DEFAULT_AUDIO_TRACK_ID,
-      label: 'Audio',
+      label: fileValue,
       trackType: 'audio',
       audioUrl: fileValue,
     })
