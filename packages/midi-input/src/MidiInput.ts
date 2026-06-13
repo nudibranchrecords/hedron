@@ -54,6 +54,12 @@ export class MidiInput implements IPlugin {
       sliderMin: 0,
       sliderMax: 0.99,
     },
+    {
+      key: 'autoMidiLearn',
+      title: 'Auto MIDI Learn',
+      valueType: 'boolean',
+      defaultValue: false,
+    },
   ] as const satisfies NodeConfig[]
   public readonly optionNodesConfig = [
     {
@@ -102,10 +108,7 @@ export class MidiInput implements IPlugin {
     optionNodes: ConfigToOptionsType<typeof MidiInput.prototype.optionNodesConfig>,
     midiEvent: MIDIEventWithValue,
   ) {
-    const value =
-      !optionNodes.override || optionNodes.overrideValue < 0
-        ? midiEvent.value
-        : optionNodes.overrideValue
+    const value = !optionNodes.override ? midiEvent.value : optionNodes.overrideValue
     return value
   }
 

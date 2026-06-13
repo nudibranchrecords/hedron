@@ -136,6 +136,7 @@ export const MidiGlobalPanel: React.FC<MidiGlobalPanelProps> = ({ engine }) => {
       <PanelBody>
         <ControlGrid>
           <NodeContainer nodeId={`${globalNodeId}-smoothing`} />
+          <NodeContainer nodeId={`${globalNodeId}-autoMidiLearn`} />
         </ControlGrid>
 
         <div className={styles.section}>

@@ -1,4 +1,4 @@
-import { useCallback, useState, useMemo } from 'react'
+import { useCallback, useState, useMemo, useEffect } from 'react'
 import { findNodeWithKeyFromIdList, HedronEngine, Input } from '@hedron-gl/engine'
 import { MIDIEvent, MidiManager } from '@hedron-gl/midi-manager'
 import { Button, ControlGrid, NodeContainer, useEngineStore } from '@hedron-gl/ui-core'
@@ -78,6 +78,36 @@ export const MidiInputPanel = ({ input, engine }: IProps) => {
   )
 
   const overrideEnabled = overrideNodeId ? Boolean(nodeValues[overrideNodeId]) : false
+
+  // Check if auto MIDI learn is enabled
+  const autoMidiLearnEnabled = Boolean(nodeValues['midi-input-global-autoMidiLearn'])
+
+  // Check if this is a brand new input (channel=1, note=1, type=ControlChange are defaults)
+  const channelNode = useMemo(
+    () => findNodeWithKeyFromIdList(nodes, 'channel', input.optionNodeIds),
+    [input.optionNodeIds, nodes],
+  )
+  const noteNode = useMemo(
+    () => findNodeWithKeyFromIdList(nodes, 'note', input.optionNodeIds),
+    [input.optionNodeIds, nodes],
+  )
+  
+  const isNewInput = useMemo(() => {
+    if (!channelNode || !noteNode) return false
+    const channel = nodeValues[channelNode.id]
+    const note = nodeValues[noteNode.id]
+    // Default values are: channel=1, note=1
+    return channel === 1 && note === 1
+  }, [channelNode, noteNode, nodeValues])
+
+  // Auto-enter MIDI learn mode when component mounts (if enabled and input is new)
+  useEffect(() => {
+    if (autoMidiLearnEnabled && isNewInput) {
+      runMidiLearn()
+    }
+    // Only run once on mount
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   return (
     <div>
