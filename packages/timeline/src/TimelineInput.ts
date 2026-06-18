@@ -66,15 +66,14 @@ export class TimelineInput implements IPlugin {
       const isPlaying = engine.getNodeOptionNode(timelineId, 'isPlaying')
       const playHeadPositionNode = engine.getNodeOptionNode(timelineId, 'playheadPositionMs')
 
-      const tracks = getTimelineTracks(engine.getStoreState(), timelineId)
-      manager.setTracks(tracks)
-
       engine.getStore().subscribe(
         (state) => getTimelineTracks(state, timelineId),
-        (tracks, prevTracks) => {
-          if (!isEqual(tracks, prevTracks)) {
-            manager.setTracks(tracks)
-          }
+        (tracks) => {
+          manager.setTracks(tracks)
+        },
+        {
+          equalityFn: isEqual,
+          fireImmediately: true,
         },
       )
 
