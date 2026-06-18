@@ -1,11 +1,13 @@
+import { HedronEngine } from '@HedronEngine/HedronEngine'
 import { nodesAsArray } from '@utils/nodesAsArray'
 import {
   EngineState,
   EngineStateWithActions,
   Input,
-  Node,
   NodeConfig,
   NodeValue,
+  Param,
+  Shot,
 } from '@store/types'
 
 /**
@@ -33,11 +35,13 @@ export interface IPlugin {
   description: string
 
   /**
+   * @deprecated prefer `onNewInput` to create option nodes
    * Config to generate option nodes. Follows same structure as sketch params config.
    */
-  optionNodesConfig: NodeConfig[]
+  optionNodesConfig?: NodeConfig[]
 
   /**
+   * @deprecated prefer `onEngineInitialize` to create global plugin option nodes
    * Config to generate global option nodes. Follows same structure as sketch params config.
    */
   globalOptionNodesConfig?: NodeConfig[]
@@ -46,7 +50,12 @@ export interface IPlugin {
    * Optional callback called after engine initialization (project load, sketches folder selection)
    * Useful for plugins that need to sync their state after the store is populated
    */
-  onEngineInitialize?: () => void
+  onEngineInitialize?: (engine: HedronEngine) => void
+
+  /**
+   * Optional callback called after each input for this plugin is added
+   */
+  onNewInput?: (engine: HedronEngine, inputId: string) => void
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -86,9 +95,17 @@ export const getOptionNodesFromIds = <T extends readonly any[]>(
       return
     }
 
-    if (node?.nodeType === 'input') {
+    if (node.nodeType === 'custom') {
       console.warn(
-        `Node ${node.title}: ${node.id} is an input node. Input nodes cannot be used as option nodes for plugins.`,
+        `Node ${node.id} is a custom node. Custom nodes cannot be used as option nodes for plugins.`,
+      )
+
+      return
+    }
+
+    if (node.nodeType === 'input') {
+      console.warn(
+        `Node ${node.id} is an input node. Input nodes cannot be used as option nodes for plugins.`,
       )
       return
     }
@@ -114,7 +131,7 @@ export const handleEachInput = <T extends readonly any[]>(
   }: {
     input: Input
     optionNodes: ConfigToOptionsType<T>
-    targetNode: Exclude<Node, Input>
+    targetNode: Param | Shot
     targetNodeValue: NodeValue
   }) => void,
 ) => {
@@ -134,7 +151,14 @@ export const handleEachInput = <T extends readonly any[]>(
 
     if (targetNode.nodeType === 'input') {
       console.warn(
-        `Input ${input.title}: ${input.id} is trying to target another input ${targetNode.title}: ${targetNode.id}. This is not supported.`,
+        `Input ${input.id} is trying to target another input ${targetNode.id}. This is not supported.`,
+      )
+      return
+    }
+
+    if (targetNode.nodeType === 'custom') {
+      console.warn(
+        `Input ${input.id} is trying to target a custom node ${targetNode.id}. This is not supported.`,
       )
       return
     }
@@ -147,7 +171,7 @@ export const handleEachInput = <T extends readonly any[]>(
       return
     }
 
-    const optionNodes = getOptionNodesFromIds<T>(storeState, input.optionNodeIds)
+    const optionNodes = getOptionNodesFromIds<T>(storeState, input.childGroups.optionNodeIds)
 
     callback({ input, optionNodes, targetNode, targetNodeValue })
   })

@@ -15,6 +15,7 @@ import {
   AudioGlobalWidget,
   AudioGlobalPanel,
 } from '@hedron-gl/audio-input'
+import { TimelineInput, TimelineGlobalWidget, TimelineGlobalPanel } from '@hedron-gl/timeline'
 
 export const performanceMonitor = new Stats()
 
@@ -35,6 +36,7 @@ engine.registerPlugin(new MidiInput(engine))
 engine.registerPlugin(new LFOInput(engine))
 engine.registerPlugin(new AudioInput(engine))
 engine.registerPlugin(new GamepadInput(engine))
+engine.registerPlugin(new TimelineInput())
 
 export const pluginViews = {
   inputPanel: {
@@ -55,6 +57,10 @@ export const pluginViews = {
     midi: {
       widget: MidiGlobalWidget,
       panel: MidiGlobalPanel,
+    },
+    timeline: {
+      widget: TimelineGlobalWidget,
+      panel: TimelineGlobalPanel,
     },
   },
 }

@@ -173,11 +173,15 @@ const findMatchingInputsForEvent = (
       const controllerIndexNode = findNodeWithKeyFromIdList(
         nodes,
         'controllerIndex',
-        input.optionNodeIds,
+        input.childGroups.optionNodeIds,
       )
 
-      const inputTypeNode = findNodeWithKeyFromIdList(nodes, 'inputType', input.optionNodeIds)
-      const indexNode = findNodeWithKeyFromIdList(nodes, 'index', input.optionNodeIds)
+      const inputTypeNode = findNodeWithKeyFromIdList(
+        nodes,
+        'inputType',
+        input.childGroups.optionNodeIds,
+      )
+      const indexNode = findNodeWithKeyFromIdList(nodes, 'index', input.childGroups.optionNodeIds)
 
       if (!controllerIndexNode || !inputTypeNode || !indexNode) return false
 
@@ -240,7 +244,7 @@ const getInputsForController = (
     const controllerIndexNode = findNodeWithKeyFromIdList(
       nodes,
       'controllerIndex',
-      node.optionNodeIds,
+      node.childGroups.optionNodeIds,
     )
 
     if (!controllerIndexNode) return false
@@ -443,8 +447,12 @@ const ControllerItem: React.FC<ControllerItemProps> = ({
     if (!lastEvent) return null
 
     const matchingInput = controllerInputs.find((input) => {
-      const inputTypeNode = findNodeWithKeyFromIdList(nodes, 'inputType', input.optionNodeIds)
-      const indexNode = findNodeWithKeyFromIdList(nodes, 'index', input.optionNodeIds)
+      const inputTypeNode = findNodeWithKeyFromIdList(
+        nodes,
+        'inputType',
+        input.childGroups.optionNodeIds,
+      )
+      const indexNode = findNodeWithKeyFromIdList(nodes, 'index', input.childGroups.optionNodeIds)
 
       if (!inputTypeNode || !indexNode) return false
 
@@ -526,7 +534,7 @@ const ControllerItem: React.FC<ControllerItemProps> = ({
                     const targetNode = nodes[input.targetNodeId]
                     const isFlashing = flashingInputs.has(input.id)
                     let type, index: number | string | undefined
-                    input.optionNodeIds.forEach((nodeId) => {
+                    input.childGroups.optionNodeIds.forEach((nodeId) => {
                       const node = nodes[nodeId]
 
                       if (!node || !('key' in node)) {

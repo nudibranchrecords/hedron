@@ -7,6 +7,7 @@ import {
   SketchConfigShotImported,
   ParamVector,
   isParamVectorValueType,
+  CustomNode,
 } from '@store/types'
 import { createUniqueId } from '@utils/createUniqueId'
 
@@ -16,7 +17,10 @@ const keysLookup: Record<ParamVectorValueType, string[]> = {
   rgb: ['r', 'g', 'b'],
 }
 
-type AddNodeConfig = EnsureRequiredValueType<SketchConfigParamImported> | SketchConfigShotImported
+export type AddNodeConfig =
+  | EnsureRequiredValueType<SketchConfigParamImported>
+  | SketchConfigShotImported
+  | CustomNode
 
 // Exclude param types that have children (vector3, rgb)
 type ParamConfigNonVector = Exclude<
@@ -37,15 +41,27 @@ const _addNodeToState = (
   optionNodeIds: string[],
   config: AddNodeConfig,
 ) => {
+  if (config.nodeType === 'custom') {
+    const { childGroups, ...rest } = config
+
+    state.nodes[nodeId] = {
+      ...rest,
+      id: nodeId,
+      parentIds: parentId ? [parentId] : [],
+      childGroups,
+    }
+
+    return state.nodes[nodeId]
+  }
+
   if (config.nodeType === 'shot') {
     state.nodes[nodeId] = {
       ...config,
       id: nodeId,
       nodeType: 'shot',
       title: config.title ?? config.key,
-      parentId,
-      childrenIds: optionNodeIds,
-      optionNodeIds,
+      parentIds: parentId ? [parentId] : [],
+      childGroups: { optionNodeIds, inputNodeIds: [] },
     }
 
     return state.nodes[nodeId]
@@ -65,9 +81,8 @@ const _addNodeToState = (
     nodeType: 'param' as const,
     title,
     hidden,
-    parentId,
-    childrenIds: optionNodeIds,
-    optionNodeIds,
+    parentIds: parentId ? [parentId] : [],
+    childGroups: { optionNodeIds, inputNodeIds: [] },
   }
 
   switch (valueType) {
@@ -155,10 +170,8 @@ export const addNode = (
       id: nodeId,
       nodeType: 'param',
       title: config.title ?? config.key,
-      vectorComponentIds,
-      childrenIds: vectorComponentIds,
-      parentId,
-      optionNodeIds: [],
+      childGroups: { optionNodeIds: [], inputNodeIds: [], vectorComponentIds },
+      parentIds: parentId ? [parentId] : [],
     } as ParamVector
 
     for (const [index, childNodeId] of vectorComponentIds.entries()) {

@@ -4,7 +4,8 @@ import { SetterCreator } from '@store/types'
 import { createUniqueId } from '@utils/createUniqueId'
 
 export const createAddInput: SetterCreator<'addInput'> =
-  (setState) => (inputConfig, optionsNodeConfig) => {
+  (setState) =>
+  (inputConfig, optionsNodeConfig = []) => {
     const id = createUniqueId()
 
     const optionNodeIds: string[] = []
@@ -24,14 +25,16 @@ export const createAddInput: SetterCreator<'addInput'> =
       }
       state.nodes[id] = {
         ...inputConfig,
-        optionNodeIds,
-        childrenIds: optionNodeIds,
+        childGroups: {
+          optionNodeIds,
+          inputNodeIds: [],
+        },
         id,
         nodeType: 'input',
       }
 
       // Add children Ids to target node (so that cleanup works if target node is deleted)
-      state.nodes[inputConfig.targetNodeId]?.childrenIds.push(id)
+      state.nodes[inputConfig.targetNodeId]?.childGroups.inputNodeIds.push(id)
     })
 
     return id

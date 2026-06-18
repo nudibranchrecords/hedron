@@ -1,13 +1,16 @@
-import { EngineState } from '@store/types'
+import { ChildGroupsLoose, EngineState } from '@store/types'
 
 export const deleteNode = (state: EngineState, nodeId: string) => {
   const node = state.nodes[nodeId]
   if (node) {
-    // Clear childrenIds from parent node, if applicable
-    if (node.parentId) {
-      const parentNode = state.nodes[node.parentId]
+    // Clear childIds from parent nodes, if applicable
+    for (const parentId of node.parentIds) {
+      const parentNode = state.nodes[parentId]
       if (parentNode) {
-        parentNode.childrenIds = parentNode.childrenIds.filter((id) => id !== nodeId)
+        for (const groupKey in parentNode.childGroups) {
+          const childGroups = parentNode.childGroups as ChildGroupsLoose
+          childGroups[groupKey] = childGroups[groupKey].filter((id) => id !== nodeId)
+        }
       }
     }
 
@@ -16,8 +19,10 @@ export const deleteNode = (state: EngineState, nodeId: string) => {
     delete state.nodeValues[nodeId]
 
     // Delete all child nodes recursively
-    for (const childNodeId of node.childrenIds) {
-      deleteNode(state, childNodeId)
+    for (const groupKey in node.childGroups) {
+      for (const childNodeId of (node.childGroups as ChildGroupsLoose)[groupKey]) {
+        deleteNode(state, childNodeId)
+      }
     }
   }
 }

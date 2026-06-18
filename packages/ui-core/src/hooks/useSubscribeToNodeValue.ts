@@ -3,7 +3,7 @@ import { ParamVector, NodeValue } from '@hedron-gl/engine'
 import { useEngineStore, useEngineStoreWithContext } from '@hooks/storeHooks'
 
 export const useSubscribeToNodeValue = <T extends NodeValue>(
-  nodeId: string,
+  nodeId: string | undefined,
   callback: (value: T) => void,
 ) => {
   const engineStore = useEngineStoreWithContext()
@@ -11,6 +11,10 @@ export const useSubscribeToNodeValue = <T extends NodeValue>(
   callbackRef.current = callback
 
   useEffect(() => {
+    if (!nodeId) {
+      return
+    }
+
     const unsubscribe = engineStore.subscribe(
       (state) => state.nodeValues[nodeId],
       (value) => {
@@ -36,7 +40,9 @@ export const useSubscribeToNodeChildrenValues = <T extends NodeValue>(
   callback: (value: T[]) => void,
 ) => {
   const engineStore = useEngineStoreWithContext()
-  const { vectorComponentIds } = useEngineStore((state) => state.nodes[nodeId] as ParamVector)
+  const {
+    childGroups: { vectorComponentIds },
+  } = useEngineStore((state) => state.nodes[nodeId] as ParamVector)
 
   const callbackRef = useRef(callback)
   callbackRef.current = callback

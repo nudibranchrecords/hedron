@@ -1,4 +1,4 @@
-import { Input, Node } from '@hedron-gl/engine'
+import { Param as ParamType, Shot as ShotType } from '@hedron-gl/engine'
 import { ParamNumber } from './ParamNumber/ParamNumber'
 import { ParamBoolean } from './ParamBoolean/ParamBoolean'
 import { ParamEnum } from './ParamEnum/ParamEnum'
@@ -20,7 +20,7 @@ import { useEngineStore, useAppStore } from '@hooks/storeHooks'
 import { useInputCount } from '@hooks/useInputCount'
 import { useOnSelectNode } from '@hooks/useOnSelectNode'
 
-const getInputElement = (node: Exclude<Node, Input>) => {
+const getInputElement = (node: ParamType | ShotType) => {
   if (node.nodeType === 'shot') {
     return <Shot id={node.id} />
   }
@@ -56,6 +56,10 @@ export const NodeContainer = ({ nodeId }: { nodeId: string }) => {
 
   if (!node) {
     return <i>Node with id {nodeId} not found</i>
+  }
+
+  if (node.nodeType === 'custom') {
+    return "NodeContainer: Tried to render a custom node, this isn't supported. Node ID: " + node.id
   }
 
   if (node.nodeType === 'input') {

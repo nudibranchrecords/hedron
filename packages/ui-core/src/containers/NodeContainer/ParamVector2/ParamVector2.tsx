@@ -10,7 +10,7 @@ interface ParamVector2Props {
 export const ParamVector2 = ({ id }: ParamVector2Props) => {
   const node = useEngineStore((state) => state.nodes[id] as ParamVector2Type)
 
-  const { vectorComponentIds } = node
+  const { vectorComponentIds } = node.childGroups
 
   return (
     <div className={c.container}>

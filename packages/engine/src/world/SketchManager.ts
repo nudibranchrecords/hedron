@@ -1,52 +1,13 @@
-import { Group } from 'three'
-import { Pass } from 'postprocessing'
-import { PassNode } from 'three/webgpu'
-import { type ShaderNodeObject } from 'three/tsl'
-import { ShotArgsObject } from '@HedronEngine/types'
-import { SketchModule } from '@store/types'
+import {
+  SketchInstance,
+  SketchInstanceErrorType,
+  SketchInstanceMap,
+  SketchModule,
+} from '@store/types'
 import { getDebugScene } from '@world/debugScene'
 import { EngineScene } from '@world/EngineScene'
 
-type SketchUpdateParams = {
-  deltaFrame: number
-  deltaTime: number
-  params: { [key: string]: unknown }
-  scene: EngineScene
-}
-
-type SketchShotFunc = (
-  args: Omit<SketchUpdateParams, 'deltaFrame' | 'deltaTime'> & { shotArgs: ShotArgsObject },
-) => void
-
-enum SketchErrorType {
-  Create = 'Create',
-  Dispose = 'Dispose',
-}
-
-type SketchManagerErrorHandler = (sketchInstanceId: string, type?: SketchErrorType) => void
-
-export type SketchInstance = {
-  id: string
-  update: (arg: SketchUpdateParams) => void
-  root?: Group
-
-  getPasses?: (engineScene: EngineScene) => Pass[]
-
-  getWebGPUPass?: (
-    prevPass: ShaderNodeObject<PassNode>,
-    renderPassNode: ShaderNodeObject<PassNode>,
-  ) => ShaderNodeObject<PassNode>
-
-  /**
-   * Called when the sketch is removed from the scene.
-   * It should clean up any resources, event listeners, or references it holds.
-   */
-  dispose(engineScene: EngineScene): () => void
-} & Record<string, SketchShotFunc>
-
-export type SketchInstanceMap = Map<string, SketchInstance>
-
-export type SketchInstanceError = (sketchInstanceId: string, errorType?: SketchErrorType) => void
+type SketchManagerErrorHandler = (sketchInstanceId: string, type?: SketchInstanceErrorType) => void
 
 export class SketchManager {
   private sketchInstances: SketchInstanceMap = new Map()
@@ -62,7 +23,7 @@ export class SketchManager {
     scene: EngineScene,
   ): SketchInstance | undefined => {
     try {
-      const sketchInstance = new module(scene) as SketchInstance
+      const sketchInstance = new module(scene)
       sketchInstance.id = instanceId
 
       if (sketchInstance.root) {
@@ -74,7 +35,7 @@ export class SketchManager {
       return sketchInstance
     } catch (error) {
       console.error('Failed to create sketch:', error)
-      this.onError(instanceId, SketchErrorType.Create)
+      this.onError(instanceId, 'Create')
     }
   }
 
@@ -107,7 +68,7 @@ export class SketchManager {
       this.sketchInstances.get(instanceId)?.dispose?.(engineScene)
     } catch (error) {
       console.error(`Error disposing sketch instance ${instanceId}:`, error)
-      this.onError(instanceId, SketchErrorType.Dispose)
+      this.onError(instanceId, 'Dispose')
     }
 
     this.sketchInstances.delete(instanceId)

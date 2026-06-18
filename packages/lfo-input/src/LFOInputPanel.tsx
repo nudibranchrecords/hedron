@@ -14,7 +14,7 @@ export const LFOInputPanel = ({ input }: IProps) => {
   return (
     <div>
       <ControlGrid className="mb-xl">
-        {input.optionNodeIds.map((id) => (
+        {input.childGroups.optionNodeIds.map((id) => (
           <NodeContainer key={id} nodeId={id} />
         ))}
       </ControlGrid>

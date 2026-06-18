@@ -1,5 +1,10 @@
 import { StoreApi } from 'zustand'
+import { Group } from 'three'
+import { Pass } from 'postprocessing'
+import { PassNode } from 'three/webgpu'
+import { type ShaderNodeObject } from 'three/tsl'
 import { ShotArgsObject } from '@HedronEngine/types'
+import { EngineScene } from '@world/EngineScene'
 
 export interface SketchState {
   id: string
@@ -11,27 +16,80 @@ export interface SketchState {
 
 export type Sketches = { [key: string]: SketchState }
 
-// TODO: How to type this??
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type SketchModule = any
+type SketchUpdateParams = {
+  deltaFrame: number
+  deltaTime: number
+  params: { [key: string]: unknown }
+  scene: EngineScene
+}
+
+type SketchShotFunc = (
+  args: Omit<SketchUpdateParams, 'deltaFrame' | 'deltaTime'> & { shotArgs: ShotArgsObject },
+) => void
+
+export type SketchInstance = {
+  id: string
+  update: (arg: SketchUpdateParams) => void
+  root?: Group
+
+  getPasses?: (engineScene: EngineScene) => Pass[]
+
+  getWebGPUPass?: (
+    prevPass: ShaderNodeObject<PassNode>,
+    renderPassNode: ShaderNodeObject<PassNode>,
+  ) => ShaderNodeObject<PassNode>
+
+  dispose(engineScene: EngineScene): () => void
+} & Record<string, SketchShotFunc>
+
+export type SketchInstanceMap = Map<string, SketchInstance>
+export type SketchInstanceErrorType = 'Create' | 'Dispose'
+export type SketchInstanceError = (
+  sketchInstanceId: string,
+  errorType?: SketchInstanceErrorType,
+) => void
+
+export type SketchModule = {
+  new (scene: EngineScene): SketchInstance
+  getConfig?: () => SketchConfigRaw
+}
+
+interface ChildGroups {
+  optionNodeIds: string[]
+  inputNodeIds: string[]
+}
+
+/**
+ * ChildGroupsLoose can be used with "as" when we want to allow for custom properties on ChildGroups,
+ * without compromising type safety for the known properties.
+ */
+export interface ChildGroupsLoose extends ChildGroups {
+  [key: string]: string[]
+}
 
 export interface NodeBase {
   id: string
   title: string
-  parentId: string | null
-  childrenIds: string[]
-  optionNodeIds: string[]
+  parentIds: string[]
+  childGroups: ChildGroups
+
+  /** Allows plugins to attach custom arbitrary data to any node.
+   * Best for special cases where params don't make sense (e.g. timeline keyframe data) */
+  customData?: Record<string, unknown>
 }
 
 export interface ParamBase extends NodeBase {
   nodeType: 'param'
   key: string
   groupIndex: number
+  hidden?: boolean
 }
 
 export interface ParamVectorBase extends ParamBase {
   nodeType: 'param'
-  vectorComponentIds: string[]
+  childGroups: ChildGroups & {
+    vectorComponentIds: string[]
+  }
 }
 
 export interface ParamNumber extends ParamBase {
@@ -85,10 +143,16 @@ export type ParamVectorValueType = ParamVector['valueType']
 export type Shot = NodeBase & {
   nodeType: 'shot'
   key: string
+  hidden?: boolean
   groupIndex: number
 }
 
-export type Node = Param | Shot | Input
+export type CustomNode = NodeBase & {
+  nodeType: 'custom'
+  customNodeType: string
+}
+
+export type Node = Param | Shot | Input | CustomNode
 export type Nodes = Partial<Record<string, Node>>
 export type NodeType = Node['nodeType']
 
@@ -192,7 +256,10 @@ export type SketchConfigShotImported = SketchConfigItemImported<SketchConfigShot
   nodeType: 'shot'
 }
 
-export type SketchConfigNodeImported = SketchConfigParamImported | SketchConfigShotImported
+export type SketchConfigNodeImported =
+  | SketchConfigParamImported
+  | SketchConfigShotImported
+  | CustomNode
 
 export interface SketchConfigNodeGroup {
   groupTitle?: string
@@ -268,8 +335,8 @@ interface Actions {
   loadProject: (project: EngineData) => void
   reset: () => void
   addInput: (
-    inputConfig: Omit<Input, 'id' | 'optionNodeIds' | 'childrenIds' | 'nodeType'>,
-    optionsNodeConfig: NodeConfig[],
+    inputConfig: Omit<Input, 'id' | 'optionNodeIds' | 'childGroups' | 'nodeType'>,
+    optionsNodeConfig?: NodeConfig[],
   ) => string
   deleteNode: (nodeId: string) => void
 }

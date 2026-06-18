@@ -3,6 +3,7 @@ import { type Clock } from '@hedron-gl/clock'
 import { listenToStore } from './storeListener'
 import { CanvasSizeMode, RendererType, Result, ShotArgsObject } from './types'
 import { importSketchModule } from './importSketchModule'
+import { createUniqueId } from '@utils/createUniqueId'
 import { ensureConfig } from '@store/shared/ensureConfig'
 import { flushNodeValueBuffer } from '@store/actionCreators/updateNodeValue'
 import { getSketchShotNodes } from '@store/selectors/getSketchShotNodes'
@@ -10,14 +11,25 @@ import { initializeGlobalVars } from '@globalVars'
 import { IPlugin } from '@plugins/Plugin'
 import { stripForSave } from '@utils/stripForSave'
 import { Renderer } from '@world/Renderer'
-import { SketchInstance, SketchInstanceError, SketchManager } from '@world/SketchManager'
+import { SketchManager } from '@world/SketchManager'
 import { createDebugScene } from '@world/debugScene'
-import { EngineData, SketchModuleItem } from '@store/types'
+import {
+  EngineData,
+  Node,
+  NodeConfig,
+  NodeValue,
+  SketchInstanceError,
+  SketchInstance,
+  SketchModuleItem,
+  Param,
+  Shot,
+  ChildGroupsLoose,
+} from '@store/types'
 import { getSketchesOfModuleId } from '@store/selectors/getSketchesOfModuleId'
 import { createEngineStore, EngineStore } from '@store/engineStore'
 import { getSketchParamValues } from '@store/selectors/getSketchParamValues'
 import { EngineScene } from '@world/EngineScene'
-import { addNode } from '@store/shared/addNode'
+import { addNode, AddNodeConfig } from '@store/shared/addNode'
 
 export class HedronEngine {
   public rendererType: RendererType
@@ -108,6 +120,140 @@ export class HedronEngine {
     // Make plugins available in the global window object for debugging
     window.__HEDRON = window.__HEDRON || {}
     window.__HEDRON.plugins = this.plugins
+  }
+
+  public addNode(nodeId: string, parentId: string | null, config: AddNodeConfig) {
+    this.store.setState((state) => {
+      addNode(state, nodeId, parentId, ensureConfig(config as NodeConfig))
+    })
+  }
+
+  public addNodeOnce(nodeId: string, parentId: string | null, config: AddNodeConfig) {
+    if (this.store.getState().nodes[nodeId]) return
+    this.addNode(nodeId, parentId, config)
+  }
+
+  public addOptionNodes(parentId: string, configs: NodeConfig[]) {
+    this.store.setState((state) => {
+      const parentNode = state.nodes[parentId]
+      if (!parentNode) {
+        console.error(`addOptionNodes: node "${parentId}" not found`)
+        return
+      }
+
+      for (const cfg of configs) {
+        const optionNodeExists = parentNode.childGroups.optionNodeIds.some((id) => {
+          const node = state.nodes[id] as Param | Shot | undefined
+          return node?.key === cfg.key
+        })
+
+        if (optionNodeExists) continue
+
+        const nodeId = createUniqueId()
+        addNode(state, nodeId, parentId, ensureConfig(cfg))
+        parentNode.childGroups.optionNodeIds.push(nodeId)
+      }
+    })
+  }
+
+  public setNodeCustomData(nodeId: string, customData: Record<string, unknown>) {
+    this.store.setState((state) => {
+      const node = state.nodes[nodeId]
+      if (!node) {
+        console.error(`setNodeCustomData: node "${nodeId}" not found`)
+        return
+      }
+
+      node.customData = {
+        ...node.customData,
+        ...customData,
+      }
+    })
+  }
+
+  /** Adds `parentId` to `childId.parentIds` and appends `childId` to the given `childGroupKey` on the parent. */
+  public addChildToNode(parentId: string, childGroupKey: string, childId: string) {
+    this.store.setState((state) => {
+      const childNode = state.nodes[childId]
+      const parentNode = state.nodes[parentId]
+
+      if (!childNode) {
+        console.error(`addChildToNode: node "${childId}" not found`)
+        return
+      }
+
+      if (!parentNode) {
+        console.error(`addChildToNode: parent node "${parentId}" not found`)
+        return
+      }
+
+      const childGroups = parentNode.childGroups as ChildGroupsLoose
+
+      let childGroup = childGroups[childGroupKey]
+      if (!childGroup) {
+        childGroup = childGroups[childGroupKey] = []
+      }
+
+      if (!childNode.parentIds.includes(parentId)) {
+        childNode.parentIds.push(parentId)
+      }
+
+      if (!childGroup.includes(childId)) {
+        childGroup.push(childId)
+      }
+    })
+  }
+
+  public getNode<T extends Node = Node>(nodeId: string): T | undefined {
+    return this.store.getState().nodes[nodeId] as T | undefined
+  }
+
+  public getNodeValue(nodeId: string): NodeValue | undefined {
+    return this.store.getState().nodeValues[nodeId]
+  }
+
+  public setNodeValue(nodeId: string | undefined, value: NodeValue): void {
+    if (!nodeId) {
+      console.error('setNodeValue: nodeId is undefined')
+      return
+    }
+    this.store.getState().updateNodeValue(nodeId, value)
+  }
+
+  public addInput(inputType: string, targetNodeId: string) {
+    const plugin = Object.values(this.plugins).find((p) => p.inputType === inputType)
+
+    if (!plugin) {
+      console.error(`No plugin found for input type ${inputType}`)
+      return
+    }
+
+    const state = this.store.getState()
+
+    const targetNode = state.nodes[targetNodeId]
+
+    const numAlready = targetNode?.childGroups?.inputNodeIds?.length ?? 0
+
+    const input = {
+      inputType: plugin.inputType,
+      targetNodeId,
+      title: `${plugin.inputType} ${numAlready + 1}`,
+      parentIds: [targetNodeId],
+    }
+
+    const addInput = this.store.getState().addInput
+
+    const inputId = addInput(input)
+
+    /**
+     * FIXME: Once `optionNodesConfig` is removed, we wont need this
+     * All plugins will use `onNewInput` to add these manually
+     * */
+    this.addOptionNodes(inputId, plugin.optionNodesConfig ?? [])
+
+    plugin.onNewInput?.(this, inputId)
+
+    return inputId
   }
 
   /**
@@ -313,6 +459,7 @@ export class HedronEngine {
   }
 
   /**
+   * @deprecated - Plugins should be using onEngineInitialize
    * Ensures global option nodes exist for all registered plugins
    * This should be called when the engine is ready to use plugin global options
    */
@@ -320,7 +467,12 @@ export class HedronEngine {
     // For each registered plugin, ensure global option nodes exist
     Object.values(this.plugins).forEach((plugin) => {
       this.createGlobalOptionNodesForPlugin(plugin)
-      plugin.onEngineInitialize?.()
+    })
+  }
+
+  public initiatePlugins() {
+    Object.values(this.plugins).forEach((plugin) => {
+      plugin.onEngineInitialize?.(this)
     })
   }
 

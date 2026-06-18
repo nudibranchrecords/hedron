@@ -28,7 +28,11 @@ export const useNodeBreadcrumbs = (nodeId: string): BreadcrumbItem[] => {
         id: node.id,
         isSelectable: node.nodeType === 'param' || node.nodeType === 'shot',
       })
-      currentId = node.parentId
+      currentId =
+        node.parentIds.find((id) => {
+          const nodeType = nodes[id]?.nodeType
+          return nodeType && nodeType !== 'custom'
+        }) || null
     }
 
     return breadcrumbs

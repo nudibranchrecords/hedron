@@ -3,7 +3,7 @@ import { createUniqueId } from '@utils/createUniqueId'
 import { engineScenes } from '@world/scenes'
 import { EngineScene } from '@world/EngineScene'
 import { Renderer } from '@world/Renderer'
-import { SketchInstanceError } from '@world/SketchManager'
+import { SketchInstanceError } from '@store/types'
 
 let debugScene: EngineScene | undefined
 
