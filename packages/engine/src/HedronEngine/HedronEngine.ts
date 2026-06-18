@@ -3,6 +3,7 @@ import { type Clock } from '@hedron-gl/clock'
 import { listenToStore } from './storeListener'
 import { CanvasSizeMode, RendererType, Result, ShotArgsObject } from './types'
 import { importSketchModule } from './importSketchModule'
+import { addResource, removeResource } from '@store/actions/resources'
 import { createUniqueId } from '@utils/createUniqueId'
 import { ensureNodeConfig } from '@store/shared/ensureConfig'
 import { flushParamValueBuffer } from '@store/actionCreators/updateParamValue'
@@ -26,6 +27,7 @@ import {
   ConfigShot,
   ConfigCustomNode,
   ChildGroupsLoose,
+  Resources,
 } from '@store/types'
 import { getSketchesOfModuleId } from '@store/selectors/getSketchesOfModuleId'
 import { createEngineStore, EngineStore } from '@store/engineStore'
@@ -144,9 +146,10 @@ export class HedronEngine {
     this.addNode(nodeId, parentId, config)
   }
 
-  public addOptionNodes(parentId: string, configs: (ConfigParam | ConfigShot)[]) {
+  public addOptionNodes(parentId: string, configs: readonly (ConfigParam | ConfigShot)[]) {
     this.store.setState((state) => {
       const parentNode = state.nodes[parentId]
+
       if (!parentNode) {
         console.error(`addOptionNodes: node "${parentId}" not found`)
         return
@@ -212,6 +215,30 @@ export class HedronEngine {
       if (!childGroup.includes(childId)) {
         childGroup.push(childId)
       }
+    })
+  }
+
+  public setResources(resources: Resources) {
+    this.store.setState(() => ({
+      resources,
+    }))
+  }
+
+  public setResourcesUrl(resourcesUrl: string | null) {
+    this.store.setState(() => ({
+      resourcesUrl,
+    }))
+  }
+
+  public addResource(fileName: string, contentType: string, lastModified: number = Date.now()) {
+    this.store.setState((state) => {
+      addResource(state, fileName, contentType, lastModified)
+    })
+  }
+
+  public removeResource(fileName: string) {
+    this.store.setState((state) => {
+      removeResource(state, fileName)
     })
   }
 
@@ -300,7 +327,10 @@ export class HedronEngine {
 
     shotNodes.forEach((shotNode) => {
       this.registerShot(shotNode.id, (shotArgs) => {
-        const params = getSketchParamValues(this.store.getState(), sketchId)
+        const state = this.store.getState()
+        const params = getSketchParamValues(state, sketchId, {
+          resourcesUrl: state.resourcesUrl,
+        })
 
         sketchInstance?.[shotNode.key]?.({
           params,
@@ -541,7 +571,9 @@ export class HedronEngine {
     }
 
     Object.keys(state.sketches).forEach((sketchId) => {
-      const paramValues = getSketchParamValues(state, sketchId)
+      const paramValues = getSketchParamValues(state, sketchId, {
+        resourcesUrl: state.resourcesUrl,
+      })
       const instance = sketchInstances.get(sketchId)
       if (instance?.getPasses) {
         try {

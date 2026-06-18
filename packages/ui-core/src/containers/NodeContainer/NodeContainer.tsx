@@ -2,6 +2,7 @@ import { Param as ParamType, Shot as ShotType } from '@hedron-gl/engine'
 import { ParamNumber } from './ParamNumber/ParamNumber'
 import { ParamBoolean } from './ParamBoolean/ParamBoolean'
 import { ParamEnum } from './ParamEnum/ParamEnum'
+import { ParamFile } from './ParamFile/ParamFile'
 import { ParamVector3 } from './ParamVector3/ParamVector3'
 import { ParamColor } from './ParamColor/ParamColor'
 import { ParamString } from './ParamString/ParamString'
@@ -34,6 +35,8 @@ const getInputElement = (node: ParamType | ShotType) => {
       return <ParamString id={node.id} />
     case 'enum':
       return <ParamEnum id={node.id} />
+    case 'file':
+      return <ParamFile id={node.id} />
     case 'vector2':
       return <ParamVector2 id={node.id} />
     case 'vector3':

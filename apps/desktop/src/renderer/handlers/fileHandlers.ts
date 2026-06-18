@@ -5,25 +5,40 @@ import {
   openProjectFileDialog,
   openSketchesDirDialog,
   saveProjectFileDialog,
+  startResourcesServer,
   startSketchesServer,
 } from '@renderer/ipc/mainThreadTalk'
 
-const startEngineWithSketchesDir = async (sketchesDirPath: string) => {
+const startEngineWithSketchesDir = async (
+  sketchesDirPath: string,
+  resourcesDirAbsolute: string,
+) => {
   const { moduleIds, url } = await startSketchesServer(sketchesDirPath)
+
+  const { url: resourcesUrl, files: resources } = await startResourcesServer(resourcesDirAbsolute)
 
   await engine.importSketchModulesFromIds(url, moduleIds)
   engine.startStoreListener()
+
+  engine.setResources(resources)
+  engine.setResourcesUrl(resourcesUrl)
 
   engine.run()
 }
 
 export const handleSketchesDialog = async () => {
-  const sketchesDir = await openSketchesDirDialog()
+  const response = await openSketchesDirDialog()
 
-  if (!sketchesDir) return
+  if (response.result !== 'success') return
 
-  appStore.getState().setSketchesDir(sketchesDir)
-  await startEngineWithSketchesDir(sketchesDir)
+  const { sketchesDirAbsolute, resourcesDirAbsolute } = response
+
+  await startEngineWithSketchesDir(sketchesDirAbsolute, resourcesDirAbsolute)
+
+  appStore.setState((state: AppState) => ({
+    ...state,
+    sketchesDir: sketchesDirAbsolute,
+  }))
 
   engine.ensureGlobalOptionNodes()
   engine.initiatePlugins()
@@ -41,9 +56,9 @@ export const handleLoadProjectDialog = async (projectPath?: string) => {
     return
   }
 
-  const { sketchesDirAbsolute, projectData, savePath } = response
+  const { sketchesDirAbsolute, projectData, savePath, resourcesDirAbsolute } = response
 
-  await startEngineWithSketchesDir(sketchesDirAbsolute)
+  await startEngineWithSketchesDir(sketchesDirAbsolute, resourcesDirAbsolute)
 
   engineStore.getState().loadProject(projectData.engine)
 

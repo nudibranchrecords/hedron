@@ -1,0 +1,54 @@
+:root {
+  --mainBgColor: var(--bgColorDark4);
+}
+
+:global(.themeLevel1) {
+  --mainBgColor: var(--bgColorDark3);
+}
+
+.fileButton {
+  width: 100%;
+  background: var(--mainBgColor);
+  padding-left: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  min-height: 1rem;
+  height: 100%;
+  overflow: hidden;
+  position: relative;
+  border-radius: var(--borderRadiusSubtle);
+}
+
+.missing {
+  color: var(--errorTextColor);
+}
+
+.panel {
+  width: 50%;
+}
+
+.fileList {
+  display: flex;
+  flex-direction: column;
+
+  button {
+    text-align: left;
+    display: block;
+    width: 100%;
+    padding: 0.5rem;
+    border-radius: var(--borderRadiusLarge);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+
+    &:hover {
+      background: var(--bgColorDark4);
+    }
+  }
+}
+
+.selectedFile button {
+  border: 1px solid white;
+}

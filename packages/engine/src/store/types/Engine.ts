@@ -4,15 +4,18 @@ import { ConfigParam, ParamValue, ParamValues } from './Param'
 import { Input } from './Input'
 import { ConfigShot } from './Shot'
 import { Nodes } from './Node'
+import { Resources } from './Resources'
 
 export interface EngineData {
   sketches: Sketches
   nodes: Nodes
   paramValues: ParamValues
+  resources: Resources
 }
 
 interface AuxState {
   sketchModules: SketchModules
+  resourcesUrl: string | null
 }
 
 export type EngineState = EngineData & AuxState
@@ -33,7 +36,7 @@ interface Actions {
   reset: () => void
   addInput: (
     inputConfig: Omit<Input, 'id' | 'optionNodeIds' | 'childGroups' | 'nodeType'>,
-    optionsNodeConfig?: (ConfigParam | ConfigShot)[],
+    optionsNodeConfig?: readonly (ConfigParam | ConfigShot)[],
   ) => string
   deleteNode: (nodeId: string) => void
 }

@@ -82,7 +82,7 @@ export const createAppStore = () =>
     persist(
       subscribeWithSelector(
         devtools(
-          immer((set) => ({
+          immer<AppState>((set) => ({
             activeSketchId: null,
             sketchesDir: null,
             globalDialogId: null,

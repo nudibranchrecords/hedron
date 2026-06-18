@@ -53,6 +53,18 @@ export type ConfigParamString = AsConfig<ParamString>
 export type ParamEnumValue = string | number
 export type ParamEnumOption = { value: ParamEnumValue; label: string }
 
+export interface ParamFile extends ParamBase {
+  valueType: 'file'
+  defaultValue: string | null
+  accept?: string[] | null
+}
+
+export type ParamFileValue = null | string
+
+export type ConfigParamFile = AsConfig<ParamFile> & {
+  accept?: string[] | null
+}
+
 export interface ParamEnum extends ParamBase {
   valueType: 'enum'
   defaultValue: ParamEnumValue
@@ -91,6 +103,7 @@ export type Param =
   | ParamVector2
   | ParamVector3
   | ParamRGB
+  | ParamFile
 
 export type ConfigParam =
   | ConfigParamBoolean
@@ -100,8 +113,39 @@ export type ConfigParam =
   | ConfigParamVector2
   | ConfigParamVector3
   | ConfigParamRGB
+  | ConfigParamFile
 
-export type ParamValue = number | boolean | string
+/** Preserves literal keys/valueTypes when defining option node config arrays. */
+export const defineOptionNodeConfigs = <const TConfigs extends readonly ConfigParam[]>(
+  configs: TConfigs,
+): TConfigs => {
+  return configs
+}
+
+export type ParamForValueType<TValueType extends Param['valueType']> = Extract<
+  Param,
+  { valueType: TValueType }
+>
+
+type OptionNodeConfigLike = {
+  key: string
+  valueType: Param['valueType']
+}
+
+/**
+ * Builds a strongly-typed key -> Param map from an option node config tuple.
+ *
+ * Example:
+ * - const CONFIGS = defineOptionNodeConfigs([...])
+ * - type OptionNodes = OptionNodesFromConfigs<typeof CONFIGS>
+ */
+export type OptionNodesFromConfigs<TConfigs extends readonly OptionNodeConfigLike[]> = {
+  [TConfig in TConfigs[number] as TConfig['key']]:
+    | (ParamForValueType<TConfig['valueType']> & { key: TConfig['key'] })
+    | undefined
+}
+
+export type ParamValue = number | boolean | string | null
 export type ParamValues = Partial<Record<string, ParamValue>>
 export type ParamValueType = Param['valueType'] | null
 

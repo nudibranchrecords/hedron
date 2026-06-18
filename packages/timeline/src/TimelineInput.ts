@@ -1,5 +1,36 @@
-import { HedronEngine, IPlugin } from '@hedron-gl/engine'
+import {
+  defineOptionNodeConfigs,
+  HedronEngine,
+  IPlugin,
+  OptionNodesFromConfigs,
+} from '@hedron-gl/engine'
 import { DEFAULT_TIMELINE_ID } from './constants'
+
+// defineOptionNodeConfigs is only needed if we want nice TS node name inference in other parts of the plugin
+export const TIMELINE_OPTION_NODE_CONFIGS = defineOptionNodeConfigs([
+  {
+    nodeType: 'param',
+    key: 'playheadPositionMs',
+    valueType: 'number',
+    defaultValue: 0,
+  },
+  {
+    nodeType: 'param',
+    key: 'isPlaying',
+    valueType: 'boolean',
+    defaultValue: false,
+  },
+  {
+    nodeType: 'param',
+    key: 'audioUrl',
+    valueType: 'file',
+    defaultValue: null,
+    accept: ['audio/*'],
+  },
+])
+
+// We can use TimelineOptionNodes for strong typing when using useNodeOptionNodes
+export type TimelineOptionNodes = OptionNodesFromConfigs<typeof TIMELINE_OPTION_NODE_CONFIGS>
 
 export class TimelineInput implements IPlugin {
   public readonly id = 'timeline-input'
@@ -15,20 +46,7 @@ export class TimelineInput implements IPlugin {
       customNodeType: 'timeline',
     })
 
-    engine.addOptionNodes(DEFAULT_TIMELINE_ID, [
-      {
-        nodeType: 'param',
-        key: 'playheadPositionMs',
-        valueType: 'number',
-        defaultValue: 0,
-      },
-      {
-        nodeType: 'param',
-        key: 'isPlaying',
-        valueType: 'boolean',
-        defaultValue: false,
-      },
-    ])
+    engine.addOptionNodes(DEFAULT_TIMELINE_ID, TIMELINE_OPTION_NODE_CONFIGS)
   }
 
   onNewInput(engine: HedronEngine, inputId: string) {
