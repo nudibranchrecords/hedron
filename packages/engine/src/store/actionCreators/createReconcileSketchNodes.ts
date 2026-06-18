@@ -25,7 +25,6 @@ export const createReconcileSketchNodes: SetterCreator<'reconcileSketchNodes'> =
       // 1. Add new nodes that are in the config but not in the current sketch.
       for (const nodeConfig of config.nodes) {
         // Find existing node for this key, if any.
-
         let nodeId = findNodeWithKeyFromIdList(
           state.nodes,
           nodeConfig.key,
