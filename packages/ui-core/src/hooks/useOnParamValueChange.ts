@@ -1,4 +1,4 @@
-import { useCallback, useRef } from 'react'
+import { useCallback } from 'react'
 import { ParamValue } from '@hedron-gl/engine'
 import { useUpdateMultipleParamValues, useUpdateParamValue } from '@hooks/useUpdateParamValue'
 
@@ -15,15 +15,15 @@ export const useOnParamValueChange = (id: string) => {
   return onValueChange
 }
 
-export const useOnMultipleParamValuesChange = (ids: string[]) => {
-  const stableIds = useRef(ids)
+export const useOnMultipleParamValuesChange = (...ids: string[]) => {
   const updateMultipleParamValues = useUpdateMultipleParamValues()
 
   const onValuesChange = useCallback(
     (values: ParamValue[]) => {
-      updateMultipleParamValues(stableIds.current, values)
+      updateMultipleParamValues(ids, values)
     },
-    [updateMultipleParamValues],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [...ids, updateMultipleParamValues],
   )
 
   return onValuesChange
