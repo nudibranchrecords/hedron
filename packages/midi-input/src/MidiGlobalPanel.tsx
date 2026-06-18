@@ -33,7 +33,7 @@ export const MidiGlobalPanel: React.FC<MidiGlobalPanelProps> = ({ engine }) => {
   const [connectedDevices, setConnectedDevices] = useState<string[]>([])
 
   const nodes = useEngineStore((state) => state.nodes)
-  const nodeValues = useEngineStore((state) => state.nodeValues)
+  const paramValues = useEngineStore((state) => state.paramValues)
   const sketches = useEngineStore((state) => state.sketches)
 
   // Track connected devices
@@ -87,9 +87,9 @@ export const MidiGlobalPanel: React.FC<MidiGlobalPanelProps> = ({ engine }) => {
 
         if (!channelNode || !noteNode || !typeNode) return
 
-        const channelValue = nodeValues[channelNode.id]
-        const noteValue = nodeValues[noteNode.id]
-        const typeValue = nodeValues[typeNode.id]
+        const channelValue = paramValues[channelNode.id]
+        const noteValue = paramValues[noteNode.id]
+        const typeValue = paramValues[typeNode.id]
 
         if (
           channelValue === event.channel &&
@@ -130,7 +130,7 @@ export const MidiGlobalPanel: React.FC<MidiGlobalPanelProps> = ({ engine }) => {
     return () => {
       midiPlugin.midiManager.onMidiMessage.remove(handleMidiMessage)
     }
-  }, [midiPlugin, nodes, nodeValues, sketches])
+  }, [midiPlugin, nodes, paramValues, sketches])
 
   const globalNodeId = `${midiPlugin.id}-global`
 

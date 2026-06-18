@@ -17,7 +17,7 @@ export const useTimelineHandlers = ({ engine, manager, timeline }: UseTimelineHa
 
   const handlePlayheadChange = useCallback(
     (time: number) => {
-      engine.setNodeValue(playheadPosNodeId, time)
+      engine.setParamValue(playheadPosNodeId, time)
 
       manager.goTo(time)
     },
@@ -51,13 +51,13 @@ export const useTimelineHandlers = ({ engine, manager, timeline }: UseTimelineHa
         return
       }
 
-      const targetNodeValue = engine.getNodeValue(inputNode.targetNodeId)
+      const targetParamValue = engine.getParamValue(inputNode.targetNodeId)
 
       const keyframe = {
         id: crypto.randomUUID(),
         time,
         valueType: 'boolean' as const,
-        value: targetNodeValue === true,
+        value: targetParamValue === true,
       }
 
       const nextKeyframes: Keyframe[] = [...(inputNode.customData?.keyframes ?? []), keyframe].sort(

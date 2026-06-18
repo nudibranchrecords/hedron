@@ -33,7 +33,7 @@ export const TimelineGlobalPanel: React.FC<TimelineGlobalPanelProps> = ({ engine
   const playHeadPositionNode = optionNodes['playheadPositionMs']!
 
   const playheadPositionMs = useEngineStore(
-    (state) => state.nodeValues[playHeadPositionNode.id] as number | undefined,
+    (state) => state.paramValues[playHeadPositionNode.id] as number | undefined,
   )
 
   return (

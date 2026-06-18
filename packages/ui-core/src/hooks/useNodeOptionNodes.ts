@@ -1,6 +1,6 @@
 import { Param } from '@hedron-gl/engine'
 import { useShallow } from 'zustand/react/shallow'
-import { useEngineStore } from '@hooks/storeHooks'
+import { useEngineStore } from '@hooks/engineHooks'
 
 /** Returns option nodes for a given parent node ID, as a key pair object based on each option node's key property */
 export const useNodeOptionNodes = (parentId: string): Record<string, Param | undefined> => {

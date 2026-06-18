@@ -4,10 +4,11 @@ import {
   EngineState,
   EngineStateWithActions,
   Input,
-  NodeConfig,
-  NodeValue,
+  ParamValue,
   Param,
   Shot,
+  ConfigParam,
+  ConfigShot,
 } from '@store/types'
 
 /**
@@ -38,13 +39,13 @@ export interface IPlugin {
    * @deprecated prefer `onNewInput` to create option nodes
    * Config to generate option nodes. Follows same structure as sketch params config.
    */
-  optionNodesConfig?: NodeConfig[]
+  optionNodesConfig?: (ConfigParam | ConfigShot)[]
 
   /**
    * @deprecated prefer `onEngineInitialize` to create global plugin option nodes
    * Config to generate global option nodes. Follows same structure as sketch params config.
    */
-  globalOptionNodesConfig?: NodeConfig[]
+  globalOptionNodesConfig?: (ConfigParam | ConfigShot)[]
 
   /**
    * Optional callback called after engine initialization (project load, sketches folder selection)
@@ -109,7 +110,7 @@ export const getOptionNodesFromIds = <T extends readonly any[]>(
       )
       return
     }
-    ;(options as Record<string, unknown>)[node.key] = state.nodeValues[id]
+    ;(options as Record<string, unknown>)[node.key] = state.paramValues[id]
   })
   return options
 }
@@ -128,12 +129,19 @@ export const handleEachInput = <T extends readonly any[]>(
   callback: ({
     input,
     optionNodes,
-  }: {
-    input: Input
-    optionNodes: ConfigToOptionsType<T>
-    targetNode: Param | Shot
-    targetNodeValue: NodeValue
-  }) => void,
+  }:
+    | {
+        input: Input
+        optionNodes: ConfigToOptionsType<T>
+        targetNode: Param
+        targetParamValue: ParamValue
+      }
+    | {
+        input: Input
+        optionNodes: ConfigToOptionsType<T>
+        targetNode: Shot
+        targetParamValue?: never
+      }) => void,
 ) => {
   const allNodes = nodesAsArray(storeState.nodes)
 
@@ -163,16 +171,20 @@ export const handleEachInput = <T extends readonly any[]>(
       return
     }
 
-    const targetNodeValue = storeState.nodeValues[input.targetNodeId]
-
-    if (targetNodeValue === undefined) {
-      // Node may not exist if deleting a sketch/param didn't clean up properly
-      // TODO: special log level for checking this
-      return
-    }
-
     const optionNodes = getOptionNodesFromIds<T>(storeState, input.childGroups.optionNodeIds)
 
-    callback({ input, optionNodes, targetNode, targetNodeValue })
+    if (targetNode.nodeType === 'param') {
+      const targetParamValue = storeState.paramValues[input.targetNodeId]
+
+      if (targetParamValue === undefined) {
+        // Node may not exist if deleting a sketch/param didn't clean up properly
+        // TODO: special log level for checking this
+        return
+      }
+
+      callback({ input, optionNodes, targetNode, targetParamValue: targetParamValue })
+    } else if (targetNode.nodeType === 'shot') {
+      callback({ input, optionNodes, targetNode })
+    }
   })
 }

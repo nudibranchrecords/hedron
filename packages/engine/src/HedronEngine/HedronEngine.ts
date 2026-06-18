@@ -4,8 +4,8 @@ import { listenToStore } from './storeListener'
 import { CanvasSizeMode, RendererType, Result, ShotArgsObject } from './types'
 import { importSketchModule } from './importSketchModule'
 import { createUniqueId } from '@utils/createUniqueId'
-import { ensureConfig } from '@store/shared/ensureConfig'
-import { flushNodeValueBuffer } from '@store/actionCreators/updateNodeValue'
+import { ensureNodeConfig } from '@store/shared/ensureConfig'
+import { flushParamValueBuffer } from '@store/actionCreators/updateParamValue'
 import { getSketchShotNodes } from '@store/selectors/getSketchShotNodes'
 import { initializeGlobalVars } from '@globalVars'
 import { IPlugin } from '@plugins/Plugin'
@@ -16,20 +16,22 @@ import { createDebugScene } from '@world/debugScene'
 import {
   EngineData,
   Node,
-  NodeConfig,
-  NodeValue,
+  ParamValue,
   SketchInstanceError,
   SketchInstance,
   SketchModuleItem,
   Param,
   Shot,
+  ConfigParam,
+  ConfigShot,
+  ConfigCustomNode,
   ChildGroupsLoose,
 } from '@store/types'
 import { getSketchesOfModuleId } from '@store/selectors/getSketchesOfModuleId'
 import { createEngineStore, EngineStore } from '@store/engineStore'
 import { getSketchParamValues } from '@store/selectors/getSketchParamValues'
 import { EngineScene } from '@world/EngineScene'
-import { addNode, AddNodeConfig } from '@store/shared/addNode'
+import { addNode } from '@store/shared/addNode'
 
 export class HedronEngine {
   public rendererType: RendererType
@@ -38,7 +40,8 @@ export class HedronEngine {
   private sketchesUrl: string | null = null
   private sketchManager: SketchManager
   public plugins: Record<string, IPlugin> = {}
-  private registeredShots: Record<string, () => void> = {}
+  private registeredShots: Record<string, (args: ShotArgsObject) => void> = {}
+  private shotListeners: Record<string, (() => void)[]> = {}
   private onFrameStart?: () => void
   private onFrameEnd?: () => void
   public clock?: Clock
@@ -107,7 +110,7 @@ export class HedronEngine {
         }
 
         // Create proper imported config with required fields
-        const cfgImported = ensureConfig(cfg)
+        const cfgImported = ensureNodeConfig(cfg)
 
         // Add the node to the store using the shared addNode utility
         addNode(state, nodeId, null, cfgImported)
@@ -122,18 +125,26 @@ export class HedronEngine {
     window.__HEDRON.plugins = this.plugins
   }
 
-  public addNode(nodeId: string, parentId: string | null, config: AddNodeConfig) {
+  public addNode(
+    nodeId: string,
+    parentId: string | null,
+    config: ConfigParam | ConfigShot | ConfigCustomNode,
+  ) {
     this.store.setState((state) => {
-      addNode(state, nodeId, parentId, ensureConfig(config as NodeConfig))
+      addNode(state, nodeId, parentId, ensureNodeConfig(config))
     })
   }
 
-  public addNodeOnce(nodeId: string, parentId: string | null, config: AddNodeConfig) {
+  public addNodeOnce(
+    nodeId: string,
+    parentId: string | null,
+    config: ConfigParam | ConfigShot | ConfigCustomNode,
+  ) {
     if (this.store.getState().nodes[nodeId]) return
     this.addNode(nodeId, parentId, config)
   }
 
-  public addOptionNodes(parentId: string, configs: NodeConfig[]) {
+  public addOptionNodes(parentId: string, configs: (ConfigParam | ConfigShot)[]) {
     this.store.setState((state) => {
       const parentNode = state.nodes[parentId]
       if (!parentNode) {
@@ -150,7 +161,7 @@ export class HedronEngine {
         if (optionNodeExists) continue
 
         const nodeId = createUniqueId()
-        addNode(state, nodeId, parentId, ensureConfig(cfg))
+        addNode(state, nodeId, parentId, ensureNodeConfig(cfg))
         parentNode.childGroups.optionNodeIds.push(nodeId)
       }
     })
@@ -208,16 +219,16 @@ export class HedronEngine {
     return this.store.getState().nodes[nodeId] as T | undefined
   }
 
-  public getNodeValue(nodeId: string): NodeValue | undefined {
-    return this.store.getState().nodeValues[nodeId]
+  public getParamValue(nodeId: string): ParamValue | undefined {
+    return this.store.getState().paramValues[nodeId]
   }
 
-  public setNodeValue(nodeId: string | undefined, value: NodeValue): void {
+  public setParamValue(nodeId: string | undefined, value: ParamValue): void {
     if (!nodeId) {
-      console.error('setNodeValue: nodeId is undefined')
+      console.error('setParamValue: nodeId is undefined')
       return
     }
-    this.store.getState().updateNodeValue(nodeId, value)
+    this.store.getState().updateParamValue(nodeId, value)
   }
 
   public addInput(inputType: string, targetNodeId: string) {
@@ -276,19 +287,12 @@ export class HedronEngine {
 
   public registerShot(shotId: string, shotFunc: (value: ShotArgsObject) => void) {
     this.unregisterShot(shotId) // Unregister existing shot if it exists to avoid duplicates
-    this.registeredShots[shotId] = this.store.subscribe(
-      (state) => state.nodeValues[shotId] as ShotArgsObject,
-      shotFunc,
-    )
+    this.registeredShots[shotId] = shotFunc
   }
 
   // This method is private, because we're automatically unregistering shots when nodes are removed from the store
   private unregisterShot(shotId: string) {
-    const unsubscribe = this.registeredShots[shotId]
-    if (unsubscribe) {
-      unsubscribe()
-      delete this.registeredShots[shotId]
-    }
+    delete this.registeredShots[shotId]
   }
 
   private registerAllSketchShots(sketchId: string, sketchInstance: SketchInstance) {
@@ -307,10 +311,24 @@ export class HedronEngine {
     })
   }
 
+  /**
+   * Registers a shot listener, which fires whenever a shot has just fired. Useful for UI to respond to shots being fired (e.g. blinking a trigger pad).
+   * Returns an unsubscribe function to remove the listener
+   */
+  public registerShotListener(shotId: string, listener: () => void) {
+    if (!this.shotListeners[shotId]) {
+      this.shotListeners[shotId] = []
+    }
+    this.shotListeners[shotId].push(listener)
+
+    return () => {
+      this.shotListeners[shotId] = this.shotListeners[shotId].filter((l) => l !== listener)
+    }
+  }
+
   public fireShot(shotId: string, shotArgs?: ShotArgsObject) {
-    // We don't directly call the shot function, instead we update the node value and let the store listener handle it
-    // We're spreading the args to create a new object reference, to ensire the store listener detects a change
-    this.store.getState().updateNodeValue(shotId, shotArgs ? { ...shotArgs } : {})
+    this.registeredShots[shotId]?.(shotArgs ?? {})
+    this.shotListeners[shotId]?.forEach((listener) => listener())
   }
 
   /**
@@ -511,7 +529,7 @@ export class HedronEngine {
    */
   private advanceFrame(engineScene: EngineScene, deltaTime: number) {
     // Flush buffered node value updates before processing the frame
-    flushNodeValueBuffer(this.store.setState)
+    flushParamValueBuffer(this.store.setState)
 
     const state = this.store.getState()
     const sketchInstances =

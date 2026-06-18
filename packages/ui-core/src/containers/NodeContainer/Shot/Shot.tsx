@@ -1,7 +1,7 @@
-import { useRef } from 'react'
-import { useFireShot } from '@hooks/useFireShot'
+import { useCallback, useRef } from 'react'
 
 import { TriggerPad, TriggerPadHandle } from '@components/TriggerPad/TriggerPad'
+import { useEngine } from '@hooks/engineHooks'
 import { useSubscribeToShot } from '@hooks/useSubscribeToShot'
 
 interface ShotProps {
@@ -10,7 +10,11 @@ interface ShotProps {
 
 export const Shot = ({ id }: ShotProps) => {
   const ref = useRef<TriggerPadHandle>(null)
-  const fireShot = useFireShot(id)
+  const engine = useEngine()
+
+  const fireShot = useCallback(() => {
+    engine.fireShot(id)
+  }, [engine, id])
 
   useSubscribeToShot(id, () => {
     ref.current?.blink()

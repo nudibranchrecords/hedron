@@ -24,7 +24,7 @@ export const useGroupedNodes = (nodeIds: string[], moduleId: string) => {
         groups[groupIndex] ||
         (groups[groupIndex] = {
           groupIndex,
-          groupTitle: module?.config.groupInfo[groupIndex]?.groupTitle,
+          groupTitle: module?.config.groupInfo[groupIndex]?.groupTitle ?? `Group ${groupIndex}`,
           children: [],
         })
 

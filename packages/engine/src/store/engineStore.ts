@@ -12,9 +12,9 @@ import { createSetSketchModuleItem } from '@store/actionCreators/setSketchModule
 import { createDeleteSketchModule } from '@store/actionCreators/deleteSketchModule'
 import { createReconcileSketchNodes } from '@store/actionCreators/createReconcileSketchNodes'
 import {
-  createUpdateMultipleNodeValues,
-  createUpdateNodeValue,
-} from '@store/actionCreators/updateNodeValue'
+  createUpdateMultipleParamValues,
+  createUpdateParamValue,
+} from '@store/actionCreators/updateParamValue'
 import { createReset } from '@store/actionCreators/reset'
 import { createLoadProject } from '@store/actionCreators/loadProject'
 import { createAddInput } from '@store/actionCreators/createAddInput'
@@ -31,8 +31,8 @@ export const createEngineStore = () =>
           updateSketch: createUpdateSketch(set),
           reconcileSketchNodes: createReconcileSketchNodes(set),
           setSketchModuleItem: createSetSketchModuleItem(set),
-          updateNodeValue: createUpdateNodeValue(set),
-          updateMultipleNodeValues: createUpdateMultipleNodeValues(set),
+          updateParamValue: createUpdateParamValue(set),
+          updateMultipleParamValues: createUpdateMultipleParamValues(set),
           deleteSketch: createDeleteSketch(set),
           deleteSketchModule: createDeleteSketchModule(set),
           moveSketchUp: createMoveSketchUp(set),
@@ -46,7 +46,7 @@ export const createEngineStore = () =>
           name: 'Hedron Engine',
           // TODO: make this configurable for users of the engine
           enabled: true,
-          // Don't show node value changes in devtools
+          // Actions ignored by devtools if they `ignore/` at the start of their action name
           actionsDenylist: ['ignore/.*'],
         },
       ),

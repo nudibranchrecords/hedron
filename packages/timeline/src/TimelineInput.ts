@@ -10,24 +10,20 @@ export class TimelineInput implements IPlugin {
   onEngineInitialize(engine: HedronEngine) {
     engine.addNodeOnce(DEFAULT_TIMELINE_ID, null, {
       title: 'Default Timeline',
+      key: 'default-timeline',
       nodeType: 'custom',
       customNodeType: 'timeline',
-      // TODO: With proper config typing we wouldn't need all this boilerplate config
-      id: DEFAULT_TIMELINE_ID,
-      parentIds: [],
-      childGroups: {
-        optionNodeIds: [],
-        inputNodeIds: [],
-      },
     })
 
     engine.addOptionNodes(DEFAULT_TIMELINE_ID, [
       {
+        nodeType: 'param',
         key: 'playheadPositionMs',
         valueType: 'number',
         defaultValue: 0,
       },
       {
+        nodeType: 'param',
         key: 'isPlaying',
         valueType: 'boolean',
         defaultValue: false,

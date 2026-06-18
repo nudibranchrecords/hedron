@@ -16,7 +16,7 @@ export const deleteNode = (state: EngineState, nodeId: string) => {
 
     // Delete the node and its value
     delete state.nodes[nodeId]
-    delete state.nodeValues[nodeId]
+    delete state.paramValues[nodeId]
 
     // Delete all child nodes recursively
     for (const groupKey in node.childGroups) {

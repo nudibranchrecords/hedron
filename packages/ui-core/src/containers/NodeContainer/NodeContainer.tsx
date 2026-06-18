@@ -16,7 +16,7 @@ import {
   NodeControlInfo,
   NodeControlInputCount,
 } from '@components/NodeControl/NodeControl'
-import { useEngineStore, useAppStore } from '@hooks/storeHooks'
+import { useEngineStore, useAppStore } from '@hooks/engineHooks'
 import { useInputCount } from '@hooks/useInputCount'
 import { useOnSelectNode } from '@hooks/useOnSelectNode'
 

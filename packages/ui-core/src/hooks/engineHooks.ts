@@ -2,7 +2,7 @@ import { createContext, useContext } from 'react'
 import { useStore } from 'zustand'
 import { useShallow } from 'zustand/react/shallow'
 import { AppStore, AppState } from '@hedron-gl/app-store'
-import { CustomSetState, EngineStore, EngineStateWithActions } from '@hedron-gl/engine'
+import { EngineStateWithActions, HedronEngine } from '@hedron-gl/engine'
 
 export const AppStoreContext = createContext<AppStore | null>(null)
 
@@ -25,35 +25,31 @@ export const useAppStore = <T>(selector: (state: AppState) => T) => {
 
 export const AppStoreProvider = AppStoreContext.Provider
 
-export const EngineStoreContext = createContext<EngineStore | null>(null)
-
-type EngineStoreWithTypedSetState = Omit<EngineStore, 'setState'> & {
-  setState: CustomSetState
-}
+export const EngineContext = createContext<HedronEngine | null>(null)
 
 /** Reads the engine store from context and throws when the provider is missing. */
-export const useEngineStoreWithContext = () => {
-  const engineStore = useContext(EngineStoreContext)
+export const useEngine = () => {
+  const engine = useContext(EngineContext)
 
-  if (!engineStore) {
-    throw new Error('Missing EngineStoreProvider')
+  if (!engine) {
+    throw new Error('Missing EngineProvider')
   }
 
-  return engineStore as EngineStoreWithTypedSetState
+  return engine
 }
 
 /** Selects a slice from the engine store using default reference equality. */
 export const useEngineStore = <T>(selector: (state: EngineStateWithActions) => T) => {
-  const engineStore = useEngineStoreWithContext()
+  const engineStore = useEngine().getStore()
 
   return useStore(engineStore, selector)
 }
 
 /** Selects a slice from the engine store and applies shallow equality to reduce rerenders. */
 export const useEngineStoreShallow = <T>(selector: (state: EngineStateWithActions) => T) => {
-  const engineStore = useEngineStoreWithContext()
+  const engineStore = useEngine().getStore()
 
   return useStore(engineStore, useShallow(selector))
 }
 
-export const EngineStoreProvider = EngineStoreContext.Provider
+export const EngineProvider = EngineContext.Provider

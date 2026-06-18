@@ -1,4 +1,4 @@
-import { handleEachInput, HedronEngine, IPlugin, NodeConfig } from '@hedron-gl/engine'
+import { handleEachInput, HedronEngine, IPlugin } from '@hedron-gl/engine'
 import { AudioDeviceManager } from './AudioDeviceManager'
 import { AudioAnalyzer, AudioData, FrequencyBand, BAND_COLORS } from './AudioAnalyzer'
 import { lerp } from './AudioUtils'
@@ -32,6 +32,7 @@ export class AudioInput implements IPlugin {
   ]
   public readonly globalOptionNodesConfig = [
     {
+      nodeType: 'param',
       key: 'masterVolume',
       title: 'Master Volume',
       valueType: 'number',
@@ -40,6 +41,7 @@ export class AudioInput implements IPlugin {
       sliderMax: 2.0,
     },
     {
+      nodeType: 'param',
       key: 'smoothing',
       title: 'Smoothing',
       valueType: 'number',
@@ -48,6 +50,7 @@ export class AudioInput implements IPlugin {
       sliderMax: 0.999,
     },
     {
+      nodeType: 'param',
       key: 'normalizeLevels',
       title: 'Normalize Levels',
       valueType: 'number',
@@ -56,6 +59,7 @@ export class AudioInput implements IPlugin {
       sliderMax: 1.0,
     },
     {
+      nodeType: 'param',
       key: 'levelsFalloff',
       title: 'Levels Falloff',
       valueType: 'number',
@@ -64,6 +68,7 @@ export class AudioInput implements IPlugin {
       sliderMax: 2.0,
     },
     {
+      nodeType: 'param',
       key: 'levelsPower',
       title: 'Levels Power',
       valueType: 'number',
@@ -72,6 +77,7 @@ export class AudioInput implements IPlugin {
       sliderMax: 5.0,
     },
     {
+      nodeType: 'param',
       key: 'maxLevelFalloffMultiplier',
       title: 'Max Level Falloff Multiplier',
       valueType: 'number',
@@ -80,6 +86,7 @@ export class AudioInput implements IPlugin {
       sliderMax: 1.0,
     },
     {
+      nodeType: 'param',
       key: 'maxLevelMinimum',
       title: 'Max Level Minimum',
       valueType: 'number',
@@ -90,6 +97,7 @@ export class AudioInput implements IPlugin {
     // Generate hidden band configuration nodes from DEFAULT_BANDS
     ...AudioInput.DEFAULT_BANDS.flatMap((band, index) => [
       {
+        nodeType: 'param' as const,
         key: `band${index}CenterFreq`,
         title: `Band ${index} Center Frequency`,
         valueType: 'number' as const,
@@ -97,6 +105,7 @@ export class AudioInput implements IPlugin {
         hidden: true,
       },
       {
+        nodeType: 'param' as const,
         key: `band${index}Q`,
         title: `Band ${index} Q Factor`,
         valueType: 'number' as const,
@@ -104,16 +113,18 @@ export class AudioInput implements IPlugin {
         hidden: true,
       },
     ]),
-  ] as const satisfies NodeConfig[]
+  ] as const satisfies IPlugin['globalOptionNodesConfig']
 
   public readonly optionNodesConfig = [
     {
+      nodeType: 'param',
       key: 'isEnabled',
       title: 'Enabled',
       valueType: 'boolean',
       defaultValue: true,
     },
     {
+      nodeType: 'param',
       key: 'frequency',
       valueType: 'enum',
       defaultValue: 1,
@@ -137,6 +148,7 @@ export class AudioInput implements IPlugin {
       ],
     },
     {
+      nodeType: 'param',
       key: 'min',
       valueType: 'number',
       defaultValue: 0,
@@ -145,6 +157,7 @@ export class AudioInput implements IPlugin {
       sliderMax: 1,
     },
     {
+      nodeType: 'param',
       key: 'max',
       valueType: 'number',
       defaultValue: 1,
@@ -152,7 +165,7 @@ export class AudioInput implements IPlugin {
       sliderMin: 0,
       sliderMax: 1,
     },
-  ] as const satisfies NodeConfig[]
+  ] as const satisfies IPlugin['optionNodesConfig']
 
   /**
    * Audio data containing the analyzer and visualization resources
@@ -229,8 +242,8 @@ export class AudioInput implements IPlugin {
 
     // Only update store if the nodes exist
     if (storeState.nodes[centerFreqNodeId] && storeState.nodes[qNodeId]) {
-      storeState.updateNodeValue(centerFreqNodeId, result.clampedFreq)
-      storeState.updateNodeValue(qNodeId, result.clampedQ)
+      storeState.updateParamValue(centerFreqNodeId, result.clampedFreq)
+      storeState.updateParamValue(qNodeId, result.clampedQ)
     }
   }
 
@@ -341,7 +354,7 @@ export class AudioInput implements IPlugin {
     // Construct the ID for the master volume node
     const masterVolumeNodeId = `${AudioInput.ID}-global-masterVolume`
     // Get the value from the store, default to 1.0 if not found
-    const masterVolume = storeState.nodeValues[masterVolumeNodeId] as number | undefined
+    const masterVolume = storeState.paramValues[masterVolumeNodeId] as number | undefined
     return masterVolume ?? 1.0
   }
 
@@ -352,7 +365,7 @@ export class AudioInput implements IPlugin {
   private getSmoothing(): number {
     const storeState = this._store.getState()
     const nodeId = `${AudioInput.ID}-global-smoothing`
-    const value = storeState.nodeValues[nodeId] as number | undefined
+    const value = storeState.paramValues[nodeId] as number | undefined
     return value ?? 0
   }
 
@@ -363,7 +376,7 @@ export class AudioInput implements IPlugin {
   private getNormalizeLevels(): number {
     const storeState = this._store.getState()
     const nodeId = `${AudioInput.ID}-global-normalizeLevels`
-    const value = storeState.nodeValues[nodeId] as number | undefined
+    const value = storeState.paramValues[nodeId] as number | undefined
     return value ?? 0
   }
 
@@ -374,7 +387,7 @@ export class AudioInput implements IPlugin {
   private getLevelsFalloff(): number {
     const storeState = this._store.getState()
     const nodeId = `${AudioInput.ID}-global-levelsFalloff`
-    const value = storeState.nodeValues[nodeId] as number | undefined
+    const value = storeState.paramValues[nodeId] as number | undefined
     return value ?? 1
   }
 
@@ -385,7 +398,7 @@ export class AudioInput implements IPlugin {
   private getLevelsPower(): number {
     const storeState = this._store.getState()
     const nodeId = `${AudioInput.ID}-global-levelsPower`
-    const value = storeState.nodeValues[nodeId] as number | undefined
+    const value = storeState.paramValues[nodeId] as number | undefined
     return value ?? 1
   }
 
@@ -396,7 +409,7 @@ export class AudioInput implements IPlugin {
   private getMaxLevelFalloffMultiplier(): number {
     const storeState = this._store.getState()
     const nodeId = `${AudioInput.ID}-global-maxLevelFalloffMultiplier`
-    const value = storeState.nodeValues[nodeId] as number | undefined
+    const value = storeState.paramValues[nodeId] as number | undefined
     return value ?? 0.9999
   }
 
@@ -407,7 +420,7 @@ export class AudioInput implements IPlugin {
   private getMaxLevelMinimum(): number {
     const storeState = this._store.getState()
     const nodeId = `${AudioInput.ID}-global-maxLevelMinimum`
-    const value = storeState.nodeValues[nodeId] as number | undefined
+    const value = storeState.paramValues[nodeId] as number | undefined
     return value ?? 0.001
   }
 
@@ -434,8 +447,8 @@ export class AudioInput implements IPlugin {
       }
     }
 
-    const centerFreq = storeState.nodeValues[centerFreqNodeId] as number | undefined
-    const q = storeState.nodeValues[qNodeId] as number | undefined
+    const centerFreq = storeState.paramValues[centerFreqNodeId] as number | undefined
+    const q = storeState.paramValues[qNodeId] as number | undefined
 
     // Return stored values or defaults
     const defaults = AudioInput.DEFAULT_BANDS[bandIndex] || { centerFreq: 1000, q: 1 }
@@ -525,18 +538,18 @@ export class AudioInput implements IPlugin {
           const audioValue = this.analyzer.levelsData[bandIndex] || 0
 
           const sliderMin =
-            (storeState.nodeValues[`${input.targetNodeId}-sliderMin`] as number) ?? 0
+            (storeState.paramValues[`${input.targetNodeId}-sliderMin`] as number) ?? 0
           const sliderMax =
-            (storeState.nodeValues[`${input.targetNodeId}-sliderMax`] as number) ?? 1
+            (storeState.paramValues[`${input.targetNodeId}-sliderMax`] as number) ?? 1
 
           // Map the audio value to the configured min/max range
-          storeState.updateNodeValue(
+          storeState.updateParamValue(
             input.targetNodeId,
             lerp(sliderMin, sliderMax, lerp(optionNodes.min, optionNodes.max, audioValue)),
           )
         } else {
           // Fallback behavior when audio isn't initialized yet
-          storeState.updateNodeValue(
+          storeState.updateParamValue(
             input.targetNodeId,
             lerp(optionNodes.min, optionNodes.max, optionNodes.frequency * 0.25),
           )

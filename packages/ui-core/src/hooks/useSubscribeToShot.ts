@@ -1,24 +1,21 @@
 import { useEffect, useRef } from 'react'
-import { useEngineStoreWithContext } from './storeHooks'
+import { useEngine } from './engineHooks'
 
 /**
  * Hook that fires a callback whenever shot is fired.
  */
-export const useSubscribeToShot = (nodeId: string, callback: () => void) => {
-  const engineStore = useEngineStoreWithContext()
+export const useSubscribeToShot = (shotId: string, callback: () => void) => {
+  const engine = useEngine()
   const callbackRef = useRef(callback)
   callbackRef.current = callback
 
   useEffect(() => {
-    const unsubscribe = engineStore.subscribe(
-      (state) => state.nodeValues[nodeId],
-      () => {
-        callbackRef.current()
-      },
-    )
+    const unsubscribe = engine.registerShotListener(shotId, () => {
+      callbackRef.current()
+    })
 
     return () => {
       unsubscribe()
     }
-  }, [engineStore, nodeId])
+  }, [engine, shotId])
 }
