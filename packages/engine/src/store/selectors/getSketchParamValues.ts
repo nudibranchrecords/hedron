@@ -31,9 +31,9 @@ export const getSketchParamValues = (
 
     switch (node.valueType) {
       case 'file': {
-        if (config.resourcesUrl) {
-          value = `${config.resourcesUrl}/${value}`
-        }
+        const prefix = config.resourcesUrl ? `${config.resourcesUrl}/` : ''
+        const filePath = state.resources[value as string]?.filePath
+        value = `${prefix}${filePath}`
       }
     }
 

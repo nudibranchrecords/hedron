@@ -1,6 +1,7 @@
 export interface Resource {
   contentType: string
   fileName: string
+  filePath: string
   lastModified: number
 }
 

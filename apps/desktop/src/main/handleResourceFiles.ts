@@ -18,6 +18,7 @@ const getInitialFiles = async (dirPath: string): Promise<Record<string, Resource
       const stats = await fs.promises.stat(filePath)
       files[dirent.name] = {
         fileName: dirent.name,
+        filePath: `${dirent.name}?${stats.mtimeMs}`, // Cache bust
         contentType: getContentTypeFromFileName(dirent.name),
         lastModified: stats.mtimeMs,
       }

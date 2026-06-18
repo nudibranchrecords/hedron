@@ -32,7 +32,7 @@ export class TimelineManager {
     for (const track of this.timelineData.tracks) {
       switch (track.trackType) {
         case 'audio':
-          if (!this.audioCache.has(track.id)) {
+          if (this.audioCache.get(track.id)?.src !== track.audioUrl) {
             const audio = new Audio(track.audioUrl)
             this.audioCache.set(track.id, audio)
           }

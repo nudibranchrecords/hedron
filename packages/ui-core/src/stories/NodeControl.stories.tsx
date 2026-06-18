@@ -207,16 +207,41 @@ export const Trigger = ({ title = 'Trigger Pad', isActive, onClick }: BasicProps
 }
 
 const fileList = [
-  { fileName: 'MyFile.png', contentType: 'image/png', lastModified: 0 },
-  { fileName: 'cover-art.JPG', contentType: 'image/jpeg', lastModified: 0 },
-  { fileName: 'Loop.WAV', contentType: 'audio/wav', lastModified: 0 },
-  { fileName: 'MyFile.mp3', contentType: 'audio/mpeg', lastModified: 0 },
-  { fileName: 'voice-note.m4a', contentType: 'audio/mp4', lastModified: 0 },
-  { fileName: 'MyOtherFile.mp4', contentType: 'video/mp4', lastModified: 0 },
-  { fileName: 'trailer.webm', contentType: 'video/webm', lastModified: 0 },
-  { fileName: 'Patch.PDF', contentType: 'application/pdf', lastModified: 0 },
-  { fileName: 'session.hedron', contentType: 'application/json', lastModified: 0 },
-  { fileName: 'notes.txt', contentType: 'text/plain', lastModified: 0 },
+  { fileName: 'MyFile.png', filePath: 'MyFile.png', contentType: 'image/png', lastModified: 0 },
+  {
+    fileName: 'cover-art.JPG',
+    filePath: 'cover-art.JPG',
+    contentType: 'image/jpeg',
+    lastModified: 0,
+  },
+  { fileName: 'Loop.WAV', filePath: 'Loop.WAV', contentType: 'audio/wav', lastModified: 0 },
+  { fileName: 'MyFile.mp3', filePath: 'MyFile.mp3', contentType: 'audio/mpeg', lastModified: 0 },
+  {
+    fileName: 'voice-note.m4a',
+    filePath: 'voice-note.m4a',
+    contentType: 'audio/mp4',
+    lastModified: 0,
+  },
+  {
+    fileName: 'MyOtherFile.mp4',
+    filePath: 'MyOtherFile.mp4',
+    contentType: 'video/mp4',
+    lastModified: 0,
+  },
+  {
+    fileName: 'trailer.webm',
+    filePath: 'trailer.webm',
+    contentType: 'video/webm',
+    lastModified: 0,
+  },
+  { fileName: 'Patch.PDF', filePath: 'Patch.PDF', contentType: 'application/pdf', lastModified: 0 },
+  {
+    fileName: 'session.hedron',
+    filePath: 'session.hedron',
+    contentType: 'application/json',
+    lastModified: 0,
+  },
+  { fileName: 'notes.txt', filePath: 'notes.txt', contentType: 'text/plain', lastModified: 0 },
 ]
 
 interface FileStoryProps extends BasicProps {

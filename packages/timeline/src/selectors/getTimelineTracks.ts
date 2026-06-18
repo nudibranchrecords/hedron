@@ -33,14 +33,15 @@ export const getTimelineTracks = (
   const audioUrlNodeId = optionNodeIds.find(
     (optionNodeId) => (state.nodes[optionNodeId] as Param)?.key === 'audioUrl',
   )
-  const fileValue = state.paramValues[audioUrlNodeId ?? ''] as ParamFileValue | undefined
+  const resourceId = state.paramValues[audioUrlNodeId ?? ''] as ParamFileValue | undefined
+  const resource = resourceId ? state.resources[resourceId] : null
 
-  if (fileValue) {
+  if (resource) {
     tracks.unshift({
       id: DEFAULT_AUDIO_TRACK_ID,
-      label: fileValue,
+      label: resource?.fileName,
       trackType: 'audio',
-      audioUrl: `${state.resourcesUrl}/${fileValue}`,
+      audioUrl: `${state.resourcesUrl}/${resource?.filePath}`,
     })
   }
   /// end hack

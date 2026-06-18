@@ -8,6 +8,7 @@ export const addResource = (
 ) => {
   state.resources[fileName] = {
     fileName,
+    filePath: `${fileName}?${lastModified}`, // append lastModified for cache busting
     contentType,
     lastModified,
   }
