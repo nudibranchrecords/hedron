@@ -104,6 +104,14 @@ export class Clock {
   }
 
   /**
+   * Sets the beat delta for external manual control (e.g. timelines)
+   * @param value The new beat delta
+   */
+  set beatDelta(value: number) {
+    this._beatDelta = value
+  }
+
+  /**
    * Gets the current beat count.
    * @returns The current beat count
    */

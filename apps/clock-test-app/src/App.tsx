@@ -106,6 +106,10 @@ function App() {
     clockRef.current?.sendTempoTap()
   }
 
+  const onDeltaSliderChange = (e) => {
+    clockRef.current!.beatDelta = Number(e.target.value)
+  }
+
   return (
     <>
       <section>
@@ -146,6 +150,9 @@ function App() {
             </div>
           </form>
         </div>
+      </section>
+      <section className="grid">
+        <input type="range" min={0} max={64} step={0.001} onChange={onDeltaSliderChange}></input>
       </section>
       <section className="grid">
         <div className="circle"></div>
