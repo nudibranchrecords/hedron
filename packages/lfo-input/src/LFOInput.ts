@@ -128,6 +128,8 @@ export class LFOInput implements IPlugin {
 
   private inputLatches: Record<string, boolean> = {}
 
+  private lastClockBeatDelta: number = -1
+
   private handleShot: ShotHandler = ({ delta, input, engine }) => {
     const val = Math.sin(delta)
 
@@ -188,10 +190,12 @@ export class LFOInput implements IPlugin {
 
     const tick = () => {
       requestAnimationFrame(() => {
-        if (!clock.isRunning) {
+        if (clock.beatDelta === this.lastClockBeatDelta) {
           tick()
           return
         }
+
+        this.lastClockBeatDelta = clock.beatDelta
 
         const storeState = store.getState()
         handleEachInput<typeof this.optionNodesConfig>(

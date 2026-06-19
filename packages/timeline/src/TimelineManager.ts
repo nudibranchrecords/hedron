@@ -1,3 +1,4 @@
+import { Clock } from '@hedron-gl/clock'
 import type {
   TimelineManagerData,
   TimelineManagerTrack,
@@ -20,9 +21,11 @@ export class TimelineManager {
   private sortedKeyframesCache: Map<string, Keyframe[]> = new Map()
   private audioCache: Map<string, HTMLAudioElement> = new Map()
   private lastKeyframeIndex: Map<string, number> = new Map()
+  private clock: Clock | null = null
 
-  constructor(timeline: TimelineManagerData) {
+  constructor(timeline: TimelineManagerData, clock?: Clock) {
     this.timelineData = timeline
+    this.clock = clock ?? null
     this.buildCache()
   }
 
@@ -111,6 +114,10 @@ export class TimelineManager {
     if (this.lastFrameTime !== null) {
       const delta = now - this.lastFrameTime
       this.position = Math.min(this.position + delta, this.timelineData.durationMs)
+
+      if (this.clock) {
+        this.clock.beatDeltaMs = this.position
+      }
     }
     this.lastFrameTime = now
 
@@ -128,9 +135,18 @@ export class TimelineManager {
 
   play() {
     if (this.playing) return
+
+    if (this.clock) {
+      this.clock.continue()
+    }
+
     if (this.position >= this.timelineData.durationMs) {
       this.position = 0
       this.resetKeyframeIndexes()
+
+      if (this.clock) {
+        this.clock.beatDeltaMs = 0
+      }
     }
     this.playing = true
     this.lastFrameTime = null
@@ -146,6 +162,11 @@ export class TimelineManager {
   pause() {
     this.playing = false
     this.lastFrameTime = null
+
+    if (this.clock) {
+      this.clock.stop()
+    }
+
     if (this.rafId !== null) {
       cancelAnimationFrame(this.rafId)
       this.rafId = null
@@ -162,6 +183,11 @@ export class TimelineManager {
     this.lastFrameTime = null
     this.resetKeyframeIndexes()
     this.emitUpdate()
+
+    if (this.clock) {
+      console.log(timeMs)
+      this.clock.beatDeltaMs = timeMs
+    }
 
     // Seek audio tracks
     for (const { audio } of this.getAudioTracksWithAudio()) {

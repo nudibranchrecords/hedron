@@ -56,10 +56,13 @@ export class TimelineInput implements IPlugin {
 
     this.timelineManagers.set(
       DEFAULT_TIMELINE_ID,
-      new TimelineManager({
-        durationMs: 60000,
-        tracks: [],
-      }),
+      new TimelineManager(
+        {
+          durationMs: 60000,
+          tracks: [],
+        },
+        engine.clock,
+      ),
     )
 
     this.timelineManagers.forEach((manager, timelineId) => {

@@ -56,15 +56,19 @@ export class Clock {
       this._beatDelta += deltaInc
       this._beatPulseComparisonDelta += deltaInc
 
-      const newBeatCount = Math.floor(this._beatDelta % 4)
-      if (newBeatCount !== this._beatCount) {
-        this._onNewBeat?.(newBeatCount)
-        this._beatCount = newBeatCount
-      }
+      this.updateBeatCount()
 
       requestAnimationFrame(this.tick)
 
       this._lastTimestamp = timestamp
+    }
+  }
+
+  private updateBeatCount = () => {
+    const newBeatCount = Math.floor(this._beatDelta % 4)
+    if (newBeatCount !== this._beatCount) {
+      this._onNewBeat?.(newBeatCount)
+      this._beatCount = newBeatCount
     }
   }
 
@@ -109,6 +113,15 @@ export class Clock {
    */
   set beatDelta(value: number) {
     this._beatDelta = value
+    this.updateBeatCount()
+  }
+
+  /**
+   * Sets the beat delta using a millisecond value, factoring in the current BPM
+   * @param deltaMs The new beat delta in milliseconds
+   */
+  set beatDeltaMs(deltaMs: number) {
+    this.beatDelta = (deltaMs / MS_IN_MINUTE) * this._bpm
   }
 
   /**
