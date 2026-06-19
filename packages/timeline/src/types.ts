@@ -15,13 +15,23 @@ export type TimelineTrackInput = Input & {
   }
 }
 
-/** Plain display/manager type — decoupled from the store */
-export interface TimelineManagerTrack {
+interface TimelineManagerTrackBase {
   id: string
   label: string
+}
+
+export interface TimelineManagerKeyframeTrack extends TimelineManagerTrackBase {
+  trackType: 'keyframe'
   keyframes: Keyframe[]
   targetNodeId?: string
 }
+
+export interface TimelineManagerAudioTrack extends TimelineManagerTrackBase {
+  trackType: 'audio'
+  audioUrl: string
+}
+
+export type TimelineManagerTrack = TimelineManagerKeyframeTrack | TimelineManagerAudioTrack
 
 export interface TimelineManagerData {
   durationMs: number

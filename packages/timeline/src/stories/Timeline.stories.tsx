@@ -2,6 +2,8 @@
 
 import type { Meta, StoryObj } from '@storybook/react'
 import { useState, useEffect, useRef } from 'react'
+// eslint-disable-next-line no-restricted-imports
+import audioUrl from '../../../../apps/example-project/resources/120-4-4.mp3'
 import { TimelineManager } from '@/TimelineManager'
 import type { TrackValues } from '@/TimelineManager'
 import { Timeline } from '@/components/Timeline/Timeline'
@@ -43,6 +45,7 @@ export const WithKeyframes: Story = {
         {
           id: 'track-1',
           label: 'Visibility',
+          trackType: 'keyframe',
           keyframes: [
             { id: 'kf-1', time: 1000, valueType: 'boolean', value: true },
             { id: 'kf-2', time: 3000, valueType: 'boolean', value: false },
@@ -64,8 +67,15 @@ export const Interactive = () => {
     durationMs: 10000,
     tracks: [
       {
+        id: 'track-audio',
+        label: 'test.mp3',
+        trackType: 'audio',
+        audioUrl: audioUrl,
+      },
+      {
         id: 'track-1',
         label: 'Visibility',
+        trackType: 'keyframe',
         keyframes: [
           { id: 'kf-v1', time: 0, valueType: 'boolean', value: true },
           { id: 'kf-v2', time: 3000, valueType: 'boolean', value: false },
@@ -75,6 +85,7 @@ export const Interactive = () => {
       {
         id: 'track-2',
         label: 'Strobe',
+        trackType: 'keyframe',
         keyframes: [
           { id: 'kf-s1', time: 1000, valueType: 'boolean', value: true },
           { id: 'kf-s2', time: 2000, valueType: 'boolean', value: false },
@@ -87,6 +98,7 @@ export const Interactive = () => {
       {
         id: 'track-3',
         label: 'Invert',
+        trackType: 'keyframe',
         keyframes: [
           { id: 'kf-i1', time: 2500, valueType: 'boolean', value: true },
           { id: 'kf-i2', time: 7500, valueType: 'boolean', value: false },
@@ -110,7 +122,7 @@ export const Interactive = () => {
   }, [timeline])
 
   useEffect(() => {
-    managerRef.current?.setData(timeline)
+    managerRef.current?.setTracks(timeline.tracks)
   }, [timeline])
 
   const handlePlayPause = () => {
@@ -134,10 +146,13 @@ export const Interactive = () => {
   const handleKeyframeDelete = (keyframeId: string) => {
     setTimeline((prev) => ({
       ...prev,
-      tracks: prev.tracks.map((track) => ({
-        ...track,
-        keyframes: track.keyframes.filter((kf) => kf.id !== keyframeId),
-      })),
+      tracks: prev.tracks.map((track) => {
+        if (track.trackType !== 'keyframe') return track
+        return {
+          ...track,
+          keyframes: track.keyframes.filter((kf) => kf.id !== keyframeId),
+        }
+      }),
     }))
   }
 
@@ -145,7 +160,7 @@ export const Interactive = () => {
     setTimeline((prev) => ({
       ...prev,
       tracks: prev.tracks.map((track) =>
-        track.id === trackId
+        track.id === trackId && track.trackType === 'keyframe'
           ? {
               ...track,
               keyframes: [
@@ -209,6 +224,7 @@ export const LongDuration: Story = {
         {
           id: 'track-1',
           label: 'Active',
+          trackType: 'keyframe',
           keyframes: [
             { id: 'kf-1', time: 10000, valueType: 'boolean', value: true },
             { id: 'kf-2', time: 30000, valueType: 'boolean', value: false },

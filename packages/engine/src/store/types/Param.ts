@@ -59,7 +59,7 @@ export interface ParamFile extends ParamBase {
   accept?: string[] | null
 }
 
-export type ParamFileValue = null | string
+export type ParamFileValue = string | null
 
 export type ConfigParamFile = AsConfig<ParamFile> & {
   accept?: string[] | null

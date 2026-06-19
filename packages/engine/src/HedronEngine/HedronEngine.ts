@@ -250,12 +250,42 @@ export class HedronEngine {
     return this.store.getState().paramValues[nodeId]
   }
 
+  public getNodeOptionNode(nodeId: string, optionKey: string): Param | Shot {
+    const node = this.getNode(nodeId)
+    if (!node) {
+      throw new Error(`getNodeOptionNode: node "${nodeId}" not found`)
+    }
+
+    const optionNodeId = node.childGroups.optionNodeIds.find((id) => {
+      const optionNode = this.getNode<Param | Shot>(id)
+      return optionNode?.key === optionKey
+    })
+
+    if (!optionNodeId) {
+      throw new Error(
+        `getNodeOptionNode: option node with key "${optionKey}" not found for node "${nodeId}"`,
+      )
+    }
+
+    const optionNode = this.getNode<Param | Shot>(optionNodeId)
+
+    if (!optionNode) {
+      throw new Error(`getNodeOptionNode: option node "${optionNodeId}" not found`)
+    }
+
+    return optionNode
+  }
+
   public setParamValue(nodeId: string | undefined, value: ParamValue): void {
     if (!nodeId) {
       console.error('setParamValue: nodeId is undefined')
       return
     }
     this.store.getState().updateParamValue(nodeId, value)
+  }
+
+  public setMultipleParamValues(nodeIds: string[], values: ParamValue[]): void {
+    this.store.getState().updateMultipleParamValues(nodeIds, values)
   }
 
   public addInput(inputType: string, targetNodeId: string) {
@@ -465,6 +495,10 @@ export class HedronEngine {
     this.renderer.passesNeedUpdate_webGPU = true
   }
 
+  public subscribeToParamValue(nodeId: string, callback: (value: ParamValue | undefined) => void) {
+    return this.store.subscribe((state) => state.paramValues[nodeId], callback)
+  }
+
   /**
    * Reconciles all sketches in the engine store to ensure their nodes match their module configurations (e.g. add/remove params and shots).
    * Useful after loading a project.
@@ -500,6 +534,10 @@ export class HedronEngine {
 
   public getStore() {
     return this.store
+  }
+
+  public getStoreState() {
+    return this.store.getState()
   }
 
   public getSaveData(): EngineData {
@@ -738,7 +776,7 @@ export class HedronEngine {
    * @param id The ID of the plugin to retrieve
    * @returns The plugin if it has been registered, undefined otherwise
    */
-  public getPlugin(id: string): IPlugin | undefined {
-    return this.plugins[id]
+  public getPlugin<T extends IPlugin>(id: string): T | undefined {
+    return this.plugins[id] as T | undefined
   }
 }

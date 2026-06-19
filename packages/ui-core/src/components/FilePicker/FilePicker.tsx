@@ -3,8 +3,9 @@ import { ParamFileValue, Resource } from '@hedron-gl/engine'
 import { createPortal } from 'react-dom'
 import css from './FilePicker.module.css'
 import { filterAvailableFiles } from './filterAvailableFiles'
+import { Button } from '@components/Button/Button'
 import { Dialog } from '@components/Dialog/Dialog'
-import { Panel, PanelBody, PanelHeader } from '@components/Panel/Panel'
+import { Panel, PanelBody, PanelHeader, PanelActions } from '@components/Panel/Panel'
 import { audioFileIcon, fileIcon, Icon, imageFileIcon, videoFileIcon } from '@components/Icon/Icon'
 
 interface FilePickerProps {
@@ -81,6 +82,18 @@ export const FilePicker = ({
                   ))}
                 </ul>
               </PanelBody>
+              <PanelActions>
+                <Button
+                  type="secondary"
+                  disabled={!currentFileName}
+                  onClick={() => {
+                    onFileNameChange(null)
+                    setIsOpen(false)
+                  }}
+                >
+                  Clear
+                </Button>
+              </PanelActions>
             </Panel>
           </Dialog>,
           document.body,

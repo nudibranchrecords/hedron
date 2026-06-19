@@ -2,9 +2,13 @@ import {
   defineOptionNodeConfigs,
   HedronEngine,
   IPlugin,
+  isEqual,
   OptionNodesFromConfigs,
 } from '@hedron-gl/engine'
 import { DEFAULT_TIMELINE_ID } from './constants'
+import { TimelineManager } from './TimelineManager'
+import { getTimelineTracks } from './selectors/getTimelineTracks'
+import { TimelineManagerKeyframeTrack } from './types'
 
 // defineOptionNodeConfigs is only needed if we want nice TS node name inference in other parts of the plugin
 export const TIMELINE_OPTION_NODE_CONFIGS = defineOptionNodeConfigs([
@@ -20,6 +24,7 @@ export const TIMELINE_OPTION_NODE_CONFIGS = defineOptionNodeConfigs([
     valueType: 'boolean',
     defaultValue: false,
   },
+  // This is a cheap hack to get audio working, eventually you'll manually add an audio track
   {
     nodeType: 'param',
     key: 'audioUrl',
@@ -37,6 +42,7 @@ export class TimelineInput implements IPlugin {
   public readonly name = 'Timeline Input'
   public readonly inputType = 'timeline-track'
   public readonly description = 'Timeline-based input for automating parameters over time.'
+  public timelineManagers: Map<string, TimelineManager> = new Map()
 
   onEngineInitialize(engine: HedronEngine) {
     engine.addNodeOnce(DEFAULT_TIMELINE_ID, null, {
@@ -47,6 +53,57 @@ export class TimelineInput implements IPlugin {
     })
 
     engine.addOptionNodes(DEFAULT_TIMELINE_ID, TIMELINE_OPTION_NODE_CONFIGS)
+
+    this.timelineManagers.set(
+      DEFAULT_TIMELINE_ID,
+      new TimelineManager({
+        durationMs: 60000,
+        tracks: [],
+      }),
+    )
+
+    this.timelineManagers.forEach((manager, timelineId) => {
+      const isPlaying = engine.getNodeOptionNode(timelineId, 'isPlaying')
+      const playHeadPositionNode = engine.getNodeOptionNode(timelineId, 'playheadPositionMs')
+
+      engine.getStore().subscribe(
+        (state) => getTimelineTracks(state, timelineId),
+        (tracks) => {
+          manager.setTracks(tracks)
+        },
+        {
+          equalityFn: isEqual,
+          fireImmediately: true,
+        },
+      )
+
+      engine.subscribeToParamValue(isPlaying.id, (isPlaying) => {
+        if (isPlaying) {
+          manager.play()
+        } else {
+          manager.pause()
+        }
+      })
+
+      manager.onUpdate((changed) => {
+        engine.setParamValue(playHeadPositionNode.id, manager.getPosition())
+
+        const changedTrackIds = Object.keys(changed)
+        if (changedTrackIds.length > 0) {
+          const tracks = getTimelineTracks(engine.getStoreState(), timelineId).filter(
+            (track): track is TimelineManagerKeyframeTrack => track.trackType === 'keyframe',
+          )
+          const changedTargetNodeIds = changedTrackIds.map(
+            (trackId) => tracks.find((track) => track.id === trackId)?.targetNodeId ?? trackId,
+          )
+
+          engine.setMultipleParamValues(
+            changedTargetNodeIds,
+            changedTrackIds.map((trackId) => changed[trackId]),
+          )
+        }
+      })
+    })
   }
 
   onNewInput(engine: HedronEngine, inputId: string) {

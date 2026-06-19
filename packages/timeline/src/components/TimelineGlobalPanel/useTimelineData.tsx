@@ -1,52 +1,19 @@
 import { useMemo } from 'react'
 
-import { useEngineStore, useEngineStoreShallow } from '@hedron-gl/ui-core'
+import { useEngineStoreDeepEqual } from '@hedron-gl/ui-core'
 
-import type { TimelineNode, TimelineManagerTrack, TimelineTrackInput } from '@/types'
 import { DEFAULT_TIMELINE_ID } from '@/constants'
+import { getTimelineTracks } from '@/selectors/getTimelineTracks'
 
 const TIMELINE_DURATION = 10000
 
 export const useTimelineData = () => {
-  const timelineNode = useEngineStore((state) => state.nodes[DEFAULT_TIMELINE_ID]) as
-    | TimelineNode
-    | undefined
-  const trackIds = useMemo(() => timelineNode?.childGroups.trackIds ?? [], [timelineNode])
-
-  const trackNodes = useEngineStoreShallow((state) =>
-    trackIds.map((inputId) => state.nodes[inputId] as TimelineTrackInput | undefined),
-  )
-
-  const targetNodes = useEngineStoreShallow((state) =>
-    trackNodes.map((trackNode) => (trackNode ? state.nodes[trackNode.targetNodeId] : undefined)),
-  )
+  const tracks = useEngineStoreDeepEqual((state) => getTimelineTracks(state, DEFAULT_TIMELINE_ID))
 
   return useMemo(() => {
-    if (!timelineNode) {
-      return { tracks: [], durationMs: TIMELINE_DURATION }
-    }
-
-    const tracks: TimelineManagerTrack[] = trackIds
-      .map((inputId, index): TimelineManagerTrack | null => {
-        const inputNode = trackNodes[index]
-        if (!inputNode) return null
-
-        const targetNode = targetNodes[index]
-
-        if (!targetNode) return null
-
-        return {
-          id: inputId,
-          label: targetNode.title,
-          keyframes: inputNode.customData?.keyframes ?? [],
-          targetNodeId: inputNode.targetNodeId,
-        }
-      })
-      .filter((t): t is TimelineManagerTrack => t !== null)
-
     return {
       tracks,
       durationMs: TIMELINE_DURATION,
     }
-  }, [timelineNode, trackIds, trackNodes, targetNodes])
+  }, [tracks])
 }

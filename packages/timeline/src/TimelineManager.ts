@@ -1,4 +1,9 @@
-import type { TimelineManagerData, TimelineManagerTrack, Keyframe } from '@/types'
+import type {
+  TimelineManagerData,
+  TimelineManagerTrack,
+  Keyframe,
+  TimelineManagerAudioTrack,
+} from '@/types'
 
 export type TrackValues = Record<string, boolean>
 
@@ -13,6 +18,7 @@ export class TimelineManager {
   private onUpdateCallback: OnUpdateCallback | null = null
   private cachedValues: TrackValues = {}
   private sortedKeyframesCache: Map<string, Keyframe[]> = new Map()
+  private audioCache: Map<string, HTMLAudioElement> = new Map()
   private lastKeyframeIndex: Map<string, number> = new Map()
 
   constructor(timeline: TimelineManagerData) {
@@ -24,10 +30,20 @@ export class TimelineManager {
     this.sortedKeyframesCache.clear()
     this.resetKeyframeIndexes()
     for (const track of this.timelineData.tracks) {
-      this.sortedKeyframesCache.set(
-        track.id,
-        [...track.keyframes].sort((a, b) => a.time - b.time),
-      )
+      switch (track.trackType) {
+        case 'audio':
+          if (this.audioCache.get(track.id)?.src !== track.audioUrl) {
+            const audio = new Audio(track.audioUrl)
+            this.audioCache.set(track.id, audio)
+          }
+          break
+        case 'keyframe':
+          this.sortedKeyframesCache.set(
+            track.id,
+            [...track.keyframes].sort((a, b) => a.time - b.time),
+          )
+          break
+      }
     }
   }
 
@@ -74,6 +90,21 @@ export class TimelineManager {
     this.onUpdateCallback?.(changed)
   }
 
+  private getAudioTracksWithAudio(): {
+    track: TimelineManagerAudioTrack
+    audio: HTMLAudioElement
+  }[] {
+    return this.timelineData.tracks
+      .filter(
+        (track): track is TimelineManagerAudioTrack =>
+          track.trackType === 'audio' && this.audioCache.has(track.id),
+      )
+      .map((track) => ({
+        track,
+        audio: this.audioCache.get(track.id)!,
+      }))
+  }
+
   private tick = (now: number) => {
     if (!this.playing) return
 
@@ -104,6 +135,12 @@ export class TimelineManager {
     this.playing = true
     this.lastFrameTime = null
     this.rafId = requestAnimationFrame(this.tick)
+
+    // Play audio tracks
+    for (const { audio } of this.getAudioTracksWithAudio()) {
+      audio.currentTime = this.position / 1000
+      audio.play()
+    }
   }
 
   pause() {
@@ -113,6 +150,11 @@ export class TimelineManager {
       cancelAnimationFrame(this.rafId)
       this.rafId = null
     }
+
+    // Pause audio tracks
+    for (const { audio } of this.getAudioTracksWithAudio()) {
+      audio.pause()
+    }
   }
 
   goTo(timeMs: number) {
@@ -120,10 +162,15 @@ export class TimelineManager {
     this.lastFrameTime = null
     this.resetKeyframeIndexes()
     this.emitUpdate()
+
+    // Seek audio tracks
+    for (const { audio } of this.getAudioTracksWithAudio()) {
+      audio.currentTime = this.position / 1000
+    }
   }
 
-  setData(timeline: TimelineManagerData) {
-    this.timelineData = timeline
+  setTracks(tracks: TimelineManagerTrack[]) {
+    this.timelineData.tracks = tracks
     this.buildCache()
     this.emitUpdate()
   }

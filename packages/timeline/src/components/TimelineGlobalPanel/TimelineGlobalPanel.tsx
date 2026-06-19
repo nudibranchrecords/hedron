@@ -7,7 +7,6 @@ import {
   useNodeOptionNodes,
   useParamValue,
   ControlGrid,
-  useResourcePathFromParamFile,
 } from '@hedron-gl/ui-core'
 import { useTimelineData } from './useTimelineData'
 import { useTimelineHandlers } from './useTimelineHandlers'
@@ -22,7 +21,7 @@ interface TimelineGlobalPanelProps {
 
 export const TimelineGlobalPanel = ({ engine }: TimelineGlobalPanelProps) => {
   const timeline = useTimelineData()
-  const manager = useTimelineManager(timeline)
+  const manager = useTimelineManager(DEFAULT_TIMELINE_ID)
 
   const { handlePlayheadChange, handleKeyframeDelete, handleKeyframeInsert } = useTimelineHandlers({
     engine,
@@ -36,8 +35,6 @@ export const TimelineGlobalPanel = ({ engine }: TimelineGlobalPanelProps) => {
 
   const audioUrlNode = optionNodes['audioUrl']!
 
-  const audioPath = useResourcePathFromParamFile(audioUrlNode.id)
-
   // Not very performant to be updating state on every frame, later we'll want to do this imperatively using useSubscribeToParamValue
   const playheadPositionMs = useParamValue<number>(playHeadPositionNode.id)
 
@@ -45,11 +42,10 @@ export const TimelineGlobalPanel = ({ engine }: TimelineGlobalPanelProps) => {
     <Panel>
       <PanelHeader>Timeline</PanelHeader>
       <PanelBody>
-        <ControlGrid>
+        <ControlGrid className="mb-xl">
           <NodeContainer nodeId={isPlayingNode.id} />
           <NodeContainer nodeId={audioUrlNode.id} />
         </ControlGrid>
-        {audioPath && <audio src={audioPath} controls style={{ width: '100%' }} />}
         <div className="mb-xl">
           <Timeline
             timeline={timeline}
