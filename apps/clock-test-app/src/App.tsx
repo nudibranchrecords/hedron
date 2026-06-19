@@ -106,7 +106,7 @@ function App() {
     clockRef.current?.sendTempoTap()
   }
 
-  const onDeltaSliderChange = (e) => {
+  const onDeltaSliderChange = () => {
     clockRef.current!.beatDelta = Number(e.target.value)
   }
 
