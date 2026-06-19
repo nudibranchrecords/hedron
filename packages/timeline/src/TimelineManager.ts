@@ -185,7 +185,6 @@ export class TimelineManager {
     this.emitUpdate()
 
     if (this.clock) {
-      console.log(timeMs)
       this.clock.beatDeltaMs = timeMs
     }
 

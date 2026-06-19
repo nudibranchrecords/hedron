@@ -1,8 +1,9 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import c from './Timeline.module.css'
 import '@hedron-gl/ui-core/base.css'
 import '@hedron-gl/ui-core/fonts.css'
 import { TrackKeyframes } from './TrackKeyframes'
+import { usePlayheadScrub } from './usePlayheadScrub'
 import { TimelineManagerTrack } from '@/types'
 
 export interface TimelineProps {
@@ -29,7 +30,7 @@ export function Timeline({
   onKeyframeInsert,
 }: TimelineProps) {
   const { durationMs, tracks } = timeline
-  const trackAreaRef = useRef<HTMLDivElement>(null)
+  const rulerAreaRef = useRef<HTMLDivElement>(null)
   const [selectedTrack, setSelectedTrack] = useState<string | null>(null)
   const [selectedKeyframe, setSelectedKeyframe] = useState<string | null>(null)
 
@@ -47,21 +48,7 @@ export function Timeline({
     return () => window.removeEventListener('keydown', handleKeyDown)
   }, [selectedKeyframe, onKeyframeDelete, selectedTrack, playheadPositionMs, onKeyframeInsert])
 
-  const handleTrackClick = useCallback(
-    (e: React.MouseEvent<HTMLDivElement>) => {
-      if (!trackAreaRef.current || !onPlayheadChange) return
-      const rect = trackAreaRef.current.getBoundingClientRect()
-      const headerWidth = parseFloat(
-        getComputedStyle(trackAreaRef.current).getPropertyValue('--trackHeaderWidth'),
-      )
-      const trackWidth = rect.width - headerWidth
-      const x = e.clientX - rect.left - headerWidth
-      if (x < 0) return
-      const time = (x / trackWidth) * durationMs
-      onPlayheadChange(Math.max(0, Math.min(durationMs, time)))
-    },
-    [durationMs, onPlayheadChange],
-  )
+  usePlayheadScrub(durationMs, rulerAreaRef, onPlayheadChange)
 
   const playheadPercent = (playheadPositionMs / durationMs) * 100
 
@@ -85,8 +72,10 @@ export function Timeline({
           {(playheadPositionMs / 1000).toFixed(1)}s / {durationSec}s
         </span>
       </div>
-      <div className={c.body} ref={trackAreaRef} onClick={handleTrackClick}>
-        <div className={c.ruler}>{rulerMarks}</div>
+      <div className={c.body}>
+        <div className={c.ruler} ref={rulerAreaRef}>
+          {rulerMarks}
+        </div>
         {tracks.map((track) => {
           const isSelected = selectedTrack === track.id
           return (
