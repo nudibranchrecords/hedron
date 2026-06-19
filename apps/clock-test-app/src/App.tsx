@@ -106,7 +106,7 @@ function App() {
     clockRef.current?.sendTempoTap()
   }
 
-  const onDeltaSliderChange = () => {
+  const onDeltaSliderChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     clockRef.current!.beatDelta = Number(e.target.value)
   }
 
