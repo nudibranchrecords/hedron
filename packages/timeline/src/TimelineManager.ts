@@ -136,18 +136,16 @@ export class TimelineManager {
   play() {
     if (this.playing) return
 
-    if (this.clock) {
-      this.clock.continue()
-    }
-
     if (this.position >= this.timelineData.durationMs) {
       this.position = 0
       this.resetKeyframeIndexes()
-
-      if (this.clock) {
-        this.clock.beatDeltaMs = 0
-      }
     }
+
+    if (this.clock) {
+      this.clock.beatDeltaMs = this.position
+      this.clock.continue()
+    }
+
     this.playing = true
     this.lastFrameTime = null
     this.rafId = requestAnimationFrame(this.tick)
