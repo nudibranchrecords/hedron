@@ -5,7 +5,7 @@ import {
   isEqual,
   OptionNodesFromConfigs,
 } from '@hedron-gl/engine'
-import { DEFAULT_TIMELINE_ID } from './constants'
+import { DEFAULT_TIMELINE_ID, TIMELINE_DURATION } from './constants'
 import { TimelineManager } from './TimelineManager'
 import { getTimelineTracks } from './selectors/getTimelineTracks'
 import { TimelineManagerKeyframeTrack } from './types'
@@ -58,7 +58,7 @@ export class TimelineInput implements IPlugin {
       DEFAULT_TIMELINE_ID,
       new TimelineManager(
         {
-          durationMs: 60000,
+          durationMs: TIMELINE_DURATION,
           tracks: [],
         },
         engine.clock,
