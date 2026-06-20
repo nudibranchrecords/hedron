@@ -437,6 +437,9 @@ importers:
 
   packages/timeline:
     dependencies:
+      '@hedron-gl/clock':
+        specifier: ^1.0.0-alpha.4
+        version: link:../clock
       '@hedron-gl/engine':
         specifier: ^1.0.0-alpha.4
         version: link:../engine
