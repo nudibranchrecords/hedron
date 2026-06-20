@@ -175,7 +175,7 @@ export class TimelineManager {
     this.emitUpdate()
 
     if (this.clock) {
-      this.clock.beatDeltaMs = timeMs
+      this.clock.beatDeltaMs = this.position
     }
 
     // Seek audio tracks
