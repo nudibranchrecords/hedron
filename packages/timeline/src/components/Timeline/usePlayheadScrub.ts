@@ -4,35 +4,43 @@ import { useCallback, useEffect, useRef } from 'react'
 export const usePlayheadScrub = (
   durationMs: number,
   playheadAreaRef: React.RefObject<HTMLDivElement>,
+  playheadPositionMs: number,
   onPlayheadChange?: (time: number) => void,
 ) => {
   // We need this as a ref for useElementScrub to work properly
   const playheadPositionRef = useRef(0)
 
+  useEffect(() => {
+    playheadPositionRef.current = playheadPositionMs
+  }, [playheadPositionMs])
+
+  const clampTime = useCallback(
+    (time: number) => Math.max(0, Math.min(durationMs, time)),
+    [durationMs],
+  )
+
   const onPlayheadAreaScrub = useCallback(
     ({ x }: { x: number }) => {
-      const newTime = playheadPositionRef.current + x * durationMs
+      const newTime = clampTime(playheadPositionRef.current + x * durationMs)
 
       onPlayheadChange?.(newTime)
       playheadPositionRef.current = newTime
     },
-    [durationMs, onPlayheadChange],
+    [clampTime, durationMs, onPlayheadChange],
   )
 
   const onRulerMouseDown = useCallback(
     (e: MouseEvent) => {
       if (!playheadAreaRef.current || !onPlayheadChange) return
       const rect = playheadAreaRef.current.getBoundingClientRect()
+      if (rect.width <= 0) return
 
-      const x = e.clientX - rect.left
-
-      if (x < 0) return
-
-      const time = (x / rect.width) * durationMs
+      const x = Math.max(0, Math.min(rect.width, e.clientX - rect.left))
+      const time = clampTime((x / rect.width) * durationMs)
       onPlayheadChange(time)
       playheadPositionRef.current = time
     },
-    [durationMs, onPlayheadChange, playheadAreaRef],
+    [clampTime, durationMs, onPlayheadChange, playheadAreaRef],
   )
 
   useEffect(() => {

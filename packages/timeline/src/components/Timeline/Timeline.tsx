@@ -48,7 +48,7 @@ export function Timeline({
     return () => window.removeEventListener('keydown', handleKeyDown)
   }, [selectedKeyframe, onKeyframeDelete, selectedTrack, playheadPositionMs, onKeyframeInsert])
 
-  usePlayheadScrub(durationMs, rulerAreaRef, onPlayheadChange)
+  usePlayheadScrub(durationMs, rulerAreaRef, playheadPositionMs, onPlayheadChange)
 
   const playheadPercent = (playheadPositionMs / durationMs) * 100
 
