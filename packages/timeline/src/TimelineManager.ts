@@ -1,4 +1,5 @@
 import { Clock } from '@hedron-gl/clock'
+import { ParamValue } from '@hedron-gl/engine'
 import type {
   TimelineManagerData,
   TimelineManagerTrack,
@@ -6,7 +7,7 @@ import type {
   TimelineManagerAudioTrack,
 } from '@/types'
 
-export type TrackValues = Record<string, boolean>
+export type TrackValues = Record<string, ParamValue>
 
 export type OnUpdateCallback = (values: TrackValues) => void
 
@@ -54,10 +55,10 @@ export class TimelineManager {
     this.lastKeyframeIndex.clear()
   }
 
-  private getTrackValue(track: TimelineManagerTrack): boolean {
+  private getTrackValue(track: TimelineManagerTrack): ParamValue | undefined {
     const sorted = this.sortedKeyframesCache.get(track.id) ?? []
     const startIndex = this.lastKeyframeIndex.get(track.id) ?? 0
-    let value = startIndex > 0 ? sorted[startIndex - 1].value : false
+    let value = startIndex > 0 ? sorted[startIndex - 1].value : undefined
     let lastIndex = startIndex
     for (let i = startIndex; i < sorted.length; i++) {
       if (sorted[i].time > this.position) break
@@ -71,7 +72,10 @@ export class TimelineManager {
   private computeValues(): TrackValues {
     const values: TrackValues = {}
     for (const track of this.timelineData.tracks) {
-      values[track.id] = this.getTrackValue(track)
+      const value = this.getTrackValue(track)
+      if (value !== undefined) {
+        values[track.id] = value
+      }
     }
     return values
   }

@@ -1,5 +1,5 @@
 import { useCallback } from 'react'
-import { HedronEngine } from '@hedron-gl/engine'
+import { HedronEngine, Param } from '@hedron-gl/engine'
 import { useNodeOptionNodes } from '@hedron-gl/ui-core'
 import { DEFAULT_TIMELINE_ID } from '@/constants'
 import { TimelineManager } from '@/TimelineManager'
@@ -51,13 +51,25 @@ export const useTimelineHandlers = ({ engine, manager, timeline }: UseTimelineHa
         return
       }
 
+      const targetParam = engine.getNode(inputNode.targetNodeId) as Param | undefined
+
+      if (!targetParam) {
+        console.error(`Target param not found for input node ${inputNode.id}`)
+        return
+      }
+
       const targetParamValue = engine.getParamValue(inputNode.targetNodeId)
+
+      if (!targetParamValue) {
+        console.error(`Target param value not found for input node ${inputNode.id}`)
+        return
+      }
 
       const keyframe = {
         id: crypto.randomUUID(),
         time,
-        valueType: 'boolean' as const,
-        value: targetParamValue === true,
+        valueType: targetParam.valueType,
+        value: targetParamValue,
       }
 
       const nextKeyframes: Keyframe[] = [...(inputNode.customData?.keyframes ?? []), keyframe].sort(

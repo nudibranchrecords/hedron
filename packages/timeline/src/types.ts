@@ -1,10 +1,11 @@
-import { Input, CustomNode } from '@hedron-gl/engine'
+import { Input, CustomNode, ParamValueType, ParamValue } from '@hedron-gl/engine'
 
 export interface Keyframe {
   id: string
   time: number
-  valueType: 'boolean'
-  value: boolean
+  // TODO: This is a bit wonky because a keyframe could be typed with a non-matching valueType and value
+  valueType: ParamValueType
+  value: ParamValue
 }
 
 /** Store node type for a timeline track */
