@@ -1,6 +1,7 @@
 import {
   defineOptionNodeConfigs,
   HedronEngine,
+  Input,
   IPlugin,
   isEqual,
   OptionNodesFromConfigs,
@@ -109,8 +110,8 @@ export class TimelineInput implements IPlugin {
     })
   }
 
-  onNewInput(engine: HedronEngine, inputId: string) {
+  onNewInput(engine: HedronEngine, newInput: Input) {
     // Input ID is only a child of the target node, we also need to make it a child of the timeline node so it shows up in the timeline UI
-    engine.addChildToNode(DEFAULT_TIMELINE_ID, 'trackIds', inputId)
+    engine.addChildToNode(DEFAULT_TIMELINE_ID, 'trackIds', newInput.id)
   }
 }

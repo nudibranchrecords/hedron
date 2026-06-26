@@ -28,6 +28,7 @@ import {
   ConfigCustomNode,
   ChildGroupsLoose,
   Resources,
+  Input,
 } from '@store/types'
 import { getSketchesOfModuleId } from '@store/selectors/getSketchesOfModuleId'
 import { createEngineStore, EngineStore } from '@store/engineStore'
@@ -288,7 +289,7 @@ export class HedronEngine {
     this.store.getState().updateMultipleParamValues(nodeIds, values)
   }
 
-  public addInput(inputType: string, targetNodeId: string) {
+  public addInput(inputType: string, targetNodeId: string): Input | undefined {
     const plugin = Object.values(this.plugins).find((p) => p.inputType === inputType)
 
     if (!plugin) {
@@ -311,17 +312,17 @@ export class HedronEngine {
 
     const addInput = this.store.getState().addInput
 
-    const inputId = addInput(input)
+    const newInput = addInput(input)
 
     /**
      * FIXME: Once `optionNodesConfig` is removed, we wont need this
      * All plugins will use `onNewInput` to add these manually
      * */
-    this.addOptionNodes(inputId, plugin.optionNodesConfig ?? [])
+    this.addOptionNodes(newInput.id, plugin.optionNodesConfig ?? [])
 
-    plugin.onNewInput?.(this, inputId)
+    plugin.onNewInput?.(this, newInput)
 
-    return inputId
+    return newInput
   }
 
   /**
