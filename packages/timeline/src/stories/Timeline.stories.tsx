@@ -179,8 +179,16 @@ export const Interactive = () => {
   const managerRef = useRef<TimelineManager | null>(null)
 
   useEffect(() => {
-    const manager = new TimelineManager(timeline)
+    const manager = new TimelineManager({
+      durationMs: 10000,
+      tracks: [],
+    })
     managerRef.current = manager
+  }, [])
+
+  useEffect(() => {
+    const manager = managerRef.current
+    if (!manager) return
 
     manager.onUpdate((changed) => {
       setTrackValues((prev) => ({ ...prev, ...changed }))
