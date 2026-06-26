@@ -83,7 +83,6 @@ export function Timeline({
         if (!track) return
 
         for (const keyframeTrackId of getChildKeyframeTrackIds(track)) {
-          console.log(`Inserting keyframe on track ${keyframeTrackId} at ${playheadPositionMs}ms`)
           onKeyframeInsert(keyframeTrackId, playheadPositionMs)
         }
       }
