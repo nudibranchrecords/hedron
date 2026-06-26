@@ -7,7 +7,11 @@ import audioUrl from '../../../../apps/example-project/resources/120-4-4.mp3'
 import { TimelineManager } from '@/TimelineManager'
 import type { TrackValues } from '@/TimelineManager'
 import { Timeline } from '@/components/Timeline/Timeline'
-import type { TimelineManagerData, TimelineManagerTrack } from '@/types'
+import type {
+  TimelineManagerData,
+  TimelineManagerKeyframeTrack,
+  TimelineManagerTrack,
+} from '@/types'
 
 const meta = {
   title: 'Timeline',
@@ -208,71 +212,72 @@ export const Interactive = () => {
     managerRef.current?.pause()
   }, [])
 
-  const handleKeyframeDelete = (keyframeId: string) => {
-    const removeKeyframe = (tracks: TimelineManagerTrack[]): TimelineManagerTrack[] =>
-      tracks.map((track) => {
-        if (track.trackType === 'keyframe') {
-          return {
-            ...track,
-            keyframes: track.keyframes.filter((kf) => kf.id !== keyframeId),
-          }
-        }
-
-        if (track.trackType === 'vector') {
-          return {
-            ...track,
-            childTracks: removeKeyframe(track.childTracks),
-          }
-        }
-
-        return track
-      })
-
+  const handleKeyframeDelete = useCallback((keyframeId: string) => {
     setTimeline((prev) => ({
       ...prev,
-      tracks: removeKeyframe(prev.tracks),
-    }))
-  }
-
-  const handleKeyframeInsert = (trackId: string, time: number) => {
-    const insertKeyframe = (tracks: TimelineManagerTrack[]): TimelineManagerTrack[] =>
-      tracks.map((track) => {
-        if (track.trackType === 'vector') {
-          return {
-            ...track,
-            childTracks: insertKeyframe(track.childTracks),
+      tracks: prev.tracks.map((track) => {
+        const deleteKeyframes = (track: TimelineManagerTrack): TimelineManagerTrack => {
+          if (track.trackType === 'keyframe') {
+            return {
+              ...track,
+              keyframes: track.keyframes.filter((kf) => kf.id !== keyframeId),
+            }
           }
-        }
-
-        if (track.trackType !== 'keyframe' || track.id !== trackId) {
+          if (track.trackType === 'vector') {
+            return {
+              ...track,
+              childTracks: track.childTracks.map(deleteKeyframes),
+            }
+          }
           return track
         }
 
-        const lastKeyframe = track.keyframes[track.keyframes.length - 1]
-        const valueType = lastKeyframe?.valueType ?? 'boolean'
-        const value =
-          lastKeyframe?.value ??
-          (valueType === 'number' ? 0 : valueType === 'boolean' ? true : null)
+        return deleteKeyframes(track)
+      }),
+    }))
+  }, [])
 
-        return {
-          ...track,
-          keyframes: [
-            ...track.keyframes,
-            {
-              id: `kf-${Date.now()}`,
-              time,
-              valueType,
-              value,
-            },
-          ].sort((a, b) => a.time - b.time),
-        }
-      })
-
+  const handleKeyframeInsert = useCallback((trackId: string, time: number) => {
     setTimeline((prev) => ({
       ...prev,
-      tracks: insertKeyframe(prev.tracks),
+      tracks: prev.tracks.map((track) => {
+        const insertKeyframe = (track: TimelineManagerTrack): TimelineManagerTrack => {
+          if (track.trackType === 'keyframe' && track.id === trackId) {
+            const lastKeyframe = track.keyframes[track.keyframes.length - 1]
+            const valueType = lastKeyframe?.valueType ?? 'boolean'
+            const value =
+              lastKeyframe?.value ??
+              (valueType === 'number' ? 0 : valueType === 'boolean' ? true : null)
+
+            return {
+              ...track,
+              keyframes: [
+                ...track.keyframes,
+                {
+                  id: crypto.randomUUID(),
+                  time,
+                  valueType,
+                  value,
+                },
+              ].sort((a, b) => a.time - b.time),
+            }
+          }
+          if (track.trackType === 'vector') {
+            console.log(`Inserting keyframe on vector track ${track.id} at ${time}ms`)
+            return {
+              ...track,
+              childTracks: track.childTracks.map(
+                insertKeyframe as (track: TimelineManagerTrack) => TimelineManagerKeyframeTrack,
+              ),
+            }
+          }
+          return track
+        }
+
+        return insertKeyframe(track)
+      }),
     }))
-  }
+  }, [])
 
   const getKeyframeTracks = (tracks: TimelineManagerTrack[]): TimelineManagerTrack[] => {
     return tracks.flatMap((track) => {

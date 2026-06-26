@@ -1,6 +1,11 @@
 import { EngineState, Input, isParamVector, Param, ParamFileValue } from '@hedron-gl/engine'
 import { DEFAULT_AUDIO_TRACK_ID } from '@/constants'
-import { TimelineManagerTrack, TimelineNode, TimelineTrackInput } from '@/types'
+import {
+  TimelineManagerKeyframeTrack,
+  TimelineManagerTrack,
+  TimelineNode,
+  TimelineTrackInput,
+} from '@/types'
 
 export const getTimelineTracks = (
   state: EngineState,
@@ -22,9 +27,7 @@ export const getTimelineTracks = (
         (inputNode.childGroups as { trackIds?: string[] } | undefined)?.trackIds ?? []
       const childTracks = childTrackIds
         .map((childTrackId: string) => createKeyframeTrack(childTrackId))
-        .filter(
-          (track: TimelineManagerTrack | null): track is TimelineManagerTrack => track !== null,
-        )
+        .filter((track): track is TimelineManagerKeyframeTrack => track !== null)
 
       return {
         trackType: 'vector',

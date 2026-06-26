@@ -23,7 +23,7 @@ interface TimelineManagerTrackBase {
 
 export interface TimelineManagerVectorTrack extends TimelineManagerTrackBase {
   trackType: 'vector'
-  childTracks: TimelineManagerTrack[]
+  childTracks: TimelineManagerKeyframeTrack[]
 }
 
 export interface TimelineManagerKeyframeTrack extends TimelineManagerTrackBase {

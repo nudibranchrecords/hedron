@@ -1,18 +1,19 @@
+import { Keyframe } from './Keyframe'
 import c from './Timeline.module.css'
 import { TimelineManagerKeyframeTrack } from '@/types'
 
 interface TrackKeyframesProps {
   track: TimelineManagerKeyframeTrack
   durationMs: number
-  selectedKeyframe: string | null
-  setSelectedKeyframe: (keyframeId: string | null) => void
+  selectedKeyframes: string[] | null
+  setSelectedKeyframes: (keyframeIds: string[] | null) => void
 }
 
 export const TrackKeyframes = ({
   track,
   durationMs,
-  selectedKeyframe,
-  setSelectedKeyframe,
+  selectedKeyframes,
+  setSelectedKeyframes,
 }: TrackKeyframesProps) => (
   <>
     {track.keyframes.map((kf, i) => {
@@ -30,16 +31,14 @@ export const TrackKeyframes = ({
     })}
     {track.keyframes.map((kf) => {
       const percent = (kf.time / durationMs) * 100
-      const isKeyframeSelected = selectedKeyframe === kf.id
+      const isKeyframeSelected = selectedKeyframes?.includes(kf.id) ?? false
       return (
-        <div
+        <Keyframe
           key={kf.id}
-          className={`${c.keyframe} ${isKeyframeSelected ? c.keyframeSelected : ''}`}
-          style={{ left: `${percent}%` }}
-          onClick={(e) => {
-            e.stopPropagation()
-            setSelectedKeyframe(isKeyframeSelected ? null : kf.id)
-          }}
+          id={kf.id}
+          percentPos={percent}
+          isSelected={isKeyframeSelected}
+          onClick={() => setSelectedKeyframes([kf.id])}
         />
       )
     })}

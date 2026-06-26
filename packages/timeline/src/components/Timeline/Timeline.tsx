@@ -1,9 +1,10 @@
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import c from './Timeline.module.css'
 import '@hedron-gl/ui-core/base.css'
 import '@hedron-gl/ui-core/fonts.css'
 import { TrackKeyframes } from './TrackKeyframes'
 import { usePlayheadScrub } from './usePlayheadScrub'
+import { Keyframe } from './Keyframe'
 import { TimelineManagerTrack } from '@/types'
 
 export interface TimelineProps {
@@ -32,21 +33,72 @@ export function Timeline({
   const { durationMs, tracks } = timeline
   const rulerAreaRef = useRef<HTMLDivElement>(null)
   const [selectedTrack, setSelectedTrack] = useState<string | null>(null)
-  const [selectedKeyframe, setSelectedKeyframe] = useState<string | null>(null)
+  const [selectedKeyframes, setSelectedKeyframes] = useState<string[] | null>(null)
+
+  const findTrackById = useCallback(
+    (trackList: TimelineManagerTrack[], trackId: string): TimelineManagerTrack | null => {
+      for (const track of trackList) {
+        if (track.id === trackId) {
+          return track
+        }
+
+        if (track.trackType === 'vector') {
+          const childTrack = findTrackById(track.childTracks, trackId)
+          if (childTrack) {
+            return childTrack
+          }
+        }
+      }
+
+      return null
+    },
+    [],
+  )
 
   useEffect(() => {
+    const getChildKeyframeTrackIds = (track: TimelineManagerTrack): string[] => {
+      if (track.trackType === 'keyframe') {
+        return [track.id]
+      }
+
+      if (track.trackType === 'vector') {
+        return track.childTracks.map((track) => track.id)
+      }
+
+      return []
+    }
+
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'x' && selectedKeyframe) {
-        onKeyframeDelete?.(selectedKeyframe)
-        setSelectedKeyframe(null)
+      if (e.key === 'x' && selectedKeyframes) {
+        selectedKeyframes.forEach((keyframeId) => {
+          onKeyframeDelete?.(keyframeId)
+        })
+
+        setSelectedKeyframes(null)
       }
       if (e.key === 'i' && selectedTrack) {
-        onKeyframeInsert?.(selectedTrack, playheadPositionMs)
+        if (!onKeyframeInsert) return
+
+        const track = findTrackById(tracks, selectedTrack)
+        if (!track) return
+
+        for (const keyframeTrackId of getChildKeyframeTrackIds(track)) {
+          console.log(`Inserting keyframe on track ${keyframeTrackId} at ${playheadPositionMs}ms`)
+          onKeyframeInsert(keyframeTrackId, playheadPositionMs)
+        }
       }
     }
     window.addEventListener('keydown', handleKeyDown)
     return () => window.removeEventListener('keydown', handleKeyDown)
-  }, [selectedKeyframe, onKeyframeDelete, selectedTrack, playheadPositionMs, onKeyframeInsert])
+  }, [
+    selectedKeyframes,
+    onKeyframeDelete,
+    selectedTrack,
+    playheadPositionMs,
+    onKeyframeInsert,
+    tracks,
+    findTrackById,
+  ])
 
   usePlayheadScrub(durationMs, rulerAreaRef, playheadPositionMs, onPlayheadChange)
 
@@ -62,6 +114,19 @@ export function Timeline({
         <span className={c.rulerLabel}>{t}s</span>
       </div>,
     )
+  }
+
+  const getChildKeyframeTimes = (track: TimelineManagerTrack): number[] => {
+    if (track.trackType === 'keyframe') {
+      return track.keyframes.map((kf) => kf.time)
+    }
+
+    if (track.trackType === 'vector') {
+      const times = track.childTracks.flatMap((childTrack) => getChildKeyframeTimes(childTrack))
+      return Array.from(new Set(times)).sort((a, b) => a - b)
+    }
+
+    return []
   }
 
   const renderTracks = (trackList: TimelineManagerTrack[], depth = 0): React.ReactNode[] => {
@@ -82,10 +147,32 @@ export function Timeline({
               <TrackKeyframes
                 track={track}
                 durationMs={durationMs}
-                selectedKeyframe={selectedKeyframe}
-                setSelectedKeyframe={setSelectedKeyframe}
+                selectedKeyframes={selectedKeyframes}
+                setSelectedKeyframes={setSelectedKeyframes}
               />
             )}
+            {track.trackType === 'vector' &&
+              getChildKeyframeTimes(track).map((time, index) => {
+                const percent = (time / durationMs) * 100
+                return (
+                  <Keyframe
+                    key={index}
+                    id={index.toString()}
+                    percentPos={percent}
+                    isSelected={false}
+                    onClick={() => {
+                      const selectedKeyframes = []
+                      for (const childTrack of track.childTracks) {
+                        const kf = childTrack.keyframes.find((kf) => kf.time === time)
+                        if (kf) {
+                          selectedKeyframes.push(kf.id)
+                        }
+                      }
+                      setSelectedKeyframes(selectedKeyframes)
+                    }}
+                  />
+                )
+              })}
           </div>
         </div>
       )
