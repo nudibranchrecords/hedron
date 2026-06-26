@@ -1,4 +1,4 @@
-import { EngineState, Input, Param, ParamFileValue } from '@hedron-gl/engine'
+import { EngineState, Input, isParamVector, Param, ParamFileValue } from '@hedron-gl/engine'
 import { DEFAULT_AUDIO_TRACK_ID } from '@/constants'
 import { TimelineManagerTrack, TimelineNode, TimelineTrackInput } from '@/types'
 
@@ -9,23 +9,42 @@ export const getTimelineTracks = (
   const timelineNode = state.nodes[timelineId] as TimelineNode | undefined
   const trackIds = timelineNode?.childGroups.trackIds ?? []
 
-  const tracks = trackIds
-    .map((inputId): TimelineManagerTrack | null => {
-      const inputNode = state.nodes[inputId] as TimelineTrackInput | undefined
-      if (!inputNode) return null
+  const createKeyframeTrack = (inputId: string): TimelineManagerTrack | null => {
+    const inputNode = state.nodes[inputId] as TimelineTrackInput | undefined
+    if (!inputNode) return null
 
-      const targetNodeId = (inputNode as Input).targetNodeId
-      const targetNode = targetNodeId ? state.nodes[targetNodeId] : undefined
-      if (!targetNode) return null
+    const targetNodeId = (inputNode as Input).targetNodeId
+    const targetNode = targetNodeId ? state.nodes[targetNodeId] : undefined
+    if (!targetNode) return null
+
+    if (isParamVector(targetNode)) {
+      const childTrackIds =
+        (inputNode.childGroups as { trackIds?: string[] } | undefined)?.trackIds ?? []
+      const childTracks = childTrackIds
+        .map((childTrackId: string) => createKeyframeTrack(childTrackId))
+        .filter(
+          (track: TimelineManagerTrack | null): track is TimelineManagerTrack => track !== null,
+        )
 
       return {
-        trackType: 'keyframe',
+        trackType: 'vector',
         id: inputId,
         label: targetNode.title,
-        keyframes: inputNode.customData?.keyframes ?? [],
-        targetNodeId,
+        childTracks,
       }
-    })
+    }
+
+    return {
+      trackType: 'keyframe',
+      id: inputId,
+      label: targetNode.title,
+      keyframes: inputNode.customData?.keyframes ?? [],
+      targetNodeId,
+    }
+  }
+
+  const tracks = trackIds
+    .map((inputId): TimelineManagerTrack | null => createKeyframeTrack(inputId))
     .filter((track): track is TimelineManagerTrack => track !== null)
 
   // TODO: This is how we hack in an audio track for now

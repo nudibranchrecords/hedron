@@ -21,6 +21,11 @@ interface TimelineManagerTrackBase {
   label: string
 }
 
+export interface TimelineManagerVectorTrack extends TimelineManagerTrackBase {
+  trackType: 'vector'
+  childTracks: TimelineManagerTrack[]
+}
+
 export interface TimelineManagerKeyframeTrack extends TimelineManagerTrackBase {
   trackType: 'keyframe'
   keyframes: Keyframe[]
@@ -32,7 +37,10 @@ export interface TimelineManagerAudioTrack extends TimelineManagerTrackBase {
   audioUrl: string
 }
 
-export type TimelineManagerTrack = TimelineManagerKeyframeTrack | TimelineManagerAudioTrack
+export type TimelineManagerTrack =
+  | TimelineManagerKeyframeTrack
+  | TimelineManagerAudioTrack
+  | TimelineManagerVectorTrack
 
 export interface TimelineManagerData {
   durationMs: number

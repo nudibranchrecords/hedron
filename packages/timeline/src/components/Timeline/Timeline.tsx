@@ -64,6 +64,40 @@ export function Timeline({
     )
   }
 
+  const renderTracks = (trackList: TimelineManagerTrack[], depth = 0): React.ReactNode[] => {
+    return trackList.flatMap((track) => {
+      const isSelected = selectedTrack === track.id
+
+      const row = (
+        <div key={track.id} className={`${c.track} ${isSelected ? c.trackSelected : ''}`}>
+          <div
+            className={c.trackHeader}
+            style={{ paddingLeft: `${16 + depth * 16}px` }}
+            onClick={() => setSelectedTrack(track.id)}
+          >
+            {track.label}
+          </div>
+          <div className={c.trackBody}>
+            {track.trackType === 'keyframe' && (
+              <TrackKeyframes
+                track={track}
+                durationMs={durationMs}
+                selectedKeyframe={selectedKeyframe}
+                setSelectedKeyframe={setSelectedKeyframe}
+              />
+            )}
+          </div>
+        </div>
+      )
+
+      if (track.trackType !== 'vector') {
+        return [row]
+      }
+
+      return [row, ...renderTracks(track.childTracks, depth + 1)]
+    })
+  }
+
   return (
     <div className={c.timeline}>
       <div className={c.header}>
@@ -76,26 +110,7 @@ export function Timeline({
         <div className={c.ruler} ref={rulerAreaRef}>
           {rulerMarks}
         </div>
-        {tracks.map((track) => {
-          const isSelected = selectedTrack === track.id
-          return (
-            <div key={track.id} className={`${c.track} ${isSelected ? c.trackSelected : ''}`}>
-              <div className={c.trackHeader} onClick={() => setSelectedTrack(track.id)}>
-                {track.label}
-              </div>
-              <div className={c.trackBody}>
-                {track.trackType === 'keyframe' && (
-                  <TrackKeyframes
-                    track={track}
-                    durationMs={durationMs}
-                    selectedKeyframe={selectedKeyframe}
-                    setSelectedKeyframe={setSelectedKeyframe}
-                  />
-                )}
-              </div>
-            </div>
-          )
-        })}
+        {renderTracks(tracks)}
         <div
           className={c.playhead}
           style={{ '--playheadPercent': playheadPercent / 100 } as React.CSSProperties}

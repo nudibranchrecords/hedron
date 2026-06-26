@@ -13,7 +13,7 @@ import {
 import { DEFAULT_TIMELINE_ID, TIMELINE_DURATION } from './constants'
 import { TimelineManager } from './TimelineManager'
 import { getTimelineTracks } from './selectors/getTimelineTracks'
-import { TimelineManagerKeyframeTrack } from './types'
+import { TimelineManagerKeyframeTrack, TimelineManagerTrack } from './types'
 
 // defineOptionNodeConfigs is only needed if we want nice TS node name inference in other parts of the plugin
 export const TIMELINE_OPTION_NODE_CONFIGS = defineOptionNodeConfigs([
@@ -98,9 +98,28 @@ export class TimelineInput implements IPlugin {
 
         const changedTrackIds = Object.keys(changed)
         if (changedTrackIds.length > 0) {
-          const tracks = getTimelineTracks(engine.getStoreState(), timelineId).filter(
-            (track): track is TimelineManagerKeyframeTrack => track.trackType === 'keyframe',
-          )
+          const allTracks = getTimelineTracks(engine.getStoreState(), timelineId)
+
+          const getKeyframeTracks = (
+            tracks: TimelineManagerTrack[],
+          ): TimelineManagerKeyframeTrack[] => {
+            const keyframeTracks: TimelineManagerKeyframeTrack[] = []
+
+            for (const track of tracks) {
+              if (track.trackType === 'keyframe') {
+                keyframeTracks.push(track)
+                continue
+              }
+
+              if (track.trackType === 'vector') {
+                keyframeTracks.push(...getKeyframeTracks(track.childTracks))
+              }
+            }
+
+            return keyframeTracks
+          }
+
+          const tracks = getKeyframeTracks(allTracks)
           const changedTargetNodeIds = changedTrackIds.map(
             (trackId) => tracks.find((track) => track.id === trackId)?.targetNodeId ?? trackId,
           )

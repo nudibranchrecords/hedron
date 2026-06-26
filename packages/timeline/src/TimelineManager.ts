@@ -30,10 +30,23 @@ export class TimelineManager {
     this.buildCache()
   }
 
+  private getAllTracks(tracks = this.timelineData.tracks): TimelineManagerTrack[] {
+    const allTracks: TimelineManagerTrack[] = []
+
+    for (const track of tracks) {
+      allTracks.push(track)
+      if (track.trackType === 'vector') {
+        allTracks.push(...this.getAllTracks(track.childTracks))
+      }
+    }
+
+    return allTracks
+  }
+
   private buildCache() {
     this.sortedKeyframesCache.clear()
     this.resetKeyframeIndexes()
-    for (const track of this.timelineData.tracks) {
+    for (const track of this.getAllTracks()) {
       switch (track.trackType) {
         case 'audio':
           if (this.audioCache.get(track.id)?.src !== track.audioUrl) {
@@ -71,7 +84,7 @@ export class TimelineManager {
 
   private computeValues(): TrackValues {
     const values: TrackValues = {}
-    for (const track of this.timelineData.tracks) {
+    for (const track of this.getAllTracks()) {
       const value = this.getTrackValue(track)
       if (value !== undefined) {
         values[track.id] = value
@@ -101,7 +114,7 @@ export class TimelineManager {
     track: TimelineManagerAudioTrack
     audio: HTMLAudioElement
   }[] {
-    return this.timelineData.tracks
+    return this.getAllTracks()
       .filter(
         (track): track is TimelineManagerAudioTrack =>
           track.trackType === 'audio' && this.audioCache.has(track.id),

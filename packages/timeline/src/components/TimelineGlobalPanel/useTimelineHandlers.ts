@@ -3,7 +3,12 @@ import { HedronEngine, Param } from '@hedron-gl/engine'
 import { useNodeOptionNodes } from '@hedron-gl/ui-core'
 import { DEFAULT_TIMELINE_ID } from '@/constants'
 import { TimelineManager } from '@/TimelineManager'
-import type { Keyframe, TimelineManagerData, TimelineTrackInput } from '@/types'
+import type {
+  Keyframe,
+  TimelineManagerData,
+  TimelineManagerTrack,
+  TimelineTrackInput,
+} from '@/types'
 
 interface UseTimelineHandlersParams {
   engine: HedronEngine
@@ -26,8 +31,22 @@ export const useTimelineHandlers = ({ engine, manager, timeline }: UseTimelineHa
 
   const handleKeyframeDelete = useCallback(
     (keyframeId: string) => {
-      for (const track of timeline.tracks) {
-        const inputNode = engine.getNode<TimelineTrackInput>(track.id)
+      const getAllTrackIds = (tracks: TimelineManagerTrack[]): string[] => {
+        const ids: string[] = []
+
+        for (const track of tracks) {
+          ids.push(track.id)
+
+          if (track.trackType === 'vector') {
+            ids.push(...getAllTrackIds(track.childTracks))
+          }
+        }
+
+        return ids
+      }
+
+      for (const trackId of getAllTrackIds(timeline.tracks)) {
+        const inputNode = engine.getNode<TimelineTrackInput>(trackId)
 
         if (!inputNode) continue
 
@@ -36,7 +55,7 @@ export const useTimelineHandlers = ({ engine, manager, timeline }: UseTimelineHa
 
         if (nextKeyframes.length === currentKeyframes.length) continue
 
-        engine.setNodeCustomData(track.id, { keyframes: nextKeyframes })
+        engine.setNodeCustomData(trackId, { keyframes: nextKeyframes })
         return
       }
     },
