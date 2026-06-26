@@ -44,10 +44,10 @@ export const SelectedNode = () => {
       Object.values(engine.plugins).map((plugin) => ({
         label: plugin.name,
         onClick: () => {
-          const id = engine.addInput(plugin.inputType, selectedNode.id)
-          if (!id) return
+          const newInput = engine.addInput(plugin.inputType, selectedNode.id)
+          if (!newInput) return
 
-          setSelectedInputId(selectedNode.id, id)
+          setSelectedInputId(selectedNode.id, newInput.id)
         },
       })),
     [selectedNode.id, setSelectedInputId],

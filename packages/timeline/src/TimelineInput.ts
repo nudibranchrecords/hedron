@@ -5,6 +5,10 @@ import {
   IPlugin,
   isEqual,
   OptionNodesFromConfigs,
+  isParamVector,
+  Param,
+  Shot,
+  isParamVectorComponent,
 } from '@hedron-gl/engine'
 import { DEFAULT_TIMELINE_ID, TIMELINE_DURATION } from './constants'
 import { TimelineManager } from './TimelineManager'
@@ -110,8 +114,22 @@ export class TimelineInput implements IPlugin {
     })
   }
 
-  onNewInput(engine: HedronEngine, newInput: Input) {
+  onNewInput(engine: HedronEngine, newInput: Input, targetNode: Param | Shot) {
+    // Don't do anything if we're dealing with a vector component (e.g. x,y,z)
+    if (isParamVectorComponent(targetNode, engine)) {
+      return
+    }
+
     // Input ID is only a child of the target node, we also need to make it a child of the timeline node so it shows up in the timeline UI
     engine.addChildToNode(DEFAULT_TIMELINE_ID, 'trackIds', newInput.id)
+
+    if (isParamVector(targetNode)) {
+      targetNode.childGroups.vectorComponentIds.forEach((nodeId) => {
+        const childInput = engine.addInput(this.inputType, nodeId)!
+
+        // Add vector components as children of parent track
+        engine.addChildToNode(newInput.id, 'trackIds', childInput.id)
+      })
+    }
   }
 }

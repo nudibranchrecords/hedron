@@ -299,7 +299,7 @@ export class HedronEngine {
 
     const state = this.store.getState()
 
-    const targetNode = state.nodes[targetNodeId]
+    const targetNode = state.nodes[targetNodeId] as Param | Shot
 
     const numAlready = targetNode?.childGroups?.inputNodeIds?.length ?? 0
 
@@ -320,7 +320,7 @@ export class HedronEngine {
      * */
     this.addOptionNodes(newInput.id, plugin.optionNodesConfig ?? [])
 
-    plugin.onNewInput?.(this, newInput)
+    plugin.onNewInput?.(this, newInput, targetNode)
 
     return newInput
   }
