@@ -5,7 +5,7 @@ import '@hedron-gl/ui-core/fonts.css'
 import { TrackKeyframes } from './TrackKeyframes'
 import { usePlayheadScrub } from './usePlayheadScrub'
 import { Keyframe } from './Keyframe'
-import { TimelineManagerTrack } from '@/types'
+import { TimelineManagerKeyframeTrack, TimelineManagerTrack } from '@/types'
 
 export interface TimelineProps {
   /** Timeline data */
@@ -122,11 +122,26 @@ export function Timeline({
     }
 
     if (track.trackType === 'vector') {
-      const times = track.childTracks.flatMap((childTrack) => getChildKeyframeTimes(childTrack))
+      const times = track.childTracks.flatMap((childTrack) =>
+        childTrack.keyframes.map((kf) => kf.time),
+      )
       return Array.from(new Set(times)).sort((a, b) => a - b)
     }
 
     return []
+  }
+
+  const getKeyframesAtTime = (tracks: TimelineManagerKeyframeTrack[], time: number): string[] => {
+    const keyframeIds: string[] = []
+
+    for (const track of tracks) {
+      const kf = track.keyframes.find((kf) => kf.time === time)
+      if (kf) {
+        keyframeIds.push(kf.id)
+      }
+    }
+
+    return keyframeIds
   }
 
   const renderTracks = (trackList: TimelineManagerTrack[], depth = 0): React.ReactNode[] => {
@@ -154,21 +169,19 @@ export function Timeline({
             {track.trackType === 'vector' &&
               getChildKeyframeTimes(track).map((time, index) => {
                 const percent = (time / durationMs) * 100
+
+                const isSelected = !getKeyframesAtTime(track.childTracks, time).some(
+                  (kfId) => !selectedKeyframes?.includes(kfId),
+                )
+
                 return (
                   <Keyframe
                     key={index}
                     id={index.toString()}
                     percentPos={percent}
-                    isSelected={false}
+                    isSelected={isSelected}
                     onClick={() => {
-                      const selectedKeyframes = []
-                      for (const childTrack of track.childTracks) {
-                        const kf = childTrack.keyframes.find((kf) => kf.time === time)
-                        if (kf) {
-                          selectedKeyframes.push(kf.id)
-                        }
-                      }
-                      setSelectedKeyframes(selectedKeyframes)
+                      setSelectedKeyframes(getKeyframesAtTime(track.childTracks, time))
                     }}
                   />
                 )
