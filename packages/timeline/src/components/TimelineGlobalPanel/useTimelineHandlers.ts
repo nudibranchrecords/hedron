@@ -3,12 +3,7 @@ import { HedronEngine, Param } from '@hedron-gl/engine'
 import { useNodeOptionNodes } from '@hedron-gl/ui-core'
 import { DEFAULT_TIMELINE_ID } from '@/constants'
 import { TimelineManager } from '@/TimelineManager'
-import type {
-  Keyframe,
-  TimelineManagerData,
-  TimelineManagerTrack,
-  TimelineTrackInput,
-} from '@/types'
+import type { Keyframe, TimelineManagerData, TimelineTrackInput } from '@/types'
 
 interface UseTimelineHandlersParams {
   engine: HedronEngine
@@ -16,7 +11,7 @@ interface UseTimelineHandlersParams {
   timeline: TimelineManagerData
 }
 
-export const useTimelineHandlers = ({ engine, manager, timeline }: UseTimelineHandlersParams) => {
+export const useTimelineHandlers = ({ engine, manager }: UseTimelineHandlersParams) => {
   const optionNodes = useNodeOptionNodes(DEFAULT_TIMELINE_ID)
   const playheadPosNodeId = optionNodes['playheadPositionMs']?.id
 
@@ -31,22 +26,8 @@ export const useTimelineHandlers = ({ engine, manager, timeline }: UseTimelineHa
 
   const handleKeyframeDelete = useCallback(
     (keyframeId: string) => {
-      const getAllTrackIds = (tracks: TimelineManagerTrack[]): string[] => {
-        const ids: string[] = []
-
-        for (const track of tracks) {
-          ids.push(track.id)
-
-          if (track.trackType === 'vector') {
-            ids.push(...getAllTrackIds(track.childTracks))
-          }
-        }
-
-        return ids
-      }
-
-      for (const trackId of getAllTrackIds(timeline.tracks)) {
-        const inputNode = engine.getNode<TimelineTrackInput>(trackId)
+      for (const track of manager.getAllTracks()) {
+        const inputNode = engine.getNode<TimelineTrackInput>(track.id)
 
         if (!inputNode) continue
 
@@ -55,11 +36,11 @@ export const useTimelineHandlers = ({ engine, manager, timeline }: UseTimelineHa
 
         if (nextKeyframes.length === currentKeyframes.length) continue
 
-        engine.setNodeCustomData(trackId, { keyframes: nextKeyframes })
+        engine.setNodeCustomData(track.id, { keyframes: nextKeyframes })
         return
       }
     },
-    [engine, timeline.tracks],
+    [engine, manager],
   )
 
   const handleKeyframeInsert = useCallback(

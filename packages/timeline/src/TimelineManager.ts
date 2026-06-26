@@ -30,19 +30,6 @@ export class TimelineManager {
     this.buildCache()
   }
 
-  private getAllTracks(tracks = this.timelineData.tracks): TimelineManagerTrack[] {
-    const allTracks: TimelineManagerTrack[] = []
-
-    for (const track of tracks) {
-      allTracks.push(track)
-      if (track.trackType === 'vector') {
-        allTracks.push(...this.getAllTracks(track.childTracks))
-      }
-    }
-
-    return allTracks
-  }
-
   private buildCache() {
     this.sortedKeyframesCache.clear()
     this.resetKeyframeIndexes()
@@ -145,6 +132,19 @@ export class TimelineManager {
     }
 
     this.rafId = requestAnimationFrame(this.tick)
+  }
+
+  getAllTracks(tracks = this.timelineData.tracks): TimelineManagerTrack[] {
+    const allTracks: TimelineManagerTrack[] = []
+
+    for (const track of tracks) {
+      allTracks.push(track)
+      if (track.trackType === 'vector') {
+        allTracks.push(...this.getAllTracks(track.childTracks))
+      }
+    }
+
+    return allTracks
   }
 
   play() {
