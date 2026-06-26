@@ -60,7 +60,7 @@ export const useTimelineHandlers = ({ engine, manager }: UseTimelineHandlersPara
 
       const targetParamValue = engine.getParamValue(inputNode.targetNodeId)
 
-      if (!targetParamValue) {
+      if (targetParamValue === undefined) {
         console.error(`Target param value not found for input node ${inputNode.id}`)
         return
       }
