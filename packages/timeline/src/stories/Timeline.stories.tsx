@@ -226,7 +226,7 @@ export const Interactive = () => {
           if (track.trackType === 'vector') {
             return {
               ...track,
-              childTracks: track.childTracks.map(deleteKeyframes),
+              childTracks: track.childTracks.map(deleteKeyframes) as TimelineManagerKeyframeTrack[],
             }
           }
           return track
