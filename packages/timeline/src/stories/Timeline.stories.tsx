@@ -1,7 +1,7 @@
 /* eslint-disable storybook/context-in-play-function */
 
 import type { Meta, StoryObj } from '@storybook/react'
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 // eslint-disable-next-line no-restricted-imports
 import audioUrl from '../../../../apps/example-project/resources/120-4-4.mp3'
 import { TimelineManager } from '@/TimelineManager'
@@ -136,12 +136,12 @@ export const Interactive = () => {
     setPlaying(!playing)
   }
 
-  const handlePlayheadChange = (time: number) => {
+  const handlePlayheadChange = useCallback((time: number) => {
     managerRef.current?.goTo(time)
     setPlayheadPositionMs(time)
     setPlaying(false)
     managerRef.current?.pause()
-  }
+  }, [])
 
   const handleKeyframeDelete = (keyframeId: string) => {
     setTimeline((prev) => ({
