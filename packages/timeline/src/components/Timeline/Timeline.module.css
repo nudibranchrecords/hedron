@@ -9,6 +9,9 @@
 
   --playheadColor: var(--actionColor1);
   --keyframeColor: white;
+  --unselectedColor: #999;
+  --hoverColor: white;
+  --selectedColor: white;
 }
 
 .header {
@@ -19,7 +22,6 @@
   background: #222;
   border-bottom: 1px solid #444;
   font-size: 11px;
-  color: #aaa;
 }
 
 .body {
@@ -50,22 +52,47 @@
 .trackSelected {
   background: rgba(255, 255, 255, 0.05);
 
-  .trackHeader {
-    color: #ccc;
+  .trackTitle,
+  .trackTitle:hover {
+    color: var(--selectedColor);
   }
 }
 
 .trackHeader {
   display: flex;
   align-items: center;
-  padding: 0 1rem;
   font-size: 10px;
-  color: #888;
+  color: var(--unselectedColor);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   height: 24px;
   cursor: pointer;
+
+  gap: 0.1rem;
+
+  button {
+    text-align: left;
+  }
+}
+
+.trackTitle {
+  flex: 1;
+  padding-left: calc(1.5rem + var(--depth) * 1rem);
+
+  &:hover {
+    color: var(--hoverColor);
+  }
+}
+
+.collapseIcon {
+  position: absolute;
+  left: 0;
+  padding: 0.5rem;
+
+  &:hover {
+    color: var(--hoverColor);
+  }
 }
 
 .trackBody {

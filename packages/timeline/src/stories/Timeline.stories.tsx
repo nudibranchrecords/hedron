@@ -13,6 +13,10 @@ import type {
   TimelineManagerTrack,
 } from '@/types'
 
+import '@hedron-gl/ui-core/icons.css'
+import '@hedron-gl/ui-core/base.css'
+import '@hedron-gl/ui-core/fonts.css'
+
 const meta = {
   title: 'Timeline',
   component: Timeline,
