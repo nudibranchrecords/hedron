@@ -1,8 +1,8 @@
 import { useCallback, useState, useMemo, useEffect } from 'react'
 import { findNodeWithKeyFromIdList, HedronEngine, Input } from '@hedron-gl/engine'
-import { MIDIEvent, MidiManager } from '@hedron-gl/midi-manager'
+import { MIDIEvent, MidiManager, MidiMessageType } from '@hedron-gl/midi-manager'
 import { Button, ControlGrid, NodeContainer, useEngineStore } from '@hedron-gl/ui-core'
-import { MidiInput } from './MidiInput'
+import { MidiInput, NOTE_ON_OFF_MODE } from './MidiInput'
 
 interface IProps {
   input: Input
@@ -41,9 +41,6 @@ const useMidiLearn = (input: Input, engine: HedronEngine) => {
               break
             case 'note':
               state.updateNodeValue(nodeId, event.note)
-              break
-            case 'type':
-              state.updateNodeValue(nodeId, event.type)
               break
           }
         })
@@ -91,7 +88,7 @@ export const MidiInputPanel = ({ input, engine }: IProps) => {
     () => findNodeWithKeyFromIdList(nodes, 'note', input.optionNodeIds),
     [input.optionNodeIds, nodes],
   )
-  
+
   const isNewInput = useMemo(() => {
     if (!channelNode || !noteNode) return false
     const channel = nodeValues[channelNode.id]
@@ -99,6 +96,27 @@ export const MidiInputPanel = ({ input, engine }: IProps) => {
     // Default values are: channel=1, note=1
     return channel === 1 && note === 1
   }, [channelNode, noteNode, nodeValues])
+
+  const typeNode = useMemo(
+    () => findNodeWithKeyFromIdList(nodes, 'type', input.optionNodeIds),
+    [input.optionNodeIds, nodes],
+  )
+  const isNoteOnOffMode = typeNode ? nodeValues[typeNode.id] === NOTE_ON_OFF_MODE : false
+
+  // Default boolean inputs to Note On/Off mode
+  useEffect(() => {
+    const store = engine.getStore()
+    const state = store.getState()
+    const targetNode = state.nodes[input.targetNodeId]
+    if (!typeNode || !targetNode || !('valueType' in targetNode)) return
+    if (
+      targetNode.valueType === 'boolean' &&
+      state.nodeValues[typeNode.id] === MidiMessageType.ControlChange
+    ) {
+      state.updateNodeValue(typeNode.id, NOTE_ON_OFF_MODE)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   // Auto-enter MIDI learn mode when component mounts (if enabled and input is new)
   useEffect(() => {
@@ -123,6 +141,12 @@ export const MidiInputPanel = ({ input, engine }: IProps) => {
             <NodeContainer key={id} nodeId={id} />
           ))}
       </ControlGrid>
+
+      {isNoteOnOffMode && (
+        <p className="mb-xl" style={{ opacity: 0.6, fontSize: '0.85em' }}>
+          Note On/Off: press drives value up, release drives it to zero.
+        </p>
+      )}
 
       {isLearning ? (
         <Button type="neutral" onClick={cancelMidiLearn}>

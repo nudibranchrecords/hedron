@@ -13,6 +13,9 @@ import {
 } from '@hedron-gl/engine'
 import { MIDIEvent, MidiManager, MidiMessageType } from '@hedron-gl/midi-manager'
 
+/** Sentinel value for "Note On/Off" mode – press drives value up, release drives it to zero. */
+export const NOTE_ON_OFF_MODE = 0 as const
+
 const noteLetters = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B']
 const midiNotes: string[] = new Array(128)
 
@@ -81,6 +84,7 @@ export class MidiInput implements IPlugin {
       options: [
         { value: MidiMessageType.NoteOn, label: 'Note On' },
         { value: MidiMessageType.NoteOff, label: 'Note Off' },
+        { value: NOTE_ON_OFF_MODE, label: 'Note On/Off' },
         { value: MidiMessageType.ControlChange, label: 'Control Change' },
       ],
     },
@@ -119,6 +123,12 @@ export class MidiInput implements IPlugin {
     optionNodes,
     targetNode,
   }) => {
+    if (optionNodes.type === NOTE_ON_OFF_MODE) {
+      // In NoteOnOff mode cycle to the next value only on press; ignore release
+      return midiEvent.type === MidiMessageType.NoteOn
+        ? (getNextEnumValue(input.targetNodeId)(storeState) ?? null)
+        : null
+    }
     switch (midiEvent.type) {
       case MidiMessageType.NoteOn:
       case MidiMessageType.NoteOff:
@@ -131,6 +141,10 @@ export class MidiInput implements IPlugin {
   }
 
   private handleBoolean: ValueHander = ({ midiEvent, optionNodes, targetNodeValue }) => {
+    if (optionNodes.type === NOTE_ON_OFF_MODE) {
+      // NoteOn → true (pressed), NoteOff → false (released)
+      return midiEvent.type === MidiMessageType.NoteOn
+    }
     switch (midiEvent.type) {
       case MidiMessageType.NoteOn:
       case MidiMessageType.NoteOff:
@@ -152,8 +166,14 @@ export class MidiInput implements IPlugin {
     const sliderMin = (storeState.nodeValues[`${input.targetNodeId}-sliderMin`] as number) ?? 0
     const sliderMax = (storeState.nodeValues[`${input.targetNodeId}-sliderMax`] as number) ?? 1
 
-    const targetValue =
-      (this.getValue(optionNodes, midiEvent) / 127) * (sliderMax - sliderMin) + sliderMin
+    let targetValue: number
+    if (optionNodes.type === NOTE_ON_OFF_MODE && midiEvent.type === MidiMessageType.NoteOff) {
+      // Release: snap back to the minimum of the slider range
+      targetValue = sliderMin
+    } else {
+      targetValue =
+        (this.getValue(optionNodes, midiEvent) / 127) * (sliderMax - sliderMin) + sliderMin
+    }
 
     // Use MidiManager's smoothing system
     this.midiManager.setSmoothedValue(
@@ -205,13 +225,19 @@ export class MidiInput implements IPlugin {
         storeState,
         'midi',
         ({ input, optionNodes, targetNode, targetNodeValue }) => {
+          const isNoteOnOff = optionNodes.type === NOTE_ON_OFF_MODE
+          const typeMatches = isNoteOnOff
+            ? event.type === MidiMessageType.NoteOn || event.type === MidiMessageType.NoteOff
+            : event.type === optionNodes.type
+
           if (
             event.channel === optionNodes.channel &&
             event.note === optionNodes.note &&
-            event.type === optionNodes.type &&
+            typeMatches &&
             event.value !== undefined
           ) {
             if (targetNode.nodeType === 'shot') {
+              if (isNoteOnOff && event.type === MidiMessageType.NoteOff) return
               this.handleShot({ input, engine, midiEvent: event as MIDIEventWithValue })
               return
             }
@@ -234,8 +260,6 @@ export class MidiInput implements IPlugin {
               targetNodeValue,
             })
 
-            // For numbers, handleNumber returns null and uses smoothing system
-            // For other types, update directly
             if (value !== null) {
               storeState.updateNodeValue(input.targetNodeId, value)
             }
