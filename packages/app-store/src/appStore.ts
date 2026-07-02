@@ -3,7 +3,7 @@ import { StoreApi } from 'zustand'
 import { devtools, persist, subscribeWithSelector } from 'zustand/middleware'
 import { immer } from 'zustand/middleware/immer'
 import type {} from '@redux-devtools/extension' // required for devtools typing
-import { DEFAULT_SCENE_NODE_ID, EngineData } from '@hedron-gl/engine'
+import { EngineData } from '@hedron-gl/engine'
 
 export type DialogId = 'sketchModules' | 'sketchesServerBuildResult'
 
@@ -35,8 +35,8 @@ export interface ProjectData {
   engine: EngineData
   app: {
     sketchesDir: string
-    activeSceneId: string
-    activeSketchId: string | null
+    selectedSceneId: string | null
+    selectedSketches: { [sceneId: string]: string | null }
     selectedNodes: { [sketchId: string]: string | null }
     selectedInputs: { [inputId: string]: string | null }
     openedControlGroups: { [sketchId: string]: Record<number, boolean> }
@@ -44,8 +44,8 @@ export interface ProjectData {
 }
 
 export interface AppState {
-  activeSceneId: string
-  activeSketchId: string | null // TODO: should be part of ProjectData
+  selectedSceneId: string | null
+  selectedSketches: ProjectData['app']['selectedSketches'] // TODO: should be part of ProjectData
   selectedNodes: ProjectData['app']['selectedNodes']
   selectedInputs: ProjectData['app']['selectedInputs']
   openedControlGroups: ProjectData['app']['openedControlGroups']
@@ -57,8 +57,8 @@ export interface AppState {
   setSelectedNode: (sketchID: string, nodeId: string | null) => void
   setSelectedInput: (nodeId: string, inputId: string | null) => void
   setOpenedControlGroup: (sketchId: string, groupIndex: number, isOpen: boolean) => void
-  setActiveSceneId: (id: string) => void
-  setActiveSketchId: (id: string) => void
+  setSelectedSceneId: (id: string | null) => void
+  setSelectedSketch: (sceneId: string, sketchId: string | null) => void
   setSketchesDir: (dir: string) => void
   setGlobalDialogId: (id: DialogId | null) => void
   setCurrentSavePath: (path: string) => void
@@ -86,8 +86,8 @@ export const createAppStore = () =>
       subscribeWithSelector(
         devtools(
           immer<AppState>((set) => ({
-            activeSceneId: DEFAULT_SCENE_NODE_ID,
-            activeSketchId: null,
+            selectedSceneId: null,
+            selectedSketches: {},
             sketchesDir: null,
             globalDialogId: null,
             currentSavePath: null,
@@ -96,9 +96,9 @@ export const createAppStore = () =>
             openedControlGroups: {},
             saveList: [],
             sketchesServerBuildResult: null,
-            setActiveSketchId: (id: string) => {
+            setSelectedSketch: (sceneId: string, sketchId: string | null) => {
               set((state) => {
-                state.activeSketchId = id
+                state.selectedSketches[sceneId] = sketchId
               })
             },
             setSketchesDir: (dir: string) => {
@@ -140,9 +140,9 @@ export const createAppStore = () =>
                 state.selectedNodes[sketchID] = nodeId
               })
             },
-            setActiveSceneId: (id: string) => {
+            setSelectedSceneId: (id: string | null) => {
               set((state) => {
-                state.activeSceneId = id
+                state.selectedSceneId = id
               })
             },
             setSelectedInput: (nodeId, inputId) => {
@@ -161,11 +161,32 @@ export const createAppStore = () =>
             cleanupStaleReferences: (engineData: EngineData) => {
               set((state) => {
                 const validNodeIds = new Set(Object.keys(engineData.nodes))
+                const validSceneIds = new Set(
+                  Object.values(engineData.nodes)
+                    .filter((node) => node?.nodeType === 'scene')
+                    .map((node) => node.id),
+                )
                 const validSketchIds = new Set(
                   Object.values(engineData.nodes)
                     .filter((node) => node?.nodeType === 'sketch')
                     .map((node) => node.id),
                 )
+
+                if (state.selectedSceneId && !validSceneIds.has(state.selectedSceneId)) {
+                  state.selectedSceneId = null
+                }
+
+                for (const sceneId of Object.keys(state.selectedSketches)) {
+                  const selectedSketchId = state.selectedSketches[sceneId]
+                  if (!validSceneIds.has(sceneId) || !selectedSketchId) {
+                    delete state.selectedSketches[sceneId]
+                    continue
+                  }
+
+                  if (!validSketchIds.has(selectedSketchId)) {
+                    delete state.selectedSketches[sceneId]
+                  }
+                }
 
                 for (const sketchId of Object.keys(state.selectedNodes)) {
                   if (!validSketchIds.has(sketchId)) {

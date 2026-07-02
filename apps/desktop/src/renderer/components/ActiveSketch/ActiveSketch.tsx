@@ -15,7 +15,7 @@ import {
 } from '@hedron-gl/ui-core'
 
 import c from './ActiveSketch.module.css'
-import { useActiveSketch } from '@components/hooks/useActiveSketch'
+import { useSelectedSketch } from '@components/hooks/useSelectedSketch'
 import { engineStore } from '@renderer/engine'
 import { SketchControls } from '@components/SketchControls/SketchControls'
 import { useGroupedNodes } from '@components/hooks/useGroupedNodes'
@@ -39,7 +39,7 @@ const SelectedNodePanel = ({ node, onClose }: { node: Node; onClose: () => void 
 }
 
 export const ActiveSketch = () => {
-  const activeSketch = useActiveSketch()
+  const activeSketch = useSelectedSketch()
 
   if (!activeSketch) {
     throw new Error('ActiveSketch component: No activesketch found')

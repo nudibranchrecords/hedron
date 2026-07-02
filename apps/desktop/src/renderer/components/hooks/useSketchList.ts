@@ -4,10 +4,14 @@ import { useAppStore } from '@renderer/appStore'
 
 export const useSketchList = () => {
   const nodes = useEngineStore((state) => state.nodes)
-  const activeSceneId = useAppStore((state) => state.activeSceneId)
+  const selectedSceneId = useAppStore((state) => state.selectedSceneId)
 
   const sketchesVals = useMemo(() => {
-    const activeScene = nodes[activeSceneId]
+    if (!selectedSceneId) {
+      return []
+    }
+
+    const activeScene = nodes[selectedSceneId]
     if (!activeScene || activeScene.nodeType !== 'scene') {
       return []
     }
@@ -18,7 +22,7 @@ export const useSketchList = () => {
         return node?.nodeType === 'sketch' ? node : null
       })
       .filter((sketch): sketch is NonNullable<typeof sketch> => sketch !== null)
-  }, [activeSceneId, nodes])
+  }, [selectedSceneId, nodes])
 
   return sketchesVals
 }

@@ -1,10 +1,25 @@
-import { DEFAULT_SCENE_NODE_ID, isSceneNode, SetterCreator } from '@store/types'
+import { EngineState, isSceneNode, isSketchNode, SetterCreator } from '@store/types'
+
+const getParentScene = (state: EngineState, instanceId: string) => {
+  const sketchNode = state.nodes[instanceId]
+  if (!isSketchNode(sketchNode)) {
+    return null
+  }
+
+  const parentSceneId = sketchNode.parentIds.find((id) => isSceneNode(state.nodes[id]))
+  if (!parentSceneId) {
+    return null
+  }
+
+  const parentScene = state.nodes[parentSceneId]
+  return isSceneNode(parentScene) ? parentScene : null
+}
 
 export const createMoveSketchUp: SetterCreator<'moveSketchUp'> =
   (setState) => (instanceId: string) =>
     setState((state) => {
-      const sceneNode = state.nodes[DEFAULT_SCENE_NODE_ID]
-      if (!isSceneNode(sceneNode)) {
+      const sceneNode = getParentScene(state, instanceId)
+      if (!sceneNode) {
         return
       }
 
@@ -22,8 +37,8 @@ export const createMoveSketchUp: SetterCreator<'moveSketchUp'> =
 export const createMoveSketchDown: SetterCreator<'moveSketchDown'> =
   (setState) => (instanceId: string) =>
     setState((state) => {
-      const sceneNode = state.nodes[DEFAULT_SCENE_NODE_ID]
-      if (!isSceneNode(sceneNode)) {
+      const sceneNode = getParentScene(state, instanceId)
+      if (!sceneNode) {
         return
       }
 

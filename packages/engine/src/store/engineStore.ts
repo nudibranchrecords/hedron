@@ -6,7 +6,7 @@ import type {} from '@redux-devtools/extension' // required for devtools typing
 import { createDeleteNode } from './actionCreators/createDeleteNode'
 import { EngineStateWithActions } from '@store/types'
 import { initialState } from '@store/initialState'
-import { createAddSketch } from '@store/actionCreators/addSketch'
+import { createAddSketchToScene } from '@store/actionCreators/addSketch'
 import { createSetSketchModuleItem } from '@store/actionCreators/setSketchModuleItem'
 import { createDeleteSketchModule } from '@store/actionCreators/deleteSketchModule'
 import { createReconcileSketchNodes } from '@store/actionCreators/createReconcileSketchNodes'
@@ -19,6 +19,7 @@ import { createLoadProject } from '@store/actionCreators/loadProject'
 import { createAddInput } from '@store/actionCreators/createAddInput'
 import { createUpdateSketch } from '@store/actionCreators/updateSketch'
 import { createMoveSketchDown, createMoveSketchUp } from '@store/actionCreators/moveSketchOrder'
+import { createAddScene } from '@store/actionCreators/scene'
 
 export const createEngineStore = () =>
   createStore<EngineStateWithActions>()(
@@ -26,7 +27,8 @@ export const createEngineStore = () =>
       devtools(
         immer<EngineStateWithActions>((set) => ({
           ...initialState,
-          addSketch: createAddSketch(set),
+          addScene: createAddScene(set),
+          addSketchToScene: createAddSketchToScene(set),
           updateSketch: createUpdateSketch(set),
           reconcileSketchNodes: createReconcileSketchNodes(set),
           setSketchModuleItem: createSetSketchModuleItem(set),

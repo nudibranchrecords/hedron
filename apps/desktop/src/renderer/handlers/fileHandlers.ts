@@ -93,8 +93,8 @@ export const handleSaveProjectDialog = async (options?: { saveAs?: boolean }) =>
     openedControlGroups,
     selectedNodes,
     selectedInputs,
-    activeSceneId,
-    activeSketchId,
+    selectedSceneId,
+    selectedSketches,
   } = appState
 
   if (!sketchesDir) {
@@ -107,8 +107,8 @@ export const handleSaveProjectDialog = async (options?: { saveAs?: boolean }) =>
     engine: engineData,
     app: {
       sketchesDir,
-      activeSceneId,
-      activeSketchId,
+      selectedSceneId,
+      selectedSketches,
       selectedNodes,
       selectedInputs,
       openedControlGroups,

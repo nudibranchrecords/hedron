@@ -1,18 +1,18 @@
-import {
-  DEFAULT_SCENE_NODE_ID,
-  EngineState,
-  isSceneNode,
-  isSketchNode,
-  SketchNode,
-} from '@store/types'
+import { EngineState, isSceneNode, isSketchNode, SceneNode, SketchNode } from '@store/types'
 
-export const getCurrentScene = (state: EngineState) => {
-  const node = state.nodes[DEFAULT_SCENE_NODE_ID]
+export const getScene = (state: EngineState, sceneId: string): SceneNode | null => {
+  const node = state.nodes[sceneId]
   return isSceneNode(node) ? node : null
 }
 
-export const getCurrentSceneSketchIds = (state: EngineState) => {
-  return getCurrentScene(state)?.childGroups.sketchIds ?? []
+export const getSceneIds = (state: EngineState): string[] => {
+  return Object.values(state.nodes)
+    .filter((node): node is SceneNode => node?.nodeType === 'scene')
+    .map((scene) => scene.id)
+}
+
+export const getSceneSketchIds = (state: EngineState, sceneId: string): string[] => {
+  return getScene(state, sceneId)?.childGroups.sketchIds ?? []
 }
 
 export const getSketch = (state: EngineState, sketchId: string): SketchNode | null => {
@@ -20,8 +20,12 @@ export const getSketch = (state: EngineState, sketchId: string): SketchNode | nu
   return isSketchNode(node) ? node : null
 }
 
-export const getCurrentSceneSketches = (state: EngineState): SketchNode[] => {
-  return getCurrentSceneSketchIds(state)
+export const getAllSceneSketchIds = (state: EngineState): string[] => {
+  return getSceneIds(state).flatMap((sceneId) => getSceneSketchIds(state, sceneId))
+}
+
+export const getAllSceneSketches = (state: EngineState): SketchNode[] => {
+  return getAllSceneSketchIds(state)
     .map((id) => getSketch(state, id))
     .filter((sketch): sketch is SketchNode => sketch !== null)
 }

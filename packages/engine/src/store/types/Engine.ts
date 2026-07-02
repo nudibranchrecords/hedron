@@ -21,7 +21,8 @@ export type EngineState = EngineData & AuxState
 
 // TODO: Remove actions from store and onto engine
 interface Actions {
-  addSketch: (moduleId: string) => string
+  addScene: () => string
+  addSketchToScene: (sceneId: string, moduleId: string) => string
   updateSketch: (instanceId: string, sketchState: Partial<SketchNode>) => void
   reconcileSketchNodes: (instanceId: string) => void
   moveSketchUp: (instanceId: string) => void
