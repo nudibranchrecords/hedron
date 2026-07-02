@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useState } from 'react'
 import {
   Button,
   Collapsible,
@@ -8,35 +8,41 @@ import {
   NodeControlMain,
   NodeControlTitle,
   useEngineStore,
+  useEngineStoreShallow,
 } from '@hedron-gl/ui-core'
-import { SceneNode } from '@hedron-gl/engine'
+import { SceneNode, ACTIVE_SCENE_ID_NODE_ID } from '@hedron-gl/engine'
 import c from './Scenes.module.css'
 import { useAppStore } from '@renderer/appStore'
 
 export const Scenes = () => {
   const [isOpen, setIsOpen] = useState(true)
 
-  const nodes = useEngineStore((state) => state.nodes)
   const addScene = useEngineStore((state) => state.addScene)
+
+  const updateParamValue = useEngineStore((state) => state.updateParamValue)
 
   const selectedSceneId = useAppStore((state) => state.selectedSceneId)
   const setSelectedSceneId = useAppStore((state) => state.setSelectedSceneId)
 
-  const scenes = useMemo(() => {
-    return Object.values(nodes)
-      .filter((node): node is SceneNode => node?.nodeType === 'scene')
-      .sort((a, b) => a.title.localeCompare(b.title))
-  }, [nodes])
+  const scenes = useEngineStoreShallow((state) =>
+    state.sceneIds
+      .map((id) => state.nodes[id])
+      .filter((node): node is SceneNode => node?.nodeType === 'scene'),
+  )
 
   const handleAddScene = () => {
     const newSceneId = addScene()
     setSelectedSceneId(newSceneId)
   }
 
+  useEffect(() => {
+    updateParamValue(ACTIVE_SCENE_ID_NODE_ID, selectedSceneId ?? '')
+  }, [selectedSceneId, updateParamValue])
+
   return (
     <div className={c.wrapper}>
       <Collapsible title={`Scenes (${scenes.length})`} isOpen={isOpen} onToggle={setIsOpen}>
-        <NodeContainer nodeId="active-scene-id" />
+        <NodeContainer nodeId={ACTIVE_SCENE_ID_NODE_ID} />
 
         <ControlGrid className={c.list}>
           {scenes.map((scene) => {

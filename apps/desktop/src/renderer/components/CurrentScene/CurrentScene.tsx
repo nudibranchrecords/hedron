@@ -9,39 +9,32 @@ import {
   sceneIcon,
   useEngineStore,
 } from '@hedron-gl/ui-core'
-import { SceneNode } from '@hedron-gl/engine'
 import c from './CurrentScene.module.css'
 import { useAppStore } from '@renderer/appStore'
 import { Sketches } from '@components/Sketches/Sketches'
 
 export const CurrentScene = () => {
-  const nodes = useEngineStore((state) => state.nodes)
-  const deleteNode = useEngineStore((state) => state.deleteNode)
+  const sceneIds = useEngineStore((state) => state.sceneIds)
+  const deleteScene = useEngineStore((state) => state.deleteScene)
 
   const selectedSceneId = useAppStore((state) => state.selectedSceneId)
   const setSelectedSceneId = useAppStore((state) => state.setSelectedSceneId)
-  const activeScene = selectedSceneId ? nodes[selectedSceneId] : undefined
-
-  const sceneIds = Object.values(nodes)
-    .filter((node): node is SceneNode => node?.nodeType === 'scene')
-    .map((scene) => scene.id)
+  const activeScene = useEngineStore((state) =>
+    selectedSceneId ? state.nodes[selectedSceneId] : undefined,
+  )
 
   const handleDeleteCurrentScene = () => {
     if (!selectedSceneId) {
       return
     }
 
-    if (sceneIds.length <= 1) {
-      return
-    }
-
     const fallbackSceneId = sceneIds.find((id) => id !== selectedSceneId)
-    if (!fallbackSceneId) {
-      return
+
+    if (fallbackSceneId) {
+      setSelectedSceneId(fallbackSceneId)
     }
 
-    setSelectedSceneId(fallbackSceneId)
-    deleteNode(selectedSceneId)
+    deleteScene(selectedSceneId)
   }
 
   if (!activeScene || activeScene.nodeType !== 'scene') {

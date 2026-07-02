@@ -3,6 +3,7 @@ import { type Clock } from '@hedron-gl/clock'
 import { listenToStore } from './storeListener'
 import { CanvasSizeMode, RendererType, Result, ShotArgsObject } from './types'
 import { importSketchModule } from './importSketchModule'
+import { getSketchSceneId } from '@store/selectors/getSketchSceneId'
 import { addResource, removeResource } from '@store/actions/resources'
 import { createUniqueId } from '@utils/createUniqueId'
 import { ensureNodeConfig } from '@store/shared/ensureConfig'
@@ -12,8 +13,7 @@ import { initializeGlobalVars } from '@globalVars'
 import { IPlugin } from '@plugins/Plugin'
 import { stripForSave } from '@utils/stripForSave'
 import { Renderer } from '@world/Renderer'
-import { SketchManager } from '@world/SketchManager'
-import { createDebugScene } from '@world/debugScene'
+import { SceneManager } from '@world/SceneManager'
 import {
   EngineData,
   Node,
@@ -31,18 +31,19 @@ import {
   InputNode,
 } from '@store/types'
 import { getSketchesOfModuleId } from '@store/selectors/getSketchesOfModuleId'
-import { getAllSceneSketchIds, getAllSceneSketches } from '@store/selectors/getSceneSketches'
+import { getAllSceneSketches, getSceneSketchIds } from '@store/selectors/getSceneSketches'
 import { createEngineStore, EngineStore } from '@store/engineStore'
 import { getSketchParamValues } from '@store/selectors/getSketchParamValues'
-import { EngineScene } from '@world/EngineScene'
 import { addNode } from '@store/shared/addNode'
+
+export const ACTIVE_SCENE_ID_NODE_ID = 'active-scene-id'
 
 export class HedronEngine {
   public rendererType: RendererType
   private renderer: Renderer
   private store: EngineStore
   private sketchesUrl: string | null = null
-  private sketchManager: SketchManager
+  private sceneManager: SceneManager
   public plugins: Record<string, IPlugin> = {}
   private registeredShots: Record<string, (args: ShotArgsObject) => void> = {}
   private shotListeners: Record<string, (() => void)[]> = {}
@@ -51,7 +52,6 @@ export class HedronEngine {
   public clock?: Clock
   private running: boolean = false
   private paused: boolean = false
-  private scene: EngineScene // The main scene for rendering sketches
   private _onError: SketchInstanceError
 
   private extraTime: number = 0 // For time manipulation, e.g. for skipping frames
@@ -76,12 +76,14 @@ export class HedronEngine {
       this.setIsSketchBroken(sketchInstanceId, true)
     }
 
-    this.sketchManager = new SketchManager({ onError: this._onError })
     this.renderer = new Renderer({
       rendererType: this.rendererType,
       canvasSizeMode: params.canvasSizeMode,
     })
-    this.scene = createDebugScene(this.renderer, this._onError)
+    this.sceneManager = new SceneManager({
+      onError: this._onError,
+      renderer: this.renderer,
+    })
 
     this.onFrameStart = params?.onFrameStart
     this.onFrameEnd = params?.onFrameEnd
@@ -364,10 +366,18 @@ export class HedronEngine {
         const params = getSketchParamValues(state, sketchId, {
           resourcesUrl: state.resourcesUrl,
         })
+        const sceneId = getSketchSceneId(state, sketchId)
+        if (!sceneId) {
+          return
+        }
+        const sketchScene = this.sceneManager.getScene(sceneId)
+        if (!sketchScene) {
+          return
+        }
 
         sketchInstance?.[shotNode.key]?.({
           params,
-          scene: this.scene,
+          scene: sketchScene,
           shotArgs,
         })
       })
@@ -399,13 +409,13 @@ export class HedronEngine {
    * Should be called after setting sketch modules (e.g. importSketchModulesFromIds or manually with setSketchModuleItem)
    */
   public startStoreListener() {
-    const addSketchToScene = (sketchInstanceId: string, moduleId: string) => {
+    const addSketchToScene = (sceneId: string, sketchInstanceId: string, moduleId: string) => {
       try {
         const storeState = this.store.getState()
         const modules = storeState.sketchModules
         const module = modules[moduleId].module
 
-        const sketchInstance = this.sketchManager.addSketchToScene(sketchInstanceId, module)
+        const sketchInstance = this.sceneManager.addSketchToScene(sceneId, sketchInstanceId, module)
 
         if (sketchInstance) {
           this.registerAllSketchShots(sketchInstanceId, sketchInstance)
@@ -422,13 +432,13 @@ export class HedronEngine {
       }
     }
 
-    const removeSketchFromScene = (sketchInstanceId: string) => {
-      this.sketchManager.removeSketchFromScene(sketchInstanceId)
+    const removeSketchFromScene = (sceneId: string, sketchInstanceId: string) => {
+      this.sceneManager.removeSketchFromScene(sceneId, sketchInstanceId)
       this.renderer.passesNeedUpdate_webGPU = true
     }
 
-    const reorderSketchesInScene = (sketchInstanceIds: string[]) => {
-      this.sketchManager.reorderSketchesInScene(sketchInstanceIds)
+    const reorderSketchesInScene = (sceneId: string, sketchInstanceIds: string[]) => {
+      this.sceneManager.reorderSketchesInScene(sceneId, sketchInstanceIds)
       this.renderer.passesNeedUpdate_webGPU = true
     }
 
@@ -436,12 +446,19 @@ export class HedronEngine {
       this.unregisterShot(nodeId)
     }
 
+    const handleActiveSceneChanged = () => {
+      this.renderer.passesNeedUpdate_webGPU = true
+    }
+
     listenToStore({
       store: this.store,
+      onSceneAdded: this.sceneManager.addScene,
+      onSceneRemoved: this.sceneManager.removeScene,
       onSketchAdded: addSketchToScene,
       onSketchRemoved: removeSketchFromScene,
       onNodeRemoved: handleRemovedNode,
       onSketchesReordered: reorderSketchesInScene,
+      onActiveSceneChanged: handleActiveSceneChanged,
     })
   }
 
@@ -484,8 +501,20 @@ export class HedronEngine {
     const sketchesToRefresh = getSketchesOfModuleId(this.store.getState(), moduleId)
 
     for (const sketch of sketchesToRefresh) {
-      this.sketchManager.removeSketchFromScene(sketch.id)
-      const sketchInstance = this.sketchManager.addSketchToScene(sketch.id, moduleItem.module)
+      const state = this.store.getState()
+      const sceneId = getSketchSceneId(state, sketch.id)
+
+      if (!sceneId) {
+        continue
+      }
+
+      this.sceneManager.removeSketchFromScene(sceneId, sketch.id)
+
+      const sketchInstance = this.sceneManager.addSketchToScene(
+        sceneId,
+        sketch.id,
+        moduleItem.module,
+      )
 
       if (sketchInstance) {
         this.registerAllSketchShots(sketch.id, sketchInstance)
@@ -552,9 +581,9 @@ export class HedronEngine {
    * This should be called when the engine is ready
    */
   public ensureGlobalOptionNodes() {
-    this.addNodeOnce('active-scene-id', null, {
+    this.addNodeOnce(ACTIVE_SCENE_ID_NODE_ID, null, {
       nodeType: 'param',
-      key: 'active-scene-id',
+      key: ACTIVE_SCENE_ID_NODE_ID,
       valueType: 'string',
       defaultValue: '',
     })
@@ -599,18 +628,27 @@ export class HedronEngine {
    * @param engineScene The scene object to update and render.
    * @param deltaTime The time delta (in seconds) to advance this frame.
    */
-  private advanceFrame(engineScene: EngineScene, deltaTime: number) {
+  private advanceFrame(deltaTime: number) {
     // Flush buffered node value updates before processing the frame
     flushParamValueBuffer(this.store.setState)
 
-    const state = this.store.getState()
-    const sketchInstances = (engineScene.sketches = this.sketchManager!.getSketchInstances())
+    const activeSceneId = this.getParamValue(ACTIVE_SCENE_ID_NODE_ID) as string | undefined
+
+    if (!activeSceneId) return
+
+    const engineScene = this.sceneManager.getScene(activeSceneId)
+
+    if (!engineScene) return
+
+    const sketchInstances = this.sceneManager.getSketchInstances(activeSceneId)
 
     if (this.renderer.rendererType === 'webgl') {
       engineScene.clearPasses()
     }
 
-    getAllSceneSketchIds(state).forEach((sketchId) => {
+    const state = this.store.getState()
+
+    getSceneSketchIds(state, activeSceneId).forEach((sketchId) => {
       const paramValues = getSketchParamValues(state, sketchId, {
         resourcesUrl: state.resourcesUrl,
       })
@@ -622,7 +660,10 @@ export class HedronEngine {
           })
         } catch (error) {
           console.error(`Error getting passes for sketch ${sketchId}:`, error)
-          this.sketchManager.removeSketchFromScene(sketchId)
+          const sceneId = getSketchSceneId(state, sketchId)
+          if (sceneId) {
+            this.sceneManager.removeSketchFromScene(sceneId, sketchId)
+          }
           this.setIsSketchBroken(sketchId, true)
         }
       }
@@ -630,10 +671,14 @@ export class HedronEngine {
         instance?.update({ deltaFrame: 1, deltaTime, params: paramValues, scene: engineScene })
       } catch (error) {
         console.error(`Error updating sketch ${sketchId}:`, error)
-        this.sketchManager.removeSketchFromScene(sketchId)
+        const sceneId = getSketchSceneId(state, sketchId)
+        if (sceneId) {
+          this.sceneManager.removeSketchFromScene(sceneId, sketchId)
+        }
         this.setIsSketchBroken(sketchId, true)
       }
     })
+
     this.renderer.render(engineScene)
   }
 
@@ -669,7 +714,7 @@ export class HedronEngine {
       this.totalTime += deltaTime
       lastTime = now
 
-      this.advanceFrame(this.scene, deltaTime)
+      this.advanceFrame(deltaTime)
 
       requestAnimationFrame(loop)
       this.onFrameEnd?.()
@@ -734,7 +779,7 @@ export class HedronEngine {
       }
       this.totalTime += deltaTime
 
-      this.advanceFrame(this.scene, deltaTime)
+      this.advanceFrame(deltaTime)
       this.onFrameEnd?.()
 
       const dataUrl = this.captureFrame()

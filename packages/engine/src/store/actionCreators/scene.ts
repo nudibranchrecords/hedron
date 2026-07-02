@@ -1,4 +1,5 @@
 import { createUniqueId } from '@utils/createUniqueId'
+import { deleteNode } from '@store/shared/deleteNode'
 import { SetterCreator } from '@store/types'
 
 export const createAddScene: SetterCreator<'addScene'> = (setState) => () => {
@@ -20,7 +21,18 @@ export const createAddScene: SetterCreator<'addScene'> = (setState) => () => {
         sketchIds: [],
       },
     }
+
+    if (!state.sceneIds.includes(newSceneId)) {
+      state.sceneIds.push(newSceneId)
+    }
   })
 
   return newSceneId
+}
+
+export const createDeleteScene: SetterCreator<'deleteScene'> = (setState) => (sceneId: string) => {
+  setState((state) => {
+    state.sceneIds = state.sceneIds.filter((id) => id !== sceneId)
+    deleteNode(state, sceneId)
+  })
 }

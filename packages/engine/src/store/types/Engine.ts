@@ -13,6 +13,7 @@ export interface EngineData {
 }
 
 interface AuxState {
+  sceneIds: string[]
   sketchModules: SketchModules
   resourcesUrl: string | null
 }
@@ -23,6 +24,7 @@ export type EngineState = EngineData & AuxState
 interface Actions {
   addScene: () => string
   addSketchToScene: (sceneId: string, moduleId: string) => string
+  deleteScene: (sceneId: string) => void
   updateSketch: (instanceId: string, sketchState: Partial<SketchNode>) => void
   reconcileSketchNodes: (instanceId: string) => void
   moveSketchUp: (instanceId: string) => void

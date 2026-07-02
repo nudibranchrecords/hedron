@@ -19,7 +19,7 @@ import { createLoadProject } from '@store/actionCreators/loadProject'
 import { createAddInput } from '@store/actionCreators/createAddInput'
 import { createUpdateSketch } from '@store/actionCreators/updateSketch'
 import { createMoveSketchDown, createMoveSketchUp } from '@store/actionCreators/moveSketchOrder'
-import { createAddScene } from '@store/actionCreators/scene'
+import { createAddScene, createDeleteScene } from '@store/actionCreators/scene'
 
 export const createEngineStore = () =>
   createStore<EngineStateWithActions>()(
@@ -28,6 +28,7 @@ export const createEngineStore = () =>
         immer<EngineStateWithActions>((set) => ({
           ...initialState,
           addScene: createAddScene(set),
+          deleteScene: createDeleteScene(set),
           addSketchToScene: createAddSketchToScene(set),
           updateSketch: createUpdateSketch(set),
           reconcileSketchNodes: createReconcileSketchNodes(set),
