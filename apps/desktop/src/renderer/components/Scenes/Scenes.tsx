@@ -3,6 +3,7 @@ import {
   Button,
   Collapsible,
   ControlGrid,
+  NodeContainer,
   NodeControl,
   NodeControlMain,
   NodeControlTitle,
@@ -35,6 +36,8 @@ export const Scenes = () => {
   return (
     <div className={c.wrapper}>
       <Collapsible title={`Scenes (${scenes.length})`} isOpen={isOpen} onToggle={setIsOpen}>
+        <NodeContainer nodeId="active-scene-id" />
+
         <ControlGrid className={c.list}>
           {scenes.map((scene) => {
             const isActive = scene.id === selectedSceneId

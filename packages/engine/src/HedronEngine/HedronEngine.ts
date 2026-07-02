@@ -96,6 +96,7 @@ export class HedronEngine {
   }
 
   /**
+   * @deprecated - Use `onEngineInitialize` in plugins instead
    * Creates global option nodes for a plugin in the store
    * @param plugin The plugin to create global option nodes for
    */
@@ -547,14 +548,15 @@ export class HedronEngine {
   }
 
   /**
-   * @deprecated - Plugins should be using onEngineInitialize
-   * Ensures global option nodes exist for all registered plugins
-   * This should be called when the engine is ready to use plugin global options
+   * Ensures global (non-plugin) option nodes exist
+   * This should be called when the engine is ready
    */
   public ensureGlobalOptionNodes() {
-    // For each registered plugin, ensure global option nodes exist
-    Object.values(this.plugins).forEach((plugin) => {
-      this.createGlobalOptionNodesForPlugin(plugin)
+    this.addNodeOnce('active-scene-id', null, {
+      nodeType: 'param',
+      key: 'active-scene-id',
+      valueType: 'string',
+      defaultValue: '',
     })
   }
 
