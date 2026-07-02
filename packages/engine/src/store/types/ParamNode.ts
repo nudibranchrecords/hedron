@@ -95,7 +95,7 @@ export interface ParamRGB extends ParamVectorBase {
 
 export type ConfigParamRGB = AsConfig<ParamRGB>
 
-export type Param =
+export type ParamNode =
   | ParamBoolean
   | ParamString
   | ParamNumber
@@ -122,14 +122,14 @@ export const defineOptionNodeConfigs = <const TConfigs extends readonly ConfigPa
   return configs
 }
 
-export type ParamForValueType<TValueType extends Param['valueType']> = Extract<
-  Param,
+export type ParamForValueType<TValueType extends ParamNode['valueType']> = Extract<
+  ParamNode,
   { valueType: TValueType }
 >
 
 type OptionNodeConfigLike = {
   key: string
-  valueType: Param['valueType']
+  valueType: ParamNode['valueType']
 }
 
 /**
@@ -147,7 +147,7 @@ export type OptionNodesFromConfigs<TConfigs extends readonly OptionNodeConfigLik
 
 export type ParamValue = number | boolean | string | null
 export type ParamValues = Partial<Record<string, ParamValue>>
-export type ParamValueType = Param['valueType'] | null
+export type ParamValueType = ParamNode['valueType'] | null
 
 export type ParamVector = ParamVector2 | ParamVector3 | ParamRGB
 export type ParamVectorValueType = ParamVector['valueType']

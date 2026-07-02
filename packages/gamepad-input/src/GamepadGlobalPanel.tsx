@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react'
 import {
   findNodeWithKeyFromIdList,
   HedronEngine,
-  Input,
+  InputNode,
   Nodes,
   nodesAsArray,
   ParamValues,
@@ -237,7 +237,7 @@ const getInputsForController = (
   controllerIndex: number,
   nodes: Nodes,
   engine: HedronEngine,
-): Input[] => {
+): InputNode[] => {
   return nodesAsArray(nodes).filter((node) => {
     if (node.nodeType !== 'input' || node.inputType !== 'gamepad') return false
 
@@ -251,7 +251,7 @@ const getInputsForController = (
 
     const controllerIndexValue = engine.getStore().getState().paramValues[controllerIndexNode.id]
     return controllerIndexValue === controllerIndex
-  }) as Input[]
+  }) as InputNode[]
 }
 
 export const GamepadGlobalPanel: React.FC<GamepadGlobalPanelProps> = ({ engine }) => {
@@ -415,7 +415,7 @@ interface ControllerItemProps {
   isExpanded: boolean
   isFlashing: boolean
   flashingInputs: Set<string>
-  controllerInputs: Input[]
+  controllerInputs: InputNode[]
   nodes: Nodes
   paramValues: ParamValues
   toggleExpanded: (physicalIndex: number) => void
@@ -527,7 +527,7 @@ const ControllerItem: React.FC<ControllerItemProps> = ({
                     const targetNode = nodes[input.targetNodeId]
                     const isFlashing = flashingInputs.has(input.id)
                     let type, index: number | string | undefined
-                    input.childGroups.optionNodeIds.forEach((nodeId) => {
+                    input.childGroups.optionNodeIds.forEach((nodeId: string) => {
                       const node = nodes[nodeId]
 
                       if (!node || !('key' in node)) {

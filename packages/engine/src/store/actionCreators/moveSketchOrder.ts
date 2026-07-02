@@ -1,10 +1,10 @@
-import { DEFAULT_SCENE_NODE_ID, isScene, SetterCreator } from '@store/types'
+import { DEFAULT_SCENE_NODE_ID, isSceneNode, SetterCreator } from '@store/types'
 
 export const createMoveSketchUp: SetterCreator<'moveSketchUp'> =
   (setState) => (instanceId: string) =>
     setState((state) => {
       const sceneNode = state.nodes[DEFAULT_SCENE_NODE_ID]
-      if (!isScene(sceneNode)) {
+      if (!isSceneNode(sceneNode)) {
         return
       }
 
@@ -23,7 +23,7 @@ export const createMoveSketchDown: SetterCreator<'moveSketchDown'> =
   (setState) => (instanceId: string) =>
     setState((state) => {
       const sceneNode = state.nodes[DEFAULT_SCENE_NODE_ID]
-      if (!isScene(sceneNode)) {
+      if (!isSceneNode(sceneNode)) {
         return
       }
 

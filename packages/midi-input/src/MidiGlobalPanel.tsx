@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { findNodeWithKeyFromIdList, HedronEngine, Param, Shot } from '@hedron-gl/engine'
+import { findNodeWithKeyFromIdList, HedronEngine, ParamNode, ShotNode } from '@hedron-gl/engine'
 import {
   Panel,
   PanelHeader,
@@ -95,7 +95,7 @@ export const MidiGlobalPanel: React.FC<MidiGlobalPanelProps> = ({ engine }) => {
           noteValue === event.note &&
           typeValue === event.type
         ) {
-          const targetNode = nodes[input.targetNodeId] as Param | Shot
+          const targetNode = nodes[input.targetNodeId] as ParamNode | ShotNode
           if (targetNode) {
             affectedNodeName = targetNode.title || targetNode.key
 

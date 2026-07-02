@@ -1,6 +1,6 @@
 import { ensureNodeConfig } from '@store/shared/ensureConfig'
 import { addNode } from '@store/shared/addNode'
-import { Input, SetterCreator } from '@store/types'
+import { InputNode, SetterCreator } from '@store/types'
 import { createUniqueId } from '@utils/createUniqueId'
 
 export const createAddInput: SetterCreator<'addInput'> =
@@ -10,7 +10,7 @@ export const createAddInput: SetterCreator<'addInput'> =
 
     const optionNodeIds: string[] = []
 
-    let newInput: Input | undefined = undefined
+    let newInput: InputNode | undefined = undefined
 
     setState((state) => {
       for (const cfg of optionsNodeConfig) {
@@ -23,7 +23,7 @@ export const createAddInput: SetterCreator<'addInput'> =
       }
 
       if (state.nodes[id]) {
-        newInput = state.nodes[id] as Input
+        newInput = state.nodes[id] as InputNode
         return
       }
 
@@ -49,5 +49,5 @@ export const createAddInput: SetterCreator<'addInput'> =
       )
     }
 
-    return newInput as Input
+    return newInput as InputNode
   }

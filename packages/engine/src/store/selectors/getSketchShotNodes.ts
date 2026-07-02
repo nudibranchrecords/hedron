@@ -1,5 +1,5 @@
 import { getSketch } from './getSceneSketches'
-import { EngineState, Shot } from '@store/types'
+import { EngineState, ShotNode } from '@store/types'
 
 export const getSketchShotNodes = (state: EngineState, sketchId: string) => {
   const { nodes } = state
@@ -11,5 +11,5 @@ export const getSketchShotNodes = (state: EngineState, sketchId: string) => {
 
   return sketch.nodeIds
     .map((id) => nodes[id])
-    .filter((node): node is Shot => node?.nodeType === 'shot')
+    .filter((node): node is ShotNode => node?.nodeType === 'shot')
 }

@@ -1,13 +1,13 @@
 import {
   defineOptionNodeConfigs,
   HedronEngine,
-  Input,
+  InputNode,
   IPlugin,
   isEqual,
   OptionNodesFromConfigs,
   isParamVector,
-  Param,
-  Shot,
+  ParamNode,
+  ShotNode,
   isParamVectorComponent,
 } from '@hedron-gl/engine'
 import { DEFAULT_TIMELINE_ID, TIMELINE_DURATION } from './constants'
@@ -133,7 +133,7 @@ export class TimelineInput implements IPlugin {
     })
   }
 
-  onNewInput(engine: HedronEngine, newInput: Input, targetNode: Param | Shot) {
+  onNewInput(engine: HedronEngine, newInput: InputNode, targetNode: ParamNode | ShotNode) {
     // Don't do anything if we're dealing with a vector component (e.g. x,y,z)
     if (isParamVectorComponent(targetNode, engine)) {
       return

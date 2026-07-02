@@ -3,8 +3,8 @@ import { Group } from 'three'
 import { Pass } from 'postprocessing'
 import { PassNode } from 'three/webgpu'
 import { NodeBase } from './NodeBase'
-import { ConfigParam, ConfigParamImported, ConfigParamNumber } from './Param'
-import { ConfigShot, ConfigShotImported } from './Shot'
+import { ConfigParam, ConfigParamImported, ConfigParamNumber } from './ParamNode'
+import { ConfigShot, ConfigShotImported } from './ShotNode'
 import { EngineScene } from '@world/EngineScene'
 import { ShotArgsObject } from '@HedronEngine/types'
 
@@ -46,7 +46,7 @@ export interface ConfigSketchImported {
   }[]
 }
 
-export interface Sketch extends NodeBase {
+export interface SketchNode extends NodeBase {
   nodeType: 'sketch'
   childGroups: NodeBase['childGroups'] & {
     nodeIds: string[]
@@ -56,7 +56,7 @@ export interface Sketch extends NodeBase {
   isBroken?: boolean
 }
 
-export type Sketches = { [key: string]: Sketch }
+export type Sketches = { [key: string]: SketchNode }
 
 type SketchUpdateParams = {
   deltaFrame: number

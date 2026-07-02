@@ -1,7 +1,7 @@
 import { shallow } from 'zustand/shallow'
 import { EngineStore } from '@store/engineStore'
 import { getCurrentSceneSketchIds } from '@store/selectors/getSceneSketches'
-import { isSketch } from '@store/types'
+import { isSketchNode } from '@store/types'
 
 interface StoreListenerConfig {
   store: EngineStore
@@ -32,7 +32,7 @@ export const listenToStore = ({
       newKeys.forEach((id) => {
         if (!prevKeys.includes(id)) {
           const sketch = state.nodes[id]
-          if (isSketch(sketch)) {
+          if (isSketchNode(sketch)) {
             onSketchAdded(id, sketch.moduleId)
           }
         }

@@ -1,4 +1,4 @@
-import { HedronEngine, Input } from '@hedron-gl/engine'
+import { HedronEngine, InputNode } from '@hedron-gl/engine'
 import { ControlGrid, NodeContainer } from '@hedron-gl/ui-core'
 import { useEffect, useState } from 'react'
 import { AudioInput } from './AudioInput'
@@ -6,7 +6,7 @@ import { calculateAverageLevel, getLevelColor } from './AudioUtils'
 import styles from './AudioInputPanel.module.css'
 
 interface IProps {
-  input: Input
+  input: InputNode
   // TODO: This can be typed as something like HedronEngineWithPlugin<AudioInput>
   engine: HedronEngine
 }

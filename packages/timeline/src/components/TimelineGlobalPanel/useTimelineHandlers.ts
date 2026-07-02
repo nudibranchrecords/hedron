@@ -1,5 +1,5 @@
 import { useCallback } from 'react'
-import { HedronEngine, Param } from '@hedron-gl/engine'
+import { HedronEngine, ParamNode } from '@hedron-gl/engine'
 import { useNodeOptionNodes } from '@hedron-gl/ui-core'
 import { DEFAULT_TIMELINE_ID } from '@/constants'
 import { TimelineManager } from '@/TimelineManager'
@@ -50,7 +50,7 @@ export const useTimelineHandlers = ({ engine, manager }: UseTimelineHandlersPara
         return
       }
 
-      const targetParam = engine.getNode(inputNode.targetNodeId) as Param | undefined
+      const targetParam = engine.getNode(inputNode.targetNodeId) as ParamNode | undefined
 
       if (!targetParam) {
         console.error(`Target param not found for input node ${inputNode.id}`)

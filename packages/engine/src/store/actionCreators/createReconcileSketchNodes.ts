@@ -1,7 +1,7 @@
 import { findNodeWithKeyFromIdList } from '@utils/findNodeWithKeyFromIdList'
 import { addNode } from '@store/shared/addNode'
 import { deleteNode } from '@store/shared/deleteNode'
-import { isSketch, Node, SetterCreator } from '@store/types'
+import { isSketchNode, Node, SetterCreator } from '@store/types'
 import { createUniqueId } from '@utils/createUniqueId'
 
 /**
@@ -12,7 +12,7 @@ export const createReconcileSketchNodes: SetterCreator<'reconcileSketchNodes'> =
   (setState) => (sketchId: string) => {
     setState((state) => {
       const sketch = state.nodes[sketchId]
-      if (!isSketch(sketch)) {
+      if (!isSketchNode(sketch)) {
         throw new Error(`Sketch with id ${sketchId} not found.`)
       }
 

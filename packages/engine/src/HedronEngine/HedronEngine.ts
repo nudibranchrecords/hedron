@@ -21,14 +21,14 @@ import {
   SketchInstanceError,
   SketchInstance,
   SketchModuleItem,
-  Param,
-  Shot,
+  ParamNode,
+  ShotNode,
   ConfigParam,
   ConfigShot,
   ConfigCustomNode,
   ChildGroupsLoose,
   Resources,
-  Input,
+  InputNode,
 } from '@store/types'
 import { getSketchesOfModuleId } from '@store/selectors/getSketchesOfModuleId'
 import {
@@ -162,7 +162,7 @@ export class HedronEngine {
 
       for (const cfg of configs) {
         const optionNodeExists = parentNode.childGroups.optionNodeIds.some((id) => {
-          const node = state.nodes[id] as Param | Shot | undefined
+          const node = state.nodes[id] as ParamNode | ShotNode | undefined
           return node?.key === cfg.key
         })
 
@@ -255,14 +255,14 @@ export class HedronEngine {
     return this.store.getState().paramValues[nodeId]
   }
 
-  public getNodeOptionNode(nodeId: string, optionKey: string): Param | Shot {
+  public getNodeOptionNode(nodeId: string, optionKey: string): ParamNode | ShotNode {
     const node = this.getNode(nodeId)
     if (!node) {
       throw new Error(`getNodeOptionNode: node "${nodeId}" not found`)
     }
 
     const optionNodeId = node.childGroups.optionNodeIds.find((id) => {
-      const optionNode = this.getNode<Param | Shot>(id)
+      const optionNode = this.getNode<ParamNode | ShotNode>(id)
       return optionNode?.key === optionKey
     })
 
@@ -272,7 +272,7 @@ export class HedronEngine {
       )
     }
 
-    const optionNode = this.getNode<Param | Shot>(optionNodeId)
+    const optionNode = this.getNode<ParamNode | ShotNode>(optionNodeId)
 
     if (!optionNode) {
       throw new Error(`getNodeOptionNode: option node "${optionNodeId}" not found`)
@@ -293,7 +293,7 @@ export class HedronEngine {
     this.store.getState().updateMultipleParamValues(nodeIds, values)
   }
 
-  public addInput(inputType: string, targetNodeId: string): Input | undefined {
+  public addInput(inputType: string, targetNodeId: string): InputNode | undefined {
     const plugin = Object.values(this.plugins).find((p) => p.inputType === inputType)
 
     if (!plugin) {
@@ -303,7 +303,7 @@ export class HedronEngine {
 
     const state = this.store.getState()
 
-    const targetNode = state.nodes[targetNodeId] as Param | Shot
+    const targetNode = state.nodes[targetNodeId] as ParamNode | ShotNode
 
     const numAlready = targetNode?.childGroups?.inputNodeIds?.length ?? 0
 

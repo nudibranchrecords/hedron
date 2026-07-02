@@ -7,7 +7,7 @@ import {
   sceneIcon,
   useEngineStore,
 } from '@hedron-gl/ui-core'
-import { Scene } from '@hedron-gl/engine'
+import { SceneNode } from '@hedron-gl/engine'
 import c from './Sketches.module.css'
 import { useActiveSketch } from '@components/hooks/useActiveSketch'
 import { ActiveSketch } from '@components/ActiveSketch/ActiveSketch'
@@ -18,7 +18,7 @@ export const Sketches = () => {
   const activeSketch = useActiveSketch()
   const nodes = useEngineStore((state) => state.nodes)
   const activeSceneId = useAppStore((state) => state.activeSceneId)
-  const activeScene = nodes[activeSceneId] as Scene
+  const activeScene = nodes[activeSceneId] as SceneNode
 
   return (
     <div className={c.wrapper}>

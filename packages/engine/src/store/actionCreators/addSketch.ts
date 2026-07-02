@@ -1,5 +1,5 @@
 import { addNode } from '@store/shared/addNode'
-import { DEFAULT_SCENE_NODE_ID, isScene, SetterCreator } from '@store/types'
+import { DEFAULT_SCENE_NODE_ID, isSceneNode, SetterCreator } from '@store/types'
 import { createUniqueId } from '@utils/createUniqueId'
 
 export const createAddSketch: SetterCreator<'addSketch'> = (setState) => (moduleId: string) => {
@@ -15,7 +15,7 @@ export const createAddSketch: SetterCreator<'addSketch'> = (setState) => (module
     }
 
     const sceneNode = state.nodes[DEFAULT_SCENE_NODE_ID]
-    if (!isScene(sceneNode)) {
+    if (!isSceneNode(sceneNode)) {
       throw new Error('Default scene node is missing or invalid')
     }
 

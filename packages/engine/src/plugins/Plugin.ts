@@ -3,10 +3,10 @@ import { nodesAsArray } from '@utils/nodesAsArray'
 import {
   EngineState,
   EngineStateWithActions,
-  Input,
+  InputNode,
   ParamValue,
-  Param,
-  Shot,
+  ParamNode,
+  ShotNode,
   ConfigParam,
   ConfigShot,
 } from '@store/types'
@@ -56,7 +56,7 @@ export interface IPlugin {
   /**
    * Optional callback called after each input for this plugin is added
    */
-  onNewInput?: (engine: HedronEngine, newInput: Input, targetNode: Param | Shot) => void
+  onNewInput?: (engine: HedronEngine, newInput: InputNode, targetNode: ParamNode | ShotNode) => void
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -139,15 +139,15 @@ export const handleEachInput = <T extends readonly any[]>(
     optionNodes,
   }:
     | {
-        input: Input
+        input: InputNode
         optionNodes: ConfigToOptionsType<T>
-        targetNode: Param
+        targetNode: ParamNode
         targetParamValue: ParamValue
       }
     | {
-        input: Input
+        input: InputNode
         optionNodes: ConfigToOptionsType<T>
-        targetNode: Shot
+        targetNode: ShotNode
         targetParamValue?: never
       }) => void,
 ) => {

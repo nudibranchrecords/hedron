@@ -1,4 +1,4 @@
-import { EngineState, Input, isParamVector, Param, ParamFileValue } from '@hedron-gl/engine'
+import { EngineState, InputNode, isParamVector, ParamNode, ParamFileValue } from '@hedron-gl/engine'
 import { DEFAULT_AUDIO_TRACK_ID } from '@/constants'
 import {
   TimelineManagerKeyframeTrack,
@@ -18,7 +18,7 @@ export const getTimelineTracks = (
     const inputNode = state.nodes[inputId] as TimelineTrackInput | undefined
     if (!inputNode) return null
 
-    const targetNodeId = (inputNode as Input).targetNodeId
+    const targetNodeId = (inputNode as InputNode).targetNodeId
     const targetNode = targetNodeId ? state.nodes[targetNodeId] : undefined
     if (!targetNode) return null
 
@@ -53,7 +53,7 @@ export const getTimelineTracks = (
   // TODO: This is how we hack in an audio track for now
   const optionNodeIds = timelineNode?.childGroups.optionNodeIds ?? []
   const audioUrlNodeId = optionNodeIds.find(
-    (optionNodeId) => (state.nodes[optionNodeId] as Param)?.key === 'audioUrl',
+    (optionNodeId) => (state.nodes[optionNodeId] as ParamNode)?.key === 'audioUrl',
   )
   const resourceId = state.paramValues[audioUrlNodeId ?? ''] as ParamFileValue | undefined
   const resource = resourceId ? state.resources[resourceId] : null

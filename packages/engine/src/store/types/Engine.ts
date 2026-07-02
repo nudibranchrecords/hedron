@@ -1,8 +1,8 @@
 import { StoreApi } from 'zustand'
-import { Sketch, SketchModuleItem, SketchModules } from './Sketch'
-import { ConfigParam, ParamValue, ParamValues } from './Param'
-import { Input } from './Input'
-import { ConfigShot } from './Shot'
+import { SketchNode, SketchModuleItem, SketchModules } from './SketchNode'
+import { ConfigParam, ParamValue, ParamValues } from './ParamNode'
+import { InputNode } from './InputNode'
+import { ConfigShot } from './ShotNode'
 import { Nodes } from './Node'
 import { Resources } from './Resources'
 
@@ -22,7 +22,7 @@ export type EngineState = EngineData & AuxState
 // TODO: Remove actions from store and onto engine
 interface Actions {
   addSketch: (moduleId: string) => string
-  updateSketch: (instanceId: string, sketchState: Partial<Sketch>) => void
+  updateSketch: (instanceId: string, sketchState: Partial<SketchNode>) => void
   reconcileSketchNodes: (instanceId: string) => void
   moveSketchUp: (instanceId: string) => void
   moveSketchDown: (instanceId: string) => void
@@ -33,9 +33,9 @@ interface Actions {
   loadProject: (project: EngineData) => void
   reset: () => void
   addInput: (
-    inputConfig: Omit<Input, 'id' | 'optionNodeIds' | 'childGroups' | 'nodeType'>,
+    inputConfig: Omit<InputNode, 'id' | 'optionNodeIds' | 'childGroups' | 'nodeType'>,
     optionsNodeConfig?: readonly (ConfigParam | ConfigShot)[],
-  ) => Input
+  ) => InputNode
   deleteNode: (nodeId: string) => void
 }
 

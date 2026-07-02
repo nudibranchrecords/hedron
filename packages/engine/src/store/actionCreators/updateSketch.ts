@@ -1,10 +1,10 @@
-import { isSketch, SetterCreator } from '@store/types'
+import { isSketchNode, SetterCreator } from '@store/types'
 
 export const createUpdateSketch: SetterCreator<'updateSketch'> =
   (setState) => (instanceId, sketchState) => {
     setState((state) => {
       const sketch = state.nodes[instanceId]
-      if (!isSketch(sketch)) return
+      if (!isSketchNode(sketch)) return
 
       state.nodes[instanceId] = {
         ...sketch,
