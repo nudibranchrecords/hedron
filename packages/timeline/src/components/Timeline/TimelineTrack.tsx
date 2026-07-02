@@ -1,4 +1,10 @@
-import { collapseOpenIcon, Icon, useIsItemOpened, useToggleStore } from '@hedron-gl/ui-core'
+import {
+  collapseOpenIcon,
+  collapseCloseIcon,
+  Icon,
+  useIsItemOpened,
+  useToggleStore,
+} from '@hedron-gl/ui-core'
 import c from './Timeline.module.css'
 import { TrackKeyframes } from './TrackKeyframes'
 import { Keyframe } from './Keyframe'
@@ -63,7 +69,7 @@ export const TimelineTrack = ({
           {track.trackType === 'vector' && (
             <Icon
               className={c.collapseIcon}
-              name={isExpanded ? collapseOpenIcon : collapseOpenIcon}
+              name={isExpanded ? collapseCloseIcon : collapseOpenIcon}
               onClick={() => setIsExpanded(track.id)}
             />
           )}

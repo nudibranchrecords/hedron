@@ -3,12 +3,11 @@ import { HedronEngine, Param } from '@hedron-gl/engine'
 import { useNodeOptionNodes } from '@hedron-gl/ui-core'
 import { DEFAULT_TIMELINE_ID } from '@/constants'
 import { TimelineManager } from '@/TimelineManager'
-import type { Keyframe, TimelineManagerData, TimelineTrackInput } from '@/types'
+import type { Keyframe, TimelineTrackInput } from '@/types'
 
 interface UseTimelineHandlersParams {
   engine: HedronEngine
   manager: TimelineManager
-  timeline: TimelineManagerData
 }
 
 export const useTimelineHandlers = ({ engine, manager }: UseTimelineHandlersParams) => {

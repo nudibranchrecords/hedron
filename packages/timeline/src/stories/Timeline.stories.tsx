@@ -275,7 +275,6 @@ export const Interactive = () => {
             }
           }
           if (track.trackType === 'vector') {
-            console.log(`Inserting keyframe on vector track ${track.id} at ${time}ms`)
             return {
               ...track,
               childTracks: track.childTracks.map(

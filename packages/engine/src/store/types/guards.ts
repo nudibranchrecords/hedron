@@ -1,6 +1,6 @@
 import { ParamValueType, ParamVector, ParamVectorValueType } from './Param'
 import { Node } from './Node'
-import { HedronEngine } from '@HedronEngine/HedronEngine'
+import type { HedronEngine } from '@HedronEngine/HedronEngine'
 
 // Record ensures every ParamValueTypeWithChildren member is listed — adding a new
 // type that extends NodeParamWithChildrenBase will cause a compile error here if
