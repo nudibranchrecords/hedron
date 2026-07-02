@@ -1,5 +1,5 @@
 import { addNode } from '@store/shared/addNode'
-import { SetterCreator } from '@store/types'
+import { DEFAULT_SCENE_NODE_ID, isScene, SetterCreator } from '@store/types'
 import { createUniqueId } from '@utils/createUniqueId'
 
 export const createAddSketch: SetterCreator<'addSketch'> = (setState) => (moduleId: string) => {
@@ -11,16 +11,25 @@ export const createAddSketch: SetterCreator<'addSketch'> = (setState) => (module
     for (const nodeConfig of config.nodes) {
       const id = createUniqueId()
       nodeIds.push(id)
-      // FIXME: Add sketch parent ID here once sketches are nodes
-      addNode(state, id, null, nodeConfig)
+      addNode(state, id, newSketchId, nodeConfig)
     }
 
-    state.sketches[newSketchId] = {
+    const sceneNode = state.nodes[DEFAULT_SCENE_NODE_ID]
+    if (!isScene(sceneNode)) {
+      throw new Error('Default scene node is missing or invalid')
+    }
+
+    state.nodes[newSketchId] = {
       id: newSketchId,
+      nodeType: 'sketch',
       moduleId,
       title: config.title,
+      parentIds: [DEFAULT_SCENE_NODE_ID],
+      childGroups: { optionNodeIds: [], inputNodeIds: [], nodeIds },
       nodeIds,
     }
+
+    sceneNode.childGroups.sketchIds.push(newSketchId)
   })
 
   return newSketchId

@@ -38,9 +38,10 @@ export type IconName =
   | 'token'
   | 'tune'
   | 'video_camera_back'
+  | 'view_in_ar'
 
 export const sketchIcon: IconName = 'token'
-export const sceneIcon: IconName = 'panorama'
+export const sceneIcon: IconName = 'view_in_ar'
 export const paramIcon: IconName = 'tune'
 export const inputIcon: IconName = 'cable'
 export const fileIcon: IconName = 'draft'

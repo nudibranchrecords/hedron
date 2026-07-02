@@ -34,7 +34,6 @@ export const MidiGlobalPanel: React.FC<MidiGlobalPanelProps> = ({ engine }) => {
 
   const nodes = useEngineStore((state) => state.nodes)
   const paramValues = useEngineStore((state) => state.paramValues)
-  const sketches = useEngineStore((state) => state.sketches)
 
   // Track connected devices
   useEffect(() => {
@@ -101,8 +100,8 @@ export const MidiGlobalPanel: React.FC<MidiGlobalPanelProps> = ({ engine }) => {
             affectedNodeName = targetNode.title || targetNode.key
 
             // Find the sketch this node belongs to
-            for (const sketch of Object.values(sketches)) {
-              if (sketch.nodeIds.includes(input.targetNodeId)) {
+            for (const sketch of Object.values(nodes)) {
+              if (sketch?.nodeType === 'sketch' && sketch.nodeIds.includes(input.targetNodeId)) {
                 sketchName = sketch.title
                 break
               }
@@ -130,7 +129,7 @@ export const MidiGlobalPanel: React.FC<MidiGlobalPanelProps> = ({ engine }) => {
     return () => {
       midiPlugin.midiManager.onMidiMessage.remove(handleMidiMessage)
     }
-  }, [midiPlugin, nodes, paramValues, sketches])
+  }, [midiPlugin, nodes, paramValues])
 
   const globalNodeId = `${midiPlugin.id}-global`
 

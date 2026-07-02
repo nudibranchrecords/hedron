@@ -110,6 +110,14 @@ export const getOptionNodesFromIds = <T extends readonly any[]>(
       )
       return
     }
+
+    if (node.nodeType === 'scene' || node.nodeType === 'sketch') {
+      console.warn(
+        `Node ${node.id} is a ${node.nodeType} node. ${node.nodeType} nodes cannot be used as option nodes for plugins.`,
+      )
+      return
+    }
+
     ;(options as Record<string, unknown>)[node.key] = state.paramValues[id]
   })
   return options
@@ -167,6 +175,13 @@ export const handleEachInput = <T extends readonly any[]>(
     if (targetNode.nodeType === 'custom') {
       console.warn(
         `Input ${input.id} is trying to target a custom node ${targetNode.id}. This is not supported.`,
+      )
+      return
+    }
+
+    if (targetNode.nodeType === 'scene' || targetNode.nodeType === 'sketch') {
+      console.warn(
+        `Input ${input.id} is trying to target a ${targetNode.nodeType} node ${targetNode.id}. This is not supported.`,
       )
       return
     }

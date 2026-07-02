@@ -3,7 +3,7 @@ import { StoreApi } from 'zustand'
 import { devtools, persist, subscribeWithSelector } from 'zustand/middleware'
 import { immer } from 'zustand/middleware/immer'
 import type {} from '@redux-devtools/extension' // required for devtools typing
-import { EngineData } from '@hedron-gl/engine'
+import { DEFAULT_SCENE_NODE_ID, EngineData } from '@hedron-gl/engine'
 
 export type DialogId = 'sketchModules' | 'sketchesServerBuildResult'
 
@@ -35,6 +35,7 @@ export interface ProjectData {
   engine: EngineData
   app: {
     sketchesDir: string
+    activeSceneId: string
     activeSketchId: string | null
     selectedNodes: { [sketchId: string]: string | null }
     selectedInputs: { [inputId: string]: string | null }
@@ -43,6 +44,7 @@ export interface ProjectData {
 }
 
 export interface AppState {
+  activeSceneId: string
   activeSketchId: string | null // TODO: should be part of ProjectData
   selectedNodes: ProjectData['app']['selectedNodes']
   selectedInputs: ProjectData['app']['selectedInputs']
@@ -55,6 +57,7 @@ export interface AppState {
   setSelectedNode: (sketchID: string, nodeId: string | null) => void
   setSelectedInput: (nodeId: string, inputId: string | null) => void
   setOpenedControlGroup: (sketchId: string, groupIndex: number, isOpen: boolean) => void
+  setActiveSceneId: (id: string) => void
   setActiveSketchId: (id: string) => void
   setSketchesDir: (dir: string) => void
   setGlobalDialogId: (id: DialogId | null) => void
@@ -83,6 +86,7 @@ export const createAppStore = () =>
       subscribeWithSelector(
         devtools(
           immer<AppState>((set) => ({
+            activeSceneId: DEFAULT_SCENE_NODE_ID,
             activeSketchId: null,
             sketchesDir: null,
             globalDialogId: null,
@@ -136,6 +140,11 @@ export const createAppStore = () =>
                 state.selectedNodes[sketchID] = nodeId
               })
             },
+            setActiveSceneId: (id: string) => {
+              set((state) => {
+                state.activeSceneId = id
+              })
+            },
             setSelectedInput: (nodeId, inputId) => {
               set((state) => {
                 state.selectedInputs[nodeId] = inputId
@@ -152,7 +161,11 @@ export const createAppStore = () =>
             cleanupStaleReferences: (engineData: EngineData) => {
               set((state) => {
                 const validNodeIds = new Set(Object.keys(engineData.nodes))
-                const validSketchIds = new Set(Object.keys(engineData.sketches))
+                const validSketchIds = new Set(
+                  Object.values(engineData.nodes)
+                    .filter((node) => node?.nodeType === 'sketch')
+                    .map((node) => node.id),
+                )
 
                 for (const sketchId of Object.keys(state.selectedNodes)) {
                   if (!validSketchIds.has(sketchId)) {

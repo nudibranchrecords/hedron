@@ -31,6 +31,10 @@ import {
   Input,
 } from '@store/types'
 import { getSketchesOfModuleId } from '@store/selectors/getSketchesOfModuleId'
+import {
+  getCurrentSceneSketchIds,
+  getCurrentSceneSketches,
+} from '@store/selectors/getSceneSketches'
 import { createEngineStore, EngineStore } from '@store/engineStore'
 import { getSketchParamValues } from '@store/selectors/getSketchParamValues'
 import { EngineScene } from '@world/EngineScene'
@@ -506,7 +510,7 @@ export class HedronEngine {
    */
   public async reconcileAllSketchNodes(): Promise<void> {
     const state = this.store.getState()
-    const sketchesToReconcile = Object.values(state.sketches)
+    const sketchesToReconcile = getCurrentSceneSketches(state)
 
     for (const sketch of sketchesToReconcile) {
       state.reconcileSketchNodes(sketch.id)
@@ -601,15 +605,13 @@ export class HedronEngine {
     flushParamValueBuffer(this.store.setState)
 
     const state = this.store.getState()
-    const sketchInstances =
-      // TODO: When we have scenes, sketches should be added to the scene earlier on
-      (engineScene.sketches = this.sketchManager!.getSketchInstances())
+    const sketchInstances = (engineScene.sketches = this.sketchManager!.getSketchInstances())
 
     if (this.renderer.rendererType === 'webgl') {
       engineScene.clearPasses()
     }
 
-    Object.keys(state.sketches).forEach((sketchId) => {
+    getCurrentSceneSketchIds(state).forEach((sketchId) => {
       const paramValues = getSketchParamValues(state, sketchId, {
         resourcesUrl: state.resourcesUrl,
       })

@@ -70,7 +70,7 @@ export const ActiveSketch = () => {
             {
               label: 'Delete Sketch',
               icon: 'delete',
-              onClick: () => engineStore.getState().deleteSketch(activeSketch.id),
+              onClick: () => engineStore.getState().deleteNode(activeSketch.id),
             },
           ]}
         >

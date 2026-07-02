@@ -2,6 +2,7 @@ import { type ShaderNodeObject } from 'three/tsl'
 import { Group } from 'three'
 import { Pass } from 'postprocessing'
 import { PassNode } from 'three/webgpu'
+import { NodeBase } from './NodeBase'
 import { ConfigParam, ConfigParamImported, ConfigParamNumber } from './Param'
 import { ConfigShot, ConfigShotImported } from './Shot'
 import { EngineScene } from '@world/EngineScene'
@@ -45,10 +46,11 @@ export interface ConfigSketchImported {
   }[]
 }
 
-// TODO: This will eventually become a node
-export interface Sketch {
-  id: string
-  title: string
+export interface Sketch extends NodeBase {
+  nodeType: 'sketch'
+  childGroups: NodeBase['childGroups'] & {
+    nodeIds: string[]
+  }
   moduleId: string
   nodeIds: string[]
   isBroken?: boolean

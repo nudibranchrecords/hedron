@@ -1,8 +1,13 @@
+import { getSketch } from './getSceneSketches'
 import { EngineState, Shot } from '@store/types'
 
 export const getSketchShotNodes = (state: EngineState, sketchId: string) => {
-  const { sketches, nodes } = state
-  const sketch = sketches[sketchId]
+  const { nodes } = state
+  const sketch = getSketch(state, sketchId)
+
+  if (!sketch) {
+    return []
+  }
 
   return sketch.nodeIds
     .map((id) => nodes[id])

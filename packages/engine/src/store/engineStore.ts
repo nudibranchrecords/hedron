@@ -7,7 +7,6 @@ import { createDeleteNode } from './actionCreators/createDeleteNode'
 import { EngineStateWithActions } from '@store/types'
 import { initialState } from '@store/initialState'
 import { createAddSketch } from '@store/actionCreators/addSketch'
-import { createDeleteSketch } from '@store/actionCreators/deleteSketch'
 import { createSetSketchModuleItem } from '@store/actionCreators/setSketchModuleItem'
 import { createDeleteSketchModule } from '@store/actionCreators/deleteSketchModule'
 import { createReconcileSketchNodes } from '@store/actionCreators/createReconcileSketchNodes'
@@ -33,7 +32,6 @@ export const createEngineStore = () =>
           setSketchModuleItem: createSetSketchModuleItem(set),
           updateParamValue: createUpdateParamValue(set),
           updateMultipleParamValues: createUpdateMultipleParamValues(set),
-          deleteSketch: createDeleteSketch(set),
           deleteSketchModule: createDeleteSketchModule(set),
           moveSketchUp: createMoveSketchUp(set),
           moveSketchDown: createMoveSketchDown(set),

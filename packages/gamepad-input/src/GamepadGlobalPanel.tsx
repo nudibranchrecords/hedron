@@ -260,7 +260,6 @@ export const GamepadGlobalPanel: React.FC<GamepadGlobalPanelProps> = ({ engine }
 
   const nodes = useEngineStore((state) => state.nodes)
   const paramValues = useEngineStore((state) => state.paramValues)
-  const sketches = useEngineStore((state) => state.sketches)
 
   const { connectedGamepads, setConnectedGamepads } = useConnectedGamepads(gamepadPlugin)
   const { flashingInputs, flashingControllers, lastEventPerController } = useGamepadEvents(
@@ -326,7 +325,6 @@ export const GamepadGlobalPanel: React.FC<GamepadGlobalPanelProps> = ({ engine }
           flashingControllers={flashingControllers}
           nodes={nodes}
           paramValues={paramValues}
-          sketches={sketches}
           engine={engine}
           toggleExpanded={toggleExpanded}
           handleControllerAssignment={handleControllerAssignment}
@@ -366,7 +364,6 @@ interface ControllerListProps {
   flashingControllers: Set<number>
   nodes: Nodes
   paramValues: ParamValues
-  sketches: Record<string, { id: string; title: string; nodeIds: string[] }>
   engine: HedronEngine
   toggleExpanded: (physicalIndex: number) => void
   handleControllerAssignment: (physicalIndex: number, logicalIndex: number) => void
@@ -380,7 +377,6 @@ const ControllerList: React.FC<ControllerListProps> = ({
   flashingControllers,
   nodes,
   paramValues,
-  sketches,
   engine,
   toggleExpanded,
   handleControllerAssignment,
@@ -403,7 +399,6 @@ const ControllerList: React.FC<ControllerListProps> = ({
             controllerInputs={controllerInputs}
             nodes={nodes}
             paramValues={paramValues}
-            sketches={sketches}
             toggleExpanded={toggleExpanded}
             handleControllerAssignment={handleControllerAssignment}
             lastEvent={lastEventPerController.get(gamepad.assignedIndex)}
@@ -423,7 +418,6 @@ interface ControllerItemProps {
   controllerInputs: Input[]
   nodes: Nodes
   paramValues: ParamValues
-  sketches: Record<string, { id: string; title: string; nodeIds: string[] }>
   toggleExpanded: (physicalIndex: number) => void
   handleControllerAssignment: (physicalIndex: number, logicalIndex: number) => void
   lastEvent?: GamepadEvent
@@ -437,7 +431,6 @@ const ControllerItem: React.FC<ControllerItemProps> = ({
   controllerInputs,
   nodes,
   paramValues,
-  sketches,
   toggleExpanded,
   handleControllerAssignment,
   lastEvent,
@@ -468,8 +461,8 @@ const ControllerItem: React.FC<ControllerItemProps> = ({
     // Find the sketch that contains this node by scanning all sketches
     let sketch = null
     if (matchingInput?.targetNodeId) {
-      const foundSketch = Object.values(sketches).find((s) =>
-        s.nodeIds?.includes(matchingInput.targetNodeId),
+      const foundSketch = Object.values(nodes).find(
+        (node) => node?.nodeType === 'sketch' && node.nodeIds?.includes(matchingInput.targetNodeId),
       )
       sketch = foundSketch || null
     }
@@ -482,7 +475,7 @@ const ControllerItem: React.FC<ControllerItemProps> = ({
       sketchTitle: sketch?.title || null,
       isRegistered: !!matchingInput,
     }
-  }, [lastEvent, controllerInputs, nodes, paramValues, sketches])
+  }, [lastEvent, controllerInputs, nodes, paramValues])
   return (
     <Card>
       <div className={isFlashing ? styles.activeCardSubtle : ''}>

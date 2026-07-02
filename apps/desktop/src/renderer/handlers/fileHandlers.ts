@@ -9,6 +9,11 @@ import {
   startSketchesServer,
 } from '@renderer/ipc/mainThreadTalk'
 
+const countNodeTypes = (projectData: ProjectData, nodeType: 'scene' | 'sketch') => {
+  return Object.values(projectData.engine.nodes).filter((node) => node?.nodeType === nodeType)
+    .length
+}
+
 const startEngineWithSketchesDir = async (
   sketchesDirPath: string,
   resourcesDirAbsolute: string,
@@ -83,8 +88,14 @@ export const handleLoadProjectDialog = async (projectPath?: string) => {
 
 export const handleSaveProjectDialog = async (options?: { saveAs?: boolean }) => {
   const appState = appStore.getState()
-  const { sketchesDir, openedControlGroups, selectedNodes, selectedInputs, activeSketchId } =
-    appState
+  const {
+    sketchesDir,
+    openedControlGroups,
+    selectedNodes,
+    selectedInputs,
+    activeSceneId,
+    activeSketchId,
+  } = appState
 
   if (!sketchesDir) {
     throw new Error("Can't save project without sketches dir")
@@ -96,6 +107,7 @@ export const handleSaveProjectDialog = async (options?: { saveAs?: boolean }) =>
     engine: engineData,
     app: {
       sketchesDir,
+      activeSceneId,
       activeSketchId,
       selectedNodes,
       selectedInputs,
@@ -118,8 +130,8 @@ export const handleSaveProjectDialog = async (options?: { saveAs?: boolean }) =>
       title: response.fileNameWithoutExt,
       date: Date.now(),
       path: response.savePath,
-      numScenes: 1,
-      numSketches: Object.keys(projectData.engine.sketches).length,
+      numScenes: countNodeTypes(projectData, 'scene'),
+      numSketches: countNodeTypes(projectData, 'sketch'),
     })
   }
 }

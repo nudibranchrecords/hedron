@@ -1,5 +1,5 @@
 import { StoreApi } from 'zustand'
-import { Sketch, Sketches, SketchModuleItem, SketchModules } from './Sketch'
+import { Sketch, SketchModuleItem, SketchModules } from './Sketch'
 import { ConfigParam, ParamValue, ParamValues } from './Param'
 import { Input } from './Input'
 import { ConfigShot } from './Shot'
@@ -7,7 +7,6 @@ import { Nodes } from './Node'
 import { Resources } from './Resources'
 
 export interface EngineData {
-  sketches: Sketches
   nodes: Nodes
   paramValues: ParamValues
   resources: Resources
@@ -25,7 +24,6 @@ interface Actions {
   addSketch: (moduleId: string) => string
   updateSketch: (instanceId: string, sketchState: Partial<Sketch>) => void
   reconcileSketchNodes: (instanceId: string) => void
-  deleteSketch: (instanceId: string) => void
   moveSketchUp: (instanceId: string) => void
   moveSketchDown: (instanceId: string) => void
   setSketchModuleItem: (newItem: SketchModuleItem) => void

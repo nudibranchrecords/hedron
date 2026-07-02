@@ -1,15 +1,31 @@
-import { Panel, PanelBody, PanelHeader } from '@hedron-gl/ui-core'
+import {
+  Icon,
+  Panel,
+  PanelBody,
+  PanelHeader,
+  ViewHeader,
+  sceneIcon,
+  useEngineStore,
+} from '@hedron-gl/ui-core'
+import { Scene } from '@hedron-gl/engine'
 import c from './Sketches.module.css'
 import { useActiveSketch } from '@components/hooks/useActiveSketch'
 import { ActiveSketch } from '@components/ActiveSketch/ActiveSketch'
 import { SketchTabs } from '@components/SketchTabs/SketchTabs'
+import { useAppStore } from '@renderer/appStore'
 
 export const Sketches = () => {
   const activeSketch = useActiveSketch()
+  const nodes = useEngineStore((state) => state.nodes)
+  const activeSceneId = useAppStore((state) => state.activeSceneId)
+  const activeScene = nodes[activeSceneId] as Scene
 
   return (
     <div className={c.wrapper}>
       <div className={c.main}>
+        <ViewHeader>
+          <Icon name={sceneIcon} /> {activeScene.title}
+        </ViewHeader>
         {activeSketch ? (
           <ActiveSketch />
         ) : (
