@@ -1,4 +1,5 @@
 import { Clock } from '@hedron-gl/clock'
+import { ParamValue } from '@hedron-gl/engine'
 import type {
   TimelineManagerData,
   TimelineManagerTrack,
@@ -6,7 +7,7 @@ import type {
   TimelineManagerAudioTrack,
 } from '@/types'
 
-export type TrackValues = Record<string, boolean>
+export type TrackValues = Record<string, ParamValue>
 
 export type OnUpdateCallback = (values: TrackValues) => void
 
@@ -32,7 +33,7 @@ export class TimelineManager {
   private buildCache() {
     this.sortedKeyframesCache.clear()
     this.resetKeyframeIndexes()
-    for (const track of this.timelineData.tracks) {
+    for (const track of this.getAllTracks()) {
       switch (track.trackType) {
         case 'audio':
           if (this.audioCache.get(track.id)?.src !== track.audioUrl) {
@@ -54,10 +55,10 @@ export class TimelineManager {
     this.lastKeyframeIndex.clear()
   }
 
-  private getTrackValue(track: TimelineManagerTrack): boolean {
+  private getTrackValue(track: TimelineManagerTrack): ParamValue | undefined {
     const sorted = this.sortedKeyframesCache.get(track.id) ?? []
     const startIndex = this.lastKeyframeIndex.get(track.id) ?? 0
-    let value = startIndex > 0 ? sorted[startIndex - 1].value : false
+    let value = startIndex > 0 ? sorted[startIndex - 1].value : undefined
     let lastIndex = startIndex
     for (let i = startIndex; i < sorted.length; i++) {
       if (sorted[i].time > this.position) break
@@ -70,8 +71,11 @@ export class TimelineManager {
 
   private computeValues(): TrackValues {
     const values: TrackValues = {}
-    for (const track of this.timelineData.tracks) {
-      values[track.id] = this.getTrackValue(track)
+    for (const track of this.getAllTracks()) {
+      const value = this.getTrackValue(track)
+      if (value !== undefined) {
+        values[track.id] = value
+      }
     }
     return values
   }
@@ -97,7 +101,7 @@ export class TimelineManager {
     track: TimelineManagerAudioTrack
     audio: HTMLAudioElement
   }[] {
-    return this.timelineData.tracks
+    return this.getAllTracks()
       .filter(
         (track): track is TimelineManagerAudioTrack =>
           track.trackType === 'audio' && this.audioCache.has(track.id),
@@ -128,6 +132,19 @@ export class TimelineManager {
     }
 
     this.rafId = requestAnimationFrame(this.tick)
+  }
+
+  getAllTracks(tracks = this.timelineData.tracks): TimelineManagerTrack[] {
+    const allTracks: TimelineManagerTrack[] = []
+
+    for (const track of tracks) {
+      allTracks.push(track)
+      if (track.trackType === 'vector') {
+        allTracks.push(...this.getAllTracks(track.childTracks))
+      }
+    }
+
+    return allTracks
   }
 
   play() {

@@ -1,6 +1,6 @@
 import { PropsWithChildren, useCallback } from 'react'
 import c from './Collapsible.module.css'
-import { Icon } from '@components/Icon/Icon'
+import { collapseCloseIcon, collapseOpenIcon, Icon } from '@components/Icon/Icon'
 
 export interface CollapsibleProps extends PropsWithChildren {
   title: string
@@ -14,7 +14,7 @@ export const Collapsible = ({ title, isOpen, onToggle, children, className }: Co
     onToggle(!isOpen)
   }, [onToggle, isOpen])
 
-  const iconName = isOpen ? 'remove' : 'add'
+  const iconName = isOpen ? collapseCloseIcon : collapseOpenIcon
 
   return (
     <div className={className}>

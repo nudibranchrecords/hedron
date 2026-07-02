@@ -1,9 +1,7 @@
-import { useEffect, useRef, useState } from 'react'
-import c from './Timeline.module.css'
-import '@hedron-gl/ui-core/base.css'
-import '@hedron-gl/ui-core/fonts.css'
-import { TrackKeyframes } from './TrackKeyframes'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { usePlayheadScrub } from './usePlayheadScrub'
+import c from './Timeline.module.css'
+import { TimelineTrack } from './TimelineTrack'
 import { TimelineManagerTrack } from '@/types'
 
 export interface TimelineProps {
@@ -31,22 +29,72 @@ export function Timeline({
 }: TimelineProps) {
   const { durationMs, tracks } = timeline
   const rulerAreaRef = useRef<HTMLDivElement>(null)
-  const [selectedTrack, setSelectedTrack] = useState<string | null>(null)
-  const [selectedKeyframe, setSelectedKeyframe] = useState<string | null>(null)
+  const [selectedTrackId, setSelectedTrackId] = useState<string | null>(null)
+  const [selectedKeyframes, setSelectedKeyframes] = useState<string[] | null>(null)
+
+  const findTrackById = useCallback(
+    (trackList: TimelineManagerTrack[], trackId: string): TimelineManagerTrack | null => {
+      for (const track of trackList) {
+        if (track.id === trackId) {
+          return track
+        }
+
+        if (track.trackType === 'vector') {
+          const childTrack = findTrackById(track.childTracks, trackId)
+          if (childTrack) {
+            return childTrack
+          }
+        }
+      }
+
+      return null
+    },
+    [],
+  )
 
   useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'x' && selectedKeyframe) {
-        onKeyframeDelete?.(selectedKeyframe)
-        setSelectedKeyframe(null)
+    const getChildKeyframeTrackIds = (track: TimelineManagerTrack): string[] => {
+      if (track.trackType === 'keyframe') {
+        return [track.id]
       }
-      if (e.key === 'i' && selectedTrack) {
-        onKeyframeInsert?.(selectedTrack, playheadPositionMs)
+
+      if (track.trackType === 'vector') {
+        return track.childTracks.map((track) => track.id)
+      }
+
+      return []
+    }
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'x' && selectedKeyframes) {
+        selectedKeyframes.forEach((keyframeId) => {
+          onKeyframeDelete?.(keyframeId)
+        })
+
+        setSelectedKeyframes(null)
+      }
+      if (e.key === 'i' && selectedTrackId) {
+        if (!onKeyframeInsert) return
+
+        const track = findTrackById(tracks, selectedTrackId)
+        if (!track) return
+
+        for (const keyframeTrackId of getChildKeyframeTrackIds(track)) {
+          onKeyframeInsert(keyframeTrackId, playheadPositionMs)
+        }
       }
     }
     window.addEventListener('keydown', handleKeyDown)
     return () => window.removeEventListener('keydown', handleKeyDown)
-  }, [selectedKeyframe, onKeyframeDelete, selectedTrack, playheadPositionMs, onKeyframeInsert])
+  }, [
+    selectedKeyframes,
+    onKeyframeDelete,
+    selectedTrackId,
+    playheadPositionMs,
+    onKeyframeInsert,
+    tracks,
+    findTrackById,
+  ])
 
   usePlayheadScrub(durationMs, rulerAreaRef, playheadPositionMs, onPlayheadChange)
 
@@ -76,26 +124,18 @@ export function Timeline({
         <div className={c.ruler} ref={rulerAreaRef}>
           {rulerMarks}
         </div>
-        {tracks.map((track) => {
-          const isSelected = selectedTrack === track.id
-          return (
-            <div key={track.id} className={`${c.track} ${isSelected ? c.trackSelected : ''}`}>
-              <div className={c.trackHeader} onClick={() => setSelectedTrack(track.id)}>
-                {track.label}
-              </div>
-              <div className={c.trackBody}>
-                {track.trackType === 'keyframe' && (
-                  <TrackKeyframes
-                    track={track}
-                    durationMs={durationMs}
-                    selectedKeyframe={selectedKeyframe}
-                    setSelectedKeyframe={setSelectedKeyframe}
-                  />
-                )}
-              </div>
-            </div>
-          )
-        })}
+        {tracks.map((track) => (
+          <TimelineTrack
+            key={track.id}
+            selectedTrackId={selectedTrackId}
+            setSelectedTrackId={setSelectedTrackId}
+            track={track}
+            depth={0}
+            durationMs={durationMs}
+            selectedKeyframes={selectedKeyframes}
+            setSelectedKeyframes={setSelectedKeyframes}
+          />
+        ))}
         <div
           className={c.playhead}
           style={{ '--playheadPercent': playheadPercent / 100 } as React.CSSProperties}

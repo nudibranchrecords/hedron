@@ -56,7 +56,7 @@ export interface IPlugin {
   /**
    * Optional callback called after each input for this plugin is added
    */
-  onNewInput?: (engine: HedronEngine, inputId: string) => void
+  onNewInput?: (engine: HedronEngine, newInput: Input, targetNode: Param | Shot) => void
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

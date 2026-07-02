@@ -1,10 +1,11 @@
-import { Input, CustomNode } from '@hedron-gl/engine'
+import { Input, CustomNode, ParamValueType, ParamValue } from '@hedron-gl/engine'
 
 export interface Keyframe {
   id: string
   time: number
-  valueType: 'boolean'
-  value: boolean
+  // TODO: This is a bit wonky because a keyframe could be typed with a non-matching valueType and value
+  valueType: ParamValueType
+  value: ParamValue
 }
 
 /** Store node type for a timeline track */
@@ -20,6 +21,11 @@ interface TimelineManagerTrackBase {
   label: string
 }
 
+export interface TimelineManagerVectorTrack extends TimelineManagerTrackBase {
+  trackType: 'vector'
+  childTracks: TimelineManagerKeyframeTrack[]
+}
+
 export interface TimelineManagerKeyframeTrack extends TimelineManagerTrackBase {
   trackType: 'keyframe'
   keyframes: Keyframe[]
@@ -31,7 +37,10 @@ export interface TimelineManagerAudioTrack extends TimelineManagerTrackBase {
   audioUrl: string
 }
 
-export type TimelineManagerTrack = TimelineManagerKeyframeTrack | TimelineManagerAudioTrack
+export type TimelineManagerTrack =
+  | TimelineManagerKeyframeTrack
+  | TimelineManagerAudioTrack
+  | TimelineManagerVectorTrack
 
 export interface TimelineManagerData {
   durationMs: number

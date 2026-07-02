@@ -1,13 +1,21 @@
 /* eslint-disable storybook/context-in-play-function */
 
 import type { Meta, StoryObj } from '@storybook/react'
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 // eslint-disable-next-line no-restricted-imports
 import audioUrl from '../../../../apps/example-project/resources/120-4-4.mp3'
 import { TimelineManager } from '@/TimelineManager'
 import type { TrackValues } from '@/TimelineManager'
 import { Timeline } from '@/components/Timeline/Timeline'
-import type { TimelineManagerData } from '@/types'
+import type {
+  TimelineManagerData,
+  TimelineManagerKeyframeTrack,
+  TimelineManagerTrack,
+} from '@/types'
+
+import '@hedron-gl/ui-core/icons.css'
+import '@hedron-gl/ui-core/base.css'
+import '@hedron-gl/ui-core/fonts.css'
 
 const meta = {
   title: 'Timeline',
@@ -59,6 +67,44 @@ export const WithKeyframes: Story = {
   },
 }
 
+export const WithVectorTrack: Story = {
+  args: {
+    timeline: {
+      durationMs: 10000,
+      tracks: [
+        {
+          id: 'track-pos',
+          label: 'Position',
+          trackType: 'vector',
+          childTracks: [
+            {
+              id: 'track-pos-x',
+              label: 'X',
+              trackType: 'keyframe',
+              keyframes: [
+                { id: 'kf-px-1', time: 1000, valueType: 'number', value: 0 },
+                { id: 'kf-px-2', time: 5000, valueType: 'number', value: 0.75 },
+                { id: 'kf-px-3', time: 9000, valueType: 'number', value: -0.2 },
+              ],
+            },
+            {
+              id: 'track-pos-y',
+              label: 'Y',
+              trackType: 'keyframe',
+              keyframes: [
+                { id: 'kf-py-1', time: 1500, valueType: 'number', value: -0.25 },
+                { id: 'kf-py-2', time: 4500, valueType: 'number', value: 0.5 },
+                { id: 'kf-py-3', time: 8000, valueType: 'number', value: 0.1 },
+              ],
+            },
+          ],
+        },
+      ],
+    },
+    playheadPositionMs: 4200,
+  },
+}
+
 export const Interactive = () => {
   const [playheadPositionMs, setPlayheadPositionMs] = useState(0)
   const [playing, setPlaying] = useState(false)
@@ -71,6 +117,33 @@ export const Interactive = () => {
         label: 'test.mp3',
         trackType: 'audio',
         audioUrl: audioUrl,
+      },
+      {
+        id: 'track-pos',
+        label: 'Position',
+        trackType: 'vector',
+        childTracks: [
+          {
+            id: 'track-pos-x',
+            label: 'X',
+            trackType: 'keyframe',
+            keyframes: [
+              { id: 'kf-px1', time: 500, valueType: 'number', value: -0.5 },
+              { id: 'kf-px2', time: 4000, valueType: 'number', value: 0.35 },
+              { id: 'kf-px3', time: 7000, valueType: 'number', value: 0.8 },
+            ],
+          },
+          {
+            id: 'track-pos-y',
+            label: 'Y',
+            trackType: 'keyframe',
+            keyframes: [
+              { id: 'kf-py1', time: 1000, valueType: 'number', value: 0.25 },
+              { id: 'kf-py2', time: 5000, valueType: 'number', value: -0.1 },
+              { id: 'kf-py3', time: 8500, valueType: 'number', value: 0.55 },
+            ],
+          },
+        ],
       },
       {
         id: 'track-1',
@@ -110,8 +183,16 @@ export const Interactive = () => {
   const managerRef = useRef<TimelineManager | null>(null)
 
   useEffect(() => {
-    const manager = new TimelineManager(timeline)
+    const manager = new TimelineManager({
+      durationMs: 10000,
+      tracks: [],
+    })
     managerRef.current = manager
+  }, [])
+
+  useEffect(() => {
+    const manager = managerRef.current
+    if (!manager) return
 
     manager.onUpdate((changed) => {
       setTrackValues((prev) => ({ ...prev, ...changed }))
@@ -136,41 +217,91 @@ export const Interactive = () => {
     setPlaying(!playing)
   }
 
-  const handlePlayheadChange = (time: number) => {
+  const handlePlayheadChange = useCallback((time: number) => {
     managerRef.current?.goTo(time)
     setPlayheadPositionMs(time)
     setPlaying(false)
     managerRef.current?.pause()
-  }
+  }, [])
 
-  const handleKeyframeDelete = (keyframeId: string) => {
+  const handleKeyframeDelete = useCallback((keyframeId: string) => {
     setTimeline((prev) => ({
       ...prev,
       tracks: prev.tracks.map((track) => {
-        if (track.trackType !== 'keyframe') return track
-        return {
-          ...track,
-          keyframes: track.keyframes.filter((kf) => kf.id !== keyframeId),
+        const deleteKeyframes = (track: TimelineManagerTrack): TimelineManagerTrack => {
+          if (track.trackType === 'keyframe') {
+            return {
+              ...track,
+              keyframes: track.keyframes.filter((kf) => kf.id !== keyframeId),
+            }
+          }
+          if (track.trackType === 'vector') {
+            return {
+              ...track,
+              childTracks: track.childTracks.map(deleteKeyframes) as TimelineManagerKeyframeTrack[],
+            }
+          }
+          return track
         }
+
+        return deleteKeyframes(track)
       }),
     }))
-  }
+  }, [])
 
-  const handleKeyframeInsert = (trackId: string, time: number) => {
+  const handleKeyframeInsert = useCallback((trackId: string, time: number) => {
     setTimeline((prev) => ({
       ...prev,
-      tracks: prev.tracks.map((track) =>
-        track.id === trackId && track.trackType === 'keyframe'
-          ? {
+      tracks: prev.tracks.map((track) => {
+        const insertKeyframe = (track: TimelineManagerTrack): TimelineManagerTrack => {
+          if (track.trackType === 'keyframe' && track.id === trackId) {
+            const lastKeyframe = track.keyframes[track.keyframes.length - 1]
+            const valueType = lastKeyframe?.valueType ?? 'boolean'
+            const value =
+              lastKeyframe?.value ??
+              (valueType === 'number' ? 0 : valueType === 'boolean' ? true : null)
+
+            return {
               ...track,
               keyframes: [
                 ...track.keyframes,
-                { id: `kf-${Date.now()}`, time, valueType: 'boolean' as const, value: true },
+                {
+                  id: crypto.randomUUID(),
+                  time,
+                  valueType,
+                  value,
+                },
               ].sort((a, b) => a.time - b.time),
             }
-          : track,
-      ),
+          }
+          if (track.trackType === 'vector') {
+            return {
+              ...track,
+              childTracks: track.childTracks.map(
+                insertKeyframe as (track: TimelineManagerTrack) => TimelineManagerKeyframeTrack,
+              ),
+            }
+          }
+          return track
+        }
+
+        return insertKeyframe(track)
+      }),
     }))
+  }, [])
+
+  const getKeyframeTracks = (tracks: TimelineManagerTrack[]): TimelineManagerTrack[] => {
+    return tracks.flatMap((track) => {
+      if (track.trackType === 'keyframe') {
+        return [track]
+      }
+
+      if (track.trackType === 'vector') {
+        return getKeyframeTracks(track.childTracks)
+      }
+
+      return [track]
+    })
   }
 
   return (
@@ -203,14 +334,17 @@ export const Interactive = () => {
       />
       <div style={{ marginTop: '12px', fontFamily: 'monospace', fontSize: '12px', color: '#ccc' }}>
         <div style={{ marginBottom: '4px', color: '#888' }}>Track Values:</div>
-        {timeline.tracks.map((track) => (
-          <div key={track.id} style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-            <span style={{ color: '#888' }}>{track.label}:</span>
-            <span style={{ color: trackValues[track.id] ? '#4f4' : '#f44' }}>
-              {String(trackValues[track.id] ?? false)}
-            </span>
-          </div>
-        ))}
+        {getKeyframeTracks(timeline.tracks).map((track) => {
+          const value = trackValues[track.id]
+          const valueColor = typeof value === 'boolean' ? (value ? '#4f4' : '#f44') : '#7cc5ff'
+
+          return (
+            <div key={track.id} style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+              <span style={{ color: '#888' }}>{track.label}:</span>
+              <span style={{ color: valueColor }}>{String(value ?? false)}</span>
+            </div>
+          )
+        })}
       </div>
     </div>
   )

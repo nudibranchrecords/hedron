@@ -1,14 +1,19 @@
 import {
   defineOptionNodeConfigs,
   HedronEngine,
+  Input,
   IPlugin,
   isEqual,
   OptionNodesFromConfigs,
+  isParamVector,
+  Param,
+  Shot,
+  isParamVectorComponent,
 } from '@hedron-gl/engine'
 import { DEFAULT_TIMELINE_ID, TIMELINE_DURATION } from './constants'
 import { TimelineManager } from './TimelineManager'
 import { getTimelineTracks } from './selectors/getTimelineTracks'
-import { TimelineManagerKeyframeTrack } from './types'
+import { TimelineManagerKeyframeTrack, TimelineManagerTrack } from './types'
 
 // defineOptionNodeConfigs is only needed if we want nice TS node name inference in other parts of the plugin
 export const TIMELINE_OPTION_NODE_CONFIGS = defineOptionNodeConfigs([
@@ -93,9 +98,28 @@ export class TimelineInput implements IPlugin {
 
         const changedTrackIds = Object.keys(changed)
         if (changedTrackIds.length > 0) {
-          const tracks = getTimelineTracks(engine.getStoreState(), timelineId).filter(
-            (track): track is TimelineManagerKeyframeTrack => track.trackType === 'keyframe',
-          )
+          const allTracks = getTimelineTracks(engine.getStoreState(), timelineId)
+
+          const getKeyframeTracks = (
+            tracks: TimelineManagerTrack[],
+          ): TimelineManagerKeyframeTrack[] => {
+            const keyframeTracks: TimelineManagerKeyframeTrack[] = []
+
+            for (const track of tracks) {
+              if (track.trackType === 'keyframe') {
+                keyframeTracks.push(track)
+                continue
+              }
+
+              if (track.trackType === 'vector') {
+                keyframeTracks.push(...getKeyframeTracks(track.childTracks))
+              }
+            }
+
+            return keyframeTracks
+          }
+
+          const tracks = getKeyframeTracks(allTracks)
           const changedTargetNodeIds = changedTrackIds.map(
             (trackId) => tracks.find((track) => track.id === trackId)?.targetNodeId ?? trackId,
           )
@@ -109,8 +133,22 @@ export class TimelineInput implements IPlugin {
     })
   }
 
-  onNewInput(engine: HedronEngine, inputId: string) {
+  onNewInput(engine: HedronEngine, newInput: Input, targetNode: Param | Shot) {
+    // Don't do anything if we're dealing with a vector component (e.g. x,y,z)
+    if (isParamVectorComponent(targetNode, engine)) {
+      return
+    }
+
     // Input ID is only a child of the target node, we also need to make it a child of the timeline node so it shows up in the timeline UI
-    engine.addChildToNode(DEFAULT_TIMELINE_ID, 'trackIds', inputId)
+    engine.addChildToNode(DEFAULT_TIMELINE_ID, 'trackIds', newInput.id)
+
+    if (isParamVector(targetNode)) {
+      targetNode.childGroups.vectorComponentIds.forEach((nodeId) => {
+        const childInput = engine.addInput(this.inputType, nodeId)!
+
+        // Add vector components as children of parent track
+        engine.addChildToNode(newInput.id, 'trackIds', childInput.id)
+      })
+    }
   }
 }

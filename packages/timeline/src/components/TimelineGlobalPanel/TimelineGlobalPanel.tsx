@@ -26,7 +26,6 @@ export const TimelineGlobalPanel = ({ engine }: TimelineGlobalPanelProps) => {
   const { handlePlayheadChange, handleKeyframeDelete, handleKeyframeInsert } = useTimelineHandlers({
     engine,
     manager,
-    timeline,
   })
 
   const optionNodes = useNodeOptionNodes<TimelineOptionNodes>(DEFAULT_TIMELINE_ID)

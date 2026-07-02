@@ -47,7 +47,8 @@ export const fileIcon: IconName = 'draft'
 export const imageFileIcon: IconName = 'image'
 export const videoFileIcon: IconName = 'movie'
 export const audioFileIcon: IconName = 'audio_file'
-
+export const collapseOpenIcon: IconName = 'add'
+export const collapseCloseIcon: IconName = 'remove'
 export interface IconProps extends React.HTMLAttributes<HTMLSpanElement> {
   name: IconName
 }

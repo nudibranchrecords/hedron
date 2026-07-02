@@ -152,25 +152,6 @@ export type ParamValueType = Param['valueType'] | null
 export type ParamVector = ParamVector2 | ParamVector3 | ParamRGB
 export type ParamVectorValueType = ParamVector['valueType']
 
-// Record ensures every ParamValueTypeWithChildren member is listed — adding a new
-// type that extends NodeParamWithChildrenBase will cause a compile error here if
-// it isn't included.
-const paramValueTypesWithChildren: Record<ParamVectorValueType, true> = {
-  vector3: true,
-  vector2: true,
-  rgb: true,
-}
-
-export const isParamVectorValueType = (
-  paramValueType: ParamValueType,
-): paramValueType is ParamVectorValueType => {
-  return paramValueType != null && paramValueType in paramValueTypesWithChildren
-}
-
-export const isParamVector = (node: Param): node is ParamVector => {
-  return node.nodeType === 'param' && node.valueType in paramValueTypesWithChildren
-}
-
 export type EnsureRequiredValueType<T> = T extends { valueType?: infer V }
   ? Omit<T, 'valueType'> & { valueType: V }
   : T
