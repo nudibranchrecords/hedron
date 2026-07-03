@@ -1,8 +1,10 @@
 import { Pass } from 'postprocessing'
 import { type Clock } from '@hedron-gl/clock'
-import { listenToStore } from './storeListener'
 import { CanvasSizeMode, RendererType, Result, ShotArgsObject } from './types'
 import { importSketchModule } from './importSketchModule'
+import { setupScenes } from './scenes'
+import { ACTIVE_SCENE_ID_NODE_ID } from '@constants'
+import { listenToStore } from '@store/storeListener'
 import { getSketchSceneId } from '@store/selectors/getSketchSceneId'
 import { addResource, removeResource } from '@store/actions/resources'
 import { createUniqueId } from '@utils/createUniqueId'
@@ -35,8 +37,6 @@ import { getAllSceneSketches, getSceneSketchIds } from '@store/selectors/getScen
 import { createEngineStore, EngineStore } from '@store/engineStore'
 import { getSketchParamValues } from '@store/selectors/getSketchParamValues'
 import { addNode } from '@store/shared/addNode'
-
-export const ACTIVE_SCENE_ID_NODE_ID = 'active-scene-id'
 
 export class HedronEngine {
   public rendererType: RendererType
@@ -577,17 +577,11 @@ export class HedronEngine {
   }
 
   /**
-   * Ensures global (non-plugin) option nodes exist
+   * @deprecated - Use `initiatePlugins` instead
+   * Ensures global option nodes exist
    * This should be called when the engine is ready
    */
   public ensureGlobalOptionNodes() {
-    this.addNodeOnce(ACTIVE_SCENE_ID_NODE_ID, null, {
-      nodeType: 'param',
-      key: ACTIVE_SCENE_ID_NODE_ID,
-      valueType: 'string',
-      defaultValue: '',
-    })
-
     // FIXME: Once plugins stop using globalOptionNodesConfig, we can remove this and rely on `onEngineInitialize` instead
     // For each registered plugin, ensure global option nodes exist
     Object.values(this.plugins).forEach((plugin) => {
@@ -599,6 +593,9 @@ export class HedronEngine {
     Object.values(this.plugins).forEach((plugin) => {
       plugin.onEngineInitialize?.(this)
     })
+
+    // Scenes aren't technically a plugin but this keeps the logic in a clean separate place
+    setupScenes(this)
   }
 
   /**
