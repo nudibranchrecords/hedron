@@ -587,6 +587,12 @@ export class HedronEngine {
       valueType: 'string',
       defaultValue: '',
     })
+
+    // FIXME: Once plugins stop using globalOptionNodesConfig, we can remove this and rely on `onEngineInitialize` instead
+    // For each registered plugin, ensure global option nodes exist
+    Object.values(this.plugins).forEach((plugin) => {
+      this.createGlobalOptionNodesForPlugin(plugin)
+    })
   }
 
   public initiatePlugins() {
