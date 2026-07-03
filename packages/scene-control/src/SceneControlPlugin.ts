@@ -8,9 +8,8 @@ import {
 } from '@hedron-gl/engine'
 
 export class SceneControlPlugin implements IPlugin {
-  public readonly id = 'scene-control'
-  public readonly name = 'Scene Control'
-  public readonly inputType = 'scene-control'
+  public readonly id = 'sceneControl'
+  public readonly name = 'Scenes'
   public readonly description = 'Manages active scene selection UI state and options.'
 
   public onEngineInitialize(engine: HedronEngine) {
