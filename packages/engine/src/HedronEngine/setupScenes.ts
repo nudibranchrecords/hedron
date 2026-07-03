@@ -1,10 +1,9 @@
-/** Scenes aren't plugins but we're still keeping the logic as separate as possible from the core */
-
 import { HedronEngine } from './HedronEngine'
 import { ParamEnum, SceneNode } from '@store/types'
 import { ACTIVE_SCENE_ID_NODE_ID } from '@constants'
 import { listenToStore } from '@store/storeListener'
 
+/** Scenes aren't plugins but we're still keeping the logic as separate as possible from the core */
 export const setupScenes = (engine: HedronEngine) => {
   // Create the node for holding onto the active scene
   engine.addNodeOnce(ACTIVE_SCENE_ID_NODE_ID, null, {
