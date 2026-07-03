@@ -3,7 +3,7 @@ import c from './Collapsible.module.css'
 import { collapseCloseIcon, collapseOpenIcon, Icon } from '@components/Icon/Icon'
 
 export interface CollapsibleProps extends PropsWithChildren {
-  title: string
+  title: string | JSX.Element
   isOpen: boolean
   onToggle: (isOpen: boolean) => void
   className?: string

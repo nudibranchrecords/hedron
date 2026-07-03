@@ -45,6 +45,7 @@ export type TimelineOptionNodes = OptionNodesFromConfigs<typeof TIMELINE_OPTION_
 export class TimelineInput implements IPlugin {
   public readonly id = 'timeline-input'
   public readonly name = 'Timeline Input'
+  public readonly iconName = 'timeline'
   public readonly inputType = 'timeline-track'
   public readonly description = 'Timeline-based input for automating parameters over time.'
   public timelineManagers: Map<string, TimelineManager> = new Map()

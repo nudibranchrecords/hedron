@@ -38,10 +38,10 @@ export const pluginViews = {
     gamepad: GamepadInputPanel,
   },
   globalPanel: {
-    audio: AudioGlobalPanel,
-    gamepad: GamepadGlobalPanel,
-    midi: MidiGlobalPanel,
-    timeline: TimelineGlobalPanel,
-    sceneControl: SceneControlGlobalPanel,
+    ['audio-input']: AudioGlobalPanel,
+    ['gamepad-input']: GamepadGlobalPanel,
+    ['midi-input']: MidiGlobalPanel,
+    ['timeline-input']: TimelineGlobalPanel,
+    ['scene-control']: SceneControlGlobalPanel,
   },
 }

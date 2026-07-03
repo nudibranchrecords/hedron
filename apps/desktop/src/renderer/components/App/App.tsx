@@ -1,4 +1,10 @@
-import { AppStoreProvider, Collapsible, EngineProvider, useAppStore } from '@hedron-gl/ui-core'
+import {
+  AppStoreProvider,
+  Collapsible,
+  EngineProvider,
+  Icon,
+  useAppStore,
+} from '@hedron-gl/ui-core'
 import { useState } from 'react'
 import c from './App.module.css'
 import { useHandleDrag } from './useHandleDrag'
@@ -17,7 +23,9 @@ const PluginGlobalControls = () => {
   return (
     <div className={c.plugins}>
       {Object.entries(pluginViews.globalPanel).map(([pluginId, PluginPanel]) => {
-        const pluginName = engine.plugins[pluginId]?.name ?? pluginId
+        const enginePlugin = engine.plugins[pluginId]
+        const pluginName = enginePlugin?.name ?? pluginId
+        const pluginIconName = enginePlugin?.iconName ?? 'extension'
         const isOpen = openById[pluginId] ?? false
 
         return (
@@ -25,7 +33,11 @@ const PluginGlobalControls = () => {
             type="panel"
             className={c.pluginItem}
             key={pluginId}
-            title={pluginName}
+            title={
+              <>
+                <Icon name={pluginIconName} /> {pluginName}
+              </>
+            }
             isOpen={isOpen}
             onToggle={(nextOpen) =>
               setOpenById((prev) => ({

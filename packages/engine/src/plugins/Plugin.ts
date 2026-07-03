@@ -31,6 +31,12 @@ export interface IPlugin {
   name: string
 
   /**
+   * Icon to be displayed in various places
+   * https://fonts.google.com/icons
+   */
+  iconName: string
+
+  /**
    * The description of the plugin.
    */
   description: string
