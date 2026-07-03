@@ -140,9 +140,13 @@ export const MidiGlobalPanel: React.FC<MidiGlobalPanelProps> = ({ engine }) => {
           <div className={styles.logContainer}>
             {midiLog.map((msg, index) => (
               <div key={index} className={styles.logMessage}>
-                <span className={styles.timestamp}>{new Date(msg.timestamp).toLocaleTimeString()}</span>
+                <span className={styles.timestamp}>
+                  {new Date(msg.timestamp).toLocaleTimeString()}
+                </span>
                 <span className={msg.affectedNodeName ? styles.affectedNode : styles.unmappedNode}>
-                  {msg.affectedNodeName ? `${msg.sketchName} - ${msg.affectedNodeName}` : 'No Mapping'}
+                  {msg.affectedNodeName
+                    ? `${msg.sketchName} - ${msg.affectedNodeName}`
+                    : 'No Mapping'}
                 </span>
                 <span className={styles.details}>
                   Ch:{msg.channel + 1} Note:{msg.note}
