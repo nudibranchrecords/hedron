@@ -1,26 +1,12 @@
 import { HedronEngine } from '@hedron-gl/engine'
 import Stats from 'three/examples/jsm/libs/stats.module.js'
 import { Clock } from '@hedron-gl/clock'
-import { MidiInput, MidiInputPanel, MidiGlobalWidget, MidiGlobalPanel } from '@hedron-gl/midi-input'
-import {
-  GamepadInput,
-  GamepadInputPanel,
-  GamepadGlobalWidget,
-  GamepadGlobalPanel,
-} from '@hedron-gl/gamepad-input'
+import { MidiInput, MidiInputPanel, MidiGlobalPanel } from '@hedron-gl/midi-input'
+import { GamepadInput, GamepadInputPanel, GamepadGlobalPanel } from '@hedron-gl/gamepad-input'
 import { LFOInput, LFOInputPanel } from '@hedron-gl/lfo-input'
-import {
-  AudioInput,
-  AudioInputPanel,
-  AudioGlobalWidget,
-  AudioGlobalPanel,
-} from '@hedron-gl/audio-input'
-import { TimelineInput, TimelineGlobalWidget, TimelineGlobalPanel } from '@hedron-gl/timeline'
-import {
-  SceneControlPlugin,
-  SceneControlGlobalWidget,
-  SceneControlGlobalPanel,
-} from '@hedron-gl/scene-control'
+import { AudioInput, AudioInputPanel, AudioGlobalPanel } from '@hedron-gl/audio-input'
+import { TimelineInput, TimelineGlobalPanel } from '@hedron-gl/timeline'
+import { SceneControlPlugin, SceneControlGlobalPanel } from '@hedron-gl/scene-control'
 
 export const performanceMonitor = new Stats()
 
@@ -52,25 +38,10 @@ export const pluginViews = {
     gamepad: GamepadInputPanel,
   },
   globalPanel: {
-    audio: {
-      widget: AudioGlobalWidget,
-      panel: AudioGlobalPanel,
-    },
-    gamepad: {
-      widget: GamepadGlobalWidget,
-      panel: GamepadGlobalPanel,
-    },
-    midi: {
-      widget: MidiGlobalWidget,
-      panel: MidiGlobalPanel,
-    },
-    timeline: {
-      widget: TimelineGlobalWidget,
-      panel: TimelineGlobalPanel,
-    },
-    sceneControl: {
-      widget: SceneControlGlobalWidget,
-      panel: SceneControlGlobalPanel,
-    },
+    audio: AudioGlobalPanel,
+    gamepad: GamepadGlobalPanel,
+    midi: MidiGlobalPanel,
+    timeline: TimelineGlobalPanel,
+    sceneControl: SceneControlGlobalPanel,
   },
 }

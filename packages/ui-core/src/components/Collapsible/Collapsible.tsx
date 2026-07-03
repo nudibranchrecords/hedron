@@ -7,9 +7,17 @@ export interface CollapsibleProps extends PropsWithChildren {
   isOpen: boolean
   onToggle: (isOpen: boolean) => void
   className?: string
+  type?: 'default' | 'panel'
 }
 
-export const Collapsible = ({ title, isOpen, onToggle, children, className }: CollapsibleProps) => {
+export const Collapsible = ({
+  title,
+  isOpen,
+  onToggle,
+  children,
+  className,
+  type = 'default',
+}: CollapsibleProps) => {
   const _onToggle = useCallback(() => {
     onToggle(!isOpen)
   }, [onToggle, isOpen])
@@ -17,11 +25,11 @@ export const Collapsible = ({ title, isOpen, onToggle, children, className }: Co
   const iconName = isOpen ? collapseCloseIcon : collapseOpenIcon
 
   return (
-    <div className={className}>
+    <div className={`${className} ${type === 'panel' ? `${c.panel} themeLevel1` : ''}`}>
       <h3 className={c.header} onClick={_onToggle}>
         <Icon name={iconName} /> {title}
       </h3>
-      {isOpen && <div>{children}</div>}
+      {isOpen && <div className={c.content}>{children}</div>}
     </div>
   )
 }

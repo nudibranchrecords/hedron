@@ -1,13 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { findNodeWithKeyFromIdList, HedronEngine, ParamNode, ShotNode } from '@hedron-gl/engine'
-import {
-  Panel,
-  PanelHeader,
-  PanelBody,
-  useEngineStore,
-  ControlGrid,
-  NodeContainer,
-} from '@hedron-gl/ui-core'
+import { useEngineStore, ControlGrid, NodeContainer } from '@hedron-gl/ui-core'
 import { MIDIEvent, MidiMessageType, midiMessageNames } from '@hedron-gl/midi-manager'
 import { MidiInput } from './MidiInput'
 import styles from './MidiGlobalPanel.module.css'
@@ -134,58 +127,49 @@ export const MidiGlobalPanel: React.FC<MidiGlobalPanelProps> = ({ engine }) => {
   const globalNodeId = `${midiPlugin.id}-global`
 
   return (
-    <Panel>
-      <PanelHeader>MIDI Settings</PanelHeader>
-      <PanelBody>
-        <ControlGrid>
-          <NodeContainer nodeId={`${globalNodeId}-smoothing`} />
-        </ControlGrid>
+    <div>
+      <ControlGrid>
+        <NodeContainer nodeId={`${globalNodeId}-smoothing`} />
+      </ControlGrid>
 
-        <div className={styles.section}>
-          <h3 className={styles.sectionTitle}>Message Log</h3>
-          {midiLog.length === 0 ? (
-            <div className={styles.emptyMessage}>No messages received</div>
-          ) : (
-            <div className={styles.logContainer}>
-              {midiLog.map((msg, index) => (
-                <div key={index} className={styles.logMessage}>
-                  <span className={styles.timestamp}>
-                    {new Date(msg.timestamp).toLocaleTimeString()}
-                  </span>
-                  <span
-                    className={msg.affectedNodeName ? styles.affectedNode : styles.unmappedNode}
-                  >
-                    {msg.affectedNodeName
-                      ? `${msg.sketchName} - ${msg.affectedNodeName}`
-                      : 'No Mapping'}
-                  </span>
-                  <span className={styles.details}>
-                    Ch:{msg.channel + 1} Note:{msg.note}
-                    {msg.value !== undefined && ` Val:${msg.value}`}
-                  </span>
-                  <span className={styles.type}>{midiMessageNames[msg.type]}</span>
-                  <span className={styles.device}>{msg.deviceName}</span>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
+      <div className={styles.section}>
+        <h3 className={styles.sectionTitle}>Message Log</h3>
+        {midiLog.length === 0 ? (
+          <div className={styles.emptyMessage}>No messages received</div>
+        ) : (
+          <div className={styles.logContainer}>
+            {midiLog.map((msg, index) => (
+              <div key={index} className={styles.logMessage}>
+                <span className={styles.timestamp}>{new Date(msg.timestamp).toLocaleTimeString()}</span>
+                <span className={msg.affectedNodeName ? styles.affectedNode : styles.unmappedNode}>
+                  {msg.affectedNodeName ? `${msg.sketchName} - ${msg.affectedNodeName}` : 'No Mapping'}
+                </span>
+                <span className={styles.details}>
+                  Ch:{msg.channel + 1} Note:{msg.note}
+                  {msg.value !== undefined && ` Val:${msg.value}`}
+                </span>
+                <span className={styles.type}>{midiMessageNames[msg.type]}</span>
+                <span className={styles.device}>{msg.deviceName}</span>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
 
-        <div className={styles.section}>
-          <h3 className={styles.sectionTitle}>Connected Devices</h3>
-          {connectedDevices.length === 0 ? (
-            <div className={styles.emptyMessage}>No MIDI devices connected</div>
-          ) : (
-            <div className={styles.deviceList}>
-              {connectedDevices.map((deviceName, index) => (
-                <div key={index} className={styles.deviceItem}>
-                  {deviceName}
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-      </PanelBody>
-    </Panel>
+      <div className={styles.section}>
+        <h3 className={styles.sectionTitle}>Connected Devices</h3>
+        {connectedDevices.length === 0 ? (
+          <div className={styles.emptyMessage}>No MIDI devices connected</div>
+        ) : (
+          <div className={styles.deviceList}>
+            {connectedDevices.map((deviceName, index) => (
+              <div key={index} className={styles.deviceItem}>
+                {deviceName}
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
   )
 }

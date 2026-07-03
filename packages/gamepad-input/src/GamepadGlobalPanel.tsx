@@ -8,9 +8,6 @@ import {
   ParamValues,
 } from '@hedron-gl/engine'
 import {
-  Panel,
-  PanelHeader,
-  PanelBody,
   useEngineStore,
   Card,
   CardBody,
@@ -299,39 +296,31 @@ export const GamepadGlobalPanel: React.FC<GamepadGlobalPanelProps> = ({ engine }
 
   if (connectedGamepads.length === 0) {
     return (
-      <Panel>
-        <PanelHeader>Gamepad Global Settings</PanelHeader>
-        <PanelBody>
-          <div className={styles.noGamepads}>
-            No gamepads detected
-            <br />
-            <br />
-            Try pressing any button on your gamepad
-          </div>
-        </PanelBody>
-      </Panel>
+      <div className={styles.noGamepads}>
+        No gamepads detected
+        <br />
+        <br />
+        Try pressing any button on your gamepad
+      </div>
     )
   }
 
   return (
-    <Panel>
-      <PanelHeader>Gamepad Global Settings</PanelHeader>
-      <PanelBody>
-        <GlobalSettings engine={engine} />
-        <ControllerList
-          connectedGamepads={connectedGamepads}
-          expandedControllers={expandedControllers}
-          flashingInputs={flashingInputs}
-          flashingControllers={flashingControllers}
-          nodes={nodes}
-          paramValues={paramValues}
-          engine={engine}
-          toggleExpanded={toggleExpanded}
-          handleControllerAssignment={handleControllerAssignment}
-          lastEventPerController={lastEventPerController}
-        />
-      </PanelBody>
-    </Panel>
+    <div>
+      <GlobalSettings engine={engine} />
+      <ControllerList
+        connectedGamepads={connectedGamepads}
+        expandedControllers={expandedControllers}
+        flashingInputs={flashingInputs}
+        flashingControllers={flashingControllers}
+        nodes={nodes}
+        paramValues={paramValues}
+        engine={engine}
+        toggleExpanded={toggleExpanded}
+        handleControllerAssignment={handleControllerAssignment}
+        lastEventPerController={lastEventPerController}
+      />
+    </div>
   )
 }
 
