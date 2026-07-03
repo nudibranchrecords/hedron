@@ -1,11 +1,7 @@
 .wrapper {
-  padding: 0.35rem 0.5rem 0.6rem;
-  flex-shrink: 0;
-}
-
-.list {
-  margin-top: 0.35rem;
-  /* grid-template-columns: minmax(0, 1fr); */
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
 }
 
 .actions {
