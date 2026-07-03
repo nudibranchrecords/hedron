@@ -7,7 +7,6 @@ import { PerformanceStats } from '@components/PerformanceStats/PerformanceStats'
 import { VideoControls } from '@components/VideoControls/VideoControls'
 import { Viewer } from '@components/Viewer'
 import { WorkArea } from '@components/WorkArea/WorkArea'
-import { Scenes } from '@components/Scenes/Scenes'
 import { appStore } from '@renderer/appStore'
 import { engine, pluginViews } from '@renderer/engine'
 
@@ -39,7 +38,6 @@ const AppContent = (): JSX.Element => {
             <div className={c.pluginWidgetStrip}>
               <WidgetStrip engine={engine} pluginViews={pluginViews.globalPanel} />
             </div>
-            <Scenes />
           </>
         )}
       </div>

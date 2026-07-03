@@ -33,6 +33,7 @@
     "@hedron-gl/gamepad-input": "^1.0.0-alpha.4",
     "@hedron-gl/lfo-input": "^1.0.0-alpha.4",
     "@hedron-gl/midi-input": "^1.0.0-alpha.4",
+    "@hedron-gl/scene-control": "^1.0.0-alpha.4",
     "@hedron-gl/timeline": "^1.0.0-alpha.4",
     "@hedron-gl/ui-core": "^1.0.0-alpha.4",
     "@tomjs/electron-devtools-installer": "^2.4.0",

@@ -2,7 +2,6 @@ import { Pass } from 'postprocessing'
 import { type Clock } from '@hedron-gl/clock'
 import { CanvasSizeMode, RendererType, Result, ShotArgsObject } from './types'
 import { importSketchModule } from './importSketchModule'
-import { setupScenes } from './setupScenes'
 import { ACTIVE_SCENE_ID_NODE_ID } from '@constants'
 import { listenToStore } from '@store/storeListener'
 import { getSketchSceneId } from '@store/selectors/getSketchSceneId'
@@ -452,8 +451,8 @@ export class HedronEngine {
 
     listenToStore({
       store: this.store,
-      onSceneAdded: this.sceneManager.addScene,
-      onSceneRemoved: this.sceneManager.removeScene,
+      onSceneAdded: (sceneId) => this.sceneManager.addScene(sceneId),
+      onSceneRemoved: (sceneId) => this.sceneManager.removeScene(sceneId),
       onSketchAdded: addSketchToScene,
       onSketchRemoved: removeSketchFromScene,
       onNodeRemoved: handleRemovedNode,
@@ -593,9 +592,6 @@ export class HedronEngine {
     Object.values(this.plugins).forEach((plugin) => {
       plugin.onEngineInitialize?.(this)
     })
-
-    // Scenes aren't technically a plugin but this keeps the logic in a clean separate place
-    setupScenes(this)
   }
 
   /**
