@@ -5,7 +5,6 @@ import {
   PanelBody,
   PanelHeader,
   PopoutMenu,
-  ViewHeader,
   sceneIcon,
   useEngineStore,
 } from '@hedron-gl/ui-core'
@@ -37,30 +36,13 @@ export const CurrentScene = () => {
     deleteScene(selectedSceneId)
   }
 
-  if (!activeScene || activeScene.nodeType !== 'scene') {
-    return (
-      <div className={c.wrapper}>
-        <header className={c.sceneHeader}>
-          <Icon name={sceneIcon} /> No Scene Selected
-        </header>
-        <div className={c.content}>
-          <div className={c.intro}>
-            <Panel>
-              <PanelHeader iconName="info">Add A Scene</PanelHeader>
-              <PanelBody>
-                Use the &quot;Add Scene&quot; button in the Scenes panel to create your first scene.
-              </PanelBody>
-            </Panel>
-          </div>
-        </div>
-      </div>
-    )
-  }
+  const hasActiveScene = activeScene?.nodeType === 'scene'
+  const sceneTitle = hasActiveScene ? activeScene.title : 'No Scene Selected'
 
   return (
     <div className={c.wrapper}>
       <header className={c.sceneHeader}>
-        <Icon name={sceneIcon} /> {activeScene.title}
+        <Icon name={sceneIcon} /> {sceneTitle}
         <PopoutMenu
           className="ml-auto"
           items={[
@@ -71,11 +53,22 @@ export const CurrentScene = () => {
             },
           ]}
         >
-          <Button type="ghost" iconName="more_horiz" />
+          <Button type="ghost" iconName="more_horiz" disabled={!hasActiveScene} />
         </PopoutMenu>
       </header>
       <div className={c.content}>
-        <Sketches />
+        {hasActiveScene ? (
+          <Sketches />
+        ) : (
+          <div className={c.intro}>
+            <Panel>
+              <PanelHeader iconName="info">Add A Scene</PanelHeader>
+              <PanelBody>
+                Use the &quot;Add Scene&quot; button in the Scenes panel to create your first scene.
+              </PanelBody>
+            </Panel>
+          </div>
+        )}
       </div>
     </div>
   )
