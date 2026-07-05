@@ -40,9 +40,9 @@ export const CurrentScene = () => {
   if (!activeScene || activeScene.nodeType !== 'scene') {
     return (
       <div className={c.wrapper}>
-        <ViewHeader>
+        <header className={c.sceneHeader}>
           <Icon name={sceneIcon} /> No Scene Selected
-        </ViewHeader>
+        </header>
         <div className={c.content}>
           <div className={c.intro}>
             <Panel>
@@ -59,7 +59,7 @@ export const CurrentScene = () => {
 
   return (
     <div className={c.wrapper}>
-      <ViewHeader>
+      <header className={c.sceneHeader}>
         <Icon name={sceneIcon} /> {activeScene.title}
         <PopoutMenu
           className="ml-auto"
@@ -73,7 +73,7 @@ export const CurrentScene = () => {
         >
           <Button type="ghost" iconName="more_horiz" />
         </PopoutMenu>
-      </ViewHeader>
+      </header>
       <div className={c.content}>
         <Sketches />
       </div>

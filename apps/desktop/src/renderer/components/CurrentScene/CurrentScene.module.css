@@ -4,6 +4,19 @@
   height: 100%;
 }
 
+.sceneHeader {
+  display: flex;
+  align-items: center;
+  color: var(--textColorLight2);
+  gap: var(--gapLarge);
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: var(--gapSmall) var(--gapLarge);
+  padding-top: var(--gapSmall);
+  padding-bottom: var(--gapSmall);
+  background: var(--bgColorDark4);
+}
+
 .content {
   flex: 1;
   min-height: 0;
