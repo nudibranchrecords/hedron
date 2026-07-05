@@ -23,7 +23,7 @@ export interface IPlugin {
   /**
    * Type of input
    */
-  inputType: string
+  inputType?: string
 
   /**
    * The name of the plugin.

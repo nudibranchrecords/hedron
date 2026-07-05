@@ -3,6 +3,7 @@ import {
   Collapsible,
   EngineProvider,
   Icon,
+  IconName,
   useAppStore,
 } from '@hedron-gl/ui-core'
 import { useState } from 'react'
@@ -35,7 +36,7 @@ const PluginGlobalControls = () => {
             key={pluginId}
             title={
               <>
-                <Icon name={pluginIconName} /> {pluginName}
+                <Icon name={pluginIconName as IconName} /> {pluginName}
               </>
             }
             isOpen={isOpen}

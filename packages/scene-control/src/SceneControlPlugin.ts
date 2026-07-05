@@ -12,7 +12,6 @@ export class SceneControlPlugin implements IPlugin {
   public readonly id = 'scene-control'
   public readonly name = 'Scenes'
   public readonly iconName = sceneIcon
-  public readonly inputType = 'none'
   public readonly description = 'Manages active scene selection UI state and options.'
 
   public onEngineInitialize(engine: HedronEngine) {

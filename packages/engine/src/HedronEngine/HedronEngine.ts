@@ -307,7 +307,7 @@ export class HedronEngine {
     const numAlready = targetNode?.childGroups?.inputNodeIds?.length ?? 0
 
     const input = {
-      inputType: plugin.inputType,
+      inputType: plugin.inputType!,
       targetNodeId,
       title: `${plugin.inputType} ${numAlready + 1}`,
       parentIds: [targetNodeId],

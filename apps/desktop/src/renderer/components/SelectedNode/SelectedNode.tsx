@@ -10,8 +10,10 @@ import {
   inputIcon,
   PanelSubHeader,
   Button,
+  IconName,
 } from '@hedron-gl/ui-core'
 import { useCallback, useMemo } from 'react'
+import { IPlugin } from '@hedron-gl/engine'
 import c from './SelectedNode.module.css'
 import { useSelectedNode } from '@components/hooks/useSelectedNode'
 import { pluginViews, engine, engineStore } from '@renderer/engine'
@@ -39,19 +41,25 @@ export const SelectedNode = () => {
   // @ts-expect-error -- needs work
   const PluginView = currentInput && pluginViews.inputPanel[currentInput?.inputType]
 
-  const availableInputs = useMemo(
-    () =>
-      Object.values(engine.plugins).map((plugin) => ({
-        label: plugin.name,
-        onClick: () => {
-          const newInput = engine.addInput(plugin.inputType, selectedNode.id)
-          if (!newInput) return
+  const availableInputs = useMemo(() => {
+    const inputPlugins = Object.values(engine.plugins).filter(
+      (plugin) => plugin.inputType,
+    ) as (IPlugin & { inputType: string })[]
 
-          setSelectedInputId(selectedNode.id, newInput.id)
-        },
-      })),
-    [selectedNode.id, setSelectedInputId],
-  )
+    return Object.values(inputPlugins).map((plugin) => ({
+      label: (
+        <>
+          <Icon name={plugin.iconName as IconName} /> {plugin.name}
+        </>
+      ),
+      onClick: () => {
+        const newInput = engine.addInput(plugin.inputType, selectedNode.id)
+        if (!newInput) return
+
+        setSelectedInputId(selectedNode.id, newInput.id)
+      },
+    }))
+  }, [selectedNode.id, setSelectedInputId])
 
   const onDeleteCurrentInput = useCallback(() => {
     if (currentInput) {
