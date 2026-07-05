@@ -27,6 +27,7 @@ export class LFOInput implements IPlugin {
   public readonly id = 'lfo-input'
   public readonly name = 'LFO Input'
   public readonly inputType = 'lfo'
+  public readonly iconName = 'vital_signs'
   public readonly description =
     'Generates LFO waves (e.g. sin, square, sawtooth) as inputs for params.'
   public readonly optionNodesConfig = [
