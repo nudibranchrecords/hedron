@@ -46,7 +46,7 @@
     "lodash.debounce": "^4.0.8",
     "mime-types": "^3.0.2",
     "postprocessing": "6.37.8",
-    "three": "^0.178.0",
+    "three": "^0.185.1",
     "usehooks-ts": "^3.1.1",
     "zustand": "^5.0.8"
   },
@@ -55,9 +55,11 @@
     "@types/lodash.debounce": "^4.0.9",
     "@types/mime-types": "^3.0.1",
     "@types/node": "^25.0.0",
-    "@types/three": "^0.178.1",
+    "@types/three": "^0.185.1",
     "electron": "37.3.0",
     "electron-builder": "26.0.12",
-    "electron-vite": "^4.0.0"
+    "electron-vite": "^4.0.0",
+    "vite": "^7.3.1",
+    "typescript": "^5.9.3"
   }
 }

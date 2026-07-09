@@ -1,5 +1,6 @@
 import { Pass } from 'postprocessing'
 import { type Clock } from '@hedron-gl/clock'
+import { WebGPURenderer } from 'three/webgpu'
 import { CanvasSizeMode, RendererType, Result, ShotArgsObject } from './types'
 import { importSketchModule } from './importSketchModule'
 import { ACTIVE_SCENE_ID_NODE_ID } from '@constants'
@@ -685,12 +686,16 @@ export class HedronEngine {
    * Starts the engine's main real-time render loop.
    * This loop runs at the browser's refresh rate using requestAnimationFrame.
    */
-  public run() {
+  public async run() {
     if (this.running) return
     this.running = true
     this.paused = false
 
     let lastTime = performance.now()
+
+    if (this.renderer.renderer instanceof WebGPURenderer) {
+      await this.renderer.renderer.init()
+    }
 
     const loop = (): void => {
       if (!this.running) {

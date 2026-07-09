@@ -1,4 +1,3 @@
-import { type ShaderNodeObject } from 'three/tsl'
 import { Group } from 'three'
 import { Pass } from 'postprocessing'
 import { PassNode } from 'three/webgpu'
@@ -76,10 +75,7 @@ export type SketchInstance = {
 
   getPasses?: (engineScene: EngineScene) => Pass[]
 
-  getWebGPUPass?: (
-    prevPass: ShaderNodeObject<PassNode>,
-    renderPassNode: ShaderNodeObject<PassNode>,
-  ) => ShaderNodeObject<PassNode>
+  getWebGPUPass?: (prevPass: PassNode, renderPassNode: PassNode) => PassNode
 
   dispose(engineScene: EngineScene): () => void
 } & Record<string, SketchShotFunc>
