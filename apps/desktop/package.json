@@ -54,7 +54,7 @@
     "@types/fs-extra": "^11.0.4",
     "@types/lodash.debounce": "^4.0.9",
     "@types/mime-types": "^3.0.1",
-    "@types/node": "^25.0.0",
+    "@types/node": "^26.1.1",
     "@types/three": "^0.185.1",
     "electron": "37.3.0",
     "electron-builder": "26.0.12",

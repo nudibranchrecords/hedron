@@ -10,10 +10,10 @@ export interface EngineData {
   nodes: Nodes
   paramValues: ParamValues
   resources: Resources
+  sceneIds: string[]
 }
 
 interface AuxState {
-  sceneIds: string[]
   sketchModules: SketchModules
   resourcesUrl: string | null
 }

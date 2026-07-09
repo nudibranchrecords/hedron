@@ -13,7 +13,6 @@ import { flushParamValueBuffer } from '@store/actionCreators/updateParamValue'
 import { getSketchShotNodes } from '@store/selectors/getSketchShotNodes'
 import { initializeGlobalVars } from '@globalVars'
 import { IPlugin } from '@plugins/Plugin'
-import { stripForSave } from '@utils/stripForSave'
 import { Renderer } from '@world/Renderer'
 import { SceneManager } from '@world/SceneManager'
 import {
@@ -572,8 +571,12 @@ export class HedronEngine {
     return this.store.getState()
   }
 
+  /**
+   * Returns stripped-down engine data suitable for saving to file
+   */
   public getSaveData(): EngineData {
-    return stripForSave(this.store.getState())
+    const { nodes, paramValues, resources, sceneIds } = this.store.getState()
+    return { nodes, paramValues, resources, sceneIds } satisfies EngineData
   }
 
   /**
