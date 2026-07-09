@@ -3,6 +3,7 @@ import {
   NodeContainer,
   useNodeOptionNodes,
   useParamValue,
+  useAppStore,
   ControlGrid,
 } from '@hedron-gl/ui-core'
 import { useTimelineData } from './useTimelineData'
@@ -25,6 +26,9 @@ export const TimelineGlobalPanel = ({ engine }: TimelineGlobalPanelProps) => {
     manager,
   })
 
+  const selectedTrackId = useAppStore((state) => state.selectedTimelineTrackId)
+  const setSelectedTrackId = useAppStore((state) => state.setSelectedTimelineTrackId)
+
   const optionNodes = useNodeOptionNodes<TimelineOptionNodes>(DEFAULT_TIMELINE_ID)
   const isPlayingNode = optionNodes['isPlaying']!
   const playHeadPositionNode = optionNodes['playheadPositionMs']!
@@ -44,6 +48,8 @@ export const TimelineGlobalPanel = ({ engine }: TimelineGlobalPanelProps) => {
         <Timeline
           timeline={timeline}
           playheadPositionMs={playheadPositionMs}
+          selectedTrackId={selectedTrackId}
+          setSelectedTrackId={setSelectedTrackId}
           onPlayheadChange={handlePlayheadChange}
           onKeyframeDelete={handleKeyframeDelete}
           onKeyframeInsert={handleKeyframeInsert}

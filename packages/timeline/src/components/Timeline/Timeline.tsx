@@ -1,8 +1,9 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { usePlayheadScrub } from './usePlayheadScrub'
 import c from './Timeline.module.css'
 import { TimelineTrack } from './TimelineTrack'
 import { TimelineManagerTrack } from '@/types'
+import { findTrackById } from '@/utils/findTrackById'
 
 export interface TimelineProps {
   /** Timeline data */
@@ -12,6 +13,8 @@ export interface TimelineProps {
   }
   /** Current playhead position in milliseconds */
   playheadPositionMs?: number
+  selectedTrackId?: string | null
+  setSelectedTrackId?: (trackId: string | null) => void
   /** Called when the user clicks on the track area to set the playhead */
   onPlayheadChange?: (time: number) => void
   /** Called when a keyframe should be deleted */
@@ -23,34 +26,25 @@ export interface TimelineProps {
 export function Timeline({
   timeline,
   playheadPositionMs = 0,
+  selectedTrackId: controlledSelectedTrackId,
+  setSelectedTrackId: controlledSetSelectedTrackId,
   onPlayheadChange,
   onKeyframeDelete,
   onKeyframeInsert,
 }: TimelineProps) {
   const { durationMs, tracks } = timeline
   const rulerAreaRef = useRef<HTMLDivElement>(null)
-  const [selectedTrackId, setSelectedTrackId] = useState<string | null>(null)
-  const [selectedKeyframes, setSelectedKeyframes] = useState<string[] | null>(null)
-
-  const findTrackById = useCallback(
-    (trackList: TimelineManagerTrack[], trackId: string): TimelineManagerTrack | null => {
-      for (const track of trackList) {
-        if (track.id === trackId) {
-          return track
-        }
-
-        if (track.trackType === 'vector') {
-          const childTrack = findTrackById(track.childTracks, trackId)
-          if (childTrack) {
-            return childTrack
-          }
-        }
-      }
-
-      return null
-    },
-    [],
+  const [uncontrolledSelectedTrackId, setUncontrolledSelectedTrackId] = useState<string | null>(
+    null,
   )
+  const isControlled = controlledSetSelectedTrackId !== undefined
+  const selectedTrackId = isControlled
+    ? (controlledSelectedTrackId ?? null)
+    : uncontrolledSelectedTrackId
+  const setSelectedTrackId = isControlled
+    ? controlledSetSelectedTrackId
+    : setUncontrolledSelectedTrackId
+  const [selectedKeyframes, setSelectedKeyframes] = useState<string[] | null>(null)
 
   useEffect(() => {
     const getChildKeyframeTrackIds = (track: TimelineManagerTrack): string[] => {

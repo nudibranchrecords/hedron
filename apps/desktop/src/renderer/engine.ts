@@ -5,7 +5,7 @@ import { MidiInput, MidiInputPanel, MidiGlobalPanel } from '@hedron-gl/midi-inpu
 import { GamepadInput, GamepadInputPanel, GamepadGlobalPanel } from '@hedron-gl/gamepad-input'
 import { LFOInput, LFOInputPanel } from '@hedron-gl/lfo-input'
 import { AudioInput, AudioInputPanel, AudioGlobalPanel } from '@hedron-gl/audio-input'
-import { TimelineInput, TimelineGlobalPanel } from '@hedron-gl/timeline'
+import { TimelineInput, TimelineGlobalPanel, TimelineInputPanel } from '@hedron-gl/timeline'
 import { SceneControlPlugin, SceneControlGlobalPanel } from '@hedron-gl/scene-control'
 
 export const performanceMonitor = new Stats()
@@ -36,6 +36,7 @@ export const pluginViews = {
     lfo: LFOInputPanel,
     audio: AudioInputPanel,
     gamepad: GamepadInputPanel,
+    ['timeline-track']: TimelineInputPanel,
   },
   globalPanel: {
     ['audio-input']: AudioGlobalPanel,

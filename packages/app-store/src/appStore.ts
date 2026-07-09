@@ -39,6 +39,7 @@ export interface ProjectData {
     selectedSketches: { [sceneId: string]: string | null }
     selectedNodes: { [sketchId: string]: string | null }
     selectedInputs: { [inputId: string]: string | null }
+    selectedTimelineTrackId: string | null
     openedControlGroups: { [sketchId: string]: Record<number, boolean> }
   }
 }
@@ -48,6 +49,7 @@ export interface AppState {
   selectedSketches: ProjectData['app']['selectedSketches'] // TODO: should be part of ProjectData
   selectedNodes: ProjectData['app']['selectedNodes']
   selectedInputs: ProjectData['app']['selectedInputs']
+  selectedTimelineTrackId: ProjectData['app']['selectedTimelineTrackId']
   openedControlGroups: ProjectData['app']['openedControlGroups']
   sketchesDir: string | null
   globalDialogId: DialogId | null
@@ -56,6 +58,7 @@ export interface AppState {
   sketchesServerBuildResult: BuildResult | null
   setSelectedNode: (sketchID: string, nodeId: string | null) => void
   setSelectedInput: (nodeId: string, inputId: string | null) => void
+  setSelectedTimelineTrackId: (trackId: string | null) => void
   setOpenedControlGroup: (sketchId: string, groupIndex: number, isOpen: boolean) => void
   setSelectedSceneId: (id: string | null) => void
   setSelectedSketch: (sceneId: string, sketchId: string | null) => void
@@ -93,6 +96,7 @@ export const createAppStore = () =>
             currentSavePath: null,
             selectedNodes: {},
             selectedInputs: {},
+            selectedTimelineTrackId: null,
             openedControlGroups: {},
             saveList: [],
             sketchesServerBuildResult: null,
@@ -148,6 +152,11 @@ export const createAppStore = () =>
             setSelectedInput: (nodeId, inputId) => {
               set((state) => {
                 state.selectedInputs[nodeId] = inputId
+              })
+            },
+            setSelectedTimelineTrackId: (trackId) => {
+              set((state) => {
+                state.selectedTimelineTrackId = trackId
               })
             },
             setOpenedControlGroup: (sketchId: string, groupIndex: number, isOpen: boolean) => {
@@ -209,6 +218,13 @@ export const createAppStore = () =>
                   ) {
                     delete state.selectedInputs[selectedNodeId]
                   }
+                }
+
+                if (
+                  state.selectedTimelineTrackId &&
+                  !validNodeIds.has(state.selectedTimelineTrackId)
+                ) {
+                  state.selectedTimelineTrackId = null
                 }
 
                 for (const sketchId of Object.keys(state.openedControlGroups)) {

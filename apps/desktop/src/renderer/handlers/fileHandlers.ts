@@ -93,6 +93,7 @@ export const handleSaveProjectDialog = async (options?: { saveAs?: boolean }) =>
     openedControlGroups,
     selectedNodes,
     selectedInputs,
+    selectedTimelineTrackId,
     selectedSceneId,
     selectedSketches,
   } = appState
@@ -111,6 +112,7 @@ export const handleSaveProjectDialog = async (options?: { saveAs?: boolean }) =>
       selectedSketches,
       selectedNodes,
       selectedInputs,
+      selectedTimelineTrackId,
       openedControlGroups,
     },
   }
