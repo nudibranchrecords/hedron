@@ -1,9 +1,9 @@
-import { type ShaderNodeObject } from 'three/tsl'
 import { Group } from 'three'
 import { Pass } from 'postprocessing'
 import { PassNode } from 'three/webgpu'
-import { ConfigParam, ConfigParamImported, ConfigParamNumber } from './Param'
-import { ConfigShot, ConfigShotImported } from './Shot'
+import { NodeBase } from './NodeBase'
+import { ConfigParam, ConfigParamImported, ConfigParamNumber } from './ParamNode'
+import { ConfigShot, ConfigShotImported } from './ShotNode'
 import { EngineScene } from '@world/EngineScene'
 import { ShotArgsObject } from '@HedronEngine/types'
 
@@ -45,16 +45,17 @@ export interface ConfigSketchImported {
   }[]
 }
 
-// TODO: This will eventually become a node
-export interface Sketch {
-  id: string
-  title: string
+export interface SketchNode extends NodeBase {
+  nodeType: 'sketch'
+  childGroups: NodeBase['childGroups'] & {
+    nodeIds: string[]
+  }
   moduleId: string
   nodeIds: string[]
   isBroken?: boolean
 }
 
-export type Sketches = { [key: string]: Sketch }
+export type Sketches = { [key: string]: SketchNode }
 
 type SketchUpdateParams = {
   deltaFrame: number
@@ -74,10 +75,7 @@ export type SketchInstance = {
 
   getPasses?: (engineScene: EngineScene) => Pass[]
 
-  getWebGPUPass?: (
-    prevPass: ShaderNodeObject<PassNode>,
-    renderPassNode: ShaderNodeObject<PassNode>,
-  ) => ShaderNodeObject<PassNode>
+  getWebGPUPass?: (prevPass: PassNode, renderPassNode: PassNode) => PassNode
 
   dispose(engineScene: EngineScene): () => void
 } & Record<string, SketchShotFunc>

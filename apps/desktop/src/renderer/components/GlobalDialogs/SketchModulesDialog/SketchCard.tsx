@@ -11,7 +11,8 @@ import {
   useEngineStore,
 } from '@hedron-gl/ui-core'
 
-import { useSetActiveSketchId } from '@components/hooks/useSetActiveSketchId'
+import { useSetSelectedSketchId } from '@components/hooks/useSetSelectedSketchId'
+import { useAppStore } from '@renderer/appStore'
 
 interface SketchCardProps {
   item: SketchModuleItem
@@ -25,14 +26,19 @@ export const SketchCard = ({
   },
   closeDialog,
 }: SketchCardProps) => {
-  const setActiveSketchId = useSetActiveSketchId()
-  const addSketch = useEngineStore((state) => state.addSketch)
+  const setSelectedSketchId = useSetSelectedSketchId()
+  const selectedSceneId = useAppStore((state) => state.selectedSceneId)
+  const addSketchToScene = useEngineStore((state) => state.addSketchToScene)
 
   const onButtonClick = useCallback(() => {
-    const id = addSketch(moduleId)
-    setActiveSketchId(id)
+    if (!selectedSceneId) {
+      return
+    }
+
+    const id = addSketchToScene(selectedSceneId, moduleId)
+    setSelectedSketchId(id)
     closeDialog()
-  }, [addSketch, closeDialog, moduleId, setActiveSketchId])
+  }, [selectedSceneId, addSketchToScene, closeDialog, moduleId, setSelectedSketchId])
 
   const numParams = nodes.filter((n) => n.nodeType === 'param').length
   const numShots = nodes.filter((n) => n.nodeType === 'shot').length
@@ -51,7 +57,7 @@ export const SketchCard = ({
         )}
       </CardContent>
       <CardActions>
-        <Button onClick={onButtonClick} iconName="add">
+        <Button onClick={onButtonClick} iconName="add" disabled={!selectedSceneId}>
           Add To Scene
         </Button>
       </CardActions>

@@ -1,5 +1,7 @@
-import { ParamValueType, ParamVector, ParamVectorValueType } from './Param'
+import { ParamValueType, ParamVector, ParamVectorValueType } from './ParamNode'
 import { Node } from './Node'
+import { SceneNode } from './SceneNode'
+import { SketchNode } from './SketchNode'
 import type { HedronEngine } from '@HedronEngine/HedronEngine'
 
 // Record ensures every ParamValueTypeWithChildren member is listed — adding a new
@@ -35,4 +37,12 @@ export const isParamVectorComponent = (node: Node, engine: HedronEngine) => {
   }
 
   return isComponent
+}
+
+export const isSketchNode = (node: Node | undefined): node is SketchNode => {
+  return node?.nodeType === 'sketch'
+}
+
+export const isSceneNode = (node: Node | undefined): node is SceneNode => {
+  return node?.nodeType === 'scene'
 }

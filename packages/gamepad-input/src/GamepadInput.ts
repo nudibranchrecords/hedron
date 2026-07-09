@@ -23,6 +23,7 @@ import { createGamepadHandlers, applySmoothing, calculate2AxisValue } from './Ga
 export class GamepadInput implements IPlugin {
   public readonly id = 'gamepad-input'
   public readonly name = 'Gamepad Input'
+  public readonly iconName = 'stadia_controller'
   public readonly inputType = 'gamepad'
   public readonly description = 'Handles gamepad input devices.'
   public readonly gamepadManager = new GamepadManager()

@@ -26,8 +26,9 @@
     "lint": "eslint . --ext .js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix"
   },
   "devDependencies": {
-    "@types/three": "^0.178.1",
+    "@types/three": "^0.185.1",
     "@vitejs/plugin-react": "^4.3.4",
+    "typescript": "^5.9.3",
     "vite": "^7.3.1",
     "vite-plugin-dts": "^4.5.3",
     "vite-tsconfig-paths": "^5.1.4"
@@ -39,7 +40,7 @@
   "peerDependencies": {
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "three": "^0.178.0",
+    "three": "^0.185.1",
     "zustand": "^5.0.8"
   },
   "bugs": {

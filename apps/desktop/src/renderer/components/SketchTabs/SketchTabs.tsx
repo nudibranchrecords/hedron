@@ -1,8 +1,8 @@
 import { useCallback } from 'react'
 import { SideTabs, SideTabsItem } from '@hedron-gl/ui-core'
 import { useSketchList } from '@components/hooks/useSketchList'
-import { useIsActiveSketch } from '@components/hooks/useIsActiveSketch'
-import { useSetActiveSketchId } from '@components/hooks/useSetActiveSketchId'
+import { useIsSelectedSketch } from '@components/hooks/useIsSelectedSketch'
+import { useSetSelectedSketchId } from '@components/hooks/useSetSelectedSketchId'
 import { useGlobalDialog } from '@components/GlobalDialogs/useGlobalDialog'
 
 interface ItemProps {
@@ -12,12 +12,12 @@ interface ItemProps {
 }
 
 const Item = ({ id, children, isBroken }: ItemProps) => {
-  const isActive = useIsActiveSketch(id)
-  const setActiveSketchId = useSetActiveSketchId()
+  const isActive = useIsSelectedSketch(id)
+  const setSelectedSketchId = useSetSelectedSketchId()
 
   const onClick = useCallback(() => {
-    setActiveSketchId(id)
-  }, [id, setActiveSketchId])
+    setSelectedSketchId(id)
+  }, [id, setSelectedSketchId])
 
   return (
     <SideTabsItem isActive={isActive} showErrorIcon={isBroken} onClick={onClick}>

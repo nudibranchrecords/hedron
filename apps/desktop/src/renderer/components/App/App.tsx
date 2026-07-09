@@ -1,4 +1,12 @@
-import { AppStoreProvider, EngineProvider, WidgetStrip, useAppStore } from '@hedron-gl/ui-core'
+import {
+  AppStoreProvider,
+  Collapsible,
+  EngineProvider,
+  Icon,
+  IconName,
+  useAppStore,
+} from '@hedron-gl/ui-core'
+import { useState } from 'react'
 import c from './App.module.css'
 import { useHandleDrag } from './useHandleDrag'
 import { GlobalClock } from '@components/GlobalClock/GlobalClock'
@@ -9,6 +17,43 @@ import { Viewer } from '@components/Viewer'
 import { WorkArea } from '@components/WorkArea/WorkArea'
 import { appStore } from '@renderer/appStore'
 import { engine, pluginViews } from '@renderer/engine'
+
+const PluginGlobalControls = () => {
+  const [openById, setOpenById] = useState<Record<string, boolean>>({})
+
+  return (
+    <div className={c.plugins}>
+      {Object.entries(pluginViews.globalPanel).map(([pluginId, PluginPanel]) => {
+        const enginePlugin = engine.plugins[pluginId]
+        const pluginName = enginePlugin?.name ?? pluginId
+        const pluginIconName = enginePlugin?.iconName ?? 'extension'
+        const isOpen = openById[pluginId] ?? false
+
+        return (
+          <Collapsible
+            type="panel"
+            className={c.pluginItem}
+            key={pluginId}
+            title={
+              <>
+                <Icon name={pluginIconName as IconName} /> {pluginName}
+              </>
+            }
+            isOpen={isOpen}
+            onToggle={(nextOpen) =>
+              setOpenById((prev) => ({
+                ...prev,
+                [pluginId]: nextOpen,
+              }))
+            }
+          >
+            <PluginPanel engine={engine} />
+          </Collapsible>
+        )
+      })}
+    </div>
+  )
+}
 
 const AppContent = (): JSX.Element => {
   const sketchesDir = useAppStore((state) => state.sketchesDir)
@@ -34,9 +79,9 @@ const AppContent = (): JSX.Element => {
                 <VideoControls />
               </div>
             </div>
-            {/* The above widgets need to be converted to plugins */}
-            <div className={c.widgetStrip}>
-              <WidgetStrip engine={engine} pluginViews={pluginViews.globalPanel} />
+
+            <div className={c.pluginControls}>
+              <PluginGlobalControls />
             </div>
           </>
         )}

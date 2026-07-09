@@ -1,7 +1,7 @@
 import { Pass, RenderPass } from 'postprocessing'
 import { PerspectiveCamera, Scene, WebGLRenderer } from 'three'
-import { pass, type ShaderNodeObject } from 'three/tsl'
-import { PassNode, PostProcessing, WebGPURenderer } from 'three/webgpu'
+import { pass } from 'three/tsl'
+import { PassNode, RenderPipeline, WebGPURenderer } from 'three/webgpu'
 import { SketchInstanceError, SketchInstanceMap } from '@store/types'
 import { RendererType } from '@HedronEngine/types'
 
@@ -24,7 +24,7 @@ export class EngineScene {
   public passes: Pass[] | undefined
   public sketches: SketchInstanceMap = new Map()
   private renderPass: RenderPass | undefined
-  private renderPass_webGPU: ShaderNodeObject<PassNode> | undefined
+  private renderPass_webGPU: PassNode | undefined
   public renderer: WebGLRenderer | WebGPURenderer
   public rendererType: RendererType
   private onSketchInstanceError: SketchInstanceError
@@ -75,14 +75,14 @@ export class EngineScene {
     this.passes = [this.renderPass]
   }
 
-  updateWebGPUPasses(sketchInstances: SketchInstanceMap, postProcessing: PostProcessing): void {
+  updateWebGPUPasses(sketchInstances: SketchInstanceMap, renderPipeline: RenderPipeline): void {
     if (this.rendererType !== 'webgpu') {
       console.warn('[HEDRON] ⚠️ WebGPU pass handling is only available in WebGPU mode.')
       return
     }
 
     const renderPassNode = this.renderPass_webGPU!
-    let prevPass: ShaderNodeObject<PassNode> = renderPassNode
+    let prevPass: PassNode = renderPassNode
 
     sketchInstances.forEach((sketchInstance) => {
       if (sketchInstance.getWebGPUPass) {
@@ -96,7 +96,7 @@ export class EngineScene {
       }
     })
 
-    postProcessing.outputNode = prevPass
-    postProcessing.needsUpdate = true
+    renderPipeline.outputNode = prevPass
+    renderPipeline.needsUpdate = true
   }
 }

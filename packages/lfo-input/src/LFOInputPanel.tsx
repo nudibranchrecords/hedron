@@ -1,8 +1,8 @@
-import { HedronEngine, Input } from '@hedron-gl/engine'
+import { HedronEngine, InputNode } from '@hedron-gl/engine'
 import { ControlGrid, NodeContainer } from '@hedron-gl/ui-core'
 
 interface IProps {
-  input: Input
+  input: InputNode
   // TODO: This can be typed as something like HedronEngineWithPlugin<MidiInput>
   engine: HedronEngine
 }

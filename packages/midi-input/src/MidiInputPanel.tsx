@@ -1,16 +1,16 @@
 import { useCallback, useState, useMemo } from 'react'
-import { findNodeWithKeyFromIdList, HedronEngine, Input } from '@hedron-gl/engine'
+import { findNodeWithKeyFromIdList, HedronEngine, InputNode } from '@hedron-gl/engine'
 import { MIDIEvent, MidiManager } from '@hedron-gl/midi-manager'
 import { Button, ControlGrid, NodeContainer, useEngineStore } from '@hedron-gl/ui-core'
 import { MidiInput } from './MidiInput'
 
 interface IProps {
-  input: Input
+  input: InputNode
   // TODO: This can be typed as something like HedronEngineWithPlugin<MidiInput>
   engine: HedronEngine
 }
 
-const useMidiLearn = (input: Input, engine: HedronEngine) => {
+const useMidiLearn = (input: InputNode, engine: HedronEngine) => {
   const [isLearning, setIsLearning] = useState(false)
 
   // TODO: May not need this "as" if we have HedronEngineWithPlugin<MidiInput>

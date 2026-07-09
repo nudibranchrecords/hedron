@@ -1,6 +1,6 @@
 import { NodeBase, ConfigNodeBase } from './NodeBase'
 
-export type Shot = NodeBase & {
+export type ShotNode = NodeBase & {
   nodeType: 'shot'
   key: string
   hidden?: boolean

@@ -4,9 +4,9 @@ import {
   IPlugin,
   ParamValue,
   handleEachInput,
-  Input,
+  InputNode,
   ConfigToOptionsType,
-  Param,
+  ParamNode,
   ParamEnum,
   EngineStateWithActions,
 } from '@hedron-gl/engine'
@@ -23,9 +23,9 @@ for (let i = 0; i < 128; i++) {
 
 type MIDIEventWithValue = Omit<MIDIEvent, 'value'> & { value: number }
 
-type ValueHander<T = Param> = (params: {
+type ValueHander<T = ParamNode> = (params: {
   midiEvent: MIDIEventWithValue
-  input: Input
+  input: InputNode
   storeState: EngineStateWithActions
   optionNodes: ConfigToOptionsType<typeof MidiInput.prototype.optionNodesConfig>
   targetNode: T
@@ -33,7 +33,7 @@ type ValueHander<T = Param> = (params: {
 }) => ParamValue | null
 
 type ShotHandler = (params: {
-  input: Input
+  input: InputNode
   engine: HedronEngine
   midiEvent: MIDIEventWithValue
 }) => void
@@ -41,6 +41,7 @@ type ShotHandler = (params: {
 export class MidiInput implements IPlugin {
   public readonly id = 'midi-input'
   public readonly name = 'MIDI Input'
+  public readonly iconName = 'piano'
   public readonly inputType = 'midi'
   public readonly description = 'Handles MIDI input devices and messages.'
   public readonly midiManager = new MidiManager()

@@ -1,8 +1,5 @@
 import { HedronEngine } from '@hedron-gl/engine'
 import {
-  Panel,
-  PanelHeader,
-  PanelBody,
   NodeContainer,
   useNodeOptionNodes,
   useParamValue,
@@ -38,24 +35,21 @@ export const TimelineGlobalPanel = ({ engine }: TimelineGlobalPanelProps) => {
   const playheadPositionMs = useParamValue<number>(playHeadPositionNode.id)
 
   return (
-    <Panel>
-      <PanelHeader>Timeline</PanelHeader>
-      <PanelBody>
-        <ControlGrid className="mb-xl">
-          <NodeContainer nodeId={isPlayingNode.id} />
-          <NodeContainer nodeId={audioUrlNode.id} />
-        </ControlGrid>
-        <div className="mb-xl">
-          <Timeline
-            timeline={timeline}
-            playheadPositionMs={playheadPositionMs}
-            onPlayheadChange={handlePlayheadChange}
-            onKeyframeDelete={handleKeyframeDelete}
-            onKeyframeInsert={handleKeyframeInsert}
-          />
-        </div>
-        Click track name to select track. Insert keyframe: [i]. Delete keyframe: [x].
-      </PanelBody>
-    </Panel>
+    <div>
+      <ControlGrid className="mb-xl">
+        <NodeContainer nodeId={isPlayingNode.id} />
+        <NodeContainer nodeId={audioUrlNode.id} />
+      </ControlGrid>
+      <div className="mb-xl">
+        <Timeline
+          timeline={timeline}
+          playheadPositionMs={playheadPositionMs}
+          onPlayheadChange={handlePlayheadChange}
+          onKeyframeDelete={handleKeyframeDelete}
+          onKeyframeInsert={handleKeyframeInsert}
+        />
+      </div>
+      Click track name to select track. Insert keyframe: [i]. Delete keyframe: [x].
+    </div>
   )
 }

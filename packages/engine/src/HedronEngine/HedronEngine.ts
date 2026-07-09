@@ -1,8 +1,11 @@
 import { Pass } from 'postprocessing'
 import { type Clock } from '@hedron-gl/clock'
-import { listenToStore } from './storeListener'
+import { WebGPURenderer } from 'three/webgpu'
 import { CanvasSizeMode, RendererType, Result, ShotArgsObject } from './types'
 import { importSketchModule } from './importSketchModule'
+import { ACTIVE_SCENE_ID_NODE_ID } from '@constants'
+import { listenToStore } from '@store/storeListener'
+import { getSketchSceneId } from '@store/selectors/getSketchSceneId'
 import { addResource, removeResource } from '@store/actions/resources'
 import { createUniqueId } from '@utils/createUniqueId'
 import { ensureNodeConfig } from '@store/shared/ensureConfig'
@@ -10,10 +13,8 @@ import { flushParamValueBuffer } from '@store/actionCreators/updateParamValue'
 import { getSketchShotNodes } from '@store/selectors/getSketchShotNodes'
 import { initializeGlobalVars } from '@globalVars'
 import { IPlugin } from '@plugins/Plugin'
-import { stripForSave } from '@utils/stripForSave'
 import { Renderer } from '@world/Renderer'
-import { SketchManager } from '@world/SketchManager'
-import { createDebugScene } from '@world/debugScene'
+import { SceneManager } from '@world/SceneManager'
 import {
   EngineData,
   Node,
@@ -21,19 +22,19 @@ import {
   SketchInstanceError,
   SketchInstance,
   SketchModuleItem,
-  Param,
-  Shot,
+  ParamNode,
+  ShotNode,
   ConfigParam,
   ConfigShot,
   ConfigCustomNode,
   ChildGroupsLoose,
   Resources,
-  Input,
+  InputNode,
 } from '@store/types'
 import { getSketchesOfModuleId } from '@store/selectors/getSketchesOfModuleId'
+import { getAllSceneSketches, getSceneSketchIds } from '@store/selectors/getSceneSketches'
 import { createEngineStore, EngineStore } from '@store/engineStore'
 import { getSketchParamValues } from '@store/selectors/getSketchParamValues'
-import { EngineScene } from '@world/EngineScene'
 import { addNode } from '@store/shared/addNode'
 
 export class HedronEngine {
@@ -41,7 +42,7 @@ export class HedronEngine {
   private renderer: Renderer
   private store: EngineStore
   private sketchesUrl: string | null = null
-  private sketchManager: SketchManager
+  private sceneManager: SceneManager
   public plugins: Record<string, IPlugin> = {}
   private registeredShots: Record<string, (args: ShotArgsObject) => void> = {}
   private shotListeners: Record<string, (() => void)[]> = {}
@@ -50,7 +51,6 @@ export class HedronEngine {
   public clock?: Clock
   private running: boolean = false
   private paused: boolean = false
-  private scene: EngineScene // The main scene for rendering sketches
   private _onError: SketchInstanceError
 
   private extraTime: number = 0 // For time manipulation, e.g. for skipping frames
@@ -75,12 +75,14 @@ export class HedronEngine {
       this.setIsSketchBroken(sketchInstanceId, true)
     }
 
-    this.sketchManager = new SketchManager({ onError: this._onError })
     this.renderer = new Renderer({
       rendererType: this.rendererType,
       canvasSizeMode: params.canvasSizeMode,
     })
-    this.scene = createDebugScene(this.renderer, this._onError)
+    this.sceneManager = new SceneManager({
+      onError: this._onError,
+      renderer: this.renderer,
+    })
 
     this.onFrameStart = params?.onFrameStart
     this.onFrameEnd = params?.onFrameEnd
@@ -95,6 +97,7 @@ export class HedronEngine {
   }
 
   /**
+   * @deprecated - Use `onEngineInitialize` in plugins instead
    * Creates global option nodes for a plugin in the store
    * @param plugin The plugin to create global option nodes for
    */
@@ -158,7 +161,7 @@ export class HedronEngine {
 
       for (const cfg of configs) {
         const optionNodeExists = parentNode.childGroups.optionNodeIds.some((id) => {
-          const node = state.nodes[id] as Param | Shot | undefined
+          const node = state.nodes[id] as ParamNode | ShotNode | undefined
           return node?.key === cfg.key
         })
 
@@ -251,14 +254,14 @@ export class HedronEngine {
     return this.store.getState().paramValues[nodeId]
   }
 
-  public getNodeOptionNode(nodeId: string, optionKey: string): Param | Shot {
+  public getNodeOptionNode(nodeId: string, optionKey: string): ParamNode | ShotNode {
     const node = this.getNode(nodeId)
     if (!node) {
       throw new Error(`getNodeOptionNode: node "${nodeId}" not found`)
     }
 
     const optionNodeId = node.childGroups.optionNodeIds.find((id) => {
-      const optionNode = this.getNode<Param | Shot>(id)
+      const optionNode = this.getNode<ParamNode | ShotNode>(id)
       return optionNode?.key === optionKey
     })
 
@@ -268,7 +271,7 @@ export class HedronEngine {
       )
     }
 
-    const optionNode = this.getNode<Param | Shot>(optionNodeId)
+    const optionNode = this.getNode<ParamNode | ShotNode>(optionNodeId)
 
     if (!optionNode) {
       throw new Error(`getNodeOptionNode: option node "${optionNodeId}" not found`)
@@ -289,7 +292,7 @@ export class HedronEngine {
     this.store.getState().updateMultipleParamValues(nodeIds, values)
   }
 
-  public addInput(inputType: string, targetNodeId: string): Input | undefined {
+  public addInput(inputType: string, targetNodeId: string): InputNode | undefined {
     const plugin = Object.values(this.plugins).find((p) => p.inputType === inputType)
 
     if (!plugin) {
@@ -299,12 +302,12 @@ export class HedronEngine {
 
     const state = this.store.getState()
 
-    const targetNode = state.nodes[targetNodeId] as Param | Shot
+    const targetNode = state.nodes[targetNodeId] as ParamNode | ShotNode
 
     const numAlready = targetNode?.childGroups?.inputNodeIds?.length ?? 0
 
     const input = {
-      inputType: plugin.inputType,
+      inputType: plugin.inputType!,
       targetNodeId,
       title: `${plugin.inputType} ${numAlready + 1}`,
       parentIds: [targetNodeId],
@@ -362,10 +365,18 @@ export class HedronEngine {
         const params = getSketchParamValues(state, sketchId, {
           resourcesUrl: state.resourcesUrl,
         })
+        const sceneId = getSketchSceneId(state, sketchId)
+        if (!sceneId) {
+          return
+        }
+        const sketchScene = this.sceneManager.getScene(sceneId)
+        if (!sketchScene) {
+          return
+        }
 
         sketchInstance?.[shotNode.key]?.({
           params,
-          scene: this.scene,
+          scene: sketchScene,
           shotArgs,
         })
       })
@@ -397,13 +408,13 @@ export class HedronEngine {
    * Should be called after setting sketch modules (e.g. importSketchModulesFromIds or manually with setSketchModuleItem)
    */
   public startStoreListener() {
-    const addSketchToScene = (sketchInstanceId: string, moduleId: string) => {
+    const addSketchToScene = (sceneId: string, sketchInstanceId: string, moduleId: string) => {
       try {
         const storeState = this.store.getState()
         const modules = storeState.sketchModules
         const module = modules[moduleId].module
 
-        const sketchInstance = this.sketchManager.addSketchToScene(sketchInstanceId, module)
+        const sketchInstance = this.sceneManager.addSketchToScene(sceneId, sketchInstanceId, module)
 
         if (sketchInstance) {
           this.registerAllSketchShots(sketchInstanceId, sketchInstance)
@@ -420,13 +431,13 @@ export class HedronEngine {
       }
     }
 
-    const removeSketchFromScene = (sketchInstanceId: string) => {
-      this.sketchManager.removeSketchFromScene(sketchInstanceId)
+    const removeSketchFromScene = (sceneId: string, sketchInstanceId: string) => {
+      this.sceneManager.removeSketchFromScene(sceneId, sketchInstanceId)
       this.renderer.passesNeedUpdate_webGPU = true
     }
 
-    const reorderSketchesInScene = (sketchInstanceIds: string[]) => {
-      this.sketchManager.reorderSketchesInScene(sketchInstanceIds)
+    const reorderSketchesInScene = (sceneId: string, sketchInstanceIds: string[]) => {
+      this.sceneManager.reorderSketchesInScene(sceneId, sketchInstanceIds)
       this.renderer.passesNeedUpdate_webGPU = true
     }
 
@@ -434,12 +445,19 @@ export class HedronEngine {
       this.unregisterShot(nodeId)
     }
 
+    const handleActiveSceneChanged = () => {
+      this.renderer.passesNeedUpdate_webGPU = true
+    }
+
     listenToStore({
       store: this.store,
+      onSceneAdded: (sceneId) => this.sceneManager.addScene(sceneId),
+      onSceneRemoved: (sceneId) => this.sceneManager.removeScene(sceneId),
       onSketchAdded: addSketchToScene,
       onSketchRemoved: removeSketchFromScene,
       onNodeRemoved: handleRemovedNode,
       onSketchesReordered: reorderSketchesInScene,
+      onActiveSceneChanged: handleActiveSceneChanged,
     })
   }
 
@@ -482,8 +500,20 @@ export class HedronEngine {
     const sketchesToRefresh = getSketchesOfModuleId(this.store.getState(), moduleId)
 
     for (const sketch of sketchesToRefresh) {
-      this.sketchManager.removeSketchFromScene(sketch.id)
-      const sketchInstance = this.sketchManager.addSketchToScene(sketch.id, moduleItem.module)
+      const state = this.store.getState()
+      const sceneId = getSketchSceneId(state, sketch.id)
+
+      if (!sceneId) {
+        continue
+      }
+
+      this.sceneManager.removeSketchFromScene(sceneId, sketch.id)
+
+      const sketchInstance = this.sceneManager.addSketchToScene(
+        sceneId,
+        sketch.id,
+        moduleItem.module,
+      )
 
       if (sketchInstance) {
         this.registerAllSketchShots(sketch.id, sketchInstance)
@@ -506,7 +536,7 @@ export class HedronEngine {
    */
   public async reconcileAllSketchNodes(): Promise<void> {
     const state = this.store.getState()
-    const sketchesToReconcile = Object.values(state.sketches)
+    const sketchesToReconcile = getAllSceneSketches(state)
 
     for (const sketch of sketchesToReconcile) {
       state.reconcileSketchNodes(sketch.id)
@@ -541,16 +571,21 @@ export class HedronEngine {
     return this.store.getState()
   }
 
+  /**
+   * Returns stripped-down engine data suitable for saving to file
+   */
   public getSaveData(): EngineData {
-    return stripForSave(this.store.getState())
+    const { nodes, paramValues, resources, sceneIds } = this.store.getState()
+    return { nodes, paramValues, resources, sceneIds } satisfies EngineData
   }
 
   /**
-   * @deprecated - Plugins should be using onEngineInitialize
-   * Ensures global option nodes exist for all registered plugins
-   * This should be called when the engine is ready to use plugin global options
+   * @deprecated - Use `initiatePlugins` instead
+   * Ensures global option nodes exist
+   * This should be called when the engine is ready
    */
   public ensureGlobalOptionNodes() {
+    // FIXME: Once plugins stop using globalOptionNodesConfig, we can remove this and rely on `onEngineInitialize` instead
     // For each registered plugin, ensure global option nodes exist
     Object.values(this.plugins).forEach((plugin) => {
       this.createGlobalOptionNodesForPlugin(plugin)
@@ -596,20 +631,27 @@ export class HedronEngine {
    * @param engineScene The scene object to update and render.
    * @param deltaTime The time delta (in seconds) to advance this frame.
    */
-  private advanceFrame(engineScene: EngineScene, deltaTime: number) {
+  private advanceFrame(deltaTime: number) {
     // Flush buffered node value updates before processing the frame
     flushParamValueBuffer(this.store.setState)
 
-    const state = this.store.getState()
-    const sketchInstances =
-      // TODO: When we have scenes, sketches should be added to the scene earlier on
-      (engineScene.sketches = this.sketchManager!.getSketchInstances())
+    const activeSceneId = this.getParamValue(ACTIVE_SCENE_ID_NODE_ID) as string | undefined
+
+    if (!activeSceneId) return
+
+    const engineScene = this.sceneManager.getScene(activeSceneId)
+
+    if (!engineScene) return
+
+    const sketchInstances = this.sceneManager.getSketchInstances(activeSceneId)
 
     if (this.renderer.rendererType === 'webgl') {
       engineScene.clearPasses()
     }
 
-    Object.keys(state.sketches).forEach((sketchId) => {
+    const state = this.store.getState()
+
+    getSceneSketchIds(state, activeSceneId).forEach((sketchId) => {
       const paramValues = getSketchParamValues(state, sketchId, {
         resourcesUrl: state.resourcesUrl,
       })
@@ -621,7 +663,10 @@ export class HedronEngine {
           })
         } catch (error) {
           console.error(`Error getting passes for sketch ${sketchId}:`, error)
-          this.sketchManager.removeSketchFromScene(sketchId)
+          const sceneId = getSketchSceneId(state, sketchId)
+          if (sceneId) {
+            this.sceneManager.removeSketchFromScene(sceneId, sketchId)
+          }
           this.setIsSketchBroken(sketchId, true)
         }
       }
@@ -629,10 +674,14 @@ export class HedronEngine {
         instance?.update({ deltaFrame: 1, deltaTime, params: paramValues, scene: engineScene })
       } catch (error) {
         console.error(`Error updating sketch ${sketchId}:`, error)
-        this.sketchManager.removeSketchFromScene(sketchId)
+        const sceneId = getSketchSceneId(state, sketchId)
+        if (sceneId) {
+          this.sceneManager.removeSketchFromScene(sceneId, sketchId)
+        }
         this.setIsSketchBroken(sketchId, true)
       }
     })
+
     this.renderer.render(engineScene)
   }
 
@@ -640,12 +689,16 @@ export class HedronEngine {
    * Starts the engine's main real-time render loop.
    * This loop runs at the browser's refresh rate using requestAnimationFrame.
    */
-  public run() {
+  public async run() {
     if (this.running) return
     this.running = true
     this.paused = false
 
     let lastTime = performance.now()
+
+    if (this.renderer.renderer instanceof WebGPURenderer) {
+      await this.renderer.renderer.init()
+    }
 
     const loop = (): void => {
       if (!this.running) {
@@ -668,7 +721,7 @@ export class HedronEngine {
       this.totalTime += deltaTime
       lastTime = now
 
-      this.advanceFrame(this.scene, deltaTime)
+      this.advanceFrame(deltaTime)
 
       requestAnimationFrame(loop)
       this.onFrameEnd?.()
@@ -733,7 +786,7 @@ export class HedronEngine {
       }
       this.totalTime += deltaTime
 
-      this.advanceFrame(this.scene, deltaTime)
+      this.advanceFrame(deltaTime)
       this.onFrameEnd?.()
 
       const dataUrl = this.captureFrame()

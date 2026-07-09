@@ -4,7 +4,6 @@ export * from './AudioInputSelector'
 export * from './AudioDebugPanel'
 export * from './AudioDeviceManager'
 export * from './AudioAnalyzer'
-export * from './AudioGlobalWidget'
 export * from './AudioGlobalPanel'
 
 // Export test utilities

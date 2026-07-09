@@ -1,3 +1,4 @@
+import { getSketch } from './getSceneSketches'
 import { EngineState, isParamVector, ParamValue } from '@store/types'
 
 // Get the values of the parameters of a sketch, dealing with child nodes
@@ -6,9 +7,13 @@ export const getSketchParamValues = (
   sketchId: string,
   config: { resourcesUrl: string | null },
 ) => {
-  const { sketches, paramValues, nodes } = state
+  const { paramValues, nodes } = state
   const sketchParamValues: Record<string, ParamValue | (ParamValue | undefined)[] | undefined> = {}
-  const sketch = sketches[sketchId]
+  const sketch = getSketch(state, sketchId)
+
+  if (!sketch) {
+    return sketchParamValues
+  }
 
   sketch.nodeIds.forEach((id) => {
     const node = nodes[id]

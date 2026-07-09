@@ -3,10 +3,10 @@ import { nodesAsArray } from '@utils/nodesAsArray'
 import {
   EngineState,
   EngineStateWithActions,
-  Input,
+  InputNode,
   ParamValue,
-  Param,
-  Shot,
+  ParamNode,
+  ShotNode,
   ConfigParam,
   ConfigShot,
 } from '@store/types'
@@ -23,12 +23,18 @@ export interface IPlugin {
   /**
    * Type of input
    */
-  inputType: string
+  inputType?: string
 
   /**
    * The name of the plugin.
    */
   name: string
+
+  /**
+   * Icon to be displayed in various places
+   * https://fonts.google.com/icons
+   */
+  iconName: string
 
   /**
    * The description of the plugin.
@@ -56,7 +62,7 @@ export interface IPlugin {
   /**
    * Optional callback called after each input for this plugin is added
    */
-  onNewInput?: (engine: HedronEngine, newInput: Input, targetNode: Param | Shot) => void
+  onNewInput?: (engine: HedronEngine, newInput: InputNode, targetNode: ParamNode | ShotNode) => void
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -110,6 +116,14 @@ export const getOptionNodesFromIds = <T extends readonly any[]>(
       )
       return
     }
+
+    if (node.nodeType === 'scene' || node.nodeType === 'sketch') {
+      console.warn(
+        `Node ${node.id} is a ${node.nodeType} node. ${node.nodeType} nodes cannot be used as option nodes for plugins.`,
+      )
+      return
+    }
+
     ;(options as Record<string, unknown>)[node.key] = state.paramValues[id]
   })
   return options
@@ -131,15 +145,15 @@ export const handleEachInput = <T extends readonly any[]>(
     optionNodes,
   }:
     | {
-        input: Input
+        input: InputNode
         optionNodes: ConfigToOptionsType<T>
-        targetNode: Param
+        targetNode: ParamNode
         targetParamValue: ParamValue
       }
     | {
-        input: Input
+        input: InputNode
         optionNodes: ConfigToOptionsType<T>
-        targetNode: Shot
+        targetNode: ShotNode
         targetParamValue?: never
       }) => void,
 ) => {
@@ -167,6 +181,13 @@ export const handleEachInput = <T extends readonly any[]>(
     if (targetNode.nodeType === 'custom') {
       console.warn(
         `Input ${input.id} is trying to target a custom node ${targetNode.id}. This is not supported.`,
+      )
+      return
+    }
+
+    if (targetNode.nodeType === 'scene' || targetNode.nodeType === 'sketch') {
+      console.warn(
+        `Input ${input.id} is trying to target a ${targetNode.nodeType} node ${targetNode.id}. This is not supported.`,
       )
       return
     }

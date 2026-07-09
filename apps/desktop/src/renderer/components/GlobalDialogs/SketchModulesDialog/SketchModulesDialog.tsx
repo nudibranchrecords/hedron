@@ -5,14 +5,16 @@ import { useSketchesSearch } from './useSketchesSearch'
 import { SketchCard } from './SketchCard'
 import { GlobalDialogProps } from '@components/GlobalDialogs/types'
 import { useSketchModuleList } from '@components/hooks/useSketchModuleList'
-import { useSetActiveSketchId } from '@components/hooks/useSetActiveSketchId'
+import { useSetSelectedSketchId } from '@components/hooks/useSetSelectedSketchId'
+import { useAppStore } from '@renderer/appStore'
 
 export const SketchModulesDialog = ({ closeDialog }: GlobalDialogProps) => {
   const sketchModules = useSketchModuleList()
   const { searchTerm, setSearchTerm, filteredModules } = useSketchesSearch(sketchModules)
   const inputRef = useRef<HTMLInputElement>(null)
-  const setActiveSketchId = useSetActiveSketchId()
-  const addSketch = useEngineStore((state) => state.addSketch)
+  const setSelectedSketchId = useSetSelectedSketchId()
+  const selectedSceneId = useAppStore((state) => state.selectedSceneId)
+  const addSketchToScene = useEngineStore((state) => state.addSketchToScene)
 
   useEffect(() => {
     // Focus the search input when dialog opens
@@ -23,10 +25,10 @@ export const SketchModulesDialog = ({ closeDialog }: GlobalDialogProps) => {
   }, [])
 
   const handleInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter' && filteredModules.length > 0) {
+    if (e.key === 'Enter' && filteredModules.length > 0 && selectedSceneId) {
       const top = filteredModules[0]
-      const id = addSketch(top.moduleId)
-      setActiveSketchId(id)
+      const id = addSketchToScene(selectedSceneId, top.moduleId)
+      setSelectedSketchId(id)
       closeDialog()
     }
   }

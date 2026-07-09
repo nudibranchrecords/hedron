@@ -17,6 +17,7 @@ export class AudioInput implements IPlugin {
   public static ENABLE_LOGGING = false
   public readonly id = AudioInput.ID
   public readonly name = 'Audio Input'
+  public readonly iconName = 'mic'
   public readonly inputType = 'audio'
   public readonly description =
     'Captures microphone audio and provides real-time frequency analysis for visualization.'

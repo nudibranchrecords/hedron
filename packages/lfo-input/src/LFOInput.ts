@@ -4,10 +4,10 @@ import {
   getNextEnumValue,
   handleEachInput,
   HedronEngine,
-  Input,
+  InputNode,
   IPlugin,
   ParamValue,
-  Param,
+  ParamNode,
 } from '@hedron-gl/engine'
 
 const TAU = Math.PI * 2
@@ -15,18 +15,19 @@ const lerp = (v0: number, v1: number, t: number) => (1 - t) * v0 + t * v1
 
 type ValueHander = (params: {
   delta: number
-  input: Input
+  input: InputNode
   storeState: EngineState
   optionNodes: ConfigToOptionsType<typeof LFOInput.prototype.optionNodesConfig>
-  targetNode: Param
+  targetNode: ParamNode
 }) => ParamValue | null
 
-type ShotHandler = (params: { delta: number; input: Input; engine: HedronEngine }) => void
+type ShotHandler = (params: { delta: number; input: InputNode; engine: HedronEngine }) => void
 
 export class LFOInput implements IPlugin {
   public readonly id = 'lfo-input'
   public readonly name = 'LFO Input'
   public readonly inputType = 'lfo'
+  public readonly iconName = 'vital_signs'
   public readonly description =
     'Generates LFO waves (e.g. sin, square, sawtooth) as inputs for params.'
   public readonly optionNodesConfig = [

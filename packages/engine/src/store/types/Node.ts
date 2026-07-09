@@ -1,8 +1,10 @@
 import { CustomNode } from './CustomNode'
-import { Input } from './Input'
-import { Param } from './Param'
-import { Shot } from './Shot'
+import { InputNode } from './InputNode'
+import { ParamNode } from './ParamNode'
+import { SceneNode } from './SceneNode'
+import { SketchNode } from './SketchNode'
+import { ShotNode } from './ShotNode'
 
-export type Node = Param | Shot | Input | CustomNode
+export type Node = ParamNode | ShotNode | InputNode | CustomNode | SceneNode | SketchNode
 export type Nodes = Partial<Record<string, Node>>
 export type NodeType = Node['nodeType']

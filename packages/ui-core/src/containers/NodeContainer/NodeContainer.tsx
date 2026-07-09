@@ -1,4 +1,4 @@
-import { Param as ParamType, Shot as ShotType } from '@hedron-gl/engine'
+import { Node, ParamNode as ParamType, ShotNode as ShotType } from '@hedron-gl/engine'
 import { ParamNumber } from './ParamNumber/ParamNumber'
 import { ParamBoolean } from './ParamBoolean/ParamBoolean'
 import { ParamEnum } from './ParamEnum/ParamEnum'
@@ -48,25 +48,32 @@ const getInputElement = (node: ParamType | ShotType) => {
   }
 }
 
+const isRenderableNode = (node: Node): node is ParamType | ShotType => {
+  return node.nodeType === 'param' || node.nodeType === 'shot'
+}
+
 export const NodeContainer = ({ nodeId }: { nodeId: string }) => {
   const node = useEngineStore((state) => state.nodes[nodeId])
   const inputCount = useInputCount(nodeId)
-  const activeSketchId = useAppStore((state) => state.activeSketchId)
+  const selectedSceneId = useAppStore((state) => state.selectedSceneId)
+  const selectedSketches = useAppStore((state) => state.selectedSketches)
+  const selectedSketchId = selectedSceneId ? selectedSketches[selectedSceneId] : null
   const isActive = useAppStore((state) =>
-    activeSketchId ? state.selectedNodes[activeSketchId] === nodeId : false,
+    selectedSketchId ? state.selectedNodes[selectedSketchId] === nodeId : false,
   )
-  const onSelectNode = useOnSelectNode(activeSketchId, nodeId)
+  const onSelectNode = useOnSelectNode(selectedSketchId, nodeId)
 
   if (!node) {
     return <i>Node with id {nodeId} not found</i>
   }
 
-  if (node.nodeType === 'custom') {
-    return "NodeContainer: Tried to render a custom node, this isn't supported. Node ID: " + node.id
-  }
-
-  if (node.nodeType === 'input') {
-    return "NodeContainer: Tried to render an input node, this isn't supported. Node ID: " + node.id
+  if (!isRenderableNode(node)) {
+    return (
+      'NodeContainer: Tried to render a ' +
+      node.nodeType +
+      " node, this isn't supported. Node ID: " +
+      node.id
+    )
   }
 
   return (
