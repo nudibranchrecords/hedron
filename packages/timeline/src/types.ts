@@ -4,7 +4,9 @@ export interface Keyframe {
   id: string
   time: number
   // TODO: This is a bit wonky because a keyframe could be typed with a non-matching valueType and value
-  valueType: ParamValueType
+  // 'shot' isn't a ParamValueType since shots aren't params - their keyframes are momentary
+  // triggers rather than held values.
+  valueType: ParamValueType | 'shot'
   value: ParamValue
 }
 

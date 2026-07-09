@@ -50,25 +50,31 @@ export const useTimelineHandlers = ({ engine, manager }: UseTimelineHandlersPara
         return
       }
 
-      const targetParam = engine.getNode(inputNode.targetNodeId) as ParamNode | undefined
+      const targetNode = engine.getNode(inputNode.targetNodeId)
 
-      if (!targetParam) {
-        console.error(`Target param not found for input node ${inputNode.id}`)
+      if (!targetNode) {
+        console.error(`Target node not found for input node ${inputNode.id}`)
         return
       }
 
-      const targetParamValue = engine.getParamValue(inputNode.targetNodeId)
+      let keyframe: Keyframe
+      if (targetNode.nodeType === 'shot') {
+        // Shot keyframes are momentary triggers; the value isn't used to decide firing.
+        keyframe = { id: crypto.randomUUID(), time, valueType: 'shot', value: true }
+      } else {
+        const targetParamValue = engine.getParamValue(inputNode.targetNodeId)
 
-      if (targetParamValue === undefined) {
-        console.error(`Target param value not found for input node ${inputNode.id}`)
-        return
-      }
+        if (targetParamValue === undefined) {
+          console.error(`Target param value not found for input node ${inputNode.id}`)
+          return
+        }
 
-      const keyframe = {
-        id: crypto.randomUUID(),
-        time,
-        valueType: targetParam.valueType,
-        value: targetParamValue,
+        keyframe = {
+          id: crypto.randomUUID(),
+          time,
+          valueType: (targetNode as ParamNode).valueType,
+          value: targetParamValue,
+        }
       }
 
       const nextKeyframes: Keyframe[] = [...(inputNode.customData?.keyframes ?? []), keyframe].sort(
