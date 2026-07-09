@@ -1,7 +1,7 @@
 import { Pass, RenderPass } from 'postprocessing'
 import { PerspectiveCamera, Scene, WebGLRenderer } from 'three'
 import { pass } from 'three/tsl'
-import { PassNode, PostProcessing, WebGPURenderer } from 'three/webgpu'
+import { PassNode, RenderPipeline, WebGPURenderer } from 'three/webgpu'
 import { SketchInstanceError, SketchInstanceMap } from '@store/types'
 import { RendererType } from '@HedronEngine/types'
 
@@ -75,7 +75,7 @@ export class EngineScene {
     this.passes = [this.renderPass]
   }
 
-  updateWebGPUPasses(sketchInstances: SketchInstanceMap, postProcessing: PostProcessing): void {
+  updateWebGPUPasses(sketchInstances: SketchInstanceMap, renderPipeline: RenderPipeline): void {
     if (this.rendererType !== 'webgpu') {
       console.warn('[HEDRON] ⚠️ WebGPU pass handling is only available in WebGPU mode.')
       return
@@ -96,7 +96,7 @@ export class EngineScene {
       }
     })
 
-    postProcessing.outputNode = prevPass
-    postProcessing.needsUpdate = true
+    renderPipeline.outputNode = prevPass
+    renderPipeline.needsUpdate = true
   }
 }
