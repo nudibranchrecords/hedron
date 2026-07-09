@@ -66,6 +66,22 @@ export class TimelineManager {
       lastIndex = i + 1
     }
     this.lastKeyframeIndex.set(track.id, lastIndex)
+
+    // 'number' params interpolate towards the next keyframe rather than holding until it's
+    // reached. Checked via valueType (not typeof value) since enum values can also be numbers,
+    // but represent discrete choices that shouldn't be interpolated between.
+    const current = sorted[lastIndex - 1]
+    const next = sorted[lastIndex]
+    if (
+      current?.valueType === 'number' &&
+      next &&
+      typeof current.value === 'number' &&
+      typeof next.value === 'number'
+    ) {
+      const t = (this.position - current.time) / (next.time - current.time)
+      return current.value + (next.value - current.value) * t
+    }
+
     return value
   }
 
