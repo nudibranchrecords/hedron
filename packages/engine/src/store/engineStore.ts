@@ -6,20 +6,20 @@ import type {} from '@redux-devtools/extension' // required for devtools typing
 import { createDeleteNode } from './actionCreators/createDeleteNode'
 import { EngineStateWithActions } from '@store/types'
 import { initialState } from '@store/initialState'
-import { createAddSketch } from '@store/actionCreators/addSketch'
-import { createDeleteSketch } from '@store/actionCreators/deleteSketch'
+import { createAddSketchToScene } from '@store/actionCreators/addSketch'
 import { createSetSketchModuleItem } from '@store/actionCreators/setSketchModuleItem'
 import { createDeleteSketchModule } from '@store/actionCreators/deleteSketchModule'
 import { createReconcileSketchNodes } from '@store/actionCreators/createReconcileSketchNodes'
 import {
-  createUpdateMultipleNodeValues,
-  createUpdateNodeValue,
-} from '@store/actionCreators/updateNodeValue'
+  createUpdateMultipleParamValues,
+  createUpdateParamValue,
+} from '@store/actionCreators/updateParamValue'
 import { createReset } from '@store/actionCreators/reset'
 import { createLoadProject } from '@store/actionCreators/loadProject'
 import { createAddInput } from '@store/actionCreators/createAddInput'
 import { createUpdateSketch } from '@store/actionCreators/updateSketch'
 import { createMoveSketchDown, createMoveSketchUp } from '@store/actionCreators/moveSketchOrder'
+import { createAddScene, createDeleteScene } from '@store/actionCreators/scene'
 
 export const createEngineStore = () =>
   createStore<EngineStateWithActions>()(
@@ -27,13 +27,14 @@ export const createEngineStore = () =>
       devtools(
         immer<EngineStateWithActions>((set) => ({
           ...initialState,
-          addSketch: createAddSketch(set),
+          addScene: createAddScene(set),
+          deleteScene: createDeleteScene(set),
+          addSketchToScene: createAddSketchToScene(set),
           updateSketch: createUpdateSketch(set),
           reconcileSketchNodes: createReconcileSketchNodes(set),
           setSketchModuleItem: createSetSketchModuleItem(set),
-          updateNodeValue: createUpdateNodeValue(set),
-          updateMultipleNodeValues: createUpdateMultipleNodeValues(set),
-          deleteSketch: createDeleteSketch(set),
+          updateParamValue: createUpdateParamValue(set),
+          updateMultipleParamValues: createUpdateMultipleParamValues(set),
           deleteSketchModule: createDeleteSketchModule(set),
           moveSketchUp: createMoveSketchUp(set),
           moveSketchDown: createMoveSketchDown(set),
@@ -46,6 +47,8 @@ export const createEngineStore = () =>
           name: 'Hedron Engine',
           // TODO: make this configurable for users of the engine
           enabled: true,
+          // Actions ignored by devtools if they `ignore/` at the start of their action name
+          actionsDenylist: ['ignore/.*'],
         },
       ),
     ),

@@ -27,6 +27,13 @@ export default {
       title: 'Sphere Scale',
       defaultValue: 1,
     },
+    {
+      key: 'matcapFileName',
+      valueType: 'file',
+      title: 'Matcap Texture',
+      defaultValue: null,
+      accept: ['image/*'],
+    },
   ],
   shots: [
     {

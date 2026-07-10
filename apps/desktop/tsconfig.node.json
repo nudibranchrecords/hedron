@@ -3,12 +3,12 @@
   "include": ["electron.vite.config.*", "src/main/**/*", "src/preload/**/*", "src/shared/**/*"],
   "compilerOptions": {
     "module": "esnext",
-    "baseUrl": ".",
     "types": ["electron-vite/node"],
     "paths": {
-      "@shared/*": ["src/shared/*"],
-      "@main/*": ["src/main/*"],
-      "@resources/*": ["resources/*"]
+      "@shared/*": ["./src/shared/*"],
+      "@main/*": ["./src/main/*"],
+      "@resources/*": ["./resources/*"],
+      "@utils/*": ["./src/main/utils/*"]
     }
   }
 }

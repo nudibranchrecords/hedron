@@ -11,22 +11,22 @@ const sphereScaleMaxNodeId = `${sphereScaleNodeId}-sliderMax`
 
 document.addEventListener('click', () => {
   const state = engineStore.getState()
-  const nodeVal = state.nodeValues[lfoInputEnabledNodeId] as boolean
+  const nodeVal = state.paramValues[lfoInputEnabledNodeId] as boolean
 
-  state.updateNodeValue(lfoInputEnabledNodeId, !nodeVal)
+  state.updateParamValue(lfoInputEnabledNodeId, !nodeVal)
 })
 
 document.addEventListener('mousemove', (e) => {
   const state = engineStore.getState()
-  const satMin = state.nodeValues[satMinNodeId] as number
-  const satMax = state.nodeValues[satMaxNodeId] as number
+  const satMin = state.paramValues[satMinNodeId] as number
+  const satMax = state.paramValues[satMaxNodeId] as number
   const saturation = (e.clientX / window.innerWidth) * (satMax - satMin) + satMin
 
-  const sphereScaleMin = state.nodeValues[sphereScaleMinNodeId] as number
-  const sphereScaleMax = state.nodeValues[sphereScaleMaxNodeId] as number
+  const sphereScaleMin = state.paramValues[sphereScaleMinNodeId] as number
+  const sphereScaleMax = state.paramValues[sphereScaleMaxNodeId] as number
   const sphereScale =
     (e.clientY / window.innerHeight) * (sphereScaleMax - sphereScaleMin) + sphereScaleMin
 
-  state.updateNodeValue(sphereScaleNodeId, sphereScale)
-  state.updateNodeValue(saturationNodeId, saturation)
+  state.updateParamValue(sphereScaleNodeId, sphereScale)
+  state.updateParamValue(saturationNodeId, saturation)
 })

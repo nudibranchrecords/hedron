@@ -7,6 +7,7 @@ import {
   ParamRGB,
   ParamVector3,
   ParamVector2,
+  ParamFile,
 } from '@hedron-gl/engine'
 import {
   GamepadInputType,
@@ -138,7 +139,7 @@ export function createGamepadHandlers(dependencies: {
    */
   const handleBoolean: ValueHandler<ParamBoolean> = ({
     gamepadEvent,
-    targetNodeValue,
+    targetParamValue,
     optionNodes,
   }) => {
     if (optionNodes.inputType === GamepadInputType.Button) {
@@ -149,7 +150,7 @@ export function createGamepadHandlers(dependencies: {
           (optionNodes.triggerOn === 'up' && !gamepadEvent.isPressed)
         if (!shouldTrigger) return null
 
-        return !targetNodeValue
+        return !targetParamValue
       }
 
       // For hold mode, follow the button state
@@ -174,8 +175,8 @@ export function createGamepadHandlers(dependencies: {
     input,
     optionNodes,
   }) => {
-    const sliderMin = (storeState.nodeValues[`${input.targetNodeId}-sliderMin`] as number) ?? 0
-    const sliderMax = (storeState.nodeValues[`${input.targetNodeId}-sliderMax`] as number) ?? 1
+    const sliderMin = (storeState.paramValues[`${input.targetNodeId}-sliderMin`] as number) ?? 0
+    const sliderMax = (storeState.paramValues[`${input.targetNodeId}-sliderMax`] as number) ?? 1
 
     // For button inputs, check if toggle mode is enabled
     if (
@@ -274,6 +275,17 @@ export function createGamepadHandlers(dependencies: {
     return null
   }
 
+  /**
+   * Handles unsupported file value types from gamepad events, logging a warning.
+   */
+  const handleUnsupportedFile: ValueHandler<ParamFile> = ({ input, targetNode, gamepadEvent }) => {
+    console.warn(
+      `Gamepad Input: Unsupported value type for node ${input.targetNodeId}. Value: ${gamepadEvent.value}, Type: ${targetNode.valueType}`,
+    )
+
+    return null
+  }
+
   return {
     handleShot,
     handleEnum,
@@ -283,5 +295,6 @@ export function createGamepadHandlers(dependencies: {
     handleUnsupportedRGB,
     handleUnsupportedVector2,
     handleUnsupportedVector3,
+    handleUnsupportedFile,
   }
 }

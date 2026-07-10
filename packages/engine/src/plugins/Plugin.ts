@@ -1,11 +1,14 @@
+import { HedronEngine } from '@HedronEngine/HedronEngine'
 import { nodesAsArray } from '@utils/nodesAsArray'
 import {
   EngineState,
   EngineStateWithActions,
-  Input,
-  Node,
-  NodeConfig,
-  NodeValue,
+  InputNode,
+  ParamValue,
+  ParamNode,
+  ShotNode,
+  ConfigParam,
+  ConfigShot,
 } from '@store/types'
 
 /**
@@ -20,7 +23,7 @@ export interface IPlugin {
   /**
    * Type of input
    */
-  inputType: string
+  inputType?: string
 
   /**
    * The name of the plugin.
@@ -28,25 +31,38 @@ export interface IPlugin {
   name: string
 
   /**
+   * Icon to be displayed in various places
+   * https://fonts.google.com/icons
+   */
+  iconName: string
+
+  /**
    * The description of the plugin.
    */
   description: string
 
   /**
+   * @deprecated prefer `onNewInput` to create option nodes
    * Config to generate option nodes. Follows same structure as sketch params config.
    */
-  optionNodesConfig: NodeConfig[]
+  optionNodesConfig?: readonly (ConfigParam | ConfigShot)[]
 
   /**
+   * @deprecated prefer `onEngineInitialize` to create global plugin option nodes
    * Config to generate global option nodes. Follows same structure as sketch params config.
    */
-  globalOptionNodesConfig?: NodeConfig[]
+  globalOptionNodesConfig?: readonly (ConfigParam | ConfigShot)[]
 
   /**
    * Optional callback called after engine initialization (project load, sketches folder selection)
    * Useful for plugins that need to sync their state after the store is populated
    */
-  onEngineInitialize?: () => void
+  onEngineInitialize?: (engine: HedronEngine) => void
+
+  /**
+   * Optional callback called after each input for this plugin is added
+   */
+  onNewInput?: (engine: HedronEngine, newInput: InputNode, targetNode: ParamNode | ShotNode) => void
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -86,13 +102,29 @@ export const getOptionNodesFromIds = <T extends readonly any[]>(
       return
     }
 
-    if (node?.nodeType === 'input') {
+    if (node.nodeType === 'custom') {
       console.warn(
-        `Node ${node.title}: ${node.id} is an input node. Input nodes cannot be used as option nodes for plugins.`,
+        `Node ${node.id} is a custom node. Custom nodes cannot be used as option nodes for plugins.`,
+      )
+
+      return
+    }
+
+    if (node.nodeType === 'input') {
+      console.warn(
+        `Node ${node.id} is an input node. Input nodes cannot be used as option nodes for plugins.`,
       )
       return
     }
-    ;(options as Record<string, unknown>)[node.key] = state.nodeValues[id]
+
+    if (node.nodeType === 'scene' || node.nodeType === 'sketch') {
+      console.warn(
+        `Node ${node.id} is a ${node.nodeType} node. ${node.nodeType} nodes cannot be used as option nodes for plugins.`,
+      )
+      return
+    }
+
+    ;(options as Record<string, unknown>)[node.key] = state.paramValues[id]
   })
   return options
 }
@@ -111,12 +143,19 @@ export const handleEachInput = <T extends readonly any[]>(
   callback: ({
     input,
     optionNodes,
-  }: {
-    input: Input
-    optionNodes: ConfigToOptionsType<T>
-    targetNode: Exclude<Node, Input>
-    targetNodeValue: NodeValue
-  }) => void,
+  }:
+    | {
+        input: InputNode
+        optionNodes: ConfigToOptionsType<T>
+        targetNode: ParamNode
+        targetParamValue: ParamValue
+      }
+    | {
+        input: InputNode
+        optionNodes: ConfigToOptionsType<T>
+        targetNode: ShotNode
+        targetParamValue?: never
+      }) => void,
 ) => {
   const allNodes = nodesAsArray(storeState.nodes)
 
@@ -134,21 +173,39 @@ export const handleEachInput = <T extends readonly any[]>(
 
     if (targetNode.nodeType === 'input') {
       console.warn(
-        `Input ${input.title}: ${input.id} is trying to target another input ${targetNode.title}: ${targetNode.id}. This is not supported.`,
+        `Input ${input.id} is trying to target another input ${targetNode.id}. This is not supported.`,
       )
       return
     }
 
-    const targetNodeValue = storeState.nodeValues[input.targetNodeId]
-
-    if (targetNodeValue === undefined) {
-      // Node may not exist if deleting a sketch/param didn't clean up properly
-      // TODO: special log level for checking this
+    if (targetNode.nodeType === 'custom') {
+      console.warn(
+        `Input ${input.id} is trying to target a custom node ${targetNode.id}. This is not supported.`,
+      )
       return
     }
 
-    const optionNodes = getOptionNodesFromIds<T>(storeState, input.optionNodeIds)
+    if (targetNode.nodeType === 'scene' || targetNode.nodeType === 'sketch') {
+      console.warn(
+        `Input ${input.id} is trying to target a ${targetNode.nodeType} node ${targetNode.id}. This is not supported.`,
+      )
+      return
+    }
 
-    callback({ input, optionNodes, targetNode, targetNodeValue })
+    const optionNodes = getOptionNodesFromIds<T>(storeState, input.childGroups.optionNodeIds)
+
+    if (targetNode.nodeType === 'param') {
+      const targetParamValue = storeState.paramValues[input.targetNodeId]
+
+      if (targetParamValue === undefined) {
+        // Node may not exist if deleting a sketch/param didn't clean up properly
+        // TODO: special log level for checking this
+        return
+      }
+
+      callback({ input, optionNodes, targetNode, targetParamValue: targetParamValue })
+    } else if (targetNode.nodeType === 'shot') {
+      callback({ input, optionNodes, targetNode })
+    }
   })
 }

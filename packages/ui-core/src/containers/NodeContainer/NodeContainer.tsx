@@ -1,8 +1,8 @@
-import { Input, Node } from '@hedron-gl/engine'
-import { useCallback } from 'react'
+import { Node, ParamNode as ParamType, ShotNode as ShotType } from '@hedron-gl/engine'
 import { ParamNumber } from './ParamNumber/ParamNumber'
 import { ParamBoolean } from './ParamBoolean/ParamBoolean'
 import { ParamEnum } from './ParamEnum/ParamEnum'
+import { ParamFile } from './ParamFile/ParamFile'
 import { ParamVector3 } from './ParamVector3/ParamVector3'
 import { ParamColor } from './ParamColor/ParamColor'
 import { ParamString } from './ParamString/ParamString'
@@ -13,12 +13,15 @@ import {
   NodeControl,
   NodeControlInner,
   NodeControlMain,
-  NodeControlProps,
   NodeControlTitle,
+  NodeControlInfo,
+  NodeControlInputCount,
 } from '@components/NodeControl/NodeControl'
-import { useEngineStore } from '@hooks/storeHooks'
+import { useEngineStore, useAppStore } from '@hooks/engineHooks'
+import { useInputCount } from '@hooks/useInputCount'
+import { useOnSelectNode } from '@hooks/useOnSelectNode'
 
-const getInputElement = (node: Exclude<Node, Input>) => {
+const getInputElement = (node: ParamType | ShotType) => {
   if (node.nodeType === 'shot') {
     return <Shot id={node.id} />
   }
@@ -32,6 +35,8 @@ const getInputElement = (node: Exclude<Node, Input>) => {
       return <ParamString id={node.id} />
     case 'enum':
       return <ParamEnum id={node.id} />
+    case 'file':
+      return <ParamFile id={node.id} />
     case 'vector2':
       return <ParamVector2 id={node.id} />
     case 'vector3':
@@ -43,35 +48,41 @@ const getInputElement = (node: Exclude<Node, Input>) => {
   }
 }
 
-export const NodeContainer = ({
-  onClick,
-  isActive,
-  nodeId,
-  layout,
-}: {
-  onClick?: (nodeId: string) => void
-  isActive?: boolean
-  nodeId: string
-  layout?: NodeControlProps['layout']
-}) => {
-  const node = useEngineStore((state) => state.nodes[nodeId])
+const isRenderableNode = (node: Node): node is ParamType | ShotType => {
+  return node.nodeType === 'param' || node.nodeType === 'shot'
+}
 
-  const _onClick = useCallback(() => {
-    onClick?.(nodeId)
-  }, [nodeId, onClick])
+export const NodeContainer = ({ nodeId }: { nodeId: string }) => {
+  const node = useEngineStore((state) => state.nodes[nodeId])
+  const inputCount = useInputCount(nodeId)
+  const selectedSceneId = useAppStore((state) => state.selectedSceneId)
+  const selectedSketches = useAppStore((state) => state.selectedSketches)
+  const selectedSketchId = selectedSceneId ? selectedSketches[selectedSceneId] : null
+  const isActive = useAppStore((state) =>
+    selectedSketchId ? state.selectedNodes[selectedSketchId] === nodeId : false,
+  )
+  const onSelectNode = useOnSelectNode(selectedSketchId, nodeId)
 
   if (!node) {
     return <i>Node with id {nodeId} not found</i>
   }
 
-  if (node.nodeType === 'input') {
-    return "NodeContainer: Tried to render an input node, this isn't supported. Node ID: " + node.id
+  if (!isRenderableNode(node)) {
+    return (
+      'NodeContainer: Tried to render a ' +
+      node.nodeType +
+      " node, this isn't supported. Node ID: " +
+      node.id
+    )
   }
 
   return (
-    <NodeControl key={node.key} onClick={_onClick} isActive={isActive} layout={layout}>
+    <NodeControl key={node.key} onClick={onSelectNode} isActive={isActive}>
       <NodeControlMain>
-        <NodeControlTitle>{node.title}</NodeControlTitle>
+        <NodeControlInfo>
+          <NodeControlTitle>{node.title}</NodeControlTitle>
+          <NodeControlInputCount inputCount={inputCount} />
+        </NodeControlInfo>
         <NodeControlInner>{getInputElement(node)}</NodeControlInner>
       </NodeControlMain>
     </NodeControl>

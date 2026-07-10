@@ -2,9 +2,9 @@ import {
   ConfigToOptionsType,
   EngineState,
   HedronEngine,
-  Input,
-  NodeValue,
-  Param,
+  InputNode,
+  ParamValue,
+  ParamNode,
 } from '@hedron-gl/engine'
 import { GamepadInput } from './GamepadInput'
 
@@ -48,20 +48,20 @@ export interface GamepadEvent {
 /**
  * Type for value handler functions.
  */
-export type ValueHandler<T = Param> = (params: {
+export type ValueHandler<T = ParamNode> = (params: {
   gamepadEvent: GamepadEvent
-  input: Input
+  input: InputNode
   storeState: EngineState
   optionNodes: ConfigToOptionsType<typeof GamepadInput.prototype.optionNodesConfig>
   targetNode: T
-  targetNodeValue: NodeValue
-}) => NodeValue | null
+  targetParamValue: ParamValue
+}) => ParamValue | null
 
 /**
  * Type for shot handler functions.
  */
 export type ShotHandler = (params: {
-  input: Input
+  input: InputNode
   engine: HedronEngine
   gamepadEvent: GamepadEvent
   optionNodes: ConfigToOptionsType<typeof GamepadInput.prototype.optionNodesConfig>

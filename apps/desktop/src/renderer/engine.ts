@@ -1,20 +1,12 @@
 import { HedronEngine } from '@hedron-gl/engine'
 import Stats from 'three/examples/jsm/libs/stats.module.js'
 import { Clock } from '@hedron-gl/clock'
-import { MidiInput, MidiInputPanel, MidiGlobalWidget, MidiGlobalPanel } from '@hedron-gl/midi-input'
-import {
-  GamepadInput,
-  GamepadInputPanel,
-  GamepadGlobalWidget,
-  GamepadGlobalPanel,
-} from '@hedron-gl/gamepad-input'
+import { MidiInput, MidiInputPanel, MidiGlobalPanel } from '@hedron-gl/midi-input'
+import { GamepadInput, GamepadInputPanel, GamepadGlobalPanel } from '@hedron-gl/gamepad-input'
 import { LFOInput, LFOInputPanel } from '@hedron-gl/lfo-input'
-import {
-  AudioInput,
-  AudioInputPanel,
-  AudioGlobalWidget,
-  AudioGlobalPanel,
-} from '@hedron-gl/audio-input'
+import { AudioInput, AudioInputPanel, AudioGlobalPanel } from '@hedron-gl/audio-input'
+import { TimelineInput, TimelineGlobalPanel } from '@hedron-gl/timeline'
+import { SceneControlPlugin, SceneControlGlobalPanel } from '@hedron-gl/scene-control'
 
 export const performanceMonitor = new Stats()
 
@@ -35,6 +27,8 @@ engine.registerPlugin(new MidiInput(engine))
 engine.registerPlugin(new LFOInput(engine))
 engine.registerPlugin(new AudioInput(engine))
 engine.registerPlugin(new GamepadInput(engine))
+engine.registerPlugin(new TimelineInput())
+engine.registerPlugin(new SceneControlPlugin())
 
 export const pluginViews = {
   inputPanel: {
@@ -44,17 +38,10 @@ export const pluginViews = {
     gamepad: GamepadInputPanel,
   },
   globalPanel: {
-    audio: {
-      widget: AudioGlobalWidget,
-      panel: AudioGlobalPanel,
-    },
-    gamepad: {
-      widget: GamepadGlobalWidget,
-      panel: GamepadGlobalPanel,
-    },
-    midi: {
-      widget: MidiGlobalWidget,
-      panel: MidiGlobalPanel,
-    },
+    ['audio-input']: AudioGlobalPanel,
+    ['gamepad-input']: GamepadGlobalPanel,
+    ['midi-input']: MidiGlobalPanel,
+    ['timeline-input']: TimelineGlobalPanel,
+    ['scene-control']: SceneControlGlobalPanel,
   },
 }

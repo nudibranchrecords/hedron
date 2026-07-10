@@ -1,6 +1,6 @@
 import { engine } from '@renderer/engine'
 import { handleLoadProjectDialog, handleSaveProjectDialog } from '@renderer/handlers/fileHandlers'
-import { AppMenuEvents, AppMenuEventsItem, SketchEvents } from '@shared/Events'
+import { AppMenuEvents, AppMenuEventsItem, ResourceEvents, SketchEvents } from '@shared/Events'
 import { appStore, BuildResult } from '@renderer/appStore'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -36,6 +36,24 @@ listen(SketchEvents.BuildResult, (result: BuildResult) => {
     }
   }
 })
+
+listen(
+  ResourceEvents.AddResourceFile,
+  ([fileName, contentType, lastModified]: [string, string, number]) => {
+    engine.addResource(fileName, contentType, lastModified)
+  },
+)
+
+listen(ResourceEvents.RemoveResourceFile, (fileName: string) => {
+  engine.removeResource(fileName)
+})
+
+listen(
+  ResourceEvents.ChangeResourceFile,
+  ([fileName, contentType, lastModified]: [string, string, number]) => {
+    engine.addResource(fileName, contentType, lastModified)
+  },
+)
 
 listen(AppMenuEvents.AppMenuClick, (item: AppMenuEventsItem) => {
   switch (item) {

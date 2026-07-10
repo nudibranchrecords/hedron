@@ -1,4 +1,4 @@
-import { HedronEngine, Input } from '@hedron-gl/engine'
+import { HedronEngine, InputNode } from '@hedron-gl/engine'
 import { ControlGrid, NodeContainer } from '@hedron-gl/ui-core'
 import { useEffect, useState } from 'react'
 import { AudioInput } from './AudioInput'
@@ -6,7 +6,7 @@ import { calculateAverageLevel, getLevelColor } from './AudioUtils'
 import styles from './AudioInputPanel.module.css'
 
 interface IProps {
-  input: Input
+  input: InputNode
   // TODO: This can be typed as something like HedronEngineWithPlugin<AudioInput>
   engine: HedronEngine
 }
@@ -20,7 +20,9 @@ export const AudioInputPanel = ({ input, engine }: IProps) => {
   const audioPlugin = engine.plugins[AudioInput.ID] as AudioInput | undefined
 
   // Log selected frequency band from input options
-  const frequencyOption = input.optionNodeIds.find((id: string) => id.includes('frequency'))
+  const frequencyOption = input.childGroups.optionNodeIds.find((id: string) =>
+    id.includes('frequency'),
+  )
   if (frequencyOption) {
     console.log('[AudioInputPanel] Selected frequency band option:', frequencyOption)
   }
@@ -74,7 +76,7 @@ export const AudioInputPanel = ({ input, engine }: IProps) => {
       )}
 
       <ControlGrid className="mb-xl">
-        {input.optionNodeIds.map((id: string) => (
+        {input.childGroups.optionNodeIds.map((id: string) => (
           <NodeContainer key={id} nodeId={id} />
         ))}
       </ControlGrid>

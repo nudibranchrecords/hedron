@@ -4,11 +4,10 @@ import {
   getNextEnumValue,
   handleEachInput,
   HedronEngine,
-  Input,
+  InputNode,
   IPlugin,
-  NodeConfig,
-  NodeValue,
-  Param,
+  ParamValue,
+  ParamNode,
 } from '@hedron-gl/engine'
 
 const TAU = Math.PI * 2
@@ -16,28 +15,31 @@ const lerp = (v0: number, v1: number, t: number) => (1 - t) * v0 + t * v1
 
 type ValueHander = (params: {
   delta: number
-  input: Input
+  input: InputNode
   storeState: EngineState
   optionNodes: ConfigToOptionsType<typeof LFOInput.prototype.optionNodesConfig>
-  targetNode: Param
-}) => NodeValue | null
+  targetNode: ParamNode
+}) => ParamValue | null
 
-type ShotHandler = (params: { delta: number; input: Input; engine: HedronEngine }) => void
+type ShotHandler = (params: { delta: number; input: InputNode; engine: HedronEngine }) => void
 
 export class LFOInput implements IPlugin {
   public readonly id = 'lfo-input'
   public readonly name = 'LFO Input'
   public readonly inputType = 'lfo'
+  public readonly iconName = 'vital_signs'
   public readonly description =
     'Generates LFO waves (e.g. sin, square, sawtooth) as inputs for params.'
   public readonly optionNodesConfig = [
     {
       key: 'isEnabled',
+      nodeType: 'param',
       valueType: 'boolean',
       defaultValue: true,
     },
     {
       key: 'frequency',
+      nodeType: 'param',
       valueType: 'enum',
       defaultValue: 1,
       options: [
@@ -89,6 +91,7 @@ export class LFOInput implements IPlugin {
     },
     {
       key: 'waveType',
+      nodeType: 'param',
       valueType: 'enum',
       defaultValue: 'sine',
       options: [
@@ -100,30 +103,37 @@ export class LFOInput implements IPlugin {
     },
     {
       key: 'amplitude',
+      nodeType: 'param',
       valueType: 'number',
       defaultValue: 1,
     },
     {
       key: 'phase',
+      nodeType: 'param',
       valueType: 'number',
       defaultValue: 0,
     },
     {
       key: 'min',
+      nodeType: 'param',
       valueType: 'number',
       defaultValue: 0,
     },
     {
       key: 'max',
+      nodeType: 'param',
       valueType: 'number',
       defaultValue: 1,
     },
-  ] as const satisfies NodeConfig[]
+  ] as const satisfies IPlugin['optionNodesConfig']
 
   private inputLatches: Record<string, boolean> = {}
 
+  private lastClockBeatDelta: number = -1
+
   private handleShot: ShotHandler = ({ delta, input, engine }) => {
     const val = Math.sin(delta)
+
     if (val > 0 && !this.inputLatches[input.id]) {
       this.inputLatches[input.id] = true
 
@@ -181,10 +191,12 @@ export class LFOInput implements IPlugin {
 
     const tick = () => {
       requestAnimationFrame(() => {
-        if (!clock.isRunning) {
+        if (clock.beatDelta === this.lastClockBeatDelta) {
           tick()
           return
         }
+
+        this.lastClockBeatDelta = clock.beatDelta
 
         const storeState = store.getState()
         handleEachInput<typeof this.optionNodesConfig>(
@@ -192,6 +204,9 @@ export class LFOInput implements IPlugin {
           this.inputType,
           ({ input, optionNodes, targetNode }) => {
             const delta = (clock.beatDelta * optionNodes.frequency + optionNodes.phase) * TAU
+
+            // TODO: This can be handled by `onInput` once we have `isEnabled` as a generic option
+            if (!optionNodes.isEnabled) return
 
             if (targetNode.nodeType === 'shot') {
               this.handleShot({
@@ -202,9 +217,6 @@ export class LFOInput implements IPlugin {
               return
             }
 
-            // TODO: This can be handled by `onInput` once we have `isEnabled` as a generic option
-            if (!optionNodes.isEnabled) return
-
             const value = {
               enum: this.handleEnum,
               boolean: this.handleBoolean,
@@ -213,6 +225,7 @@ export class LFOInput implements IPlugin {
               rgb: this.handleUnsupported,
               vector2: this.handleUnsupported,
               vector3: this.handleUnsupported,
+              file: this.handleUnsupported,
             }[targetNode.valueType]({
               delta,
               input,
@@ -225,7 +238,7 @@ export class LFOInput implements IPlugin {
               return
             }
 
-            storeState.updateNodeValue(input.targetNodeId, value)
+            storeState.updateParamValue(input.targetNodeId, value)
           },
         )
 

@@ -13,6 +13,7 @@ export default class Logo {
   root = new THREE.Group()
   sphere = new THREE.Mesh(sphereGeom, matcapMat)
   model?: THREE.Mesh
+  lastMatCapUrl?: string
 
   constructor() {
     // Add inner sphere
@@ -26,16 +27,20 @@ export default class Logo {
 
       const s = 0.5
       this.model.scale.set(s, s, s)
-
-      textureLoader.load(matcapUrl, (matcap) => {
-        matcapMat.matcap = matcap
-        matcapMat.needsUpdate = true
-      })
     })
   }
 
   update({ params: p, deltaFrame: d }) {
     if (!this.model) return
+
+    // TODO: We wouldn't need to check every frame if we had some sketch api for reacting to param changes
+    if (p.matcapFileName && p.matcapFileName !== this.lastMatCapUrl) {
+      this.lastMatCapUrl = p.matcapFileName
+      textureLoader.load(p.matcapFileName, (matcap) => {
+        matcapMat.matcap = matcap
+        matcapMat.needsUpdate = true
+      })
+    }
 
     let s
 

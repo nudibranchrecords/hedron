@@ -1,3 +1,4 @@
+import { Node } from '@hedron-gl/engine'
 import {
   Button,
   ViewHeader,
@@ -6,37 +7,40 @@ import {
   Panel,
   PanelBody,
   PanelHeader,
+  PanelBreadcrumbs,
   PopoutMenu,
   HedronErrorBoundary,
-  useAppStore,
   useOnSelectNode,
   NodeContainer,
 } from '@hedron-gl/ui-core'
 
-import { Node } from '@hedron-gl/engine'
 import c from './ActiveSketch.module.css'
 import { openSketchSourceFile } from './openSketchSourceFile'
-import { useActiveSketch } from '@components/hooks/useActiveSketch'
+import { useSelectedSketch } from '@components/hooks/useSelectedSketch'
 import { engineStore } from '@renderer/engine'
 import { SketchControls } from '@components/SketchControls/SketchControls'
 import { useGroupedNodes } from '@components/hooks/useGroupedNodes'
 import { useSelectedNode } from '@components/hooks/useSelectedNode'
+import { useNodeBreadcrumbs } from '@components/hooks/useNodeBreadcrumbs'
 import { SelectedNode } from '@components/SelectedNode/SelectedNode'
 
-interface ControlItemProps {
-  node: Node
-  sketchId: string
-}
+const SelectedNodePanel = ({ node, onClose }: { node: Node; onClose: () => void }) => {
+  const breadcrumbs = useNodeBreadcrumbs(node.id)
 
-const ControlItem = ({ node, sketchId }: ControlItemProps) => {
-  const isActive = useAppStore((state) => state.selectedNodes[sketchId] === node.id)
-  const onSelectNode = useOnSelectNode(sketchId, node.id)
-
-  return <NodeContainer onClick={onSelectNode} nodeId={node.id} isActive={isActive} />
+  return (
+    <Panel snugPosition="bottom" spacing="slim" width="full" className={c.bottomPanel}>
+      <PanelHeader iconName={paramIcon} buttonOnClick={onClose}>
+        <PanelBreadcrumbs items={breadcrumbs} />
+      </PanelHeader>
+      <PanelBody>
+        <SelectedNode />
+      </PanelBody>
+    </Panel>
+  )
 }
 
 export const ActiveSketch = () => {
-  const activeSketch = useActiveSketch()
+  const activeSketch = useSelectedSketch()
 
   if (!activeSketch) {
     throw new Error('ActiveSketch component: No activesketch found')
@@ -72,7 +76,7 @@ export const ActiveSketch = () => {
             {
               label: 'Delete Sketch',
               icon: 'delete',
-              onClick: () => engineStore.getState().deleteSketch(activeSketch.id),
+              onClick: () => engineStore.getState().deleteNode(activeSketch.id),
             },
           ]}
         >
@@ -84,20 +88,11 @@ export const ActiveSketch = () => {
           <SketchControls
             sketchId={activeSketch.id}
             nodeGroups={nodeGroups}
-            ControlItem={ControlItem}
+            ControlItem={({ node }) => <NodeContainer nodeId={node.id} />}
           />
         </div>
 
-        {selectedNode && (
-          <Panel snugPosition="bottom" spacing="slim" width="full" className={c.bottomPanel}>
-            <PanelHeader iconName={paramIcon} buttonOnClick={closeSelectedNodePanel}>
-              {selectedNode.title}
-            </PanelHeader>
-            <PanelBody>
-              <SelectedNode />
-            </PanelBody>
-          </Panel>
-        )}
+        {selectedNode && <SelectedNodePanel node={selectedNode} onClose={closeSelectedNodePanel} />}
       </HedronErrorBoundary>
     </div>
   )

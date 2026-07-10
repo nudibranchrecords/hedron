@@ -10,6 +10,7 @@ import {
   ParamVector2,
   ParamVector3,
   HedronEngine,
+  ParamFile,
 } from '@hedron-gl/engine'
 import { GamepadManager } from './GamepadManager'
 import { GamepadEvent, GamepadInputType, AxisMode, ValueHandler, ShotHandler } from './GamepadTypes'
@@ -22,6 +23,7 @@ import { createGamepadHandlers, applySmoothing, calculate2AxisValue } from './Ga
 export class GamepadInput implements IPlugin {
   public readonly id = 'gamepad-input'
   public readonly name = 'Gamepad Input'
+  public readonly iconName = 'stadia_controller'
   public readonly inputType = 'gamepad'
   public readonly description = 'Handles gamepad input devices.'
   public readonly gamepadManager = new GamepadManager()
@@ -64,6 +66,7 @@ export class GamepadInput implements IPlugin {
     boolean: ValueHandler<ParamBoolean>
     number: ValueHandler<ParamNumber>
     string: ValueHandler<ParamString>
+    file: ValueHandler<ParamFile>
     rgb: ValueHandler<ParamRGB>
     vector2: ValueHandler<ParamVector2>
     vector3: ValueHandler<ParamVector3>
@@ -89,6 +92,7 @@ export class GamepadInput implements IPlugin {
       rgb: baseHandlers.handleUnsupportedRGB,
       vector2: baseHandlers.handleUnsupportedVector2,
       vector3: baseHandlers.handleUnsupportedVector3,
+      file: baseHandlers.handleUnsupportedFile,
     }
 
     this.gamepadManager.onGamepadEvent.add(this.handleGamepadEvent.bind(this))
@@ -104,7 +108,7 @@ export class GamepadInput implements IPlugin {
   private getAxisSmoothing(): number {
     const storeState = this.store.getState()
     const nodeId = `${this.id}-global-axisSmoothing`
-    const value = storeState.nodeValues[nodeId] as number | undefined
+    const value = storeState.paramValues[nodeId] as number | undefined
     return value ?? 0
   }
 
@@ -115,7 +119,7 @@ export class GamepadInput implements IPlugin {
   private getButtonSmoothing(): number {
     const storeState = this.store.getState()
     const nodeId = `${this.id}-global-buttonSmoothing`
-    const value = storeState.nodeValues[nodeId] as number | undefined
+    const value = storeState.paramValues[nodeId] as number | undefined
     return value ?? 0
   }
 
@@ -126,7 +130,7 @@ export class GamepadInput implements IPlugin {
   private getAxisDeadZone(): number {
     const storeState = this.store.getState()
     const nodeId = `${this.id}-global-axisDeadZone`
-    const value = storeState.nodeValues[nodeId] as number | undefined
+    const value = storeState.paramValues[nodeId] as number | undefined
     return value ?? 0
   }
 
@@ -137,7 +141,7 @@ export class GamepadInput implements IPlugin {
   private getAxisCap(): number {
     const storeState = this.store.getState()
     const nodeId = `${this.id}-global-axisCap`
-    const value = storeState.nodeValues[nodeId] as number | undefined
+    const value = storeState.paramValues[nodeId] as number | undefined
     return value ?? 1
   }
 
@@ -184,7 +188,7 @@ export class GamepadInput implements IPlugin {
     handleEachInput<typeof this.optionNodesConfig>(
       storeState,
       'gamepad',
-      ({ input, optionNodes, targetNode, targetNodeValue }) => {
+      ({ input, optionNodes, targetNode, targetParamValue }) => {
         // Skip if input is disabled
         if (!optionNodes.isEnabled) return
 
@@ -240,9 +244,9 @@ export class GamepadInput implements IPlugin {
             )
 
             const sliderMin =
-              (storeState.nodeValues[`${input.targetNodeId}-sliderMin`] as number) ?? 0
+              (storeState.paramValues[`${input.targetNodeId}-sliderMin`] as number) ?? 0
             const sliderMax =
-              (storeState.nodeValues[`${input.targetNodeId}-sliderMax`] as number) ?? 1
+              (storeState.paramValues[`${input.targetNodeId}-sliderMax`] as number) ?? 1
             const scaledValue = combinedValue * (sliderMax - sliderMin) + sliderMin
 
             this.targetValues.set(input.id, scaledValue)
@@ -283,7 +287,8 @@ export class GamepadInput implements IPlugin {
           optionNodes,
           // @ts-expect-error - TS can't infer that handler matches node type
           targetNode,
-          targetNodeValue,
+          // @ts-expect-error - TS can't infer that handler matches node type
+          targetParamValue,
         })
 
         if (value === null) {
@@ -295,7 +300,7 @@ export class GamepadInput implements IPlugin {
           this.targetValues.set(input.id, value)
         } else {
           // For non-number types, update directly
-          storeState.updateNodeValue(input.targetNodeId, value)
+          storeState.updateParamValue(input.targetNodeId, value)
         }
       },
     )
@@ -333,7 +338,7 @@ export class GamepadInput implements IPlugin {
         if (targetValue === undefined) return
 
         // Get current value from store
-        const currentValue = storeState.nodeValues[input.targetNodeId] as number | undefined
+        const currentValue = storeState.paramValues[input.targetNodeId] as number | undefined
 
         // Determine smoothing based on input type
         let smoothing = 0
@@ -353,7 +358,7 @@ export class GamepadInput implements IPlugin {
         }
 
         // Update the node value
-        storeState.updateNodeValue(input.targetNodeId, finalValue)
+        storeState.updateParamValue(input.targetNodeId, finalValue)
       },
     )
   }

@@ -14,4 +14,4 @@ out
 .sketches-server
 dev-settings.json
 chrome-extensions
-packages/ui-core/storybook-static/*
+**/storybook-static/*

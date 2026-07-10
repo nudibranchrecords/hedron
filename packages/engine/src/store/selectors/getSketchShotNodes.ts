@@ -1,8 +1,15 @@
-import { EngineState } from '@store/types'
+import { getSketch } from './getSceneSketches'
+import { EngineState, ShotNode } from '@store/types'
 
 export const getSketchShotNodes = (state: EngineState, sketchId: string) => {
-  const { sketches, nodes } = state
-  const sketch = sketches[sketchId]
+  const { nodes } = state
+  const sketch = getSketch(state, sketchId)
 
-  return sketch.nodeIds.map((id) => nodes[id]).filter((node) => node?.nodeType === 'shot')
+  if (!sketch) {
+    return []
+  }
+
+  return sketch.nodeIds
+    .map((id) => nodes[id])
+    .filter((node): node is ShotNode => node?.nodeType === 'shot')
 }

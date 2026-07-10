@@ -4,7 +4,7 @@ import c from './PopoutMenu.module.css'
 import { Menu, MenuItem } from '@components/Menu/Menu'
 import { Icon, IconName } from '@components/Icon/Icon'
 interface MenuItemConfig {
-  label: string
+  label: string | JSX.Element
   onClick: () => void
   icon?: IconName
 }

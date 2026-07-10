@@ -1,13 +1,17 @@
 import type { Meta } from '@storybook/react'
 import { fn } from '@storybook/test'
-import { useEffect, useRef, useState } from 'react'
+import { Fragment, useEffect, useRef, useState } from 'react'
 import { useInterval } from 'usehooks-ts'
+import { ParamFileValue } from '@hedron-gl/engine'
+import { FilePicker } from '@components/FilePicker/FilePicker'
 import { EnumDropdown, EnumDropdownHandle } from '@components/EnumDropdown/EnumDropdown'
 import {
   NodeControl,
   NodeControlMain,
   NodeControlTitle,
   NodeControlInner,
+  NodeControlInfo,
+  NodeControlInputCount,
 } from '@components/NodeControl/NodeControl'
 
 import { ControlGrid } from '@components/ControlGrid/ControlGrid'
@@ -30,22 +34,21 @@ interface BasicProps {
   title: string
   isActive?: boolean
   color?: 'light'
-  layout?: 'horizontal' | 'vertical'
   onClick: () => void
 }
 
-export const Number = ({ title = 'Short Name', isActive, layout, onClick }: BasicProps) => {
+export const Number = ({ title = 'Short Name', isActive, onClick }: BasicProps) => {
   const ref = useRef<FloatSliderHandle>(null)
 
   useEffect(() => {
-    ref.current?.updateValue(Math.random() * 1)
+    ref.current?.updateValue(Math.random())
   }, [])
 
   useInterval(() => {
-    ref.current!.updateValue(Math.random() * 1)
+    ref.current!.updateValue(Math.random())
   }, 3000)
   return (
-    <NodeControl isActive={isActive} onClick={onClick} layout={layout}>
+    <NodeControl isActive={isActive} onClick={onClick}>
       <NodeControlMain>
         <NodeControlTitle>{title}</NodeControlTitle>
         <NodeControlInner>
@@ -56,42 +59,15 @@ export const Number = ({ title = 'Short Name', isActive, layout, onClick }: Basi
   )
 }
 
-export const NumberVertical = ({ title = 'Short Name', isActive, onClick }: BasicProps) => {
+export const NumberMinMaxPositive = ({ title = 'Short Name', isActive, onClick }: BasicProps) => {
   const ref = useRef<FloatSliderHandle>(null)
 
   useEffect(() => {
-    ref.current?.updateValue(Math.random() * 1)
-  }, [])
-
-  useInterval(() => {
-    ref.current!.updateValue(Math.random() * 1)
-  }, 3000)
-  return (
-    <NodeControl isActive={isActive} onClick={onClick} layout="vertical">
-      <NodeControlMain>
-        <NodeControlTitle>{title}</NodeControlTitle>
-        <NodeControlInner>
-          <FloatSlider min={-1} max={1} onValueChange={fn()} ref={ref} />
-        </NodeControlInner>
-      </NodeControlMain>
-    </NodeControl>
-  )
-}
-
-export const NumberMinMaxPositive = ({
-  title = 'Short Name',
-  isActive,
-  layout,
-  onClick,
-}: BasicProps) => {
-  const ref = useRef<FloatSliderHandle>(null)
-
-  useEffect(() => {
-    ref.current?.updateValue(Math.random() * 1)
+    ref.current?.updateValue(Math.random())
   }, [])
 
   return (
-    <NodeControl isActive={isActive} onClick={onClick} layout={layout}>
+    <NodeControl isActive={isActive} onClick={onClick}>
       <NodeControlMain>
         <NodeControlTitle>{title}</NodeControlTitle>
         <NodeControlInner>
@@ -102,20 +78,15 @@ export const NumberMinMaxPositive = ({
   )
 }
 
-export const NumberMinMaxNegative = ({
-  title = 'Short Name',
-  isActive,
-  layout,
-  onClick,
-}: BasicProps) => {
+export const NumberMinMaxNegative = ({ title = 'Short Name', isActive, onClick }: BasicProps) => {
   const ref = useRef<FloatSliderHandle>(null)
 
   useEffect(() => {
-    ref.current?.updateValue(Math.random() * 1)
+    ref.current?.updateValue(Math.random())
   }, [])
 
   return (
-    <NodeControl isActive={isActive} onClick={onClick} layout={layout}>
+    <NodeControl isActive={isActive} onClick={onClick}>
       <NodeControlMain>
         <NodeControlTitle>{title}</NodeControlTitle>
         <NodeControlInner>
@@ -126,19 +97,19 @@ export const NumberMinMaxNegative = ({
   )
 }
 
-export const NumberTextOnly = ({ title = 'Short Name', isActive, layout, onClick }: BasicProps) => {
+export const NumberTextOnly = ({ title = 'Short Name', isActive, onClick }: BasicProps) => {
   const ref = useRef<NumberInputHandle>(null)
 
   useEffect(() => {
-    ref.current?.updateValue(Math.random() * 1)
+    ref.current?.updateValue(Math.random())
   }, [])
 
   useInterval(() => {
-    ref.current!.updateValue(Math.random() * 1)
+    ref.current!.updateValue(Math.random())
   }, 3000)
 
   return (
-    <NodeControl isActive={isActive} onClick={onClick} layout={layout}>
+    <NodeControl isActive={isActive} onClick={onClick}>
       <NodeControlMain>
         <NodeControlTitle>{title}</NodeControlTitle>
         <NodeControlInner>
@@ -149,14 +120,14 @@ export const NumberTextOnly = ({ title = 'Short Name', isActive, layout, onClick
   )
 }
 
-export const Boolean = ({ title = 'Boolean Thing', isActive, layout, onClick }: BasicProps) => {
+export const Boolean = ({ title = 'Boolean Thing', isActive, onClick }: BasicProps) => {
   const ref = useRef<BooleanToggleHandle>(null)
 
   useInterval(() => {
     ref.current!.setChecked(Math.random() > 0.5)
   }, 3000)
   return (
-    <NodeControl isActive={isActive} onClick={onClick} layout={layout}>
+    <NodeControl isActive={isActive} onClick={onClick}>
       <NodeControlMain>
         <NodeControlTitle>{title}</NodeControlTitle>
         <NodeControlInner>
@@ -167,7 +138,7 @@ export const Boolean = ({ title = 'Boolean Thing', isActive, layout, onClick }: 
   )
 }
 
-export const Color = ({ title = 'Color Picker', isActive, layout, onClick }: BasicProps) => {
+export const Color = ({ title = 'Color Picker', isActive, onClick }: BasicProps) => {
   const ref = useRef<ColorPickerHandle>(null)
 
   useInterval(() => {
@@ -175,7 +146,7 @@ export const Color = ({ title = 'Color Picker', isActive, layout, onClick }: Bas
   }, 3000)
 
   return (
-    <NodeControl isActive={isActive} onClick={onClick} layout={layout}>
+    <NodeControl isActive={isActive} onClick={onClick}>
       <NodeControlMain>
         <NodeControlTitle>{title}</NodeControlTitle>
         <NodeControlInner>
@@ -192,7 +163,7 @@ const options = [
   { value: 'option3', label: 'MyExtraLongOptionNameWithNoSpacesWow' },
 ]
 
-export const Enum = ({ title = 'Enum Dropdown', isActive, layout, onClick }: BasicProps) => {
+export const Enum = ({ title = 'Enum Dropdown', isActive, onClick }: BasicProps) => {
   const ref = useRef<EnumDropdownHandle>(null)
 
   useInterval(() => {
@@ -200,7 +171,7 @@ export const Enum = ({ title = 'Enum Dropdown', isActive, layout, onClick }: Bas
   }, 3000)
 
   return (
-    <NodeControl isActive={isActive} onClick={onClick} layout={layout}>
+    <NodeControl isActive={isActive} onClick={onClick}>
       <NodeControlMain>
         <NodeControlTitle>{title}</NodeControlTitle>
         <NodeControlInner>
@@ -211,7 +182,7 @@ export const Enum = ({ title = 'Enum Dropdown', isActive, layout, onClick }: Bas
   )
 }
 
-export const Trigger = ({ title = 'Trigger Pad', isActive, layout, onClick }: BasicProps) => {
+export const Trigger = ({ title = 'Trigger Pad', isActive, onClick }: BasicProps) => {
   const ref = useRef<TriggerPadHandle>(null)
 
   const onPadClick = () => {
@@ -224,7 +195,7 @@ export const Trigger = ({ title = 'Trigger Pad', isActive, layout, onClick }: Ba
   }, 3000)
 
   return (
-    <NodeControl isActive={isActive} onClick={onClick} layout={layout}>
+    <NodeControl isActive={isActive} onClick={onClick}>
       <NodeControlMain>
         <NodeControlTitle>{title}</NodeControlTitle>
         <NodeControlInner>
@@ -233,6 +204,122 @@ export const Trigger = ({ title = 'Trigger Pad', isActive, layout, onClick }: Ba
       </NodeControlMain>
     </NodeControl>
   )
+}
+
+const fileList = [
+  { fileName: 'MyFile.png', filePath: 'MyFile.png', contentType: 'image/png', lastModified: 0 },
+  {
+    fileName: 'cover-art.JPG',
+    filePath: 'cover-art.JPG',
+    contentType: 'image/jpeg',
+    lastModified: 0,
+  },
+  { fileName: 'Loop.WAV', filePath: 'Loop.WAV', contentType: 'audio/wav', lastModified: 0 },
+  { fileName: 'MyFile.mp3', filePath: 'MyFile.mp3', contentType: 'audio/mpeg', lastModified: 0 },
+  {
+    fileName: 'voice-note.m4a',
+    filePath: 'voice-note.m4a',
+    contentType: 'audio/mp4',
+    lastModified: 0,
+  },
+  {
+    fileName: 'MyOtherFile.mp4',
+    filePath: 'MyOtherFile.mp4',
+    contentType: 'video/mp4',
+    lastModified: 0,
+  },
+  {
+    fileName: 'trailer.webm',
+    filePath: 'trailer.webm',
+    contentType: 'video/webm',
+    lastModified: 0,
+  },
+  { fileName: 'Patch.PDF', filePath: 'Patch.PDF', contentType: 'application/pdf', lastModified: 0 },
+  {
+    fileName: 'session.hedron',
+    filePath: 'session.hedron',
+    contentType: 'application/json',
+    lastModified: 0,
+  },
+  { fileName: 'notes.txt', filePath: 'notes.txt', contentType: 'text/plain', lastModified: 0 },
+]
+
+interface FileStoryProps extends BasicProps {
+  accept?: string[] | null
+  startingFile?: ParamFileValue
+}
+
+const FileStory = ({
+  title = 'File Picker',
+  isActive,
+  onClick,
+  accept,
+  startingFile,
+}: FileStoryProps) => {
+  const [file, setFile] = useState<ParamFileValue>(startingFile || null)
+
+  return (
+    <NodeControl isActive={isActive} onClick={onClick}>
+      <NodeControlMain>
+        <NodeControlTitle>{title}</NodeControlTitle>
+        <NodeControlInner>
+          <FilePicker
+            availableFiles={fileList}
+            currentFileName={file}
+            onFileNameChange={setFile}
+            accept={accept}
+          />
+        </NodeControlInner>
+      </NodeControlMain>
+    </NodeControl>
+  )
+}
+
+export const File = ({ title = 'File Picker', isActive, onClick }: BasicProps) => {
+  return <FileStory title={title} isActive={isActive} onClick={onClick} />
+}
+
+export const FileMissing = ({ title = 'Video Only', isActive, onClick }: BasicProps) => {
+  return (
+    <FileStory title={title} isActive={isActive} onClick={onClick} startingFile="missing.mp4" />
+  )
+}
+
+export const FileImagesAndMp3 = ({ title = 'Images + MP3', isActive, onClick }: BasicProps) => {
+  return (
+    <FileStory title={title} isActive={isActive} onClick={onClick} accept={['image/*', '.mp3']} />
+  )
+}
+
+export const FileAudioOnly = ({ title = 'Audio Only', isActive, onClick }: BasicProps) => {
+  return (
+    <FileStory
+      title={title}
+      isActive={isActive}
+      onClick={onClick}
+      accept={['audio/*']}
+      startingFile="Loop.WAV"
+    />
+  )
+}
+
+export const FileExactMimeAndExtension = ({
+  title = 'PDF + MP4',
+  isActive,
+  onClick,
+}: BasicProps) => {
+  return (
+    <FileStory
+      title={title}
+      isActive={isActive}
+      onClick={onClick}
+      accept={['application/pdf', '.mp4']}
+    />
+  )
+}
+
+export const FileVideoOnly = ({ title = 'Video Only', isActive, onClick }: BasicProps) => {
+  return <FileStory title={title} isActive={isActive} onClick={onClick} accept={['video/*']} />
 }
 
 const params = [
@@ -251,69 +338,33 @@ const params = [
   ['Trigger Pad', 'trigger'],
 ]
 
-interface ControlGridStoryProps {
-  layout?: 'horizontal' | 'vertical'
-}
-
-export const WithControlGrid = ({ layout }: ControlGridStoryProps) => {
+export const WithControlGrid = () => {
   const [activeId, setActiveId] = useState(0)
 
   return (
     <ControlGrid>
       {params.map(([title, type], i) => (
-        <>
+        <Fragment key={i}>
           {type === 'number' && (
-            <Number
-              key={i}
-              title={title}
-              isActive={activeId === i}
-              layout={layout}
-              onClick={() => setActiveId(i)}
-            />
+            <Number title={title} isActive={activeId === i} onClick={() => setActiveId(i)} />
           )}
           {type === 'boolean' && (
-            <Boolean
-              key={i}
-              title={title}
-              isActive={activeId === i}
-              layout={layout}
-              onClick={() => setActiveId(i)}
-            />
+            <Boolean title={title} isActive={activeId === i} onClick={() => setActiveId(i)} />
           )}
           {type === 'color' && (
-            <Color
-              key={i}
-              title={title}
-              isActive={activeId === i}
-              layout={layout}
-              onClick={() => setActiveId(i)}
-            />
+            <Color title={title} isActive={activeId === i} onClick={() => setActiveId(i)} />
           )}
           {type === 'enum' && (
-            <Enum
-              key={i}
-              title={title}
-              isActive={activeId === i}
-              layout={layout}
-              onClick={() => setActiveId(i)}
-            />
+            <Enum title={title} isActive={activeId === i} onClick={() => setActiveId(i)} />
           )}
           {type === 'trigger' && (
-            <Trigger
-              key={i}
-              title={title}
-              isActive={activeId === i}
-              layout={layout}
-              onClick={() => setActiveId(i)}
-            />
+            <Trigger title={title} isActive={activeId === i} onClick={() => setActiveId(i)} />
           )}
-        </>
+        </Fragment>
       ))}
     </ControlGrid>
   )
 }
-
-export const WithControlGridVertical = () => <WithControlGrid layout="vertical" />
 
 export const GridOnPanel = () => (
   <Panel spacing="slim">
@@ -324,19 +375,81 @@ export const GridOnPanel = () => (
   </Panel>
 )
 
-export const NumberReversed = ({ title = 'Short Name', isActive, layout, onClick }: BasicProps) => {
+export const NumberReversed = ({ title = 'Short Name', isActive, onClick }: BasicProps) => {
   const ref = useRef<FloatSliderHandle>(null)
 
   useEffect(() => {
-    ref.current?.updateValue(Math.random() * 1)
+    ref.current?.updateValue(Math.random())
   }, [])
 
   return (
-    <NodeControl isActive={isActive} onClick={onClick} layout={layout}>
+    <NodeControl isActive={isActive} onClick={onClick}>
       <NodeControlMain>
         <NodeControlTitle>{title}</NodeControlTitle>
         <NodeControlInner>
           <FloatSlider min={10} max={-10} onValueChange={fn()} ref={ref} />
+        </NodeControlInner>
+      </NodeControlMain>
+    </NodeControl>
+  )
+}
+
+export const NumberWithInputCount = ({ title = 'Brightness', isActive, onClick }: BasicProps) => {
+  const ref = useRef<FloatSliderHandle>(null)
+
+  useEffect(() => {
+    ref.current?.updateValue(Math.random())
+  }, [])
+
+  return (
+    <NodeControl isActive={isActive} onClick={onClick}>
+      <NodeControlMain>
+        <NodeControlInfo>
+          <NodeControlTitle>{title}</NodeControlTitle>
+          <NodeControlInputCount inputCount={2} />
+        </NodeControlInfo>
+        <NodeControlInner>
+          <FloatSlider min={0} max={1} onValueChange={fn()} ref={ref} />
+        </NodeControlInner>
+      </NodeControlMain>
+    </NodeControl>
+  )
+}
+
+export const BooleanWithInputCount = ({ title = 'Enabled', isActive, onClick }: BasicProps) => {
+  const ref = useRef<BooleanToggleHandle>(null)
+
+  return (
+    <NodeControl isActive={isActive} onClick={onClick}>
+      <NodeControlMain>
+        <NodeControlInfo>
+          <NodeControlTitle>{title}</NodeControlTitle>
+          <NodeControlInputCount inputCount={1} />
+        </NodeControlInfo>
+        <NodeControlInner>
+          <BooleanToggle onValueChange={fn()} ref={ref} />
+        </NodeControlInner>
+      </NodeControlMain>
+    </NodeControl>
+  )
+}
+
+export const WithInputCountZero = ({ title = 'No Inputs', isActive, onClick }: BasicProps) => {
+  const ref = useRef<FloatSliderHandle>(null)
+
+  useEffect(() => {
+    ref.current?.updateValue(0.5)
+  }, [])
+
+  return (
+    <NodeControl isActive={isActive} onClick={onClick}>
+      <NodeControlMain>
+        <NodeControlInfo>
+          <NodeControlTitle>{title}</NodeControlTitle>
+          <NodeControlInputCount inputCount={0} />
+        </NodeControlInfo>
+        <NodeControlInner>
+          <FloatSlider min={0} max={1} onValueChange={fn()} ref={ref} />
         </NodeControlInner>
       </NodeControlMain>
     </NodeControl>

@@ -1,11 +1,11 @@
 import { Panel, PanelBody, PanelHeader } from '@hedron-gl/ui-core'
 import c from './Sketches.module.css'
-import { useActiveSketch } from '@components/hooks/useActiveSketch'
+import { useSelectedSketch } from '@components/hooks/useSelectedSketch'
 import { ActiveSketch } from '@components/ActiveSketch/ActiveSketch'
 import { SketchTabs } from '@components/SketchTabs/SketchTabs'
 
 export const Sketches = () => {
-  const activeSketch = useActiveSketch()
+  const activeSketch = useSelectedSketch()
 
   return (
     <div className={c.wrapper}>

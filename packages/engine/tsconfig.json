@@ -11,7 +11,8 @@
       "@world/*": ["src/world/*"],
       "@plugins/*": ["src/plugins/*"],
       "@HedronEngine/*": ["src/HedronEngine/*"],
-      "@globalVars": ["src/globalVars"]
+      "@globalVars": ["src/globalVars"],
+      "@constants": ["src/constants"]
     }
   }
 }
