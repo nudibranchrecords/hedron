@@ -84,12 +84,12 @@ export const MidiInputPanel = ({ input, engine }: IProps) => {
 
   // Check if this is a brand new input (channel=1, note=1, type=ControlChange are defaults)
   const channelNode = useMemo(
-    () => findNodeWithKeyFromIdList(nodes, 'channel', input.optionNodeIds),
-    [input.optionNodeIds, nodes],
+    () => findNodeWithKeyFromIdList(nodes, 'channel', input.childGroups.optionNodeIds),
+    [input.childGroups.optionNodeIds, nodes],
   )
   const noteNode = useMemo(
-    () => findNodeWithKeyFromIdList(nodes, 'note', input.optionNodeIds),
-    [input.optionNodeIds, nodes],
+    () => findNodeWithKeyFromIdList(nodes, 'note', input.childGroups.optionNodeIds),
+    [input.childGroups.optionNodeIds, nodes],
   )
 
   const isNewInput = useMemo(() => {
@@ -101,8 +101,8 @@ export const MidiInputPanel = ({ input, engine }: IProps) => {
   }, [channelNode, noteNode, paramValues])
 
   const typeNode = useMemo(
-    () => findNodeWithKeyFromIdList(nodes, 'type', input.optionNodeIds),
-    [input.optionNodeIds, nodes],
+    () => findNodeWithKeyFromIdList(nodes, 'type', input.childGroups.optionNodeIds),
+    [input.childGroups.optionNodeIds, nodes],
   )
   const isNoteOnOffMode = typeNode ? paramValues[typeNode.id] === NOTE_ON_OFF_MODE : false
 

@@ -59,6 +59,7 @@ export class MidiInput implements IPlugin {
       sliderMax: 0.99,
     },
     {
+      nodeType: 'param',
       key: 'autoMidiLearn',
       title: 'Auto MIDI Learn',
       valueType: 'boolean',
