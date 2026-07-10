@@ -87,30 +87,26 @@ export class VideoRenderPlugin implements IPlugin {
       manager.play({ silent: true })
     })
 
-    if (typeof engine.renderFramesSequence === 'function') {
-      await engine.renderFramesSequence(
-        frameCount,
-        fps,
-        async (dataUrl: string, frameIndex: number | string) => {
-          const result = await this.callbacks.saveFrame(dataUrl, {
-            name,
-            frameIndex,
-            outputDirAbsolute,
-          })
-          if (!result.success) {
-            console.error(`Failed to save frame ${frameIndex}: ${result.error}`)
-          }
-          const frameNum = Number(frameIndex)
-          if (!isNaN(frameNum) && ((frameNum + 1) % 10 === 0 || frameNum === frameCount - 1)) {
-            console.log(`Saved frame ${frameNum + 1} / ${frameCount}`)
-          }
-        },
-        width,
-        height,
-      )
-    } else {
-      console.error('engine.renderFramesSequence is not available')
-    }
+    await engine.renderFramesSequence(
+      frameCount,
+      fps,
+      async (dataUrl: string, frameIndex: number | string) => {
+        const result = await this.callbacks.saveFrame(dataUrl, {
+          name,
+          frameIndex,
+          outputDirAbsolute,
+        })
+        if (!result.success) {
+          console.error(`Failed to save frame ${frameIndex}: ${result.error}`)
+        }
+        const frameNum = Number(frameIndex)
+        if (!isNaN(frameNum) && ((frameNum + 1) % 10 === 0 || frameNum === frameCount - 1)) {
+          console.log(`Saved frame ${frameNum + 1} / ${frameCount}`)
+        }
+      },
+      width,
+      height,
+    )
 
     this.restoreTimelinePlaybackState(engine, timelinePlugin)
 

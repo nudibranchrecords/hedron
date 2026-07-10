@@ -1,11 +1,6 @@
 import { VideoRenderCallbacks } from '@hedron-gl/video-render'
 import { DialogEvents, OpenOutputDirResponse } from '@shared/Events'
-import {
-  FrameEvents,
-  SaveFrameResponse,
-  RenderSequenceOptions,
-  SaveFrameSequenceResponse,
-} from '@shared/FrameEvents'
+import { FrameEvents, SaveFrameResponse, SaveFrameSequenceResponse } from '@shared/FrameEvents'
 
 export const videoRenderCallbacks: VideoRenderCallbacks = {
   saveFrame: async (dataUrl, options) => {
@@ -18,10 +13,9 @@ export const videoRenderCallbacks: VideoRenderCallbacks = {
   },
 
   buildVideo: async (options) => {
-    const payload: RenderSequenceOptions = { ...options, video: true }
     return (await window.electronApi.ipcRenderer.invoke(
       FrameEvents.SaveFrameSequence,
-      payload,
+      options,
     )) as SaveFrameSequenceResponse
   },
 

@@ -9,16 +9,12 @@ export async function saveFrameSequenceHandler(
   options: RenderSequenceOptions,
 ): Promise<SaveFrameSequenceResponse> {
   try {
-    const { outputDirAbsolute, name, video, fps, frameCount, audioFileName } = options
+    const { outputDirAbsolute, name, fps, frameCount, audioFileName } = options
     const dirPath = getFrameDirPath(outputDirAbsolute, name)
-
-    if (!video) {
-      return { success: true, path: dirPath }
-    }
 
     const videoPath = await buildVideoFromFrames({ dirPath, name, fps, frameCount, audioFileName })
 
-    return { success: true, path: dirPath, videoPath }
+    return { success: true, videoPath }
   } catch (error) {
     console.error('Error saving frame sequence:', error)
     return { success: false, error: String(error) }

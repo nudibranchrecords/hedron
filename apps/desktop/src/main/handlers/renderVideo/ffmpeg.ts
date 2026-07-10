@@ -1,4 +1,5 @@
 import path from 'path'
+import fs from 'fs/promises'
 import { exec } from 'child_process'
 import { getCurrentResourcesDir } from '@main/handleResourceFiles'
 
@@ -64,6 +65,10 @@ export async function buildVideoFromFrames({
   await runFfmpeg(
     `ffmpeg -y -framerate ${fps} -i "${framesPattern}" -i "${tempAudio}" -map 0:v -map 1:a -c:v libx264 -pix_fmt yuv420p -crf 18 -c:a pcm_s16le "${videoPath}"`,
   )
+
+  await fs
+    .unlink(tempAudio)
+    .catch((error) => console.error('Failed to clean up temp audio:', error))
 
   return videoPath
 }

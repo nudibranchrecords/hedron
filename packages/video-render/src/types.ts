@@ -33,7 +33,6 @@ export interface BuildVideoOptions {
 
 export interface BuildVideoResult {
   success: boolean
-  path?: string
   videoPath?: string
   error?: string
 }

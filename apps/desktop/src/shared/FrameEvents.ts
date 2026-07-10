@@ -20,7 +20,6 @@ export interface SaveFrameResponse {
 export interface RenderSequenceOptions {
   outputDirAbsolute: string
   name: string
-  video: boolean
   fps: number
   frameCount: number
   /** Resource filename (not an absolute path) of the audio to mux in, resolved against the current resources directory. */
@@ -29,7 +28,6 @@ export interface RenderSequenceOptions {
 
 export interface SaveFrameSequenceResponse {
   success: boolean
-  path?: string
   videoPath?: string
   error?: string
 }
