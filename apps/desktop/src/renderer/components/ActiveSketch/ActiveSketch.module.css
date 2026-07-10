@@ -1,0 +1,15 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  height: 100%;
+}
+
+.section {
+  overflow: auto;
+  flex: 1;
+}
+
+.bottomPanel {
+  margin-right: calc(-1 * var(--gapXLarge));
+}

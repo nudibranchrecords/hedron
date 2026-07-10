@@ -72,6 +72,13 @@ export type AudioAnalyzerSettings = {
   generateAudioTexture: boolean
 
   /**
+   * Number of historical frames to store in the texture
+   * The texture will have height = historyDepth, where row 0 is current frame
+   * and row (historyDepth-1) is the oldest frame
+   */
+  historyDepth: number
+
+  /**
    * How much to reduce the clean bins value each frame
    * Lower values create smoother release after sound peaks
    */
@@ -192,6 +199,11 @@ export class AudioAnalyzer {
   public generateAudioTexture: boolean
 
   /**
+   * Number of historical frames to store in the texture
+   */
+  public historyDepth: number
+
+  /**
    * How much to reduce the clean bins value each frame
    * Lower values create smoother release after sound peaks
    */
@@ -240,6 +252,7 @@ export class AudioAnalyzer {
     // Apply settings with defaults
     const defaultSettings: AudioAnalyzerSettings = {
       generateAudioTexture: true,
+      historyDepth: 64,
       levelsFalloff: 1,
       normalizeLevels: 0,
       smoothing: 0,
@@ -250,6 +263,7 @@ export class AudioAnalyzer {
 
     const mergedSettings = { ...defaultSettings, ...settings }
     this.generateAudioTexture = mergedSettings.generateAudioTexture
+    this.historyDepth = mergedSettings.historyDepth
     this.levelsFalloff = mergedSettings.levelsFalloff
     this.normalizeLevels = mergedSettings.normalizeLevels
     this.smoothing = mergedSettings.smoothing
@@ -279,14 +293,16 @@ export class AudioAnalyzer {
     this.sampleRate = sampleRate
     this.nyquist = sampleRate / 2
 
-    // Create texture data array and initialize it
-    const textureData = new Uint8Array(analyserNode.frequencyBinCount)
-    for (let i = 0; i < textureData.length; i++) {
-      textureData[i] = i
-    }
+    const binCount = analyserNode.frequencyBinCount
+
+    // Create 2D texture data array for historical data
+    // Width = frequency bins, Height = history depth
+    const textureData = new Uint8Array(binCount * this.historyDepth)
+    // Initialize with zeros
+    textureData.fill(0)
 
     // Create frequency data array for analyzer
-    const freqs = new Uint8Array(analyserNode.frequencyBinCount)
+    const freqs = new Uint8Array(binCount)
 
     // Initialize audio data structure
     this.audioData = {
@@ -295,8 +311,8 @@ export class AudioAnalyzer {
       textureData: textureData,
       texture: new THREE.DataTexture(
         textureData,
-        textureData.length,
-        1,
+        binCount,
+        this.historyDepth,
         THREE.RedFormat,
         THREE.UnsignedByteType,
       ),
@@ -413,6 +429,8 @@ export class AudioAnalyzer {
       // Normalize to 0-1 range
       let freq = this.audioData.freqs[i] / 256
 
+      freq = freq * this.masterVolume
+
       // Apply falloff to create smoother transitions
       freq = Math.max(freq, Math.max(0, this.fullCleanLevelsData[i] - this.levelsFalloff))
       this.fullCleanLevelsData[i] = freq
@@ -447,9 +465,23 @@ export class AudioAnalyzer {
 
     // Update visualization texture if requested
     if (this.generateAudioTexture && this.audioData) {
-      for (let i = 0; i < this.audioData.freqs.length; i++) {
+      const binCount = this.audioData.freqs.length
+
+      // Shift existing history down by one row
+      // Copy from row i to row i+1, starting from the bottom
+      for (let row = this.historyDepth - 1; row > 0; row--) {
+        const destOffset = row * binCount
+        const srcOffset = (row - 1) * binCount
+        for (let i = 0; i < binCount; i++) {
+          this.audioData.textureData[destOffset + i] = this.audioData.textureData[srcOffset + i]
+        }
+      }
+
+      // Write current frame data to row 0
+      for (let i = 0; i < binCount; i++) {
         this.audioData.textureData[i] = Math.floor(this.fullLevelsData[i] * 256)
       }
+
       this.audioData.texture.needsUpdate = true
     }
   }
@@ -493,6 +525,9 @@ export class AudioAnalyzer {
       // Calculate weighted average
       let bandValue = totalWeight > 0 ? sum / totalWeight : 0
 
+      // Apply master volume
+      bandValue = bandValue * this.masterVolume
+
       // Apply falloff for smoother transitions
       bandValue = Math.max(
         bandValue,
@@ -523,9 +558,6 @@ export class AudioAnalyzer {
 
       // Apply exponential curve for emphasis
       bandValue = Math.pow(bandValue, this.levelsPower)
-
-      // Apply master volume
-      bandValue = bandValue * this.masterVolume
 
       // Apply smoothing between frames
       this.levelsData[bandIndex] = lerp(bandValue, this.levelsData[bandIndex], this.smoothing)

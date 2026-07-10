@@ -1,45 +1,62 @@
 import { Pass, RenderPass } from 'postprocessing'
-import { PerspectiveCamera, Scene } from 'three'
-import { pass, type ShaderNodeObject } from 'three/tsl'
-import { PassNode, PostProcessing } from 'three/webgpu'
-import { SketchInstanceError, SketchInstanceMap } from '@world/SketchManager'
+import { PerspectiveCamera, Scene, WebGLRenderer } from 'three'
+import { pass } from 'three/tsl'
+import { PassNode, RenderPipeline, WebGPURenderer } from 'three/webgpu'
+import { SketchInstanceError, SketchInstanceMap } from '@store/types'
 import { RendererType } from '@HedronEngine/types'
 
 export class EngineScene {
   public scene: Scene
-  public camera: PerspectiveCamera
+  private _camera: PerspectiveCamera
+  public get camera(): PerspectiveCamera {
+    return this._camera
+  }
+  public set camera(newCamera: PerspectiveCamera) {
+    this._camera = newCamera
+    if (this.rendererType === 'webgpu' && this.renderPass_webGPU?.camera) {
+      this.renderPass_webGPU.camera = newCamera
+      return
+    }
+    if (this.rendererType === 'webgl' && this.renderPass) {
+      this.renderPass.mainCamera = this._camera
+    }
+  }
   public passes: Pass[] | undefined
   public sketches: SketchInstanceMap = new Map()
   private renderPass: RenderPass | undefined
-  private renderPass_webGPU: ShaderNodeObject<PassNode> | undefined
+  private renderPass_webGPU: PassNode | undefined
+  public renderer: WebGLRenderer | WebGPURenderer
   public rendererType: RendererType
   private onSketchInstanceError: SketchInstanceError
 
   constructor({
     rendererType,
     onSketchInstanceError,
+    renderer,
   }: {
     rendererType: RendererType
     onSketchInstanceError: SketchInstanceError
+    renderer: WebGLRenderer | WebGPURenderer
   }) {
+    this.renderer = renderer
     this.rendererType = rendererType
     this.onSketchInstanceError = onSketchInstanceError
     this.scene = new Scene()
-    this.camera = new PerspectiveCamera(75, undefined, 0.1, 100000)
-    this.camera.position.z = 5
+    this._camera = new PerspectiveCamera(75, undefined, 0.1, 100000)
+    this._camera.position.z = 5
     this.rendererType = rendererType
 
     if (this.rendererType === 'webgpu') {
-      this.renderPass_webGPU = pass(this.scene, this.camera)
+      this.renderPass_webGPU = pass(this.scene, this._camera)
     } else {
-      this.renderPass = new RenderPass(this.scene, this.camera)
+      this.renderPass = new RenderPass(this.scene, this._camera)
       this.passes = [this.renderPass]
     }
   }
 
   setRatio(ratio: number): void {
-    this.camera.aspect = ratio
-    this.camera.updateProjectionMatrix()
+    this._camera.aspect = ratio
+    this._camera.updateProjectionMatrix()
   }
 
   addPass(pass: Pass): void {
@@ -58,18 +75,19 @@ export class EngineScene {
     this.passes = [this.renderPass]
   }
 
-  updateWebGPUPasses(sketchInstances: SketchInstanceMap, postProcessing: PostProcessing): void {
+  updateWebGPUPasses(sketchInstances: SketchInstanceMap, renderPipeline: RenderPipeline): void {
     if (this.rendererType !== 'webgpu') {
       console.warn('[HEDRON] ⚠️ WebGPU pass handling is only available in WebGPU mode.')
       return
     }
 
-    let prevPass = this.renderPass_webGPU!
+    const renderPassNode = this.renderPass_webGPU!
+    let prevPass: PassNode = renderPassNode
 
     sketchInstances.forEach((sketchInstance) => {
       if (sketchInstance.getWebGPUPass) {
         try {
-          const nextPass = sketchInstance.getWebGPUPass(prevPass)
+          const nextPass = sketchInstance.getWebGPUPass(prevPass, renderPassNode)
           prevPass = nextPass
         } catch (error) {
           this.onSketchInstanceError(sketchInstance.id)
@@ -78,7 +96,7 @@ export class EngineScene {
       }
     })
 
-    postProcessing.outputNode = prevPass
-    postProcessing.needsUpdate = true
+    renderPipeline.outputNode = prevPass
+    renderPipeline.needsUpdate = true
   }
 }

@@ -1,41 +1,60 @@
 import { Result } from './types'
+import { safeImport } from './importUtils'
 import {
-  SketchConfigRaw,
-  SketchConfigImported,
-  SketchModule,
-  SketchModuleItem,
-  SketchConfigParamImported,
+  ConfigParamImported,
+  ConfigShotImported,
+  ConfigSketch,
+  ConfigSketchImported,
   SketchConfigParam,
   SketchConfigShot,
+  SketchModule,
+  SketchModuleItem,
 } from '@store/types'
 import { createUniqueId } from '@utils/createUniqueId'
-
-const ensureParamImported = (
-  param: SketchConfigParam,
-): Omit<SketchConfigParamImported, 'groupIndex'> => {
-  const valueType = param.valueType ?? 'number'
-
-  return {
-    ...param,
-    valueType,
-    title: param.title ?? param.key,
-    nodeType: 'param',
-  }
-}
 
 interface ProcessConfigOptions {
   fallBackTitle: string
 }
 
-export const processConfig = (
-  config: SketchConfigRaw,
+const ensureParamConfig = (param: SketchConfigParam, groupIndex: number): ConfigParamImported => {
+  const base = {
+    title: param.title ?? param.key,
+    groupIndex,
+    nodeType: 'param',
+  } as const
+
+  if (param.valueType === undefined) {
+    return {
+      ...param,
+      ...base,
+      valueType: 'number',
+    }
+  }
+
+  return {
+    ...param,
+    ...base,
+  } as ConfigParamImported
+}
+
+const ensureShotConfig = (shot: SketchConfigShot, groupIndex: number): ConfigShotImported => {
+  return {
+    ...shot,
+    title: shot.title ?? shot.key,
+    groupIndex,
+    nodeType: 'shot',
+  }
+}
+
+export const processSketchConfig = (
+  config: ConfigSketch,
   { fallBackTitle }: ProcessConfigOptions,
-): SketchConfigImported => {
-  const groupInfo: SketchConfigImported['groupInfo'] = []
+): ConfigSketchImported => {
+  const groupInfo: ConfigSketchImported['groupInfo'] = []
 
   let groupIndex = -1
   let shotGroupIndex = -1
-  const flattenedNodes: SketchConfigImported['nodes'] = []
+  const flattenedNodes: ConfigSketchImported['nodes'] = []
   const ungroupedParams: SketchConfigParam[] = []
   const ungroupedShots: SketchConfigShot[] = []
 
@@ -48,11 +67,7 @@ export const processConfig = (
           groupTitle: param.groupTitle ?? `Group ${groupIndex}`,
         }
 
-        flattenedNodes.push(
-          ...param.params.map(
-            (p) => ({ ...ensureParamImported(p), groupIndex }) as SketchConfigParamImported,
-          ),
-        )
+        flattenedNodes.push(...param.params.map((p) => ensureParamConfig(p, groupIndex)))
       } else {
         ungroupedParams.push(param)
       }
@@ -66,11 +81,7 @@ export const processConfig = (
         groupTitle: groupIndex === 0 ? 'Params' : `Ungrouped Params`,
       }
 
-      flattenedNodes.push(
-        ...ungroupedParams.map(
-          (p) => ({ ...ensureParamImported(p), groupIndex }) as SketchConfigParamImported,
-        ),
-      )
+      flattenedNodes.push(...ungroupedParams.map((p) => ensureParamConfig(p, groupIndex)))
     }
   }
 
@@ -84,14 +95,7 @@ export const processConfig = (
           groupTitle: shot.groupTitle ?? `Group ${groupIndex}`,
         }
 
-        flattenedNodes.push(
-          ...shot.shots.map((s) => ({
-            ...s,
-            groupIndex,
-            title: s.title ?? s.key,
-            nodeType: 'shot' as const,
-          })),
-        )
+        flattenedNodes.push(...shot.shots.map((s) => ensureShotConfig(s, groupIndex)))
       } else {
         ungroupedShots.push(shot)
       }
@@ -105,20 +109,13 @@ export const processConfig = (
         groupTitle: shotGroupIndex === -1 ? 'Shots' : `Ungrouped Shots`,
       }
 
-      flattenedNodes.push(
-        ...ungroupedShots.map((s) => ({
-          ...s,
-          groupIndex,
-          title: s.title ?? s.key,
-          nodeType: 'shot' as const,
-        })),
-      )
+      flattenedNodes.push(...ungroupedShots.map((s) => ensureShotConfig(s, groupIndex)))
     }
   }
 
-  const processedConfig: SketchConfigImported = {
-    ...config,
+  const processedConfig: ConfigSketchImported = {
     title: config.title ?? fallBackTitle,
+    description: config.description,
     nodes: flattenedNodes,
     groupInfo,
   }
@@ -135,37 +132,45 @@ export const importSketchModule = async (
 
     // Get the sketch module
     const sketchPath = `${baseUrl}/${moduleId}/index.js?${cacheBust}`
-    if ((await fetch(sketchPath)).status !== 200) {
-      return Promise.reject(`Sketch module not found: ${sketchPath}`)
+
+    const sketchImport = await safeImport(
+      sketchPath,
+      `Failed to import sketch module: ${sketchPath}`,
+    )
+    if (!sketchImport.ok) {
+      return { success: false, error: sketchImport.error, data: undefined }
     }
-    const sketchModule = await import(/* @vite-ignore */ sketchPath)
-    const module: SketchModule = sketchModule.default
+
+    const module: SketchModule = sketchImport.module.default
 
     const processConfigOptions = {
       fallBackTitle: moduleId,
     }
 
-    // Get the sketch config
-    const configPath = `${baseUrl}/${moduleId}/config.js?${cacheBust}`
-    let config: SketchConfigImported
-    if ((await fetch(configPath)).status !== 200) {
-      // No config file found
-      // Try instancing the sketch, and call getConfig() on it
-      const tempModule = new module(undefined)
-      const unprocessedConfig = tempModule.getConfig?.() as SketchConfigRaw | undefined
+    let config: ConfigSketchImported
 
-      tempModule.dispose?.()
+    // First try to get config from static getConfig()
+    const unprocessedConfigFromGetConfig = module.getConfig?.() as ConfigSketch | undefined
 
-      if (unprocessedConfig) {
-        config = processConfig(unprocessedConfig, processConfigOptions)
-      } else {
-        return Promise.reject(
-          `Sketch config not found: ${configPath} and no valid getConfig() function found in sketch`,
-        )
-      }
+    if (unprocessedConfigFromGetConfig) {
+      config = processSketchConfig(unprocessedConfigFromGetConfig, processConfigOptions)
     } else {
-      const configModule = await import(/* @vite-ignore */ configPath)
-      config = processConfig(configModule.default as SketchConfigRaw, processConfigOptions)
+      // If no getConfig(), try to import config.js
+      const configPath = `${baseUrl}/${moduleId}/config.js?${cacheBust}`
+
+      const configImport = await safeImport(
+        configPath,
+        `Failed to import sketch config: ${configPath}`,
+      )
+      if (configImport.ok) {
+        config = processSketchConfig(
+          configImport.module.default as ConfigSketch,
+          processConfigOptions,
+        )
+      } else {
+        // Generate empty config if config.js is not found, allowing for no config sketches
+        config = processSketchConfig({}, processConfigOptions)
+      }
     }
 
     return {
@@ -179,7 +184,6 @@ export const importSketchModule = async (
     }
   } catch (error) {
     console.error(error)
-
     return {
       data: undefined,
       success: false,

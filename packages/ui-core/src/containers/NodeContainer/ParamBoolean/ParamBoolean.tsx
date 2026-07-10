@@ -1,6 +1,6 @@
 import { useRef } from 'react'
-import { useOnNodeValueChange } from '@hooks/useOnNodeValueChange'
-import { useSubscribeToNodeValue } from '@hooks/useSubscribeToNodeValue'
+import { useOnParamValueChange } from '@hooks/useOnParamValueChange'
+import { useSubscribeToParamValue } from '@hooks/useSubscribeToParamValue'
 import { BooleanToggle, BooleanToggleHandle } from '@components/BooleanToggle/BooleanToggle'
 
 interface ParamNumberProps {
@@ -9,9 +9,9 @@ interface ParamNumberProps {
 
 export const ParamBoolean = ({ id }: ParamNumberProps) => {
   const ref = useRef<BooleanToggleHandle>(null)
-  const onValueChange = useOnNodeValueChange(id)
+  const onValueChange = useOnParamValueChange(id)
 
-  useSubscribeToNodeValue<boolean>(id, (value) => {
+  useSubscribeToParamValue<boolean>(id, (value) => {
     ref.current?.setChecked(value)
   })
 

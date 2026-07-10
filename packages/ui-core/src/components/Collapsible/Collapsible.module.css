@@ -10,3 +10,14 @@
     color: white;
   }
 }
+
+.panel {
+  background-color: var(--bgColorDark2);
+  border-radius: var(--borderRadiusLarge);
+  padding: var(--gapLarge);
+  border: 1px solid var(--lineColor1);
+
+  .content {
+    padding: var(--gapLarge);
+  }
+}

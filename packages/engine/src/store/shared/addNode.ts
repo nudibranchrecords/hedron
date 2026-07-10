@@ -1,45 +1,69 @@
 import {
   EngineState,
   EnsureRequiredValueType,
-  NodeParamWithChildren,
-  ParamValueTypeWithChildren,
-  SketchConfigParamImported,
-  isNodeTypeWithChildren,
-  NodeValueType,
-  SketchConfigShotImported,
+  ParamVectorValueType,
+  ConfigParamImported,
+  ParamValueType,
+  ConfigShotImported,
+  ParamVector,
+  isParamVectorValueType,
+  ConfigCustomNodeImported,
 } from '@store/types'
 import { createUniqueId } from '@utils/createUniqueId'
 
-const vector3Keys = ['x', 'y', 'z']
-const rgbKeys = ['r', 'g', 'b']
-
-type AddNodeConfig = EnsureRequiredValueType<SketchConfigParamImported> | SketchConfigShotImported
-
-// Exclude param types that have children (vector3, rgb)
-type ParamConfigWithoutChildren = Exclude<
-  EnsureRequiredValueType<SketchConfigParamImported>,
-  { valueType: ParamValueTypeWithChildren }
->
-
-const isParamConfigWithoutChildren = (
-  config: EnsureRequiredValueType<SketchConfigParamImported>,
-): config is ParamConfigWithoutChildren => {
-  return !isNodeTypeWithChildren(config.valueType)
+const keysLookup: Record<ParamVectorValueType, string[]> = {
+  vector3: ['x', 'y', 'z'],
+  vector2: ['x', 'y'],
+  rgb: ['r', 'g', 'b'],
 }
 
-const _addNodeToState = (state: EngineState, nodeId: string, config: AddNodeConfig) => {
+type AddNodeConfig = ConfigParamImported | ConfigShotImported | ConfigCustomNodeImported
+
+// Exclude param types that have children (vector3, rgb)
+type ParamConfigNonVector = Exclude<
+  EnsureRequiredValueType<ConfigParamImported>,
+  { valueType: ParamVectorValueType }
+>
+
+const isParamNonVectorConfig = (
+  config: EnsureRequiredValueType<ConfigParamImported>,
+): config is ParamConfigNonVector => {
+  return !isParamVectorValueType(config.valueType)
+}
+
+const _addNodeToState = (
+  state: EngineState,
+  nodeId: string,
+  parentId: string | null,
+  optionNodeIds: string[],
+  config: AddNodeConfig,
+) => {
+  if (config.nodeType === 'custom') {
+    state.nodes[nodeId] = {
+      ...config,
+      id: nodeId,
+      title: config.title ?? config.key,
+      parentIds: parentId ? [parentId] : [],
+      childGroups: { optionNodeIds, inputNodeIds: [] },
+    }
+
+    return state.nodes[nodeId]
+  }
+
   if (config.nodeType === 'shot') {
     state.nodes[nodeId] = {
       ...config,
       id: nodeId,
       nodeType: 'shot',
       title: config.title ?? config.key,
+      parentIds: parentId ? [parentId] : [],
+      childGroups: { optionNodeIds, inputNodeIds: [] },
     }
 
     return state.nodes[nodeId]
   }
 
-  if (!isParamConfigWithoutChildren(config)) {
+  if (!isParamNonVectorConfig(config)) {
     throw new Error(`_addNodeToState shouldn't be used with node of valueType: ${config.valueType}`)
   }
 
@@ -53,17 +77,13 @@ const _addNodeToState = (state: EngineState, nodeId: string, config: AddNodeConf
     nodeType: 'param' as const,
     title,
     hidden,
+    parentIds: parentId ? [parentId] : [],
+    childGroups: { optionNodeIds, inputNodeIds: [] },
   }
 
   switch (valueType) {
     case 'number':
-      state.nodes[nodeId] = {
-        ...baseNode,
-        valueType,
-        defaultValue,
-        sliderMin: config.sliderMin,
-        sliderMax: config.sliderMax,
-      }
+      state.nodes[nodeId] = { ...baseNode, valueType, defaultValue }
       break
     case 'boolean':
       state.nodes[nodeId] = { ...baseNode, valueType, defaultValue }
@@ -74,6 +94,14 @@ const _addNodeToState = (state: EngineState, nodeId: string, config: AddNodeConf
     case 'enum':
       state.nodes[nodeId] = { ...baseNode, valueType, defaultValue, options: config.options }
       break
+    case 'file':
+      state.nodes[nodeId] = {
+        ...baseNode,
+        valueType,
+        defaultValue,
+        accept: config.accept,
+      }
+      break
   }
 
   if (
@@ -81,9 +109,10 @@ const _addNodeToState = (state: EngineState, nodeId: string, config: AddNodeConf
     (valueType === 'boolean' && typeof defaultValue === 'boolean') ||
     (valueType === 'enum' &&
       (typeof defaultValue === 'string' || typeof defaultValue === 'number')) ||
-    (valueType === 'string' && typeof defaultValue === 'string')
+    (valueType === 'string' && typeof defaultValue === 'string') ||
+    (valueType === 'file' && (typeof defaultValue === 'string' || defaultValue === null))
   ) {
-    state.nodeValues[nodeId] = defaultValue
+    state.paramValues[nodeId] = defaultValue
   } else {
     throw new Error(
       `valueType of param ${key}: ${valueType} does not match defaultValue: ${defaultValue}`,
@@ -96,13 +125,13 @@ const _addNodeToState = (state: EngineState, nodeId: string, config: AddNodeConf
 const _addSliderMinAndMaxNodesToState = (
   state: EngineState,
   paramId: string,
-  sketchConfigParam: { sliderMin?: number; sliderMax?: number; valueType: NodeValueType },
+  sketchConfigParam: { sliderMin?: number; sliderMax?: number; valueType: ParamValueType },
 ) => {
   /** TODO: This can probably be tidier, using some sort of config object to generate the option nodes
    * The same config object could also be used in the component to loop through
    */
   if (sketchConfigParam.valueType === 'number') {
-    _addNodeToState(state, `${paramId}-sliderMin`, {
+    _addNodeToState(state, `${paramId}-sliderMin`, paramId, [], {
       key: 'sliderMin',
       nodeType: 'param',
       valueType: 'number',
@@ -111,7 +140,7 @@ const _addSliderMinAndMaxNodesToState = (
       title: 'Slider Min',
     })
 
-    _addNodeToState(state, `${paramId}-sliderMax`, {
+    _addNodeToState(state, `${paramId}-sliderMax`, paramId, [], {
       key: 'sliderMax',
       nodeType: 'param',
       valueType: 'number',
@@ -119,28 +148,43 @@ const _addSliderMinAndMaxNodesToState = (
       groupIndex: 0,
       title: 'Slider Max',
     })
+
+    return [`${paramId}-sliderMin`, `${paramId}-sliderMax`]
   }
+
+  return []
 }
 
-export const addNode = (state: EngineState, nodeId: string, config: AddNodeConfig) => {
-  if (config.nodeType === 'param' && isNodeTypeWithChildren(config.valueType)) {
+export const addNode = (
+  state: EngineState,
+  nodeId: string,
+  parentId: string | null,
+  config: AddNodeConfig,
+) => {
+  if (config.nodeType === 'param' && isParamVectorValueType(config.valueType)) {
     if (!Array.isArray(config.defaultValue)) {
       throw new Error(`Expected defaultValue to be an array for ${config.valueType} type`)
     }
 
-    const childNodeIds = Array.from({ length: 3 }, createUniqueId) as [string, string, string]
-    const keys = config.valueType === 'vector3' ? vector3Keys : rgbKeys
+    const keys = keysLookup[config.valueType]
+
+    const vectorComponentIds = Array.from({ length: keys.length }, createUniqueId) as string[]
 
     state.nodes[nodeId] = {
       ...config,
       id: nodeId,
       nodeType: 'param',
       title: config.title ?? config.key,
-      childNodeIds,
-    } as NodeParamWithChildren
+      childGroups: { optionNodeIds: [], inputNodeIds: [], vectorComponentIds },
+      parentIds: parentId ? [parentId] : [],
+    } as ParamVector
 
-    for (const [index, childNodeId] of childNodeIds.entries()) {
-      _addNodeToState(state, childNodeId, {
+    for (const [index, childNodeId] of vectorComponentIds.entries()) {
+      const optionNodeIds = _addSliderMinAndMaxNodesToState(state, childNodeId, {
+        valueType: 'number',
+      })
+
+      _addNodeToState(state, childNodeId, nodeId, optionNodeIds, {
         groupIndex: 0,
         nodeType: 'param',
         title: keys[index],
@@ -148,15 +192,14 @@ export const addNode = (state: EngineState, nodeId: string, config: AddNodeConfi
         valueType: 'number',
         defaultValue: config.defaultValue[index],
       })
-      _addSliderMinAndMaxNodesToState(state, childNodeId, {
-        valueType: 'number',
-      })
     }
   } else {
-    _addNodeToState(state, nodeId, config)
+    let optionNodeIds: string[] = []
 
     if (config.nodeType === 'param') {
-      _addSliderMinAndMaxNodesToState(state, nodeId, config)
+      optionNodeIds = _addSliderMinAndMaxNodesToState(state, nodeId, config)
     }
+
+    _addNodeToState(state, nodeId, parentId, optionNodeIds, config)
   }
 }

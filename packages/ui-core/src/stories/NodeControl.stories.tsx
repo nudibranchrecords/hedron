@@ -1,13 +1,17 @@
 import type { Meta } from '@storybook/react'
 import { fn } from '@storybook/test'
-import { useEffect, useRef, useState } from 'react'
+import { Fragment, useEffect, useRef, useState } from 'react'
 import { useInterval } from 'usehooks-ts'
+import { ParamFileValue } from '@hedron-gl/engine'
+import { FilePicker } from '@components/FilePicker/FilePicker'
 import { EnumDropdown, EnumDropdownHandle } from '@components/EnumDropdown/EnumDropdown'
 import {
   NodeControl,
   NodeControlMain,
   NodeControlTitle,
   NodeControlInner,
+  NodeControlInfo,
+  NodeControlInputCount,
 } from '@components/NodeControl/NodeControl'
 
 import { ControlGrid } from '@components/ControlGrid/ControlGrid'
@@ -37,11 +41,11 @@ export const Number = ({ title = 'Short Name', isActive, onClick }: BasicProps) 
   const ref = useRef<FloatSliderHandle>(null)
 
   useEffect(() => {
-    ref.current?.updateValue(Math.random() * 1)
+    ref.current?.updateValue(Math.random())
   }, [])
 
   useInterval(() => {
-    ref.current!.updateValue(Math.random() * 1)
+    ref.current!.updateValue(Math.random())
   }, 3000)
   return (
     <NodeControl isActive={isActive} onClick={onClick}>
@@ -59,7 +63,7 @@ export const NumberMinMaxPositive = ({ title = 'Short Name', isActive, onClick }
   const ref = useRef<FloatSliderHandle>(null)
 
   useEffect(() => {
-    ref.current?.updateValue(Math.random() * 1)
+    ref.current?.updateValue(Math.random())
   }, [])
 
   return (
@@ -78,7 +82,7 @@ export const NumberMinMaxNegative = ({ title = 'Short Name', isActive, onClick }
   const ref = useRef<FloatSliderHandle>(null)
 
   useEffect(() => {
-    ref.current?.updateValue(Math.random() * 1)
+    ref.current?.updateValue(Math.random())
   }, [])
 
   return (
@@ -97,11 +101,11 @@ export const NumberTextOnly = ({ title = 'Short Name', isActive, onClick }: Basi
   const ref = useRef<NumberInputHandle>(null)
 
   useEffect(() => {
-    ref.current?.updateValue(Math.random() * 1)
+    ref.current?.updateValue(Math.random())
   }, [])
 
   useInterval(() => {
-    ref.current!.updateValue(Math.random() * 1)
+    ref.current!.updateValue(Math.random())
   }, 3000)
 
   return (
@@ -202,6 +206,122 @@ export const Trigger = ({ title = 'Trigger Pad', isActive, onClick }: BasicProps
   )
 }
 
+const fileList = [
+  { fileName: 'MyFile.png', filePath: 'MyFile.png', contentType: 'image/png', lastModified: 0 },
+  {
+    fileName: 'cover-art.JPG',
+    filePath: 'cover-art.JPG',
+    contentType: 'image/jpeg',
+    lastModified: 0,
+  },
+  { fileName: 'Loop.WAV', filePath: 'Loop.WAV', contentType: 'audio/wav', lastModified: 0 },
+  { fileName: 'MyFile.mp3', filePath: 'MyFile.mp3', contentType: 'audio/mpeg', lastModified: 0 },
+  {
+    fileName: 'voice-note.m4a',
+    filePath: 'voice-note.m4a',
+    contentType: 'audio/mp4',
+    lastModified: 0,
+  },
+  {
+    fileName: 'MyOtherFile.mp4',
+    filePath: 'MyOtherFile.mp4',
+    contentType: 'video/mp4',
+    lastModified: 0,
+  },
+  {
+    fileName: 'trailer.webm',
+    filePath: 'trailer.webm',
+    contentType: 'video/webm',
+    lastModified: 0,
+  },
+  { fileName: 'Patch.PDF', filePath: 'Patch.PDF', contentType: 'application/pdf', lastModified: 0 },
+  {
+    fileName: 'session.hedron',
+    filePath: 'session.hedron',
+    contentType: 'application/json',
+    lastModified: 0,
+  },
+  { fileName: 'notes.txt', filePath: 'notes.txt', contentType: 'text/plain', lastModified: 0 },
+]
+
+interface FileStoryProps extends BasicProps {
+  accept?: string[] | null
+  startingFile?: ParamFileValue
+}
+
+const FileStory = ({
+  title = 'File Picker',
+  isActive,
+  onClick,
+  accept,
+  startingFile,
+}: FileStoryProps) => {
+  const [file, setFile] = useState<ParamFileValue>(startingFile || null)
+
+  return (
+    <NodeControl isActive={isActive} onClick={onClick}>
+      <NodeControlMain>
+        <NodeControlTitle>{title}</NodeControlTitle>
+        <NodeControlInner>
+          <FilePicker
+            availableFiles={fileList}
+            currentFileName={file}
+            onFileNameChange={setFile}
+            accept={accept}
+          />
+        </NodeControlInner>
+      </NodeControlMain>
+    </NodeControl>
+  )
+}
+
+export const File = ({ title = 'File Picker', isActive, onClick }: BasicProps) => {
+  return <FileStory title={title} isActive={isActive} onClick={onClick} />
+}
+
+export const FileMissing = ({ title = 'Video Only', isActive, onClick }: BasicProps) => {
+  return (
+    <FileStory title={title} isActive={isActive} onClick={onClick} startingFile="missing.mp4" />
+  )
+}
+
+export const FileImagesAndMp3 = ({ title = 'Images + MP3', isActive, onClick }: BasicProps) => {
+  return (
+    <FileStory title={title} isActive={isActive} onClick={onClick} accept={['image/*', '.mp3']} />
+  )
+}
+
+export const FileAudioOnly = ({ title = 'Audio Only', isActive, onClick }: BasicProps) => {
+  return (
+    <FileStory
+      title={title}
+      isActive={isActive}
+      onClick={onClick}
+      accept={['audio/*']}
+      startingFile="Loop.WAV"
+    />
+  )
+}
+
+export const FileExactMimeAndExtension = ({
+  title = 'PDF + MP4',
+  isActive,
+  onClick,
+}: BasicProps) => {
+  return (
+    <FileStory
+      title={title}
+      isActive={isActive}
+      onClick={onClick}
+      accept={['application/pdf', '.mp4']}
+    />
+  )
+}
+
+export const FileVideoOnly = ({ title = 'Video Only', isActive, onClick }: BasicProps) => {
+  return <FileStory title={title} isActive={isActive} onClick={onClick} accept={['video/*']} />
+}
+
 const params = [
   ['Fun Param Name', 'number'],
   ['Another Param', 'boolean'],
@@ -224,38 +344,23 @@ export const WithControlGrid = () => {
   return (
     <ControlGrid>
       {params.map(([title, type], i) => (
-        <>
+        <Fragment key={i}>
           {type === 'number' && (
-            <Number
-              key={i}
-              title={title}
-              isActive={activeId === i}
-              onClick={() => setActiveId(i)}
-            />
+            <Number title={title} isActive={activeId === i} onClick={() => setActiveId(i)} />
           )}
           {type === 'boolean' && (
-            <Boolean
-              key={i}
-              title={title}
-              isActive={activeId === i}
-              onClick={() => setActiveId(i)}
-            />
+            <Boolean title={title} isActive={activeId === i} onClick={() => setActiveId(i)} />
           )}
           {type === 'color' && (
-            <Color key={i} title={title} isActive={activeId === i} onClick={() => setActiveId(i)} />
+            <Color title={title} isActive={activeId === i} onClick={() => setActiveId(i)} />
           )}
           {type === 'enum' && (
-            <Enum key={i} title={title} isActive={activeId === i} onClick={() => setActiveId(i)} />
+            <Enum title={title} isActive={activeId === i} onClick={() => setActiveId(i)} />
           )}
           {type === 'trigger' && (
-            <Trigger
-              key={i}
-              title={title}
-              isActive={activeId === i}
-              onClick={() => setActiveId(i)}
-            />
+            <Trigger title={title} isActive={activeId === i} onClick={() => setActiveId(i)} />
           )}
-        </>
+        </Fragment>
       ))}
     </ControlGrid>
   )
@@ -269,3 +374,84 @@ export const GridOnPanel = () => (
     </PanelBody>
   </Panel>
 )
+
+export const NumberReversed = ({ title = 'Short Name', isActive, onClick }: BasicProps) => {
+  const ref = useRef<FloatSliderHandle>(null)
+
+  useEffect(() => {
+    ref.current?.updateValue(Math.random())
+  }, [])
+
+  return (
+    <NodeControl isActive={isActive} onClick={onClick}>
+      <NodeControlMain>
+        <NodeControlTitle>{title}</NodeControlTitle>
+        <NodeControlInner>
+          <FloatSlider min={10} max={-10} onValueChange={fn()} ref={ref} />
+        </NodeControlInner>
+      </NodeControlMain>
+    </NodeControl>
+  )
+}
+
+export const NumberWithInputCount = ({ title = 'Brightness', isActive, onClick }: BasicProps) => {
+  const ref = useRef<FloatSliderHandle>(null)
+
+  useEffect(() => {
+    ref.current?.updateValue(Math.random())
+  }, [])
+
+  return (
+    <NodeControl isActive={isActive} onClick={onClick}>
+      <NodeControlMain>
+        <NodeControlInfo>
+          <NodeControlTitle>{title}</NodeControlTitle>
+          <NodeControlInputCount inputCount={2} />
+        </NodeControlInfo>
+        <NodeControlInner>
+          <FloatSlider min={0} max={1} onValueChange={fn()} ref={ref} />
+        </NodeControlInner>
+      </NodeControlMain>
+    </NodeControl>
+  )
+}
+
+export const BooleanWithInputCount = ({ title = 'Enabled', isActive, onClick }: BasicProps) => {
+  const ref = useRef<BooleanToggleHandle>(null)
+
+  return (
+    <NodeControl isActive={isActive} onClick={onClick}>
+      <NodeControlMain>
+        <NodeControlInfo>
+          <NodeControlTitle>{title}</NodeControlTitle>
+          <NodeControlInputCount inputCount={1} />
+        </NodeControlInfo>
+        <NodeControlInner>
+          <BooleanToggle onValueChange={fn()} ref={ref} />
+        </NodeControlInner>
+      </NodeControlMain>
+    </NodeControl>
+  )
+}
+
+export const WithInputCountZero = ({ title = 'No Inputs', isActive, onClick }: BasicProps) => {
+  const ref = useRef<FloatSliderHandle>(null)
+
+  useEffect(() => {
+    ref.current?.updateValue(0.5)
+  }, [])
+
+  return (
+    <NodeControl isActive={isActive} onClick={onClick}>
+      <NodeControlMain>
+        <NodeControlInfo>
+          <NodeControlTitle>{title}</NodeControlTitle>
+          <NodeControlInputCount inputCount={0} />
+        </NodeControlInfo>
+        <NodeControlInner>
+          <FloatSlider min={0} max={1} onValueChange={fn()} ref={ref} />
+        </NodeControlInner>
+      </NodeControlMain>
+    </NodeControl>
+  )
+}

@@ -35,6 +35,25 @@
   }
 }
 
+.headerTitle {
+  font-size: 1rem;
+  font-weight: 500;
+  overflow: auto;
+}
+
+.subHeader {
+  display: flex;
+  flex: 1;
+  gap: var(--gapMedium);
+  align-items: center;
+  min-height: 1.5rem;
+  margin-bottom: var(--gapXLarge);
+
+  h3 {
+    margin: 0;
+  }
+}
+
 .body {
   padding: var(--gapXLarge);
 
@@ -53,6 +72,32 @@
 
 .button {
   margin-left: auto;
+}
+
+.breadcrumbs {
+  display: flex;
+  align-items: center;
+  gap: var(--gapSmall);
+  overflow: hidden;
+}
+
+.breadcrumbItem {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+  flex-shrink: 1;
+}
+
+.breadcrumbClickable {
+  cursor: pointer;
+  text-decoration: dotted underline 1px;
+  text-underline-offset: 2px;
+}
+
+.breadcrumbSeparator {
+  opacity: 0.4;
+  flex-shrink: 0;
 }
 
 .slim {

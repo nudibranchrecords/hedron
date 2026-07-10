@@ -1,0 +1,14 @@
+{
+  "name": "example-project",
+  "version": "1.0.0-alpha.4",
+  "private": true,
+  "dependencies": {
+    "is-even": "^1.0.0",
+    "postprocessing": "6.37.8",
+    "three": "^0.185.1",
+    "three-stdlib": "^2.36.0"
+  },
+  "devDependencies": {
+    "@types/three": "^0.185.1"
+  }
+}

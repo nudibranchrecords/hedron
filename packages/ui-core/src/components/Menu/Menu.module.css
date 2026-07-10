@@ -3,6 +3,7 @@
   flex-direction: column;
   padding: var(--gapSmall);
   background: var(--bgColorDark4);
+  color: var(--textColorLight1);
   border-radius: var(--borderRadiusLarge);
   font-size: var(--baseFontSize);
 }

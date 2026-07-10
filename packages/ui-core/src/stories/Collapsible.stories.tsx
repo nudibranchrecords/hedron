@@ -18,3 +18,13 @@ export const Default = () => {
     </Collapsible>
   )
 }
+
+export const Panel = () => {
+  const [isOpen, setIsOpen] = useState(true)
+
+  return (
+    <Collapsible title="Collapsible Title" isOpen={isOpen} onToggle={setIsOpen} type="panel">
+      Collapsible Content
+    </Collapsible>
+  )
+}

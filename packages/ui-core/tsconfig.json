@@ -8,7 +8,8 @@
       "@components/*": ["src/components/*"],
       "@containers/*": ["src/containers/*"],
       "@css/*": ["src/css/*"],
-      "@hooks/*": ["src/hooks/*"]
+      "@hooks/*": ["src/hooks/*"],
+      "@utils/*": ["src/utils/*"]
     }
   }
 }

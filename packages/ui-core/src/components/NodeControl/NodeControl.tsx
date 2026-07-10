@@ -5,6 +5,7 @@ import {
   useWasMouseDownOnInnerContext,
   useMouseDownOnInner,
 } from './wasMouseDownOnInner'
+import { Icon, inputIcon } from '@components/Icon/Icon'
 
 export interface NodeControlProps {
   isActive?: boolean
@@ -46,6 +47,28 @@ export interface NodeControlTitleProps {
 export const NodeControlTitle = ({ children }: NodeControlTitleProps) => (
   <div className={c.title}>{children}</div>
 )
+
+export interface NodeControlInfoProps {
+  children: React.ReactNode
+}
+
+export const NodeControlInfo = ({ children }: NodeControlInfoProps) => (
+  <div className={c.info}>{children}</div>
+)
+
+export interface NodeControlInputCountProps {
+  inputCount: number
+}
+
+export const NodeControlInputCount = ({ inputCount }: NodeControlInputCountProps) => {
+  if (inputCount === 0) return null
+  return (
+    <div className={c.inputCount}>
+      <Icon name={inputIcon} className={c.inputCountIcon} />
+      {inputCount}
+    </div>
+  )
+}
 
 export interface NodeControlInnerProps {
   children: React.ReactNode

@@ -16,7 +16,7 @@ import {
   rgbaToHex,
   rgbaToHsva,
 } from '@uiw/react-color'
-import { useFloating, shift, offset } from '@floating-ui/react-dom'
+import { useFloating, shift, offset, flip } from '@floating-ui/react-dom'
 import css from './ColorPicker.module.css'
 
 type RGBColor = [number, number, number]
@@ -31,6 +31,8 @@ export interface ColorPickerProps {
 
 const defaultColor: HsvaColor = hexToHsva('#FFFFFF')
 
+const FLOATING_PADDING = 10
+
 export const ColorPicker = forwardRef<ColorPickerHandle, ColorPickerProps>(function ColorPicker(
   { onValueChange },
   ref,
@@ -40,7 +42,11 @@ export const ColorPicker = forwardRef<ColorPickerHandle, ColorPickerProps>(funct
   const colorRef = useRef<HsvaColor>(defaultColor)
   const [isOpen, setIsOpen] = useState(false)
   const { refs, floatingStyles } = useFloating({
-    middleware: [shift({ padding: 10 }), offset({ mainAxis: 10 })],
+    middleware: [
+      flip({ padding: FLOATING_PADDING }),
+      shift({ padding: FLOATING_PADDING }),
+      offset({ mainAxis: FLOATING_PADDING }),
+    ],
   })
 
   const onBoxClick = useCallback(() => {

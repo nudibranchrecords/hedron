@@ -3,9 +3,24 @@ import { StoreApi } from 'zustand'
 import { devtools, persist, subscribeWithSelector } from 'zustand/middleware'
 import { immer } from 'zustand/middleware/immer'
 import type {} from '@redux-devtools/extension' // required for devtools typing
-import { EngineData } from '@hedron/engine'
+import { EngineData } from '@hedron-gl/engine'
 
-export type DialogId = 'sketchModules'
+export type DialogId = 'sketchModules' | 'sketchesServerBuildResult'
+
+export interface BuildMessage {
+  text: string
+  location?: {
+    file: string
+    line: number
+    column: number
+    lineText: string
+  } | null
+}
+
+export interface BuildResult {
+  errors: BuildMessage[]
+  warnings: BuildMessage[]
+}
 
 export interface SaveItem {
   title: string
@@ -20,17 +35,17 @@ export interface ProjectData {
   engine: EngineData
   app: {
     sketchesDir: string
-    // TODO: activeSketchId should be part of the save state
-    // but causing errors when Hedron opens directly on a sketch
-    // activeSketchId: string | null
-    selectedNodes: { [sketchId: string]: string }
-    selectedInputs: { [inputId: string]: string }
+    selectedSceneId: string | null
+    selectedSketches: { [sceneId: string]: string | null }
+    selectedNodes: { [sketchId: string]: string | null }
+    selectedInputs: { [inputId: string]: string | null }
     openedControlGroups: { [sketchId: string]: Record<number, boolean> }
   }
 }
 
 export interface AppState {
-  activeSketchId: string | null // TODO: should be part of ProjectData
+  selectedSceneId: string | null
+  selectedSketches: ProjectData['app']['selectedSketches'] // TODO: should be part of ProjectData
   selectedNodes: ProjectData['app']['selectedNodes']
   selectedInputs: ProjectData['app']['selectedInputs']
   openedControlGroups: ProjectData['app']['openedControlGroups']
@@ -38,15 +53,19 @@ export interface AppState {
   globalDialogId: DialogId | null
   currentSavePath: string | null
   saveList: SaveItem[]
-  setSelectedNode: (sketchID: string | null, nodeId: string) => void
-  setSelectedInput: (nodeId: string, inputId: string) => void
+  sketchesServerBuildResult: BuildResult | null
+  setSelectedNode: (sketchID: string, nodeId: string | null) => void
+  setSelectedInput: (nodeId: string, inputId: string | null) => void
   setOpenedControlGroup: (sketchId: string, groupIndex: number, isOpen: boolean) => void
-  setActiveSketchId: (id: string) => void
+  setSelectedSceneId: (id: string | null) => void
+  setSelectedSketch: (sceneId: string, sketchId: string | null) => void
   setSketchesDir: (dir: string) => void
   setGlobalDialogId: (id: DialogId | null) => void
   setCurrentSavePath: (path: string) => void
   addToSaveList: (path: SaveItem) => void
   removeFromSaveList: (path: string) => void
+  setSketchesServerBuildResult: (result: BuildResult | null) => void
+  cleanupStaleReferences: (engineData: EngineData) => void
 }
 
 export type SetState = StoreApi<AppState>['setState']
@@ -66,8 +85,9 @@ export const createAppStore = () =>
     persist(
       subscribeWithSelector(
         devtools(
-          immer((set) => ({
-            activeSketchId: null,
+          immer<AppState>((set) => ({
+            selectedSceneId: null,
+            selectedSketches: {},
             sketchesDir: null,
             globalDialogId: null,
             currentSavePath: null,
@@ -75,9 +95,10 @@ export const createAppStore = () =>
             selectedInputs: {},
             openedControlGroups: {},
             saveList: [],
-            setActiveSketchId: (id: string) => {
+            sketchesServerBuildResult: null,
+            setSelectedSketch: (sceneId: string, sketchId: string | null) => {
               set((state) => {
-                state.activeSketchId = id
+                state.selectedSketches[sceneId] = sketchId
               })
             },
             setSketchesDir: (dir: string) => {
@@ -109,18 +130,22 @@ export const createAppStore = () =>
                 }
               })
             },
-            setSelectedNode: (sketchID, nodeId) => {
+            setSketchesServerBuildResult: (result: BuildResult | null) => {
               set((state) => {
-                let catId = sketchID
-                if (!catId) {
-                  // Some nodes wont have a relevant sketch ID, for now we store them under "aux"
-                  catId = 'aux'
-                }
-
-                state.selectedNodes[catId] = nodeId
+                state.sketchesServerBuildResult = result
               })
             },
-            setSelectedInput: (nodeId: string, inputId: string) => {
+            setSelectedNode: (sketchID, nodeId) => {
+              set((state) => {
+                state.selectedNodes[sketchID] = nodeId
+              })
+            },
+            setSelectedSceneId: (id: string | null) => {
+              set((state) => {
+                state.selectedSceneId = id
+              })
+            },
+            setSelectedInput: (nodeId, inputId) => {
               set((state) => {
                 state.selectedInputs[nodeId] = inputId
               })
@@ -131,6 +156,66 @@ export const createAppStore = () =>
                   state.openedControlGroups[sketchId] = {}
                 }
                 state.openedControlGroups[sketchId][groupIndex] = isOpen
+              })
+            },
+            cleanupStaleReferences: (engineData: EngineData) => {
+              set((state) => {
+                const validNodeIds = new Set(Object.keys(engineData.nodes))
+                const validSceneIds = new Set(
+                  Object.values(engineData.nodes)
+                    .filter((node) => node?.nodeType === 'scene')
+                    .map((node) => node.id),
+                )
+                const validSketchIds = new Set(
+                  Object.values(engineData.nodes)
+                    .filter((node) => node?.nodeType === 'sketch')
+                    .map((node) => node.id),
+                )
+
+                if (state.selectedSceneId && !validSceneIds.has(state.selectedSceneId)) {
+                  state.selectedSceneId = null
+                }
+
+                for (const sceneId of Object.keys(state.selectedSketches)) {
+                  const selectedSketchId = state.selectedSketches[sceneId]
+                  if (!validSceneIds.has(sceneId) || !selectedSketchId) {
+                    delete state.selectedSketches[sceneId]
+                    continue
+                  }
+
+                  if (!validSketchIds.has(selectedSketchId)) {
+                    delete state.selectedSketches[sceneId]
+                  }
+                }
+
+                for (const sketchId of Object.keys(state.selectedNodes)) {
+                  if (!validSketchIds.has(sketchId)) {
+                    delete state.selectedNodes[sketchId]
+                    continue
+                  }
+
+                  const selectedNodeId = state.selectedNodes[sketchId]
+                  if (selectedNodeId && !validNodeIds.has(selectedNodeId)) {
+                    delete state.selectedNodes[sketchId]
+                  }
+                }
+
+                for (const selectedNodeId of Object.keys(state.selectedInputs)) {
+                  const selectedInputId = state.selectedInputs[selectedNodeId]
+                  if (
+                    !validNodeIds.has(selectedNodeId) ||
+                    !selectedInputId ||
+                    !validNodeIds.has(selectedInputId)
+                  ) {
+                    delete state.selectedInputs[selectedNodeId]
+                  }
+                }
+
+                for (const sketchId of Object.keys(state.openedControlGroups)) {
+                  if (!validSketchIds.has(sketchId)) {
+                    delete state.openedControlGroups[sketchId]
+                  }
+                }
               })
             },
           })),

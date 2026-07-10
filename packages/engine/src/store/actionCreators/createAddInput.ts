@@ -1,40 +1,53 @@
+import { ensureNodeConfig } from '@store/shared/ensureConfig'
 import { addNode } from '@store/shared/addNode'
-import { SetterCreator, SketchConfigParamImported } from '@store/types'
+import { InputNode, SetterCreator } from '@store/types'
 import { createUniqueId } from '@utils/createUniqueId'
 
 export const createAddInput: SetterCreator<'addInput'> =
-  (setState) => (inputConfig, optionsNodeConfig) => {
+  (setState) =>
+  (inputConfig, optionsNodeConfig = []) => {
     const id = createUniqueId()
 
     const optionNodeIds: string[] = []
+
+    let newInput: InputNode | undefined = undefined
 
     setState((state) => {
       for (const cfg of optionsNodeConfig) {
         const optionNodeId = createUniqueId()
         optionNodeIds.push(optionNodeId)
 
-        const cfgImported = {
-          ...cfg,
-          valueType: cfg.valueType ?? 'number',
-          groupIndex: 0,
-          title: cfg.title ?? cfg.key,
-          nodeType: 'param',
-          // TODO: This casting is not ideal, issues tie in with `addNode` type messiness
-        } as SketchConfigParamImported
+        const cfgImported = ensureNodeConfig(cfg)
 
-        addNode(state, optionNodeId, cfgImported)
+        addNode(state, optionNodeId, id, cfgImported)
       }
 
-      if (state.inputs[id]) {
+      if (state.nodes[id]) {
+        newInput = state.nodes[id] as InputNode
         return
       }
-      state.inputs[id] = {
+
+      newInput = {
         ...inputConfig,
-        optionNodeIds,
+        childGroups: {
+          optionNodeIds,
+          inputNodeIds: [],
+        },
         id,
-        // TODO: Give inputs an (optional) sketchId so option nodes can be selected and displayed in bottom sketch panel
+        nodeType: 'input',
       }
+
+      state.nodes[id] = newInput
+
+      // Add children Ids to target node (so that cleanup works if target node is deleted)
+      state.nodes[inputConfig.targetNodeId]?.childGroups.inputNodeIds.push(id)
     })
 
-    return id
+    if (!newInput) {
+      throw new Error(
+        'Failed to create new input. This is likely a bug in the engine store, as it should have been created in the setState callback.',
+      )
+    }
+
+    return newInput as InputNode
   }

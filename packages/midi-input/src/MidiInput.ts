@@ -1,20 +1,18 @@
 import {
   getNextEnumValue,
   HedronEngine,
-  InputOptionNodesConfig,
   IPlugin,
-  NodeValue,
+  ParamValue,
   handleEachInput,
-  EngineState,
-  Input,
+  InputNode,
   ConfigToOptionsType,
-  Param,
-} from '@hedron/engine'
-import { MIDIEvent, MidiManager, MidiMessageType } from '@hedron/midi-manager'
-import { NodeParamEnum } from 'node_modules/@hedron/engine/dist'
+  ParamNode,
+  ParamEnum,
+  EngineStateWithActions,
+} from '@hedron-gl/engine'
+import { MIDIEvent, MidiManager, MidiMessageType } from '@hedron-gl/midi-manager'
 
 const noteLetters = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B']
-
 const midiNotes: string[] = new Array(128)
 
 for (let i = 0; i < 128; i++) {
@@ -25,17 +23,17 @@ for (let i = 0; i < 128; i++) {
 
 type MIDIEventWithValue = Omit<MIDIEvent, 'value'> & { value: number }
 
-type ValueHander<T = Param> = (params: {
+type ValueHander<T = ParamNode> = (params: {
   midiEvent: MIDIEventWithValue
-  input: Input
-  storeState: EngineState
+  input: InputNode
+  storeState: EngineStateWithActions
   optionNodes: ConfigToOptionsType<typeof MidiInput.prototype.optionNodesConfig>
   targetNode: T
-  targetNodeValue: NodeValue
-}) => NodeValue | null
+  targetParamValue: ParamValue
+}) => ParamValue | null
 
 type ShotHandler = (params: {
-  input: Input
+  input: InputNode
   engine: HedronEngine
   midiEvent: MIDIEventWithValue
 }) => void
@@ -43,23 +41,38 @@ type ShotHandler = (params: {
 export class MidiInput implements IPlugin {
   public readonly id = 'midi-input'
   public readonly name = 'MIDI Input'
+  public readonly iconName = 'piano'
   public readonly inputType = 'midi'
   public readonly description = 'Handles MIDI input devices and messages.'
   public readonly midiManager = new MidiManager()
+  public readonly globalOptionNodesConfig = [
+    {
+      nodeType: 'param',
+      key: 'smoothing',
+      title: 'Smoothing',
+      valueType: 'number',
+      defaultValue: 0.9,
+      sliderMin: 0,
+      sliderMax: 0.99,
+    },
+  ] as const satisfies IPlugin['globalOptionNodesConfig']
   public readonly optionNodesConfig = [
     {
+      nodeType: 'param',
       key: 'channel',
       valueType: 'enum',
       options: Array.from({ length: 16 }, (_, i) => ({ value: i, label: `${i + 1}` })),
       defaultValue: 1,
     },
     {
+      nodeType: 'param',
       key: 'note',
       valueType: 'enum',
       options: midiNotes.map((label, i) => ({ value: i, label })),
       defaultValue: 1,
     },
     {
+      nodeType: 'param',
       key: 'type',
       valueType: 'enum',
       defaultValue: MidiMessageType.ControlChange,
@@ -69,45 +82,94 @@ export class MidiInput implements IPlugin {
         { value: MidiMessageType.ControlChange, label: 'Control Change' },
       ],
     },
-  ] as const satisfies InputOptionNodesConfig
+    {
+      nodeType: 'param',
+      key: 'override',
+      title: 'Use Override',
+      valueType: 'boolean',
+      defaultValue: false,
+    },
+    {
+      nodeType: 'param',
+      key: 'overrideValue',
+      title: 'Override Value',
+      valueType: 'number',
+      defaultValue: -1,
+      sliderMin: -1,
+      sliderMax: 127,
+    },
+  ] as const satisfies IPlugin['optionNodesConfig']
 
   private handleShot: ShotHandler = ({ input, engine, midiEvent }) => {
     engine.fireShot(input.targetNodeId, { _midiEvent: midiEvent })
   }
 
-  private handleEnum: ValueHander<NodeParamEnum> = ({
+  private getValue(
+    optionNodes: ConfigToOptionsType<typeof MidiInput.prototype.optionNodesConfig>,
+    midiEvent: MIDIEventWithValue,
+  ) {
+    const value =
+      !optionNodes.override || optionNodes.overrideValue < 0
+        ? midiEvent.value
+        : optionNodes.overrideValue
+    return value
+  }
+
+  private handleEnum: ValueHander<ParamEnum> = ({
     midiEvent,
     input,
     storeState,
+    optionNodes,
     targetNode,
   }) => {
     switch (midiEvent.type) {
       case MidiMessageType.NoteOn:
       case MidiMessageType.NoteOff:
-        return getNextEnumValue(input.targetNodeId)(storeState)
+        return getNextEnumValue(input.targetNodeId)(storeState) ?? null
       default: {
-        return targetNode.options[
-          Math.floor((midiEvent.value / 127) * (targetNode.options.length - 1))
-        ].value
+        const value = this.getValue(optionNodes, midiEvent)
+        return targetNode.options[Math.floor((value / 127) * (targetNode.options.length - 1))].value
       }
     }
   }
 
-  private handleBoolean: ValueHander = ({ midiEvent, targetNodeValue }) => {
+  private handleBoolean: ValueHander = ({ midiEvent, optionNodes, targetParamValue }) => {
     switch (midiEvent.type) {
       case MidiMessageType.NoteOn:
       case MidiMessageType.NoteOff:
-        return !targetNodeValue
-      default:
-        return midiEvent.value > 0
+        return !targetParamValue
+      default: {
+        const value = this.getValue(optionNodes, midiEvent)
+        return value > 0
+      }
     }
   }
 
-  private handleNumber: ValueHander = ({ midiEvent, storeState, input }) => {
-    const sliderMin = (storeState.nodeValues[`${input.targetNodeId}-sliderMin`] as number) ?? 0
-    const sliderMax = (storeState.nodeValues[`${input.targetNodeId}-sliderMax`] as number) ?? 1
+  private handleNumber: ValueHander = ({
+    midiEvent,
+    storeState,
+    input,
+    optionNodes,
+    targetParamValue: currVal,
+  }) => {
+    const sliderMin = (storeState.paramValues[`${input.targetNodeId}-sliderMin`] as number) ?? 0
+    const sliderMax = (storeState.paramValues[`${input.targetNodeId}-sliderMax`] as number) ?? 1
 
-    return (midiEvent.value / 127) * (sliderMax - sliderMin) + sliderMin
+    const targetValue =
+      (this.getValue(optionNodes, midiEvent) / 127) * (sliderMax - sliderMin) + sliderMin
+
+    // Use MidiManager's smoothing system
+    this.midiManager.setSmoothedValue(
+      input.id,
+      currVal as number,
+      targetValue,
+      (smoothedValue: number) => {
+        storeState.updateParamValue(input.targetNodeId, smoothedValue)
+      },
+    )
+
+    // Return null to prevent immediate update in the event handler
+    return null
   }
 
   private handleUnsupported: ValueHander = ({ input, targetNode, midiEvent }) => {
@@ -121,6 +183,22 @@ export class MidiInput implements IPlugin {
   constructor(engine: HedronEngine) {
     const store = engine.getStore()
 
+    // Update smoothing value from global options
+    const updateSmoothing = () => {
+      const storeState = store.getState()
+      const smoothingNodeId = `${this.id}-global-smoothing`
+      const smoothingValue = storeState.paramValues[smoothingNodeId] as number | undefined
+      this.midiManager.smoothing = smoothingValue ?? 0.9
+    }
+
+    // Initial update
+    updateSmoothing()
+
+    // Subscribe to state changes to update smoothing
+    store.subscribe(() => {
+      updateSmoothing()
+    })
+
     this.midiManager.onMidiMessage.add((event) => {
       const storeState = store.getState()
 
@@ -129,7 +207,7 @@ export class MidiInput implements IPlugin {
       handleEachInput<typeof this.optionNodesConfig>(
         storeState,
         'midi',
-        ({ input, optionNodes, targetNode, targetNodeValue }) => {
+        ({ input, optionNodes, targetNode, targetParamValue }) => {
           if (
             event.channel === optionNodes.channel &&
             event.note === optionNodes.note &&
@@ -147,7 +225,9 @@ export class MidiInput implements IPlugin {
               number: this.handleNumber,
               string: this.handleUnsupported,
               rgb: this.handleUnsupported,
+              vector2: this.handleUnsupported,
               vector3: this.handleUnsupported,
+              file: this.handleUnsupported,
             }[targetNode.valueType]({
               midiEvent: event as MIDIEventWithValue,
               input,
@@ -155,14 +235,15 @@ export class MidiInput implements IPlugin {
               optionNodes,
               // @ts-expect-error -- TS isn't smart enough to infer the correct node type
               targetNode,
-              targetNodeValue,
+              // @ts-expect-error -- TS isn't smart enough to infer the correct node type
+              targetParamValue,
             })
 
-            if (value === null) {
-              return
+            // For numbers, handleNumber returns null and uses smoothing system
+            // For other types, update directly
+            if (value !== null) {
+              storeState.updateParamValue(input.targetNodeId, value)
             }
-
-            storeState.updateNodeValue(input.targetNodeId, value)
           }
         },
       )

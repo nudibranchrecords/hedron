@@ -1,6 +1,6 @@
 {
-  "name": "@hedron/audio-input",
-  "version": "1.0.0-alpha.1",
+  "name": "@hedron-gl/audio-input",
+  "version": "1.0.0-alpha.4",
   "description": "Audio input for Hedron",
   "author": "Cale Bradbury",
   "homepage": "https://github.com/nudibranchrecords/hedron#readme",
@@ -26,23 +26,27 @@
     "lint": "eslint . --ext .js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix"
   },
   "devDependencies": {
-    "@types/three": "^0.178.1",
+    "@types/three": "^0.185.1",
     "@vitejs/plugin-react": "^4.3.4",
-    "vite": "^6.2.3",
+    "typescript": "^5.9.3",
+    "vite": "^7.3.1",
     "vite-plugin-dts": "^4.5.3",
     "vite-tsconfig-paths": "^5.1.4"
   },
   "dependencies": {
-    "@hedron/engine": "workspace:^",
-    "@hedron/ui-core": "workspace:^"
+    "@hedron-gl/engine": "^1.0.0-alpha.4",
+    "@hedron-gl/ui-core": "^1.0.0-alpha.4"
   },
   "peerDependencies": {
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "three": "^0.178.0",
-    "zustand": "^5.0.2"
+    "three": "^0.185.1",
+    "zustand": "^5.0.8"
   },
   "bugs": {
     "url": "https://github.com/nudibranchrecords/hedron/issues"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }

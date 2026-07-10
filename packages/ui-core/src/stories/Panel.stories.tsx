@@ -1,9 +1,31 @@
-import type { Meta, StoryObj } from '@storybook/react'
+import type { Decorator, Meta, StoryObj } from '@storybook/react'
 
 import { fn } from '@storybook/test'
 import { WithControlGrid } from './NodeControl.stories'
-import { Panel, PanelActions, PanelBody, PanelHeader } from '@components/Panel/Panel'
+import { Icon } from '@components/Icon/Icon'
+import {
+  Panel,
+  PanelActions,
+  PanelBody,
+  PanelHeader,
+  PanelSubHeader,
+  PanelBreadcrumbs,
+} from '@components/Panel/Panel'
 import { Button } from '@components/Button/Button'
+
+const bottomDecorator: Decorator = (Story) => {
+  return (
+    <div
+      style={{
+        height: '100vh',
+        display: 'flex',
+        alignItems: 'flex-end',
+      }}
+    >
+      <Story />
+    </div>
+  )
+}
 
 const meta = {
   title: 'Panel',
@@ -177,26 +199,69 @@ export const BottomPanel: Story = {
   parameters: {
     layout: 'fullscreen',
   },
-  decorators: [
-    (Story) => {
-      return (
-        <div
-          style={{
-            height: '100vh',
-            display: 'flex',
-            alignItems: 'flex-end',
-          }}
-        >
-          <Story />
-        </div>
-      )
-    },
-  ],
+  decorators: [bottomDecorator],
   render: () => {
     return (
       <Panel snugPosition="bottom" spacing="slim" width="full">
         <PanelHeader iconName="power" buttonOnClick={fn()}>
           Position X Input
+        </PanelHeader>
+        <PanelBody>
+          <PanelSubHeader title="Subheader Title" iconName="info">
+            <Button size="slim" type="ghost" className="mr-auto" onClick={fn()}>
+              <Icon name="edit" />
+            </Button>
+            <Button size="slim" type="ghost" onClick={fn()}>
+              <Icon name="delete" />
+            </Button>
+          </PanelSubHeader>
+          <WithControlGrid />
+        </PanelBody>
+      </Panel>
+    )
+  },
+}
+
+export const BottomPanelWithBreadcrumbs: Story = {
+  parameters: {
+    layout: 'fullscreen',
+  },
+  decorators: [bottomDecorator],
+  render: () => {
+    return (
+      <Panel snugPosition="bottom" spacing="slim" width="full">
+        <PanelHeader iconName="tune" buttonOnClick={fn()}>
+          <PanelBreadcrumbs
+            items={[
+              { label: 'Logo', id: 'sketch-1', onClick: fn() },
+              { label: 'Speed', id: 'param-1' },
+            ]}
+          />
+        </PanelHeader>
+        <PanelBody>
+          <p>Panel content with breadcrumbs in the header.</p>
+        </PanelBody>
+      </Panel>
+    )
+  },
+}
+
+export const WithClickableBreadcrumbs: Story = {
+  parameters: {
+    layout: 'fullscreen',
+  },
+  decorators: [bottomDecorator],
+  render: () => {
+    return (
+      <Panel snugPosition="bottom" spacing="slim" width="full">
+        <PanelHeader iconName="tune" buttonOnClick={fn()}>
+          <PanelBreadcrumbs
+            items={[
+              { label: 'My Awesome Sketch', id: 'sketch-1', onClick: fn() },
+              { label: 'Material Settings', id: 'group-1', onClick: fn() },
+              { label: 'Diffuse Color', id: 'param-1' },
+            ]}
+          />
         </PanelHeader>
         <PanelBody>
           <WithControlGrid />
