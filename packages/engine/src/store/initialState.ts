@@ -1,8 +1,10 @@
 import { EngineState } from '@store/types'
 
 export const initialState: EngineState = {
-  sketches: {},
   nodes: {},
-  nodeValues: {},
+  paramValues: {},
+  sceneIds: [],
   sketchModules: {},
+  resources: {},
+  resourcesUrl: null,
 }

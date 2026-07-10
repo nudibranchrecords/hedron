@@ -2,11 +2,12 @@ import {
   EngineState,
   EnsureRequiredValueType,
   ParamVectorValueType,
-  SketchConfigParamImported,
+  ConfigParamImported,
   ParamValueType,
-  SketchConfigShotImported,
+  ConfigShotImported,
   ParamVector,
   isParamVectorValueType,
+  ConfigCustomNodeImported,
 } from '@store/types'
 import { createUniqueId } from '@utils/createUniqueId'
 
@@ -16,16 +17,16 @@ const keysLookup: Record<ParamVectorValueType, string[]> = {
   rgb: ['r', 'g', 'b'],
 }
 
-type AddNodeConfig = EnsureRequiredValueType<SketchConfigParamImported> | SketchConfigShotImported
+type AddNodeConfig = ConfigParamImported | ConfigShotImported | ConfigCustomNodeImported
 
 // Exclude param types that have children (vector3, rgb)
 type ParamConfigNonVector = Exclude<
-  EnsureRequiredValueType<SketchConfigParamImported>,
+  EnsureRequiredValueType<ConfigParamImported>,
   { valueType: ParamVectorValueType }
 >
 
 const isParamNonVectorConfig = (
-  config: EnsureRequiredValueType<SketchConfigParamImported>,
+  config: EnsureRequiredValueType<ConfigParamImported>,
 ): config is ParamConfigNonVector => {
   return !isParamVectorValueType(config.valueType)
 }
@@ -37,15 +38,26 @@ const _addNodeToState = (
   optionNodeIds: string[],
   config: AddNodeConfig,
 ) => {
+  if (config.nodeType === 'custom') {
+    state.nodes[nodeId] = {
+      ...config,
+      id: nodeId,
+      title: config.title ?? config.key,
+      parentIds: parentId ? [parentId] : [],
+      childGroups: { optionNodeIds, inputNodeIds: [] },
+    }
+
+    return state.nodes[nodeId]
+  }
+
   if (config.nodeType === 'shot') {
     state.nodes[nodeId] = {
       ...config,
       id: nodeId,
       nodeType: 'shot',
       title: config.title ?? config.key,
-      parentId,
-      childrenIds: optionNodeIds,
-      optionNodeIds,
+      parentIds: parentId ? [parentId] : [],
+      childGroups: { optionNodeIds, inputNodeIds: [] },
     }
 
     return state.nodes[nodeId]
@@ -65,9 +77,8 @@ const _addNodeToState = (
     nodeType: 'param' as const,
     title,
     hidden,
-    parentId,
-    childrenIds: optionNodeIds,
-    optionNodeIds,
+    parentIds: parentId ? [parentId] : [],
+    childGroups: { optionNodeIds, inputNodeIds: [] },
   }
 
   switch (valueType) {
@@ -83,6 +94,14 @@ const _addNodeToState = (
     case 'enum':
       state.nodes[nodeId] = { ...baseNode, valueType, defaultValue, options: config.options }
       break
+    case 'file':
+      state.nodes[nodeId] = {
+        ...baseNode,
+        valueType,
+        defaultValue,
+        accept: config.accept,
+      }
+      break
   }
 
   if (
@@ -90,9 +109,10 @@ const _addNodeToState = (
     (valueType === 'boolean' && typeof defaultValue === 'boolean') ||
     (valueType === 'enum' &&
       (typeof defaultValue === 'string' || typeof defaultValue === 'number')) ||
-    (valueType === 'string' && typeof defaultValue === 'string')
+    (valueType === 'string' && typeof defaultValue === 'string') ||
+    (valueType === 'file' && (typeof defaultValue === 'string' || defaultValue === null))
   ) {
-    state.nodeValues[nodeId] = defaultValue
+    state.paramValues[nodeId] = defaultValue
   } else {
     throw new Error(
       `valueType of param ${key}: ${valueType} does not match defaultValue: ${defaultValue}`,
@@ -155,10 +175,8 @@ export const addNode = (
       id: nodeId,
       nodeType: 'param',
       title: config.title ?? config.key,
-      vectorComponentIds,
-      childrenIds: vectorComponentIds,
-      parentId,
-      optionNodeIds: [],
+      childGroups: { optionNodeIds: [], inputNodeIds: [], vectorComponentIds },
+      parentIds: parentId ? [parentId] : [],
     } as ParamVector
 
     for (const [index, childNodeId] of vectorComponentIds.entries()) {

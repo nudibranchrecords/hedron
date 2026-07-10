@@ -13,10 +13,10 @@
     "@hedron-gl/engine": "^1.0.0-alpha.4",
     "@hedron-gl/lfo-input": "^1.0.0-alpha.4",
     "postprocessing": "6.37.8",
-    "three": "^0.178.0",
+    "three": "^0.185.1",
     "three-stdlib": "^2.36.0"
   },
   "devDependencies": {
-    "@types/three": "^0.178.1"
+    "@types/three": "^0.185.1"
   }
 }

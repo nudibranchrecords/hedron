@@ -1,3 +1,4 @@
+import path from 'path'
 import { app, BrowserWindow, dialog, ipcMain, screen, session } from 'electron'
 import { electronApp, optimizer } from '@electron-toolkit/utils'
 import { REDUX_DEVTOOLS, installExtension } from '@tomjs/electron-devtools-installer'
@@ -5,14 +6,17 @@ import { ProjectData } from '@hedron-gl/app-store'
 import { saveFrameHandler, saveFrameSequenceHandler } from './handlers/frameHandlers'
 import {
   DialogEvents,
+  OpenSketchesDirResponse,
   FileEvents,
   OpenProjectResponse,
+  ResourceEvents,
   SaveProjectResponse,
   SketchEvents,
 } from '@shared/Events'
 import { updateDisplayMenu, updateMenu } from '@main/menu'
 import { createWindow } from '@main/mainWindow'
 import { startSketchesServer } from '@main/handleSketchFiles'
+import { startResourcesServer } from '@main/handleResourceFiles'
 import { saveProjectFile } from '@main/handlers/saveProjectFile'
 import { openProjectFile } from '@main/handlers/openProjectFile'
 import { openFolder } from '@main/handlers/openFolder'
@@ -86,12 +90,23 @@ app.on('window-all-closed', () => {
   }
 })
 
-ipcMain.handle(DialogEvents.OpenSketchesDirDialog, async () => {
+ipcMain.handle(DialogEvents.OpenSketchesDirDialog, async (): Promise<OpenSketchesDirResponse> => {
   const result = await dialog.showOpenDialog({
     properties: ['openDirectory'],
   })
 
-  return result.filePaths[0]
+  if (result.canceled || result.filePaths.length === 0) {
+    return { result: 'canceled' }
+  }
+
+  const sketchesDirAbsolute = result.filePaths[0]
+  const resourcesDirAbsolute = path.resolve(path.dirname(sketchesDirAbsolute), 'resources')
+
+  return {
+    result: 'success',
+    sketchesDirAbsolute,
+    resourcesDirAbsolute,
+  }
 })
 
 ipcMain.handle(
@@ -114,6 +129,10 @@ ipcMain.handle(FileEvents.OpenFolder, async (_, folderPath: string) => {
 
 ipcMain.handle(SketchEvents.StartSketchesServer, async (_, sketchesDir: string) => {
   return await startSketchesServer(sketchesDir)
+})
+
+ipcMain.handle(ResourceEvents.StartResourcesServer, async (_, resourcesDir: string) => {
+  return await startResourcesServer(resourcesDir)
 })
 
 ipcMain.handle(FrameEvents.SaveFrame, saveFrameHandler)

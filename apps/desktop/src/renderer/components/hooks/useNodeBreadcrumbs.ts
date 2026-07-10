@@ -2,7 +2,7 @@ import { useMemo } from 'react'
 import { BreadcrumbItem, useEngineStore } from '@hedron-gl/ui-core'
 import { Node } from '@hedron-gl/engine'
 import { useAppStore } from '@renderer/appStore'
-import { useActiveSketch } from '@components/hooks/useActiveSketch'
+import { useSelectedSketch } from '@components/hooks/useSelectedSketch'
 
 interface BreadcrumbData {
   label: string
@@ -11,7 +11,7 @@ interface BreadcrumbData {
 }
 
 export const useNodeBreadcrumbs = (nodeId: string): BreadcrumbItem[] => {
-  const activeSketch = useActiveSketch()
+  const selectedSketch = useSelectedSketch()
   const selectNode = useAppStore((state) => state.setSelectedNode)
 
   const nodes = useEngineStore((state) => state.nodes)
@@ -28,7 +28,11 @@ export const useNodeBreadcrumbs = (nodeId: string): BreadcrumbItem[] => {
         id: node.id,
         isSelectable: node.nodeType === 'param' || node.nodeType === 'shot',
       })
-      currentId = node.parentId
+      currentId =
+        node.parentIds.find((id) => {
+          const nodeType = nodes[id]?.nodeType
+          return nodeType && nodeType !== 'custom'
+        }) || null
     }
 
     return breadcrumbs
@@ -40,10 +44,10 @@ export const useNodeBreadcrumbs = (nodeId: string): BreadcrumbItem[] => {
         label: item.label,
         id: item.id,
         onClick:
-          item.isSelectable && activeSketch && i < data.length - 1
-            ? () => selectNode(activeSketch.id, item.id)
+          item.isSelectable && selectedSketch && i < data.length - 1
+            ? () => selectNode(selectedSketch.id, item.id)
             : undefined,
       })),
-    [data, activeSketch, selectNode],
+    [data, selectedSketch, selectNode],
   )
 }

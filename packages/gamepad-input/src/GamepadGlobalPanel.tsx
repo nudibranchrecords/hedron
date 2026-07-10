@@ -2,15 +2,12 @@ import React, { useState, useEffect, useCallback } from 'react'
 import {
   findNodeWithKeyFromIdList,
   HedronEngine,
-  Input,
+  InputNode,
   Nodes,
   nodesAsArray,
-  NodeValues,
+  ParamValues,
 } from '@hedron-gl/engine'
 import {
-  Panel,
-  PanelHeader,
-  PanelBody,
   useEngineStore,
   Card,
   CardBody,
@@ -71,7 +68,7 @@ const useConnectedGamepads = (gamepadPlugin: GamepadInput | undefined) => {
 const useGamepadEvents = (
   gamepadPlugin: GamepadInput | undefined,
   nodes: Nodes,
-  nodeValues: NodeValues,
+  paramValues: ParamValues,
 ) => {
   const [flashingInputs, setFlashingInputs] = useState<Set<string>>(new Set())
   const [flashingControllers, setFlashingControllers] = useState<Set<number>>(new Set())
@@ -94,7 +91,7 @@ const useGamepadEvents = (
       )
 
       // Find matching inputs and flash them
-      const matchingInputIds = findMatchingInputsForEvent(event, nodes, nodeValues)
+      const matchingInputIds = findMatchingInputsForEvent(event, nodes, paramValues)
       flashInputs(matchingInputIds, setFlashingInputs)
 
       // Flash controller card at reduced capacity
@@ -138,7 +135,7 @@ const useGamepadEvents = (
 
     gamepadPlugin.gamepadManager.onGamepadEvent.add(handleEvent)
     return () => gamepadPlugin.gamepadManager.onGamepadEvent.remove(handleEvent)
-  }, [gamepadPlugin, nodes, nodeValues])
+  }, [gamepadPlugin, nodes, paramValues])
 
   return { flashingInputs, flashingControllers, lastEventPerController }
 }
@@ -164,7 +161,7 @@ const findPhysicalIndicesForLogicalController = (
 const findMatchingInputsForEvent = (
   event: GamepadEvent,
   nodes: Nodes,
-  nodeValues: NodeValues,
+  paramValues: ParamValues,
 ): string[] => {
   return nodesAsArray(nodes)
     .filter((input) => {
@@ -173,17 +170,21 @@ const findMatchingInputsForEvent = (
       const controllerIndexNode = findNodeWithKeyFromIdList(
         nodes,
         'controllerIndex',
-        input.optionNodeIds,
+        input.childGroups.optionNodeIds,
       )
 
-      const inputTypeNode = findNodeWithKeyFromIdList(nodes, 'inputType', input.optionNodeIds)
-      const indexNode = findNodeWithKeyFromIdList(nodes, 'index', input.optionNodeIds)
+      const inputTypeNode = findNodeWithKeyFromIdList(
+        nodes,
+        'inputType',
+        input.childGroups.optionNodeIds,
+      )
+      const indexNode = findNodeWithKeyFromIdList(nodes, 'index', input.childGroups.optionNodeIds)
 
       if (!controllerIndexNode || !inputTypeNode || !indexNode) return false
 
-      const controllerIndex = nodeValues[controllerIndexNode.id]
-      const inputType = nodeValues[inputTypeNode.id]
-      const index = nodeValues[indexNode.id]
+      const controllerIndex = paramValues[controllerIndexNode.id]
+      const inputType = paramValues[inputTypeNode.id]
+      const index = paramValues[indexNode.id]
 
       return (
         controllerIndex === event.controllerIndex &&
@@ -233,21 +234,21 @@ const getInputsForController = (
   controllerIndex: number,
   nodes: Nodes,
   engine: HedronEngine,
-): Input[] => {
+): InputNode[] => {
   return nodesAsArray(nodes).filter((node) => {
     if (node.nodeType !== 'input' || node.inputType !== 'gamepad') return false
 
     const controllerIndexNode = findNodeWithKeyFromIdList(
       nodes,
       'controllerIndex',
-      node.optionNodeIds,
+      node.childGroups.optionNodeIds,
     )
 
     if (!controllerIndexNode) return false
 
-    const controllerIndexValue = engine.getStore().getState().nodeValues[controllerIndexNode.id]
+    const controllerIndexValue = engine.getStore().getState().paramValues[controllerIndexNode.id]
     return controllerIndexValue === controllerIndex
-  }) as Input[]
+  }) as InputNode[]
 }
 
 export const GamepadGlobalPanel: React.FC<GamepadGlobalPanelProps> = ({ engine }) => {
@@ -255,14 +256,13 @@ export const GamepadGlobalPanel: React.FC<GamepadGlobalPanelProps> = ({ engine }
   const [expandedControllers, setExpandedControllers] = useState<Set<number>>(new Set())
 
   const nodes = useEngineStore((state) => state.nodes)
-  const nodeValues = useEngineStore((state) => state.nodeValues)
-  const sketches = useEngineStore((state) => state.sketches)
+  const paramValues = useEngineStore((state) => state.paramValues)
 
   const { connectedGamepads, setConnectedGamepads } = useConnectedGamepads(gamepadPlugin)
   const { flashingInputs, flashingControllers, lastEventPerController } = useGamepadEvents(
     gamepadPlugin,
     nodes,
-    nodeValues,
+    paramValues,
   )
 
   const toggleExpanded = useCallback((physicalIndex: number) => {
@@ -296,40 +296,31 @@ export const GamepadGlobalPanel: React.FC<GamepadGlobalPanelProps> = ({ engine }
 
   if (connectedGamepads.length === 0) {
     return (
-      <Panel>
-        <PanelHeader>Gamepad Global Settings</PanelHeader>
-        <PanelBody>
-          <div className={styles.noGamepads}>
-            No gamepads detected
-            <br />
-            <br />
-            Try pressing any button on your gamepad
-          </div>
-        </PanelBody>
-      </Panel>
+      <div className={styles.noGamepads}>
+        No gamepads detected
+        <br />
+        <br />
+        Try pressing any button on your gamepad
+      </div>
     )
   }
 
   return (
-    <Panel>
-      <PanelHeader>Gamepad Global Settings</PanelHeader>
-      <PanelBody>
-        <GlobalSettings engine={engine} />
-        <ControllerList
-          connectedGamepads={connectedGamepads}
-          expandedControllers={expandedControllers}
-          flashingInputs={flashingInputs}
-          flashingControllers={flashingControllers}
-          nodes={nodes}
-          nodeValues={nodeValues}
-          sketches={sketches}
-          engine={engine}
-          toggleExpanded={toggleExpanded}
-          handleControllerAssignment={handleControllerAssignment}
-          lastEventPerController={lastEventPerController}
-        />
-      </PanelBody>
-    </Panel>
+    <div>
+      <GlobalSettings engine={engine} />
+      <ControllerList
+        connectedGamepads={connectedGamepads}
+        expandedControllers={expandedControllers}
+        flashingInputs={flashingInputs}
+        flashingControllers={flashingControllers}
+        nodes={nodes}
+        paramValues={paramValues}
+        engine={engine}
+        toggleExpanded={toggleExpanded}
+        handleControllerAssignment={handleControllerAssignment}
+        lastEventPerController={lastEventPerController}
+      />
+    </div>
   )
 }
 
@@ -361,8 +352,7 @@ interface ControllerListProps {
   flashingInputs: Set<string>
   flashingControllers: Set<number>
   nodes: Nodes
-  nodeValues: NodeValues
-  sketches: Record<string, { id: string; title: string; nodeIds: string[] }>
+  paramValues: ParamValues
   engine: HedronEngine
   toggleExpanded: (physicalIndex: number) => void
   handleControllerAssignment: (physicalIndex: number, logicalIndex: number) => void
@@ -375,8 +365,7 @@ const ControllerList: React.FC<ControllerListProps> = ({
   flashingInputs,
   flashingControllers,
   nodes,
-  nodeValues,
-  sketches,
+  paramValues,
   engine,
   toggleExpanded,
   handleControllerAssignment,
@@ -398,8 +387,7 @@ const ControllerList: React.FC<ControllerListProps> = ({
             flashingInputs={flashingInputs}
             controllerInputs={controllerInputs}
             nodes={nodes}
-            nodeValues={nodeValues}
-            sketches={sketches}
+            paramValues={paramValues}
             toggleExpanded={toggleExpanded}
             handleControllerAssignment={handleControllerAssignment}
             lastEvent={lastEventPerController.get(gamepad.assignedIndex)}
@@ -416,10 +404,9 @@ interface ControllerItemProps {
   isExpanded: boolean
   isFlashing: boolean
   flashingInputs: Set<string>
-  controllerInputs: Input[]
+  controllerInputs: InputNode[]
   nodes: Nodes
-  nodeValues: NodeValues
-  sketches: Record<string, { id: string; title: string; nodeIds: string[] }>
+  paramValues: ParamValues
   toggleExpanded: (physicalIndex: number) => void
   handleControllerAssignment: (physicalIndex: number, logicalIndex: number) => void
   lastEvent?: GamepadEvent
@@ -432,8 +419,7 @@ const ControllerItem: React.FC<ControllerItemProps> = ({
   flashingInputs,
   controllerInputs,
   nodes,
-  nodeValues,
-  sketches,
+  paramValues,
   toggleExpanded,
   handleControllerAssignment,
   lastEvent,
@@ -443,13 +429,17 @@ const ControllerItem: React.FC<ControllerItemProps> = ({
     if (!lastEvent) return null
 
     const matchingInput = controllerInputs.find((input) => {
-      const inputTypeNode = findNodeWithKeyFromIdList(nodes, 'inputType', input.optionNodeIds)
-      const indexNode = findNodeWithKeyFromIdList(nodes, 'index', input.optionNodeIds)
+      const inputTypeNode = findNodeWithKeyFromIdList(
+        nodes,
+        'inputType',
+        input.childGroups.optionNodeIds,
+      )
+      const indexNode = findNodeWithKeyFromIdList(nodes, 'index', input.childGroups.optionNodeIds)
 
       if (!inputTypeNode || !indexNode) return false
 
-      const inputType = nodeValues[inputTypeNode.id]
-      const index = nodeValues[indexNode.id]
+      const inputType = paramValues[inputTypeNode.id]
+      const index = paramValues[indexNode.id]
 
       return inputType === lastEvent.inputType && index === lastEvent.index
     })
@@ -460,8 +450,8 @@ const ControllerItem: React.FC<ControllerItemProps> = ({
     // Find the sketch that contains this node by scanning all sketches
     let sketch = null
     if (matchingInput?.targetNodeId) {
-      const foundSketch = Object.values(sketches).find((s) =>
-        s.nodeIds?.includes(matchingInput.targetNodeId),
+      const foundSketch = Object.values(nodes).find(
+        (node) => node?.nodeType === 'sketch' && node.nodeIds?.includes(matchingInput.targetNodeId),
       )
       sketch = foundSketch || null
     }
@@ -474,7 +464,7 @@ const ControllerItem: React.FC<ControllerItemProps> = ({
       sketchTitle: sketch?.title || null,
       isRegistered: !!matchingInput,
     }
-  }, [lastEvent, controllerInputs, nodes, nodeValues, sketches])
+  }, [lastEvent, controllerInputs, nodes, paramValues])
   return (
     <Card>
       <div className={isFlashing ? styles.activeCardSubtle : ''}>
@@ -526,7 +516,7 @@ const ControllerItem: React.FC<ControllerItemProps> = ({
                     const targetNode = nodes[input.targetNodeId]
                     const isFlashing = flashingInputs.has(input.id)
                     let type, index: number | string | undefined
-                    input.optionNodeIds.forEach((nodeId) => {
+                    input.childGroups.optionNodeIds.forEach((nodeId: string) => {
                       const node = nodes[nodeId]
 
                       if (!node || !('key' in node)) {
@@ -534,9 +524,9 @@ const ControllerItem: React.FC<ControllerItemProps> = ({
                       }
 
                       if (node.key === 'inputType') {
-                        type = nodeValues[nodeId] as number
+                        type = paramValues[nodeId] as number
                       } else if (node.key === 'index') {
-                        index = nodeValues[nodeId] as number
+                        index = paramValues[nodeId] as number
                       }
                     })
                     return (

@@ -63,11 +63,20 @@
   flex-shrink: 0;
 }
 
-.widgetStrip:last-child {
+.pluginControls {
   flex: 1;
   min-height: 0;
+  overflow: auto;
+  padding: 0.25rem 0;
 }
 
 .widgetItem {
   padding: 0.25rem 0;
+}
+
+.plugins {
+  padding: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
 }

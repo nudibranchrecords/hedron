@@ -1,21 +1,21 @@
 import { useCallback, useState, useMemo } from 'react'
-import { HedronEngine, Input } from '@hedron-gl/engine'
+import { HedronEngine, InputNode } from '@hedron-gl/engine'
 import {
   Button,
   ControlGrid,
   NodeContainer,
   useEngineStore,
-  useOptionNodeByKey,
+  useNodeOptionNodes,
 } from '@hedron-gl/ui-core'
 import { GamepadInput } from './GamepadInput'
 import { GamepadEvent, AxisMode, GamepadInputType } from './GamepadTypes'
 
 interface IProps {
-  input: Input
+  input: InputNode
   engine: HedronEngine
 }
 
-const useGamepadLearn = (input: Input, engine: HedronEngine) => {
+const useGamepadLearn = (input: InputNode, engine: HedronEngine) => {
   const [isLearning, setIsLearning] = useState(false)
 
   const plugin = engine.getPlugin('gamepad-input') as GamepadInput
@@ -35,22 +35,22 @@ const useGamepadLearn = (input: Input, engine: HedronEngine) => {
         const state = store.getState()
 
         // Update each option node with the learned values
-        input.optionNodeIds.forEach((nodeId) => {
+        input.childGroups.optionNodeIds.forEach((nodeId) => {
           const node = state.nodes[nodeId]
           if (!node || node.nodeType !== 'param') return
           switch (node.key) {
             case 'controllerIndex':
-              state.updateNodeValue(nodeId, event.controllerIndex)
+              state.updateParamValue(nodeId, event.controllerIndex)
               break
             case 'inputType':
-              state.updateNodeValue(nodeId, event.inputType)
+              state.updateParamValue(nodeId, event.inputType)
               break
             case 'index':
-              state.updateNodeValue(nodeId, event.index)
+              state.updateParamValue(nodeId, event.index)
               break
             case 'secondaryIndex':
               if (event.secondaryIndex !== undefined) {
-                state.updateNodeValue(nodeId, event.secondaryIndex)
+                state.updateParamValue(nodeId, event.secondaryIndex)
               }
               break
           }
@@ -59,7 +59,7 @@ const useGamepadLearn = (input: Input, engine: HedronEngine) => {
       .finally(() => {
         setIsLearning(false)
       })
-  }, [engine, input.optionNodeIds, gamepadManager])
+  }, [engine, input.childGroups.optionNodeIds, gamepadManager])
 
   const cancelGamepadLearn = useCallback(() => {
     gamepadManager.cancelGamepadLearn()
@@ -79,20 +79,22 @@ export const GamepadInputPanel = ({ input, engine }: IProps) => {
   const { isLearning, runGamepadLearn, cancelGamepadLearn } = useGamepadLearn(input, engine)
 
   const nodes = useEngineStore((state) => state.nodes)
-  const nodeValues = useEngineStore((state) => state.nodeValues)
+  const paramValues = useEngineStore((state) => state.paramValues)
 
-  const inputTypeNode = useOptionNodeByKey(input, 'inputType')
-  const axisModeNode = useOptionNodeByKey(input, 'axisMode')
+  const optionNodes = useNodeOptionNodes(input.id)
 
-  const inputTypeValue = inputTypeNode ? nodeValues[inputTypeNode.id] : null
-  const axisModeValue = axisModeNode ? nodeValues[axisModeNode.id] : null
+  const inputTypeNode = optionNodes['inputType']
+  const axisModeNode = optionNodes['axisMode']
+
+  const inputTypeValue = inputTypeNode ? paramValues[inputTypeNode.id] : null
+  const axisModeValue = axisModeNode ? paramValues[axisModeNode.id] : null
   const targetNode = nodes[input.targetNodeId]
-  const targetNodeValueType = targetNode?.nodeType === 'param' ? targetNode.valueType : null
+  const targetParamValueType = targetNode?.nodeType === 'param' ? targetNode.valueType : null
 
   // Memoize filtered node IDs to prevent unnecessary recalculations
   const visibleOptionNodeIds = useMemo(
     () =>
-      input.optionNodeIds.filter((id) => {
+      input.childGroups.optionNodeIds.filter((id) => {
         const node = nodes[id]
 
         if (!node || !('key' in node)) {
@@ -107,7 +109,7 @@ export const GamepadInputPanel = ({ input, engine }: IProps) => {
         if (node?.key === 'buttonMode') {
           return (
             inputTypeValue === GamepadInputType.Button &&
-            (targetNodeValueType === 'number' || targetNodeValueType === 'boolean')
+            (targetParamValueType === 'number' || targetParamValueType === 'boolean')
           )
         }
         // Hide axisMode unless it's an axis input
@@ -131,7 +133,7 @@ export const GamepadInputPanel = ({ input, engine }: IProps) => {
         }
         return true
       }),
-    [input.optionNodeIds, nodes, inputTypeValue, axisModeValue, targetNodeValueType],
+    [input.childGroups.optionNodeIds, nodes, inputTypeValue, axisModeValue, targetParamValueType],
   )
 
   return (

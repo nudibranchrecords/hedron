@@ -1,0 +1,42 @@
+{
+  "name": "@hedron-gl/scene-control",
+  "version": "1.0.0-alpha.4",
+  "description": "Scene control plugin for Hedron",
+  "author": "Alex Kempton <alex@funwithtriangles.net>",
+  "homepage": "https://github.com/nudibranchrecords/hedron#readme",
+  "type": "module",
+  "license": "ISC",
+  "main": "./dist/scene-control.es.js",
+  "types": "./dist/index.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nudibranchrecords/hedron.git"
+  },
+  "scripts": {
+    "dev": "vite build --watch",
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "build": "vite build",
+    "lint": "eslint . --ext .js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.3.4",
+    "typescript": "^5.9.3",
+    "vite": "^7.3.1",
+    "vite-plugin-dts": "^4.5.3",
+    "vite-tsconfig-paths": "^5.1.4"
+  },
+  "dependencies": {
+    "@hedron-gl/engine": "^1.0.0-alpha.4",
+    "@hedron-gl/ui-core": "^1.0.0-alpha.4"
+  },
+  "peerDependencies": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "bugs": {
+    "url": "https://github.com/nudibranchrecords/hedron/issues"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

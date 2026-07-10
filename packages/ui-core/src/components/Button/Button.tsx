@@ -16,6 +16,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         type="button"
         className={`${c.wrapper} ${c[type]} ${size && c[size]} ${disabled && c.disabled} ${className}`}
         ref={ref}
+        disabled={disabled}
         {...props}
       >
         {iconName && <Icon name={iconName} className={c.icon} />}

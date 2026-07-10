@@ -2,6 +2,8 @@ import type { Meta } from '@storybook/react'
 import { fn } from '@storybook/test'
 import { Fragment, useEffect, useRef, useState } from 'react'
 import { useInterval } from 'usehooks-ts'
+import { ParamFileValue } from '@hedron-gl/engine'
+import { FilePicker } from '@components/FilePicker/FilePicker'
 import { EnumDropdown, EnumDropdownHandle } from '@components/EnumDropdown/EnumDropdown'
 import {
   NodeControl,
@@ -202,6 +204,122 @@ export const Trigger = ({ title = 'Trigger Pad', isActive, onClick }: BasicProps
       </NodeControlMain>
     </NodeControl>
   )
+}
+
+const fileList = [
+  { fileName: 'MyFile.png', filePath: 'MyFile.png', contentType: 'image/png', lastModified: 0 },
+  {
+    fileName: 'cover-art.JPG',
+    filePath: 'cover-art.JPG',
+    contentType: 'image/jpeg',
+    lastModified: 0,
+  },
+  { fileName: 'Loop.WAV', filePath: 'Loop.WAV', contentType: 'audio/wav', lastModified: 0 },
+  { fileName: 'MyFile.mp3', filePath: 'MyFile.mp3', contentType: 'audio/mpeg', lastModified: 0 },
+  {
+    fileName: 'voice-note.m4a',
+    filePath: 'voice-note.m4a',
+    contentType: 'audio/mp4',
+    lastModified: 0,
+  },
+  {
+    fileName: 'MyOtherFile.mp4',
+    filePath: 'MyOtherFile.mp4',
+    contentType: 'video/mp4',
+    lastModified: 0,
+  },
+  {
+    fileName: 'trailer.webm',
+    filePath: 'trailer.webm',
+    contentType: 'video/webm',
+    lastModified: 0,
+  },
+  { fileName: 'Patch.PDF', filePath: 'Patch.PDF', contentType: 'application/pdf', lastModified: 0 },
+  {
+    fileName: 'session.hedron',
+    filePath: 'session.hedron',
+    contentType: 'application/json',
+    lastModified: 0,
+  },
+  { fileName: 'notes.txt', filePath: 'notes.txt', contentType: 'text/plain', lastModified: 0 },
+]
+
+interface FileStoryProps extends BasicProps {
+  accept?: string[] | null
+  startingFile?: ParamFileValue
+}
+
+const FileStory = ({
+  title = 'File Picker',
+  isActive,
+  onClick,
+  accept,
+  startingFile,
+}: FileStoryProps) => {
+  const [file, setFile] = useState<ParamFileValue>(startingFile || null)
+
+  return (
+    <NodeControl isActive={isActive} onClick={onClick}>
+      <NodeControlMain>
+        <NodeControlTitle>{title}</NodeControlTitle>
+        <NodeControlInner>
+          <FilePicker
+            availableFiles={fileList}
+            currentFileName={file}
+            onFileNameChange={setFile}
+            accept={accept}
+          />
+        </NodeControlInner>
+      </NodeControlMain>
+    </NodeControl>
+  )
+}
+
+export const File = ({ title = 'File Picker', isActive, onClick }: BasicProps) => {
+  return <FileStory title={title} isActive={isActive} onClick={onClick} />
+}
+
+export const FileMissing = ({ title = 'Video Only', isActive, onClick }: BasicProps) => {
+  return (
+    <FileStory title={title} isActive={isActive} onClick={onClick} startingFile="missing.mp4" />
+  )
+}
+
+export const FileImagesAndMp3 = ({ title = 'Images + MP3', isActive, onClick }: BasicProps) => {
+  return (
+    <FileStory title={title} isActive={isActive} onClick={onClick} accept={['image/*', '.mp3']} />
+  )
+}
+
+export const FileAudioOnly = ({ title = 'Audio Only', isActive, onClick }: BasicProps) => {
+  return (
+    <FileStory
+      title={title}
+      isActive={isActive}
+      onClick={onClick}
+      accept={['audio/*']}
+      startingFile="Loop.WAV"
+    />
+  )
+}
+
+export const FileExactMimeAndExtension = ({
+  title = 'PDF + MP4',
+  isActive,
+  onClick,
+}: BasicProps) => {
+  return (
+    <FileStory
+      title={title}
+      isActive={isActive}
+      onClick={onClick}
+      accept={['application/pdf', '.mp4']}
+    />
+  )
+}
+
+export const FileVideoOnly = ({ title = 'Video Only', isActive, onClick }: BasicProps) => {
+  return <FileStory title={title} isActive={isActive} onClick={onClick} accept={['video/*']} />
 }
 
 const params = [

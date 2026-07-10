@@ -1,6 +1,6 @@
 import { ControlGrid, Collapsible, HedronErrorBoundary } from '@hedron-gl/ui-core'
 import { ComponentType } from 'react'
-import { Shot, Param } from '@hedron-gl/engine'
+import { ShotNode, ParamNode } from '@hedron-gl/engine'
 import c from './SketchControls.module.css'
 import { useAppStore } from '@renderer/appStore'
 
@@ -9,9 +9,9 @@ interface SketchControlsProps {
   nodeGroups: {
     groupTitle: string
     groupIndex: number
-    children: (Param | Shot)[]
+    children: (ParamNode | ShotNode)[]
   }[]
-  ControlItem: ComponentType<{ node: Param | Shot; sketchId: string }>
+  ControlItem: ComponentType<{ node: ParamNode | ShotNode; sketchId: string }>
 }
 
 const EMPTY_OBJECT = {} as Record<number, boolean>

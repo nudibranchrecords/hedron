@@ -5,27 +5,50 @@ import {
   openProjectFileDialog,
   openSketchesDirDialog,
   saveProjectFileDialog,
+  startResourcesServer,
   startSketchesServer,
 } from '@renderer/ipc/mainThreadTalk'
 
-const startEngineWithSketchesDir = async (sketchesDirPath: string) => {
+const countNodeTypes = (projectData: ProjectData, nodeType: 'scene' | 'sketch') => {
+  return Object.values(projectData.engine.nodes).filter((node) => node?.nodeType === nodeType)
+    .length
+}
+
+const startEngineWithSketchesDir = async (
+  sketchesDirPath: string,
+  resourcesDirAbsolute: string,
+) => {
   const { moduleIds, url } = await startSketchesServer(sketchesDirPath)
+
+  const { url: resourcesUrl, files: resources } = await startResourcesServer(resourcesDirAbsolute)
 
   await engine.importSketchModulesFromIds(url, moduleIds)
   engine.startStoreListener()
 
+  engine.setResources(resources)
+  engine.setResourcesUrl(resourcesUrl)
+
   engine.run()
+
+  return { resources, resourcesUrl }
 }
 
 export const handleSketchesDialog = async () => {
-  const sketchesDir = await openSketchesDirDialog()
+  const response = await openSketchesDirDialog()
 
-  if (!sketchesDir) return
+  if (response.result !== 'success') return
 
-  appStore.getState().setSketchesDir(sketchesDir)
-  await startEngineWithSketchesDir(sketchesDir)
+  const { sketchesDirAbsolute, resourcesDirAbsolute } = response
+
+  await startEngineWithSketchesDir(sketchesDirAbsolute, resourcesDirAbsolute)
+
+  appStore.setState((state: AppState) => ({
+    ...state,
+    sketchesDir: sketchesDirAbsolute,
+  }))
 
   engine.ensureGlobalOptionNodes()
+  engine.initiatePlugins()
 }
 
 export const handleLoadProjectDialog = async (projectPath?: string) => {
@@ -40,11 +63,12 @@ export const handleLoadProjectDialog = async (projectPath?: string) => {
     return
   }
 
-  const { sketchesDirAbsolute, projectData, savePath } = response
+  const { sketchesDirAbsolute, projectData, savePath, resourcesDirAbsolute } = response
 
-  await startEngineWithSketchesDir(sketchesDirAbsolute)
+  const { resources } = await startEngineWithSketchesDir(sketchesDirAbsolute, resourcesDirAbsolute)
 
-  engineStore.getState().loadProject(projectData.engine)
+  // Load project and overwrite resources with newly loaded ones
+  engineStore.getState().loadProject({ ...projectData.engine, resources })
 
   engine.ensureGlobalOptionNodes()
 
@@ -57,13 +81,21 @@ export const handleLoadProjectDialog = async (projectPath?: string) => {
   // Add/remove shots from sketches based on their current module configs, in case files were updated since last load
   engine.reconcileAllSketchNodes()
 
+  engine.initiatePlugins()
+
   appStore.getState().cleanupStaleReferences(engine.getSaveData())
 }
 
 export const handleSaveProjectDialog = async (options?: { saveAs?: boolean }) => {
   const appState = appStore.getState()
-  const { sketchesDir, openedControlGroups, selectedNodes, selectedInputs, activeSketchId } =
-    appState
+  const {
+    sketchesDir,
+    openedControlGroups,
+    selectedNodes,
+    selectedInputs,
+    selectedSceneId,
+    selectedSketches,
+  } = appState
 
   if (!sketchesDir) {
     throw new Error("Can't save project without sketches dir")
@@ -75,7 +107,8 @@ export const handleSaveProjectDialog = async (options?: { saveAs?: boolean }) =>
     engine: engineData,
     app: {
       sketchesDir,
-      activeSketchId,
+      selectedSceneId,
+      selectedSketches,
       selectedNodes,
       selectedInputs,
       openedControlGroups,
@@ -97,8 +130,8 @@ export const handleSaveProjectDialog = async (options?: { saveAs?: boolean }) =>
       title: response.fileNameWithoutExt,
       date: Date.now(),
       path: response.savePath,
-      numScenes: 1,
-      numSketches: Object.keys(projectData.engine.sketches).length,
+      numScenes: countNodeTypes(projectData, 'scene'),
+      numSketches: countNodeTypes(projectData, 'sketch'),
     })
   }
 }

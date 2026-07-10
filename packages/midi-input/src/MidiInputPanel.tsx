@@ -1,16 +1,16 @@
 import { useCallback, useState, useMemo, useEffect } from 'react'
-import { findNodeWithKeyFromIdList, HedronEngine, Input } from '@hedron-gl/engine'
+import { findNodeWithKeyFromIdList, HedronEngine, InputNode } from '@hedron-gl/engine'
 import { MIDIEvent, MidiManager, MidiMessageType } from '@hedron-gl/midi-manager'
 import { Button, ControlGrid, NodeContainer, useEngineStore } from '@hedron-gl/ui-core'
 import { MidiInput, NOTE_ON_OFF_MODE } from './MidiInput'
 
 interface IProps {
-  input: Input
+  input: InputNode
   // TODO: This can be typed as something like HedronEngineWithPlugin<MidiInput>
   engine: HedronEngine
 }
 
-const useMidiLearn = (input: Input, engine: HedronEngine) => {
+const useMidiLearn = (input: InputNode, engine: HedronEngine) => {
   const [isLearning, setIsLearning] = useState(false)
 
   // TODO: May not need this "as" if we have HedronEngineWithPlugin<MidiInput>
@@ -31,16 +31,19 @@ const useMidiLearn = (input: Input, engine: HedronEngine) => {
         const state = store.getState()
 
         // Update each option node with the learned values
-        input.optionNodeIds.forEach((nodeId) => {
+        input.childGroups.optionNodeIds.forEach((nodeId) => {
           const node = state.nodes[nodeId]
           if (!node || node.nodeType !== 'param') return
 
           switch (node.key) {
             case 'channel':
-              state.updateNodeValue(nodeId, event.channel)
+              state.updateParamValue(nodeId, event.channel)
               break
             case 'note':
-              state.updateNodeValue(nodeId, event.note)
+              state.updateParamValue(nodeId, event.note)
+              break
+            case 'type':
+              state.updateParamValue(nodeId, event.type)
               break
           }
         })
@@ -48,7 +51,7 @@ const useMidiLearn = (input: Input, engine: HedronEngine) => {
       .finally(() => {
         setIsLearning(false)
       })
-  }, [engine, input.optionNodeIds, midiManager])
+  }, [engine, input.childGroups.optionNodeIds, midiManager])
 
   const cancelMidiLearn = useCallback(() => {
     midiManager.cancelMidiLearn()
@@ -67,17 +70,17 @@ const useMidiLearn = (input: Input, engine: HedronEngine) => {
 export const MidiInputPanel = ({ input, engine }: IProps) => {
   const { isLearning, runMidiLearn, cancelMidiLearn } = useMidiLearn(input, engine)
   const nodes = useEngineStore((s) => s.nodes)
-  const nodeValues = useEngineStore((s) => s.nodeValues)
+  const paramValues = useEngineStore((s) => s.paramValues)
 
   const overrideNodeId = useMemo(
-    () => findNodeWithKeyFromIdList(nodes, 'overrideValue', input.optionNodeIds)?.id,
-    [input.optionNodeIds, nodes],
+    () => findNodeWithKeyFromIdList(nodes, 'overrideValue', input.childGroups.optionNodeIds)?.id,
+    [input.childGroups.optionNodeIds, nodes],
   )
 
-  const overrideEnabled = overrideNodeId ? Boolean(nodeValues[overrideNodeId]) : false
+  const overrideEnabled = overrideNodeId ? Boolean(paramValues[overrideNodeId]) : false
 
   // Check if auto MIDI learn is enabled
-  const autoMidiLearnEnabled = Boolean(nodeValues['midi-input-global-autoMidiLearn'])
+  const autoMidiLearnEnabled = Boolean(paramValues['midi-input-global-autoMidiLearn'])
 
   // Check if this is a brand new input (channel=1, note=1, type=ControlChange are defaults)
   const channelNode = useMemo(
@@ -91,17 +94,17 @@ export const MidiInputPanel = ({ input, engine }: IProps) => {
 
   const isNewInput = useMemo(() => {
     if (!channelNode || !noteNode) return false
-    const channel = nodeValues[channelNode.id]
-    const note = nodeValues[noteNode.id]
+    const channel = paramValues[channelNode.id]
+    const note = paramValues[noteNode.id]
     // Default values are: channel=1, note=1
     return channel === 1 && note === 1
-  }, [channelNode, noteNode, nodeValues])
+  }, [channelNode, noteNode, paramValues])
 
   const typeNode = useMemo(
     () => findNodeWithKeyFromIdList(nodes, 'type', input.optionNodeIds),
     [input.optionNodeIds, nodes],
   )
-  const isNoteOnOffMode = typeNode ? nodeValues[typeNode.id] === NOTE_ON_OFF_MODE : false
+  const isNoteOnOffMode = typeNode ? paramValues[typeNode.id] === NOTE_ON_OFF_MODE : false
 
   // Default boolean inputs to Note On/Off mode
   useEffect(() => {
@@ -111,9 +114,9 @@ export const MidiInputPanel = ({ input, engine }: IProps) => {
     if (!typeNode || !targetNode || !('valueType' in targetNode)) return
     if (
       targetNode.valueType === 'boolean' &&
-      state.nodeValues[typeNode.id] === MidiMessageType.ControlChange
+      state.paramValues[typeNode.id] === MidiMessageType.ControlChange
     ) {
-      state.updateNodeValue(typeNode.id, NOTE_ON_OFF_MODE)
+      state.updateParamValue(typeNode.id, NOTE_ON_OFF_MODE)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
@@ -130,7 +133,7 @@ export const MidiInputPanel = ({ input, engine }: IProps) => {
   return (
     <div>
       <ControlGrid className="mb-xl">
-        {input.optionNodeIds
+        {input.childGroups.optionNodeIds
           .filter((id) => {
             const node = nodes[id]
             if (!node || !('key' in node)) return false

@@ -1,3 +1,4 @@
+import { Resource } from '@hedron-gl/engine'
 import { ProjectData } from './types'
 
 export enum SketchEvents {
@@ -49,9 +50,16 @@ type ResponseError = {
   error: string
 }
 
+type OpenSketchesDirResponseSuccess = {
+  result: 'success'
+  sketchesDirAbsolute: string
+  resourcesDirAbsolute: string
+}
+
 type OpenProjectResponseSuccess = {
   result: 'success'
   sketchesDirAbsolute: string
+  resourcesDirAbsolute: string
   savePath: string
   projectData: ProjectData
 }
@@ -65,6 +73,11 @@ type SaveProjectResponseSuccess = {
 
 export type OpenProjectResponse = OpenProjectResponseSuccess | ResponseError | ResponseCanceled
 
+export type OpenSketchesDirResponse =
+  | OpenSketchesDirResponseSuccess
+  | ResponseError
+  | ResponseCanceled
+
 export type SaveProjectResponse = SaveProjectResponseSuccess | ResponseError | ResponseCanceled
 
 export enum FileWatchEvents {
@@ -72,4 +85,16 @@ export enum FileWatchEvents {
   unlink = 'unlink',
   add = 'add',
   buildResult = 'buildResult',
+}
+
+export enum ResourceEvents {
+  StartResourcesServer = 'start-resources-server',
+  AddResourceFile = 'add-resource-file',
+  RemoveResourceFile = 'remove-resource-file',
+  ChangeResourceFile = 'change-resource-file',
+}
+
+export interface ResourcesServerResponse {
+  files: Record<string, Resource>
+  url: string | null
 }
