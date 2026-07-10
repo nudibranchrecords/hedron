@@ -5,6 +5,7 @@ import type {
   TimelineManagerTrack,
   Keyframe,
   TimelineManagerAudioTrack,
+  TimelineManagerKeyframeTrack,
 } from '@/types'
 
 export type TrackValues = Record<string, ParamValue>
@@ -55,7 +56,7 @@ export class TimelineManager {
     this.lastKeyframeIndex.clear()
   }
 
-  private getTrackValue(track: TimelineManagerTrack): ParamValue | undefined {
+  private getTrackValue(track: TimelineManagerKeyframeTrack): ParamValue | undefined {
     const sorted = this.sortedKeyframesCache.get(track.id) ?? []
     const startIndex = this.lastKeyframeIndex.get(track.id) ?? 0
     let value = startIndex > 0 ? sorted[startIndex - 1].value : undefined
@@ -66,12 +67,22 @@ export class TimelineManager {
       lastIndex = i + 1
     }
     this.lastKeyframeIndex.set(track.id, lastIndex)
+
+    // interpolation for number values
+    const current = sorted[lastIndex - 1]
+    const next = sorted[lastIndex]
+    if (current?.valueType === 'number' && next?.valueType === 'number') {
+      const t = (this.position - current.time) / (next.time - current.time)
+      return current.value + (next.value - current.value) * t
+    }
+
     return value
   }
 
   private computeValues(): TrackValues {
     const values: TrackValues = {}
     for (const track of this.getAllTracks()) {
+      if (track.trackType !== 'keyframe') continue
       const value = this.getTrackValue(track)
       if (value !== undefined) {
         values[track.id] = value
@@ -87,6 +98,7 @@ export class TimelineManager {
         changed[key] = newValues[key]
       }
     }
+
     return changed
   }
 
