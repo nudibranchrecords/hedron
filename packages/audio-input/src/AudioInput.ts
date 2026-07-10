@@ -210,8 +210,6 @@ export class AudioInput implements IPlugin {
       })
       .then(() => {
         console.log('[AudioInput] Audio system successfully initialized')
-        // Start the update loop when audio is ready
-        window.requestAnimationFrame(() => this.update())
       })
       .catch((error) => {
         console.error('[AudioInput] Failed to initialize audio system:', error)
@@ -493,8 +491,7 @@ export class AudioInput implements IPlugin {
   }
 
   /**
-   * Updates audio analysis on each frame
-   * @returns The current levels data array
+   * Updates audio analysis on each engine frame (called via HedronEngine.advanceFrame).
    */
   public update() {
     if (!this.audioData) return
@@ -513,9 +510,6 @@ export class AudioInput implements IPlugin {
 
     // Update nodes based on new audio levels
     this.updateInputNodes()
-
-    // Schedule next update
-    window.requestAnimationFrame(() => this.update())
   }
 
   /**
