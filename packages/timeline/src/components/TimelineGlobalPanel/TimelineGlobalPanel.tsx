@@ -28,6 +28,7 @@ export const TimelineGlobalPanel = ({ engine }: TimelineGlobalPanelProps) => {
   const optionNodes = useNodeOptionNodes<TimelineOptionNodes>(DEFAULT_TIMELINE_ID)
   const isPlayingNode = optionNodes['isPlaying']!
   const playHeadPositionNode = optionNodes['playheadPositionMs']!
+  const durationSecondsNode = optionNodes['durationSeconds']!
 
   const audioUrlNode = optionNodes['audioUrl']!
 
@@ -39,6 +40,7 @@ export const TimelineGlobalPanel = ({ engine }: TimelineGlobalPanelProps) => {
       <ControlGrid className="mb-xl">
         <NodeContainer nodeId={isPlayingNode.id} />
         <NodeContainer nodeId={audioUrlNode.id} />
+        <NodeContainer nodeId={durationSecondsNode.id} />
       </ControlGrid>
       <div className="mb-xl">
         <Timeline

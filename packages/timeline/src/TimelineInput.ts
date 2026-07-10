@@ -7,6 +7,7 @@ import {
   OptionNodesFromConfigs,
   isParamVector,
   ParamNode,
+  PluginUpdateArgs,
   ShotNode,
   isParamVectorComponent,
 } from '@hedron-gl/engine'
@@ -37,6 +38,12 @@ export const TIMELINE_OPTION_NODE_CONFIGS = defineOptionNodeConfigs([
     defaultValue: null,
     accept: ['audio/*'],
   },
+  {
+    nodeType: 'param',
+    key: 'durationSeconds',
+    valueType: 'number',
+    defaultValue: TIMELINE_DURATION / 1000,
+  },
 ])
 
 // We can use TimelineOptionNodes for strong typing when using useNodeOptionNodes
@@ -60,11 +67,15 @@ export class TimelineInput implements IPlugin {
 
     engine.addOptionNodes(DEFAULT_TIMELINE_ID, TIMELINE_OPTION_NODE_CONFIGS)
 
+    const durationNode = engine.getNodeOptionNode(DEFAULT_TIMELINE_ID, 'durationSeconds')
+    const initialDurationSeconds =
+      (engine.getParamValue(durationNode.id) as number | undefined) ?? TIMELINE_DURATION / 1000
+
     this.timelineManagers.set(
       DEFAULT_TIMELINE_ID,
       new TimelineManager(
         {
-          durationMs: TIMELINE_DURATION,
+          durationMs: initialDurationSeconds * 1000,
           tracks: [],
         },
         engine.clock,
@@ -74,6 +85,7 @@ export class TimelineInput implements IPlugin {
     this.timelineManagers.forEach((manager, timelineId) => {
       const isPlaying = engine.getNodeOptionNode(timelineId, 'isPlaying')
       const playHeadPositionNode = engine.getNodeOptionNode(timelineId, 'playheadPositionMs')
+      const durationSeconds = engine.getNodeOptionNode(timelineId, 'durationSeconds')
 
       engine.getStore().subscribe(
         (state) => getTimelineTracks(state, timelineId),
@@ -91,6 +103,12 @@ export class TimelineInput implements IPlugin {
           manager.play()
         } else {
           manager.pause()
+        }
+      })
+
+      engine.subscribeToParamValue(durationSeconds.id, (seconds) => {
+        if (typeof seconds === 'number') {
+          manager.setDuration(seconds * 1000)
         }
       })
 
@@ -131,6 +149,14 @@ export class TimelineInput implements IPlugin {
           )
         }
       })
+    })
+  }
+
+  update(_engine: HedronEngine, { deltaTime }: PluginUpdateArgs) {
+    this.timelineManagers.forEach((manager) => {
+      if (manager.isPlaying()) {
+        manager.step(deltaTime * 1000)
+      }
     })
   }
 

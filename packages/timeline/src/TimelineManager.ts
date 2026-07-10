@@ -15,8 +15,6 @@ export class TimelineManager {
   private timelineData: TimelineManagerData
   private position = 0
   private playing = false
-  private rafId: number | null = null
-  private lastFrameTime: number | null = null
   private onUpdateCallback: OnUpdateCallback | null = null
   private cachedValues: TrackValues = {}
   private sortedKeyframesCache: Map<string, Keyframe[]> = new Map()
@@ -112,26 +110,27 @@ export class TimelineManager {
       }))
   }
 
-  private tick = (now: number) => {
+  /**
+   * Advances playback position by deltaMs. Called once per engine frame (via TimelineInput's
+   * IPlugin.onFrame) while playing, for both real-time playback and fixed-framerate rendering.
+   */
+  step(deltaMs: number) {
     if (!this.playing) return
 
-    if (this.lastFrameTime !== null) {
-      const delta = now - this.lastFrameTime
-      this.position = Math.min(this.position + delta, this.timelineData.durationMs)
+    this.position = Math.max(
+      0,
+      Math.min(this.position + deltaMs, this.timelineData.durationMs),
+    )
 
-      if (this.clock) {
-        this.clock.beatDeltaMs = this.position
-      }
+    if (this.clock) {
+      this.clock.beatDeltaMs = this.position
     }
-    this.lastFrameTime = now
 
     this.emitUpdate()
 
     if (this.position >= this.timelineData.durationMs) {
       this.goTo(0)
     }
-
-    this.rafId = requestAnimationFrame(this.tick)
   }
 
   getAllTracks(tracks = this.timelineData.tracks): TimelineManagerTrack[] {
@@ -147,7 +146,11 @@ export class TimelineManager {
     return allTracks
   }
 
-  play() {
+  /**
+   * @param options.silent Skip starting audio track playback (used when rendering, where audio
+   * is muxed in separately rather than played back live).
+   */
+  play(options?: { silent?: boolean }) {
     if (this.playing) return
 
     if (this.clock) {
@@ -156,8 +159,8 @@ export class TimelineManager {
     }
 
     this.playing = true
-    this.lastFrameTime = null
-    this.rafId = requestAnimationFrame(this.tick)
+
+    if (options?.silent) return
 
     // Play audio tracks
     for (const { audio } of this.getAudioTracksWithAudio()) {
@@ -168,15 +171,9 @@ export class TimelineManager {
 
   pause() {
     this.playing = false
-    this.lastFrameTime = null
 
     if (this.clock) {
       this.clock.stop()
-    }
-
-    if (this.rafId !== null) {
-      cancelAnimationFrame(this.rafId)
-      this.rafId = null
     }
 
     // Pause audio tracks
@@ -187,7 +184,6 @@ export class TimelineManager {
 
   goTo(timeMs: number) {
     this.position = Math.max(0, Math.min(timeMs, this.timelineData.durationMs))
-    this.lastFrameTime = null
     this.resetKeyframeIndexes()
     this.emitUpdate()
 
@@ -199,6 +195,12 @@ export class TimelineManager {
     for (const { audio } of this.getAudioTracksWithAudio()) {
       audio.currentTime = this.position / 1000
     }
+  }
+
+  setDuration(durationMs: number) {
+    this.timelineData.durationMs = durationMs
+    this.position = Math.min(this.position, durationMs)
+    this.emitUpdate()
   }
 
   setTracks(tracks: TimelineManagerTrack[]) {
