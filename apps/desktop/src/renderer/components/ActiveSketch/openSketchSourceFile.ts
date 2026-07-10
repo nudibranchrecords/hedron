@@ -15,12 +15,20 @@ export async function openSketchSourceFile(moduleId: string) {
     return
   }
   // Ask main process to open the file
-  const result = await window.electronApi.ipcRenderer.invoke(
-    FileEvents.OpenSketchSourceFile,
-    sketchesDir,
-    moduleId,
-  )
-  if (!result?.success) {
-    alert(result?.error || 'Source file not found for this sketch.')
+  try {
+    const result = await window.electronApi.ipcRenderer.invoke(
+      FileEvents.OpenSketchSourceFile,
+      sketchesDir,
+      moduleId,
+    )
+    if (!result?.success) {
+      alert(result?.error || 'Source file not found for this sketch.')
+    }
+  } catch (error: unknown) {
+    const message =
+      (error && typeof error === 'object' && 'message' in error
+        ? String((error as { message?: string }).message || '')
+        : '') || 'An unexpected error occurred.'
+    alert(`Failed to open source file: ${message}`)
   }
 }
