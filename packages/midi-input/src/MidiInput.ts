@@ -9,6 +9,7 @@ import {
   ParamNode,
   ParamEnum,
   EngineStateWithActions,
+  findNodeWithKeyFromIdList,
 } from '@hedron-gl/engine'
 import { MIDIEvent, MidiManager, MidiMessageType } from '@hedron-gl/midi-manager'
 
@@ -202,6 +203,45 @@ export class MidiInput implements IPlugin {
     )
 
     return null
+  }
+
+  // Shared by onNewInput and the panel's manual "Midi Learn" button, so both stay in sync.
+  applyLearnedEvent(
+    engine: HedronEngine,
+    inputId: string,
+    event: MIDIEvent,
+    { includeType }: { includeType: boolean },
+  ) {
+    const state = engine.getStore().getState()
+    // Always re-fetch by id: a passed-in InputNode reference can be stale.
+    const input = state.nodes[inputId] as InputNode | undefined
+    if (!input) return
+
+    const channelNode = findNodeWithKeyFromIdList(state.nodes, 'channel', input.childGroups.optionNodeIds)
+    const noteNode = findNodeWithKeyFromIdList(state.nodes, 'note', input.childGroups.optionNodeIds)
+
+    if (channelNode) state.updateParamValue(channelNode.id, event.channel)
+    if (noteNode) state.updateParamValue(noteNode.id, event.note)
+
+    if (includeType) {
+      const typeNode = findNodeWithKeyFromIdList(state.nodes, 'type', input.childGroups.optionNodeIds)
+      if (typeNode) state.updateParamValue(typeNode.id, event.type)
+    }
+  }
+
+  // Runs once at creation, not on every panel mount, unlike a value-inferred "is new" check.
+  onNewInput = (engine: HedronEngine, newInput: InputNode) => {
+    const store = engine.getStore()
+
+    const autoLearnEnabled = Boolean(
+      store.getState().paramValues[`${this.id}-global-autoMidiLearn`],
+    )
+    if (!autoLearnEnabled) return
+
+    this.midiManager.midiLearn().then((event) => {
+      if (!event) return
+      this.applyLearnedEvent(engine, newInput.id, event, { includeType: true })
+    })
   }
 
   constructor(engine: HedronEngine) {
