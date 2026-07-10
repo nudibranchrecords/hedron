@@ -10,6 +10,10 @@ export interface RenderFramesOptions {
   audioFileName?: string
 }
 
+export type RenderProgress =
+  | { stage: 'rendering-frames'; framesSaved: number; totalFrames: number }
+  | { stage: 'building-video' }
+
 export interface SaveFrameOptions {
   name?: string
   frameIndex?: number | string

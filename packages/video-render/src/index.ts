@@ -4,6 +4,7 @@ export { VideoRenderGlobalPanel } from './components/VideoRenderGlobalPanel/Vide
 export { VIDEO_RENDER_NODE_ID } from './constants'
 export type {
   RenderFramesOptions,
+  RenderProgress,
   SaveFrameOptions,
   SaveFrameResult,
   BuildVideoOptions,

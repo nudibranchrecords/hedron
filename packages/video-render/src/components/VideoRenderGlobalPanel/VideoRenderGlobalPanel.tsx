@@ -12,7 +12,7 @@ import { useCaptureFrameShot } from './useCaptureFrameShot'
 import c from './VideoRenderGlobalPanel.module.css'
 import { VIDEO_RENDER_NODE_ID } from '@/constants'
 import { VideoRenderOptionNodes, VideoRenderPlugin } from '@/VideoRenderPlugin'
-import { RenderFramesOptions } from '@/types'
+import { RenderFramesOptions, RenderProgress } from '@/types'
 
 interface RenderSettings {
   name: string
@@ -80,22 +80,12 @@ export function VideoRenderGlobalPanel(): JSX.Element {
     setRenderingStatus('Preparing to render...')
 
     try {
-      const originalConsoleLog = console.log
-      console.log = (message: string) => {
-        originalConsoleLog(message)
-        if (typeof message !== 'string') return
-
-        if (message.includes('Saved frame')) {
-          const match = message.match(/Saved frame (\d+) \/ (\d+)/)
-          if (match && match[1]) {
-            const processedFrames = parseInt(match[1])
-            setProgress(Math.floor((processedFrames / frameCount) * 100))
-            setRenderingStatus(`Rendering frames: ${processedFrames}/${frameCount}`)
-          }
-        } else if (message.includes('Creating video')) {
+      const handleProgress = (progress: RenderProgress) => {
+        if (progress.stage === 'rendering-frames') {
+          setProgress(Math.floor((progress.framesSaved / progress.totalFrames) * 100))
+          setRenderingStatus(`Rendering frames: ${progress.framesSaved}/${progress.totalFrames}`)
+        } else if (progress.stage === 'building-video') {
           setRenderingStatus('Creating video file...')
-        } else if (message.includes('Video created at')) {
-          setRenderingStatus('Video created successfully!')
         }
       }
 
@@ -109,9 +99,8 @@ export function VideoRenderGlobalPanel(): JSX.Element {
         height: renderSettings.height ?? undefined,
         audioFileName: audioFileName ?? undefined,
       }
-      await videoRenderPlugin?.renderFrames(options)
+      await videoRenderPlugin?.renderFrames(options, handleProgress)
 
-      console.log = originalConsoleLog
       setProgress(100)
       setRenderingStatus('Render completed!')
       setTimeout(() => {

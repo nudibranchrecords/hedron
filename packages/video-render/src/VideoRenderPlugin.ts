@@ -1,7 +1,7 @@
 import { ConfigShot, HedronEngine, IPlugin, ShotNode } from '@hedron-gl/engine'
 import { TimelineInput } from '@hedron-gl/timeline'
 import { VIDEO_RENDER_NODE_ID } from './constants'
-import { RenderFramesOptions, VideoRenderCallbacks } from './types'
+import { RenderFramesOptions, RenderProgress, VideoRenderCallbacks } from './types'
 
 // Shot-type option nodes aren't covered by `defineOptionNodeConfigs` (typed for ConfigParam only),
 // so this is declared directly and passed to `engine.addOptionNodes`.
@@ -58,16 +58,19 @@ export class VideoRenderPlugin implements IPlugin {
   }
 
   /** Renders a frame sequence (and optionally a video) from the timeline, start to finish. */
-  async renderFrames({
-    frameCount,
-    name,
-    fps,
-    outputDirAbsolute,
-    video = false,
-    width,
-    height,
-    audioFileName,
-  }: RenderFramesOptions) {
+  async renderFrames(
+    {
+      frameCount,
+      name,
+      fps,
+      outputDirAbsolute,
+      video = false,
+      width,
+      height,
+      audioFileName,
+    }: RenderFramesOptions,
+    onProgress?: (progress: RenderProgress) => void,
+  ) {
     const engine = this.requireEngine()
 
     // Not calling engine.resetTime(): it dumps one huge delta onto the next frame, sending TimelineManager's position deeply negative.
@@ -99,9 +102,15 @@ export class VideoRenderPlugin implements IPlugin {
         if (!result.success) {
           console.error(`Failed to save frame ${frameIndex}: ${result.error}`)
         }
+
         const frameNum = Number(frameIndex)
-        if (!isNaN(frameNum) && ((frameNum + 1) % 10 === 0 || frameNum === frameCount - 1)) {
-          console.log(`Saved frame ${frameNum + 1} / ${frameCount}`)
+        if (isNaN(frameNum)) return
+
+        const framesSaved = frameNum + 1
+        onProgress?.({ stage: 'rendering-frames', framesSaved, totalFrames: frameCount })
+
+        if (framesSaved % 10 === 0 || framesSaved === frameCount) {
+          console.log(`Saved frame ${framesSaved} / ${frameCount}`)
         }
       },
       width,
@@ -118,6 +127,7 @@ export class VideoRenderPlugin implements IPlugin {
 
     if (video) {
       console.log('Creating video...')
+      onProgress?.({ stage: 'building-video' })
       const result = await this.callbacks.buildVideo({
         outputDirAbsolute,
         name,
