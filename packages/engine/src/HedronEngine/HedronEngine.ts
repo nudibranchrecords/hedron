@@ -632,6 +632,11 @@ export class HedronEngine {
    * @param deltaTime The time delta (in seconds) to advance this frame.
    */
   private advanceFrame(deltaTime: number) {
+    this.clock?.step(deltaTime * 1000)
+    Object.values(this.plugins).forEach((plugin) =>
+      plugin.update?.(this, { deltaFrame: 1, deltaTime }),
+    )
+
     // Flush buffered node value updates before processing the frame
     flushParamValueBuffer(this.store.setState)
 
