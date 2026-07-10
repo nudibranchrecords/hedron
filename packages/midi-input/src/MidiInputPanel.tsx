@@ -42,9 +42,9 @@ const useMidiLearn = (input: InputNode, engine: HedronEngine) => {
             case 'note':
               state.updateParamValue(nodeId, event.note)
               break
-            case 'type':
-              state.updateParamValue(nodeId, event.type)
-              break
+            // type is intentionally left alone — learning shouldn't clobber a
+            // user-chosen type (e.g. Note On/Off mode) with whatever message
+            // happened to trigger the learn
           }
         })
       })
