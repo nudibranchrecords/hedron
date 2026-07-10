@@ -1,4 +1,4 @@
-import { useCallback, useState, useMemo, useEffect } from 'react'
+import { useCallback, useState, useMemo, useEffect, useRef } from 'react'
 import { findNodeWithKeyFromIdList, HedronEngine, InputNode } from '@hedron-gl/engine'
 import { MIDIEvent, MidiManager, MidiMessageType } from '@hedron-gl/midi-manager'
 import { Button, ControlGrid, NodeContainer, useEngineStore } from '@hedron-gl/ui-core'
@@ -122,8 +122,10 @@ export const MidiInputPanel = ({ input, engine }: IProps) => {
   }, [])
 
   // Auto-enter MIDI learn mode when component mounts (if enabled and input is new)
+  const hasAutoTriggeredLearn = useRef(false)
   useEffect(() => {
-    if (autoMidiLearnEnabled && isNewInput) {
+    if (autoMidiLearnEnabled && isNewInput && !hasAutoTriggeredLearn.current) {
+      hasAutoTriggeredLearn.current = true
       runMidiLearn()
     }
     // Only run once on mount
