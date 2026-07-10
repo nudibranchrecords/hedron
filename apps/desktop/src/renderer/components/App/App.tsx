@@ -12,7 +12,6 @@ import { useHandleDrag } from './useHandleDrag'
 import { GlobalClock } from '@components/GlobalClock/GlobalClock'
 import { GlobalDialogs } from '@components/GlobalDialogs/GlobalDialogs'
 import { PerformanceStats } from '@components/PerformanceStats/PerformanceStats'
-import { VideoControls } from '@components/VideoControls/VideoControls'
 import { Viewer } from '@components/Viewer'
 import { WorkArea } from '@components/WorkArea/WorkArea'
 import { appStore } from '@renderer/appStore'
@@ -74,9 +73,6 @@ const AppContent = (): JSX.Element => {
               <PerformanceStats />
               <div className={c.widgetItem}>
                 <GlobalClock />
-              </div>
-              <div className={c.widgetItem}>
-                <VideoControls />
               </div>
             </div>
 
