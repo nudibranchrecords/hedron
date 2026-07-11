@@ -127,7 +127,8 @@ export class TimelineInput implements IPlugin {
           const paramValues: ParamValue[] = []
 
           for (const trackId of changedTrackIds) {
-            const targetNodeId = tracks.find((track) => track.id === trackId)?.targetNodeId ?? trackId
+            const targetNodeId =
+              tracks.find((track) => track.id === trackId)?.targetNodeId ?? trackId
             const targetNode = engine.getNode(targetNodeId)
             const value = changed[trackId]
 

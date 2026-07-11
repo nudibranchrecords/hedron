@@ -1,9 +1,9 @@
 import { useCallback } from 'react'
-import { HedronEngine, ParamNode } from '@hedron-gl/engine'
+import { HedronEngine } from '@hedron-gl/engine'
 import { useNodeOptionNodes } from '@hedron-gl/ui-core'
 import { DEFAULT_TIMELINE_ID } from '@/constants'
 import { TimelineManager } from '@/TimelineManager'
-import type { Keyframe, TimelineTrackInput } from '@/types'
+import type { Keyframe, KeyframeParam, TimelineTrackInput } from '@/types'
 
 interface UseTimelineHandlersParams {
   engine: HedronEngine
@@ -59,9 +59,8 @@ export const useTimelineHandlers = ({ engine, manager }: UseTimelineHandlersPara
 
       let keyframe: Keyframe
       if (targetNode.nodeType === 'shot') {
-        // Shot keyframes are momentary triggers; the value isn't used to decide firing.
-        keyframe = { id: crypto.randomUUID(), time, valueType: 'shot', value: true }
-      } else {
+        keyframe = { id: crypto.randomUUID(), time, nodeType: 'shot' }
+      } else if (targetNode.nodeType === 'param') {
         const targetParamValue = engine.getParamValue(inputNode.targetNodeId)
 
         if (targetParamValue === undefined) {
@@ -72,9 +71,14 @@ export const useTimelineHandlers = ({ engine, manager }: UseTimelineHandlersPara
         keyframe = {
           id: crypto.randomUUID(),
           time,
-          valueType: (targetNode as ParamNode).valueType,
+          valueType: targetNode.valueType,
           value: targetParamValue,
-        } as Keyframe
+          nodeType: 'param',
+        } as KeyframeParam
+      } else {
+        throw new Error(
+          `Unsupported target node type for input node ${inputNode.id} with type ${targetNode.nodeType}`,
+        )
       }
 
       const nextKeyframes: Keyframe[] = [...(inputNode.customData?.keyframes ?? []), keyframe].sort(

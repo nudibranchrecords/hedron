@@ -6,6 +6,7 @@ import type {
   Keyframe,
   TimelineManagerAudioTrack,
   TimelineManagerKeyframeTrack,
+  KeyframeParam,
 } from '@/types'
 
 export type TrackValues = Record<string, ParamValue>
@@ -59,7 +60,7 @@ export class TimelineManager {
   }
 
   private getHeldValue(track: TimelineManagerKeyframeTrack): ParamValue | undefined {
-    const sorted = this.sortedKeyframesCache.get(track.id) ?? []
+    const sorted = (this.sortedKeyframesCache.get(track.id) ?? []) as KeyframeParam[]
     const startIndex = this.lastKeyframeIndex.get(track.id) ?? 0
     let value = startIndex > 0 ? sorted[startIndex - 1].value : undefined
     let lastIndex = startIndex
@@ -92,10 +93,10 @@ export class TimelineManager {
   }
 
   private isShotTrack(track: TimelineManagerTrack): boolean {
-    return track.trackType === 'keyframe' && track.keyframes[0]?.valueType === 'shot'
+    return track.trackType === 'keyframe' && track.keyframes[0]?.nodeType === 'shot'
   }
 
-  private getTrackValue(track: TimelineManagerTrack): ParamValue | undefined {
+  private getTrackValue(track: TimelineManagerKeyframeTrack): ParamValue | undefined {
     return this.isShotTrack(track) ? this.getShotFired(track) : this.getHeldValue(track)
   }
 
