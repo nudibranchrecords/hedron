@@ -86,7 +86,7 @@ export class TimelineManager {
   // keyframes crossed (time <= position) increases since the last check.
   private getShouldShotFire(track: TimelineManagerTrack): true | undefined {
     const sorted = this.sortedKeyframesCache.get(track.id) ?? []
-    const count = sorted.filter((kf) => kf.time <= this.position).length
+    const count = sorted.filter((kf) => kf.time < this.position).length
     const lastCount = this.shotKeyframeCount.get(track.id) ?? 0
     this.shotKeyframeCount.set(track.id, count)
     return count > lastCount ? true : undefined
