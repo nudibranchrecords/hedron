@@ -123,7 +123,7 @@ export class TimelineManager {
       // Shot fires are already edge-detected in getShotFired, so a `true` is forwarded as-is
       // rather than compared against the last value (there's no "held state" to diff against).
       if (this.isShotTrack(track)) {
-        if (value) changed[track.id] = value
+        changed[track.id] = value
       } else if (this.cachedValues[track.id] !== value) {
         changed[track.id] = value
       }
