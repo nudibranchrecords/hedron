@@ -6,6 +6,7 @@ import type {
   Keyframe,
   TimelineManagerAudioTrack,
   TimelineManagerKeyframeTrack,
+  KeyframeParam,
 } from '@/types'
 
 export type TrackValues = Record<string, ParamValue>
@@ -23,6 +24,8 @@ export class TimelineManager {
   private sortedKeyframesCache: Map<string, Keyframe[]> = new Map()
   private audioCache: Map<string, HTMLAudioElement> = new Map()
   private lastKeyframeIndex: Map<string, number> = new Map()
+  // Number of shot keyframes at or before the position as of the last check, per track.
+  private shotKeyframeCount: Map<string, number> = new Map()
   private clock: Clock | null = null
 
   constructor(timeline: TimelineManagerData, clock?: Clock) {
@@ -56,8 +59,8 @@ export class TimelineManager {
     this.lastKeyframeIndex.clear()
   }
 
-  private getTrackValue(track: TimelineManagerKeyframeTrack): ParamValue | undefined {
-    const sorted = this.sortedKeyframesCache.get(track.id) ?? []
+  private getHeldValue(track: TimelineManagerKeyframeTrack): ParamValue | undefined {
+    const sorted = (this.sortedKeyframesCache.get(track.id) ?? []) as KeyframeParam[]
     const startIndex = this.lastKeyframeIndex.get(track.id) ?? 0
     let value = startIndex > 0 ? sorted[startIndex - 1].value : undefined
     let lastIndex = startIndex
@@ -79,6 +82,26 @@ export class TimelineManager {
     return value
   }
 
+  // Shot keyframes are momentary triggers, not held state: fire once whenever the number of
+  // keyframes crossed (time <= position) increases since the last check.
+  private getShouldShotFire(track: TimelineManagerTrack): true | undefined {
+    const sorted = this.sortedKeyframesCache.get(track.id) ?? []
+    const count = sorted.filter((kf) => kf.time < this.position).length
+    const lastCount = this.shotKeyframeCount.get(track.id) ?? 0
+    this.shotKeyframeCount.set(track.id, count)
+    return count > lastCount ? true : undefined
+  }
+
+  private isShotTrack(track: TimelineManagerTrack): boolean {
+    return track.trackType === 'keyframe' && track.keyframes[0]?.nodeType === 'shot'
+  }
+
+  // Returns the value for a track at the current position, or undefined if no value is held.
+  // Also returns true for shot tracks if a shot should fire at the current position, or undefined if not.
+  private getTrackValue(track: TimelineManagerKeyframeTrack): ParamValue | true | undefined {
+    return this.isShotTrack(track) ? this.getShouldShotFire(track) : this.getHeldValue(track)
+  }
+
   private computeValues(): TrackValues {
     const values: TrackValues = {}
     for (const track of this.getAllTracks()) {
@@ -93,9 +116,16 @@ export class TimelineManager {
 
   private getChangedValues(newValues: TrackValues): TrackValues {
     const changed: TrackValues = {}
-    for (const key of Object.keys(newValues)) {
-      if (this.cachedValues[key] !== newValues[key]) {
-        changed[key] = newValues[key]
+    for (const track of this.getAllTracks()) {
+      const value = newValues[track.id]
+      if (value === undefined) continue
+
+      // Shot fires are already edge-detected in getShotFired, so a `true` is forwarded as-is
+      // rather than compared against the last value (there's no "held state" to diff against).
+      if (this.isShotTrack(track)) {
+        changed[track.id] = value
+      } else if (this.cachedValues[track.id] !== value) {
+        changed[track.id] = value
       }
     }
 
