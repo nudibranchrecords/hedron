@@ -84,20 +84,22 @@ export class TimelineManager {
 
   // Shot keyframes are momentary triggers, not held state: fire once whenever the number of
   // keyframes crossed (time <= position) increases since the last check.
-  private getShotFired(track: TimelineManagerTrack): boolean {
+  private getShouldShotFire(track: TimelineManagerTrack): true | undefined {
     const sorted = this.sortedKeyframesCache.get(track.id) ?? []
     const count = sorted.filter((kf) => kf.time <= this.position).length
     const lastCount = this.shotKeyframeCount.get(track.id) ?? 0
     this.shotKeyframeCount.set(track.id, count)
-    return count > lastCount
+    return count > lastCount ? true : undefined
   }
 
   private isShotTrack(track: TimelineManagerTrack): boolean {
     return track.trackType === 'keyframe' && track.keyframes[0]?.nodeType === 'shot'
   }
 
-  private getTrackValue(track: TimelineManagerKeyframeTrack): ParamValue | undefined {
-    return this.isShotTrack(track) ? this.getShotFired(track) : this.getHeldValue(track)
+  // Returns the value for a track at the current position, or undefined if no value is held.
+  // Also returns true for shot tracks if a shot should fire at the current position, or undefined if not.
+  private getTrackValue(track: TimelineManagerKeyframeTrack): ParamValue | true | undefined {
+    return this.isShotTrack(track) ? this.getShouldShotFire(track) : this.getHeldValue(track)
   }
 
   private computeValues(): TrackValues {

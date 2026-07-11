@@ -133,9 +133,7 @@ export class TimelineInput implements IPlugin {
             const value = changed[trackId]
 
             if (targetNode?.nodeType === 'shot') {
-              if (value) {
-                engine.fireShot(targetNodeId)
-              }
+              engine.fireShot(targetNodeId)
               continue
             }
 
