@@ -74,7 +74,7 @@ export const useTimelineHandlers = ({ engine, manager }: UseTimelineHandlersPara
           time,
           valueType: (targetNode as ParamNode).valueType,
           value: targetParamValue,
-        }
+        } as Keyframe
       }
 
       const nextKeyframes: Keyframe[] = [...(inputNode.customData?.keyframes ?? []), keyframe].sort(

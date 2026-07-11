@@ -263,6 +263,7 @@ export const Interactive = () => {
 
             return {
               ...track,
+              // @ts-ignore -- this is just a story file we don't need to care so much
               keyframes: [
                 ...track.keyframes,
                 {
