@@ -222,6 +222,34 @@ export class HedronEngine {
     })
   }
 
+  /** Removes `childId` from `parentId.childGroups[childGroupKey]` and clears the matching parent link. */
+  public removeChildFromNode(parentId: string, childGroupKey: string, childId: string) {
+    this.store.setState((state) => {
+      const childNode = state.nodes[childId]
+      const parentNode = state.nodes[parentId]
+
+      if (!childNode) {
+        console.error(`removeChildFromNode: node "${childId}" not found`)
+        return
+      }
+
+      if (!parentNode) {
+        console.error(`removeChildFromNode: parent node "${parentId}" not found`)
+        return
+      }
+
+      const childGroups = parentNode.childGroups as ChildGroupsLoose
+      const childGroup = childGroups[childGroupKey]
+
+      if (!childGroup) {
+        return
+      }
+
+      childGroups[childGroupKey] = childGroup.filter((id) => id !== childId)
+      childNode.parentIds = childNode.parentIds.filter((id) => id !== parentId)
+    })
+  }
+
   public setResources(resources: Resources) {
     this.store.setState(() => ({
       resources,
