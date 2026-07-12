@@ -45,7 +45,7 @@ export const ActiveSketch = () => {
     throw new Error('ActiveSketch component: No activesketch found')
   }
 
-  const nodeGroups = useGroupedNodes(activeSketch.nodeIds, activeSketch.moduleId)
+  const nodeGroups = useGroupedNodes(activeSketch.childGroups.nodeIds, activeSketch.moduleId)
 
   const selectedNode = useSelectedNode()
   const closeSelectedNodePanel = useOnSelectNode(activeSketch.id, null)

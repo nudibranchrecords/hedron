@@ -51,7 +51,6 @@ export interface SketchNode extends NodeBase {
     nodeIds: string[]
   }
   moduleId: string
-  nodeIds: string[]
   isBroken?: boolean
 }
 

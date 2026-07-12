@@ -94,7 +94,10 @@ export const MidiGlobalPanel: React.FC<MidiGlobalPanelProps> = ({ engine }) => {
 
             // Find the sketch this node belongs to
             for (const sketch of Object.values(nodes)) {
-              if (sketch?.nodeType === 'sketch' && sketch.nodeIds.includes(input.targetNodeId)) {
+              if (
+                sketch?.nodeType === 'sketch' &&
+                sketch.childGroups.nodeIds?.includes(input.targetNodeId)
+              ) {
                 sketchName = sketch.title
                 break
               }
