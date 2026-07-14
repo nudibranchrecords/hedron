@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useId, useRef, useState } from 'react'
 import { usePlayheadScrub } from './usePlayheadScrub'
 import c from './Timeline.module.css'
 import { TimelineTrack } from './TimelineTrack'
@@ -11,65 +11,60 @@ export interface TimelineProps {
     durationMs: number
     tracks: TimelineManagerTrack[]
   }
-  /** Current playhead position in milliseconds */
-  playheadPositionMs?: number
-  selectedTrackId?: string | null
-  setSelectedTrackId?: (trackId: string | null) => void
-  /** Called when the user clicks on the track area to set the playhead */
-  onPlayheadChange?: (time: number) => void
-  /** Called when a keyframe should be deleted */
-  onKeyframeDelete?: (keyframeId: string) => void
-  /** Called when a keyframe should be inserted on a track at a given time */
-  onKeyframeInsert?: (trackId: string, time: number) => void
-}
-
-// Multiple Timeline instances can be mounted at once (e.g. the global timeline panel
-// plus a per-input panel). Only the most recently mounted one should act on [i]/[x],
-// otherwise both fire and e.g. double-insert the same keyframe.
-type KeydownHandler = (e: KeyboardEvent) => void
-const keydownHandlerStack: KeydownHandler[] = []
-let sharedKeydownListenerInstalled = false
-
-function ensureSharedKeydownListener() {
-  if (sharedKeydownListenerInstalled) return
-  sharedKeydownListenerInstalled = true
-  window.addEventListener('keydown', (e) => {
-    keydownHandlerStack[keydownHandlerStack.length - 1]?.(e)
-  })
-}
-
-function registerKeydownHandler(handler: KeydownHandler) {
-  ensureSharedKeydownListener()
-  keydownHandlerStack.push(handler)
-  return () => {
-    const index = keydownHandlerStack.indexOf(handler)
-    if (index !== -1) keydownHandlerStack.splice(index, 1)
-  }
+  playheadPositionMs: number
+  activeTimelineComponentId: string | null
+  selectedTrackId: string | null
+  setSelectedTrackId: (trackId: string | null) => void
+  setActiveTimelineComponentId: (id: string | null) => void
+  componentId?: string
+  onPlayheadChange: (time: number) => void
+  onKeyframeDelete: (keyframeId: string) => void
+  onKeyframeInsert: (trackId: string, time: number) => void
 }
 
 export function Timeline({
   timeline,
   playheadPositionMs = 0,
-  selectedTrackId: controlledSelectedTrackId,
-  setSelectedTrackId: controlledSetSelectedTrackId,
+  activeTimelineComponentId,
+  selectedTrackId: _selectedTrackId,
+  setSelectedTrackId: _setSelectedTrackId,
+  componentId: _componentId,
+  setActiveTimelineComponentId,
   onPlayheadChange,
   onKeyframeDelete,
   onKeyframeInsert,
 }: TimelineProps) {
   const { durationMs, tracks } = timeline
   const rulerAreaRef = useRef<HTMLDivElement>(null)
-  const [uncontrolledSelectedTrackId, setUncontrolledSelectedTrackId] = useState<string | null>(
-    null,
+
+  // To prevent clashing of keyboard events, we need to keep track of which component is the active one
+  const fallbackId = useId()
+  const componentId = _componentId ?? fallbackId
+
+  const isActiveComponent = componentId === activeTimelineComponentId
+
+  const [_selectedKeyframes, _setSelectedKeyframes] = useState<string[] | null>(null)
+
+  const selectedKeyframes = isActiveComponent ? _selectedKeyframes : null
+  const selectedTrackId = isActiveComponent ? _selectedTrackId : null
+
+  const setSelectedKeyframes = useCallback(
+    (keyframes: string[] | null) => {
+      _setSelectedKeyframes(keyframes)
+
+      setActiveTimelineComponentId(componentId)
+    },
+    [componentId, setActiveTimelineComponentId],
   )
-  const isControlled =
-    controlledSelectedTrackId !== undefined && controlledSetSelectedTrackId !== undefined
-  const selectedTrackId = isControlled
-    ? (controlledSelectedTrackId ?? null)
-    : uncontrolledSelectedTrackId
-  const setSelectedTrackId = isControlled
-    ? controlledSetSelectedTrackId
-    : setUncontrolledSelectedTrackId
-  const [selectedKeyframes, setSelectedKeyframes] = useState<string[] | null>(null)
+
+  const setSelectedTrackId = useCallback(
+    (trackId: string | null) => {
+      _setSelectedTrackId(trackId)
+
+      setActiveTimelineComponentId(componentId)
+    },
+    [_setSelectedTrackId, componentId, setActiveTimelineComponentId],
+  )
 
   useEffect(() => {
     const getChildKeyframeTrackIds = (track: TimelineManagerTrack): string[] => {
@@ -95,14 +90,12 @@ export function Timeline({
       }
       if (e.key === 'x' && selectedKeyframes) {
         selectedKeyframes.forEach((keyframeId) => {
-          onKeyframeDelete?.(keyframeId)
+          onKeyframeDelete(keyframeId)
         })
 
         setSelectedKeyframes(null)
       }
       if (e.key === 'i' && selectedTrackId) {
-        if (!onKeyframeInsert) return
-
         const track = findTrackById(tracks, selectedTrackId)
         if (!track) return
 
@@ -111,7 +104,10 @@ export function Timeline({
         }
       }
     }
-    return registerKeydownHandler(handleKeyDown)
+    window.addEventListener('keydown', handleKeyDown)
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown)
+    }
   }, [
     selectedKeyframes,
     onKeyframeDelete,
@@ -119,6 +115,7 @@ export function Timeline({
     playheadPositionMs,
     onKeyframeInsert,
     tracks,
+    setSelectedKeyframes,
   ])
 
   usePlayheadScrub(durationMs, rulerAreaRef, playheadPositionMs, onPlayheadChange)

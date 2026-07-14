@@ -26,6 +26,8 @@ export const TimelineGlobalPanel = ({ engine }: TimelineGlobalPanelProps) => {
     manager,
   })
 
+  const activeTimelineComponentId = useAppStore((state) => state.activeTimelineComponentId)
+  const setActiveTimelineComponentId = useAppStore((state) => state.setActiveTimelineComponentId)
   const selectedTrackId = useAppStore((state) => state.selectedTimelineTrackId)
   const setSelectedTrackId = useAppStore((state) => state.setSelectedTimelineTrackId)
 
@@ -48,6 +50,8 @@ export const TimelineGlobalPanel = ({ engine }: TimelineGlobalPanelProps) => {
         <Timeline
           timeline={timeline}
           playheadPositionMs={playheadPositionMs}
+          activeTimelineComponentId={activeTimelineComponentId}
+          setActiveTimelineComponentId={setActiveTimelineComponentId}
           selectedTrackId={selectedTrackId}
           setSelectedTrackId={setSelectedTrackId}
           onPlayheadChange={handlePlayheadChange}

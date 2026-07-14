@@ -39,7 +39,6 @@ export interface ProjectData {
     selectedSketches: { [sceneId: string]: string | null }
     selectedNodes: { [sketchId: string]: string | null }
     selectedInputs: { [inputId: string]: string | null }
-    selectedTimelineTrackId: string | null
     openedControlGroups: { [sketchId: string]: Record<number, boolean> }
   }
 }
@@ -49,7 +48,7 @@ export interface AppState {
   selectedSketches: ProjectData['app']['selectedSketches'] // TODO: should be part of ProjectData
   selectedNodes: ProjectData['app']['selectedNodes']
   selectedInputs: ProjectData['app']['selectedInputs']
-  selectedTimelineTrackId: ProjectData['app']['selectedTimelineTrackId']
+
   openedControlGroups: ProjectData['app']['openedControlGroups']
   sketchesDir: string | null
   globalDialogId: DialogId | null
@@ -58,7 +57,6 @@ export interface AppState {
   sketchesServerBuildResult: BuildResult | null
   setSelectedNode: (sketchID: string, nodeId: string | null) => void
   setSelectedInput: (nodeId: string, inputId: string | null) => void
-  setSelectedTimelineTrackId: (trackId: string | null) => void
   setOpenedControlGroup: (sketchId: string, groupIndex: number, isOpen: boolean) => void
   setSelectedSceneId: (id: string | null) => void
   setSelectedSketch: (sceneId: string, sketchId: string | null) => void
@@ -69,6 +67,15 @@ export interface AppState {
   removeFromSaveList: (path: string) => void
   setSketchesServerBuildResult: (result: BuildResult | null) => void
   cleanupStaleReferences: (engineData: EngineData) => void
+
+  /** @deprecated -- this state handler will be moved to the timeline plugin */
+  setActiveTimelineComponentId: (id: string | null) => void
+  /** @deprecated -- this state will be moved to the timeline plugin */
+  activeTimelineComponentId: string | null
+  /** @deprecated -- this state handler will be moved to the timeline plugin */
+  setSelectedTimelineTrackId: (trackId: string | null) => void
+  /** @deprecated -- this state will be moved to the timeline plugin */
+  selectedTimelineTrackId: string | null
 }
 
 export type SetState = StoreApi<AppState>['setState']
@@ -96,6 +103,7 @@ export const createAppStore = () =>
             currentSavePath: null,
             selectedNodes: {},
             selectedInputs: {},
+            activeTimelineComponentId: null,
             selectedTimelineTrackId: null,
             openedControlGroups: {},
             saveList: [],
@@ -154,9 +162,14 @@ export const createAppStore = () =>
                 state.selectedInputs[nodeId] = inputId
               })
             },
-            setSelectedTimelineTrackId: (trackId) => {
+            setActiveTimelineComponentId: (id) => {
               set((state) => {
-                state.selectedTimelineTrackId = trackId
+                state.activeTimelineComponentId = id
+              })
+            },
+            setSelectedTimelineTrackId: (id) => {
+              set((state) => {
+                state.selectedTimelineTrackId = id
               })
             },
             setOpenedControlGroup: (sketchId: string, groupIndex: number, isOpen: boolean) => {
@@ -218,13 +231,6 @@ export const createAppStore = () =>
                   ) {
                     delete state.selectedInputs[selectedNodeId]
                   }
-                }
-
-                if (
-                  state.selectedTimelineTrackId &&
-                  !validNodeIds.has(state.selectedTimelineTrackId)
-                ) {
-                  state.selectedTimelineTrackId = null
                 }
 
                 for (const sketchId of Object.keys(state.openedControlGroups)) {

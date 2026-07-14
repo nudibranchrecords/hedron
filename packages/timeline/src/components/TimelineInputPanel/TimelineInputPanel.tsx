@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useId } from 'react'
 import { HedronEngine, InputNode } from '@hedron-gl/engine'
 import { useNodeOptionNodes, useParamValue, useAppStore } from '@hedron-gl/ui-core'
 import { useTimelineData } from '@/components/TimelineGlobalPanel/useTimelineData'
@@ -27,14 +27,18 @@ export const TimelineInputPanel = ({ input, engine }: TimelineInputPanelProps) =
     manager,
   })
 
+  const activeTimelineComponentId = useAppStore((state) => state.activeTimelineComponentId)
+  const setActiveTimelineComponentId = useAppStore((state) => state.setActiveTimelineComponentId)
   const selectedTrackId = useAppStore((state) => state.selectedTimelineTrackId)
   const setSelectedTrackId = useAppStore((state) => state.setSelectedTimelineTrackId)
 
-  // Viewing this input's track makes it the selected one, so keyboard shortcuts (i/x) act on it
-  // and it stays in sync with the global timeline panel's selection.
+  const timelineComponentId = useId()
+
+  // Viewing this input's track makes it the selected one
   useEffect(() => {
     setSelectedTrackId(input.id)
-  }, [input.id, setSelectedTrackId])
+    setActiveTimelineComponentId(timelineComponentId)
+  }, [input.id, setSelectedTrackId, setActiveTimelineComponentId, timelineComponentId])
 
   const optionNodes = useNodeOptionNodes<TimelineOptionNodes>(DEFAULT_TIMELINE_ID)
   const playHeadPositionNode = optionNodes['playheadPositionMs']!
@@ -46,7 +50,10 @@ export const TimelineInputPanel = ({ input, engine }: TimelineInputPanelProps) =
     <Timeline
       timeline={{ durationMs: timeline.durationMs, tracks: track ? [track] : [] }}
       playheadPositionMs={playheadPositionMs}
+      activeTimelineComponentId={activeTimelineComponentId}
+      setActiveTimelineComponentId={setActiveTimelineComponentId}
       selectedTrackId={selectedTrackId}
+      componentId={timelineComponentId}
       setSelectedTrackId={setSelectedTrackId}
       onPlayheadChange={handlePlayheadChange}
       onKeyframeDelete={handleKeyframeDelete}

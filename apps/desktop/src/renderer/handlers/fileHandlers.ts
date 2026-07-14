@@ -76,7 +76,6 @@ export const handleLoadProjectDialog = async (projectPath?: string) => {
     ...state,
     currentSavePath: savePath,
     ...projectData.app,
-    selectedTimelineTrackId: projectData.app.selectedTimelineTrackId ?? null,
   }))
 
   // Add/remove shots from sketches based on their current module configs, in case files were updated since last load
@@ -94,7 +93,6 @@ export const handleSaveProjectDialog = async (options?: { saveAs?: boolean }) =>
     openedControlGroups,
     selectedNodes,
     selectedInputs,
-    selectedTimelineTrackId,
     selectedSceneId,
     selectedSketches,
   } = appState
@@ -113,7 +111,6 @@ export const handleSaveProjectDialog = async (options?: { saveAs?: boolean }) =>
       selectedSketches,
       selectedNodes,
       selectedInputs,
-      selectedTimelineTrackId,
       openedControlGroups,
     },
   }
