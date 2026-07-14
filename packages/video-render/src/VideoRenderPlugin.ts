@@ -1,18 +1,92 @@
-import { ConfigShot, HedronEngine, IPlugin, ShotNode } from '@hedron-gl/engine'
+import {
+  ConfigShot,
+  defineOptionNodeConfigs,
+  HedronEngine,
+  IPlugin,
+  OptionNodesFromConfigs,
+  ShotNode,
+} from '@hedron-gl/engine'
 import { TimelineInput } from '@hedron-gl/timeline'
 import { VIDEO_RENDER_NODE_ID } from './constants'
 import { RenderFramesOptions, RenderProgress, VideoRenderCallbacks } from './types'
 
 // Shot-type option nodes aren't covered by `defineOptionNodeConfigs` (typed for ConfigParam only),
-// so this is declared directly and passed to `engine.addOptionNodes`.
+// so these are declared directly and passed to `engine.addOptionNodes`.
 const CAPTURE_FRAME_SHOT_CONFIG: ConfigShot = {
   nodeType: 'shot',
   key: 'captureFrame',
 }
 
+const BROWSE_OUTPUT_DIR_SHOT_CONFIG: ConfigShot = {
+  nodeType: 'shot',
+  key: 'browseOutputDir',
+  title: 'Browse',
+}
+
+const RENDER_SHOT_CONFIG: ConfigShot = {
+  nodeType: 'shot',
+  key: 'render',
+  title: 'Render',
+}
+
+// Render settings as option nodes (rather than component-local state) so they get the standard
+// param UI for free and are persisted with the project via the engine's normal save/load path.
+export const VIDEO_RENDER_PARAM_CONFIGS = defineOptionNodeConfigs([
+  {
+    nodeType: 'param',
+    key: 'outputDirAbsolute',
+    title: 'Output Directory',
+    valueType: 'string',
+    defaultValue: '',
+  },
+  {
+    nodeType: 'param',
+    key: 'name',
+    title: 'Output Name',
+    valueType: 'string',
+    defaultValue: 'hedron-render',
+  },
+  {
+    nodeType: 'param',
+    key: 'createVideo',
+    title: 'Create Video',
+    valueType: 'boolean',
+    defaultValue: true,
+  },
+  {
+    // 0 means "use the current canvas size" (see renderFrames below).
+    nodeType: 'param',
+    key: 'width',
+    title: 'Width',
+    valueType: 'number',
+    defaultValue: 0,
+    sliderMin: 0,
+    sliderMax: 3840,
+  },
+  {
+    nodeType: 'param',
+    key: 'height',
+    title: 'Height',
+    valueType: 'number',
+    defaultValue: 0,
+    sliderMin: 0,
+    sliderMax: 2160,
+  },
+  {
+    nodeType: 'param',
+    key: 'fps',
+    title: 'FPS',
+    valueType: 'number',
+    defaultValue: 30,
+    sliderMin: 1,
+    sliderMax: 120,
+  },
+] as const)
+
 // A mapped type (via Record) rather than a plain interface, so it satisfies useNodeOptionNodes'
 // `Record<string, ParamNode | ShotNode | undefined>` generic constraint.
-export type VideoRenderOptionNodes = Record<'captureFrame', ShotNode | undefined>
+export type VideoRenderOptionNodes = OptionNodesFromConfigs<typeof VIDEO_RENDER_PARAM_CONFIGS> &
+  Record<'captureFrame' | 'browseOutputDir' | 'render', ShotNode | undefined>
 
 // Input-less plugin: depends on the timeline plugin (reads duration/audio), but timeline doesn't know about it.
 // Electron-specific I/O (files, ffmpeg, dialogs) is injected via the constructor; everything else is engine orchestration here.
@@ -36,7 +110,12 @@ export class VideoRenderPlugin implements IPlugin {
       customNodeType: 'video-render',
     })
 
-    engine.addOptionNodes(VIDEO_RENDER_NODE_ID, [CAPTURE_FRAME_SHOT_CONFIG])
+    engine.addOptionNodes(VIDEO_RENDER_NODE_ID, [
+      ...VIDEO_RENDER_PARAM_CONFIGS,
+      CAPTURE_FRAME_SHOT_CONFIG,
+      BROWSE_OUTPUT_DIR_SHOT_CONFIG,
+      RENDER_SHOT_CONFIG,
+    ])
   }
 
   /** Captures the current canvas frame and saves it (a single, timestamped PNG). */

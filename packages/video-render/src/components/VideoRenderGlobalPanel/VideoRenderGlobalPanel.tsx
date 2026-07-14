@@ -1,6 +1,5 @@
-import { useState, useEffect } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import {
-  Button,
   ControlGrid,
   NodeContainer,
   useEngine,
@@ -14,24 +13,6 @@ import { VIDEO_RENDER_NODE_ID } from '@/constants'
 import { VideoRenderOptionNodes, VideoRenderPlugin } from '@/VideoRenderPlugin'
 import { RenderFramesOptions, RenderProgress } from '@/types'
 
-interface RenderSettings {
-  name: string
-  createVideo: boolean
-  width: number | null
-  height: number | null
-  fps: number
-  outputDirAbsolute: string
-}
-
-const defaultRenderSettings: RenderSettings = {
-  name: 'hedron-render',
-  createVideo: true,
-  width: null,
-  height: null,
-  fps: 30,
-  outputDirAbsolute: '',
-}
-
 export function VideoRenderGlobalPanel(): JSX.Element {
   useCaptureFrameShot()
 
@@ -44,36 +25,39 @@ export function VideoRenderGlobalPanel(): JSX.Element {
   const durationSeconds = useParamValue<number>(timelineOptionNodes['durationSeconds']!.id)
   const audioFileName = useParamValue<string | null>(timelineOptionNodes['audioUrl']!.id)
 
-  const videoRenderOptionNodes = useNodeOptionNodes<VideoRenderOptionNodes>(VIDEO_RENDER_NODE_ID)
-  const captureFrameNode = videoRenderOptionNodes['captureFrame']
+  const optionNodes = useNodeOptionNodes<VideoRenderOptionNodes>(VIDEO_RENDER_NODE_ID)
+  const captureFrameNode = optionNodes['captureFrame']
+  const browseOutputDirNode = optionNodes['browseOutputDir']
+  const renderShotNode = optionNodes['render']
+  const outputDirNode = optionNodes['outputDirAbsolute']!
+  const nameNode = optionNodes['name']!
+  const createVideoNode = optionNodes['createVideo']!
+  const widthNode = optionNodes['width']!
+  const heightNode = optionNodes['height']!
+  const fpsNode = optionNodes['fps']!
 
-  const [renderSettings, setRenderSettings] = useState<RenderSettings>(defaultRenderSettings)
+  const outputDirAbsolute = useParamValue<string>(outputDirNode.id)
+  const name = useParamValue<string>(nameNode.id)
+  const createVideo = useParamValue<boolean>(createVideoNode.id)
+  const width = useParamValue<number>(widthNode.id)
+  const height = useParamValue<number>(heightNode.id)
+  const fps = useParamValue<number>(fpsNode.id)
+
   const [isRendering, setIsRendering] = useState(false)
   const [progress, setProgress] = useState(0)
   const [renderingStatus, setRenderingStatus] = useState('Preparing...')
 
-  useEffect(() => {
-    const saved = sessionStorage.getItem('hedron-render-settings')
-    if (saved) {
-      setRenderSettings((prev) => ({ ...prev, ...JSON.parse(saved) }))
+  const frameCount = Math.max(1, Math.round(durationSeconds * (fps || 30)))
+
+  const handleBrowseOutputDir = useCallback(async () => {
+    const dir = await videoRenderPlugin?.selectOutputDir()
+    if (dir) {
+      engine.setParamValue(outputDirNode.id, dir)
     }
-  }, [])
+  }, [videoRenderPlugin, engine, outputDirNode.id])
 
-  useEffect(() => {
-    sessionStorage.setItem('hedron-render-settings', JSON.stringify(renderSettings))
-  }, [renderSettings])
-
-  const frameCount = Math.max(1, Math.round(durationSeconds * renderSettings.fps))
-
-  const handleBrowseOutputDir = async () => {
-    const outputDirAbsolute = await videoRenderPlugin?.selectOutputDir()
-    if (outputDirAbsolute) {
-      setRenderSettings((prev) => ({ ...prev, outputDirAbsolute }))
-    }
-  }
-
-  const handleRender = async () => {
-    if (!renderSettings.outputDirAbsolute) return
+  const handleRender = useCallback(async () => {
+    if (!outputDirAbsolute || isRendering) return
 
     setIsRendering(true)
     setProgress(0)
@@ -91,12 +75,12 @@ export function VideoRenderGlobalPanel(): JSX.Element {
 
       const options: RenderFramesOptions = {
         frameCount,
-        name: renderSettings.name,
-        fps: renderSettings.fps,
-        outputDirAbsolute: renderSettings.outputDirAbsolute,
-        video: renderSettings.createVideo,
-        width: renderSettings.width ?? undefined,
-        height: renderSettings.height ?? undefined,
+        name,
+        fps,
+        outputDirAbsolute,
+        video: createVideo,
+        width,
+        height,
         audioFileName: audioFileName ?? undefined,
       }
       await videoRenderPlugin?.renderFrames(options, handleProgress)
@@ -111,114 +95,58 @@ export function VideoRenderGlobalPanel(): JSX.Element {
       console.error('Error during rendering:', error)
       setIsRendering(false)
     }
-  }
+  }, [
+    outputDirAbsolute,
+    isRendering,
+    frameCount,
+    name,
+    fps,
+    createVideo,
+    width,
+    height,
+    audioFileName,
+    videoRenderPlugin,
+  ])
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value, type } = e.target
-    if (type === 'checkbox') {
-      setRenderSettings((prev) => ({ ...prev, [name]: e.target.checked }))
-    } else if (name === 'width' || name === 'height' || name === 'fps') {
-      setRenderSettings((prev) => ({ ...prev, [name]: value === '' ? null : Number(value) }))
-    } else {
-      setRenderSettings((prev) => ({ ...prev, [name]: value }))
-    }
-  }
+  useEffect(() => {
+    if (!browseOutputDirNode) return
+    engine.registerShot(browseOutputDirNode.id, () => handleBrowseOutputDir())
+  }, [engine, browseOutputDirNode, handleBrowseOutputDir])
+
+  useEffect(() => {
+    if (!renderShotNode) return
+    engine.registerShot(renderShotNode.id, () => handleRender())
+  }, [engine, renderShotNode, handleRender])
 
   return (
     <div className={c.form}>
-      <div className={c.formGroup}>
-        Output Directory
-        <div className={c.formGroupRow}>
-          <input
-            className={c.input}
-            type="text"
-            value={renderSettings.outputDirAbsolute}
-            readOnly
-            placeholder="Choose a folder..."
-            disabled={isRendering}
-          />
-          <Button
-            size="short"
-            type="neutral"
-            onClick={handleBrowseOutputDir}
-            disabled={isRendering}
-          >
-            Browse
-          </Button>
+      <div className={c.outputDirRow}>
+        <div className={c.outputDirInput}>
+          <NodeContainer nodeId={outputDirNode.id} />
         </div>
+        {browseOutputDirNode && (
+          <div className={c.outputDirBrowse}>
+            <NodeContainer nodeId={browseOutputDirNode.id} />
+          </div>
+        )}
       </div>
 
-      <div className={c.formGroupRow} style={{ alignItems: 'flex-start' }}>
-        <div style={{ flex: 2 }}>
-          Output Name
-          <input
-            className={c.input}
-            type="text"
-            name="name"
-            value={renderSettings.name}
-            onChange={handleChange}
-            disabled={isRendering}
-          />
-        </div>
-        <div style={{ flex: 1 }}>
-          FPS
-          <input
-            className={c.input}
-            type="number"
-            name="fps"
-            value={renderSettings.fps}
-            onChange={handleChange}
-            min="1"
-            disabled={isRendering}
-          />
-        </div>
-      </div>
+      <ControlGrid>
+        <NodeContainer nodeId={nameNode.id} />
+        <NodeContainer nodeId={createVideoNode.id} />
+      </ControlGrid>
+
+      <ControlGrid>
+        <NodeContainer nodeId={widthNode.id} />
+        <NodeContainer nodeId={heightNode.id} />
+        <NodeContainer nodeId={fpsNode.id} />
+      </ControlGrid>
 
       <small>
-        Timeline is {(durationSeconds || 0).toFixed(1)}s, rendering {frameCount} frames at{' '}
-        {renderSettings.fps}fps.
+        Width/height of 0 uses the current canvas size. Create Video requires ffmpeg. Timeline is{' '}
+        {(durationSeconds || 0).toFixed(1)}s, rendering {frameCount} frames at {fps || 30}fps.
         {audioFileName ? ` Audio: ${audioFileName}.` : ' No audio resource set on the timeline.'}
       </small>
-
-      <div className={c.formGroupRow}>
-        <input
-          className={c.checkbox}
-          type="checkbox"
-          name="createVideo"
-          checked={renderSettings.createVideo}
-          onChange={handleChange}
-          disabled={isRendering}
-        />
-        Create Video (requires ffmpeg)
-      </div>
-
-      <div className={c.formGroup}>
-        Resolution (optional)
-        <div className={c.formGroupRow}>
-          <input
-            className={c.input}
-            type="number"
-            placeholder="Width"
-            name="width"
-            value={renderSettings.width ?? ''}
-            onChange={handleChange}
-            disabled={isRendering}
-            style={{ width: '50%' }}
-          />
-          <span>×</span>
-          <input
-            className={c.input}
-            type="number"
-            placeholder="Height"
-            name="height"
-            value={renderSettings.height ?? ''}
-            onChange={handleChange}
-            disabled={isRendering}
-            style={{ width: '50%' }}
-          />
-        </div>
-        <small>Leave empty to use current canvas size</small>
-      </div>
 
       {isRendering && (
         <div className={c.progressContainer}>
@@ -230,21 +158,10 @@ export function VideoRenderGlobalPanel(): JSX.Element {
         </div>
       )}
 
-      <div>
-        <Button
-          type="secondary"
-          onClick={handleRender}
-          disabled={isRendering || !renderSettings.outputDirAbsolute}
-        >
-          {isRendering ? 'Rendering...' : 'Render'}
-        </Button>
-      </div>
-
-      {captureFrameNode && (
-        <ControlGrid>
-          <NodeContainer nodeId={captureFrameNode.id} />
-        </ControlGrid>
-      )}
+      <ControlGrid>
+        {renderShotNode && <NodeContainer nodeId={renderShotNode.id} />}
+        {captureFrameNode && <NodeContainer nodeId={captureFrameNode.id} />}
+      </ControlGrid>
     </div>
   )
 }

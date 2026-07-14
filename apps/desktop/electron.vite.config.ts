@@ -41,6 +41,7 @@ export default defineConfig({
         '@hedron-gl/midi-manager': path.resolve(__dirname, '../../packages/midi-manager/src'),
         '@hedron-gl/timeline': path.resolve(__dirname, '../../packages/timeline/src'),
         '@hedron-gl/scene-control': path.resolve(__dirname, '../../packages/scene-control/src'),
+        '@hedron-gl/video-render': path.resolve(__dirname, '../../packages/video-render/src'),
       },
     },
   },

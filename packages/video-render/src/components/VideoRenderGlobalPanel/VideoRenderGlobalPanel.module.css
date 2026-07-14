@@ -1,33 +1,23 @@
 .form {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: var(--gapLarge);
+  padding: var(--gapLarge) 0;
 }
 
-.formGroup {
+.outputDirRow {
   display: flex;
-  flex-direction: column;
-  gap: 4px;
+  gap: var(--gapLarge);
 }
 
-.formGroupRow {
-  display: flex;
-  align-items: center;
-  gap: 8px;
+.outputDirInput {
+  flex: 2;
+  min-width: 0;
 }
 
-.input {
-  background-color: var(--bgColorDark2);
-  border: 1px solid var(--lineColor2);
-  border-radius: 4px;
-  color: var(--textColorLight1);
-  font-size: 12px;
-  padding: 4px 8px;
-  width: 100%;
-}
-
-.checkbox {
-  margin-right: 8px;
+.outputDirBrowse {
+  flex: 1;
+  min-width: 0;
 }
 
 .progressContainer {
