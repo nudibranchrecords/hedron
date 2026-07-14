@@ -60,6 +60,10 @@ export function Timeline({
     }
 
     const handleKeyDown = (e: KeyboardEvent) => {
+      const target = e.target as HTMLElement | null
+      if (target?.tagName === 'INPUT' || target?.tagName === 'TEXTAREA' || target?.isContentEditable) {
+        return
+      }
       if (e.key === 'x' && selectedKeyframes) {
         selectedKeyframes.forEach((keyframeId) => {
           onKeyframeDelete?.(keyframeId)
