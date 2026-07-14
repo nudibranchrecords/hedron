@@ -7,16 +7,26 @@ import {
 
 type KeyframeValueType = Exclude<ParamNonVectorValueType, null>
 
-type KeyframeForValueType<TValueType extends KeyframeValueType> = {
+type KeyframeBase = {
   id: string
   time: number
+}
+
+type KeyframeForValueType<TValueType extends KeyframeValueType> = KeyframeBase & {
+  nodeType: 'param'
   valueType: TValueType
   value: ParamForValueType<TValueType>['defaultValue']
 }
 
-export type Keyframe = {
+export type KeyframeParam = {
   [TValueType in KeyframeValueType]: KeyframeForValueType<TValueType>
 }[KeyframeValueType]
+
+export type KeyframeShot = KeyframeBase & {
+  nodeType: 'shot'
+}
+
+export type Keyframe = KeyframeParam | KeyframeShot
 
 /** Store node type for a timeline track */
 export type TimelineTrackInput = InputNode & {
