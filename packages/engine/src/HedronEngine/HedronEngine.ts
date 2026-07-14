@@ -633,11 +633,15 @@ export class HedronEngine {
    */
   private advanceFrame(deltaTime: number) {
     this.clock?.step(deltaTime * 1000)
+
+    // Flush before plugin.update() so plugins read this frame's values, not stale ones buffered since the last flush.
+    flushParamValueBuffer(this.store.setState)
+
     Object.values(this.plugins).forEach((plugin) =>
       plugin.update?.(this, { deltaFrame: 1, deltaTime }),
     )
 
-    // Flush buffered node value updates before processing the frame
+    // Flush again so any updates plugins just buffered are visible to sketches this same frame.
     flushParamValueBuffer(this.store.setState)
 
     const activeSceneId = this.getParamValue(ACTIVE_SCENE_ID_NODE_ID) as string | undefined

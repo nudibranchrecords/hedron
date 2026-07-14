@@ -157,11 +157,10 @@ export class VideoRenderPlugin implements IPlugin {
   ) {
     timelinePlugin?.timelineManagers.forEach((manager, timelineId) => {
       const isPlayingNode = engine.getNodeOptionNode(timelineId, 'isPlaying')
+      manager.pause()
       if (engine.getParamValue(isPlayingNode.id)) {
         manager.goTo(0)
         manager.play()
-      } else {
-        manager.pause()
       }
     })
   }

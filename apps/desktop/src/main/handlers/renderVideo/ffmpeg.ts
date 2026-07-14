@@ -1,11 +1,13 @@
 import path from 'path'
 import fs from 'fs/promises'
-import { exec } from 'child_process'
+import { execFile } from 'child_process'
 import { getCurrentResourcesDir } from '@main/handleResourceFiles'
 
-function runFfmpeg(cmd: string): Promise<void> {
+// Args array (no shell) so filenames/paths containing quotes or shell metacharacters can't
+// be interpreted as commands.
+function runFfmpeg(args: string[]): Promise<void> {
   return new Promise((resolve, reject) => {
-    exec(cmd, (error, _stdout, stderr) => {
+    execFile('ffmpeg', args, (error, _stdout, stderr) => {
       if (error) {
         console.error('ffmpeg error:', error, stderr)
         reject(error)
@@ -43,9 +45,20 @@ export async function buildVideoFromFrames({
   const framesPattern = path.join(dirPath, `${name}-%0${padding}d.png`)
 
   if (!audioFileName) {
-    await runFfmpeg(
-      `ffmpeg -y -framerate ${fps} -i "${framesPattern}" -c:v libx264 -pix_fmt yuv420p -crf 18 "${videoPath}"`,
-    )
+    await runFfmpeg([
+      '-y',
+      '-framerate',
+      String(fps),
+      '-i',
+      framesPattern,
+      '-c:v',
+      'libx264',
+      '-pix_fmt',
+      'yuv420p',
+      '-crf',
+      '18',
+      videoPath,
+    ])
     return videoPath
   }
 
@@ -58,13 +71,43 @@ export async function buildVideoFromFrames({
   const tempAudio = path.join(dirPath, `${name}-temp.wav`)
 
   // Convert to WAV and trim to exact duration, adding fade in/out
-  await runFfmpeg(
-    `ffmpeg -y -i "${audioPath}" -t ${videoDuration} -af "afade=t=in:st=0:d=0.5,afade=t=out:st=${videoDuration - 0.5}:d=0.5" -ar 48000 -ac 2 "${tempAudio}"`,
-  )
+  await runFfmpeg([
+    '-y',
+    '-i',
+    audioPath,
+    '-t',
+    String(videoDuration),
+    '-af',
+    `afade=t=in:st=0:d=0.5,afade=t=out:st=${videoDuration - 0.5}:d=0.5`,
+    '-ar',
+    '48000',
+    '-ac',
+    '2',
+    tempAudio,
+  ])
 
-  await runFfmpeg(
-    `ffmpeg -y -framerate ${fps} -i "${framesPattern}" -i "${tempAudio}" -map 0:v -map 1:a -c:v libx264 -pix_fmt yuv420p -crf 18 -c:a pcm_s16le "${videoPath}"`,
-  )
+  await runFfmpeg([
+    '-y',
+    '-framerate',
+    String(fps),
+    '-i',
+    framesPattern,
+    '-i',
+    tempAudio,
+    '-map',
+    '0:v',
+    '-map',
+    '1:a',
+    '-c:v',
+    'libx264',
+    '-pix_fmt',
+    'yuv420p',
+    '-crf',
+    '18',
+    '-c:a',
+    'pcm_s16le',
+    videoPath,
+  ])
 
   await fs
     .unlink(tempAudio)

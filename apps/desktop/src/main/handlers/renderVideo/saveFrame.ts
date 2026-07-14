@@ -1,4 +1,4 @@
-import fs from 'fs'
+import fs from 'fs/promises'
 import { getDocumentsPath, getFrameFilePath, getTimestampedFilePath } from './paths'
 import { SaveFrameOptions, SaveFrameResponse } from '@shared/FrameEvents'
 
@@ -16,7 +16,7 @@ export async function saveFrameHandler(
     } else {
       filePath = getTimestampedFilePath()
     }
-    fs.writeFileSync(filePath, base64Data, 'base64')
+    await fs.writeFile(filePath, base64Data, 'base64')
     return { success: true, path: filePath }
   } catch (error) {
     console.error('Error saving frame:', error)

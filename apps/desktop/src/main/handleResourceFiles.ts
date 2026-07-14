@@ -8,8 +8,8 @@ import { ResourcesServer } from '@main/ResourcesServer/ResourcesServer'
 
 // Track the current server instance
 let currentResourcesServer: ResourcesServer | null = null
-let currentResourcesDir: string | null = null
-export const getCurrentResourcesDir = (): string | null => currentResourcesDir
+let currentResourcesDir: string | undefined = undefined
+export const getCurrentResourcesDir = (): string | undefined => currentResourcesDir
 
 const getInitialFiles = async (dirPath: string): Promise<Record<string, Resource>> => {
   const files: Record<string, Resource> = {}
