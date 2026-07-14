@@ -8,6 +8,7 @@ import { TimelineManager } from '@/TimelineManager'
 import type { TrackValues } from '@/TimelineManager'
 import { Timeline } from '@/components/Timeline/Timeline'
 import type {
+  KeyframeParam,
   TimelineManagerData,
   TimelineManagerKeyframeTrack,
   TimelineManagerTrack,
@@ -55,10 +56,10 @@ export const WithKeyframes: Story = {
           label: 'Visibility',
           trackType: 'keyframe',
           keyframes: [
-            { id: 'kf-1', time: 1000, valueType: 'boolean', value: true },
-            { id: 'kf-2', time: 3000, valueType: 'boolean', value: false },
-            { id: 'kf-3', time: 5500, valueType: 'boolean', value: true },
-            { id: 'kf-4', time: 8000, valueType: 'boolean', value: false },
+            { id: 'kf-1', time: 1000, valueType: 'boolean', value: true, nodeType: 'param' },
+            { id: 'kf-2', time: 3000, valueType: 'boolean', value: false, nodeType: 'param' },
+            { id: 'kf-3', time: 5500, valueType: 'boolean', value: true, nodeType: 'param' },
+            { id: 'kf-4', time: 8000, valueType: 'boolean', value: false, nodeType: 'param' },
           ],
         },
       ],
@@ -82,9 +83,9 @@ export const WithVectorTrack: Story = {
               label: 'X',
               trackType: 'keyframe',
               keyframes: [
-                { id: 'kf-px-1', time: 1000, valueType: 'number', value: 0 },
-                { id: 'kf-px-2', time: 5000, valueType: 'number', value: 0.75 },
-                { id: 'kf-px-3', time: 9000, valueType: 'number', value: -0.2 },
+                { id: 'kf-px-1', time: 1000, valueType: 'number', value: 0, nodeType: 'param' },
+                { id: 'kf-px-2', time: 5000, valueType: 'number', value: 0.75, nodeType: 'param' },
+                { id: 'kf-px-3', time: 9000, valueType: 'number', value: -0.2, nodeType: 'param' },
               ],
             },
             {
@@ -92,9 +93,9 @@ export const WithVectorTrack: Story = {
               label: 'Y',
               trackType: 'keyframe',
               keyframes: [
-                { id: 'kf-py-1', time: 1500, valueType: 'number', value: -0.25 },
-                { id: 'kf-py-2', time: 4500, valueType: 'number', value: 0.5 },
-                { id: 'kf-py-3', time: 8000, valueType: 'number', value: 0.1 },
+                { id: 'kf-py-1', time: 1500, valueType: 'number', value: -0.25, nodeType: 'param' },
+                { id: 'kf-py-2', time: 4500, valueType: 'number', value: 0.5, nodeType: 'param' },
+                { id: 'kf-py-3', time: 8000, valueType: 'number', value: 0.1, nodeType: 'param' },
               ],
             },
           ],
@@ -128,9 +129,9 @@ export const Interactive = () => {
             label: 'X',
             trackType: 'keyframe',
             keyframes: [
-              { id: 'kf-px1', time: 500, valueType: 'number', value: -0.5 },
-              { id: 'kf-px2', time: 4000, valueType: 'number', value: 0.35 },
-              { id: 'kf-px3', time: 7000, valueType: 'number', value: 0.8 },
+              { id: 'kf-px1', time: 500, valueType: 'number', value: -0.5, nodeType: 'param' },
+              { id: 'kf-px2', time: 4000, valueType: 'number', value: 0.35, nodeType: 'param' },
+              { id: 'kf-px3', time: 7000, valueType: 'number', value: 0.8, nodeType: 'param' },
             ],
           },
           {
@@ -138,9 +139,9 @@ export const Interactive = () => {
             label: 'Y',
             trackType: 'keyframe',
             keyframes: [
-              { id: 'kf-py1', time: 1000, valueType: 'number', value: 0.25 },
-              { id: 'kf-py2', time: 5000, valueType: 'number', value: -0.1 },
-              { id: 'kf-py3', time: 8500, valueType: 'number', value: 0.55 },
+              { id: 'kf-py1', time: 1000, valueType: 'number', value: 0.25, nodeType: 'param' },
+              { id: 'kf-py2', time: 5000, valueType: 'number', value: -0.1, nodeType: 'param' },
+              { id: 'kf-py3', time: 8500, valueType: 'number', value: 0.55, nodeType: 'param' },
             ],
           },
         ],
@@ -150,9 +151,9 @@ export const Interactive = () => {
         label: 'Visibility',
         trackType: 'keyframe',
         keyframes: [
-          { id: 'kf-v1', time: 0, valueType: 'boolean', value: true },
-          { id: 'kf-v2', time: 3000, valueType: 'boolean', value: false },
-          { id: 'kf-v3', time: 6000, valueType: 'boolean', value: true },
+          { id: 'kf-v1', time: 0, valueType: 'boolean', value: true, nodeType: 'param' },
+          { id: 'kf-v2', time: 3000, valueType: 'boolean', value: false, nodeType: 'param' },
+          { id: 'kf-v3', time: 6000, valueType: 'boolean', value: true, nodeType: 'param' },
         ],
       },
       {
@@ -160,12 +161,12 @@ export const Interactive = () => {
         label: 'Strobe',
         trackType: 'keyframe',
         keyframes: [
-          { id: 'kf-s1', time: 1000, valueType: 'boolean', value: true },
-          { id: 'kf-s2', time: 2000, valueType: 'boolean', value: false },
-          { id: 'kf-s3', time: 4000, valueType: 'boolean', value: true },
-          { id: 'kf-s4', time: 5000, valueType: 'boolean', value: false },
-          { id: 'kf-s5', time: 7000, valueType: 'boolean', value: true },
-          { id: 'kf-s6', time: 8000, valueType: 'boolean', value: false },
+          { id: 'kf-s1', time: 1000, valueType: 'boolean', value: true, nodeType: 'param' },
+          { id: 'kf-s2', time: 2000, valueType: 'boolean', value: false, nodeType: 'param' },
+          { id: 'kf-s3', time: 4000, valueType: 'boolean', value: true, nodeType: 'param' },
+          { id: 'kf-s4', time: 5000, valueType: 'boolean', value: false, nodeType: 'param' },
+          { id: 'kf-s5', time: 7000, valueType: 'boolean', value: true, nodeType: 'param' },
+          { id: 'kf-s6', time: 8000, valueType: 'boolean', value: false, nodeType: 'param' },
         ],
       },
       {
@@ -173,8 +174,8 @@ export const Interactive = () => {
         label: 'Invert',
         trackType: 'keyframe',
         keyframes: [
-          { id: 'kf-i1', time: 2500, valueType: 'boolean', value: true },
-          { id: 'kf-i2', time: 7500, valueType: 'boolean', value: false },
+          { id: 'kf-i1', time: 2500, valueType: 'boolean', value: true, nodeType: 'param' },
+          { id: 'kf-i2', time: 7500, valueType: 'boolean', value: false, nodeType: 'param' },
         ],
       },
     ],
@@ -274,7 +275,7 @@ export const Interactive = () => {
       tracks: prev.tracks.map((track) => {
         const insertKeyframe = (track: TimelineManagerTrack): TimelineManagerTrack => {
           if (track.trackType === 'keyframe' && track.id === trackId) {
-            const lastKeyframe = track.keyframes[track.keyframes.length - 1]
+            const lastKeyframe = track.keyframes[track.keyframes.length - 1] as KeyframeParam
             const valueType = lastKeyframe?.valueType ?? 'boolean'
             const value =
               lastKeyframe?.value ??
@@ -380,11 +381,11 @@ export const LongDuration: Story = {
           label: 'Active',
           trackType: 'keyframe',
           keyframes: [
-            { id: 'kf-1', time: 10000, valueType: 'boolean', value: true },
-            { id: 'kf-2', time: 30000, valueType: 'boolean', value: false },
-            { id: 'kf-3', time: 60000, valueType: 'boolean', value: true },
-            { id: 'kf-4', time: 90000, valueType: 'boolean', value: false },
-            { id: 'kf-5', time: 110000, valueType: 'boolean', value: true },
+            { id: 'kf-1', time: 10000, valueType: 'boolean', value: true, nodeType: 'param' },
+            { id: 'kf-2', time: 30000, valueType: 'boolean', value: false, nodeType: 'param' },
+            { id: 'kf-3', time: 60000, valueType: 'boolean', value: true, nodeType: 'param' },
+            { id: 'kf-4', time: 90000, valueType: 'boolean', value: false, nodeType: 'param' },
+            { id: 'kf-5', time: 110000, valueType: 'boolean', value: true, nodeType: 'param' },
           ],
         },
       ],
