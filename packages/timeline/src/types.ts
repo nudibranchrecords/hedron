@@ -1,12 +1,32 @@
-import { InputNode, CustomNode, ParamValueType, ParamValue } from '@hedron-gl/engine'
+import {
+  InputNode,
+  CustomNode,
+  ParamForValueType,
+  ParamNonVectorValueType,
+} from '@hedron-gl/engine'
 
-export interface Keyframe {
+type KeyframeValueType = Exclude<ParamNonVectorValueType, null>
+
+type KeyframeBase = {
   id: string
   time: number
-  // TODO: This is a bit wonky because a keyframe could be typed with a non-matching valueType and value
-  valueType: ParamValueType
-  value: ParamValue
 }
+
+type KeyframeForValueType<TValueType extends KeyframeValueType> = KeyframeBase & {
+  nodeType: 'param'
+  valueType: TValueType
+  value: ParamForValueType<TValueType>['defaultValue']
+}
+
+export type KeyframeParam = {
+  [TValueType in KeyframeValueType]: KeyframeForValueType<TValueType>
+}[KeyframeValueType]
+
+export type KeyframeShot = KeyframeBase & {
+  nodeType: 'shot'
+}
+
+export type Keyframe = KeyframeParam | KeyframeShot
 
 /** Store node type for a timeline track */
 export type TimelineTrackInput = InputNode & {

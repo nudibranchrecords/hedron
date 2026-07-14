@@ -151,6 +151,7 @@ export type ParamValueType = ParamNode['valueType'] | null
 
 export type ParamVector = ParamVector2 | ParamVector3 | ParamRGB
 export type ParamVectorValueType = ParamVector['valueType']
+export type ParamNonVectorValueType = Exclude<ParamValueType, ParamVectorValueType>
 
 export type EnsureRequiredValueType<T> = T extends { valueType?: infer V }
   ? Omit<T, 'valueType'> & { valueType: V }

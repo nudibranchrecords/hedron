@@ -1,9 +1,9 @@
 import { useCallback } from 'react'
-import { HedronEngine, ParamNode } from '@hedron-gl/engine'
+import { HedronEngine } from '@hedron-gl/engine'
 import { useNodeOptionNodes } from '@hedron-gl/ui-core'
 import { DEFAULT_TIMELINE_ID } from '@/constants'
 import { TimelineManager } from '@/TimelineManager'
-import type { Keyframe, TimelineTrackInput } from '@/types'
+import type { Keyframe, KeyframeParam, TimelineTrackInput } from '@/types'
 
 interface UseTimelineHandlersParams {
   engine: HedronEngine
@@ -50,25 +50,35 @@ export const useTimelineHandlers = ({ engine, manager }: UseTimelineHandlersPara
         return
       }
 
-      const targetParam = engine.getNode(inputNode.targetNodeId) as ParamNode | undefined
+      const targetNode = engine.getNode(inputNode.targetNodeId)
 
-      if (!targetParam) {
-        console.error(`Target param not found for input node ${inputNode.id}`)
+      if (!targetNode) {
+        console.error(`Target node not found for input node ${inputNode.id}`)
         return
       }
 
-      const targetParamValue = engine.getParamValue(inputNode.targetNodeId)
+      let keyframe: Keyframe
+      if (targetNode.nodeType === 'shot') {
+        keyframe = { id: crypto.randomUUID(), time, nodeType: 'shot' }
+      } else if (targetNode.nodeType === 'param') {
+        const targetParamValue = engine.getParamValue(inputNode.targetNodeId)
 
-      if (targetParamValue === undefined) {
-        console.error(`Target param value not found for input node ${inputNode.id}`)
-        return
-      }
+        if (targetParamValue === undefined) {
+          console.error(`Target param value not found for input node ${inputNode.id}`)
+          return
+        }
 
-      const keyframe = {
-        id: crypto.randomUUID(),
-        time,
-        valueType: targetParam.valueType,
-        value: targetParamValue,
+        keyframe = {
+          id: crypto.randomUUID(),
+          time,
+          valueType: targetNode.valueType,
+          value: targetParamValue,
+          nodeType: 'param',
+        } as KeyframeParam
+      } else {
+        throw new Error(
+          `Unsupported target node type for input node ${inputNode.id} with type ${targetNode.nodeType}`,
+        )
       }
 
       const nextKeyframes: Keyframe[] = [...(inputNode.customData?.keyframes ?? []), keyframe].sort(

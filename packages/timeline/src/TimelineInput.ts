@@ -7,6 +7,7 @@ import {
   OptionNodesFromConfigs,
   isParamVector,
   ParamNode,
+  ParamValue,
   ShotNode,
   isParamVectorComponent,
 } from '@hedron-gl/engine'
@@ -118,14 +119,28 @@ export class TimelineInput implements IPlugin {
         if (changedTrackIds.length > 0) {
           const allTracks = getTimelineTracks(engine.getStoreState(), timelineId)
           const tracks = getKeyframeTracks(allTracks)
-          const changedTargetNodeIds = changedTrackIds.map(
-            (trackId) => tracks.find((track) => track.id === trackId)?.targetNodeId ?? trackId,
-          )
 
-          engine.setMultipleParamValues(
-            changedTargetNodeIds,
-            changedTrackIds.map((trackId) => changed[trackId]),
-          )
+          const paramTargetNodeIds: string[] = []
+          const paramValues: ParamValue[] = []
+
+          for (const trackId of changedTrackIds) {
+            const targetNodeId =
+              tracks.find((track) => track.id === trackId)?.targetNodeId ?? trackId
+            const targetNode = engine.getNode(targetNodeId)
+            const value = changed[trackId]
+
+            if (targetNode?.nodeType === 'shot') {
+              engine.fireShot(targetNodeId)
+              continue
+            }
+
+            paramTargetNodeIds.push(targetNodeId)
+            paramValues.push(value)
+          }
+
+          if (paramTargetNodeIds.length > 0) {
+            engine.setMultipleParamValues(paramTargetNodeIds, paramValues)
+          }
         }
       })
     })
