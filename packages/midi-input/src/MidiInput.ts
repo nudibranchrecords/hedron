@@ -120,7 +120,10 @@ export class MidiInput implements IPlugin {
     optionNodes: ConfigToOptionsType<typeof MidiInput.prototype.optionNodesConfig>,
     midiEvent: MIDIEventWithValue,
   ) {
-    const value = !optionNodes.override ? midiEvent.value : optionNodes.overrideValue
+    const value =
+      !optionNodes.override || optionNodes.overrideValue < 0
+        ? midiEvent.value
+        : optionNodes.overrideValue
     return value
   }
 

@@ -53,7 +53,7 @@ export const MidiInputPanel = ({ input, engine }: IProps) => {
   const paramValues = useEngineStore((s) => s.paramValues)
 
   const overrideNodeId = useMemo(
-    () => findNodeWithKeyFromIdList(nodes, 'overrideValue', input.childGroups.optionNodeIds)?.id,
+    () => findNodeWithKeyFromIdList(nodes, 'override', input.childGroups.optionNodeIds)?.id,
     [input.childGroups.optionNodeIds, nodes],
   )
 
