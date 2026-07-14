@@ -23,6 +23,30 @@ export interface TimelineProps {
   onKeyframeInsert?: (trackId: string, time: number) => void
 }
 
+// Multiple Timeline instances can be mounted at once (e.g. the global timeline panel
+// plus a per-input panel). Only the most recently mounted one should act on [i]/[x],
+// otherwise both fire and e.g. double-insert the same keyframe.
+type KeydownHandler = (e: KeyboardEvent) => void
+const keydownHandlerStack: KeydownHandler[] = []
+let sharedKeydownListenerInstalled = false
+
+function ensureSharedKeydownListener() {
+  if (sharedKeydownListenerInstalled) return
+  sharedKeydownListenerInstalled = true
+  window.addEventListener('keydown', (e) => {
+    keydownHandlerStack[keydownHandlerStack.length - 1]?.(e)
+  })
+}
+
+function registerKeydownHandler(handler: KeydownHandler) {
+  ensureSharedKeydownListener()
+  keydownHandlerStack.push(handler)
+  return () => {
+    const index = keydownHandlerStack.indexOf(handler)
+    if (index !== -1) keydownHandlerStack.splice(index, 1)
+  }
+}
+
 export function Timeline({
   timeline,
   playheadPositionMs = 0,
@@ -37,7 +61,8 @@ export function Timeline({
   const [uncontrolledSelectedTrackId, setUncontrolledSelectedTrackId] = useState<string | null>(
     null,
   )
-  const isControlled = controlledSetSelectedTrackId !== undefined
+  const isControlled =
+    controlledSelectedTrackId !== undefined && controlledSetSelectedTrackId !== undefined
   const selectedTrackId = isControlled
     ? (controlledSelectedTrackId ?? null)
     : uncontrolledSelectedTrackId
@@ -82,8 +107,7 @@ export function Timeline({
         }
       }
     }
-    window.addEventListener('keydown', handleKeyDown)
-    return () => window.removeEventListener('keydown', handleKeyDown)
+    return registerKeydownHandler(handleKeyDown)
   }, [
     selectedKeyframes,
     onKeyframeDelete,

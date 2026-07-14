@@ -76,6 +76,7 @@ export const handleLoadProjectDialog = async (projectPath?: string) => {
     ...state,
     currentSavePath: savePath,
     ...projectData.app,
+    selectedTimelineTrackId: projectData.app.selectedTimelineTrackId ?? null,
   }))
 
   // Add/remove shots from sketches based on their current module configs, in case files were updated since last load
