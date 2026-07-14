@@ -43,6 +43,23 @@ export const TIMELINE_OPTION_NODE_CONFIGS = defineOptionNodeConfigs([
 // We can use TimelineOptionNodes for strong typing when using useNodeOptionNodes
 export type TimelineOptionNodes = OptionNodesFromConfigs<typeof TIMELINE_OPTION_NODE_CONFIGS>
 
+const getKeyframeTracks = (tracks: TimelineManagerTrack[]): TimelineManagerKeyframeTrack[] => {
+  const keyframeTracks: TimelineManagerKeyframeTrack[] = []
+
+  for (const track of tracks) {
+    if (track.trackType === 'keyframe') {
+      keyframeTracks.push(track)
+      continue
+    }
+
+    if (track.trackType === 'vector') {
+      keyframeTracks.push(...getKeyframeTracks(track.childTracks))
+    }
+  }
+
+  return keyframeTracks
+}
+
 export class TimelineInput implements IPlugin {
   public readonly id = 'timeline-input'
   public readonly name = 'Timeline Input'
@@ -101,26 +118,6 @@ export class TimelineInput implements IPlugin {
         const changedTrackIds = Object.keys(changed)
         if (changedTrackIds.length > 0) {
           const allTracks = getTimelineTracks(engine.getStoreState(), timelineId)
-
-          const getKeyframeTracks = (
-            tracks: TimelineManagerTrack[],
-          ): TimelineManagerKeyframeTrack[] => {
-            const keyframeTracks: TimelineManagerKeyframeTrack[] = []
-
-            for (const track of tracks) {
-              if (track.trackType === 'keyframe') {
-                keyframeTracks.push(track)
-                continue
-              }
-
-              if (track.trackType === 'vector') {
-                keyframeTracks.push(...getKeyframeTracks(track.childTracks))
-              }
-            }
-
-            return keyframeTracks
-          }
-
           const tracks = getKeyframeTracks(allTracks)
 
           const paramTargetNodeIds: string[] = []
