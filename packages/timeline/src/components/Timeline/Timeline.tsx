@@ -86,7 +86,11 @@ export function Timeline({
 
     const handleKeyDown = (e: KeyboardEvent) => {
       const target = e.target as HTMLElement | null
-      if (target?.tagName === 'INPUT' || target?.tagName === 'TEXTAREA' || target?.isContentEditable) {
+      if (
+        target?.tagName === 'INPUT' ||
+        target?.tagName === 'TEXTAREA' ||
+        target?.isContentEditable
+      ) {
         return
       }
       if (e.key === 'x' && selectedKeyframes) {
@@ -115,7 +119,6 @@ export function Timeline({
     playheadPositionMs,
     onKeyframeInsert,
     tracks,
-    findTrackById,
   ])
 
   usePlayheadScrub(durationMs, rulerAreaRef, playheadPositionMs, onPlayheadChange)
