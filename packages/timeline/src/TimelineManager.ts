@@ -194,7 +194,7 @@ export class TimelineManager {
   }
 
   getAllTracks(): TimelineManagerTrack[] {
-    return this.flatTracks
+    return [...this.flatTracks]
   }
 
   play() {
