@@ -3,7 +3,7 @@ import { HedronEngine, ParamNode, ShotNode } from '@hedron-gl/engine'
 import { useEngineStore, ControlGrid, NodeContainer, getNodeOptionNodes } from '@hedron-gl/ui-core'
 import { MIDIEvent, MidiMessageType, midiMessageNames } from '@hedron-gl/midi-manager'
 import { MidiInput } from './MidiInput'
-import { doesMidiEventMatchInput } from './doesMidiEventMatchInput'
+import { doesMidiEventMatchInput } from './utils'
 import styles from './MidiGlobalPanel.module.css'
 import { NOTE_MODE_ON } from './constants'
 

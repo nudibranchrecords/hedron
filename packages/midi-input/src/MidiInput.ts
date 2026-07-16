@@ -21,7 +21,7 @@ import {
   NOTE_MODE_ON_OFF,
   MIDI_NOTES,
 } from './constants'
-import { doesMidiEventMatchInput } from './doesMidiEventMatchInput'
+import { doesMidiEventMatchInput, getMidiInputTypeFromEvent } from './utils'
 
 type MIDIEventWithValue = Omit<MIDIEvent, 'value'> & { value: number }
 
@@ -153,14 +153,6 @@ export class MidiInput implements IPlugin {
     }
   }
 
-  private resolveLearnedInputType(event: MIDIEvent): number | null {
-    if (event.type === MidiMessageType.ControlChange) return MIDI_INPUT_TYPE_CONTROL_CHANGE
-    if (event.type === MidiMessageType.NoteOn || event.type === MidiMessageType.NoteOff) {
-      return MIDI_INPUT_TYPE_NOTE
-    }
-    return null
-  }
-
   private handleBoolean: ValueHander = ({ midiEvent, optionNodes, targetParamValue }) => {
     switch (midiEvent.type) {
       case MidiMessageType.NoteOn:
@@ -235,7 +227,7 @@ export class MidiInput implements IPlugin {
       type: typeNode,
     } = getNodeOptionNodes(state, input.id)
 
-    const learnedType = this.resolveLearnedInputType(event)
+    const learnedType = getMidiInputTypeFromEvent(event)
 
     if (channelNode) state.updateParamValue(channelNode.id, event.channel)
     if (noteNode) state.updateParamValue(noteNode.id, event.note)

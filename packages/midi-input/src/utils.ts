@@ -50,3 +50,11 @@ export const doesMidiEventMatchInput = ({
       return false
   }
 }
+
+export const getMidiInputTypeFromEvent = (event: MIDIEvent): number | null => {
+  if (event.type === MidiMessageType.ControlChange) return MIDI_INPUT_TYPE_CONTROL_CHANGE
+  if (event.type === MidiMessageType.NoteOn || event.type === MidiMessageType.NoteOff) {
+    return MIDI_INPUT_TYPE_NOTE
+  }
+  return null
+}
