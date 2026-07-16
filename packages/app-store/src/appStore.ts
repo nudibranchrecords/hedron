@@ -48,6 +48,7 @@ export interface AppState {
   selectedSketches: ProjectData['app']['selectedSketches'] // TODO: should be part of ProjectData
   selectedNodes: ProjectData['app']['selectedNodes']
   selectedInputs: ProjectData['app']['selectedInputs']
+
   openedControlGroups: ProjectData['app']['openedControlGroups']
   sketchesDir: string | null
   globalDialogId: DialogId | null
@@ -66,6 +67,15 @@ export interface AppState {
   removeFromSaveList: (path: string) => void
   setSketchesServerBuildResult: (result: BuildResult | null) => void
   cleanupStaleReferences: (engineData: EngineData) => void
+
+  /** @deprecated -- this state handler will be moved to the timeline plugin */
+  setActiveTimelineComponentId: (id: string | null) => void
+  /** @deprecated -- this state will be moved to the timeline plugin */
+  activeTimelineComponentId: string | null
+  /** @deprecated -- this state handler will be moved to the timeline plugin */
+  setSelectedTimelineTrackId: (trackId: string | null) => void
+  /** @deprecated -- this state will be moved to the timeline plugin */
+  selectedTimelineTrackId: string | null
 }
 
 export type SetState = StoreApi<AppState>['setState']
@@ -93,6 +103,8 @@ export const createAppStore = () =>
             currentSavePath: null,
             selectedNodes: {},
             selectedInputs: {},
+            activeTimelineComponentId: null,
+            selectedTimelineTrackId: null,
             openedControlGroups: {},
             saveList: [],
             sketchesServerBuildResult: null,
@@ -148,6 +160,16 @@ export const createAppStore = () =>
             setSelectedInput: (nodeId, inputId) => {
               set((state) => {
                 state.selectedInputs[nodeId] = inputId
+              })
+            },
+            setActiveTimelineComponentId: (id) => {
+              set((state) => {
+                state.activeTimelineComponentId = id
+              })
+            },
+            setSelectedTimelineTrackId: (id) => {
+              set((state) => {
+                state.selectedTimelineTrackId = id
               })
             },
             setOpenedControlGroup: (sketchId: string, groupIndex: number, isOpen: boolean) => {

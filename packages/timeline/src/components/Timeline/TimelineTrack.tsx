@@ -1,10 +1,5 @@
-import {
-  collapseOpenIcon,
-  collapseCloseIcon,
-  Icon,
-  useIsItemOpened,
-  useToggleStore,
-} from '@hedron-gl/ui-core'
+import { collapseOpenIcon, collapseCloseIcon, Icon } from '@hedron-gl/ui-core'
+import { useState } from 'react'
 import c from './Timeline.module.css'
 import { TrackKeyframes } from './TrackKeyframes'
 import { Keyframe } from './Keyframe'
@@ -58,8 +53,7 @@ export const TimelineTrack = ({
   selectedKeyframes,
   setSelectedKeyframes,
 }: TimelineTrackProps) => {
-  const isExpanded = useIsItemOpened(track.id)
-  const setIsExpanded = useToggleStore((state) => state.toggleItem)
+  const [isExpanded, setIsExpanded] = useState<boolean>(false)
   const isSelected = track.id === selectedTrackId
 
   return (
@@ -70,7 +64,7 @@ export const TimelineTrack = ({
             <Icon
               className={c.collapseIcon}
               name={isExpanded ? collapseCloseIcon : collapseOpenIcon}
-              onClick={() => setIsExpanded(track.id)}
+              onClick={() => setIsExpanded(!isExpanded)}
             />
           )}
           <button className={c.trackTitle} onClick={() => setSelectedTrackId(track.id)}>
