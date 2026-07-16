@@ -33,6 +33,7 @@ export const Default: Story = {
   args: {
     favourites: defaultFavourites,
     onFavouriteSelect: () => {},
+    onFavouriteSave: () => {},
   },
 }
 
@@ -40,5 +41,6 @@ export const Empty: Story = {
   args: {
     favourites: [],
     onFavouriteSelect: () => {},
+    onFavouriteSave: () => {},
   },
 }

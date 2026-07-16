@@ -14,6 +14,10 @@ export const ParamFavouritesPanel = ({ sketchId, engine }: ParamFavouritesPanelP
     void favouriteId
   }
 
+  const handleFavouriteSave = (favouriteName: string) => {
+    void favouriteName
+  }
+
   return (
     <ParamFavouritesControl
       favourites={[
@@ -21,6 +25,7 @@ export const ParamFavouritesPanel = ({ sketchId, engine }: ParamFavouritesPanelP
         { id: 'favourite-2', name: 'Fog Drift' },
       ]}
       onFavouriteSelect={handleFavouriteSelect}
+      onFavouriteSave={handleFavouriteSave}
     />
   )
 }
