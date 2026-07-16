@@ -34,6 +34,9 @@ export const Default: Story = {
     favourites: defaultFavourites,
     onFavouriteSelect: () => {},
     onFavouriteSave: () => {},
+    onFavouriteDelete: () => {},
+    onFavouriteOverwrite: () => {},
+    onFavouriteEditTitle: (_id: string, _newName: string) => {},
   },
 }
 
@@ -42,5 +45,8 @@ export const Empty: Story = {
     favourites: [],
     onFavouriteSelect: () => {},
     onFavouriteSave: () => {},
+    onFavouriteDelete: () => {},
+    onFavouriteOverwrite: () => {},
+    onFavouriteEditTitle: (_id: string, _newName: string) => {},
   },
 }

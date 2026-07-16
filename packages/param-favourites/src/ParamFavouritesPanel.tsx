@@ -18,6 +18,19 @@ export const ParamFavouritesPanel = ({ sketchId, engine }: ParamFavouritesPanelP
     void favouriteName
   }
 
+  const handleFavouriteDelete = (favouriteId: string) => {
+    void favouriteId
+  }
+
+  const handleFavouriteOverwrite = (favouriteId: string) => {
+    void favouriteId
+  }
+
+  const handleFavouriteEditTitle = (favouriteId: string, newName: string) => {
+    void favouriteId
+    void newName
+  }
+
   return (
     <ParamFavouritesControl
       favourites={[
@@ -26,6 +39,9 @@ export const ParamFavouritesPanel = ({ sketchId, engine }: ParamFavouritesPanelP
       ]}
       onFavouriteSelect={handleFavouriteSelect}
       onFavouriteSave={handleFavouriteSave}
+      onFavouriteDelete={handleFavouriteDelete}
+      onFavouriteOverwrite={handleFavouriteOverwrite}
+      onFavouriteEditTitle={handleFavouriteEditTitle}
     />
   )
 }
