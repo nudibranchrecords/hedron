@@ -141,6 +141,9 @@ importers:
       '@hedron-gl/midi-input':
         specifier: ^1.0.0-alpha.4
         version: link:../../packages/midi-input
+      '@hedron-gl/param-favourites':
+        specifier: ^1.0.0-alpha.4
+        version: link:../../packages/param-favourites
       '@hedron-gl/scene-control':
         specifier: ^1.0.0-alpha.4
         version: link:../../packages/scene-control
@@ -449,6 +452,37 @@ importers:
         version: link:../ui-core
 
   packages/midi-manager: {}
+
+  packages/param-favourites:
+    dependencies:
+      '@hedron-gl/engine':
+        specifier: ^1.0.0-alpha.4
+        version: link:../engine
+      '@hedron-gl/ui-core':
+        specifier: ^1.0.0-alpha.4
+        version: link:../ui-core
+      react:
+        specifier: ^18.3.1
+        version: 18.3.1
+      react-dom:
+        specifier: ^18.3.1
+        version: 18.3.1(react@18.3.1)
+    devDependencies:
+      '@vitejs/plugin-react':
+        specifier: ^4.3.4
+        version: 4.7.0(vite@7.3.1(@types/node@26.1.1)(jiti@2.7.0)(lightningcss@1.32.0)(yaml@2.9.0))
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+      vite:
+        specifier: ^7.3.1
+        version: 7.3.1(@types/node@26.1.1)(jiti@2.7.0)(lightningcss@1.32.0)(yaml@2.9.0)
+      vite-plugin-dts:
+        specifier: ^4.5.3
+        version: 4.5.4(@types/node@26.1.1)(rollup@4.62.2)(typescript@5.9.3)(vite@7.3.1(@types/node@26.1.1)(jiti@2.7.0)(lightningcss@1.32.0)(yaml@2.9.0))
+      vite-tsconfig-paths:
+        specifier: ^5.1.4
+        version: 5.1.4(typescript@5.9.3)(vite@7.3.1(@types/node@26.1.1)(jiti@2.7.0)(lightningcss@1.32.0)(yaml@2.9.0))
 
   packages/scene-control:
     dependencies:
@@ -10052,7 +10086,7 @@ snapshots:
       '@vue/compiler-vue2': 2.7.16
       '@vue/shared': 3.5.27
       alien-signals: 0.4.14
-      minimatch: 9.0.5
+      minimatch: 9.0.9
       muggle-string: 0.4.1
       path-browserify: 1.0.1
     optionalDependencies:
