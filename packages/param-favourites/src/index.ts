@@ -1,2 +1,2 @@
 export * from './ParamFavouritesPlugin'
-export * from './ParamFavoruitesPanel'
+export * from './ParamFavouritesPanel'
