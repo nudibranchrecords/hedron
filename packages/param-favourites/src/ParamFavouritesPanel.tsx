@@ -1,4 +1,5 @@
 import { HedronEngine } from '@hedron-gl/engine'
+import { ParamFavouritesControl } from './components/ParamFavouritesControl/ParamFavouritesControl'
 
 interface ParamFavouritesPanelProps {
   sketchId: string
@@ -9,5 +10,17 @@ export const ParamFavouritesPanel = ({ sketchId, engine }: ParamFavouritesPanelP
   void sketchId
   void engine
 
-  return <div>hi!</div>
+  const handleFavouriteSelect = (favouriteId: string) => {
+    void favouriteId
+  }
+
+  return (
+    <ParamFavouritesControl
+      favourites={[
+        { id: 'favourite-1', name: 'Bright Pulse' },
+        { id: 'favourite-2', name: 'Fog Drift' },
+      ]}
+      onFavouriteSelect={handleFavouriteSelect}
+    />
+  )
 }
