@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
-import { findNodeWithKeyFromIdList, HedronEngine, ParamNode, ShotNode } from '@hedron-gl/engine'
-import { useEngineStore, ControlGrid, NodeContainer } from '@hedron-gl/ui-core'
+import { HedronEngine, ParamNode, ShotNode } from '@hedron-gl/engine'
+import { useEngineStore, ControlGrid, NodeContainer, getNodeOptionNodes } from '@hedron-gl/ui-core'
 import { MIDIEvent, MidiMessageType, midiMessageNames } from '@hedron-gl/midi-manager'
 import { MidiInput } from './MidiInput'
 import styles from './MidiGlobalPanel.module.css'
@@ -69,13 +69,11 @@ export const MidiGlobalPanel: React.FC<MidiGlobalPanelProps> = ({ engine }) => {
       Object.values(nodes).forEach((input) => {
         if (input?.nodeType !== 'input' || input.inputType !== 'midi') return
 
-        const channelNode = findNodeWithKeyFromIdList(
-          nodes,
-          'channel',
-          input.childGroups.optionNodeIds,
-        )
-        const noteNode = findNodeWithKeyFromIdList(nodes, 'note', input.childGroups.optionNodeIds)
-        const typeNode = findNodeWithKeyFromIdList(nodes, 'type', input.childGroups.optionNodeIds)
+        const {
+          channel: channelNode,
+          note: noteNode,
+          type: typeNode,
+        } = getNodeOptionNodes({ nodes }, input.id)
 
         if (!channelNode || !noteNode || !typeNode) return
 

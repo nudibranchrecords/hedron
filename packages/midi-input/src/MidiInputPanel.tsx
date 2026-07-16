@@ -1,7 +1,13 @@
-import { useCallback, useState, useEffect, useMemo } from 'react'
-import { findNodeWithKeyFromIdList, HedronEngine, InputNode } from '@hedron-gl/engine'
+import { useCallback, useState, useEffect } from 'react'
+import { HedronEngine, InputNode } from '@hedron-gl/engine'
 import { MidiManager } from '@hedron-gl/midi-manager'
-import { Button, ControlGrid, NodeContainer, useEngineStore } from '@hedron-gl/ui-core'
+import {
+  Button,
+  ControlGrid,
+  NodeContainer,
+  useEngineStore,
+  useNodeOptionNodes,
+} from '@hedron-gl/ui-core'
 import { MidiInput, NOTE_ON_OFF_MODE } from './MidiInput'
 
 interface IProps {
@@ -49,20 +55,13 @@ const useMidiLearn = (input: InputNode, engine: HedronEngine) => {
  */
 export const MidiInputPanel = ({ input, engine }: IProps) => {
   const { isLearning, runMidiLearn, cancelMidiLearn } = useMidiLearn(input, engine)
+
   const nodes = useEngineStore((s) => s.nodes)
   const paramValues = useEngineStore((s) => s.paramValues)
 
-  const overrideNodeId = useMemo(
-    () => findNodeWithKeyFromIdList(nodes, 'override', input.childGroups.optionNodeIds)?.id,
-    [input.childGroups.optionNodeIds, nodes],
-  )
+  const { override: overrideNode, type: typeNode } = useNodeOptionNodes(input.id)
 
-  const overrideEnabled = overrideNodeId ? Boolean(paramValues[overrideNodeId]) : false
-
-  const typeNode = useMemo(
-    () => findNodeWithKeyFromIdList(nodes, 'type', input.childGroups.optionNodeIds),
-    [input.childGroups.optionNodeIds, nodes],
-  )
+  const overrideEnabled = overrideNode ? Boolean(paramValues[overrideNode.id]) : false
   const isNoteOnOffMode = typeNode ? paramValues[typeNode.id] === NOTE_ON_OFF_MODE : false
 
   return (

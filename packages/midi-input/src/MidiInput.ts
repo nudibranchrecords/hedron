@@ -9,9 +9,9 @@ import {
   ParamNode,
   ParamEnum,
   EngineStateWithActions,
-  findNodeWithKeyFromIdList,
 } from '@hedron-gl/engine'
 import { MIDIEvent, MidiManager, MidiMessageType } from '@hedron-gl/midi-manager'
+import { getNodeOptionNodes } from '@hedron-gl/ui-core'
 
 /** Sentinel value for "Note On/Off" mode – press drives value up, release drives it to zero. */
 export const NOTE_ON_OFF_MODE = 0 as const
@@ -220,15 +220,17 @@ export class MidiInput implements IPlugin {
     const input = state.nodes[inputId] as InputNode | undefined
     if (!input) return
 
-    const channelNode = findNodeWithKeyFromIdList(state.nodes, 'channel', input.childGroups.optionNodeIds)
-    const noteNode = findNodeWithKeyFromIdList(state.nodes, 'note', input.childGroups.optionNodeIds)
+    const {
+      channel: channelNode,
+      note: noteNode,
+      type: typeNode,
+    } = getNodeOptionNodes(state, input.id)
 
     if (channelNode) state.updateParamValue(channelNode.id, event.channel)
     if (noteNode) state.updateParamValue(noteNode.id, event.note)
 
-    if (includeType) {
-      const typeNode = findNodeWithKeyFromIdList(state.nodes, 'type', input.childGroups.optionNodeIds)
-      if (typeNode) state.updateParamValue(typeNode.id, event.type)
+    if (includeType && typeNode) {
+      state.updateParamValue(typeNode.id, event.type)
     }
   }
 
