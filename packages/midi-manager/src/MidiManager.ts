@@ -194,6 +194,13 @@ export class MidiManager {
   private learnResolve: ((event: MIDIEvent | null) => void) | undefined
   private learnListener: ((event: MIDIEvent) => void) | undefined
 
+  // Fires when a learn session starts or stops.
+  public readonly onLearnStateChange = new Signal<boolean>()
+
+  public get isLearning(): boolean {
+    return !!this.learnPromise
+  }
+
   /**
    * Start a MIDI learn process and return the learned MIDI event, or undefined if canceled.
    * @returns A promise that resolves with the learned MIDIEvent, or undefined if learning was canceled.
@@ -226,6 +233,7 @@ export class MidiManager {
       }
       this.onMidiMessage.add(this.learnListener)
     })
+    this.onLearnStateChange.dispatch(true)
     return this.learnPromise
   }
 
@@ -233,11 +241,13 @@ export class MidiManager {
    * Cancels the current MIDI learn process.
    */
   public cancelMidiLearn(): void {
+    if (!this.learnPromise) return
     if (this.learnListener) this.onMidiMessage.remove(this.learnListener)
     this.learnResolve?.(null)
     this.learnPromise = undefined
     this.learnResolve = undefined
     this.learnListener = undefined
+    this.onLearnStateChange.dispatch(false)
   }
 
   /**

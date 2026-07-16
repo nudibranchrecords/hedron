@@ -33,12 +33,12 @@ export const TimelineGlobalPanel = ({ engine }: TimelineGlobalPanelProps) => {
 
   const optionNodes = useNodeOptionNodes<TimelineOptionNodes>(DEFAULT_TIMELINE_ID)
   const isPlayingNode = optionNodes['isPlaying']!
-  const playHeadPositionNode = optionNodes['playheadPositionMs']!
+  const playHeadPositionNode = optionNodes['playheadPositionMs']
 
   const audioUrlNode = optionNodes['audioUrl']!
 
   // Not very performant to be updating state on every frame, later we'll want to do this imperatively using useSubscribeToParamValue
-  const playheadPositionMs = useParamValue<number>(playHeadPositionNode.id)
+  const playheadPositionMs = useParamValue<number>(playHeadPositionNode?.id, 0)
 
   return (
     <div>
