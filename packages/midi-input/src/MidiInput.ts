@@ -10,20 +10,18 @@ import {
   ParamEnum,
   EngineStateWithActions,
 } from '@hedron-gl/engine'
+
 import { MIDIEvent, MidiManager, MidiMessageType } from '@hedron-gl/midi-manager'
 import { getNodeOptionNodes } from '@hedron-gl/ui-core'
-
-/** Sentinel value for "Note On/Off" mode – press drives value up, release drives it to zero. */
-export const NOTE_ON_OFF_MODE = 0 as const
-
-const noteLetters = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B']
-const midiNotes: string[] = new Array(128)
-
-for (let i = 0; i < 128; i++) {
-  const letter = noteLetters[i % noteLetters.length]
-  const octave = Math.floor(i / noteLetters.length) - 1
-  midiNotes[i] = `${i} - ${letter} (${octave})`
-}
+import {
+  MIDI_INPUT_TYPE_CONTROL_CHANGE,
+  MIDI_INPUT_TYPE_NOTE,
+  NOTE_MODE_ON,
+  NOTE_MODE_OFF,
+  NOTE_MODE_ON_OFF,
+  MIDI_NOTES,
+} from './constants'
+import { doesMidiEventMatchInput } from './doesMidiEventMatchInput'
 
 type MIDIEventWithValue = Omit<MIDIEvent, 'value'> & { value: number }
 
@@ -79,19 +77,29 @@ export class MidiInput implements IPlugin {
       nodeType: 'param',
       key: 'note',
       valueType: 'enum',
-      options: midiNotes.map((label, i) => ({ value: i, label })),
+      options: MIDI_NOTES.map((label, i) => ({ value: i, label })),
       defaultValue: 1,
     },
     {
       nodeType: 'param',
       key: 'type',
       valueType: 'enum',
-      defaultValue: MidiMessageType.ControlChange,
+      defaultValue: MIDI_INPUT_TYPE_CONTROL_CHANGE,
       options: [
-        { value: MidiMessageType.NoteOn, label: 'Note On' },
-        { value: MidiMessageType.NoteOff, label: 'Note Off' },
-        { value: NOTE_ON_OFF_MODE, label: 'Note On/Off' },
-        { value: MidiMessageType.ControlChange, label: 'Control Change' },
+        { value: MIDI_INPUT_TYPE_NOTE, label: 'Note' },
+        { value: MIDI_INPUT_TYPE_CONTROL_CHANGE, label: 'Control Change' },
+      ],
+    },
+    {
+      nodeType: 'param',
+      key: 'noteMode',
+      title: 'Note Mode',
+      valueType: 'enum',
+      defaultValue: NOTE_MODE_ON,
+      options: [
+        { value: NOTE_MODE_ON, label: 'On' },
+        { value: NOTE_MODE_OFF, label: 'Off' },
+        { value: NOTE_MODE_ON_OFF, label: 'On/Off' },
       ],
     },
     {
@@ -134,12 +142,6 @@ export class MidiInput implements IPlugin {
     optionNodes,
     targetNode,
   }) => {
-    if (optionNodes.type === NOTE_ON_OFF_MODE) {
-      // In NoteOnOff mode cycle to the next value only on press; ignore release
-      return midiEvent.type === MidiMessageType.NoteOn
-        ? (getNextEnumValue(input.targetNodeId)(storeState) ?? null)
-        : null
-    }
     switch (midiEvent.type) {
       case MidiMessageType.NoteOn:
       case MidiMessageType.NoteOff:
@@ -151,14 +153,22 @@ export class MidiInput implements IPlugin {
     }
   }
 
-  private handleBoolean: ValueHander = ({ midiEvent, optionNodes, targetParamValue }) => {
-    if (optionNodes.type === NOTE_ON_OFF_MODE) {
-      // NoteOn → true (pressed), NoteOff → false (released)
-      return midiEvent.type === MidiMessageType.NoteOn
+  private resolveLearnedInputType(event: MIDIEvent): number | null {
+    if (event.type === MidiMessageType.ControlChange) return MIDI_INPUT_TYPE_CONTROL_CHANGE
+    if (event.type === MidiMessageType.NoteOn || event.type === MidiMessageType.NoteOff) {
+      return MIDI_INPUT_TYPE_NOTE
     }
+    return null
+  }
+
+  private handleBoolean: ValueHander = ({ midiEvent, optionNodes, targetParamValue }) => {
     switch (midiEvent.type) {
       case MidiMessageType.NoteOn:
       case MidiMessageType.NoteOff:
+        if (optionNodes.noteMode === NOTE_MODE_ON_OFF) {
+          // NoteOn → true (pressed), NoteOff → false (released)
+          return midiEvent.type === MidiMessageType.NoteOn
+        }
         return !targetParamValue
       default: {
         const value = this.getValue(optionNodes, midiEvent)
@@ -178,7 +188,11 @@ export class MidiInput implements IPlugin {
     const sliderMax = (storeState.paramValues[`${input.targetNodeId}-sliderMax`] as number) ?? 1
 
     let targetValue: number
-    if (optionNodes.type === NOTE_ON_OFF_MODE && midiEvent.type === MidiMessageType.NoteOff) {
+    if (
+      optionNodes.type === MIDI_INPUT_TYPE_NOTE &&
+      optionNodes.noteMode === NOTE_MODE_ON_OFF &&
+      midiEvent.type === MidiMessageType.NoteOff
+    ) {
       // Release: snap back to the minimum of the slider range
       targetValue = sliderMin
     } else {
@@ -209,12 +223,7 @@ export class MidiInput implements IPlugin {
   }
 
   // Shared by onNewInput and the panel's manual "Midi Learn" button, so both stay in sync.
-  applyLearnedEvent(
-    engine: HedronEngine,
-    inputId: string,
-    event: MIDIEvent,
-    { includeType }: { includeType: boolean },
-  ) {
+  applyLearnedEvent(engine: HedronEngine, inputId: string, event: MIDIEvent) {
     const state = engine.getStore().getState()
     // Always re-fetch by id: a passed-in InputNode reference can be stale.
     const input = state.nodes[inputId] as InputNode | undefined
@@ -226,12 +235,11 @@ export class MidiInput implements IPlugin {
       type: typeNode,
     } = getNodeOptionNodes(state, input.id)
 
+    const learnedType = this.resolveLearnedInputType(event)
+
     if (channelNode) state.updateParamValue(channelNode.id, event.channel)
     if (noteNode) state.updateParamValue(noteNode.id, event.note)
-
-    if (includeType && typeNode) {
-      state.updateParamValue(typeNode.id, event.type)
-    }
+    if (typeNode && learnedType !== null) state.updateParamValue(typeNode.id, learnedType)
   }
 
   // Runs once at creation, not on every panel mount, unlike a value-inferred "is new" check.
@@ -245,7 +253,7 @@ export class MidiInput implements IPlugin {
 
     this.midiManager.midiLearn().then((event) => {
       if (!event) return
-      this.applyLearnedEvent(engine, newInput.id, event, { includeType: true })
+      this.applyLearnedEvent(engine, newInput.id, event)
     })
   }
 
@@ -277,46 +285,52 @@ export class MidiInput implements IPlugin {
         storeState,
         'midi',
         ({ input, optionNodes, targetNode, targetParamValue }) => {
-          const isNoteOnOff = optionNodes.type === NOTE_ON_OFF_MODE
-          const typeMatches = isNoteOnOff
-            ? event.type === MidiMessageType.NoteOn || event.type === MidiMessageType.NoteOff
-            : event.type === optionNodes.type
+          const doesEventMatchInput = doesMidiEventMatchInput({
+            event,
+            channel: optionNodes.channel,
+            note: optionNodes.note,
+            type: optionNodes.type,
+            noteMode: optionNodes.noteMode,
+          })
 
-          if (
-            event.channel === optionNodes.channel &&
-            event.note === optionNodes.note &&
-            typeMatches &&
-            event.value !== undefined
-          ) {
-            if (targetNode.nodeType === 'shot') {
-              if (isNoteOnOff && event.type === MidiMessageType.NoteOff) return
-              this.handleShot({ input, engine, midiEvent: event as MIDIEventWithValue })
+          if (!doesEventMatchInput || event.value === undefined) return
+          const midiEvent = event as MIDIEventWithValue
+
+          if (targetNode.nodeType === 'shot') {
+            if (
+              optionNodes.type === MIDI_INPUT_TYPE_NOTE &&
+              optionNodes.noteMode === NOTE_MODE_ON_OFF &&
+              event.type === MidiMessageType.NoteOff
+            ) {
               return
             }
 
-            const value = {
-              enum: this.handleEnum,
-              boolean: this.handleBoolean,
-              number: this.handleNumber,
-              string: this.handleUnsupported,
-              rgb: this.handleUnsupported,
-              vector2: this.handleUnsupported,
-              vector3: this.handleUnsupported,
-              file: this.handleUnsupported,
-            }[targetNode.valueType]({
-              midiEvent: event as MIDIEventWithValue,
-              input,
-              storeState,
-              optionNodes,
-              // @ts-expect-error -- TS isn't smart enough to infer the correct node type
-              targetNode,
-              // @ts-expect-error -- TS isn't smart enough to infer the correct node type
-              targetParamValue,
-            })
+            this.handleShot({ input, engine, midiEvent })
+            return
+          }
 
-            if (value !== null) {
-              storeState.updateParamValue(input.targetNodeId, value)
-            }
+          const value = {
+            enum: this.handleEnum,
+            boolean: this.handleBoolean,
+            number: this.handleNumber,
+            string: this.handleUnsupported,
+            rgb: this.handleUnsupported,
+            vector2: this.handleUnsupported,
+            vector3: this.handleUnsupported,
+            file: this.handleUnsupported,
+          }[targetNode.valueType]({
+            midiEvent,
+            input,
+            storeState,
+            optionNodes,
+            // @ts-expect-error -- TS isn't smart enough to infer the correct node type
+            targetNode,
+            // @ts-expect-error -- TS isn't smart enough to infer the correct node type
+            targetParamValue,
+          })
+
+          if (value !== null) {
+            storeState.updateParamValue(input.targetNodeId, value)
           }
         },
       )

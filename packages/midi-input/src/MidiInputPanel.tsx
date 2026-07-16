@@ -1,14 +1,16 @@
-import { useCallback, useState, useEffect } from 'react'
-import { HedronEngine, InputNode } from '@hedron-gl/engine'
+import { useCallback, useState, useEffect, useMemo } from 'react'
+import { HedronEngine, InputNode, ParamNode } from '@hedron-gl/engine'
 import { MidiManager } from '@hedron-gl/midi-manager'
 import {
   Button,
   ControlGrid,
   NodeContainer,
-  useEngineStore,
   useNodeOptionNodes,
+  useParamValue,
 } from '@hedron-gl/ui-core'
-import { MidiInput, NOTE_ON_OFF_MODE } from './MidiInput'
+import { MidiInput } from './MidiInput'
+
+import { MIDI_INPUT_TYPE_NOTE } from './constants'
 
 interface IProps {
   input: InputNode
@@ -35,8 +37,7 @@ const useMidiLearn = (input: InputNode, engine: HedronEngine) => {
   const runMidiLearn = useCallback(async () => {
     const event = await midiManager.midiLearn()
     if (!event) return
-    // Re-learning an existing input shouldn't clobber a deliberately chosen type.
-    plugin.applyLearnedEvent(engine, input.id, event, { includeType: false })
+    plugin.applyLearnedEvent(engine, input.id, event)
   }, [engine, input.id, midiManager, plugin])
 
   const cancelMidiLearn = useCallback(() => {
@@ -56,34 +57,31 @@ const useMidiLearn = (input: InputNode, engine: HedronEngine) => {
 export const MidiInputPanel = ({ input, engine }: IProps) => {
   const { isLearning, runMidiLearn, cancelMidiLearn } = useMidiLearn(input, engine)
 
-  const nodes = useEngineStore((s) => s.nodes)
-  const paramValues = useEngineStore((s) => s.paramValues)
+  const optionNodes = useNodeOptionNodes(input.id)
 
-  const { override: overrideNode, type: typeNode } = useNodeOptionNodes(input.id)
+  const overrideNode = optionNodes.override
+  const typeNode = optionNodes.type
 
-  const overrideEnabled = overrideNode ? Boolean(paramValues[overrideNode.id]) : false
-  const isNoteOnOffMode = typeNode ? paramValues[typeNode.id] === NOTE_ON_OFF_MODE : false
+  const overrideEnabled = useParamValue<boolean>(overrideNode?.id, false)
+  const nodeType = useParamValue<number>(typeNode?.id, 0)
+  const isNoteType = nodeType === MIDI_INPUT_TYPE_NOTE
+
+  const filteredNodes = useMemo(() => {
+    return Object.values(optionNodes).filter((node) => {
+      if (!node || !('key' in node)) return false
+      if (node.key === 'overrideValue') return overrideEnabled
+      if (node.key === 'noteMode') return isNoteType
+      return true
+    }) as ParamNode[]
+  }, [optionNodes, overrideEnabled, isNoteType])
 
   return (
     <div>
       <ControlGrid className="mb-xl">
-        {input.childGroups.optionNodeIds
-          .filter((id) => {
-            const node = nodes[id]
-            if (!node || !('key' in node)) return false
-            if (node.key === 'overrideValue') return overrideEnabled
-            return true
-          })
-          .map((id) => (
-            <NodeContainer key={id} nodeId={id} />
-          ))}
+        {filteredNodes.map((node) => (
+          <NodeContainer key={node.id} nodeId={node.id} />
+        ))}
       </ControlGrid>
-
-      {isNoteOnOffMode && (
-        <p className="mb-xl" style={{ opacity: 0.6, fontSize: '0.85em' }}>
-          Note On/Off: press drives value up, release drives it to zero.
-        </p>
-      )}
 
       {isLearning ? (
         <Button type="neutral" onClick={cancelMidiLearn}>
