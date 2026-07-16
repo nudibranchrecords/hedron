@@ -21,45 +21,45 @@ import {
 import { createPortal } from 'react-dom'
 import { FormEvent, useEffect, useRef, useState } from 'react'
 
-export interface ParamFavouriteItem {
+export interface ParamPresetItem {
   id: string
   name: string
 }
 
-export interface ParamFavouritesControlProps {
-  favourites: ParamFavouriteItem[]
-  onFavouriteSelect: (favouriteId: string) => void
-  onFavouriteSave: (favouriteName: string) => void
-  onFavouriteDelete: (favouriteId: string) => void
-  onFavouriteOverwrite: (favouriteId: string) => void
-  onFavouriteEditTitle: (favouriteId: string, newName: string) => void
+export interface ParamPresetsControlProps {
+  presets: ParamPresetItem[]
+  onPresetSelect: (presetId: string) => void
+  onPresetSave: (presetName: string) => void
+  onPresetDelete: (presetId: string) => void
+  onPresetOverwrite: (presetId: string) => void
+  onPresetEditTitle: (presetId: string, newName: string) => void
 }
 
 const Item = ({
-  favourite,
+  preset,
   onPadClick,
   onDelete,
   onOverwrite,
   onEditTitle,
 }: {
-  favourite: ParamFavouriteItem
-  onPadClick: (favouriteId: string) => void
-  onDelete: (favouriteId: string) => void
-  onOverwrite: (favouriteId: string) => void
-  onEditTitle: (favouriteId: string) => void
+  preset: ParamPresetItem
+  onPadClick: (presetId: string) => void
+  onDelete: (presetId: string) => void
+  onOverwrite: (presetId: string) => void
+  onEditTitle: (presetId: string) => void
 }) => {
   const padRef = useRef<TriggerPadHandle>(null)
 
   const handlePadClick = () => {
     padRef.current?.blink()
-    onPadClick(favourite.id)
+    onPadClick(preset.id)
   }
 
   return (
-    <NodeControl key={favourite.id}>
+    <NodeControl key={preset.id}>
       <NodeControlMain>
         <NodeControlInfo>
-          <NodeControlTitle>{favourite.name}</NodeControlTitle>
+          <NodeControlTitle>{preset.name}</NodeControlTitle>
 
           <PopoutMenu
             className="ml-auto"
@@ -67,17 +67,17 @@ const Item = ({
               {
                 label: 'Delete',
                 icon: 'delete',
-                onClick: () => onDelete(favourite.id),
+                onClick: () => onDelete(preset.id),
               },
               {
                 label: 'Overwrite',
                 icon: 'swap_horiz' as IconName,
-                onClick: () => onOverwrite(favourite.id),
+                onClick: () => onOverwrite(preset.id),
               },
               {
                 label: 'Rename',
                 icon: 'edit',
-                onClick: () => onEditTitle(favourite.id),
+                onClick: () => onEditTitle(preset.id),
               },
             ]}
           >
@@ -93,69 +93,69 @@ const Item = ({
   )
 }
 
-export const ParamFavouritesControl = ({
-  favourites,
-  onFavouriteSelect,
-  onFavouriteSave,
-  onFavouriteDelete,
-  onFavouriteOverwrite,
-  onFavouriteEditTitle,
-}: ParamFavouritesControlProps) => {
+export const ParamPresetsControl = ({
+  presets,
+  onPresetSelect,
+  onPresetSave,
+  onPresetDelete,
+  onPresetOverwrite,
+  onPresetEditTitle,
+}: ParamPresetsControlProps) => {
   const [isDialogOpen, setIsDialogOpen] = useState(false)
-  const [newFavouriteName, setNewFavouriteName] = useState('')
+  const [newPresetName, setNewPresetName] = useState('')
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
-  const [editFavouriteId, setEditFavouriteId] = useState<string | null>(null)
-  const [editFavouriteName, setEditFavouriteName] = useState('')
+  const [editPresetId, setEditPresetId] = useState<string | null>(null)
+  const [editPresetName, setEditPresetName] = useState('')
   const editNameInputRef = useRef<TextInputHandle>(null)
 
-  const onPadClick = (favouriteId: string) => {
-    onFavouriteSelect(favouriteId)
+  const onPadClick = (presetId: string) => {
+    onPresetSelect(presetId)
   }
 
   const closeDialog = () => {
     setIsDialogOpen(false)
-    setNewFavouriteName('')
+    setNewPresetName('')
   }
 
   const closeEditDialog = () => {
     setIsEditDialogOpen(false)
-    setEditFavouriteId(null)
-    setEditFavouriteName('')
+    setEditPresetId(null)
+    setEditPresetName('')
   }
 
-  const saveFavourite = () => {
-    const trimmedName = newFavouriteName.trim()
+  const savePreset = () => {
+    const trimmedName = newPresetName.trim()
     if (!trimmedName) return
 
-    onFavouriteSave(trimmedName)
+    onPresetSave(trimmedName)
     closeDialog()
   }
 
   const handleSaveSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
-    saveFavourite()
+    savePreset()
   }
 
-  const openEditDialog = (favouriteId: string) => {
-    const favourite = favourites.find((item) => item.id === favouriteId)
-    if (!favourite) return
+  const openEditDialog = (presetId: string) => {
+    const preset = presets.find((item) => item.id === presetId)
+    if (!preset) return
 
-    setEditFavouriteId(favourite.id)
-    setEditFavouriteName(favourite.name)
+    setEditPresetId(preset.id)
+    setEditPresetName(preset.name)
     setIsEditDialogOpen(true)
   }
 
   useEffect(() => {
     if (!isEditDialogOpen) return
 
-    editNameInputRef.current?.setValue(editFavouriteName)
-  }, [editFavouriteName, isEditDialogOpen])
+    editNameInputRef.current?.setValue(editPresetName)
+  }, [editPresetName, isEditDialogOpen])
 
   const saveEditedTitle = () => {
-    const trimmedName = editFavouriteName.trim()
-    if (!trimmedName || !editFavouriteId) return
+    const trimmedName = editPresetName.trim()
+    if (!trimmedName || !editPresetId) return
 
-    onFavouriteEditTitle(editFavouriteId, trimmedName)
+    onPresetEditTitle(editPresetId, trimmedName)
     closeEditDialog()
   }
 
@@ -167,13 +167,13 @@ export const ParamFavouritesControl = ({
   return (
     <>
       <ControlGrid className="mb-xl">
-        {favourites.map((favourite) => (
+        {presets.map((preset) => (
           <Item
-            key={favourite.id}
-            favourite={favourite}
+            key={preset.id}
+            preset={preset}
             onPadClick={onPadClick}
-            onDelete={onFavouriteDelete}
-            onOverwrite={onFavouriteOverwrite}
+            onDelete={onPresetDelete}
+            onOverwrite={onPresetOverwrite}
             onEditTitle={openEditDialog}
           />
         ))}
@@ -181,7 +181,7 @@ export const ParamFavouritesControl = ({
 
       <div>
         <Button type="secondary" size="slim" iconName="add" onClick={() => setIsDialogOpen(true)}>
-          Save Favourite
+          Save Preset
         </Button>
       </div>
 
@@ -189,16 +189,16 @@ export const ParamFavouritesControl = ({
         createPortal(
           <Dialog onBackgroundClick={closeDialog}>
             <Panel>
-              <PanelHeader buttonOnClick={closeDialog}>Save Favourite</PanelHeader>
+              <PanelHeader buttonOnClick={closeDialog}>Save Preset</PanelHeader>
               <form onSubmit={handleSaveSubmit} noValidate>
                 <PanelBody>
-                  <TextInput onValueChange={setNewFavouriteName} autoFocus />
+                  <TextInput onValueChange={setNewPresetName} autoFocus />
                 </PanelBody>
                 <PanelActions>
                   <Button type="secondary" onClick={closeDialog}>
                     Cancel
                   </Button>
-                  <Button submit type="primary" disabled={!newFavouriteName.trim()}>
+                  <Button submit type="primary" disabled={!newPresetName.trim()}>
                     Confirm
                   </Button>
                 </PanelActions>
@@ -212,20 +212,16 @@ export const ParamFavouritesControl = ({
         createPortal(
           <Dialog onBackgroundClick={closeEditDialog}>
             <Panel>
-              <PanelHeader buttonOnClick={closeEditDialog}>Edit Favourite Title</PanelHeader>
+              <PanelHeader buttonOnClick={closeEditDialog}>Edit Preset Title</PanelHeader>
               <form onSubmit={handleEditSubmit} noValidate>
                 <PanelBody>
-                  <TextInput
-                    ref={editNameInputRef}
-                    onValueChange={setEditFavouriteName}
-                    autoFocus
-                  />
+                  <TextInput ref={editNameInputRef} onValueChange={setEditPresetName} autoFocus />
                 </PanelBody>
                 <PanelActions>
                   <Button type="secondary" onClick={closeEditDialog}>
                     Cancel
                   </Button>
-                  <Button submit type="primary" disabled={!editFavouriteName.trim()}>
+                  <Button submit type="primary" disabled={!editPresetName.trim()}>
                     Confirm
                   </Button>
                 </PanelActions>

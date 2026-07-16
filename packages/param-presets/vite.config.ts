@@ -8,8 +8,8 @@ export default defineConfig({
   build: {
     lib: {
       entry: ['src/index.ts'],
-      name: 'param-favourites',
-      fileName: (format) => `param-favourites.${format}.js`,
+      name: 'param-presets',
+      fileName: (format) => `param-presets.${format}.js`,
     },
     rollupOptions: {
       external: [

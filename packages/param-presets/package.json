@@ -1,13 +1,13 @@
 {
-  "name": "@hedron-gl/param-favourites",
+  "name": "@hedron-gl/param-presets",
   "version": "1.0.0-alpha.4",
-  "description": "Param favourites plugin for Hedron",
+  "description": "Param presets plugin for Hedron",
   "author": "Alex Kempton <alex@funwithtriangles.net>",
   "homepage": "https://github.com/nudibranchrecords/hedron#readme",
   "type": "module",
   "license": "ISC",
-  "main": "./dist/param-favourites.es.js",
-  "types": "./dist/index.d.ts",
+  "main": "./dist/param-presets.es.js",
+  "types": "./dist/param-presets.d.ts",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/nudibranchrecords/hedron.git"

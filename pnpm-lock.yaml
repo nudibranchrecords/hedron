@@ -141,9 +141,9 @@ importers:
       '@hedron-gl/midi-input':
         specifier: ^1.0.0-alpha.4
         version: link:../../packages/midi-input
-      '@hedron-gl/param-favourites':
+      '@hedron-gl/param-presets':
         specifier: ^1.0.0-alpha.4
-        version: link:../../packages/param-favourites
+        version: link:../../packages/param-presets
       '@hedron-gl/scene-control':
         specifier: ^1.0.0-alpha.4
         version: link:../../packages/scene-control
@@ -453,7 +453,7 @@ importers:
 
   packages/midi-manager: {}
 
-  packages/param-favourites:
+  packages/param-presets:
     dependencies:
       '@hedron-gl/engine':
         specifier: ^1.0.0-alpha.4

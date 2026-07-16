@@ -7,7 +7,7 @@ import { LFOInput, LFOInputPanel } from '@hedron-gl/lfo-input'
 import { AudioInput, AudioInputPanel, AudioGlobalPanel } from '@hedron-gl/audio-input'
 import { TimelineInput, TimelineGlobalPanel, TimelineInputPanel } from '@hedron-gl/timeline'
 import { SceneControlPlugin, SceneControlGlobalPanel } from '@hedron-gl/scene-control'
-import { ParamFavouritesPlugin, ParamFavouritesPanel } from '@hedron-gl/param-favourites'
+import { ParamPresetsPlugin, ParamPresetsPanel } from '@hedron-gl/param-presets'
 
 export const performanceMonitor = new Stats()
 
@@ -30,7 +30,7 @@ engine.registerPlugin(new AudioInput(engine))
 engine.registerPlugin(new GamepadInput(engine))
 engine.registerPlugin(new TimelineInput())
 engine.registerPlugin(new SceneControlPlugin())
-engine.registerPlugin(new ParamFavouritesPlugin())
+engine.registerPlugin(new ParamPresetsPlugin())
 
 export const pluginViews = {
   inputPanel: {
@@ -48,6 +48,6 @@ export const pluginViews = {
     ['scene-control']: SceneControlGlobalPanel,
   },
   sketchCollapsible: {
-    ['param-favourites']: ParamFavouritesPanel,
+    ['param-presets']: ParamPresetsPanel,
   },
 }
