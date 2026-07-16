@@ -467,6 +467,9 @@ importers:
       react-dom:
         specifier: ^18.3.1
         version: 18.3.1(react@18.3.1)
+      zustand:
+        specifier: ^5.0.8
+        version: 5.0.11(@types/react@19.2.17)(immer@10.2.0)(react@18.3.1)
     devDependencies:
       '@chromatic-com/storybook':
         specifier: ^1.8.0
