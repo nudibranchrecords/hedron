@@ -41,8 +41,8 @@ export const TimelineInputPanel = ({ input, engine }: TimelineInputPanelProps) =
   }, [input.id, setSelectedTrackId, setActiveTimelineComponentId, timelineComponentId])
 
   const optionNodes = useNodeOptionNodes<TimelineOptionNodes>(DEFAULT_TIMELINE_ID)
-  const playHeadPositionNode = optionNodes['playheadPositionMs']!
-  const playheadPositionMs = useParamValue<number>(playHeadPositionNode.id)
+  const playHeadPositionNode = optionNodes['playheadPositionMs']
+  const playheadPositionMs = useParamValue<number>(playHeadPositionNode?.id, 0)
 
   const track = findTrackById(timeline.tracks, input.id)
 
