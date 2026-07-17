@@ -164,6 +164,10 @@ export class Renderer {
     this.aspectRatio = ratio
   }
 
+  /**
+   * Requests the next animation frame, making sure to match the refresh rate of the output window
+   * @param callback The function to call on the next animation frame.
+   */
   public requestFrame(callback: () => void): void {
     this.rafId = this.outputWindow.requestAnimationFrame(callback)
     this.frameCallback = callback
