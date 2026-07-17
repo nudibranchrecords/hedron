@@ -13,13 +13,10 @@ const config: StorybookConfig = {
     name: '@storybook/react-vite',
     options: {},
   },
-  viteFinal: async (config) => {
-    // @ts-expect-error
-    config.plugins = [...config.plugins, tsconfigPaths()]
-    return {
-      ...config,
-    }
-  },
+  viteFinal: async (config) => ({
+    ...config,
+    plugins: [...(config.plugins ?? []), tsconfigPaths()],
+  }),
 }
 
 export default config
