@@ -5,22 +5,14 @@ import { immer } from 'zustand/middleware/immer'
 
 export interface ParamPresetStoreItem {
   title: string
-  params: Record<string, ParamValue>
+  paramValuesByKey: Record<string, ParamValue>
 }
 
 interface ParamPresetsStoreState {
   byModuleId: Record<string, Record<string, ParamPresetStoreItem>>
-  addPreset: (
-    moduleId: string,
-    presetTitle: string,
-    params: Record<string, ParamValue>,
-  ) => void
+  addPreset: (moduleId: string, presetTitle: string, params: Record<string, ParamValue>) => void
   deletePreset: (moduleId: string, presetId: string) => void
-  overwritePreset: (
-    moduleId: string,
-    presetId: string,
-    params: Record<string, ParamValue>,
-  ) => void
+  overwritePreset: (moduleId: string, presetId: string, params: Record<string, ParamValue>) => void
   editPresetTitle: (moduleId: string, presetId: string, newTitle: string) => void
 }
 
@@ -35,7 +27,7 @@ export const useParamPresetsStore = create<ParamPresetsStoreState>()(
           state.byModuleId[moduleId] ??= {}
           state.byModuleId[moduleId][presetId] = {
             title: presetTitle,
-            params,
+            paramValuesByKey: params,
           }
         })
       },
@@ -55,7 +47,7 @@ export const useParamPresetsStore = create<ParamPresetsStoreState>()(
           const targetPreset = modulePresets[presetId]
           if (!targetPreset) return
 
-          targetPreset.params = params
+          targetPreset.paramValuesByKey = params
         })
       },
       editPresetTitle: (moduleId, presetId, newTitle) => {

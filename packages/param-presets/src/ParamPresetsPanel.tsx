@@ -1,9 +1,9 @@
 import { HedronEngine, ParamNode, ParamValue, SketchNode } from '@hedron-gl/engine'
 import { useMemo } from 'react'
 import { ParamPresetsControl } from './ParamPresetsControl'
-import { useParamPresetsStore } from './paramPresetsStore'
+import { ParamPresetStoreItem, useParamPresetsStore } from './paramPresetsStore'
 
-const EMPTY_PRESETS = {} as Record<string, { title: string; params: Record<string, ParamValue> }>
+const EMPTY_PRESETS = {} as Record<string, ParamPresetStoreItem>
 
 interface ParamPresetsPanelProps {
   sketchId: string
@@ -53,7 +53,7 @@ export const ParamPresetsPanel = ({ sketchId, engine }: ParamPresetsPanelProps) 
     if (!preset) return
 
     const keyToIdMap = getSketchParamKeyToIdMap()
-    const paramEntries = Object.entries(preset.params).reduce(
+    const paramEntries = Object.entries(preset.paramValuesByKey).reduce(
       (acc, [paramKey, value]) => {
         const paramId = keyToIdMap[paramKey]
         if (!paramId) return acc
