@@ -1,8 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react'
-import {
-  ParamPresetsControl,
-  ParamPresetItem,
-} from '../components/ParamPresetsControl/ParamPresetsControl'
+import { ParamPresetsControl, ParamPresetItem } from './ParamPresetsControl'
 
 const defaultPresets: ParamPresetItem[] = [
   { id: 'preset-1', name: 'Bright Pulse' },
@@ -36,7 +33,7 @@ export const Default: Story = {
     onPresetSave: () => {},
     onPresetDelete: () => {},
     onPresetOverwrite: () => {},
-    onPresetEditTitle: (_id: string, _newName: string) => {},
+    onPresetEditTitle: () => {},
   },
 }
 
@@ -47,6 +44,6 @@ export const Empty: Story = {
     onPresetSave: () => {},
     onPresetDelete: () => {},
     onPresetOverwrite: () => {},
-    onPresetEditTitle: (_id: string, _newName: string) => {},
+    onPresetEditTitle: () => {},
   },
 }

@@ -1,6 +1,6 @@
 import { HedronEngine, ParamNode, ParamValue, SketchNode } from '@hedron-gl/engine'
 import { useMemo } from 'react'
-import { ParamPresetsControl } from './components/ParamPresetsControl/ParamPresetsControl'
+import { ParamPresetsControl } from './ParamPresetsControl'
 import { useParamPresetsStore } from './paramPresetsStore'
 
 const EMPTY_PRESETS = {} as Record<string, { title: string; params: Record<string, ParamValue> }>
