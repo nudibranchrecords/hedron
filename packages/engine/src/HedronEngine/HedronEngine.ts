@@ -551,8 +551,8 @@ export class HedronEngine {
     return this.renderer.createCanvas(containerEl)
   }
 
-  public setOutput(container: HTMLElement) {
-    this.renderer.setOutput(container)
+  public setOutput(container: HTMLElement, outputWindow: Window) {
+    this.renderer.setOutput(container, outputWindow)
   }
 
   public stopOutput() {
@@ -706,7 +706,7 @@ export class HedronEngine {
       }
 
       if (this.paused) {
-        requestAnimationFrame(loop)
+        this.renderer.requestFrame(loop)
         return
       }
 
@@ -723,7 +723,7 @@ export class HedronEngine {
 
       this.advanceFrame(deltaTime)
 
-      requestAnimationFrame(loop)
+      this.renderer.requestFrame(loop)
       this.onFrameEnd?.()
     }
 

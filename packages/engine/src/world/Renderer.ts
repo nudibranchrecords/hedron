@@ -17,12 +17,15 @@ export class Renderer {
   private outputContainer: HTMLElement | undefined | null
   private previewCanvas: HTMLCanvasElement | undefined
   private outputCanvas: HTMLCanvasElement | undefined
+  private outputWindow: Window = window
   private canvas: HTMLCanvasElement | undefined
   private previewContext: CanvasRenderingContext2D | undefined | null
   public aspectRatio: number = 1
   public passesNeedUpdate_webGPU: boolean = true
   private isSendingOutput = false
   private canvasSizeMode: CanvasSizeMode
+  private frameCallback: (() => void) | null = null
+  private rafId: number | null = null
 
   constructor({
     rendererType,
@@ -161,10 +164,16 @@ export class Renderer {
     this.aspectRatio = ratio
   }
 
+  public requestFrame(callback: () => void): void {
+    this.rafId = this.outputWindow.requestAnimationFrame(callback)
+    this.frameCallback = callback
+  }
+
   // Set the output to a second canvas (e.g. a separate window for making full screen)
-  public setOutput(container: HTMLElement): void {
+  public setOutput(container: HTMLElement, outputWindow: Window): void {
     this.stopOutput()
     this.outputContainer = container
+    this.outputWindow = outputWindow
 
     if (!this.outputContainer) throw new Error("Can't find container")
     if (!this.canvas) throw new Error("Can't find canvas")
@@ -202,10 +211,20 @@ export class Renderer {
     if (!this.canvas) throw new Error("Can't find canvas")
     if (!this.viewerContainer) throw new Error("Can't find viewerContainer")
 
+    this.outputWindow = window
     this.viewerContainer.innerHTML = ''
     this.canvas.setAttribute('style', '')
     this.viewerContainer.appendChild(this.canvas)
     this.isSendingOutput = false
+
+    // Keep frame loop going when switching back to the main window
+    if (this.frameCallback) {
+      if (this.rafId !== null) {
+        this.outputWindow.cancelAnimationFrame(this.rafId)
+      }
+      this.outputWindow.requestAnimationFrame(this.frameCallback)
+      this.frameCallback = null
+    }
 
     this.setSize()
   }
