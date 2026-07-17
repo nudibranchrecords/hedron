@@ -1,0 +1,54 @@
+{
+  "name": "@hedron-gl/param-presets",
+  "version": "1.0.0-alpha.4",
+  "description": "Param presets plugin for Hedron",
+  "author": "Alex Kempton <alex@funwithtriangles.net>",
+  "homepage": "https://github.com/nudibranchrecords/hedron#readme",
+  "type": "module",
+  "license": "ISC",
+  "main": "./dist/param-presets.es.js",
+  "types": "./dist/param-presets.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nudibranchrecords/hedron.git"
+  },
+  "scripts": {
+    "dev": "vite build --watch",
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "build": "vite build",
+    "lint": "eslint . --ext .js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix",
+    "storybook": "storybook dev -p 6008",
+    "build-storybook": "storybook build"
+  },
+  "devDependencies": {
+    "@chromatic-com/storybook": "^1.8.0",
+    "@storybook/addon-essentials": "^8.2.9",
+    "@storybook/addon-interactions": "^8.2.9",
+    "@storybook/addon-links": "^8.2.9",
+    "@storybook/blocks": "^8.2.9",
+    "@storybook/react": "^8.2.9",
+    "@storybook/react-vite": "^8.2.9",
+    "@storybook/test": "^8.2.9",
+    "@vitejs/plugin-react": "^4.3.4",
+    "storybook": "^8.2.9",
+    "typescript": "^5.9.3",
+    "vite": "^7.3.1",
+    "vite-plugin-dts": "^4.5.3",
+    "vite-tsconfig-paths": "^5.1.4"
+  },
+  "dependencies": {
+    "@hedron-gl/engine": "^1.0.0-alpha.4",
+    "@hedron-gl/ui-core": "^1.0.0-alpha.4",
+    "zustand": "^5.0.8"
+  },
+  "peerDependencies": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "bugs": {
+    "url": "https://github.com/nudibranchrecords/hedron/issues"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

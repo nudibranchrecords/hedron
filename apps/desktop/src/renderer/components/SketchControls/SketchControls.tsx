@@ -1,8 +1,45 @@
-import { ControlGrid, Collapsible, HedronErrorBoundary } from '@hedron-gl/ui-core'
-import { ComponentType } from 'react'
+import { ControlGrid, Collapsible, HedronErrorBoundary, Icon, IconName } from '@hedron-gl/ui-core'
+import { ComponentType, useState } from 'react'
 import { ShotNode, ParamNode } from '@hedron-gl/engine'
 import c from './SketchControls.module.css'
 import { useAppStore } from '@renderer/appStore'
+import { engine, pluginViews } from '@renderer/engine'
+
+const SketchPluginCollapsibles = ({ sketchId }: { sketchId: string }) => {
+  const [openById, setOpenById] = useState<Record<string, boolean>>({})
+
+  return (
+    <>
+      {Object.entries(pluginViews.sketchCollapsible).map(([pluginId, PluginPanel]) => {
+        const enginePlugin = engine.plugins[pluginId]
+        const pluginName = enginePlugin?.name ?? pluginId
+        const iconName = (enginePlugin?.iconName ?? 'extension') as IconName
+        const isOpen = openById[pluginId] ?? false
+
+        return (
+          <div key={pluginId} className="mb-xl">
+            <Collapsible
+              title={
+                <>
+                  <Icon name={iconName} /> {pluginName}
+                </>
+              }
+              isOpen={isOpen}
+              onToggle={(nextOpen) =>
+                setOpenById((prev) => ({
+                  ...prev,
+                  [pluginId]: nextOpen,
+                }))
+              }
+            >
+              <PluginPanel sketchId={sketchId} engine={engine} />
+            </Collapsible>
+          </div>
+        )
+      })}
+    </>
+  )
+}
 
 interface SketchControlsProps {
   sketchId: string
@@ -49,6 +86,8 @@ export const SketchControls = ({ sketchId, nodeGroups, ControlItem }: SketchCont
             </div>
           )
         })}
+
+        <SketchPluginCollapsibles sketchId={sketchId} />
       </div>
     </HedronErrorBoundary>
   )
