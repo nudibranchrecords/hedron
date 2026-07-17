@@ -36,8 +36,83 @@ const meta = {
 export default meta
 type Story = StoryObj<typeof meta>
 
+const STORY_COMPONENT_ID = 'timeline-story-component'
+
+const NOOP_SET_SELECTED_TRACK_ID: (trackId: string | null) => void = () => {}
+const NOOP_SET_ACTIVE_TIMELINE_COMPONENT_ID: (id: string | null) => void = () => {}
+const NOOP_ON_PLAYHEAD_CHANGE: (time: number) => void = () => {}
+const NOOP_ON_KEYFRAME_DELETE: (keyframeId: string) => void = () => {}
+const NOOP_ON_KEYFRAME_INSERT: (trackId: string, time: number) => void = () => {}
+
+const createInsertedKeyframe = (time: number, lastKeyframe?: KeyframeParam): KeyframeParam => {
+  if (!lastKeyframe) {
+    return {
+      id: crypto.randomUUID(),
+      time,
+      nodeType: 'param',
+      valueType: 'boolean',
+      value: true,
+    }
+  }
+
+  switch (lastKeyframe.valueType) {
+    case 'number':
+      return {
+        id: crypto.randomUUID(),
+        time,
+        nodeType: 'param',
+        valueType: 'number',
+        value: typeof lastKeyframe.value === 'number' ? lastKeyframe.value : 0,
+      }
+    case 'boolean':
+      return {
+        id: crypto.randomUUID(),
+        time,
+        nodeType: 'param',
+        valueType: 'boolean',
+        value: typeof lastKeyframe.value === 'boolean' ? lastKeyframe.value : true,
+      }
+    case 'string':
+      return {
+        id: crypto.randomUUID(),
+        time,
+        nodeType: 'param',
+        valueType: 'string',
+        value: typeof lastKeyframe.value === 'string' ? lastKeyframe.value : '',
+      }
+    case 'file':
+      return {
+        id: crypto.randomUUID(),
+        time,
+        nodeType: 'param',
+        valueType: 'file',
+        value: typeof lastKeyframe.value === 'string' ? lastKeyframe.value : null,
+      }
+    case 'enum':
+      return {
+        id: crypto.randomUUID(),
+        time,
+        nodeType: 'param',
+        valueType: 'enum',
+        value: lastKeyframe.value,
+      }
+  }
+}
+
+const baseTimelineArgs = {
+  activeTimelineComponentId: STORY_COMPONENT_ID,
+  selectedTrackId: null,
+  setSelectedTrackId: NOOP_SET_SELECTED_TRACK_ID,
+  setActiveTimelineComponentId: NOOP_SET_ACTIVE_TIMELINE_COMPONENT_ID,
+  componentId: STORY_COMPONENT_ID,
+  onPlayheadChange: NOOP_ON_PLAYHEAD_CHANGE,
+  onKeyframeDelete: NOOP_ON_KEYFRAME_DELETE,
+  onKeyframeInsert: NOOP_ON_KEYFRAME_INSERT,
+}
+
 export const Default: Story = {
   args: {
+    ...baseTimelineArgs,
     timeline: {
       durationMs: 10000,
       tracks: [],
@@ -48,6 +123,7 @@ export const Default: Story = {
 
 export const WithKeyframes: Story = {
   args: {
+    ...baseTimelineArgs,
     timeline: {
       durationMs: 10000,
       tracks: [
@@ -70,6 +146,7 @@ export const WithKeyframes: Story = {
 
 export const WithVectorTrack: Story = {
   args: {
+    ...baseTimelineArgs,
     timeline: {
       durationMs: 10000,
       tracks: [
@@ -109,6 +186,10 @@ export const WithVectorTrack: Story = {
 export const Interactive = () => {
   const [playheadPositionMs, setPlayheadPositionMs] = useState(0)
   const [playing, setPlaying] = useState(false)
+  const [selectedTrackId, setSelectedTrackId] = useState<string | null>(null)
+  const [activeTimelineComponentId, setActiveTimelineComponentId] = useState<string | null>(
+    STORY_COMPONENT_ID,
+  )
   const [trackValues, setTrackValues] = useState<TrackValues>({})
   const [timeline, setTimeline] = useState<TimelineManagerData>({
     durationMs: 10000,
@@ -276,23 +357,11 @@ export const Interactive = () => {
         const insertKeyframe = (track: TimelineManagerTrack): TimelineManagerTrack => {
           if (track.trackType === 'keyframe' && track.id === trackId) {
             const lastKeyframe = track.keyframes[track.keyframes.length - 1] as KeyframeParam
-            const valueType = lastKeyframe?.valueType ?? 'boolean'
-            const value =
-              lastKeyframe?.value ??
-              (valueType === 'number' ? 0 : valueType === 'boolean' ? true : null)
+            const insertedKeyframe = createInsertedKeyframe(time, lastKeyframe)
 
             return {
               ...track,
-              // @ts-ignore -- this is just a story file we don't need to care so much
-              keyframes: [
-                ...track.keyframes,
-                {
-                  id: crypto.randomUUID(),
-                  time,
-                  valueType,
-                  value,
-                },
-              ].sort((a, b) => a.time - b.time),
+              keyframes: [...track.keyframes, insertedKeyframe].sort((a, b) => a.time - b.time),
             }
           }
           if (track.trackType === 'vector') {
@@ -349,6 +418,11 @@ export const Interactive = () => {
       <Timeline
         timeline={timeline}
         playheadPositionMs={playheadPositionMs}
+        activeTimelineComponentId={activeTimelineComponentId}
+        selectedTrackId={selectedTrackId}
+        setSelectedTrackId={setSelectedTrackId}
+        setActiveTimelineComponentId={setActiveTimelineComponentId}
+        componentId={STORY_COMPONENT_ID}
         onPlayheadChange={handlePlayheadChange}
         onKeyframeDelete={handleKeyframeDelete}
         onKeyframeInsert={handleKeyframeInsert}
@@ -373,6 +447,7 @@ export const Interactive = () => {
 
 export const LongDuration: Story = {
   args: {
+    ...baseTimelineArgs,
     timeline: {
       durationMs: 120000,
       tracks: [

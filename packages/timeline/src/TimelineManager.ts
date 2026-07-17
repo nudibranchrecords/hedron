@@ -25,6 +25,9 @@ export class TimelineManager {
   // Number of shot keyframes at or before the position as of the last check, per track.
   private shotKeyframeCount: Map<string, number> = new Map()
   private clock: Clock | null = null
+  // Flattened (vector tracks expanded to their childTracks) view of timelineData.tracks, kept in
+  // sync by buildCache() - avoids re-walking the track tree on every computeValues/emitUpdate call.
+  private flatTracks: TimelineManagerTrack[] = []
 
   constructor(timeline: TimelineManagerData, clock?: Clock) {
     this.timelineData = timeline
@@ -32,10 +35,24 @@ export class TimelineManager {
     this.buildCache()
   }
 
+  private flattenTracks(tracks: TimelineManagerTrack[]): TimelineManagerTrack[] {
+    const allTracks: TimelineManagerTrack[] = []
+
+    for (const track of tracks) {
+      allTracks.push(track)
+      if (track.trackType === 'vector') {
+        allTracks.push(...this.flattenTracks(track.childTracks))
+      }
+    }
+
+    return allTracks
+  }
+
   private buildCache() {
     this.sortedKeyframesCache.clear()
     this.resetKeyframeIndexes()
-    for (const track of this.getAllTracks()) {
+    this.flatTracks = this.flattenTracks(this.timelineData.tracks)
+    for (const track of this.flatTracks) {
       switch (track.trackType) {
         case 'audio':
           if (this.audioCache.get(track.id)?.src !== track.audioUrl) {
@@ -102,7 +119,7 @@ export class TimelineManager {
 
   private computeValues(): TrackValues {
     const values: TrackValues = {}
-    for (const track of this.getAllTracks()) {
+    for (const track of this.flatTracks) {
       if (track.trackType !== 'keyframe') continue
       const value = this.getTrackValue(track)
       if (value !== undefined) {
@@ -141,7 +158,7 @@ export class TimelineManager {
     track: TimelineManagerAudioTrack
     audio: HTMLAudioElement
   }[] {
-    return this.getAllTracks()
+    return this.flatTracks
       .filter(
         (track): track is TimelineManagerAudioTrack =>
           track.trackType === 'audio' && this.audioCache.has(track.id),
@@ -175,17 +192,8 @@ export class TimelineManager {
     }
   }
 
-  getAllTracks(tracks = this.timelineData.tracks): TimelineManagerTrack[] {
-    const allTracks: TimelineManagerTrack[] = []
-
-    for (const track of tracks) {
-      allTracks.push(track)
-      if (track.trackType === 'vector') {
-        allTracks.push(...this.getAllTracks(track.childTracks))
-      }
-    }
-
-    return allTracks
+  getAllTracks(): TimelineManagerTrack[] {
+    return [...this.flatTracks]
   }
 
   /**

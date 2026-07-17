@@ -3,6 +3,7 @@ import {
   NodeContainer,
   useNodeOptionNodes,
   useParamValue,
+  useAppStore,
   ControlGrid,
 } from '@hedron-gl/ui-core'
 import { useTimelineData } from './useTimelineData'
@@ -25,15 +26,20 @@ export const TimelineGlobalPanel = ({ engine }: TimelineGlobalPanelProps) => {
     manager,
   })
 
+  const activeTimelineComponentId = useAppStore((state) => state.activeTimelineComponentId)
+  const setActiveTimelineComponentId = useAppStore((state) => state.setActiveTimelineComponentId)
+  const selectedTrackId = useAppStore((state) => state.selectedTimelineTrackId)
+  const setSelectedTrackId = useAppStore((state) => state.setSelectedTimelineTrackId)
+
   const optionNodes = useNodeOptionNodes<TimelineOptionNodes>(DEFAULT_TIMELINE_ID)
-  const isPlayingNode = optionNodes['isPlaying']!
-  const playHeadPositionNode = optionNodes['playheadPositionMs']!
-  const durationSecondsNode = optionNodes['durationSeconds']!
+  const isPlayingNode = optionNodes['isPlaying']
+  const durationSecondsNode = optionNodes['durationSeconds']
+  const playHeadPositionNode = optionNodes['playheadPositionMs']
 
   const audioUrlNode = optionNodes['audioUrl']!
 
   // Not very performant to be updating state on every frame, later we'll want to do this imperatively using useSubscribeToParamValue
-  const playheadPositionMs = useParamValue<number>(playHeadPositionNode.id)
+  const playheadPositionMs = useParamValue<number>(playHeadPositionNode?.id, 0)
 
   return (
     <div>
@@ -46,6 +52,10 @@ export const TimelineGlobalPanel = ({ engine }: TimelineGlobalPanelProps) => {
         <Timeline
           timeline={timeline}
           playheadPositionMs={playheadPositionMs}
+          activeTimelineComponentId={activeTimelineComponentId}
+          setActiveTimelineComponentId={setActiveTimelineComponentId}
+          selectedTrackId={selectedTrackId}
+          setSelectedTrackId={setSelectedTrackId}
           onPlayheadChange={handlePlayheadChange}
           onKeyframeDelete={handleKeyframeDelete}
           onKeyframeInsert={handleKeyframeInsert}

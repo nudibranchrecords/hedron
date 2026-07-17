@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react'
-import { findNodeWithKeyFromIdList, HedronEngine, ParamNode, ShotNode } from '@hedron-gl/engine'
-import { useEngineStore, ControlGrid, NodeContainer } from '@hedron-gl/ui-core'
+import { HedronEngine, ParamNode, ShotNode } from '@hedron-gl/engine'
+import { useEngineStore, ControlGrid, NodeContainer, getNodeOptionNodes } from '@hedron-gl/ui-core'
 import { MIDIEvent, MidiMessageType, midiMessageNames } from '@hedron-gl/midi-manager'
 import { MidiInput } from './MidiInput'
+import { doesMidiEventMatchInput } from './utils'
 import styles from './MidiGlobalPanel.module.css'
+import { NOTE_MODE_ON } from './constants'
 
 interface MidiGlobalPanelProps {
   engine: HedronEngine
@@ -69,24 +71,34 @@ export const MidiGlobalPanel: React.FC<MidiGlobalPanelProps> = ({ engine }) => {
       Object.values(nodes).forEach((input) => {
         if (input?.nodeType !== 'input' || input.inputType !== 'midi') return
 
-        const channelNode = findNodeWithKeyFromIdList(
-          nodes,
-          'channel',
-          input.childGroups.optionNodeIds,
-        )
-        const noteNode = findNodeWithKeyFromIdList(nodes, 'note', input.childGroups.optionNodeIds)
-        const typeNode = findNodeWithKeyFromIdList(nodes, 'type', input.childGroups.optionNodeIds)
+        const {
+          channel: channelNode,
+          note: noteNode,
+          type: typeNode,
+          noteMode: noteModeNode,
+        } = getNodeOptionNodes({ nodes }, input.id)
 
         if (!channelNode || !noteNode || !typeNode) return
 
-        const channelValue = paramValues[channelNode.id]
-        const noteValue = paramValues[noteNode.id]
-        const typeValue = paramValues[typeNode.id]
+        const channelValue = paramValues[channelNode.id] as number | undefined
+        const noteValue = paramValues[noteNode.id] as number | undefined
+        const typeValue = paramValues[typeNode.id] as number | undefined
+        const noteModeValue = noteModeNode
+          ? ((paramValues[noteModeNode.id] as number | undefined) ?? NOTE_MODE_ON)
+          : NOTE_MODE_ON
+
+        if (channelValue === undefined || noteValue === undefined || typeValue === undefined) {
+          return
+        }
 
         if (
-          channelValue === event.channel &&
-          noteValue === event.note &&
-          typeValue === event.type
+          doesMidiEventMatchInput({
+            event,
+            channel: channelValue,
+            note: noteValue,
+            type: typeValue,
+            noteMode: noteModeValue,
+          })
         ) {
           const targetNode = nodes[input.targetNodeId] as ParamNode | ShotNode
           if (targetNode) {
@@ -130,6 +142,7 @@ export const MidiGlobalPanel: React.FC<MidiGlobalPanelProps> = ({ engine }) => {
     <div>
       <ControlGrid>
         <NodeContainer nodeId={`${globalNodeId}-smoothing`} />
+        <NodeContainer nodeId={`${globalNodeId}-autoMidiLearn`} />
       </ControlGrid>
 
       <div className={styles.section}>

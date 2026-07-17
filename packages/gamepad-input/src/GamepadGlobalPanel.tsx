@@ -1,12 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react'
-import {
-  findNodeWithKeyFromIdList,
-  HedronEngine,
-  InputNode,
-  Nodes,
-  nodesAsArray,
-  ParamValues,
-} from '@hedron-gl/engine'
+import { HedronEngine, InputNode, Nodes, nodesAsArray, ParamValues } from '@hedron-gl/engine'
 import {
   useEngineStore,
   Card,
@@ -14,6 +7,7 @@ import {
   CardContent,
   Collapsible,
   ControlGrid,
+  getNodeOptionNodes,
   NodeContainer,
 } from '@hedron-gl/ui-core'
 import { GamepadInput } from './GamepadInput'
@@ -167,18 +161,11 @@ const findMatchingInputsForEvent = (
     .filter((input) => {
       if (input.nodeType !== 'input' || input.inputType !== 'gamepad') return false
 
-      const controllerIndexNode = findNodeWithKeyFromIdList(
-        nodes,
-        'controllerIndex',
-        input.childGroups.optionNodeIds,
-      )
-
-      const inputTypeNode = findNodeWithKeyFromIdList(
-        nodes,
-        'inputType',
-        input.childGroups.optionNodeIds,
-      )
-      const indexNode = findNodeWithKeyFromIdList(nodes, 'index', input.childGroups.optionNodeIds)
+      const {
+        controllerIndex: controllerIndexNode,
+        inputType: inputTypeNode,
+        index: indexNode,
+      } = getNodeOptionNodes({ nodes }, input.id)
 
       if (!controllerIndexNode || !inputTypeNode || !indexNode) return false
 
@@ -238,11 +225,7 @@ const getInputsForController = (
   return nodesAsArray(nodes).filter((node) => {
     if (node.nodeType !== 'input' || node.inputType !== 'gamepad') return false
 
-    const controllerIndexNode = findNodeWithKeyFromIdList(
-      nodes,
-      'controllerIndex',
-      node.childGroups.optionNodeIds,
-    )
+    const { controllerIndex: controllerIndexNode } = getNodeOptionNodes({ nodes }, node.id)
 
     if (!controllerIndexNode) return false
 
@@ -429,12 +412,7 @@ const ControllerItem: React.FC<ControllerItemProps> = ({
     if (!lastEvent) return null
 
     const matchingInput = controllerInputs.find((input) => {
-      const inputTypeNode = findNodeWithKeyFromIdList(
-        nodes,
-        'inputType',
-        input.childGroups.optionNodeIds,
-      )
-      const indexNode = findNodeWithKeyFromIdList(nodes, 'index', input.childGroups.optionNodeIds)
+      const { inputType: inputTypeNode, index: indexNode } = getNodeOptionNodes({ nodes }, input.id)
 
       if (!inputTypeNode || !indexNode) return false
 

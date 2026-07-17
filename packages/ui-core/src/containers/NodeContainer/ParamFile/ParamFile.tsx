@@ -10,7 +10,7 @@ interface ParamFileProps {
 
 export const ParamFile = ({ id }: ParamFileProps) => {
   const node = useEngineStore((state) => state.nodes[id]) as ParamFileType
-  const currentFile = useParamValue<ParamFileValue>(id)
+  const currentFile = useParamValue<ParamFileValue>(id, null)
   const onFileChange = useOnParamValueChange(id)
   const availableFiles = useEngineStoreShallow((state) => Object.values(state.resources))
 
