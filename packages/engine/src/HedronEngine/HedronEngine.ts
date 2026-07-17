@@ -288,20 +288,8 @@ export class HedronEngine {
     this.store.getState().updateParamValue(nodeId, value)
   }
 
-  public setMultipleParamValues(nodeIds: string[], values: ParamValue[]): void
-  public setMultipleParamValues(valuesByNodeId: Record<string, ParamValue>): void
-  public setMultipleParamValues(
-    nodeIdsOrValuesByNodeId: string[] | Record<string, ParamValue>,
-    maybeValues?: ParamValue[],
-  ): void {
-    if (Array.isArray(nodeIdsOrValuesByNodeId)) {
-      this.store.getState().updateMultipleParamValues(nodeIdsOrValuesByNodeId, maybeValues ?? [])
-      return
-    }
-
-    this.store.setState((state) => {
-      state.paramValues = { ...state.paramValues, ...nodeIdsOrValuesByNodeId }
-    })
+  public setMultipleParamValues(nodeIds: string[], values: ParamValue[]): void {
+    this.store.getState().updateMultipleParamValues(nodeIds, values)
   }
 
   public addInput(inputType: string, targetNodeId: string): InputNode | undefined {

@@ -64,7 +64,7 @@ export const ParamPresetsPanel = ({ sketchId, engine }: ParamPresetsPanelProps) 
       {} as Record<string, ParamValue>,
     )
 
-    engine.setMultipleParamValues(paramEntries)
+    engine.setMultipleParamValues(Object.keys(paramEntries), Object.values(paramEntries))
   }
 
   const getCurrentParamsSnapshot = (): Record<string, ParamValue> | null => {
