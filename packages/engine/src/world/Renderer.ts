@@ -215,6 +215,7 @@ export class Renderer {
     if (!this.canvas) throw new Error("Can't find canvas")
     if (!this.viewerContainer) throw new Error("Can't find viewerContainer")
 
+    const previousWindow = this.outputWindow
     this.outputWindow = window
     this.viewerContainer.innerHTML = ''
     this.canvas.setAttribute('style', '')
@@ -224,10 +225,9 @@ export class Renderer {
     // Keep frame loop going when switching back to the main window
     if (this.frameCallback) {
       if (this.rafId !== null) {
-        this.outputWindow.cancelAnimationFrame(this.rafId)
+        previousWindow.cancelAnimationFrame(this.rafId)
       }
-      this.outputWindow.requestAnimationFrame(this.frameCallback)
-      this.frameCallback = null
+      this.rafId = this.outputWindow.requestAnimationFrame(this.frameCallback)
     }
 
     this.setSize()
