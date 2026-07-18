@@ -10,6 +10,7 @@ export const sendOutput = (display: Display): void => {
 
   outputWin.document.write('<div style="width:100vw;height:100vh;"></div>')
   outputWin.document.body.style.margin = '0'
+  outputWin.document.body.style.background = '#222'
   outputWin.document.body.style.cursor = 'none'
 
   const { x, y } = display.bounds
@@ -21,7 +22,7 @@ export const sendOutput = (display: Display): void => {
   })
 
   setTimeout(() => {
-    engine.setOutput(outputWin.document.querySelector('div') as HTMLDivElement)
+    engine.setOutput(outputWin.document.querySelector('div') as HTMLDivElement, outputWin)
   }, 1000)
 }
 
