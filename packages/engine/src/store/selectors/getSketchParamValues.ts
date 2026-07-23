@@ -1,5 +1,6 @@
+import { getParamValue } from './getParamValue'
 import { getSketch } from './getSceneSketches'
-import { EngineState, isParamVector, ParamValue } from '@store/types'
+import { EngineState, ParamValue } from '@store/types'
 
 // Get the values of the parameters of a sketch, dealing with child nodes
 export const getSketchParamValues = (
@@ -7,8 +8,8 @@ export const getSketchParamValues = (
   sketchId: string,
   config: { resourcesUrl: string | null },
 ) => {
-  const { paramValues, nodes } = state
-  const sketchParamValues: Record<string, ParamValue | (ParamValue | undefined)[] | undefined> = {}
+  const { nodes } = state
+  const sketchParamValues: Record<string, ParamValue | ParamValue[] | undefined> = {}
   const sketch = getSketch(state, sketchId)
 
   if (!sketch) {
@@ -24,23 +25,7 @@ export const getSketchParamValues = (
 
     const { key } = node
 
-    let value: ParamValue | (ParamValue | undefined)[] | undefined
-
-    if (isParamVector(node)) {
-      // Return an array of values for nodes with child nodes
-      const childNodeIds = node.childGroups.vectorComponentIds
-      value = childNodeIds.map((childNodeId) => paramValues[childNodeId])
-    } else {
-      value = paramValues[id]
-    }
-
-    switch (node.valueType) {
-      case 'file': {
-        const prefix = config.resourcesUrl ? `${config.resourcesUrl}/` : ''
-        const filePath = state.resources[value as string]?.filePath
-        value = `${prefix}${filePath}`
-      }
-    }
+    const value = getParamValue(state, id, config)
 
     sketchParamValues[key] = value
   })
