@@ -15,26 +15,40 @@ export const useHandleDrag = () => {
   }
 
   useEffect(() => {
-    const onMouseMove = (e: MouseEvent) => {
+    const applyRatio = (clientX: number) => {
       if (!isDraggingRef.current) return
       const wrapper = wrapperRef.current
       if (!wrapper) return
       const rect = wrapper.getBoundingClientRect()
-      let ratio = (e.clientX - rect.left) / rect.width
+      let ratio = (clientX - rect.left) / rect.width
       ratio = Math.max(MIN_RATIO, Math.min(MAX_RATIO, ratio))
       setLeftRatio(ratio)
     }
-    const onMouseUp = () => {
+
+    const stopDragging = () => {
       if (isDraggingRef.current) {
         isDraggingRef.current = false
         clearGlobalCursor()
       }
     }
+
+    const onMouseMove = (e: MouseEvent) => applyRatio(e.clientX)
+    const onTouchMove = (e: TouchEvent) => {
+      if (e.touches.length !== 1) return
+      applyRatio(e.touches[0].clientX)
+    }
+
     window.addEventListener('mousemove', onMouseMove)
-    window.addEventListener('mouseup', onMouseUp)
+    window.addEventListener('mouseup', stopDragging)
+    window.addEventListener('touchmove', onTouchMove)
+    window.addEventListener('touchend', stopDragging)
+    window.addEventListener('touchcancel', stopDragging)
     return () => {
       window.removeEventListener('mousemove', onMouseMove)
-      window.removeEventListener('mouseup', onMouseUp)
+      window.removeEventListener('mouseup', stopDragging)
+      window.removeEventListener('touchmove', onTouchMove)
+      window.removeEventListener('touchend', stopDragging)
+      window.removeEventListener('touchcancel', stopDragging)
     }
   }, [])
 
