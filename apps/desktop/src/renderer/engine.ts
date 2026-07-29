@@ -8,6 +8,7 @@ import { AudioInput, AudioInputPanel, AudioGlobalPanel } from '@hedron-gl/audio-
 import { TimelineInput, TimelineGlobalPanel, TimelineInputPanel } from '@hedron-gl/timeline'
 import { SceneControlPlugin, SceneControlGlobalPanel } from '@hedron-gl/scene-control'
 import { VideoRenderPlugin, VideoRenderGlobalPanel } from '@hedron-gl/video-render'
+import { ParamPresetsPlugin, ParamPresetsPanel } from '@hedron-gl/param-presets'
 import { videoRenderCallbacks } from '@renderer/utils/renderVideo/videoRenderCallbacks'
 
 export const performanceMonitor = new Stats()
@@ -32,6 +33,7 @@ engine.registerPlugin(new AudioInput(engine))
 engine.registerPlugin(new GamepadInput(engine))
 engine.registerPlugin(new SceneControlPlugin())
 engine.registerPlugin(new VideoRenderPlugin(videoRenderCallbacks))
+engine.registerPlugin(new ParamPresetsPlugin())
 
 export const pluginViews = {
   inputPanel: {
@@ -48,5 +50,8 @@ export const pluginViews = {
     ['timeline-input']: TimelineGlobalPanel,
     ['video-render']: VideoRenderGlobalPanel,
     ['scene-control']: SceneControlGlobalPanel,
+  },
+  sketchCollapsible: {
+    ['param-presets']: ParamPresetsPanel,
   },
 }

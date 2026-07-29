@@ -7,13 +7,14 @@ export interface ButtonProps extends React.HTMLAttributes<HTMLButtonElement> {
   size?: 'slim' | 'short'
   disabled?: boolean
   iconName?: IconName
+  submit?: boolean
 }
 
 export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ type = 'primary', children, iconName, size, disabled, className, ...props }, ref) => {
+  ({ type = 'primary', children, iconName, size, disabled, className, submit, ...props }, ref) => {
     return (
       <button
-        type="button"
+        type={submit ? 'submit' : 'button'}
         className={`${c.wrapper} ${c[type]} ${size && c[size]} ${disabled && c.disabled} ${className}`}
         ref={ref}
         disabled={disabled}

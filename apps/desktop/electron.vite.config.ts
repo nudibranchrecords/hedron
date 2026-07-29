@@ -42,6 +42,7 @@ export default defineConfig({
         '@hedron-gl/timeline': path.resolve(__dirname, '../../packages/timeline/src'),
         '@hedron-gl/scene-control': path.resolve(__dirname, '../../packages/scene-control/src'),
         '@hedron-gl/video-render': path.resolve(__dirname, '../../packages/video-render/src'),
+        '@hedron-gl/param-presets': path.resolve(__dirname, '../../packages/param-presets/src'),
       },
     },
   },

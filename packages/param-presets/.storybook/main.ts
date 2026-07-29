@@ -18,4 +18,5 @@ const config: StorybookConfig = {
     plugins: [...(config.plugins ?? []), tsconfigPaths()],
   }),
 }
+
 export default config

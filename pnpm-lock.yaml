@@ -141,6 +141,9 @@ importers:
       '@hedron-gl/midi-input':
         specifier: ^1.0.0-alpha.4
         version: link:../../packages/midi-input
+      '@hedron-gl/param-presets':
+        specifier: ^1.0.0-alpha.4
+        version: link:../../packages/param-presets
       '@hedron-gl/scene-control':
         specifier: ^1.0.0-alpha.4
         version: link:../../packages/scene-control
@@ -452,6 +455,67 @@ importers:
         version: link:../ui-core
 
   packages/midi-manager: {}
+
+  packages/param-presets:
+    dependencies:
+      '@hedron-gl/engine':
+        specifier: ^1.0.0-alpha.4
+        version: link:../engine
+      '@hedron-gl/ui-core':
+        specifier: ^1.0.0-alpha.4
+        version: link:../ui-core
+      react:
+        specifier: ^18.3.1
+        version: 18.3.1
+      react-dom:
+        specifier: ^18.3.1
+        version: 18.3.1(react@18.3.1)
+      zustand:
+        specifier: ^5.0.8
+        version: 5.0.11(@types/react@19.2.17)(immer@10.2.0)(react@18.3.1)
+    devDependencies:
+      '@chromatic-com/storybook':
+        specifier: ^1.8.0
+        version: 1.9.0(react@18.3.1)
+      '@storybook/addon-essentials':
+        specifier: ^8.2.9
+        version: 8.6.14(@types/react@19.2.17)(storybook@8.6.15(prettier@3.9.4))
+      '@storybook/addon-interactions':
+        specifier: ^8.2.9
+        version: 8.6.14(storybook@8.6.15(prettier@3.9.4))
+      '@storybook/addon-links':
+        specifier: ^8.2.9
+        version: 8.6.15(react@18.3.1)(storybook@8.6.15(prettier@3.9.4))
+      '@storybook/blocks':
+        specifier: ^8.2.9
+        version: 8.6.14(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(storybook@8.6.15(prettier@3.9.4))
+      '@storybook/react':
+        specifier: ^8.2.9
+        version: 8.6.15(@storybook/test@8.6.15(storybook@8.6.15(prettier@3.9.4)))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(storybook@8.6.15(prettier@3.9.4))(typescript@5.9.3)
+      '@storybook/react-vite':
+        specifier: ^8.2.9
+        version: 8.6.15(@storybook/test@8.6.15(storybook@8.6.15(prettier@3.9.4)))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(rollup@4.62.2)(storybook@8.6.15(prettier@3.9.4))(typescript@5.9.3)(vite@7.3.1(@types/node@26.1.1)(jiti@2.7.0)(lightningcss@1.32.0)(yaml@2.9.0))
+      '@storybook/test':
+        specifier: ^8.2.9
+        version: 8.6.15(storybook@8.6.15(prettier@3.9.4))
+      '@vitejs/plugin-react':
+        specifier: ^4.3.4
+        version: 4.7.0(vite@7.3.1(@types/node@26.1.1)(jiti@2.7.0)(lightningcss@1.32.0)(yaml@2.9.0))
+      storybook:
+        specifier: ^8.2.9
+        version: 8.6.15(prettier@3.9.4)
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+      vite:
+        specifier: ^7.3.1
+        version: 7.3.1(@types/node@26.1.1)(jiti@2.7.0)(lightningcss@1.32.0)(yaml@2.9.0)
+      vite-plugin-dts:
+        specifier: ^4.5.3
+        version: 4.5.4(@types/node@26.1.1)(rollup@4.62.2)(typescript@5.9.3)(vite@7.3.1(@types/node@26.1.1)(jiti@2.7.0)(lightningcss@1.32.0)(yaml@2.9.0))
+      vite-tsconfig-paths:
+        specifier: ^5.1.4
+        version: 5.1.4(typescript@5.9.3)(vite@7.3.1(@types/node@26.1.1)(jiti@2.7.0)(lightningcss@1.32.0)(yaml@2.9.0))
 
   packages/scene-control:
     dependencies:
@@ -7491,7 +7555,7 @@ snapshots:
     dependencies:
       chromatic: 11.29.0
       filesize: 10.1.6
-      jsonfile: 6.2.0
+      jsonfile: 6.2.1
       react-confetti: 6.4.0(react@18.3.1)
       strip-ansi: 7.1.2
     transitivePeerDependencies:
@@ -9326,7 +9390,7 @@ snapshots:
       react: 18.3.1
       react-docgen: 7.1.1
       react-dom: 18.3.1(react@18.3.1)
-      resolve: 1.22.11
+      resolve: 1.22.12
       storybook: 8.6.15(prettier@3.9.4)
       tsconfig-paths: 4.2.0
       vite: 7.3.1(@types/node@26.1.1)(jiti@2.7.0)(lightningcss@1.32.0)(yaml@2.9.0)
@@ -9348,7 +9412,7 @@ snapshots:
       react: 18.3.1
       react-docgen: 7.1.1
       react-dom: 18.3.1(react@18.3.1)
-      resolve: 1.22.11
+      resolve: 1.22.12
       storybook: 8.6.15(prettier@3.9.4)
       tsconfig-paths: 4.2.0
       vite: 8.1.4(@types/node@26.1.1)(esbuild@0.23.1)(jiti@2.7.0)(yaml@2.9.0)
@@ -10084,7 +10148,7 @@ snapshots:
       '@vue/compiler-vue2': 2.7.16
       '@vue/shared': 3.5.27
       alien-signals: 0.4.14
-      minimatch: 9.0.5
+      minimatch: 9.0.9
       muggle-string: 0.4.1
       path-browserify: 1.0.1
     optionalDependencies:
@@ -11929,8 +11993,8 @@ snapshots:
     dependencies:
       foreground-child: 3.3.1
       jackspeak: 3.4.3
-      minimatch: 9.0.5
-      minipass: 7.1.2
+      minimatch: 9.0.9
+      minipass: 7.1.3
       package-json-from-dist: 1.0.1
       path-scurry: 1.11.1
 
@@ -13766,7 +13830,7 @@ snapshots:
       '@types/doctrine': 0.0.9
       '@types/resolve': 1.20.6
       doctrine: 3.0.0
-      resolve: 1.22.11
+      resolve: 1.22.12
       strip-indent: 4.1.1
     transitivePeerDependencies:
       - supports-color
