@@ -70,15 +70,13 @@ export async function buildVideoFromFrames({
 
   const tempAudio = path.join(dirPath, `${name}-temp.wav`)
 
-  // Convert to WAV and trim to exact duration, adding fade in/out
+  // Convert to WAV, trimmed to the video's duration.
   await runFfmpeg([
     '-y',
     '-i',
     audioPath,
     '-t',
     String(videoDuration),
-    '-af',
-    `afade=t=in:st=0:d=0.5,afade=t=out:st=${videoDuration - 0.5}:d=0.5`,
     '-ar',
     '48000',
     '-ac',
@@ -104,8 +102,18 @@ export async function buildVideoFromFrames({
     'yuv420p',
     '-crf',
     '18',
+    // AAC, not PCM: raw PCM-in-MP4 ("ipcm") isn't supported by most players, including Windows
+    // Media Player - AAC is the standard MP4 audio codec and plays everywhere. ffmpeg's native
+    // AAC encoder also writes MP4 edit-list metadata compensating for its own encoder delay, so
+    // compliant players start exactly on sample 0 with no lead-in gap - important for a loop.
     '-c:a',
-    'pcm_s16le',
+    'aac',
+    '-b:a',
+    '320k',
+    // Moves the moov atom to the front of the file - required by some players/embeds to start
+    // playback at all, not just for faster start.
+    '-movflags',
+    '+faststart',
     videoPath,
   ])
 
