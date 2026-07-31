@@ -57,6 +57,9 @@ export async function buildVideoFromFrames({
       'yuv420p',
       '-crf',
       '18',
+      // Moves the moov atom to the front - some players/embeds need this to play at all.
+      '-movflags',
+      '+faststart',
       videoPath,
     ])
     return videoPath
