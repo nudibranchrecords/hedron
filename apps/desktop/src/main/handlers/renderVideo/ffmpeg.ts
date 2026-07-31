@@ -102,16 +102,13 @@ export async function buildVideoFromFrames({
     'yuv420p',
     '-crf',
     '18',
-    // AAC, not PCM: raw PCM-in-MP4 ("ipcm") isn't supported by most players, including Windows
-    // Media Player - AAC is the standard MP4 audio codec and plays everywhere. ffmpeg's native
-    // AAC encoder also writes MP4 edit-list metadata compensating for its own encoder delay, so
-    // compliant players start exactly on sample 0 with no lead-in gap - important for a loop.
+    // AAC, not PCM: raw PCM-in-MP4 isn't supported by most players, including Windows Media Player.
+    // ffmpeg's edit-list metadata also compensates for AAC encoder delay, avoiding a loop-point gap.
     '-c:a',
     'aac',
     '-b:a',
     '320k',
-    // Moves the moov atom to the front of the file - required by some players/embeds to start
-    // playback at all, not just for faster start.
+    // Moves the moov atom to the front - some players/embeds need this to play at all.
     '-movflags',
     '+faststart',
     videoPath,

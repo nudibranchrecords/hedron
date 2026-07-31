@@ -740,10 +740,15 @@ export class HedronEngine {
   }
 
   /**
-   * Public method to resize the renderer's canvas.
+   * Public method to resize the renderer's canvas for frame capture/export.
    */
   public resizeRenderer(width: number, height: number): void {
     this.renderer.resize(width, height)
+  }
+
+  /** Restores the renderer's canvas after a `resizeRenderer` capture/export resize. */
+  public restoreRendererSize(width: number, height: number): void {
+    this.renderer.restoreSize(width, height)
   }
 
   /**
@@ -812,7 +817,7 @@ export class HedronEngine {
 
     // Restore original size after rendering
     if (originalSize) {
-      this.resizeRenderer(originalSize.width, originalSize.height)
+      this.restoreRendererSize(originalSize.width, originalSize.height)
     }
 
     this.paused = false

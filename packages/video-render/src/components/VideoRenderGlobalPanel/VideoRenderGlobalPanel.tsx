@@ -65,7 +65,9 @@ export function VideoRenderGlobalPanel(): JSX.Element {
 
     try {
       const handleProgress = (progress: RenderProgress) => {
-        if (progress.stage === 'rendering-frames') {
+        if (progress.stage === 'analyzing-audio') {
+          setRenderingStatus('Analyzing audio...')
+        } else if (progress.stage === 'rendering-frames') {
           setProgress(Math.floor((progress.framesSaved / progress.totalFrames) * 100))
           setRenderingStatus(`Rendering frames: ${progress.framesSaved}/${progress.totalFrames}`)
         } else if (progress.stage === 'building-video') {

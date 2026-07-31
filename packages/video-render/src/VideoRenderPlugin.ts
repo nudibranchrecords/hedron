@@ -6,7 +6,8 @@ import {
   OptionNodesFromConfigs,
   ShotNode,
 } from '@hedron-gl/engine'
-import { TimelineInput } from '@hedron-gl/timeline'
+import { DEFAULT_TIMELINE_ID, getResourceUrl, TimelineInput } from '@hedron-gl/timeline'
+import { AudioInput } from '@hedron-gl/audio-input'
 import { VIDEO_RENDER_NODE_ID } from './constants'
 import { RenderFramesOptions, RenderProgress, VideoRenderCallbacks } from './types'
 
@@ -152,6 +153,10 @@ export class VideoRenderPlugin implements IPlugin {
   ) {
     const engine = this.requireEngine()
 
+    // Stop the live loop first - `beginOfflineAnalysis` below has real async gaps, and an
+    // unpaused engine would keep advancing the timeline in real time during them.
+    engine.pause()
+
     // Not calling engine.resetTime(): it dumps one huge delta onto the next frame, sending TimelineManager's position deeply negative.
     // The timeline's start position is already reset cleanly via manager.goTo(0) below.
 
@@ -161,45 +166,73 @@ export class VideoRenderPlugin implements IPlugin {
       engine.resizeRenderer(width, height)
     }
 
-    // Drives the timeline deterministically for the render, muted (audio is muxed in separately).
-    // Ignores the live "isPlaying" toggle - a render always plays the full timeline.
     const timelinePlugin = engine.getPlugin<TimelineInput>('timeline-input')
+    const defaultTimelineManager = timelinePlugin?.timelineManagers.get(DEFAULT_TIMELINE_ID)
+
+    // Precompute the audio's frequency data so audio-reactive params react to the render's own
+    // soundtrack (deterministically) instead of whatever the mic happens to be picking up.
+    const audioInput = engine.getPlugin<AudioInput>('audio-input')
+    let offlineAnalysisActive = false
+    if (audioFileName && audioInput && defaultTimelineManager) {
+      const audioUrl = getResourceUrl(engine.getStoreState(), audioFileName)
+      if (audioUrl) {
+        onProgress?.({ stage: 'analyzing-audio' })
+        // Deliberately not caught: falling back to live (muted) analysis would silently
+        // produce a render with no audio reaction at all.
+        await audioInput.beginOfflineAnalysis({
+          url: audioUrl,
+          fps,
+          frameCount,
+          getTimeMs: () => defaultTimelineManager.getPosition(),
+        })
+        offlineAnalysisActive = true
+      }
+    }
+
+    // Started only now, synchronously followed by renderFramesSequence below (no await between).
+    // Muted - audio is muxed in separately. Ignores the live "isPlaying" toggle.
     timelinePlugin?.timelineManagers.forEach((manager) => {
       manager.goTo(0)
       manager.play({ silent: true })
     })
 
-    await engine.renderFramesSequence(
-      frameCount,
-      fps,
-      async (dataUrl: string, frameIndex: number | string) => {
-        const result = await this.callbacks.saveFrame(dataUrl, {
-          name,
-          frameIndex,
-          outputDirAbsolute,
-        })
-        if (!result.success) {
-          console.error(`Failed to save frame ${frameIndex}: ${result.error}`)
-        }
+    try {
+      await engine.renderFramesSequence(
+        frameCount,
+        fps,
+        async (dataUrl: string, frameIndex: number | string) => {
+          const result = await this.callbacks.saveFrame(dataUrl, {
+            name,
+            frameIndex,
+            outputDirAbsolute,
+          })
+          if (!result.success) {
+            console.error(`Failed to save frame ${frameIndex}: ${result.error}`)
+          }
 
-        const frameNum = Number(frameIndex)
-        if (isNaN(frameNum)) return
+          const frameNum = Number(frameIndex)
+          if (isNaN(frameNum)) return
 
-        const framesSaved = frameNum + 1
-        onProgress?.({ stage: 'rendering-frames', framesSaved, totalFrames: frameCount })
+          const framesSaved = frameNum + 1
+          onProgress?.({ stage: 'rendering-frames', framesSaved, totalFrames: frameCount })
 
-        if (framesSaved % 10 === 0 || framesSaved === frameCount) {
-          console.log(`Saved frame ${framesSaved} / ${frameCount}`)
-        }
-      },
-      width,
-      height,
-    )
+          if (framesSaved % 10 === 0 || framesSaved === frameCount) {
+            console.log(`Saved frame ${framesSaved} / ${frameCount}`)
+          }
+        },
+        width,
+        height,
+      )
+    } finally {
+      if (offlineAnalysisActive) {
+        audioInput?.endOfflineAnalysis()
+      }
+    }
 
     this.restoreTimelinePlaybackState(engine, timelinePlugin)
 
     if (originalSize) {
-      engine.resizeRenderer(originalSize.width, originalSize.height)
+      engine.restoreRendererSize(originalSize.width, originalSize.height)
     }
 
     console.log(`Frame sequence saved to ${outputDirAbsolute}/${name}/`)

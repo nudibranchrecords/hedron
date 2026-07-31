@@ -13,14 +13,19 @@ export type TrackValues = Record<string, ParamValue>
 
 export type OnUpdateCallback = (values: TrackValues) => void
 
+export type OnAudioElementChangeCallback = (element: HTMLAudioElement | null) => void
+
 export class TimelineManager {
   private timelineData: TimelineManagerData
   private position = 0
   private playing = false
   private onUpdateCallback: OnUpdateCallback | null = null
+  private onAudioElementChangeCallback: OnAudioElementChangeCallback | null = null
   private cachedValues: TrackValues = {}
   private sortedKeyframesCache: Map<string, Keyframe[]> = new Map()
   private audioCache: Map<string, HTMLAudioElement> = new Map()
+  // Last element reported to onAudioElementChangeCallback - fires only on actual change.
+  private currentAudioElement: HTMLAudioElement | null = null
   private lastKeyframeIndex: Map<string, number> = new Map()
   // Number of shot keyframes at or before the position as of the last check, per track.
   private shotKeyframeCount: Map<string, number> = new Map()
@@ -56,7 +61,11 @@ export class TimelineManager {
       switch (track.trackType) {
         case 'audio':
           if (this.audioCache.get(track.id)?.src !== track.audioUrl) {
-            const audio = new Audio(track.audioUrl)
+            const audio = new Audio()
+            // Cross-origin resources server - without this the element is tainted and can't
+            // be captured for analysis. Must be set before src.
+            audio.crossOrigin = 'anonymous'
+            audio.src = track.audioUrl
             this.audioCache.set(track.id, audio)
           }
           break
@@ -68,6 +77,19 @@ export class TimelineManager {
           break
       }
     }
+
+    this.syncAudioElementChange()
+  }
+
+  // Reports the audio track's element on create/replace/remove, not on every buildCache() call.
+  private syncAudioElementChange() {
+    const [firstAudioTrack] = this.getAudioTracksWithAudio()
+    const element = firstAudioTrack?.audio ?? null
+
+    if (element === this.currentAudioElement) return
+
+    this.currentAudioElement = element
+    this.onAudioElementChangeCallback?.(element)
   }
 
   private resetKeyframeIndexes() {
@@ -263,6 +285,18 @@ export class TimelineManager {
     this.onUpdateCallback = callback
   }
 
+  /**
+   * Fires on audio-track element create/replace/remove, and immediately with the current
+   * element if one already exists (tracks are often already built by registration time).
+   */
+  onAudioElementChange(callback: OnAudioElementChangeCallback) {
+    this.onAudioElementChangeCallback = callback
+
+    if (this.currentAudioElement) {
+      callback(this.currentAudioElement)
+    }
+  }
+
   getPosition() {
     return this.position
   }
@@ -274,5 +308,6 @@ export class TimelineManager {
   dispose() {
     this.pause()
     this.onUpdateCallback = null
+    this.onAudioElementChangeCallback = null
   }
 }

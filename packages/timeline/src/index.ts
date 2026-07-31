@@ -6,9 +6,10 @@ export type {
   Keyframe,
 } from './types'
 export { TimelineManager } from './TimelineManager'
-export type { TrackValues, OnUpdateCallback } from './TimelineManager'
+export type { TrackValues, OnUpdateCallback, OnAudioElementChangeCallback } from './TimelineManager'
 export { TimelineInput } from './TimelineInput'
 export type { TimelineOptionNodes } from './TimelineInput'
 export { TimelineGlobalPanel } from './components/TimelineGlobalPanel/TimelineGlobalPanel'
 export { DEFAULT_TIMELINE_ID } from './constants'
 export { TimelineInputPanel } from './components/TimelineInputPanel/TimelineInputPanel'
+export { getResourceUrl } from './utils/getResourceUrl'

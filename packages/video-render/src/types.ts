@@ -11,6 +11,7 @@ export interface RenderFramesOptions {
 }
 
 export type RenderProgress =
+  | { stage: 'analyzing-audio' }
   | { stage: 'rendering-frames'; framesSaved: number; totalFrames: number }
   | { stage: 'building-video' }
 
