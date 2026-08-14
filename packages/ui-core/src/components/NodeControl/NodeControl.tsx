@@ -17,7 +17,7 @@ export const NodeControl = ({ isActive, children, onClick }: NodeControlProps) =
   const wasMouseDownOnInner = useWasMouseDownOnInnerContext()
 
   const handleClick = useCallback(() => {
-    // Disable click event if mouse down started on inner
+    // Disable click event if mouse/touch down started on inner
     if (!wasMouseDownOnInner.current) {
       onClick?.()
     }
@@ -75,15 +75,20 @@ export interface NodeControlInnerProps {
 }
 
 export const NodeControlInner = ({ children }: NodeControlInnerProps) => {
-  // Register mouse down on inner so click can be disabled if mouse is released outside of this component
-  const handleMouseDown = useMouseDownOnInner()
+  // Register mouse/touch down on inner so click can be disabled if mouse is released outside of this component
+  const { handleMouseDown, handleTouchStart } = useMouseDownOnInner()
 
   const handleClick = useCallback((event: React.MouseEvent<HTMLDivElement>) => {
     event.stopPropagation()
   }, [])
 
   return (
-    <div className={c.inner} onClick={handleClick} onMouseDown={handleMouseDown}>
+    <div
+      className={c.inner}
+      onClick={handleClick}
+      onMouseDown={handleMouseDown}
+      onTouchStart={handleTouchStart}
+    >
       {children}
     </div>
   )

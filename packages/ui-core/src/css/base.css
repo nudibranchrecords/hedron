@@ -9,6 +9,12 @@
     'opsz' 24;
 }
 
+html {
+  /* The app shell never pans or zooms as a whole; scrollable panels set their own
+     touch-action, so this only blocks stray pinch-zoom/double-tap-zoom gestures. */
+  touch-action: none;
+}
+
 body {
   user-select: none;
   margin: 0;

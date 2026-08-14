@@ -150,7 +150,7 @@ export const FloatSlider = forwardRef<FloatSliderHandle, FloatSliderProps>(funct
     [range, min, max, direction, updateValue, onValueChange],
   )
 
-  useElementScrub(canvasRef, onElementScrub, 'ew-resize')
+  useElementScrub(canvasRef, onElementScrub, 'ew-resize', 'x')
 
   useEffect(() => {
     const canvas = canvasRef.current
