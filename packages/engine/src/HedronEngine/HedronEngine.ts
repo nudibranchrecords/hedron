@@ -632,7 +632,16 @@ export class HedronEngine {
    * @param deltaTime The time delta (in seconds) to advance this frame.
    */
   private advanceFrame(deltaTime: number) {
-    // Flush buffered node value updates before processing the frame
+    this.clock?.step(deltaTime * 1000)
+
+    // Flush before plugin.update() so plugins read this frame's values, not stale ones buffered since the last flush.
+    flushParamValueBuffer(this.store.setState)
+
+    Object.values(this.plugins).forEach((plugin) =>
+      plugin.update?.(this, { deltaFrame: 1, deltaTime }),
+    )
+
+    // Flush again so any updates plugins just buffered are visible to sketches this same frame.
     flushParamValueBuffer(this.store.setState)
 
     const activeSceneId = this.getParamValue(ACTIVE_SCENE_ID_NODE_ID) as string | undefined
@@ -731,10 +740,15 @@ export class HedronEngine {
   }
 
   /**
-   * Public method to resize the renderer's canvas.
+   * Public method to resize the renderer's canvas for frame capture/export.
    */
   public resizeRenderer(width: number, height: number): void {
     this.renderer.resize(width, height)
+  }
+
+  /** Restores the renderer's canvas after a `resizeRenderer` capture/export resize. */
+  public restoreRendererSize(width: number, height: number): void {
+    this.renderer.restoreSize(width, height)
   }
 
   /**
@@ -803,7 +817,7 @@ export class HedronEngine {
 
     // Restore original size after rendering
     if (originalSize) {
-      this.resizeRenderer(originalSize.width, originalSize.height)
+      this.restoreRendererSize(originalSize.width, originalSize.height)
     }
 
     this.paused = false
