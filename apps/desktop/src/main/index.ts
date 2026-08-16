@@ -3,6 +3,7 @@ import { app, BrowserWindow, dialog, ipcMain, screen, session } from 'electron'
 import { electronApp, optimizer } from '@electron-toolkit/utils'
 import { REDUX_DEVTOOLS, installExtension } from '@tomjs/electron-devtools-installer'
 import { ProjectData } from '@hedron-gl/app-store'
+import { openSketchSourceFile } from './handlers/openSketchSourceFile'
 import { saveFrameHandler, saveFrameSequenceHandler } from './handlers/frameHandlers'
 import {
   DialogEvents,
@@ -126,6 +127,13 @@ ipcMain.handle(
 ipcMain.handle(FileEvents.OpenFolder, async (_, folderPath: string) => {
   return await openFolder(folderPath)
 })
+
+ipcMain.handle(
+  FileEvents.OpenSketchSourceFile,
+  async (_, sketchesDir: string, moduleId: string) => {
+    return await openSketchSourceFile(sketchesDir, moduleId)
+  },
+)
 
 ipcMain.handle(SketchEvents.StartSketchesServer, async (_, sketchesDir: string) => {
   return await startSketchesServer(sketchesDir)
