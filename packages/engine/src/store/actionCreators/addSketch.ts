@@ -27,7 +27,6 @@ export const createAddSketchToScene: SetterCreator<'addSketchToScene'> =
         title: config.title,
         parentIds: [sceneId],
         childGroups: { optionNodeIds: [], inputNodeIds: [], nodeIds },
-        nodeIds,
       }
 
       sceneNode.childGroups.sketchIds.push(newSketchId)

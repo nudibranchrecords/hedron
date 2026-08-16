@@ -45,10 +45,11 @@ export const ActiveSketch = () => {
     throw new Error('ActiveSketch component: No activesketch found')
   }
 
-  const nodeGroups = useGroupedNodes(activeSketch.nodeIds, activeSketch.moduleId)
+  const nodeGroups = useGroupedNodes(activeSketch.childGroups.nodeIds, activeSketch.moduleId)
 
   const selectedNode = useSelectedNode()
   const closeSelectedNodePanel = useOnSelectNode(activeSketch.id, null)
+  const openSketchOptions = useOnSelectNode(activeSketch.id, activeSketch.id)
 
   return (
     <div className={c.container}>
@@ -57,6 +58,11 @@ export const ActiveSketch = () => {
         <PopoutMenu
           className="ml-auto"
           items={[
+            {
+              label: 'Sketch Options',
+              icon: 'settings',
+              onClick: openSketchOptions,
+            },
             {
               label: 'Move Up',
               icon: 'arrow_upward',

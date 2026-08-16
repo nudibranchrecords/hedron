@@ -15,7 +15,7 @@ export const getSketchParamValues = (
     return sketchParamValues
   }
 
-  sketch.nodeIds.forEach((id) => {
+  sketch.childGroups.nodeIds.forEach((id) => {
     const node = nodes[id]
 
     if (node?.nodeType !== 'param') {

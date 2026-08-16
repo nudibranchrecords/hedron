@@ -1,4 +1,4 @@
-import { SceneNode, ACTIVE_SCENE_ID_NODE_ID } from '@hedron-gl/engine'
+import { ACTIVE_SCENE_ID_NODE_ID } from '@hedron-gl/engine'
 import {
   Button,
   ControlGrid,
@@ -8,7 +8,7 @@ import {
   NodeControlTitle,
   useAppStore,
   useEngineStore,
-  useEngineStoreShallow,
+  useSceneNodes,
 } from '@hedron-gl/ui-core'
 import { useEffect } from 'react'
 
@@ -22,11 +22,7 @@ export const SceneControlGlobalPanel = () => {
   const selectedSceneId = useAppStore((state) => state.selectedSceneId)
   const setSelectedSceneId = useAppStore((state) => state.setSelectedSceneId)
 
-  const scenes = useEngineStoreShallow((state) =>
-    state.sceneIds
-      .map((id) => state.nodes[id])
-      .filter((node): node is SceneNode => node?.nodeType === 'scene'),
-  )
+  const scenes = useSceneNodes()
 
   const handleAddScene = () => {
     const newSceneId = addScene()
