@@ -1,7 +1,7 @@
-import { HedronEngine, ParamNode, ParamValue, SketchNode } from '@hedron-gl/engine'
+import { HedronEngine, ParamNode, SketchNode } from '@hedron-gl/engine'
 import { useMemo } from 'react'
 import { ParamPresetsControl } from './ParamPresetsControl'
-import { ParamPresetStoreItem, useParamPresetsStore } from './paramPresetsStore'
+import { ParamPresetStoreItem, ParamsPreset, useParamPresetsStore } from './paramPresetsStore'
 
 const EMPTY_PRESETS = {} as Record<string, ParamPresetStoreItem>
 
@@ -61,27 +61,24 @@ export const ParamPresetsPanel = ({ sketchId, engine }: ParamPresetsPanelProps) 
         acc[paramId] = value
         return acc
       },
-      {} as Record<string, ParamValue>,
+      {} as ParamsPreset,
     )
 
     engine.setMultipleParamValues(Object.keys(paramEntries), Object.values(paramEntries))
   }
 
-  const getCurrentParamsSnapshot = (): Record<string, ParamValue> | null => {
+  const getCurrentParamsSnapshot = (): ParamsPreset | null => {
     if (!moduleId || !sketch) return null
 
     const keyToIdMap = getSketchParamKeyToIdMap()
 
-    return Object.entries(keyToIdMap).reduce(
-      (acc, [paramKey, paramId]) => {
-        const val = engine.getParamValue(paramId)
-        if (val !== undefined) {
-          acc[paramKey] = val
-        }
-        return acc
-      },
-      {} as Record<string, ParamValue>,
-    )
+    return Object.entries(keyToIdMap).reduce((acc, [paramKey, paramId]) => {
+      const val = engine.getParamValue(paramId)
+      if (val !== undefined) {
+        acc[paramKey] = val
+      }
+      return acc
+    }, {} as ParamsPreset)
   }
 
   const handlePresetSave = (presetName: string) => {

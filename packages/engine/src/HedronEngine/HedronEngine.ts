@@ -30,12 +30,14 @@ import {
   ChildGroupsLoose,
   Resources,
   InputNode,
+  isParamVector,
 } from '@store/types'
 import { getSketchesOfModuleId } from '@store/selectors/getSketchesOfModuleId'
 import { getAllSceneSketches, getSceneSketchIds } from '@store/selectors/getSceneSketches'
 import { createEngineStore, EngineStore } from '@store/engineStore'
 import { getSketchParamValues } from '@store/selectors/getSketchParamValues'
 import { addNode } from '@store/shared/addNode'
+import { getParamValue } from '@store/selectors/getParamValue'
 
 export class HedronEngine {
   public rendererType: RendererType
@@ -250,8 +252,15 @@ export class HedronEngine {
     return this.store.getState().nodes[nodeId] as T | undefined
   }
 
-  public getParamValue(nodeId: string): ParamValue | undefined {
-    return this.store.getState().paramValues[nodeId]
+  /**
+   * Gets the param value for a node. Will return an array of values if the node is a vector param
+   * @param nodeId
+   * @returns The param value for the node (or an array of values if the node is a vector param), or undefined if the node does not exist or is not a param node
+   */
+  public getParamValue(nodeId: string): ParamValue | ParamValue[] | undefined {
+    return getParamValue(this.store.getState(), nodeId, {
+      resourcesUrl: this.store.getState().resourcesUrl,
+    })
   }
 
   public getNodeOptionNode(nodeId: string, optionKey: string): ParamNode | ShotNode {
@@ -280,16 +289,43 @@ export class HedronEngine {
     return optionNode
   }
 
-  public setParamValue(nodeId: string | undefined, value: ParamValue): void {
+  /**
+   * Sets the value of a parameter node, updating multiple nodes if the type is a vector.
+   * @param nodeId The ID of the parameter node to set the value for.
+   * @param value The value to set for the parameter node. If the node is a vector parameter, this should be an array of values for each component.
+   * */
+  public setParamValue(nodeId: string | undefined, value: ParamValue | ParamValue[]): void {
     if (!nodeId) {
       console.error('setParamValue: nodeId is undefined')
       return
     }
-    this.store.getState().updateParamValue(nodeId, value)
+
+    const node = this.store.getState().nodes[nodeId]
+
+    if (!node) {
+      console.error(`setParamValue: node "${nodeId}" not found`)
+      return
+    }
+
+    if (Array.isArray(value)) {
+      if (isParamVector(node)) {
+        node.childGroups.vectorComponentIds.forEach((componentId, index) => {
+          this.store.getState().updateParamValue(componentId, value[index])
+        })
+      } else {
+        console.error(
+          `setParamValue: node "${nodeId}" is not a vector param, but value is an array`,
+        )
+      }
+    } else {
+      this.store.getState().updateParamValue(nodeId, value)
+    }
   }
 
-  public setMultipleParamValues(nodeIds: string[], values: ParamValue[]): void {
-    this.store.getState().updateMultipleParamValues(nodeIds, values)
+  public setMultipleParamValues(nodeIds: string[], values: (ParamValue | ParamValue[])[]): void {
+    nodeIds.forEach((nodeId, index) => {
+      this.setParamValue(nodeId, values[index])
+    })
   }
 
   public addInput(inputType: string, targetNodeId: string): InputNode | undefined {
