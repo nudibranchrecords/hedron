@@ -38,6 +38,15 @@ export const TIMELINE_OPTION_NODE_CONFIGS = defineOptionNodeConfigs([
     defaultValue: null,
     accept: ['audio/*'],
   },
+  {
+    nodeType: 'param',
+    key: 'zoomPxPerSecond',
+    title: 'Timeline Zoom',
+    valueType: 'number',
+    defaultValue: 80,
+    sliderMin: 10,
+    sliderMax: 300,
+  },
 ])
 
 // We can use TimelineOptionNodes for strong typing when using useNodeOptionNodes
@@ -154,6 +163,18 @@ export class TimelineInput implements IPlugin {
 
     // Input ID is only a child of the target node, we also need to make it a child of the timeline node so it shows up in the timeline UI
     engine.addChildToNode(DEFAULT_TIMELINE_ID, 'trackIds', newInput.id)
+
+    engine.addOptionNodes(newInput.id, [
+      {
+        nodeType: 'param',
+        key: 'zoomPxPerSecond',
+        title: 'Track Zoom',
+        valueType: 'number',
+        defaultValue: 80,
+        sliderMin: 10,
+        sliderMax: 300,
+      },
+    ])
 
     if (isParamVector(targetNode)) {
       targetNode.childGroups.vectorComponentIds.forEach((nodeId) => {

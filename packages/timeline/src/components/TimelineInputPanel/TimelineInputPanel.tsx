@@ -1,11 +1,18 @@
-import { useEffect, useId } from 'react'
+import { useEffect, useId, useRef } from 'react'
 import { HedronEngine, InputNode } from '@hedron-gl/engine'
-import { useNodeOptionNodes, useParamValue, useAppStore } from '@hedron-gl/ui-core'
+import {
+  useNodeOptionNodes,
+  useParamValue,
+  useAppStore,
+  useSubscribeToParamValue,
+  ControlGrid,
+  NodeContainer,
+} from '@hedron-gl/ui-core'
 import { useTimelineData } from '@/components/TimelineGlobalPanel/useTimelineData'
 import { useTimelineHandlers } from '@/components/TimelineGlobalPanel/useTimelineHandlers'
 import { useTimelineManager } from '@/components/TimelineGlobalPanel/useTimelineManager'
 import { DEFAULT_TIMELINE_ID } from '@/constants'
-import { Timeline } from '@/components/Timeline/Timeline'
+import { Timeline, TimelineHandle } from '@/components/Timeline/Timeline'
 import { TimelineOptionNodes } from '@/TimelineInput'
 import { findTrackById } from '@/utils/findTrackById'
 
@@ -41,25 +48,41 @@ export const TimelineInputPanel = ({ input, engine }: TimelineInputPanelProps) =
     setActiveTimelineComponentId(timelineComponentId)
   }, [input.id, setSelectedTrackId, setActiveTimelineComponentId, timelineComponentId])
 
-  const optionNodes = useNodeOptionNodes<TimelineOptionNodes>(DEFAULT_TIMELINE_ID)
-  const playHeadPositionNode = optionNodes['playheadPositionMs']
+  const timelineOptionNodes = useNodeOptionNodes<TimelineOptionNodes>(DEFAULT_TIMELINE_ID)
+  const trackOptionNodes = useNodeOptionNodes<TimelineOptionNodes>(input.id)
+  const playHeadPositionNode = timelineOptionNodes['playheadPositionMs']
   const playheadPositionMs = useParamValue<number>(playHeadPositionNode?.id, 0)
 
   const track = findTrackById(timeline.tracks, input.id)
 
+  const zoomPxPerSecondNode = trackOptionNodes['zoomPxPerSecond']!
+
+  const timelineRef = useRef<TimelineHandle>(null)
+
+  useSubscribeToParamValue<number>(zoomPxPerSecondNode.id, (value) => {
+    timelineRef.current?.setPxPerSecond(value)
+  })
+
   return (
-    <Timeline
-      timeline={{ durationMs: timeline.durationMs, tracks: track ? [track] : [] }}
-      playheadPositionMs={playheadPositionMs}
-      activeTimelineComponentId={activeTimelineComponentId}
-      setActiveTimelineComponentId={setActiveTimelineComponentId}
-      selectedTrackId={selectedTrackId}
-      componentId={timelineComponentId}
-      setSelectedTrackId={setSelectedTrackId}
-      onPlayheadChange={handlePlayheadChange}
-      onKeyframeDelete={handleKeyframeDelete}
-      onKeyframeInsert={handleKeyframeInsert}
-      onKeyframeMove={handleKeyframeMove}
-    />
+    <>
+      <ControlGrid className="mb-xl">
+        <NodeContainer nodeId={zoomPxPerSecondNode.id} />
+      </ControlGrid>
+
+      <Timeline
+        ref={timelineRef}
+        timeline={{ durationMs: timeline.durationMs, tracks: track ? [track] : [] }}
+        playheadPositionMs={playheadPositionMs}
+        activeTimelineComponentId={activeTimelineComponentId}
+        setActiveTimelineComponentId={setActiveTimelineComponentId}
+        selectedTrackId={selectedTrackId}
+        componentId={timelineComponentId}
+        setSelectedTrackId={setSelectedTrackId}
+        onPlayheadChange={handlePlayheadChange}
+        onKeyframeDelete={handleKeyframeDelete}
+        onKeyframeInsert={handleKeyframeInsert}
+        onKeyframeMove={handleKeyframeMove}
+      />
+    </>
   )
 }
