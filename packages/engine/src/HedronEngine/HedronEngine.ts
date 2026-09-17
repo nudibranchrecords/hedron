@@ -300,26 +300,42 @@ export class HedronEngine {
       return
     }
 
-    const node = this.store.getState().nodes[nodeId]
+    const state = this.store.getState()
+    const node = state.nodes[nodeId]
 
-    if (!node) {
-      console.error(`setParamValue: node "${nodeId}" not found`)
+    if (!node || node.nodeType !== 'param') {
+      console.error(`setParamValue: param node "${nodeId}" not found`)
+      return
+    }
+
+    if (isParamVector(node)) {
+      if (!Array.isArray(value)) {
+        console.error(
+          `setParamValue: node "${nodeId}" is a vector param, but value is not an array`,
+        )
+        return
+      }
+
+      const componentIds = node.childGroups.vectorComponentIds
+      if (value.length !== componentIds.length) {
+        console.error(
+          `setParamValue: expected ${componentIds.length} values for vector param "${nodeId}", got ${value.length}`,
+        )
+        return
+      }
+
+      componentIds.forEach((componentId, index) => {
+        state.updateParamValue(componentId, value[index])
+      })
       return
     }
 
     if (Array.isArray(value)) {
-      if (isParamVector(node)) {
-        node.childGroups.vectorComponentIds.forEach((componentId, index) => {
-          this.store.getState().updateParamValue(componentId, value[index])
-        })
-      } else {
-        console.error(
-          `setParamValue: node "${nodeId}" is not a vector param, but value is an array`,
-        )
-      }
-    } else {
-      this.store.getState().updateParamValue(nodeId, value)
+      console.error(`setParamValue: node "${nodeId}" is not a vector param, but value is an array`)
+      return
     }
+
+    state.updateParamValue(nodeId, value)
   }
 
   public setMultipleParamValues(nodeIds: string[], values: (ParamValue | ParamValue[])[]): void {
