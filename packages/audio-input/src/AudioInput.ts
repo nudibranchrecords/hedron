@@ -1,8 +1,30 @@
 import { handleEachInput, HedronEngine, IPlugin } from '@hedron-gl/engine'
 import { AudioDeviceManager } from './AudioDeviceManager'
-import { AudioAnalyzer, AudioData, FrequencyBand, BAND_COLORS } from './AudioAnalyzer'
-import { lerp } from './AudioUtils'
+import {
+  AudioAnalyzer,
+  AudioData,
+  FrequencyBand,
+  BAND_COLORS,
+  DEFAULT_MIN_DECIBELS,
+  DEFAULT_MAX_DECIBELS,
+} from './AudioAnalyzer'
+import { lerp, computePeakAmplitude, gainForPeak } from './AudioUtils'
 import { handleAudioError } from './AudioTestUtils'
+import { analyzeAudioOffline } from './OfflineSpectrumAnalyzer'
+
+/** Target peak amplitude for peak-normalized (auto) gain - a touch under full scale for headroom. */
+const TARGET_PEAK_AMPLITUDE = 0.99
+
+export interface BeginOfflineAnalysisOptions {
+  /** URL of the audio resource to analyze (e.g. the timeline's audio resource, resolved). */
+  url: string
+  /** Frames per second of the render this analysis is being computed for. */
+  fps: number
+  /** Total number of frames to precompute (should match the render's frame count). */
+  frameCount: number
+  /** Returns the current playhead position, in milliseconds, for the frame being rendered. */
+  getTimeMs: () => number
+}
 
 /**
  * Audio Input plugin for capturing and processing audio from the microphone
@@ -95,6 +117,15 @@ export class AudioInput implements IPlugin {
       sliderMin: 0.0001,
       sliderMax: 0.1,
     },
+    {
+      nodeType: 'param',
+      key: 'fileAudioGainDb',
+      title: 'File Audio Gain (dB, negative = auto)',
+      valueType: 'number',
+      defaultValue: 0,
+      sliderMin: -24,
+      sliderMax: 24,
+    },
     // Generate hidden band configuration nodes from DEFAULT_BANDS
     ...AudioInput.DEFAULT_BANDS.flatMap((band, index) => [
       {
@@ -185,6 +216,30 @@ export class AudioInput implements IPlugin {
    */
   public analyzer: AudioAnalyzer
 
+  /** The plugin's single, lazily-created AudioContext. */
+  private context: AudioContext | null = null
+
+  /** The single analyser every source (mic, timeline audio element) is routed into. */
+  private analyserNode: AnalyserNode | null = null
+
+  /** The mic's source node, connected to the analyser by default. Undone while a live element source (e.g. the timeline's audio) is routed in instead. */
+  private micSource: MediaStreamAudioSourceNode | null = null
+
+  /** Analysis tap for the currently-routed audio element (e.g. the timeline's), if any. */
+  private liveElementSource: MediaStreamAudioSourceNode | null = null
+
+  /** One tap per element - re-capturing the same element would pile up redundant streams. */
+  private liveElementSourceCache = new WeakMap<HTMLAudioElement, MediaStreamAudioSourceNode>()
+
+  /** Applies file gain to element-sourced audio, which (unlike mic capture) gets no auto gain control. */
+  private fileGainNode: GainNode | null = null
+
+  /**
+   * Peak-normalized gain per resource URL (auto mode only, `fileAudioGainDb < 0`).
+   * Shared between live preview and render so both use the same value.
+   */
+  private peakGainCache = new Map<string, number>()
+
   /**
    * Reference to the engine's state store
    */
@@ -210,8 +265,6 @@ export class AudioInput implements IPlugin {
       })
       .then(() => {
         console.log('[AudioInput] Audio system successfully initialized')
-        // Start the update loop when audio is ready
-        window.requestAnimationFrame(() => this.update())
       })
       .catch((error) => {
         console.error('[AudioInput] Failed to initialize audio system:', error)
@@ -312,17 +365,9 @@ export class AudioInput implements IPlugin {
       // Get an audio stream using the device manager
       const stream = await this.deviceManager.getAudioStream()
 
-      // Create audio context
-      const context = new window.AudioContext()
-      if (AudioInput.ENABLE_LOGGING) {
-        console.log(
-          `[AudioInput] Audio context created. Sample rate: ${context.sampleRate}Hz, State: ${context.state}`,
-        )
-      }
-
-      // Create media stream source and analyzer
-      const source = context.createMediaStreamSource(stream)
-      const analyser = context.createAnalyser()
+      // The context and analyser are created once and reused across device changes.
+      const context = this.getOrCreateContext()
+      const analyser = this.getOrCreateAnalyser()
 
       // Log analyzer configuration
       if (AudioInput.ENABLE_LOGGING) {
@@ -333,17 +378,259 @@ export class AudioInput implements IPlugin {
         console.log(`  - Smoothing time constant: ${analyser.smoothingTimeConstant}`)
       }
 
-      // Set up audio data in the analyzer
-      const audioData = this.analyzer.setupAudioData(analyser, context.sampleRate)
+      // Replace any previous mic source (e.g. after a device change) with one for the new stream.
+      this.micSource?.disconnect()
+      this.micSource = context.createMediaStreamSource(stream)
 
-      // Connect the audio source to the analyzer
-      source.connect(analyser)
+      const audioData = this.audioData ?? this.analyzer.setupAudioData(analyser, context.sampleRate)
+
+      // Mic only feeds the analyser when no element is routed in.
+      if (!this.liveElementSource) {
+        this.micSource.connect(analyser)
+      }
 
       return audioData
     } catch (error) {
       handleAudioError(error)
       throw error
     }
+  }
+
+  /** The plugin's single, long-lived AudioContext. */
+  private getOrCreateContext(): AudioContext {
+    if (!this.context) {
+      this.context = new window.AudioContext()
+      if (AudioInput.ENABLE_LOGGING) {
+        console.log(
+          `[AudioInput] Audio context created. Sample rate: ${this.context.sampleRate}Hz, State: ${this.context.state}`,
+        )
+      }
+    }
+    return this.context
+  }
+
+  /** The single analyser every source is routed into, kept at the spec-default dB window. */
+  private getOrCreateAnalyser(): AnalyserNode {
+    if (!this.analyserNode) {
+      const analyser = this.getOrCreateContext().createAnalyser()
+      // One shared dB window - mic and file input are measured identically.
+      // File-specific correction happens as real gain instead (see fileGainNode).
+      analyser.minDecibels = DEFAULT_MIN_DECIBELS
+      analyser.maxDecibels = DEFAULT_MAX_DECIBELS
+      this.analyserNode = analyser
+    }
+    return this.analyserNode
+  }
+
+  /**
+   * Precomputes frequency data for `url` and switches the analyzer to sample it by frame
+   * index (via `getTimeMs`) instead of reading live from the mic.
+   */
+  public async beginOfflineAnalysis({
+    url,
+    fps,
+    frameCount,
+    getTimeMs,
+  }: BeginOfflineAnalysisOptions): Promise<void> {
+    await this.ensureAudioDataExists()
+
+    const response = await fetch(url)
+    const arrayBuffer = await response.arrayBuffer()
+
+    // Decode at the live context's sample rate to match AudioAnalyzer's bin-to-frequency mapping.
+    const analyser = this.audioData!.analyser
+    const sampleRate = analyser.context.sampleRate
+    const audioBuffer = await this.getOrCreateContext().decodeAudioData(arrayBuffer)
+
+    const frames = await analyzeAudioOffline({
+      audioBuffer,
+      fps,
+      frameCount,
+      sampleRate,
+      gain: this.resolveFileGain(url, audioBuffer),
+      fftSize: analyser.fftSize,
+      smoothingTimeConstant: analyser.smoothingTimeConstant,
+      minDecibels: analyser.minDecibels,
+      maxDecibels: analyser.maxDecibels,
+    })
+
+    const getFrameIndex = () => Math.round((getTimeMs() / 1000) * fps)
+    this.analyzer.beginOfflineAnalysis(frames, getFrameIndex)
+  }
+
+  /** Restores live (mic or routed element) analysis after a render finishes. */
+  public endOfflineAnalysis(): void {
+    this.analyzer.endOfflineAnalysis()
+  }
+
+  /**
+   * Routes an audio element into the analyser in place of the mic; `null` restores the mic.
+   * Sets up the context/analyser on demand if mic init hasn't run yet.
+   */
+  public setLiveElementSource(element: HTMLAudioElement | null): void {
+    const context = this.getOrCreateContext()
+    const analyser = this.getOrCreateAnalyser()
+    this.ensureAudioDataExists()
+
+    this.liveElementSource?.disconnect()
+    this.liveElementSource = null
+
+    if (!element) {
+      this.fileGainNode?.disconnect()
+      this.micSource?.connect(analyser)
+      return
+    }
+
+    // Mic and element must not both feed the analyser, or render won't match preview.
+    this.micSource?.disconnect()
+
+    const source = this.getElementTap(element, context)
+    if (!source) {
+      // Tap failed - fall back to the mic rather than silently analysing nothing.
+      this.micSource?.connect(analyser)
+      return
+    }
+
+    // Element playback gets no browser auto gain control, unlike mic capture - see `applyFileGain`.
+    const gainNode = this.fileGainNode ?? context.createGain()
+    gainNode.disconnect()
+    gainNode.connect(analyser)
+    this.fileGainNode = gainNode
+
+    source.connect(gainNode)
+    this.liveElementSource = source
+
+    this.applyFileGain(element.currentSrc || element.src, gainNode)
+    this.ensureContextRunning()
+  }
+
+  /**
+   * Applies manual dB gain, or (if `fileAudioGainDb` < 0) a cached/computed peak-normalized gain.
+   * An uncached peak needs a decode - applies unity gain first, then resolves it async.
+   */
+  private applyFileGain(url: string, gainNode: GainNode): void {
+    if (this.getFileAudioGainDb() >= 0) {
+      gainNode.gain.value = this.getManualFileGain()
+      return
+    }
+
+    const cached = this.peakGainCache.get(url)
+    if (cached !== undefined) {
+      gainNode.gain.value = cached
+      return
+    }
+
+    gainNode.gain.value = 1
+    this.getOrComputePeakGain(url)
+      .then((gain) => {
+        // Only apply if this node is still the live one - it may have changed mid-flight.
+        if (this.fileGainNode === gainNode) {
+          gainNode.gain.value = gain
+        }
+      })
+      .catch((error) => {
+        console.error('[AudioInput] Failed to compute peak-normalized gain:', error)
+      })
+  }
+
+  /** Decodes `url` (uncached) purely to measure its peak - used when nothing has decoded it yet. */
+  private async getOrComputePeakGain(url: string): Promise<number> {
+    const cached = this.peakGainCache.get(url)
+    if (cached !== undefined) return cached
+
+    const response = await fetch(url)
+    const arrayBuffer = await response.arrayBuffer()
+    const audioBuffer = await this.getOrCreateContext().decodeAudioData(arrayBuffer)
+
+    const gain = gainForPeak(computePeakAmplitude(audioBuffer), TARGET_PEAK_AMPLITUDE)
+    this.peakGainCache.set(url, gain)
+    return gain
+  }
+
+  /** Resolves gain for an already-decoded buffer (the render path always has one on hand). */
+  private resolveFileGain(url: string, audioBuffer: AudioBuffer): number {
+    if (this.getFileAudioGainDb() >= 0) return this.getManualFileGain()
+
+    const cached = this.peakGainCache.get(url)
+    if (cached !== undefined) return cached
+
+    const gain = gainForPeak(computePeakAmplitude(audioBuffer), TARGET_PEAK_AMPLITUDE)
+    this.peakGainCache.set(url, gain)
+    return gain
+  }
+
+  /**
+   * Taps the element via `captureStream` (copies output, doesn't reroute it).
+   * `createMediaElementSource` would hijack playback and fail silently on any graph issue.
+   */
+  private getElementTap(
+    element: HTMLAudioElement,
+    context: AudioContext,
+  ): MediaStreamAudioSourceNode | null {
+    const cached = this.liveElementSourceCache.get(element)
+    if (cached) return cached
+
+    const capturableElement = element as HTMLAudioElement & {
+      captureStream?: () => MediaStream
+    }
+
+    if (typeof capturableElement.captureStream !== 'function') {
+      console.error('[AudioInput] captureStream is unavailable; cannot analyse timeline audio.')
+      return null
+    }
+
+    try {
+      const stream = capturableElement.captureStream()
+
+      // No audio track until the element has loaded - retry once "playing" fires.
+      if (stream.getAudioTracks().length === 0) {
+        element.addEventListener('playing', () => this.setLiveElementSource(element), {
+          once: true,
+        })
+        return null
+      }
+
+      const source = context.createMediaStreamSource(stream)
+      this.liveElementSourceCache.set(element, source)
+      return source
+    } catch (error) {
+      console.error('[AudioInput] Failed to tap timeline audio for analysis:', error)
+      return null
+    }
+  }
+
+  /** Contexts start suspended until a user gesture; while suspended the analyser reads silence. */
+  private ensureContextRunning(): void {
+    if (this.context?.state === 'suspended') {
+      this.context.resume().catch(() => {})
+    }
+  }
+
+  /**
+   * Ensures `this.audioData` exists, for render machines with no mic permission/init.
+   * Sets up the shared analyser with nothing routed into it.
+   */
+  private ensureAudioDataExists(): void {
+    if (this.audioData) return
+
+    const context = this.getOrCreateContext()
+    this.analyzer.setupAudioData(this.getOrCreateAnalyser(), context.sampleRate)
+  }
+
+  /** File audio gain in dB from the global options (default: 0). */
+  private getFileAudioGainDb(): number {
+    const storeState = this._store.getState()
+    const nodeId = `${AudioInput.ID}-global-fileAudioGainDb`
+    const value = storeState.paramValues[nodeId] as number | undefined
+    return value ?? 0
+  }
+
+  /**
+   * `fileAudioGainDb` as a linear gain multiplier (only valid when non-negative).
+   * Flat boost across the signal, so frequency balance stays untouched.
+   */
+  private getManualFileGain(): number {
+    return Math.pow(10, this.getFileAudioGainDb() / 20)
   }
 
   /**
@@ -493,8 +780,7 @@ export class AudioInput implements IPlugin {
   }
 
   /**
-   * Updates audio analysis on each frame
-   * @returns The current levels data array
+   * Updates audio analysis on each engine frame (called via HedronEngine.advanceFrame).
    */
   public update() {
     if (!this.audioData) return
@@ -508,14 +794,21 @@ export class AudioInput implements IPlugin {
     this.analyzer.maxLevelFalloffMultiplier = this.getMaxLevelFalloffMultiplier()
     this.analyzer.maxLevelMinimum = this.getMaxLevelMinimum()
 
+    // Keep manual gain in sync each frame so the slider takes effect immediately.
+    // Auto/peak gain is resolved once at routing time (applyFileGain) and left alone here.
+    if (this.liveElementSource) {
+      if (this.fileGainNode && this.getFileAudioGainDb() >= 0) {
+        this.fileGainNode.gain.value = this.getManualFileGain()
+      }
+      // Retry resume in case the context was created before the first user gesture.
+      this.ensureContextRunning()
+    }
+
     // Update the analyzer
     this.analyzer.update()
 
     // Update nodes based on new audio levels
     this.updateInputNodes()
-
-    // Schedule next update
-    window.requestAnimationFrame(() => this.update())
   }
 
   /**

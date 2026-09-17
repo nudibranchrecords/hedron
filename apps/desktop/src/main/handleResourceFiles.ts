@@ -8,6 +8,8 @@ import { ResourcesServer } from '@main/ResourcesServer/ResourcesServer'
 
 // Track the current server instance
 let currentResourcesServer: ResourcesServer | null = null
+let currentResourcesDir: string | undefined = undefined
+export const getCurrentResourcesDir = (): string | undefined => currentResourcesDir
 
 const getInitialFiles = async (dirPath: string): Promise<Record<string, Resource>> => {
   const files: Record<string, Resource> = {}
@@ -46,6 +48,8 @@ export const startResourcesServer = async (dirPath: string): Promise<ResourcesSe
     console.warn(`[HEDRON] Resources path does not exist: ${dirPath}`)
     return { url: null, files: {} }
   }
+
+  currentResourcesDir = dirPath
 
   const files = await getInitialFiles(dirPath)
   const resourcesServer = new ResourcesServer()

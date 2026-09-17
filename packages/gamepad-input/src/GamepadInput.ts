@@ -96,9 +96,6 @@ export class GamepadInput implements IPlugin {
     }
 
     this.gamepadManager.onGamepadEvent.add(this.handleGamepadEvent.bind(this))
-
-    // Start the update loop
-    window.requestAnimationFrame(() => this.update())
   }
 
   /**
@@ -307,14 +304,11 @@ export class GamepadInput implements IPlugin {
   }
 
   /**
-   * Updates gamepad input values on each frame.
+   * Updates gamepad input values on each engine frame (called via HedronEngine.advanceFrame).
    * Applies smoothing by lerping towards target values.
    */
   public update() {
     this.updateInputNodes()
-
-    // Schedule next update
-    window.requestAnimationFrame(() => this.update())
   }
 
   /**

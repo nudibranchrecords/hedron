@@ -153,6 +153,9 @@ importers:
       '@hedron-gl/ui-core':
         specifier: ^1.0.0-alpha.4
         version: link:../../packages/ui-core
+      '@hedron-gl/video-render':
+        specifier: ^1.0.0-alpha.4
+        version: link:../../packages/video-render
       '@tomjs/electron-devtools-installer':
         specifier: ^2.4.0
         version: 2.4.0(electron@37.3.0)
@@ -672,6 +675,43 @@ importers:
       typescript:
         specifier: ^5.6.2
         version: 5.9.3
+
+  packages/video-render:
+    dependencies:
+      '@hedron-gl/audio-input':
+        specifier: ^1.0.0-alpha.4
+        version: link:../audio-input
+      '@hedron-gl/engine':
+        specifier: ^1.0.0-alpha.4
+        version: link:../engine
+      '@hedron-gl/timeline':
+        specifier: ^1.0.0-alpha.4
+        version: link:../timeline
+      '@hedron-gl/ui-core':
+        specifier: ^1.0.0-alpha.4
+        version: link:../ui-core
+      react:
+        specifier: ^18.3.1
+        version: 18.3.1
+      react-dom:
+        specifier: ^18.3.1
+        version: 18.3.1(react@18.3.1)
+    devDependencies:
+      '@vitejs/plugin-react':
+        specifier: ^4.3.4
+        version: 4.7.0(vite@7.3.1(@types/node@26.1.1)(jiti@2.7.0)(lightningcss@1.32.0)(yaml@2.9.0))
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+      vite:
+        specifier: ^7.3.1
+        version: 7.3.1(@types/node@26.1.1)(jiti@2.7.0)(lightningcss@1.32.0)(yaml@2.9.0)
+      vite-plugin-dts:
+        specifier: ^4.5.3
+        version: 4.5.4(@types/node@26.1.1)(rollup@4.62.2)(typescript@5.9.3)(vite@7.3.1(@types/node@26.1.1)(jiti@2.7.0)(lightningcss@1.32.0)(yaml@2.9.0))
+      vite-tsconfig-paths:
+        specifier: ^5.1.4
+        version: 5.1.4(typescript@5.9.3)(vite@7.3.1(@types/node@26.1.1)(jiti@2.7.0)(lightningcss@1.32.0)(yaml@2.9.0))
 
 packages:
 
@@ -3453,9 +3493,6 @@ packages:
   brace-expansion@1.1.16:
     resolution: {integrity: sha512-IDw48K2/2kRkg9LdJxurvq3lV3aBgq0REY89duEqFRthjlPdXHKMj7EnQOXVckxzgisinf3nHfrcE2FufFLXMw==}
 
-  brace-expansion@2.0.2:
-    resolution: {integrity: sha512-Jt0vHyM+jmUBqojB7E1NIYadt0vI0Qxjxd2TErW94wDz+E2LAm5vKMXXwg6ZZBTHPuUlDgQHKXvjGBdfcF1ZDQ==}
-
   brace-expansion@2.1.2:
     resolution: {integrity: sha512-w5JZcKgdhDOgOwm8H+KgbosopHMuGcl6qbulwjtz3SM7I7P3yW1eAjzMPLrIE+NQ9vjgANKHWeMHnrT0OXW1oA==}
 
@@ -5494,20 +5531,12 @@ packages:
   minimatch@3.1.5:
     resolution: {integrity: sha512-VgjWUsnnT6n+NUk6eZq77zeFdpW2LWDzP6zFGrCbHXiYNul5Dzqk2HHQ5uFH2DNW5Xbp8+jVzaeNt94ssEEl4w==}
 
-  minimatch@5.1.6:
-    resolution: {integrity: sha512-lKwV/1brpG6mBUFHtb7NUmtABCb2WZZmm2wNiOA5hAb8VdCS4B3dtMWyvcoViccwAW/COERjXLt0zP1zXUN26g==}
-    engines: {node: '>=10'}
-
   minimatch@5.1.9:
     resolution: {integrity: sha512-7o1wEA2RyMP7Iu7GNba9vc0RWWGACJOCZBJX2GJWip0ikV+wcOsgVuY9uE8CPiyQhkGFSlhuSkZPavN7u1c2Fw==}
     engines: {node: '>=10'}
 
   minimatch@8.0.4:
     resolution: {integrity: sha512-W0Wvr9HyFXZRGIDgCicunpQ299OKXs9RgZfaukz4qAW/pJhcpUfupc9c+OObPOFueNy8VSrZgEmDtk6Kh4WzDA==}
-    engines: {node: '>=16 || 14 >=14.17'}
-
-  minimatch@9.0.5:
-    resolution: {integrity: sha512-G6T0ZX48xgozx7587koeX9Ys2NYy6Gmv//P89sEte9V9whIapMNF4idKxnW2QtCcLiTWlb/wfCabAtAFWhhBow==}
     engines: {node: '>=16 || 14 >=14.17'}
 
   minimatch@9.0.9:
@@ -7572,7 +7601,7 @@ snapshots:
     dependencies:
       commander: 5.1.0
       glob: 7.2.3
-      minimatch: 3.1.2
+      minimatch: 3.1.5
 
   '@electron/asar@3.4.1':
     dependencies:
@@ -7698,7 +7727,7 @@ snapshots:
       debug: 4.4.3
       dir-compare: 4.2.0
       fs-extra: 11.3.3
-      minimatch: 9.0.5
+      minimatch: 9.0.9
       plist: 3.1.0
     transitivePeerDependencies:
       - supports-color
@@ -8251,7 +8280,7 @@ snapshots:
       cosmiconfig: 9.0.0(typescript@5.9.3)
       dedent: 1.5.3
       execa: 5.0.0
-      fs-extra: 11.3.3
+      fs-extra: 11.3.6
       get-stream: 6.0.0
       git-url-parse: 14.0.0
       glob-parent: 6.0.2
@@ -8333,7 +8362,7 @@ snapshots:
   '@microsoft/api-extractor-model@7.32.2(@types/node@26.1.1)':
     dependencies:
       '@microsoft/tsdoc': 0.16.0
-      '@microsoft/tsdoc-config': 0.18.0
+      '@microsoft/tsdoc-config': 0.18.1
       '@rushstack/node-core-library': 5.19.1(@types/node@26.1.1)
     transitivePeerDependencies:
       - '@types/node'
@@ -8426,7 +8455,6 @@ snapshots:
       ajv: 8.18.0
       jju: 1.4.0
       resolve: 1.22.12
-    optional: true
 
   '@microsoft/tsdoc@0.16.0': {}
 
@@ -8507,7 +8535,7 @@ snapshots:
       hosted-git-info: 9.0.2
       json-stringify-nice: 1.1.4
       lru-cache: 11.2.5
-      minimatch: 10.1.2
+      minimatch: 10.2.5
       nopt: 8.1.0
       npm-install-checks: 7.1.2
       npm-package-arg: 13.0.1
@@ -8519,7 +8547,7 @@ snapshots:
       proggy: 3.0.0
       promise-all-reject-late: 1.0.1
       promise-call-limit: 3.0.2
-      semver: 7.7.2
+      semver: 7.7.4
       ssri: 12.0.0
       treeverse: 3.0.0
       walk-up-path: 4.0.0
@@ -8533,11 +8561,11 @@ snapshots:
 
   '@npmcli/fs@4.0.0':
     dependencies:
-      semver: 7.7.2
+      semver: 7.7.4
 
   '@npmcli/fs@5.0.0':
     dependencies:
-      semver: 7.7.2
+      semver: 7.7.4
 
   '@npmcli/git@6.0.3':
     dependencies:
@@ -8547,7 +8575,7 @@ snapshots:
       npm-pick-manifest: 10.0.0
       proc-log: 5.0.0
       promise-retry: 2.0.1
-      semver: 7.7.2
+      semver: 7.7.4
       which: 5.0.0
 
   '@npmcli/git@7.0.1':
@@ -8558,7 +8586,7 @@ snapshots:
       npm-pick-manifest: 11.0.3
       proc-log: 6.1.0
       promise-retry: 2.0.1
-      semver: 7.7.2
+      semver: 7.7.4
       which: 6.0.0
 
   '@npmcli/installed-package-contents@3.0.0':
@@ -8576,7 +8604,7 @@ snapshots:
       '@npmcli/name-from-folder': 4.0.0
       '@npmcli/package-json': 7.0.2
       glob: 13.0.1
-      minimatch: 10.1.2
+      minimatch: 10.2.5
 
   '@npmcli/metavuln-calculator@9.0.3':
     dependencies:
@@ -8584,7 +8612,7 @@ snapshots:
       json-parse-even-better-errors: 5.0.0
       pacote: 21.1.0
       proc-log: 6.1.0
-      semver: 7.7.2
+      semver: 7.7.4
     transitivePeerDependencies:
       - supports-color
 
@@ -8608,7 +8636,7 @@ snapshots:
       hosted-git-info: 9.0.2
       json-parse-even-better-errors: 5.0.0
       proc-log: 6.1.0
-      semver: 7.7.2
+      semver: 7.7.4
       validate-npm-package-license: 3.0.4
 
   '@npmcli/promise-spawn@8.0.3':
@@ -8643,7 +8671,7 @@ snapshots:
       enquirer: 2.3.6
       minimatch: 10.1.1
       nx: 22.4.5
-      semver: 7.7.2
+      semver: 7.7.4
       tslib: 2.8.1
       yargs-parser: 21.1.1
 
@@ -8997,7 +9025,7 @@ snapshots:
       ajv: 8.13.0
       ajv-draft-04: 1.0.0(ajv@8.13.0)
       ajv-formats: 3.0.1(ajv@8.13.0)
-      fs-extra: 11.3.3
+      fs-extra: 11.3.6
       import-lazy: 4.0.0
       jju: 1.4.0
       resolve: 1.22.12
@@ -9479,7 +9507,7 @@ snapshots:
   '@tufjs/models@4.1.0':
     dependencies:
       '@tufjs/canonical-json': 2.0.0
-      minimatch: 10.1.2
+      minimatch: 10.2.5
 
   '@tweenjs/tween.js@23.1.3': {}
 
@@ -9730,7 +9758,7 @@ snapshots:
       debug: 4.4.3
       globby: 11.1.0
       is-glob: 4.0.3
-      minimatch: 9.0.5
+      minimatch: 9.0.9
       semver: 7.7.4
       ts-api-utils: 1.4.3(typescript@5.9.3)
     optionalDependencies:
@@ -10222,7 +10250,6 @@ snapshots:
       fast-uri: 3.1.3
       json-schema-traverse: 1.0.0
       require-from-string: 2.0.2
-    optional: true
 
   ajv@8.20.0:
     dependencies:
@@ -10515,10 +10542,6 @@ snapshots:
     dependencies:
       balanced-match: 1.0.2
       concat-map: 0.0.1
-
-  brace-expansion@2.0.2:
-    dependencies:
-      balanced-match: 1.0.2
 
   brace-expansion@2.1.2:
     dependencies:
@@ -10890,7 +10913,7 @@ snapshots:
       handlebars: 4.7.8
       json-stringify-safe: 5.0.1
       meow: 8.1.2
-      semver: 7.7.2
+      semver: 7.7.4
       split: 1.0.1
 
   conventional-commits-filter@3.0.0:
@@ -11042,7 +11065,7 @@ snapshots:
 
   dir-compare@4.2.0:
     dependencies:
-      minimatch: 3.1.2
+      minimatch: 3.1.5
       p-limit: 3.1.0
 
   dir-glob@3.0.1:
@@ -11271,7 +11294,7 @@ snapshots:
       has-property-descriptors: 1.0.2
       has-proto: 1.2.0
       has-symbols: 1.1.0
-      hasown: 2.0.2
+      hasown: 2.0.4
       internal-slot: 1.1.0
       is-array-buffer: 3.0.5
       is-callable: 1.2.7
@@ -11336,11 +11359,11 @@ snapshots:
       es-errors: 1.3.0
       get-intrinsic: 1.3.0
       has-tostringtag: 1.0.2
-      hasown: 2.0.2
+      hasown: 2.0.4
 
   es-shim-unscopables@1.1.0:
     dependencies:
-      hasown: 2.0.2
+      hasown: 2.0.4
 
   es-to-primitive@1.3.0:
     dependencies:
@@ -11645,7 +11668,7 @@ snapshots:
 
   estree-walker@3.0.3:
     dependencies:
-      '@types/estree': 1.0.8
+      '@types/estree': 1.0.9
 
   esutils@2.0.3: {}
 
@@ -11730,7 +11753,7 @@ snapshots:
 
   filelist@1.0.4:
     dependencies:
-      minimatch: 5.1.6
+      minimatch: 5.1.9
 
   filesize@10.1.6: {}
 
@@ -11784,7 +11807,7 @@ snapshots:
       asynckit: 0.4.0
       combined-stream: 1.0.8
       es-set-tostringtag: 2.1.0
-      hasown: 2.0.2
+      hasown: 2.0.4
       mime-types: 2.1.35
 
   form-data@4.0.6:
@@ -11841,7 +11864,7 @@ snapshots:
     dependencies:
       at-least-node: 1.0.0
       graceful-fs: 4.2.11
-      jsonfile: 6.2.0
+      jsonfile: 6.2.1
       universalify: 2.0.1
 
   fs-minipass@2.1.0:
@@ -11865,7 +11888,7 @@ snapshots:
       call-bound: 1.0.4
       define-properties: 1.2.1
       functions-have-names: 1.2.3
-      hasown: 2.0.2
+      hasown: 2.0.4
       is-callable: 1.2.7
 
   functions-have-names@1.2.3: {}
@@ -11886,7 +11909,7 @@ snapshots:
       get-proto: 1.0.1
       gopd: 1.2.0
       has-symbols: 1.1.0
-      hasown: 2.0.2
+      hasown: 2.0.4
       math-intrinsics: 1.1.0
 
   get-pkg-repo@4.2.1:
@@ -11935,7 +11958,7 @@ snapshots:
   git-semver-tags@5.0.1:
     dependencies:
       meow: 8.1.2
-      semver: 7.7.2
+      semver: 7.7.4
 
   git-up@7.0.0:
     dependencies:
@@ -11971,14 +11994,14 @@ snapshots:
     dependencies:
       foreground-child: 3.3.1
       jackspeak: 4.2.1
-      minimatch: 10.1.2
+      minimatch: 10.2.5
       minipass: 7.1.2
       package-json-from-dist: 1.0.1
       path-scurry: 2.0.1
 
   glob@13.0.1:
     dependencies:
-      minimatch: 10.1.2
+      minimatch: 10.2.5
       minipass: 7.1.2
       path-scurry: 2.0.1
 
@@ -11987,7 +12010,7 @@ snapshots:
       fs.realpath: 1.0.0
       inflight: 1.0.6
       inherits: 2.0.4
-      minimatch: 3.1.2
+      minimatch: 3.1.5
       once: 1.4.0
       path-is-absolute: 1.0.1
 
@@ -12173,7 +12196,7 @@ snapshots:
 
   ignore-walk@8.0.0:
     dependencies:
-      minimatch: 10.1.2
+      minimatch: 10.2.5
 
   ignore@5.3.2: {}
 
@@ -12222,7 +12245,7 @@ snapshots:
       npm-package-arg: 13.0.1
       promzard: 2.0.0
       read: 4.1.0
-      semver: 7.7.2
+      semver: 7.7.4
       validate-npm-package-license: 3.0.4
       validate-npm-package-name: 6.0.2
 
@@ -12241,7 +12264,7 @@ snapshots:
   internal-slot@1.1.0:
     dependencies:
       es-errors: 1.3.0
-      hasown: 2.0.2
+      hasown: 2.0.4
       side-channel: 1.1.0
 
   ip-address@10.1.0: {}
@@ -12369,7 +12392,7 @@ snapshots:
       call-bound: 1.0.4
       gopd: 1.2.0
       has-tostringtag: 1.0.2
-      hasown: 2.0.2
+      hasown: 2.0.4
 
   is-set@2.0.3: {}
 
@@ -12674,7 +12697,7 @@ snapshots:
       npm-package-arg: 13.0.1
       npm-registry-fetch: 19.1.0
       proc-log: 5.0.0
-      semver: 7.7.2
+      semver: 7.7.4
       sigstore: 4.1.0
       ssri: 12.0.0
     transitivePeerDependencies:
@@ -12832,7 +12855,7 @@ snapshots:
 
   make-dir@4.0.0:
     dependencies:
-      semver: 7.7.2
+      semver: 7.7.4
 
   make-fetch-happen@10.2.1:
     dependencies:
@@ -12989,7 +13012,7 @@ snapshots:
 
   minimatch@3.0.5:
     dependencies:
-      brace-expansion: 1.1.12
+      brace-expansion: 1.1.16
 
   minimatch@3.1.2:
     dependencies:
@@ -12999,21 +13022,13 @@ snapshots:
     dependencies:
       brace-expansion: 1.1.16
 
-  minimatch@5.1.6:
-    dependencies:
-      brace-expansion: 2.0.2
-
   minimatch@5.1.9:
     dependencies:
       brace-expansion: 2.1.2
 
   minimatch@8.0.4:
     dependencies:
-      brace-expansion: 2.0.2
-
-  minimatch@9.0.5:
-    dependencies:
-      brace-expansion: 2.0.2
+      brace-expansion: 2.1.2
 
   minimatch@9.0.9:
     dependencies:
@@ -13125,7 +13140,7 @@ snapshots:
       array-differ: 3.0.0
       array-union: 2.1.0
       arrify: 2.0.1
-      minimatch: 3.0.5
+      minimatch: 3.1.5
 
   mute-stream@2.0.0: {}
 
@@ -13170,9 +13185,9 @@ snapshots:
       make-fetch-happen: 14.0.3
       nopt: 8.1.0
       proc-log: 5.0.0
-      semver: 7.7.2
+      semver: 7.7.4
       tar: 7.5.7
-      tinyglobby: 0.2.12
+      tinyglobby: 0.2.17
       which: 5.0.0
     transitivePeerDependencies:
       - supports-color
@@ -13218,8 +13233,8 @@ snapshots:
   normalize-package-data@3.0.3:
     dependencies:
       hosted-git-info: 4.1.0
-      is-core-module: 2.16.1
-      semver: 7.7.2
+      is-core-module: 2.16.2
+      semver: 7.7.4
       validate-npm-package-license: 3.0.4
 
   normalize-url@6.1.0: {}
@@ -13234,11 +13249,11 @@ snapshots:
 
   npm-install-checks@7.1.2:
     dependencies:
-      semver: 7.7.2
+      semver: 7.7.4
 
   npm-install-checks@8.0.0:
     dependencies:
-      semver: 7.7.2
+      semver: 7.7.4
 
   npm-normalize-package-bin@4.0.0: {}
 
@@ -13248,14 +13263,14 @@ snapshots:
     dependencies:
       hosted-git-info: 8.1.0
       proc-log: 5.0.0
-      semver: 7.7.2
+      semver: 7.7.4
       validate-npm-package-name: 6.0.2
 
   npm-package-arg@13.0.1:
     dependencies:
       hosted-git-info: 9.0.2
       proc-log: 5.0.0
-      semver: 7.7.2
+      semver: 7.7.4
       validate-npm-package-name: 6.0.2
 
   npm-packlist@10.0.3:
@@ -13268,14 +13283,14 @@ snapshots:
       npm-install-checks: 7.1.2
       npm-normalize-package-bin: 4.0.0
       npm-package-arg: 12.0.2
-      semver: 7.7.2
+      semver: 7.7.4
 
   npm-pick-manifest@11.0.3:
     dependencies:
       npm-install-checks: 8.0.0
       npm-normalize-package-bin: 5.0.0
       npm-package-arg: 13.0.1
-      semver: 7.7.2
+      semver: 7.7.4
 
   npm-registry-fetch@19.1.0:
     dependencies:
@@ -13321,7 +13336,7 @@ snapshots:
       open: 8.4.2
       ora: 5.3.0
       resolve.exports: 2.0.3
-      semver: 7.7.2
+      semver: 7.7.4
       string-width: 4.2.3
       tar-stream: 2.2.0
       tmp: 0.2.5
@@ -14551,8 +14566,8 @@ snapshots:
 
   tinyglobby@0.2.12:
     dependencies:
-      fdir: 6.5.0(picomatch@4.0.3)
-      picomatch: 4.0.3
+      fdir: 6.5.0(picomatch@4.0.5)
+      picomatch: 4.0.5
 
   tinyglobby@0.2.15:
     dependencies:

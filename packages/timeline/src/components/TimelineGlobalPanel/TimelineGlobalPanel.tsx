@@ -32,7 +32,8 @@ export const TimelineGlobalPanel = ({ engine }: TimelineGlobalPanelProps) => {
   const setSelectedTrackId = useAppStore((state) => state.setSelectedTimelineTrackId)
 
   const optionNodes = useNodeOptionNodes<TimelineOptionNodes>(DEFAULT_TIMELINE_ID)
-  const isPlayingNode = optionNodes['isPlaying']!
+  const isPlayingNode = optionNodes['isPlaying']
+  const durationSecondsNode = optionNodes['durationSeconds']
   const playHeadPositionNode = optionNodes['playheadPositionMs']
 
   const audioUrlNode = optionNodes['audioUrl']!
@@ -45,6 +46,7 @@ export const TimelineGlobalPanel = ({ engine }: TimelineGlobalPanelProps) => {
       <ControlGrid className="mb-xl">
         <NodeContainer nodeId={isPlayingNode.id} />
         <NodeContainer nodeId={audioUrlNode.id} />
+        <NodeContainer nodeId={durationSecondsNode.id} />
       </ControlGrid>
       <div className="mb-xl">
         <Timeline

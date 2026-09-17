@@ -12,6 +12,15 @@ import {
 } from '@store/types'
 
 /**
+ * Time variables passed to a plugin's `update`.
+ * Mirrors what sketches receive, minus `params`/`scene` (per-sketch concepts).
+ */
+export interface PluginUpdateArgs {
+  deltaFrame: number
+  deltaTime: number
+}
+
+/**
  * Class type for a Plugin.
  */
 export interface IPlugin {
@@ -63,6 +72,12 @@ export interface IPlugin {
    * Optional callback called after each input for this plugin is added
    */
   onNewInput?: (engine: HedronEngine, newInput: InputNode, targetNode: ParamNode | ShotNode) => void
+
+  /**
+   * Runs once per engine frame (live and during render), before sketches update.
+   * Time-based plugins (LFO, timeline) should advance state here instead of self-scheduling via rAF.
+   */
+  update?: (engine: HedronEngine, args: PluginUpdateArgs) => void
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
