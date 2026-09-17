@@ -10,10 +10,7 @@ import { createAddSketchToScene } from '@store/actionCreators/addSketch'
 import { createSetSketchModuleItem } from '@store/actionCreators/setSketchModuleItem'
 import { createDeleteSketchModule } from '@store/actionCreators/deleteSketchModule'
 import { createReconcileSketchNodes } from '@store/actionCreators/createReconcileSketchNodes'
-import {
-  createUpdateMultipleParamValues,
-  createUpdateParamValue,
-} from '@store/actionCreators/updateParamValue'
+import { createUpdateParamValue } from '@store/actionCreators/updateParamValue'
 import { createReset } from '@store/actionCreators/reset'
 import { createLoadProject } from '@store/actionCreators/loadProject'
 import { createAddInput } from '@store/actionCreators/createAddInput'
@@ -34,7 +31,6 @@ export const createEngineStore = () =>
           reconcileSketchNodes: createReconcileSketchNodes(set),
           setSketchModuleItem: createSetSketchModuleItem(set),
           updateParamValue: createUpdateParamValue(set),
-          updateMultipleParamValues: createUpdateMultipleParamValues(set),
           deleteSketchModule: createDeleteSketchModule(set),
           moveSketchUp: createMoveSketchUp(set),
           moveSketchDown: createMoveSketchDown(set),

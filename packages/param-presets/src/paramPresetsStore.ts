@@ -3,16 +3,18 @@ import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import { immer } from 'zustand/middleware/immer'
 
+export type ParamsPreset = Record<string, ParamValue | ParamValue[]>
+
 export interface ParamPresetStoreItem {
   title: string
-  paramValuesByKey: Record<string, ParamValue>
+  paramValuesByKey: ParamsPreset
 }
 
 interface ParamPresetsStoreState {
   byModuleId: Record<string, Record<string, ParamPresetStoreItem>>
-  addPreset: (moduleId: string, presetTitle: string, params: Record<string, ParamValue>) => void
+  addPreset: (moduleId: string, presetTitle: string, params: ParamsPreset) => void
   deletePreset: (moduleId: string, presetId: string) => void
-  overwritePreset: (moduleId: string, presetId: string, params: Record<string, ParamValue>) => void
+  overwritePreset: (moduleId: string, presetId: string, params: ParamsPreset) => void
   editPresetTitle: (moduleId: string, presetId: string, newTitle: string) => void
 }
 
