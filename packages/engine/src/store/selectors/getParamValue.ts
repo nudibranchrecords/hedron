@@ -35,9 +35,23 @@ export const getParamValue = (
 
   switch (node.valueType) {
     case 'file': {
+      const fileName = value as string | null | undefined
+
+      if (fileName === null) {
+        value = null
+        break
+      }
+
+      if (fileName === undefined) {
+        value = undefined
+        break
+      }
+
       const prefix = config.resourcesUrl ? `${config.resourcesUrl}/` : ''
-      const filePath = state.resources[value as string]?.filePath
-      value = `${prefix}${filePath}`
+      const filePath = state.resources[fileName]?.filePath
+
+      value = filePath ? `${prefix}${filePath}` : null
+      break
     }
   }
   return value
