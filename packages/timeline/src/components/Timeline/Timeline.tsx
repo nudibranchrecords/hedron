@@ -19,18 +19,14 @@ export type TimelineHandle = {
 }
 
 export interface TimelineProps {
-  /** Timeline data */
-  timeline: {
-    durationMs: number
-    tracks: TimelineManagerTrack[]
-  }
+  tracks: TimelineManagerTrack[]
+  durationMs: number
   playheadPositionMs: number
   activeTimelineComponentId: string | null
   selectedTrackId: string | null
   setSelectedTrackId: (trackId: string | null) => void
   setActiveTimelineComponentId: (id: string | null) => void
   componentId?: string
-  /** Initial pixels-per-second of timeline duration. Change later via the `setPxPerSecond` ref handle. */
   initialPxPerSecond?: number
   onPlayheadChange: (time: number) => void
   onKeyframeDelete: (keyframeId: string) => void
@@ -40,7 +36,8 @@ export interface TimelineProps {
 
 export const Timeline = forwardRef<TimelineHandle, TimelineProps>(function Timeline(
   {
-    timeline,
+    tracks,
+    durationMs,
     playheadPositionMs = 0,
     activeTimelineComponentId,
     selectedTrackId: _selectedTrackId,
@@ -55,7 +52,6 @@ export const Timeline = forwardRef<TimelineHandle, TimelineProps>(function Timel
   },
   ref,
 ) {
-  const { durationMs, tracks } = timeline
   const durationSec = durationMs / 1000
   const rulerAreaRef = useRef<HTMLDivElement>(null)
   const bodyRef = useRef<HTMLDivElement>(null)

@@ -8,7 +8,7 @@ import {
   ControlGrid,
   NodeContainer,
 } from '@hedron-gl/ui-core'
-import { useTimelineData } from '@/components/TimelineGlobalPanel/useTimelineData'
+import { useTimelineTracks } from '@/components/TimelineGlobalPanel/useTimelineTracks'
 import { useTimelineHandlers } from '@/components/TimelineGlobalPanel/useTimelineHandlers'
 import { useTimelineManager } from '@/components/TimelineGlobalPanel/useTimelineManager'
 import { DEFAULT_TIMELINE_ID } from '@/constants'
@@ -26,7 +26,7 @@ interface TimelineInputPanelProps {
  * (header, playhead, keyframes), scoped down to just this input's own track.
  */
 export const TimelineInputPanel = ({ input, engine }: TimelineInputPanelProps) => {
-  const timeline = useTimelineData()
+  const tracks = useTimelineTracks()
   const manager = useTimelineManager(DEFAULT_TIMELINE_ID)
 
   const { handlePlayheadChange, handleKeyframeDelete, handleKeyframeInsert, handleKeyframeMove } =
@@ -53,7 +53,10 @@ export const TimelineInputPanel = ({ input, engine }: TimelineInputPanelProps) =
   const playHeadPositionNode = timelineOptionNodes['playheadPositionMs']
   const playheadPositionMs = useParamValue<number>(playHeadPositionNode?.id, 0)
 
-  const track = findTrackById(timeline.tracks, input.id)
+  const track = findTrackById(tracks, input.id)
+
+  const durationNode = timelineOptionNodes['timelineDurationS']
+  const durationS = useParamValue<number>(durationNode?.id, 0)
 
   const zoomPxPerSecondNode = trackOptionNodes['zoomPxPerSecond']!
 
@@ -71,7 +74,8 @@ export const TimelineInputPanel = ({ input, engine }: TimelineInputPanelProps) =
 
       <Timeline
         ref={timelineRef}
-        timeline={{ durationMs: timeline.durationMs, tracks: track ? [track] : [] }}
+        durationMs={durationS * 1000}
+        tracks={track ? [track] : []}
         playheadPositionMs={playheadPositionMs}
         activeTimelineComponentId={activeTimelineComponentId}
         setActiveTimelineComponentId={setActiveTimelineComponentId}

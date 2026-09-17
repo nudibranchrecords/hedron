@@ -95,7 +95,7 @@ export const FloatSlider = forwardRef<FloatSliderHandle, FloatSliderProps>(funct
   )
 
   const onDoubleClick = useCallback(() => {
-    numberInput.current?.focus()
+    numberInput.current?.focus?.()
   }, [])
 
   const updateZeroPip = useCallback(() => {

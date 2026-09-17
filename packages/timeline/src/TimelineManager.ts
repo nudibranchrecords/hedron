@@ -1,7 +1,6 @@
 import { Clock } from '@hedron-gl/clock'
 import { ParamValue } from '@hedron-gl/engine'
 import type {
-  TimelineManagerData,
   TimelineManagerTrack,
   Keyframe,
   TimelineManagerAudioTrack,
@@ -14,7 +13,8 @@ export type TrackValues = Record<string, ParamValue>
 export type OnUpdateCallback = (values: TrackValues) => void
 
 export class TimelineManager {
-  private timelineData: TimelineManagerData
+  private tracks: TimelineManagerTrack[]
+  private durationMs: number
   private position = 0
   private playing = false
   private rafId: number | null = null
@@ -31,8 +31,17 @@ export class TimelineManager {
   // sync by buildCache() - avoids re-walking the track tree on every computeValues/emitUpdate call.
   private flatTracks: TimelineManagerTrack[] = []
 
-  constructor(timeline: TimelineManagerData, clock?: Clock) {
-    this.timelineData = timeline
+  constructor({
+    tracks,
+    durationMs,
+    clock,
+  }: {
+    tracks: TimelineManagerTrack[]
+    durationMs: number
+    clock?: Clock
+  }) {
+    this.tracks = tracks
+    this.durationMs = durationMs
     this.clock = clock ?? null
     this.buildCache()
   }
@@ -53,7 +62,7 @@ export class TimelineManager {
   private buildCache() {
     this.sortedKeyframesCache.clear()
     this.resetKeyframeIndexes()
-    this.flatTracks = this.flattenTracks(this.timelineData.tracks)
+    this.flatTracks = this.flattenTracks(this.tracks)
     for (const track of this.flatTracks) {
       switch (track.trackType) {
         case 'audio':
@@ -176,7 +185,7 @@ export class TimelineManager {
 
     if (this.lastFrameTime !== null) {
       const delta = now - this.lastFrameTime
-      this.position = Math.min(this.position + delta, this.timelineData.durationMs)
+      this.position = Math.min(this.position + delta, this.durationMs)
 
       if (this.clock) {
         this.clock.beatDeltaMs = this.position
@@ -186,7 +195,7 @@ export class TimelineManager {
 
     this.emitUpdate()
 
-    if (this.position >= this.timelineData.durationMs) {
+    if (this.position >= this.durationMs) {
       this.goTo(0)
     }
 
@@ -236,7 +245,7 @@ export class TimelineManager {
   }
 
   goTo(timeMs: number) {
-    this.position = Math.max(0, Math.min(timeMs, this.timelineData.durationMs))
+    this.position = Math.max(0, Math.min(timeMs, this.durationMs))
     this.lastFrameTime = null
     this.resetKeyframeIndexes()
     this.emitUpdate()
@@ -252,8 +261,13 @@ export class TimelineManager {
   }
 
   setTracks(tracks: TimelineManagerTrack[]) {
-    this.timelineData.tracks = tracks
+    this.tracks = tracks
     this.buildCache()
+    this.emitUpdate()
+  }
+
+  setDurationMs(durationMs: number) {
+    this.durationMs = durationMs
     this.emitUpdate()
   }
 

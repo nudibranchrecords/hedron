@@ -578,8 +578,13 @@ export class HedronEngine {
     this.renderer.passesNeedUpdate_webGPU = true
   }
 
-  public subscribeToParamValue(nodeId: string, callback: (value: ParamValue | undefined) => void) {
-    return this.store.subscribe((state) => state.paramValues[nodeId], callback)
+  public subscribeToParamValue<T extends ParamValue>(
+    nodeId: string,
+    callback: (value: T | undefined) => void,
+  ) {
+    return this.store.subscribe((state) => state.paramValues[nodeId] as T | undefined, callback, {
+      fireImmediately: true,
+    })
   }
 
   /**

@@ -8,7 +8,7 @@ import {
   ControlGrid,
   useSubscribeToParamValue,
 } from '@hedron-gl/ui-core'
-import { useTimelineData } from './useTimelineData'
+import { useTimelineTracks } from './useTimelineTracks'
 import { useTimelineHandlers } from './useTimelineHandlers'
 import { useTimelineManager } from './useTimelineManager'
 import { DEFAULT_TIMELINE_ID } from '@/constants'
@@ -20,7 +20,7 @@ interface TimelineGlobalPanelProps {
 }
 
 export const TimelineGlobalPanel = ({ engine }: TimelineGlobalPanelProps) => {
-  const timeline = useTimelineData()
+  const tracks = useTimelineTracks()
   const manager = useTimelineManager(DEFAULT_TIMELINE_ID)
 
   const { handlePlayheadChange, handleKeyframeDelete, handleKeyframeInsert, handleKeyframeMove } =
@@ -40,10 +40,12 @@ export const TimelineGlobalPanel = ({ engine }: TimelineGlobalPanelProps) => {
 
   const audioUrlNode = optionNodes['audioUrl']!
   const zoomPxPerSecondNode = optionNodes['zoomPxPerSecond']!
+  const durationNode = optionNodes['timelineDurationS']!
 
   // Not very performant to be updating state on every frame, later we'll want to do this imperatively using useSubscribeToParamValue
   const playheadPositionMs = useParamValue<number>(playHeadPositionNode?.id, 0)
   const initialZoomPxPerSecond = useParamValue<number>(zoomPxPerSecondNode.id, 80)
+  const durationS = useParamValue<number>(durationNode.id, 0)
 
   const timelineRef = useRef<TimelineHandle>(null)
 
@@ -54,14 +56,16 @@ export const TimelineGlobalPanel = ({ engine }: TimelineGlobalPanelProps) => {
   return (
     <div>
       <ControlGrid className="mb-xl">
+        <NodeContainer nodeId={zoomPxPerSecondNode.id} />
         <NodeContainer nodeId={isPlayingNode.id} />
         <NodeContainer nodeId={audioUrlNode.id} />
-        <NodeContainer nodeId={zoomPxPerSecondNode.id} />
+        <NodeContainer nodeId={durationNode.id} />
       </ControlGrid>
       <div className="mb-xl">
         <Timeline
           ref={timelineRef}
-          timeline={timeline}
+          durationMs={durationS * 1000}
+          tracks={tracks}
           playheadPositionMs={playheadPositionMs}
           activeTimelineComponentId={activeTimelineComponentId}
           setActiveTimelineComponentId={setActiveTimelineComponentId}

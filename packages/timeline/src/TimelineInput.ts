@@ -26,6 +26,13 @@ export const TIMELINE_OPTION_NODE_CONFIGS = defineOptionNodeConfigs([
   },
   {
     nodeType: 'param',
+    key: 'timelineDurationS',
+    valueType: 'number',
+    displayMode: 'field',
+    defaultValue: 30,
+  },
+  {
+    nodeType: 'param',
     key: 'isPlaying',
     valueType: 'boolean',
     defaultValue: false,
@@ -43,8 +50,8 @@ export const TIMELINE_OPTION_NODE_CONFIGS = defineOptionNodeConfigs([
     key: 'zoomPxPerSecond',
     title: 'Timeline Zoom',
     valueType: 'number',
-    defaultValue: 80,
-    sliderMin: 10,
+    defaultValue: 10,
+    sliderMin: 0.01,
     sliderMax: 300,
   },
 ])
@@ -89,17 +96,16 @@ export class TimelineInput implements IPlugin {
 
     this.timelineManagers.set(
       DEFAULT_TIMELINE_ID,
-      new TimelineManager(
-        {
-          durationMs: TIMELINE_DURATION,
-          tracks: [],
-        },
-        engine.clock,
-      ),
+      new TimelineManager({
+        durationMs: TIMELINE_DURATION,
+        tracks: [],
+        clock: engine.clock,
+      }),
     )
 
     this.timelineManagers.forEach((manager, timelineId) => {
       const isPlaying = engine.getNodeOptionNode(timelineId, 'isPlaying')
+      const timelineDurationS = engine.getNodeOptionNode(timelineId, 'timelineDurationS')
       const playHeadPositionNode = engine.getNodeOptionNode(timelineId, 'playheadPositionMs')
 
       engine.getStore().subscribe(
@@ -118,6 +124,12 @@ export class TimelineInput implements IPlugin {
           manager.play()
         } else {
           manager.pause()
+        }
+      })
+
+      engine.subscribeToParamValue<number>(timelineDurationS.id, (timelineDurationS) => {
+        if (timelineDurationS !== undefined && timelineDurationS > 0) {
+          manager.setDurationMs(timelineDurationS * 1000)
         }
       })
 

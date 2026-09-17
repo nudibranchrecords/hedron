@@ -7,12 +7,7 @@ import audioUrl from '../../../../apps/example-project/resources/120-4-4.mp3'
 import { TimelineManager } from '@/TimelineManager'
 import type { TrackValues } from '@/TimelineManager'
 import { Timeline, TimelineHandle } from '@/components/Timeline/Timeline'
-import type {
-  KeyframeParam,
-  TimelineManagerData,
-  TimelineManagerKeyframeTrack,
-  TimelineManagerTrack,
-} from '@/types'
+import type { KeyframeParam, TimelineManagerKeyframeTrack, TimelineManagerTrack } from '@/types'
 import { findTrackById } from '@/utils/findTrackById'
 import {
   deleteKeyframeFromTracks,
@@ -121,10 +116,8 @@ const baseTimelineArgs = {
 export const Default: Story = {
   args: {
     ...baseTimelineArgs,
-    timeline: {
-      durationMs: 10000,
-      tracks: [],
-    },
+    durationMs: 10000,
+    tracks: [],
     playheadPositionMs: 0,
   },
 }
@@ -132,22 +125,20 @@ export const Default: Story = {
 export const WithKeyframes: Story = {
   args: {
     ...baseTimelineArgs,
-    timeline: {
-      durationMs: 10000,
-      tracks: [
-        {
-          id: 'track-1',
-          label: 'Visibility',
-          trackType: 'keyframe',
-          keyframes: [
-            { id: 'kf-1', time: 1000, valueType: 'boolean', value: true, nodeType: 'param' },
-            { id: 'kf-2', time: 3000, valueType: 'boolean', value: false, nodeType: 'param' },
-            { id: 'kf-3', time: 5500, valueType: 'boolean', value: true, nodeType: 'param' },
-            { id: 'kf-4', time: 8000, valueType: 'boolean', value: false, nodeType: 'param' },
-          ],
-        },
-      ],
-    },
+    durationMs: 10000,
+    tracks: [
+      {
+        id: 'track-1',
+        label: 'Visibility',
+        trackType: 'keyframe',
+        keyframes: [
+          { id: 'kf-1', time: 1000, valueType: 'boolean', value: true, nodeType: 'param' },
+          { id: 'kf-2', time: 3000, valueType: 'boolean', value: false, nodeType: 'param' },
+          { id: 'kf-3', time: 5500, valueType: 'boolean', value: true, nodeType: 'param' },
+          { id: 'kf-4', time: 8000, valueType: 'boolean', value: false, nodeType: 'param' },
+        ],
+      },
+    ],
     playheadPositionMs: 3500,
   },
 }
@@ -155,38 +146,36 @@ export const WithKeyframes: Story = {
 export const WithVectorTrack: Story = {
   args: {
     ...baseTimelineArgs,
-    timeline: {
-      durationMs: 10000,
-      tracks: [
-        {
-          id: 'track-pos',
-          label: 'Position',
-          trackType: 'vector',
-          childTracks: [
-            {
-              id: 'track-pos-x',
-              label: 'X',
-              trackType: 'keyframe',
-              keyframes: [
-                { id: 'kf-px-1', time: 1000, valueType: 'number', value: 0, nodeType: 'param' },
-                { id: 'kf-px-2', time: 5000, valueType: 'number', value: 0.75, nodeType: 'param' },
-                { id: 'kf-px-3', time: 9000, valueType: 'number', value: -0.2, nodeType: 'param' },
-              ],
-            },
-            {
-              id: 'track-pos-y',
-              label: 'Y',
-              trackType: 'keyframe',
-              keyframes: [
-                { id: 'kf-py-1', time: 1500, valueType: 'number', value: -0.25, nodeType: 'param' },
-                { id: 'kf-py-2', time: 4500, valueType: 'number', value: 0.5, nodeType: 'param' },
-                { id: 'kf-py-3', time: 8000, valueType: 'number', value: 0.1, nodeType: 'param' },
-              ],
-            },
-          ],
-        },
-      ],
-    },
+    durationMs: 10000,
+    tracks: [
+      {
+        id: 'track-pos',
+        label: 'Position',
+        trackType: 'vector',
+        childTracks: [
+          {
+            id: 'track-pos-x',
+            label: 'X',
+            trackType: 'keyframe',
+            keyframes: [
+              { id: 'kf-px-1', time: 1000, valueType: 'number', value: 0, nodeType: 'param' },
+              { id: 'kf-px-2', time: 5000, valueType: 'number', value: 0.75, nodeType: 'param' },
+              { id: 'kf-px-3', time: 9000, valueType: 'number', value: -0.2, nodeType: 'param' },
+            ],
+          },
+          {
+            id: 'track-pos-y',
+            label: 'Y',
+            trackType: 'keyframe',
+            keyframes: [
+              { id: 'kf-py-1', time: 1500, valueType: 'number', value: -0.25, nodeType: 'param' },
+              { id: 'kf-py-2', time: 4500, valueType: 'number', value: 0.5, nodeType: 'param' },
+              { id: 'kf-py-3', time: 8000, valueType: 'number', value: 0.1, nodeType: 'param' },
+            ],
+          },
+        ],
+      },
+    ],
     playheadPositionMs: 4200,
   },
 }
@@ -202,7 +191,10 @@ export const Interactive = () => {
     STORY_COMPONENT_ID,
   )
   const [trackValues, setTrackValues] = useState<TrackValues>({})
-  const [timeline, setTimeline] = useState<TimelineManagerData>({
+  const [timeline, setTimeline] = useState<{
+    durationMs: number
+    tracks: TimelineManagerTrack[]
+  }>({
     durationMs: TIMELINE_DURATION,
     tracks: [
       {
@@ -399,7 +391,8 @@ export const Interactive = () => {
       </div>
       <Timeline
         ref={timelineRef}
-        timeline={timeline}
+        durationMs={timeline.durationMs}
+        tracks={timeline.tracks}
         playheadPositionMs={playheadPositionMs}
         activeTimelineComponentId={activeTimelineComponentId}
         selectedTrackId={selectedTrackId}
@@ -433,23 +426,22 @@ export const Interactive = () => {
 export const LongDuration: Story = {
   args: {
     ...baseTimelineArgs,
-    timeline: {
-      durationMs: 120000,
-      tracks: [
-        {
-          id: 'track-1',
-          label: 'Active',
-          trackType: 'keyframe',
-          keyframes: [
-            { id: 'kf-1', time: 10000, valueType: 'boolean', value: true, nodeType: 'param' },
-            { id: 'kf-2', time: 30000, valueType: 'boolean', value: false, nodeType: 'param' },
-            { id: 'kf-3', time: 60000, valueType: 'boolean', value: true, nodeType: 'param' },
-            { id: 'kf-4', time: 90000, valueType: 'boolean', value: false, nodeType: 'param' },
-            { id: 'kf-5', time: 110000, valueType: 'boolean', value: true, nodeType: 'param' },
-          ],
-        },
-      ],
-    },
+    durationMs: 120000,
+    tracks: [
+      {
+        id: 'track-1',
+        label: 'Active',
+        trackType: 'keyframe',
+        keyframes: [
+          { id: 'kf-1', time: 10000, valueType: 'boolean', value: true, nodeType: 'param' },
+          { id: 'kf-2', time: 30000, valueType: 'boolean', value: false, nodeType: 'param' },
+          { id: 'kf-3', time: 60000, valueType: 'boolean', value: true, nodeType: 'param' },
+          { id: 'kf-4', time: 90000, valueType: 'boolean', value: false, nodeType: 'param' },
+          { id: 'kf-5', time: 110000, valueType: 'boolean', value: true, nodeType: 'param' },
+        ],
+      },
+    ],
+
     playheadPositionMs: 45000,
   },
 }
