@@ -200,7 +200,7 @@ export const Interactive = () => {
   )
   const [trackValues, setTrackValues] = useState<TrackValues>({})
   const [timeline, setTimeline] = useState<TimelineManagerData>({
-    durationMs: 10000,
+    durationMs: 60000 * 3,
     tracks: [
       {
         id: 'track-audio',

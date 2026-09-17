@@ -5,6 +5,9 @@ import { TimelineTrack } from './TimelineTrack'
 import { TimelineManagerTrack } from '@/types'
 import { findTrackById } from '@/utils/findTrackById'
 
+// How many pixels represent one second of timeline duration, used to size the scrollable track area
+const PX_PER_SECOND = 80
+
 export interface TimelineProps {
   /** Timeline data */
   timeline: {
@@ -125,6 +128,7 @@ export function Timeline({
   const playheadPercent = (playheadPositionMs / durationMs) * 100
 
   const durationSec = durationMs / 1000
+  const trackAreaWidth = durationSec * PX_PER_SECOND
   const rulerMarks = []
   const step = durationSec <= 10 ? 1 : durationSec <= 60 ? 5 : 10
   for (let t = 0; t <= durationSec; t += step) {
@@ -144,7 +148,10 @@ export function Timeline({
           {(playheadPositionMs / 1000).toFixed(1)}s / {durationSec}s
         </span>
       </div>
-      <div className={c.body}>
+      <div
+        className={c.body}
+        style={{ '--trackAreaWidth': `${trackAreaWidth}px` } as React.CSSProperties}
+      >
         <div className={c.ruler} ref={rulerAreaRef}>
           {rulerMarks}
         </div>
