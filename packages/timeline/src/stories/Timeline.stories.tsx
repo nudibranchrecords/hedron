@@ -6,7 +6,7 @@ import { useState, useEffect, useRef, useCallback } from 'react'
 import audioUrl from '../../../../apps/example-project/resources/120-4-4.mp3'
 import { TimelineManager } from '@/TimelineManager'
 import type { TrackValues } from '@/TimelineManager'
-import { Timeline } from '@/components/Timeline/Timeline'
+import { Timeline, TimelineHandle } from '@/components/Timeline/Timeline'
 import type {
   KeyframeParam,
   TimelineManagerData,
@@ -195,6 +195,8 @@ export const Interactive = () => {
   const [playheadPositionMs, setPlayheadPositionMs] = useState(0)
   const [playing, setPlaying] = useState(false)
   const [selectedTrackId, setSelectedTrackId] = useState<string | null>(null)
+  const [pxPerSecond, setPxPerSecond] = useState(80)
+  const timelineRef = useRef<TimelineHandle>(null)
   const [activeTimelineComponentId, setActiveTimelineComponentId] = useState<string | null>(
     STORY_COMPONENT_ID,
   )
@@ -377,7 +379,25 @@ export const Interactive = () => {
           keyframe left/right to move it.
         </span>
       </div>
+      <div style={{ marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+        <label style={{ color: '#aaa', fontSize: '12px', width: '120px' }} htmlFor="px-per-second">
+          Zoom ({pxPerSecond}px/s)
+        </label>
+        <input
+          id="px-per-second"
+          type="range"
+          min={10}
+          max={300}
+          value={pxPerSecond}
+          onChange={(e) => {
+            const nextPxPerSecond = Number(e.target.value)
+            setPxPerSecond(nextPxPerSecond)
+            timelineRef.current?.setPxPerSecond(nextPxPerSecond)
+          }}
+        />
+      </div>
       <Timeline
+        ref={timelineRef}
         timeline={timeline}
         playheadPositionMs={playheadPositionMs}
         activeTimelineComponentId={activeTimelineComponentId}
@@ -385,6 +405,7 @@ export const Interactive = () => {
         setSelectedTrackId={setSelectedTrackId}
         setActiveTimelineComponentId={setActiveTimelineComponentId}
         componentId={STORY_COMPONENT_ID}
+        initialPxPerSecond={pxPerSecond}
         onPlayheadChange={handlePlayheadChange}
         onKeyframeDelete={handleKeyframeDelete}
         onKeyframeInsert={handleKeyframeInsert}

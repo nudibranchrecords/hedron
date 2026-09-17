@@ -1,12 +1,22 @@
-import { useCallback, useEffect, useId, useRef, useState } from 'react'
+import {
+  forwardRef,
+  useCallback,
+  useEffect,
+  useId,
+  useImperativeHandle,
+  useRef,
+  useState,
+} from 'react'
 import { usePlayheadScrub } from './usePlayheadScrub'
+import { usePxPerSecond } from './usePxPerSecond'
 import c from './Timeline.module.css'
 import { TimelineTrack } from './TimelineTrack'
 import { TimelineManagerTrack } from '@/types'
 import { findTrackById } from '@/utils/findTrackById'
 
-// How many pixels represent one second of timeline duration, used to size the scrollable track area
-const PX_PER_SECOND = 80
+export type TimelineHandle = {
+  setPxPerSecond: (pxPerSecond: number) => void
+}
 
 export interface TimelineProps {
   /** Timeline data */
@@ -20,27 +30,41 @@ export interface TimelineProps {
   setSelectedTrackId: (trackId: string | null) => void
   setActiveTimelineComponentId: (id: string | null) => void
   componentId?: string
+  /** Initial pixels-per-second of timeline duration. Change later via the `setPxPerSecond` ref handle. */
+  initialPxPerSecond?: number
   onPlayheadChange: (time: number) => void
   onKeyframeDelete: (keyframeId: string) => void
   onKeyframeInsert: (trackId: string, time: number) => void
   onKeyframeMove: (keyframeId: string, time: number) => void
 }
 
-export function Timeline({
-  timeline,
-  playheadPositionMs = 0,
-  activeTimelineComponentId,
-  selectedTrackId: _selectedTrackId,
-  setSelectedTrackId: _setSelectedTrackId,
-  componentId: _componentId,
-  setActiveTimelineComponentId,
-  onPlayheadChange,
-  onKeyframeDelete,
-  onKeyframeInsert,
-  onKeyframeMove,
-}: TimelineProps) {
+export const Timeline = forwardRef<TimelineHandle, TimelineProps>(function Timeline(
+  {
+    timeline,
+    playheadPositionMs = 0,
+    activeTimelineComponentId,
+    selectedTrackId: _selectedTrackId,
+    setSelectedTrackId: _setSelectedTrackId,
+    componentId: _componentId,
+    initialPxPerSecond = 80,
+    setActiveTimelineComponentId,
+    onPlayheadChange,
+    onKeyframeDelete,
+    onKeyframeInsert,
+    onKeyframeMove,
+  },
+  ref,
+) {
   const { durationMs, tracks } = timeline
+  const durationSec = durationMs / 1000
   const rulerAreaRef = useRef<HTMLDivElement>(null)
+  const bodyRef = useRef<HTMLDivElement>(null)
+  const { pxPerSecond, setPxPerSecond } = usePxPerSecond({
+    bodyRef,
+    durationMs,
+    playheadPositionMs,
+    initialPxPerSecond,
+  })
 
   // To prevent clashing of keyboard events, we need to keep track of which component is the active one
   const fallbackId = useId()
@@ -123,12 +147,13 @@ export function Timeline({
     setSelectedKeyframes,
   ])
 
+  useImperativeHandle(ref, () => ({ setPxPerSecond }), [setPxPerSecond])
+
   usePlayheadScrub(durationMs, rulerAreaRef, playheadPositionMs, onPlayheadChange)
 
   const playheadPercent = (playheadPositionMs / durationMs) * 100
 
-  const durationSec = durationMs / 1000
-  const trackAreaWidth = durationSec * PX_PER_SECOND
+  const trackAreaWidth = durationSec * pxPerSecond
   const rulerMarks = []
   const step = durationSec <= 10 ? 1 : durationSec <= 60 ? 5 : 10
   for (let t = 0; t <= durationSec; t += step) {
@@ -150,6 +175,7 @@ export function Timeline({
       </div>
       <div
         className={c.body}
+        ref={bodyRef}
         style={{ '--trackAreaWidth': `${trackAreaWidth}px` } as React.CSSProperties}
       >
         <div className={c.ruler} ref={rulerAreaRef}>
@@ -175,4 +201,4 @@ export function Timeline({
       </div>
     </div>
   )
-}
+})
