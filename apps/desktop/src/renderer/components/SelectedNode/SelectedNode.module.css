@@ -21,3 +21,19 @@
   color: var(--textColorLight2);
   font-style: italic;
 }
+
+.sceneList {
+  display: flex;
+  gap: var(--gapXLarge);
+}
+
+.sceneItem {
+  display: flex;
+  align-items: center;
+  gap: var(--gapSmall);
+  color: var(--textColor1);
+}
+
+.sceneLabel {
+  line-height: 1.2;
+}

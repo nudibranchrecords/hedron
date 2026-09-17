@@ -19,7 +19,7 @@ export const createReconcileSketchNodes: SetterCreator<'reconcileSketchNodes'> =
       const moduleId = sketch.moduleId
       const { config } = state.sketchModules[moduleId]
 
-      const existingIds = new Set(sketch.nodeIds)
+      const existingIds = new Set(sketch.childGroups.nodeIds)
       const newNodeIds: string[] = []
 
       // 1. Add new nodes that are in the config but not in the current sketch.
@@ -53,7 +53,6 @@ export const createReconcileSketchNodes: SetterCreator<'reconcileSketchNodes'> =
         deleteNode(state, oldNodeId)
       }
 
-      sketch.nodeIds = newNodeIds
       sketch.childGroups.nodeIds = newNodeIds
     })
   }

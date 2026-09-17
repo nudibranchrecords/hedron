@@ -9,7 +9,7 @@ export const getSketchShotNodes = (state: EngineState, sketchId: string) => {
     return []
   }
 
-  return sketch.nodeIds
+  return sketch.childGroups.nodeIds
     .map((id) => nodes[id])
     .filter((node): node is ShotNode => node?.nodeType === 'shot')
 }

@@ -429,7 +429,9 @@ const ControllerItem: React.FC<ControllerItemProps> = ({
     let sketch = null
     if (matchingInput?.targetNodeId) {
       const foundSketch = Object.values(nodes).find(
-        (node) => node?.nodeType === 'sketch' && node.nodeIds?.includes(matchingInput.targetNodeId),
+        (node) =>
+          node?.nodeType === 'sketch' &&
+          node.childGroups.nodeIds?.includes(matchingInput.targetNodeId),
       )
       sketch = foundSketch || null
     }
