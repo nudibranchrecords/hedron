@@ -13,6 +13,12 @@ import type {
   TimelineManagerKeyframeTrack,
   TimelineManagerTrack,
 } from '@/types'
+import { findTrackById } from '@/utils/findTrackById'
+import {
+  deleteKeyframeFromTracks,
+  insertKeyframeIntoTracks,
+  moveKeyframeInTracks,
+} from '@/utils/keyframeOperations'
 
 import '@hedron-gl/ui-core/icons.css'
 import '@hedron-gl/ui-core/base.css'
@@ -43,6 +49,7 @@ const NOOP_SET_ACTIVE_TIMELINE_COMPONENT_ID: (id: string | null) => void = () =>
 const NOOP_ON_PLAYHEAD_CHANGE: (time: number) => void = () => {}
 const NOOP_ON_KEYFRAME_DELETE: (keyframeId: string) => void = () => {}
 const NOOP_ON_KEYFRAME_INSERT: (trackId: string, time: number) => void = () => {}
+const NOOP_ON_KEYFRAME_MOVE: (keyframeId: string, time: number) => void = () => {}
 
 const createInsertedKeyframe = (time: number, lastKeyframe?: KeyframeParam): KeyframeParam => {
   if (!lastKeyframe) {
@@ -108,6 +115,7 @@ const baseTimelineArgs = {
   onPlayheadChange: NOOP_ON_PLAYHEAD_CHANGE,
   onKeyframeDelete: NOOP_ON_KEYFRAME_DELETE,
   onKeyframeInsert: NOOP_ON_KEYFRAME_INSERT,
+  onKeyframeMove: NOOP_ON_KEYFRAME_MOVE,
 }
 
 export const Default: Story = {
@@ -309,55 +317,27 @@ export const Interactive = () => {
   const handleKeyframeDelete = useCallback((keyframeId: string) => {
     setTimeline((prev) => ({
       ...prev,
-      tracks: prev.tracks.map((track) => {
-        const deleteKeyframes = (track: TimelineManagerTrack): TimelineManagerTrack => {
-          if (track.trackType === 'keyframe') {
-            return {
-              ...track,
-              keyframes: track.keyframes.filter((kf) => kf.id !== keyframeId),
-            }
-          }
-          if (track.trackType === 'vector') {
-            return {
-              ...track,
-              childTracks: track.childTracks.map(deleteKeyframes) as TimelineManagerKeyframeTrack[],
-            }
-          }
-          return track
-        }
-
-        return deleteKeyframes(track)
-      }),
+      tracks: deleteKeyframeFromTracks(prev.tracks, keyframeId),
     }))
   }, [])
 
   const handleKeyframeInsert = useCallback((trackId: string, time: number) => {
+    setTimeline((prev) => {
+      const track = findTrackById(prev.tracks, trackId) as TimelineManagerKeyframeTrack | null
+      const lastKeyframe = track?.keyframes[track.keyframes.length - 1] as KeyframeParam | undefined
+      const insertedKeyframe = createInsertedKeyframe(time, lastKeyframe)
+
+      return {
+        ...prev,
+        tracks: insertKeyframeIntoTracks(prev.tracks, trackId, insertedKeyframe),
+      }
+    })
+  }, [])
+
+  const handleKeyframeMove = useCallback((keyframeId: string, time: number) => {
     setTimeline((prev) => ({
       ...prev,
-      tracks: prev.tracks.map((track) => {
-        const insertKeyframe = (track: TimelineManagerTrack): TimelineManagerTrack => {
-          if (track.trackType === 'keyframe' && track.id === trackId) {
-            const lastKeyframe = track.keyframes[track.keyframes.length - 1] as KeyframeParam
-            const insertedKeyframe = createInsertedKeyframe(time, lastKeyframe)
-
-            return {
-              ...track,
-              keyframes: [...track.keyframes, insertedKeyframe].sort((a, b) => a.time - b.time),
-            }
-          }
-          if (track.trackType === 'vector') {
-            return {
-              ...track,
-              childTracks: track.childTracks.map(
-                insertKeyframe as (track: TimelineManagerTrack) => TimelineManagerKeyframeTrack,
-              ),
-            }
-          }
-          return track
-        }
-
-        return insertKeyframe(track)
-      }),
+      tracks: moveKeyframeInTracks(prev.tracks, keyframeId, time),
     }))
   }, [])
 
@@ -393,7 +373,8 @@ export const Interactive = () => {
         </button>
         <span style={{ color: '#aaa', fontSize: '12px' }}>
           Click a track header to select it. Press &quot;i&quot; to insert a keyframe at the
-          playhead. Click a keyframe to select it, then press &quot;x&quot; to delete.
+          playhead. Click a keyframe to select it, then press &quot;x&quot; to delete. Drag a
+          keyframe left/right to move it.
         </span>
       </div>
       <Timeline
@@ -407,6 +388,7 @@ export const Interactive = () => {
         onPlayheadChange={handlePlayheadChange}
         onKeyframeDelete={handleKeyframeDelete}
         onKeyframeInsert={handleKeyframeInsert}
+        onKeyframeMove={handleKeyframeMove}
       />
       <div style={{ marginTop: '12px', fontFamily: 'monospace', fontSize: '12px', color: '#ccc' }}>
         <div style={{ marginBottom: '4px', color: '#888' }}>Track Values:</div>

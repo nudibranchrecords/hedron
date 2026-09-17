@@ -21,10 +21,11 @@ export const TimelineGlobalPanel = ({ engine }: TimelineGlobalPanelProps) => {
   const timeline = useTimelineData()
   const manager = useTimelineManager(DEFAULT_TIMELINE_ID)
 
-  const { handlePlayheadChange, handleKeyframeDelete, handleKeyframeInsert } = useTimelineHandlers({
-    engine,
-    manager,
-  })
+  const { handlePlayheadChange, handleKeyframeDelete, handleKeyframeInsert, handleKeyframeMove } =
+    useTimelineHandlers({
+      engine,
+      manager,
+    })
 
   const activeTimelineComponentId = useAppStore((state) => state.activeTimelineComponentId)
   const setActiveTimelineComponentId = useAppStore((state) => state.setActiveTimelineComponentId)
@@ -57,6 +58,7 @@ export const TimelineGlobalPanel = ({ engine }: TimelineGlobalPanelProps) => {
           onPlayheadChange={handlePlayheadChange}
           onKeyframeDelete={handleKeyframeDelete}
           onKeyframeInsert={handleKeyframeInsert}
+          onKeyframeMove={handleKeyframeMove}
         />
       </div>
       Click track name to select track. Insert keyframe: [i]. Delete keyframe: [x].

@@ -22,10 +22,11 @@ export const TimelineInputPanel = ({ input, engine }: TimelineInputPanelProps) =
   const timeline = useTimelineData()
   const manager = useTimelineManager(DEFAULT_TIMELINE_ID)
 
-  const { handlePlayheadChange, handleKeyframeDelete, handleKeyframeInsert } = useTimelineHandlers({
-    engine,
-    manager,
-  })
+  const { handlePlayheadChange, handleKeyframeDelete, handleKeyframeInsert, handleKeyframeMove } =
+    useTimelineHandlers({
+      engine,
+      manager,
+    })
 
   const activeTimelineComponentId = useAppStore((state) => state.activeTimelineComponentId)
   const setActiveTimelineComponentId = useAppStore((state) => state.setActiveTimelineComponentId)
@@ -58,6 +59,7 @@ export const TimelineInputPanel = ({ input, engine }: TimelineInputPanelProps) =
       onPlayheadChange={handlePlayheadChange}
       onKeyframeDelete={handleKeyframeDelete}
       onKeyframeInsert={handleKeyframeInsert}
+      onKeyframeMove={handleKeyframeMove}
     />
   )
 }

@@ -20,6 +20,7 @@ export interface TimelineProps {
   onPlayheadChange: (time: number) => void
   onKeyframeDelete: (keyframeId: string) => void
   onKeyframeInsert: (trackId: string, time: number) => void
+  onKeyframeMove: (keyframeId: string, time: number) => void
 }
 
 export function Timeline({
@@ -33,6 +34,7 @@ export function Timeline({
   onPlayheadChange,
   onKeyframeDelete,
   onKeyframeInsert,
+  onKeyframeMove,
 }: TimelineProps) {
   const { durationMs, tracks } = timeline
   const rulerAreaRef = useRef<HTMLDivElement>(null)
@@ -156,6 +158,7 @@ export function Timeline({
             durationMs={durationMs}
             selectedKeyframes={selectedKeyframes}
             setSelectedKeyframes={setSelectedKeyframes}
+            onKeyframeMove={onKeyframeMove}
           />
         ))}
         <div
