@@ -192,6 +192,7 @@ export const WithVectorTrack: Story = {
 }
 
 export const Interactive = () => {
+  const TIMELINE_DURATION = 60000 * 3
   const [playheadPositionMs, setPlayheadPositionMs] = useState(0)
   const [playing, setPlaying] = useState(false)
   const [selectedTrackId, setSelectedTrackId] = useState<string | null>(null)
@@ -202,7 +203,7 @@ export const Interactive = () => {
   )
   const [trackValues, setTrackValues] = useState<TrackValues>({})
   const [timeline, setTimeline] = useState<TimelineManagerData>({
-    durationMs: 60000 * 3,
+    durationMs: TIMELINE_DURATION,
     tracks: [
       {
         id: 'track-audio',
@@ -276,11 +277,11 @@ export const Interactive = () => {
 
   useEffect(() => {
     const manager = new TimelineManager({
-      durationMs: 10000,
+      durationMs: TIMELINE_DURATION,
       tracks: [],
     })
     managerRef.current = manager
-  }, [])
+  }, [TIMELINE_DURATION])
 
   useEffect(() => {
     const manager = managerRef.current
