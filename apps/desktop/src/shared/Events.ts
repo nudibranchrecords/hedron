@@ -39,6 +39,7 @@ export enum DialogEvents {
 export enum FileEvents {
   SaveProject = 'save-project',
   OpenFolder = 'open-folder',
+  OpenSketchSourceFile = 'open-sketch-source-file',
 }
 
 type ResponseCanceled = {

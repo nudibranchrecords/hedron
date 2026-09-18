@@ -12,6 +12,7 @@ export type IconName =
   | 'bolt'
   | 'cable'
   | 'close'
+  | 'code'
   | 'content_copy'
   | 'delete'
   | 'description'
