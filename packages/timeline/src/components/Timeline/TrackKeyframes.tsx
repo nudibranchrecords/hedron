@@ -1,3 +1,4 @@
+import { RefObject } from 'react'
 import { Keyframe } from './Keyframe'
 import { TimelineManagerKeyframeTrack } from '@/types'
 
@@ -6,6 +7,8 @@ interface TrackKeyframesProps {
   durationMs: number
   selectedKeyframes: string[] | null
   setSelectedKeyframes: (keyframeIds: string[] | null) => void
+  containerRef: RefObject<HTMLDivElement>
+  onKeyframeMove: (keyframeId: string, time: number) => void
 }
 
 export const TrackKeyframes = ({
@@ -13,18 +16,22 @@ export const TrackKeyframes = ({
   durationMs,
   selectedKeyframes,
   setSelectedKeyframes,
+  containerRef,
+  onKeyframeMove,
 }: TrackKeyframesProps) => (
   <>
     {track.keyframes.map((kf) => {
-      const percent = (kf.time / durationMs) * 100
       const isKeyframeSelected = selectedKeyframes?.includes(kf.id) ?? false
       return (
         <Keyframe
           key={kf.id}
           id={kf.id}
-          percentPos={percent}
           isSelected={isKeyframeSelected}
+          time={kf.time}
+          trackDurationMs={durationMs}
+          trackRef={containerRef}
           onClick={() => setSelectedKeyframes([kf.id])}
+          onMove={(time) => onKeyframeMove(kf.id, time)}
         />
       )
     })}

@@ -62,11 +62,6 @@ export type TimelineManagerTrack =
   | TimelineManagerAudioTrack
   | TimelineManagerVectorTrack
 
-export interface TimelineManagerData {
-  durationMs: number
-  tracks: TimelineManagerTrack[]
-}
-
 export interface TimelineNode extends CustomNode {
   customNodeType: 'timeline'
   childGroups: CustomNode['childGroups'] & {

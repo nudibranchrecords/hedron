@@ -4,6 +4,7 @@ import { useNodeOptionNodes } from '@hedron-gl/ui-core'
 import { DEFAULT_TIMELINE_ID } from '@/constants'
 import { TimelineManager } from '@/TimelineManager'
 import type { Keyframe, KeyframeParam, TimelineTrackInput } from '@/types'
+import { addKeyframe, removeKeyframe, setKeyframeTime } from '@/utils/keyframeOperations'
 
 interface UseTimelineHandlersParams {
   engine: HedronEngine
@@ -31,7 +32,7 @@ export const useTimelineHandlers = ({ engine, manager }: UseTimelineHandlersPara
         if (!inputNode) continue
 
         const currentKeyframes: Keyframe[] = inputNode.customData?.keyframes ?? []
-        const nextKeyframes = currentKeyframes.filter((kf) => kf.id !== keyframeId)
+        const nextKeyframes = removeKeyframe(currentKeyframes, keyframeId)
 
         if (nextKeyframes.length === currentKeyframes.length) continue
 
@@ -81,18 +82,37 @@ export const useTimelineHandlers = ({ engine, manager }: UseTimelineHandlersPara
         )
       }
 
-      const nextKeyframes: Keyframe[] = [...(inputNode.customData?.keyframes ?? []), keyframe].sort(
-        (a, b) => a.time - b.time,
-      )
+      const nextKeyframes = addKeyframe(inputNode.customData?.keyframes ?? [], keyframe)
 
       engine.setNodeCustomData(trackId, { keyframes: nextKeyframes })
     },
     [engine],
   )
 
+  const handleKeyframeMove = useCallback(
+    (keyframeId: string, time: number) => {
+      for (const track of manager.getAllTracks()) {
+        const inputNode = engine.getNode<TimelineTrackInput>(track.id)
+
+        if (!inputNode) continue
+
+        const currentKeyframes: Keyframe[] = inputNode.customData?.keyframes ?? []
+
+        if (!currentKeyframes.some((kf) => kf.id === keyframeId)) continue
+
+        engine.setNodeCustomData(track.id, {
+          keyframes: setKeyframeTime(currentKeyframes, keyframeId, time),
+        })
+        return
+      }
+    },
+    [engine, manager],
+  )
+
   return {
     handlePlayheadChange,
     handleKeyframeDelete,
     handleKeyframeInsert,
+    handleKeyframeMove,
   }
 }

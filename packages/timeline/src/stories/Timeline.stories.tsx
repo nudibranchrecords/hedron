@@ -6,13 +6,14 @@ import { useState, useEffect, useRef, useCallback } from 'react'
 import audioUrl from '../../../../apps/example-project/resources/120-4-4.mp3'
 import { TimelineManager } from '@/TimelineManager'
 import type { TrackValues } from '@/TimelineManager'
-import { Timeline } from '@/components/Timeline/Timeline'
-import type {
-  KeyframeParam,
-  TimelineManagerData,
-  TimelineManagerKeyframeTrack,
-  TimelineManagerTrack,
-} from '@/types'
+import { Timeline, TimelineHandle } from '@/components/Timeline/Timeline'
+import type { KeyframeParam, TimelineManagerKeyframeTrack, TimelineManagerTrack } from '@/types'
+import { findTrackById } from '@/utils/findTrackById'
+import {
+  deleteKeyframeFromTracks,
+  insertKeyframeIntoTracks,
+  moveKeyframeInTracks,
+} from '@/utils/keyframeOperations'
 
 import '@hedron-gl/ui-core/icons.css'
 import '@hedron-gl/ui-core/base.css'
@@ -43,6 +44,7 @@ const NOOP_SET_ACTIVE_TIMELINE_COMPONENT_ID: (id: string | null) => void = () =>
 const NOOP_ON_PLAYHEAD_CHANGE: (time: number) => void = () => {}
 const NOOP_ON_KEYFRAME_DELETE: (keyframeId: string) => void = () => {}
 const NOOP_ON_KEYFRAME_INSERT: (trackId: string, time: number) => void = () => {}
+const NOOP_ON_KEYFRAME_MOVE: (keyframeId: string, time: number) => void = () => {}
 
 const createInsertedKeyframe = (time: number, lastKeyframe?: KeyframeParam): KeyframeParam => {
   if (!lastKeyframe) {
@@ -108,15 +110,14 @@ const baseTimelineArgs = {
   onPlayheadChange: NOOP_ON_PLAYHEAD_CHANGE,
   onKeyframeDelete: NOOP_ON_KEYFRAME_DELETE,
   onKeyframeInsert: NOOP_ON_KEYFRAME_INSERT,
+  onKeyframeMove: NOOP_ON_KEYFRAME_MOVE,
 }
 
 export const Default: Story = {
   args: {
     ...baseTimelineArgs,
-    timeline: {
-      durationMs: 10000,
-      tracks: [],
-    },
+    durationMs: 10000,
+    tracks: [],
     playheadPositionMs: 0,
   },
 }
@@ -124,22 +125,20 @@ export const Default: Story = {
 export const WithKeyframes: Story = {
   args: {
     ...baseTimelineArgs,
-    timeline: {
-      durationMs: 10000,
-      tracks: [
-        {
-          id: 'track-1',
-          label: 'Visibility',
-          trackType: 'keyframe',
-          keyframes: [
-            { id: 'kf-1', time: 1000, valueType: 'boolean', value: true, nodeType: 'param' },
-            { id: 'kf-2', time: 3000, valueType: 'boolean', value: false, nodeType: 'param' },
-            { id: 'kf-3', time: 5500, valueType: 'boolean', value: true, nodeType: 'param' },
-            { id: 'kf-4', time: 8000, valueType: 'boolean', value: false, nodeType: 'param' },
-          ],
-        },
-      ],
-    },
+    durationMs: 10000,
+    tracks: [
+      {
+        id: 'track-1',
+        label: 'Visibility',
+        trackType: 'keyframe',
+        keyframes: [
+          { id: 'kf-1', time: 1000, valueType: 'boolean', value: true, nodeType: 'param' },
+          { id: 'kf-2', time: 3000, valueType: 'boolean', value: false, nodeType: 'param' },
+          { id: 'kf-3', time: 5500, valueType: 'boolean', value: true, nodeType: 'param' },
+          { id: 'kf-4', time: 8000, valueType: 'boolean', value: false, nodeType: 'param' },
+        ],
+      },
+    ],
     playheadPositionMs: 3500,
   },
 }
@@ -147,52 +146,56 @@ export const WithKeyframes: Story = {
 export const WithVectorTrack: Story = {
   args: {
     ...baseTimelineArgs,
-    timeline: {
-      durationMs: 10000,
-      tracks: [
-        {
-          id: 'track-pos',
-          label: 'Position',
-          trackType: 'vector',
-          childTracks: [
-            {
-              id: 'track-pos-x',
-              label: 'X',
-              trackType: 'keyframe',
-              keyframes: [
-                { id: 'kf-px-1', time: 1000, valueType: 'number', value: 0, nodeType: 'param' },
-                { id: 'kf-px-2', time: 5000, valueType: 'number', value: 0.75, nodeType: 'param' },
-                { id: 'kf-px-3', time: 9000, valueType: 'number', value: -0.2, nodeType: 'param' },
-              ],
-            },
-            {
-              id: 'track-pos-y',
-              label: 'Y',
-              trackType: 'keyframe',
-              keyframes: [
-                { id: 'kf-py-1', time: 1500, valueType: 'number', value: -0.25, nodeType: 'param' },
-                { id: 'kf-py-2', time: 4500, valueType: 'number', value: 0.5, nodeType: 'param' },
-                { id: 'kf-py-3', time: 8000, valueType: 'number', value: 0.1, nodeType: 'param' },
-              ],
-            },
-          ],
-        },
-      ],
-    },
+    durationMs: 10000,
+    tracks: [
+      {
+        id: 'track-pos',
+        label: 'Position',
+        trackType: 'vector',
+        childTracks: [
+          {
+            id: 'track-pos-x',
+            label: 'X',
+            trackType: 'keyframe',
+            keyframes: [
+              { id: 'kf-px-1', time: 1000, valueType: 'number', value: 0, nodeType: 'param' },
+              { id: 'kf-px-2', time: 5000, valueType: 'number', value: 0.75, nodeType: 'param' },
+              { id: 'kf-px-3', time: 9000, valueType: 'number', value: -0.2, nodeType: 'param' },
+            ],
+          },
+          {
+            id: 'track-pos-y',
+            label: 'Y',
+            trackType: 'keyframe',
+            keyframes: [
+              { id: 'kf-py-1', time: 1500, valueType: 'number', value: -0.25, nodeType: 'param' },
+              { id: 'kf-py-2', time: 4500, valueType: 'number', value: 0.5, nodeType: 'param' },
+              { id: 'kf-py-3', time: 8000, valueType: 'number', value: 0.1, nodeType: 'param' },
+            ],
+          },
+        ],
+      },
+    ],
     playheadPositionMs: 4200,
   },
 }
 
 export const Interactive = () => {
+  const TIMELINE_DURATION = 60000 * 3
   const [playheadPositionMs, setPlayheadPositionMs] = useState(0)
   const [playing, setPlaying] = useState(false)
   const [selectedTrackId, setSelectedTrackId] = useState<string | null>(null)
+  const [pxPerSecond, setPxPerSecond] = useState(80)
+  const timelineRef = useRef<TimelineHandle>(null)
   const [activeTimelineComponentId, setActiveTimelineComponentId] = useState<string | null>(
     STORY_COMPONENT_ID,
   )
   const [trackValues, setTrackValues] = useState<TrackValues>({})
-  const [timeline, setTimeline] = useState<TimelineManagerData>({
-    durationMs: 10000,
+  const [timeline, setTimeline] = useState<{
+    durationMs: number
+    tracks: TimelineManagerTrack[]
+  }>({
+    durationMs: TIMELINE_DURATION,
     tracks: [
       {
         id: 'track-audio',
@@ -266,11 +269,11 @@ export const Interactive = () => {
 
   useEffect(() => {
     const manager = new TimelineManager({
-      durationMs: 10000,
+      durationMs: TIMELINE_DURATION,
       tracks: [],
     })
     managerRef.current = manager
-  }, [])
+  }, [TIMELINE_DURATION])
 
   useEffect(() => {
     const manager = managerRef.current
@@ -278,7 +281,7 @@ export const Interactive = () => {
 
     manager.onUpdate((changed) => {
       setTrackValues((prev) => ({ ...prev, ...changed }))
-      setPlayheadPositionMs(manager.getPosition())
+      setPlayheadPositionMs(manager.getPositionMs())
     })
 
     return () => manager.dispose()
@@ -309,55 +312,27 @@ export const Interactive = () => {
   const handleKeyframeDelete = useCallback((keyframeId: string) => {
     setTimeline((prev) => ({
       ...prev,
-      tracks: prev.tracks.map((track) => {
-        const deleteKeyframes = (track: TimelineManagerTrack): TimelineManagerTrack => {
-          if (track.trackType === 'keyframe') {
-            return {
-              ...track,
-              keyframes: track.keyframes.filter((kf) => kf.id !== keyframeId),
-            }
-          }
-          if (track.trackType === 'vector') {
-            return {
-              ...track,
-              childTracks: track.childTracks.map(deleteKeyframes) as TimelineManagerKeyframeTrack[],
-            }
-          }
-          return track
-        }
-
-        return deleteKeyframes(track)
-      }),
+      tracks: deleteKeyframeFromTracks(prev.tracks, keyframeId),
     }))
   }, [])
 
   const handleKeyframeInsert = useCallback((trackId: string, time: number) => {
+    setTimeline((prev) => {
+      const track = findTrackById(prev.tracks, trackId) as TimelineManagerKeyframeTrack | null
+      const lastKeyframe = track?.keyframes[track.keyframes.length - 1] as KeyframeParam | undefined
+      const insertedKeyframe = createInsertedKeyframe(time, lastKeyframe)
+
+      return {
+        ...prev,
+        tracks: insertKeyframeIntoTracks(prev.tracks, trackId, insertedKeyframe),
+      }
+    })
+  }, [])
+
+  const handleKeyframeMove = useCallback((keyframeId: string, time: number) => {
     setTimeline((prev) => ({
       ...prev,
-      tracks: prev.tracks.map((track) => {
-        const insertKeyframe = (track: TimelineManagerTrack): TimelineManagerTrack => {
-          if (track.trackType === 'keyframe' && track.id === trackId) {
-            const lastKeyframe = track.keyframes[track.keyframes.length - 1] as KeyframeParam
-            const insertedKeyframe = createInsertedKeyframe(time, lastKeyframe)
-
-            return {
-              ...track,
-              keyframes: [...track.keyframes, insertedKeyframe].sort((a, b) => a.time - b.time),
-            }
-          }
-          if (track.trackType === 'vector') {
-            return {
-              ...track,
-              childTracks: track.childTracks.map(
-                insertKeyframe as (track: TimelineManagerTrack) => TimelineManagerKeyframeTrack,
-              ),
-            }
-          }
-          return track
-        }
-
-        return insertKeyframe(track)
-      }),
+      tracks: moveKeyframeInTracks(prev.tracks, keyframeId, time),
     }))
   }, [])
 
@@ -393,20 +368,42 @@ export const Interactive = () => {
         </button>
         <span style={{ color: '#aaa', fontSize: '12px' }}>
           Click a track header to select it. Press &quot;i&quot; to insert a keyframe at the
-          playhead. Click a keyframe to select it, then press &quot;x&quot; to delete.
+          playhead. Click a keyframe to select it, then press &quot;x&quot; to delete. Drag a
+          keyframe left/right to move it.
         </span>
       </div>
+      <div style={{ marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+        <label style={{ color: '#aaa', fontSize: '12px', width: '120px' }} htmlFor="px-per-second">
+          Zoom ({pxPerSecond}px/s)
+        </label>
+        <input
+          id="px-per-second"
+          type="range"
+          min={10}
+          max={300}
+          value={pxPerSecond}
+          onChange={(e) => {
+            const nextPxPerSecond = Number(e.target.value)
+            setPxPerSecond(nextPxPerSecond)
+            timelineRef.current?.setPxPerSecond(nextPxPerSecond)
+          }}
+        />
+      </div>
       <Timeline
-        timeline={timeline}
+        ref={timelineRef}
+        durationMs={timeline.durationMs}
+        tracks={timeline.tracks}
         playheadPositionMs={playheadPositionMs}
         activeTimelineComponentId={activeTimelineComponentId}
         selectedTrackId={selectedTrackId}
         setSelectedTrackId={setSelectedTrackId}
         setActiveTimelineComponentId={setActiveTimelineComponentId}
         componentId={STORY_COMPONENT_ID}
+        initialPxPerSecond={pxPerSecond}
         onPlayheadChange={handlePlayheadChange}
         onKeyframeDelete={handleKeyframeDelete}
         onKeyframeInsert={handleKeyframeInsert}
+        onKeyframeMove={handleKeyframeMove}
       />
       <div style={{ marginTop: '12px', fontFamily: 'monospace', fontSize: '12px', color: '#ccc' }}>
         <div style={{ marginBottom: '4px', color: '#888' }}>Track Values:</div>
@@ -429,23 +426,22 @@ export const Interactive = () => {
 export const LongDuration: Story = {
   args: {
     ...baseTimelineArgs,
-    timeline: {
-      durationMs: 120000,
-      tracks: [
-        {
-          id: 'track-1',
-          label: 'Active',
-          trackType: 'keyframe',
-          keyframes: [
-            { id: 'kf-1', time: 10000, valueType: 'boolean', value: true, nodeType: 'param' },
-            { id: 'kf-2', time: 30000, valueType: 'boolean', value: false, nodeType: 'param' },
-            { id: 'kf-3', time: 60000, valueType: 'boolean', value: true, nodeType: 'param' },
-            { id: 'kf-4', time: 90000, valueType: 'boolean', value: false, nodeType: 'param' },
-            { id: 'kf-5', time: 110000, valueType: 'boolean', value: true, nodeType: 'param' },
-          ],
-        },
-      ],
-    },
+    durationMs: 120000,
+    tracks: [
+      {
+        id: 'track-1',
+        label: 'Active',
+        trackType: 'keyframe',
+        keyframes: [
+          { id: 'kf-1', time: 10000, valueType: 'boolean', value: true, nodeType: 'param' },
+          { id: 'kf-2', time: 30000, valueType: 'boolean', value: false, nodeType: 'param' },
+          { id: 'kf-3', time: 60000, valueType: 'boolean', value: true, nodeType: 'param' },
+          { id: 'kf-4', time: 90000, valueType: 'boolean', value: false, nodeType: 'param' },
+          { id: 'kf-5', time: 110000, valueType: 'boolean', value: true, nodeType: 'param' },
+        ],
+      },
+    ],
+
     playheadPositionMs: 45000,
   },
 }

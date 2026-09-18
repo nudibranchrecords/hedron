@@ -3,7 +3,7 @@ import css from './NumberInput.module.css'
 
 export type NumberInputHandle = {
   updateValue: (value: number) => void
-  focus: () => void
+  focus?: () => void
 }
 
 export interface NumberInputProps extends React.HTMLAttributes<HTMLDivElement> {

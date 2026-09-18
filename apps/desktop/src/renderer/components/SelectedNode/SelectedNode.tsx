@@ -5,12 +5,14 @@ import {
   PopoutMenu,
   useEngineStore,
   useAppStore,
-  ParamNumberOptions,
   HedronErrorBoundary,
   inputIcon,
   PanelSubHeader,
   Button,
   IconName,
+  ControlGrid,
+  useNodeOptionNodes,
+  NodeContainer,
 } from '@hedron-gl/ui-core'
 import { useCallback, useMemo } from 'react'
 import { IPlugin } from '@hedron-gl/engine'
@@ -27,6 +29,9 @@ export const SelectedNode = () => {
       'SelectedNode component: selected node not found. This component should only be used when a node is selected',
     )
   }
+
+  const optionNodes = useNodeOptionNodes(selectedNode.id)
+  const optionNodeList = Object.values(optionNodes)
 
   const selectedInputId = useAppStore((state) => state.selectedInputs[selectedNode.id])
   const setSelectedInputId = useAppStore((state) => state.setSelectedInput)
@@ -127,14 +132,13 @@ export const SelectedNode = () => {
             iconName="settings"
           />
 
-          {(() => {
-            switch (selectedNode.valueType) {
-              case 'number':
-                return <ParamNumberOptions id={selectedNode.id} />
-              default:
-                return <i>No options yet for {selectedNode.valueType}</i>
-            }
-          })()}
+          {optionNodeList.length > 0 && (
+            <ControlGrid>
+              {optionNodeList.map(
+                (node) => node && <NodeContainer key={node.id} nodeId={node.id} />,
+              )}
+            </ControlGrid>
+          )}
         </div>
       )}
     </>
