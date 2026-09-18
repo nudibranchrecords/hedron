@@ -281,7 +281,7 @@ export const Interactive = () => {
 
     manager.onUpdate((changed) => {
       setTrackValues((prev) => ({ ...prev, ...changed }))
-      setPlayheadPositionMs(manager.getPosition())
+      setPlayheadPositionMs(manager.getPositionMs())
     })
 
     return () => manager.dispose()

@@ -15,7 +15,7 @@ export type OnUpdateCallback = (values: TrackValues) => void
 export class TimelineManager {
   private tracks: TimelineManagerTrack[]
   private durationMs: number
-  private position = 0
+  private positionMs = 0
   private playing = false
   private rafId: number | null = null
   private lastFrameTime: number | null = null
@@ -91,7 +91,7 @@ export class TimelineManager {
     let value = startIndex > 0 ? sorted[startIndex - 1].value : undefined
     let lastIndex = startIndex
     for (let i = startIndex; i < sorted.length; i++) {
-      if (sorted[i].time > this.position) break
+      if (sorted[i].time > this.positionMs) break
       value = sorted[i].value
       lastIndex = i + 1
     }
@@ -101,7 +101,7 @@ export class TimelineManager {
     const current = sorted[lastIndex - 1]
     const next = sorted[lastIndex]
     if (current?.valueType === 'number' && next?.valueType === 'number') {
-      const t = (this.position - current.time) / (next.time - current.time)
+      const t = (this.positionMs - current.time) / (next.time - current.time)
       return current.value + (next.value - current.value) * t
     }
 
@@ -112,7 +112,7 @@ export class TimelineManager {
   // keyframes crossed (time <= position) increases since the last check.
   private getShouldShotFire(track: TimelineManagerTrack): true | undefined {
     const sorted = this.sortedKeyframesCache.get(track.id) ?? []
-    const count = sorted.filter((kf) => kf.time < this.position).length
+    const count = sorted.filter((kf) => kf.time < this.positionMs).length
     const lastCount = this.shotKeyframeCount.get(track.id) ?? 0
     this.shotKeyframeCount.set(track.id, count)
     return count > lastCount ? true : undefined
@@ -185,17 +185,17 @@ export class TimelineManager {
 
     if (this.lastFrameTime !== null) {
       const delta = now - this.lastFrameTime
-      this.position = Math.min(this.position + delta, this.durationMs)
+      this.positionMs = Math.min(this.positionMs + delta, this.durationMs)
 
       if (this.clock) {
-        this.clock.beatDeltaMs = this.position
+        this.clock.beatDeltaMs = this.positionMs
       }
     }
     this.lastFrameTime = now
 
     this.emitUpdate()
 
-    if (this.position >= this.durationMs) {
+    if (this.positionMs >= this.durationMs) {
       this.goTo(0)
     }
 
@@ -210,7 +210,7 @@ export class TimelineManager {
     if (this.playing) return
 
     if (this.clock) {
-      this.clock.beatDeltaMs = this.position
+      this.clock.beatDeltaMs = this.positionMs
       this.clock.continue()
     }
 
@@ -220,7 +220,7 @@ export class TimelineManager {
 
     // Play audio tracks
     for (const { audio } of this.getAudioTracksWithAudio()) {
-      audio.currentTime = this.position / 1000
+      audio.currentTime = this.positionMs / 1000
       audio.play()
     }
   }
@@ -245,19 +245,20 @@ export class TimelineManager {
   }
 
   goTo(timeMs: number) {
-    this.position = Math.max(0, Math.min(timeMs, this.durationMs))
+    this.positionMs = Math.max(0, Math.min(timeMs, this.durationMs))
     this.lastFrameTime = null
     this.resetKeyframeIndexes()
-    this.emitUpdate()
 
     if (this.clock) {
-      this.clock.beatDeltaMs = this.position
+      this.clock.beatDeltaMs = this.positionMs
     }
 
     // Seek audio tracks
     for (const { audio } of this.getAudioTracksWithAudio()) {
-      audio.currentTime = this.position / 1000
+      audio.currentTime = this.positionMs / 1000
     }
+
+    this.emitUpdate()
   }
 
   setTracks(tracks: TimelineManagerTrack[]) {
@@ -267,16 +268,18 @@ export class TimelineManager {
   }
 
   setDurationMs(durationMs: number) {
-    this.durationMs = durationMs
-    this.emitUpdate()
+    this.durationMs = Math.max(0, durationMs)
+
+    // Ensure position stays within the new duration
+    this.goTo(Math.min(this.positionMs, this.durationMs))
   }
 
   onUpdate(callback: OnUpdateCallback) {
     this.onUpdateCallback = callback
   }
 
-  getPosition() {
-    return this.position
+  getPositionMs() {
+    return this.positionMs
   }
 
   isPlaying() {

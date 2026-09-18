@@ -134,7 +134,7 @@ export class TimelineInput implements IPlugin {
       })
 
       manager.onUpdate((changed) => {
-        engine.setParamValue(playHeadPositionNode.id, manager.getPosition())
+        engine.setParamValue(playHeadPositionNode.id, manager.getPositionMs())
 
         const changedTrackIds = Object.keys(changed)
         if (changedTrackIds.length > 0) {

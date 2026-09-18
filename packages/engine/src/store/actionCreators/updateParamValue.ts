@@ -14,13 +14,12 @@ export function flushParamValueBuffer(setState: EngineStore['setState']) {
     (state) => {
       for (const paramId in tempParamValueBuffer) {
         state.paramValues[paramId] = tempParamValueBuffer[paramId]
+
+        // remove from buffer
+        delete tempParamValueBuffer[paramId]
       }
     },
     undefined,
     'ignore/paramValues',
   )
-  // Clear buffer after flush
-  for (const paramId in tempParamValueBuffer) {
-    delete tempParamValueBuffer[paramId]
-  }
 }
