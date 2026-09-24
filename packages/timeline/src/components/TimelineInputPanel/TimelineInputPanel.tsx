@@ -1,19 +1,14 @@
-import { useEffect, useId, useRef } from 'react'
+import { useEffect, useId } from 'react'
 import { HedronEngine, InputNode } from '@hedron-gl/engine'
-import {
-  useNodeOptionNodes,
-  useParamValue,
-  useAppStore,
-  useSubscribeToParamValue,
-  ControlGrid,
-  NodeContainer,
-} from '@hedron-gl/ui-core'
-import { useTimelineTracks } from '@/components/TimelineGlobalPanel/useTimelineTracks'
-import { useTimelineHandlers } from '@/components/TimelineGlobalPanel/useTimelineHandlers'
-import { useTimelineManager } from '@/components/TimelineGlobalPanel/useTimelineManager'
+import { ControlGrid, NodeContainer } from '@hedron-gl/ui-core'
+import { useTimelineTracks } from '@/components/hooks/useTimelineTracks'
+import { useTimelineHandlers } from '@/components/hooks/useTimelineHandlers'
+import { useTimelineManager } from '@/components/hooks/useTimelineManager'
+import { useTimelineState } from '@/components/hooks/useTimelineState'
+import { useTimelineHandle } from '@/components/hooks/useTimelineHandle'
+import { useTimelineOptionNodes } from '@/components/hooks/useTimelineOptionNodes'
 import { DEFAULT_TIMELINE_ID } from '@/constants'
-import { Timeline, TimelineHandle } from '@/components/Timeline/Timeline'
-import { TimelineOptionNodes } from '@/TimelineInput'
+import { Timeline } from '@/components/Timeline/Timeline'
 import { findTrackById } from '@/utils/findTrackById'
 
 interface TimelineInputPanelProps {
@@ -29,16 +24,23 @@ export const TimelineInputPanel = ({ input, engine }: TimelineInputPanelProps) =
   const tracks = useTimelineTracks()
   const manager = useTimelineManager(DEFAULT_TIMELINE_ID)
 
-  const { handlePlayheadChange, handleKeyframeDelete, handleKeyframeInsert, handleKeyframeMove } =
-    useTimelineHandlers({
-      engine,
-      manager,
-    })
+  const {
+    handlePlayheadChange,
+    handleKeyframeDelete,
+    handleKeyframeInsert,
+    handleKeyframeMove,
+    handlePlayPauseToggle,
+  } = useTimelineHandlers({
+    engine,
+    manager,
+  })
 
-  const activeTimelineComponentId = useAppStore((state) => state.activeTimelineComponentId)
-  const setActiveTimelineComponentId = useAppStore((state) => state.setActiveTimelineComponentId)
-  const selectedTrackId = useAppStore((state) => state.selectedTimelineTrackId)
-  const setSelectedTrackId = useAppStore((state) => state.setSelectedTimelineTrackId)
+  const {
+    activeTimelineComponentId,
+    setActiveTimelineComponentId,
+    selectedTrackId,
+    setSelectedTrackId,
+  } = useTimelineState()
 
   const timelineComponentId = useId()
 
@@ -48,23 +50,12 @@ export const TimelineInputPanel = ({ input, engine }: TimelineInputPanelProps) =
     setActiveTimelineComponentId(timelineComponentId)
   }, [input.id, setSelectedTrackId, setActiveTimelineComponentId, timelineComponentId])
 
-  const timelineOptionNodes = useNodeOptionNodes<TimelineOptionNodes>(DEFAULT_TIMELINE_ID)
-  const trackOptionNodes = useNodeOptionNodes<TimelineOptionNodes>(input.id)
-  const playHeadPositionNode = timelineOptionNodes['playheadPositionMs']
-  const playheadPositionMs = useParamValue<number>(playHeadPositionNode?.id, 0)
+  const { playheadPositionMs, durationS } = useTimelineOptionNodes()
+  const { zoomPxPerSecondNode } = useTimelineOptionNodes(input.id)
 
   const track = findTrackById(tracks, input.id)
 
-  const durationNode = timelineOptionNodes['timelineDurationS']
-  const durationS = useParamValue<number>(durationNode?.id, 0)
-
-  const zoomPxPerSecondNode = trackOptionNodes['zoomPxPerSecond']!
-
-  const timelineRef = useRef<TimelineHandle>(null)
-
-  useSubscribeToParamValue<number>(zoomPxPerSecondNode.id, (value) => {
-    timelineRef.current?.setPxPerSecond(value)
-  })
+  const timelineRef = useTimelineHandle(zoomPxPerSecondNode.id)
 
   return (
     <>
@@ -86,6 +77,7 @@ export const TimelineInputPanel = ({ input, engine }: TimelineInputPanelProps) =
         onKeyframeDelete={handleKeyframeDelete}
         onKeyframeInsert={handleKeyframeInsert}
         onKeyframeMove={handleKeyframeMove}
+        onPlayPauseToggle={handlePlayPauseToggle}
       />
     </>
   )

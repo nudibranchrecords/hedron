@@ -45,6 +45,7 @@ const NOOP_ON_PLAYHEAD_CHANGE: (time: number) => void = () => {}
 const NOOP_ON_KEYFRAME_DELETE: (keyframeId: string) => void = () => {}
 const NOOP_ON_KEYFRAME_INSERT: (trackId: string, time: number) => void = () => {}
 const NOOP_ON_KEYFRAME_MOVE: (keyframeId: string, time: number) => void = () => {}
+const NOOP_ON_PLAY_PAUSE_TOGGLE = () => {}
 
 const createInsertedKeyframe = (time: number, lastKeyframe?: KeyframeParam): KeyframeParam => {
   if (!lastKeyframe) {
@@ -111,6 +112,7 @@ const baseTimelineArgs = {
   onKeyframeDelete: NOOP_ON_KEYFRAME_DELETE,
   onKeyframeInsert: NOOP_ON_KEYFRAME_INSERT,
   onKeyframeMove: NOOP_ON_KEYFRAME_MOVE,
+  onPlayPauseToggle: NOOP_ON_PLAY_PAUSE_TOGGLE,
 }
 
 export const Default: Story = {
@@ -404,6 +406,7 @@ export const Interactive = () => {
         onKeyframeDelete={handleKeyframeDelete}
         onKeyframeInsert={handleKeyframeInsert}
         onKeyframeMove={handleKeyframeMove}
+        onPlayPauseToggle={handlePlayPause}
       />
       <div style={{ marginTop: '12px', fontFamily: 'monospace', fontSize: '12px', color: '#ccc' }}>
         <div style={{ marginBottom: '4px', color: '#888' }}>Track Values:</div>
