@@ -32,6 +32,7 @@ export interface TimelineProps {
   onKeyframeDelete: (keyframeId: string) => void
   onKeyframeInsert: (trackId: string, time: number) => void
   onKeyframeMove: (keyframeId: string, time: number) => void
+  onPlayPauseToggle: () => void
 }
 
 export const Timeline = forwardRef<TimelineHandle, TimelineProps>(function Timeline(
@@ -40,7 +41,7 @@ export const Timeline = forwardRef<TimelineHandle, TimelineProps>(function Timel
     durationMs,
     playheadPositionMs = 0,
     activeTimelineComponentId,
-    selectedTrackId: _selectedTrackId,
+    selectedTrackId,
     setSelectedTrackId: _setSelectedTrackId,
     componentId: _componentId,
     initialPxPerSecond = 80,
@@ -49,6 +50,7 @@ export const Timeline = forwardRef<TimelineHandle, TimelineProps>(function Timel
     onKeyframeDelete,
     onKeyframeInsert,
     onKeyframeMove,
+    onPlayPauseToggle,
   },
   ref,
 ) {
@@ -68,10 +70,7 @@ export const Timeline = forwardRef<TimelineHandle, TimelineProps>(function Timel
 
   const isActiveComponent = componentId === activeTimelineComponentId
 
-  const [_selectedKeyframes, _setSelectedKeyframes] = useState<string[] | null>(null)
-
-  const selectedKeyframes = isActiveComponent ? _selectedKeyframes : null
-  const selectedTrackId = isActiveComponent ? _selectedTrackId : null
+  const [selectedKeyframes, _setSelectedKeyframes] = useState<string[] | null>(null)
 
   const setSelectedKeyframes = useCallback(
     (keyframes: string[] | null) => {
@@ -113,6 +112,16 @@ export const Timeline = forwardRef<TimelineHandle, TimelineProps>(function Timel
       ) {
         return
       }
+
+      // Play/pause on space
+      if (e.key === ' ') {
+        e.preventDefault()
+        onPlayPauseToggle()
+      }
+
+      // Don't handle events below if this component is not active
+      if (!isActiveComponent) return
+
       if (e.key === 'x' && selectedKeyframes) {
         selectedKeyframes.forEach((keyframeId) => {
           onKeyframeDelete(keyframeId)
@@ -136,11 +145,13 @@ export const Timeline = forwardRef<TimelineHandle, TimelineProps>(function Timel
   }, [
     selectedKeyframes,
     onKeyframeDelete,
-    selectedTrackId,
     playheadPositionMs,
     onKeyframeInsert,
     tracks,
     setSelectedKeyframes,
+    isActiveComponent,
+    selectedTrackId,
+    onPlayPauseToggle,
   ])
 
   useImperativeHandle(ref, () => ({ setPxPerSecond }), [setPxPerSecond])

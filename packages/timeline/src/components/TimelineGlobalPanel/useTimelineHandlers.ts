@@ -1,6 +1,6 @@
 import { useCallback } from 'react'
 import { HedronEngine } from '@hedron-gl/engine'
-import { useNodeOptionNodes } from '@hedron-gl/ui-core'
+import { useNodeOptionNodes, useParamValue } from '@hedron-gl/ui-core'
 import { DEFAULT_TIMELINE_ID } from '@/constants'
 import { TimelineManager } from '@/TimelineManager'
 import type { Keyframe, KeyframeParam, TimelineTrackInput } from '@/types'
@@ -14,6 +14,9 @@ interface UseTimelineHandlersParams {
 export const useTimelineHandlers = ({ engine, manager }: UseTimelineHandlersParams) => {
   const optionNodes = useNodeOptionNodes(DEFAULT_TIMELINE_ID)
   const playheadPosNodeId = optionNodes['playheadPositionMs']?.id
+  const isPlayingNodeId = optionNodes['isPlaying']?.id
+
+  const isPlaying = useParamValue<boolean>(isPlayingNodeId, false)
 
   const handlePlayheadChange = useCallback(
     (time: number) => {
@@ -109,10 +112,16 @@ export const useTimelineHandlers = ({ engine, manager }: UseTimelineHandlersPara
     [engine, manager],
   )
 
+  const handlePlayPauseToggle = useCallback(() => {
+    console.log(isPlaying)
+    engine.setParamValue(isPlayingNodeId, !isPlaying)
+  }, [engine, isPlayingNodeId, isPlaying])
+
   return {
     handlePlayheadChange,
     handleKeyframeDelete,
     handleKeyframeInsert,
     handleKeyframeMove,
+    handlePlayPauseToggle,
   }
 }
