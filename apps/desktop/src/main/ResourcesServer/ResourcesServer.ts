@@ -3,8 +3,8 @@ import http from 'http'
 import fs from 'fs'
 import path from 'path'
 import chokidar, { FSWatcher } from 'chokidar'
+import send from 'send'
 import { getPort } from 'get-port-please'
-import { getContentTypeFromFileName } from '@utils/getContentTypeFromFileName'
 import { FileWatchEvents } from '@shared/Events'
 
 const HOST = process.platform.startsWith('win') ? 'localhost' : '0.0.0.0'
@@ -50,20 +50,23 @@ export class ResourcesServer extends EventEmitter {
         return
       }
 
-      fs.readFile(filePath, (err, data) => {
-        if (err) {
-          res.writeHead(404)
-          res.end()
-          return
-        }
+      res.setHeader('Access-Control-Allow-Origin', '*')
+      res.setHeader('Cache-Control', 'no-cache')
 
-        res.writeHead(200, {
-          'Content-Type': getContentTypeFromFileName(fileName),
-          'Access-Control-Allow-Origin': '*',
-          'Cache-Control': 'no-cache',
-        })
-        res.end(data)
+      send(req, fileName, {
+        root: dirPath,
+        cacheControl: false,
       })
+        .on('error', (error) => {
+          if (res.headersSent) {
+            res.destroy()
+            return
+          }
+
+          res.writeHead(error.status || 404)
+          res.end()
+        })
+        .pipe(res)
     })
 
     await new Promise<void>((resolve) => {
