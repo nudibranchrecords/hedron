@@ -4,6 +4,7 @@ import {
   useEffect,
   useId,
   useImperativeHandle,
+  useMemo,
   useRef,
   useState,
 } from 'react'
@@ -11,8 +12,38 @@ import { usePlayheadScrub } from './usePlayheadScrub'
 import { usePxPerSecond } from './usePxPerSecond'
 import c from './Timeline.module.css'
 import { TimelineTrack } from './TimelineTrack'
-import { TimelineManagerTrack } from '@/types'
+import { AlignedKeyframe, TimelineManagerTrack } from '@/types'
 import { findTrackById } from '@/utils/findTrackById'
+
+const KEYFRAME_ALIGNMENT_TOLERANCE_MS = 8
+
+const getAlignedKeyframes = (
+  tracks: TimelineManagerTrack[],
+  playheadPositionMs: number,
+): AlignedKeyframe[] => {
+  const alignedKeyframes: AlignedKeyframe[] = []
+
+  for (const track of tracks) {
+    if (track.trackType === 'vector') {
+      alignedKeyframes.push(...getAlignedKeyframes(track.childTracks, playheadPositionMs))
+      continue
+    }
+
+    if (track.trackType !== 'keyframe') continue
+
+    for (const keyframe of track.keyframes) {
+      if (Math.abs(keyframe.time - playheadPositionMs) <= KEYFRAME_ALIGNMENT_TOLERANCE_MS) {
+        alignedKeyframes.push({
+          trackId: track.id,
+          targetNodeId: track.targetNodeId,
+          keyframe,
+        })
+      }
+    }
+  }
+
+  return alignedKeyframes
+}
 
 export type TimelineHandle = {
   setPxPerSecond: (pxPerSecond: number) => void
@@ -33,6 +64,7 @@ export interface TimelineProps {
   onKeyframeInsert: (trackId: string, time: number) => void
   onKeyframeMove: (keyframeId: string, time: number) => void
   onPlayPauseToggle: () => void
+  onAlignedKeyframesChange?: (alignedKeyframes: AlignedKeyframe[]) => void
 }
 
 export const Timeline = forwardRef<TimelineHandle, TimelineProps>(function Timeline(
@@ -51,6 +83,7 @@ export const Timeline = forwardRef<TimelineHandle, TimelineProps>(function Timel
     onKeyframeInsert,
     onKeyframeMove,
     onPlayPauseToggle,
+    onAlignedKeyframesChange,
   },
   ref,
 ) {
@@ -71,6 +104,14 @@ export const Timeline = forwardRef<TimelineHandle, TimelineProps>(function Timel
   const isActiveComponent = componentId === activeTimelineComponentId
 
   const [selectedKeyframes, _setSelectedKeyframes] = useState<string[] | null>(null)
+  const alignedKeyframes = useMemo(
+    () => getAlignedKeyframes(tracks, playheadPositionMs),
+    [tracks, playheadPositionMs],
+  )
+  const alignedKeyframeIds = useMemo(
+    () => new Set(alignedKeyframes.map(({ keyframe }) => keyframe.id)),
+    [alignedKeyframes],
+  )
 
   const setSelectedKeyframes = useCallback(
     (keyframes: string[] | null) => {
@@ -156,6 +197,10 @@ export const Timeline = forwardRef<TimelineHandle, TimelineProps>(function Timel
 
   useImperativeHandle(ref, () => ({ setPxPerSecond }), [setPxPerSecond])
 
+  useEffect(() => {
+    onAlignedKeyframesChange?.(alignedKeyframes)
+  }, [alignedKeyframes, onAlignedKeyframesChange])
+
   usePlayheadScrub(durationMs, rulerAreaRef, playheadPositionMs, onPlayheadChange)
 
   const playheadPercent = (playheadPositionMs / durationMs) * 100
@@ -198,6 +243,7 @@ export const Timeline = forwardRef<TimelineHandle, TimelineProps>(function Timel
             durationMs={durationMs}
             selectedKeyframes={selectedKeyframes}
             setSelectedKeyframes={setSelectedKeyframes}
+            alignedKeyframeIds={alignedKeyframeIds}
             onKeyframeMove={onKeyframeMove}
           />
         ))}

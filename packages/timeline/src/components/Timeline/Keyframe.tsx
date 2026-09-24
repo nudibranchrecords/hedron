@@ -6,6 +6,7 @@ interface KeyframeProps {
   id: string
   onClick?: (keyframeId: string) => void
   isSelected: boolean
+  isAlignedWithPlayhead: boolean
   time: number
   trackDurationMs: number
   trackRef: RefObject<HTMLDivElement>
@@ -15,6 +16,7 @@ interface KeyframeProps {
 export const Keyframe = ({
   onClick,
   isSelected,
+  isAlignedWithPlayhead,
   id,
   time,
   trackDurationMs,
@@ -64,7 +66,7 @@ export const Keyframe = ({
   return (
     <div
       key={id}
-      className={`${c.keyframe} ${isKeyframeSelected ? c.keyframeSelected : ''}`}
+      className={`${c.keyframe} ${isKeyframeSelected ? c.keyframeSelected : ''} ${isAlignedWithPlayhead ? c.keyframeAligned : ''}`}
       style={{ left: `${percent}%` }}
       onMouseDown={handleMouseDown}
       onClick={(e) => {

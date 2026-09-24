@@ -14,6 +14,7 @@ interface TimelineTrackProps {
   durationMs: number
   selectedKeyframes: string[] | null
   setSelectedKeyframes: (keyframes: string[] | null) => void
+  alignedKeyframeIds: Set<string>
   onKeyframeMove: (keyframeId: string, time: number) => void
 }
 
@@ -53,6 +54,7 @@ export const TimelineTrack = ({
   durationMs,
   selectedKeyframes,
   setSelectedKeyframes,
+  alignedKeyframeIds,
   onKeyframeMove,
 }: TimelineTrackProps) => {
   const [isExpanded, setIsExpanded] = useState<boolean>(false)
@@ -81,6 +83,7 @@ export const TimelineTrack = ({
               durationMs={durationMs}
               selectedKeyframes={selectedKeyframes}
               setSelectedKeyframes={setSelectedKeyframes}
+              alignedKeyframeIds={alignedKeyframeIds}
               containerRef={trackBodyRef}
               onKeyframeMove={onKeyframeMove}
             />
@@ -90,12 +93,16 @@ export const TimelineTrack = ({
               const isSelected = !getKeyframesAtTime(track.childTracks, time).some(
                 (kfId) => !selectedKeyframes?.includes(kfId),
               )
+              const isAlignedWithPlayhead = getKeyframesAtTime(track.childTracks, time).some(
+                (kfId) => alignedKeyframeIds.has(kfId),
+              )
 
               return (
                 <Keyframe
                   key={index}
                   id={index.toString()}
                   isSelected={isSelected}
+                  isAlignedWithPlayhead={isAlignedWithPlayhead}
                   time={time}
                   trackDurationMs={durationMs}
                   trackRef={trackBodyRef}
@@ -124,6 +131,7 @@ export const TimelineTrack = ({
             durationMs={durationMs}
             selectedKeyframes={selectedKeyframes}
             setSelectedKeyframes={setSelectedKeyframes}
+            alignedKeyframeIds={alignedKeyframeIds}
             onKeyframeMove={onKeyframeMove}
           />
         ))}

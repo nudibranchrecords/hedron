@@ -34,6 +34,7 @@ export const TimelineGlobalPanel = ({ engine }: TimelineGlobalPanelProps) => {
     selectedTrackId,
     setSelectedTrackId,
   } = useTimelineState()
+
   const {
     isPlayingNode,
     audioUrlNode,
@@ -43,6 +44,7 @@ export const TimelineGlobalPanel = ({ engine }: TimelineGlobalPanelProps) => {
     durationS,
     playheadPositionMs,
   } = useTimelineOptionNodes()
+
   const timelineRef = useTimelineHandle(zoomPxPerSecondNode.id)
 
   return (

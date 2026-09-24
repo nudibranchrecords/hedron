@@ -62,6 +62,12 @@ export type TimelineManagerTrack =
   | TimelineManagerAudioTrack
   | TimelineManagerVectorTrack
 
+export interface AlignedKeyframe {
+  trackId: string
+  targetNodeId?: string
+  keyframe: Keyframe
+}
+
 export interface TimelineNode extends CustomNode {
   customNodeType: 'timeline'
   childGroups: CustomNode['childGroups'] & {

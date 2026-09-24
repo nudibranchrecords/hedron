@@ -7,6 +7,7 @@ interface TrackKeyframesProps {
   durationMs: number
   selectedKeyframes: string[] | null
   setSelectedKeyframes: (keyframeIds: string[] | null) => void
+  alignedKeyframeIds: Set<string>
   containerRef: RefObject<HTMLDivElement>
   onKeyframeMove: (keyframeId: string, time: number) => void
 }
@@ -16,6 +17,7 @@ export const TrackKeyframes = ({
   durationMs,
   selectedKeyframes,
   setSelectedKeyframes,
+  alignedKeyframeIds,
   containerRef,
   onKeyframeMove,
 }: TrackKeyframesProps) => (
@@ -27,6 +29,7 @@ export const TrackKeyframes = ({
           key={kf.id}
           id={kf.id}
           isSelected={isKeyframeSelected}
+          isAlignedWithPlayhead={alignedKeyframeIds.has(kf.id)}
           time={kf.time}
           trackDurationMs={durationMs}
           trackRef={containerRef}

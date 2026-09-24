@@ -9,6 +9,7 @@
 
   --playheadColor: var(--actionColor1);
   --keyframeColor: white;
+  --alignedKeyframeColor: #ffd84d;
   --unselectedColor: #999;
   --hoverColor: white;
   --selectedColor: white;
@@ -172,5 +173,11 @@
 
   &.keyframeSelected {
     background: var(--keyframeColor);
+  }
+
+  &.keyframeAligned {
+    border-color: var(--alignedKeyframeColor);
+    background: var(--alignedKeyframeColor);
+    opacity: 1;
   }
 }

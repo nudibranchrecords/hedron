@@ -19,7 +19,7 @@ import '@hedron-gl/ui-core/icons.css'
 import '@hedron-gl/ui-core/base.css'
 import '@hedron-gl/ui-core/fonts.css'
 
-const meta = {
+const meta: Meta<typeof Timeline> = {
   title: 'Timeline',
   component: Timeline,
   parameters: {
@@ -32,7 +32,7 @@ const meta = {
       </div>
     ),
   ],
-} satisfies Meta<typeof Timeline>
+}
 
 export default meta
 type Story = StoryObj<typeof meta>
@@ -141,7 +141,7 @@ export const WithKeyframes: Story = {
         ],
       },
     ],
-    playheadPositionMs: 3500,
+    playheadPositionMs: 3000,
   },
 }
 
