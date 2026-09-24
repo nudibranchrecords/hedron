@@ -1,10 +1,6 @@
 import { EngineState, isParamVector, ParamValue } from '@store/types'
 
-export const getParamValue = (
-  state: EngineState,
-  paramId: string,
-  config: { resourcesUrl: string | null },
-) => {
+export const getParamValue = (state: EngineState, paramId: string) => {
   let value: ParamValue | ParamValue[] | undefined
 
   const node = state.nodes[paramId]
@@ -47,7 +43,7 @@ export const getParamValue = (
         break
       }
 
-      const prefix = config.resourcesUrl ? `${config.resourcesUrl}/` : ''
+      const prefix = state.resourcesUrl ? `${state.resourcesUrl}/` : ''
       const filePath = state.resources[fileName]?.filePath
 
       value = filePath ? `${prefix}${filePath}` : null

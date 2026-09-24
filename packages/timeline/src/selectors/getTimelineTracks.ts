@@ -1,4 +1,4 @@
-import { EngineState, InputNode, isParamVector, ParamNode, ParamFileValue } from '@hedron-gl/engine'
+import { EngineState, InputNode, isParamVector, ParamNode, getParamValue } from '@hedron-gl/engine'
 import { DEFAULT_AUDIO_TRACK_ID } from '@/constants'
 import {
   TimelineManagerKeyframeTrack,
@@ -55,15 +55,18 @@ export const getTimelineTracks = (
   const audioUrlNodeId = optionNodeIds.find(
     (optionNodeId) => (state.nodes[optionNodeId] as ParamNode)?.key === 'audioUrl',
   )
-  const resourceId = state.paramValues[audioUrlNodeId ?? ''] as ParamFileValue | undefined
-  const resource = resourceId ? state.resources[resourceId] : null
 
-  if (resource) {
+  if (audioUrlNodeId) {
+    // The raw node value is just the file name
+    const label = state.paramValues[audioUrlNodeId] as string
+    // getParamValue returns the full url path for resources
+    const audioUrl = getParamValue(state, audioUrlNodeId) as string
+
     tracks.unshift({
       id: DEFAULT_AUDIO_TRACK_ID,
-      label: resource?.fileName,
+      label,
       trackType: 'audio',
-      audioUrl: `${state.resourcesUrl}/${resource?.filePath}`,
+      audioUrl,
     })
   }
   /// end hack

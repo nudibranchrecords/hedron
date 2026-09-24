@@ -258,9 +258,7 @@ export class HedronEngine {
    * @returns The param value for the node (or an array of values if the node is a vector param), or undefined if the node does not exist or is not a param node
    */
   public getParamValue(nodeId: string): ParamValue | ParamValue[] | undefined {
-    return getParamValue(this.store.getState(), nodeId, {
-      resourcesUrl: this.store.getState().resourcesUrl,
-    })
+    return getParamValue(this.store.getState(), nodeId)
   }
 
   public getNodeOptionNode(nodeId: string, optionKey: string): ParamNode | ShotNode {
@@ -414,9 +412,7 @@ export class HedronEngine {
     shotNodes.forEach((shotNode) => {
       this.registerShot(shotNode.id, (shotArgs) => {
         const state = this.store.getState()
-        const params = getSketchParamValues(state, sketchId, {
-          resourcesUrl: state.resourcesUrl,
-        })
+        const params = getSketchParamValues(state, sketchId)
         const sceneId = getSketchSceneId(state, sketchId)
         if (!sceneId) {
           return
@@ -709,9 +705,7 @@ export class HedronEngine {
     const state = this.store.getState()
 
     getSceneSketchIds(state, activeSceneId).forEach((sketchId) => {
-      const paramValues = getSketchParamValues(state, sketchId, {
-        resourcesUrl: state.resourcesUrl,
-      })
+      const paramValues = getSketchParamValues(state, sketchId)
       const instance = sketchInstances.get(sketchId)
       if (instance?.getPasses) {
         try {
