@@ -182,6 +182,84 @@ export const WithVectorTrack: Story = {
   },
 }
 
+export const WithSketchGroups: Story = {
+  args: {
+    ...baseTimelineArgs,
+    durationMs: 10000,
+    tracks: [
+      {
+        id: 'sketch-group-sketch-a',
+        label: 'Solid',
+        trackType: 'sketch',
+        childTracks: [
+          {
+            id: 'track-solid-visible',
+            label: 'Visible',
+            trackType: 'keyframe',
+            keyframes: [
+              { id: 'kf-sv-1', time: 1000, valueType: 'boolean', value: true, nodeType: 'param' },
+              { id: 'kf-sv-2', time: 6000, valueType: 'boolean', value: false, nodeType: 'param' },
+            ],
+          },
+          {
+            id: 'track-solid-pos',
+            label: 'Position',
+            trackType: 'vector',
+            childTracks: [
+              {
+                id: 'track-solid-pos-x',
+                label: 'X',
+                trackType: 'keyframe',
+                keyframes: [
+                  { id: 'kf-spx-1', time: 1000, valueType: 'number', value: 0, nodeType: 'param' },
+                  {
+                    id: 'kf-spx-2',
+                    time: 4000,
+                    valueType: 'number',
+                    value: 0.6,
+                    nodeType: 'param',
+                  },
+                ],
+              },
+              {
+                id: 'track-solid-pos-y',
+                label: 'Y',
+                trackType: 'keyframe',
+                keyframes: [
+                  {
+                    id: 'kf-spy-1',
+                    time: 2500,
+                    valueType: 'number',
+                    value: -0.4,
+                    nodeType: 'param',
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      },
+      {
+        id: 'sketch-group-sketch-b',
+        label: 'Stars',
+        trackType: 'sketch',
+        childTracks: [
+          {
+            id: 'track-stars-count',
+            label: 'Count',
+            trackType: 'keyframe',
+            keyframes: [
+              { id: 'kf-sc-1', time: 3000, valueType: 'number', value: 100, nodeType: 'param' },
+              { id: 'kf-sc-2', time: 8000, valueType: 'number', value: 400, nodeType: 'param' },
+            ],
+          },
+        ],
+      },
+    ],
+    playheadPositionMs: 3000,
+  },
+}
+
 export const Interactive = () => {
   const TIMELINE_DURATION = 60000 * 3
   const [playheadPositionMs, setPlayheadPositionMs] = useState(0)
@@ -344,7 +422,7 @@ export const Interactive = () => {
         return [track]
       }
 
-      if (track.trackType === 'vector') {
+      if (track.trackType === 'vector' || track.trackType === 'sketch') {
         return getKeyframeTracks(track.childTracks)
       }
 

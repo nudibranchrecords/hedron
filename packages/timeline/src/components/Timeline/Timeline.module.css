@@ -13,6 +13,9 @@
   --unselectedColor: #999;
   --hoverColor: white;
   --selectedColor: white;
+  --groupColor: #111;
+
+  --trackHeaderWidth: 140px;
 }
 
 .header {
@@ -35,8 +38,6 @@
   height: 100%;
   position: relative;
   overflow-x: auto;
-
-  --trackHeaderWidth: 100px;
 }
 
 .ruler {
@@ -75,13 +76,11 @@
   overflow: hidden;
   text-overflow: ellipsis;
   height: 24px;
-  cursor: pointer;
   position: sticky;
   left: 0;
   z-index: 3;
   background: #1a1a1a;
-
-  gap: 0.1rem;
+  padding-left: calc(0.5rem + var(--depth) * 1rem);
 
   button {
     text-align: left;
@@ -90,17 +89,30 @@
 
 .trackTitle {
   flex: 1;
-  padding-left: calc(1.5rem + var(--depth) * 1rem);
 
   &:hover {
     color: var(--hoverColor);
   }
 }
 
+.trackSketchGroup {
+  background: var(--groupColor);
+
+  .trackHeader {
+    background: var(--groupColor);
+  }
+
+  .trackTitle {
+    cursor: default;
+    &:hover {
+      color: inherit;
+    }
+  }
+}
+
 .collapseIcon {
-  position: absolute;
-  left: 0;
-  padding: 0.5rem;
+  cursor: pointer;
+  padding: 0.25rem;
 
   &:hover {
     color: var(--hoverColor);

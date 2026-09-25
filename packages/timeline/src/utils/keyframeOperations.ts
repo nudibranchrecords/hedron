@@ -1,4 +1,9 @@
-import { Keyframe, TimelineManagerKeyframeTrack, TimelineManagerTrack } from '@/types'
+import {
+  Keyframe,
+  TimelineManagerKeyframeTrack,
+  TimelineManagerSketchTrack,
+  TimelineManagerTrack,
+} from '@/types'
 
 export const sortKeyframes = (keyframes: Keyframe[]): Keyframe[] =>
   [...keyframes].sort((a, b) => a.time - b.time)
@@ -28,6 +33,15 @@ const mapKeyframeTracks = (
       return {
         ...track,
         childTracks: mapKeyframeTracks(track.childTracks, fn) as TimelineManagerKeyframeTrack[],
+      }
+    }
+    if (track.trackType === 'sketch') {
+      return {
+        ...track,
+        childTracks: mapKeyframeTracks(
+          track.childTracks,
+          fn,
+        ) as TimelineManagerSketchTrack['childTracks'],
       }
     }
     return track

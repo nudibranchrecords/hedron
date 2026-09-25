@@ -9,7 +9,7 @@ export const findTrackById = (
       return track
     }
 
-    if (track.trackType === 'vector') {
+    if (track.trackType === 'vector' || track.trackType === 'sketch') {
       const childTrack = findTrackById(track.childTracks, trackId)
       if (childTrack) {
         return childTrack

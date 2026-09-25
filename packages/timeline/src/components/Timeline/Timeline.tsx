@@ -26,7 +26,7 @@ const getAlignedKeyframes = (
   const alignedKeyframes: AlignedKeyframe[] = []
 
   for (const track of tracks) {
-    if (track.trackType === 'vector') {
+    if (track.trackType === 'vector' || track.trackType === 'sketch') {
       alignedKeyframes.push(
         ...getAlignedKeyframes(track.childTracks, playheadPositionMs, alignmentToleranceMs),
       )

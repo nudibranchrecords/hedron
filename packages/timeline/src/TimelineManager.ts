@@ -51,7 +51,7 @@ export class TimelineManager {
 
     for (const track of tracks) {
       allTracks.push(track)
-      if (track.trackType === 'vector') {
+      if (track.trackType === 'vector' || track.trackType === 'sketch') {
         allTracks.push(...this.flattenTracks(track.childTracks))
       }
     }

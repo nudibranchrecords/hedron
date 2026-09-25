@@ -57,10 +57,17 @@ export interface TimelineManagerAudioTrack extends TimelineManagerTrackBase {
   audioUrl: string
 }
 
+/** Inferred grouping of a sketch's tracks. Not persisted, not selectable, holds no keyframes of its own. */
+export interface TimelineManagerSketchTrack extends TimelineManagerTrackBase {
+  trackType: 'sketch'
+  childTracks: (TimelineManagerKeyframeTrack | TimelineManagerVectorTrack)[]
+}
+
 export type TimelineManagerTrack =
   | TimelineManagerKeyframeTrack
   | TimelineManagerAudioTrack
   | TimelineManagerVectorTrack
+  | TimelineManagerSketchTrack
 
 export interface AlignedKeyframe {
   trackId: string

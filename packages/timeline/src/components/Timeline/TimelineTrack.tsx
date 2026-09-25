@@ -4,6 +4,7 @@ import c from './Timeline.module.css'
 import { TrackKeyframes } from './TrackKeyframes'
 import { Keyframe } from './Keyframe'
 import { TimelineManagerKeyframeTrack, TimelineManagerTrack } from '@/types'
+import { getKeyframeTracks } from '@/utils/getKeyframeTracks'
 
 interface TimelineTrackProps {
   selectedTrackId: string | null
@@ -18,19 +19,10 @@ interface TimelineTrackProps {
   onKeyframeMove: (keyframeId: string, time: number) => void
 }
 
-const getChildKeyframeTimes = (track: TimelineManagerTrack): number[] => {
-  if (track.trackType === 'keyframe') {
-    return track.keyframes.map((kf) => kf.time)
-  }
+const getKeyframeTimes = (tracks: TimelineManagerKeyframeTrack[]): number[] => {
+  const times = tracks.flatMap((track) => track.keyframes.map((kf) => kf.time))
 
-  if (track.trackType === 'vector') {
-    const times = track.childTracks.flatMap((childTrack) =>
-      childTrack.keyframes.map((kf) => kf.time),
-    )
-    return Array.from(new Set(times)).sort((a, b) => a - b)
-  }
-
-  return []
+  return Array.from(new Set(times)).sort((a, b) => a - b)
 }
 
 const getKeyframesAtTime = (tracks: TimelineManagerKeyframeTrack[], time: number): string[] => {
@@ -57,22 +49,36 @@ export const TimelineTrack = ({
   alignedKeyframeIds,
   onKeyframeMove,
 }: TimelineTrackProps) => {
-  const [isExpanded, setIsExpanded] = useState<boolean>(false)
-  const isSelected = track.id === selectedTrackId
+  const isSketchGroup = track.trackType === 'sketch'
+  const childTracks: TimelineManagerTrack[] =
+    track.trackType === 'vector' || track.trackType === 'sketch' ? track.childTracks : []
+  const isExpandable = childTracks.length > 0
+
+  const [isExpanded, setIsExpanded] = useState<boolean>(isSketchGroup)
+  const isSelected = !isSketchGroup && track.id === selectedTrackId
   const trackBodyRef = useRef<HTMLDivElement>(null)
+
+  // Group rows collate every keyframe underneath them, however deeply nested.
+  const collatedTracks = getKeyframeTracks(childTracks)
 
   return (
     <>
-      <div key={track.id} className={`${c.track} ${isSelected ? c.trackSelected : ''}`}>
+      <div
+        key={track.id}
+        className={`${c.track} ${isSelected ? c.trackSelected : ''}  ${isSketchGroup ? c.trackSketchGroup : ''}`}
+      >
         <div className={c.trackHeader} style={{ '--depth': depth } as React.CSSProperties}>
-          {track.trackType === 'vector' && (
+          {isExpandable && (
             <Icon
               className={c.collapseIcon}
               name={isExpanded ? collapseCloseIcon : collapseOpenIcon}
               onClick={() => setIsExpanded(!isExpanded)}
             />
           )}
-          <button className={c.trackTitle} onClick={() => setSelectedTrackId(track.id)}>
+          <button
+            className={c.trackTitle}
+            onClick={() => (isSketchGroup ? undefined : setSelectedTrackId(track.id))}
+          >
             {track.label}
           </button>
         </div>
@@ -88,13 +94,14 @@ export const TimelineTrack = ({
               onKeyframeMove={onKeyframeMove}
             />
           )}
-          {track.trackType === 'vector' &&
-            getChildKeyframeTimes(track).map((time, index) => {
-              const isSelected = !getKeyframesAtTime(track.childTracks, time).some(
-                (kfId) => !selectedKeyframes?.includes(kfId),
-              )
-              const isAlignedWithPlayhead = getKeyframesAtTime(track.childTracks, time).some(
-                (kfId) => alignedKeyframeIds.has(kfId),
+          {isExpandable &&
+            getKeyframeTimes(collatedTracks).map((time, index) => {
+              const keyframeIdsAtTime = getKeyframesAtTime(collatedTracks, time)
+              const isSelected =
+                keyframeIdsAtTime.length > 0 &&
+                keyframeIdsAtTime.every((kfId) => selectedKeyframes?.includes(kfId))
+              const isAlignedWithPlayhead = keyframeIdsAtTime.some((kfId) =>
+                alignedKeyframeIds.has(kfId),
               )
 
               return (
@@ -107,10 +114,10 @@ export const TimelineTrack = ({
                   trackDurationMs={durationMs}
                   trackRef={trackBodyRef}
                   onClick={() => {
-                    setSelectedKeyframes(getKeyframesAtTime(track.childTracks, time))
+                    setSelectedKeyframes(keyframeIdsAtTime)
                   }}
                   onMove={(newTime) => {
-                    for (const kfId of getKeyframesAtTime(track.childTracks, time)) {
+                    for (const kfId of keyframeIdsAtTime) {
                       onKeyframeMove(kfId, newTime)
                     }
                   }}
@@ -119,9 +126,8 @@ export const TimelineTrack = ({
             })}
         </div>
       </div>
-      {track.trackType === 'vector' &&
-        isExpanded &&
-        track.childTracks.map((childTrack) => (
+      {isExpanded &&
+        childTracks.map((childTrack) => (
           <TimelineTrack
             key={childTrack.id}
             selectedTrackId={selectedTrackId}
