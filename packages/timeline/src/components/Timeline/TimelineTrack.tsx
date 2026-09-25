@@ -15,7 +15,7 @@ interface TimelineTrackProps {
   durationMs: number
   selectedKeyframes: string[] | null
   selectKeyframes: (keyframeIds: string[], isMultiSelect: boolean) => void
-  clearSelectedKeyframes: () => void
+  onSelectionBoxStart: (e: React.MouseEvent) => void
   alignedKeyframeIds: Set<string>
   onKeyframeDragStart: (keyframeIds: string[]) => void
   onKeyframeDragMove: (deltaMs: number) => void
@@ -48,7 +48,7 @@ export const TimelineTrack = ({
   durationMs,
   selectedKeyframes,
   selectKeyframes,
-  clearSelectedKeyframes,
+  onSelectionBoxStart,
   alignedKeyframeIds,
   onKeyframeDragStart,
   onKeyframeDragMove,
@@ -87,7 +87,7 @@ export const TimelineTrack = ({
           </button>
         </div>
         {/* Keyframes stop propagation, so a mousedown landing here is empty lane space. */}
-        <div className={c.trackBody} ref={trackBodyRef} onMouseDown={clearSelectedKeyframes}>
+        <div className={c.trackBody} ref={trackBodyRef} onMouseDown={onSelectionBoxStart}>
           {track.trackType === 'keyframe' && (
             <TrackKeyframes
               track={track}
@@ -113,7 +113,7 @@ export const TimelineTrack = ({
               return (
                 <Keyframe
                   key={index}
-                  id={index.toString()}
+                  selectionIds={keyframeIdsAtTime}
                   isSelected={isSelected}
                   isAlignedWithPlayhead={isAlignedWithPlayhead}
                   time={time}
@@ -140,7 +140,7 @@ export const TimelineTrack = ({
             durationMs={durationMs}
             selectedKeyframes={selectedKeyframes}
             selectKeyframes={selectKeyframes}
-            clearSelectedKeyframes={clearSelectedKeyframes}
+            onSelectionBoxStart={onSelectionBoxStart}
             alignedKeyframeIds={alignedKeyframeIds}
             onKeyframeDragStart={onKeyframeDragStart}
             onKeyframeDragMove={onKeyframeDragMove}

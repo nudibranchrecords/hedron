@@ -158,6 +158,14 @@
   background: #333;
 }
 
+.selectionBox {
+  position: absolute;
+  border: 1px solid var(--playheadColor);
+  background: rgba(255, 255, 255, 0.1);
+  pointer-events: none;
+  z-index: 2;
+}
+
 .rulerLabel {
   position: absolute;
   top: 1px;

@@ -10,6 +10,7 @@ import {
 } from 'react'
 import { usePlayheadScrub } from './usePlayheadScrub'
 import { usePxPerSecond } from './usePxPerSecond'
+import { useSelectionBox } from './useSelectionBox'
 import c from './Timeline.module.css'
 import { TimelineTrack } from './TimelineTrack'
 import { AlignedKeyframe, TimelineManagerTrack } from '@/types'
@@ -168,9 +169,24 @@ export const Timeline = forwardRef<TimelineHandle, TimelineProps>(function Timel
     [setSelectedKeyframes],
   )
 
-  const clearSelectedKeyframes = useCallback(() => {
-    setSelectedKeyframes(null)
-  }, [setSelectedKeyframes])
+  const setBoxSelectedKeyframes = useCallback(
+    (keyframeIds: string[]) => {
+      const current = selectedKeyframesRef.current ?? []
+      const isUnchanged =
+        current.length === keyframeIds.length &&
+        current.every((keyframeId, index) => keyframeId === keyframeIds[index])
+
+      if (isUnchanged) return
+
+      setSelectedKeyframes(keyframeIds.length > 0 ? keyframeIds : null)
+    },
+    [setSelectedKeyframes],
+  )
+
+  const { selectionBox, startSelectionBox } = useSelectionBox({
+    bodyRef,
+    onSelectionChange: setBoxSelectedKeyframes,
+  })
 
   const handleKeyframeDragStart = useCallback(
     (keyframeIds: string[]) => {
@@ -333,12 +349,23 @@ export const Timeline = forwardRef<TimelineHandle, TimelineProps>(function Timel
             durationMs={durationMs}
             selectedKeyframes={selectedKeyframes}
             selectKeyframes={selectKeyframes}
-            clearSelectedKeyframes={clearSelectedKeyframes}
+            onSelectionBoxStart={startSelectionBox}
             alignedKeyframeIds={alignedKeyframeIds}
             onKeyframeDragStart={handleKeyframeDragStart}
             onKeyframeDragMove={handleKeyframeDragMove}
           />
         ))}
+        {selectionBox && (
+          <div
+            className={c.selectionBox}
+            style={{
+              left: selectionBox.left,
+              top: selectionBox.top,
+              width: selectionBox.width,
+              height: selectionBox.height,
+            }}
+          />
+        )}
         <div
           className={c.playhead}
           style={{ '--playheadPercent': playheadPercent / 100 } as React.CSSProperties}

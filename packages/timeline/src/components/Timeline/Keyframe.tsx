@@ -3,7 +3,8 @@ import { clearGlobalCursor, setGlobalCursor } from '@hedron-gl/ui-core'
 import c from './Timeline.module.css'
 
 interface KeyframeProps {
-  id: string
+  /** Keyframes this element stands for: one on a leaf track, many on a collated group row. */
+  selectionIds: string[]
   onSelect?: (options: { isMultiSelect: boolean }) => void
   isSelected: boolean
   isAlignedWithPlayhead: boolean
@@ -18,7 +19,7 @@ export const Keyframe = ({
   onSelect,
   isSelected,
   isAlignedWithPlayhead,
-  id,
+  selectionIds,
   time,
   trackDurationMs,
   trackRef,
@@ -69,7 +70,7 @@ export const Keyframe = ({
 
   return (
     <div
-      key={id}
+      data-keyframe-ids={selectionIds.join(',')}
       className={`${c.keyframe} ${isKeyframeSelected ? c.keyframeSelected : ''} ${isAlignedWithPlayhead ? c.keyframeAligned : ''}`}
       style={{ left: `${percent}%` }}
       onMouseDown={handleMouseDown}

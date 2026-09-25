@@ -29,7 +29,7 @@ export const TrackKeyframes = ({
       return (
         <Keyframe
           key={kf.id}
-          id={kf.id}
+          selectionIds={[kf.id]}
           isSelected={isKeyframeSelected}
           isAlignedWithPlayhead={alignedKeyframeIds.has(kf.id)}
           time={kf.time}
