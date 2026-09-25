@@ -11,7 +11,6 @@ import {
   PopoutMenu,
   HedronErrorBoundary,
   useOnSelectNode,
-  NodeContainer,
 } from '@hedron-gl/ui-core'
 
 import c from './ActiveSketch.module.css'
@@ -79,11 +78,7 @@ export const ActiveSketch = () => {
       </ViewHeader>
       <HedronErrorBoundary key={activeSketch.id}>
         <div className={c.section}>
-          <SketchControls
-            sketchId={activeSketch.id}
-            nodeGroups={nodeGroups}
-            ControlItem={({ node }) => <NodeContainer nodeId={node.id} />}
-          />
+          <SketchControls sketchId={activeSketch.id} nodeGroups={nodeGroups} />
         </div>
 
         {selectedNode && <SelectedNodePanel node={selectedNode} onClose={closeSelectedNodePanel} />}

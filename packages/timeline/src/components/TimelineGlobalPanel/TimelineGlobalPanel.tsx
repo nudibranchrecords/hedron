@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { HedronEngine } from '@hedron-gl/engine'
 import { NodeContainer, ControlGrid } from '@hedron-gl/ui-core'
 import { useTimelineTracks } from '@/components/hooks/useTimelineTracks'
@@ -6,8 +7,10 @@ import { useTimelineManager } from '@/components/hooks/useTimelineManager'
 import { useTimelineState } from '@/components/hooks/useTimelineState'
 import { useTimelineOptionNodes } from '@/components/hooks/useTimelineOptionNodes'
 import { useTimelineHandle } from '@/components/hooks/useTimelineHandle'
+import { useAlignedKeyframeValueSync } from '@/components/hooks/useAlignedKeyframeValueSync'
 import { DEFAULT_TIMELINE_ID } from '@/constants'
 import { Timeline } from '@/components/Timeline/Timeline'
+import { AlignedKeyframe } from '@/types'
 
 interface TimelineGlobalPanelProps {
   engine: HedronEngine
@@ -43,9 +46,18 @@ export const TimelineGlobalPanel = ({ engine }: TimelineGlobalPanelProps) => {
     durationNode,
     durationS,
     playheadPositionMs,
+    isPlaying,
   } = useTimelineOptionNodes()
+  const [alignedKeyframes, setAlignedKeyframes] = useState<AlignedKeyframe[]>([])
+  const isAlignmentEnabled = !isPlaying
 
   const timelineRef = useTimelineHandle(zoomPxPerSecondNode.id)
+  useAlignedKeyframeValueSync({
+    engine,
+    manager,
+    alignedKeyframes,
+    isEnabled: isAlignmentEnabled,
+  })
 
   return (
     <div>
@@ -66,6 +78,8 @@ export const TimelineGlobalPanel = ({ engine }: TimelineGlobalPanelProps) => {
           selectedTrackId={selectedTrackId}
           setSelectedTrackId={setSelectedTrackId}
           initialPxPerSecond={zoomPxPerSecond}
+          isAlignmentEnabled={isAlignmentEnabled}
+          onAlignedKeyframesChange={setAlignedKeyframes}
           onPlayheadChange={handlePlayheadChange}
           onKeyframeDelete={handleKeyframeDelete}
           onKeyframeInsert={handleKeyframeInsert}

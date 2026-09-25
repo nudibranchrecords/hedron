@@ -1,4 +1,4 @@
-import { useEffect, useId } from 'react'
+import { useEffect, useId, useMemo, useState } from 'react'
 import { HedronEngine, InputNode } from '@hedron-gl/engine'
 import { ControlGrid, NodeContainer } from '@hedron-gl/ui-core'
 import { useTimelineTracks } from '@/components/hooks/useTimelineTracks'
@@ -7,9 +7,11 @@ import { useTimelineManager } from '@/components/hooks/useTimelineManager'
 import { useTimelineState } from '@/components/hooks/useTimelineState'
 import { useTimelineHandle } from '@/components/hooks/useTimelineHandle'
 import { useTimelineOptionNodes } from '@/components/hooks/useTimelineOptionNodes'
+import { useAlignedKeyframeValueSync } from '@/components/hooks/useAlignedKeyframeValueSync'
 import { DEFAULT_TIMELINE_ID } from '@/constants'
 import { Timeline } from '@/components/Timeline/Timeline'
 import { findTrackById } from '@/utils/findTrackById'
+import { AlignedKeyframe } from '@/types'
 
 interface TimelineInputPanelProps {
   input: InputNode
@@ -50,12 +52,23 @@ export const TimelineInputPanel = ({ input, engine }: TimelineInputPanelProps) =
     setActiveTimelineComponentId(timelineComponentId)
   }, [input.id, setSelectedTrackId, setActiveTimelineComponentId, timelineComponentId])
 
-  const { playheadPositionMs, durationS } = useTimelineOptionNodes()
+  const { playheadPositionMs, durationS, isPlaying } = useTimelineOptionNodes()
   const { zoomPxPerSecondNode } = useTimelineOptionNodes(input.id)
+  const [alignedKeyframes, setAlignedKeyframes] = useState<AlignedKeyframe[]>([])
+  const isAlignmentEnabled = !isPlaying
 
-  const track = findTrackById(tracks, input.id)
+  const singleTrackInArray = useMemo(() => {
+    const track = findTrackById(tracks, input.id)
+    return track ? [track] : []
+  }, [tracks, input.id])
 
   const timelineRef = useTimelineHandle(zoomPxPerSecondNode.id)
+  useAlignedKeyframeValueSync({
+    engine,
+    manager,
+    alignedKeyframes,
+    isEnabled: isAlignmentEnabled,
+  })
 
   return (
     <>
@@ -66,13 +79,15 @@ export const TimelineInputPanel = ({ input, engine }: TimelineInputPanelProps) =
       <Timeline
         ref={timelineRef}
         durationMs={durationS * 1000}
-        tracks={track ? [track] : []}
+        tracks={singleTrackInArray}
         playheadPositionMs={playheadPositionMs}
         activeTimelineComponentId={activeTimelineComponentId}
         setActiveTimelineComponentId={setActiveTimelineComponentId}
         selectedTrackId={selectedTrackId}
         componentId={timelineComponentId}
         setSelectedTrackId={setSelectedTrackId}
+        isAlignmentEnabled={isAlignmentEnabled}
+        onAlignedKeyframesChange={setAlignedKeyframes}
         onPlayheadChange={handlePlayheadChange}
         onKeyframeDelete={handleKeyframeDelete}
         onKeyframeInsert={handleKeyframeInsert}

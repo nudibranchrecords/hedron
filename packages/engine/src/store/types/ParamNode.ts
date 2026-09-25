@@ -153,6 +153,9 @@ export type ParamValue = number | boolean | string | null
 export type ParamValues = Partial<Record<string, ParamValue>>
 export type ParamValueType = ParamNode['valueType'] | null
 
+/** Distinguishes a direct user edit from a write driven by an input/automation. */
+export type ParamValueOrigin = 'user' | 'automation'
+
 export type ParamVector = ParamVector2 | ParamVector3 | ParamRGB
 export type ParamVectorValueType = ParamVector['valueType']
 export type ParamNonVectorValueType = Exclude<ParamValueType, ParamVectorValueType>

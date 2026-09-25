@@ -34,7 +34,7 @@ export const Vector2ScrubOverlay = () => {
 
           const nextValue = oldVal + vec2[i] * range
           const clampedValue = Math.min(Math.max(nextValue, sliderMin), sliderMax)
-          updateParamValue(id, clampedValue)
+          updateParamValue(id, clampedValue, 'user')
         })
       }
     },

@@ -1,4 +1,4 @@
-import { useRef } from 'react'
+import { useEffect, useRef } from 'react'
 import type { ParamNumber as ParamNumberType } from '@hedron-gl/engine'
 import { useOnParamValueChange } from '@hooks/useOnParamValueChange'
 import { useEngineStore } from '@hooks/engineHooks'

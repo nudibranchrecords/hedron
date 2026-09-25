@@ -1,5 +1,12 @@
-import { ControlGrid, Collapsible, HedronErrorBoundary, Icon, IconName } from '@hedron-gl/ui-core'
-import { ComponentType, useState } from 'react'
+import {
+  ControlGrid,
+  Collapsible,
+  HedronErrorBoundary,
+  Icon,
+  IconName,
+  NodeContainer,
+} from '@hedron-gl/ui-core'
+import { useState } from 'react'
 import { ShotNode, ParamNode } from '@hedron-gl/engine'
 import c from './SketchControls.module.css'
 import { useAppStore } from '@renderer/appStore'
@@ -48,12 +55,11 @@ interface SketchControlsProps {
     groupIndex: number
     children: (ParamNode | ShotNode)[]
   }[]
-  ControlItem: ComponentType<{ node: ParamNode | ShotNode; sketchId: string }>
 }
 
 const EMPTY_OBJECT = {} as Record<number, boolean>
 
-export const SketchControls = ({ sketchId, nodeGroups, ControlItem }: SketchControlsProps) => {
+export const SketchControls = ({ sketchId, nodeGroups }: SketchControlsProps) => {
   const openedControlGroups =
     useAppStore((state) => state.openedControlGroups[sketchId]) ?? EMPTY_OBJECT
   const setOpenedControlGroup = useAppStore((state) => state.setOpenedControlGroup)
@@ -68,8 +74,7 @@ export const SketchControls = ({ sketchId, nodeGroups, ControlItem }: SketchCont
           const grid = (
             <ControlGrid>
               {children.map((node) => (
-                /* unique key is important here! otherwise can get cross talk between params with the same key in different sketches */
-                <ControlItem key={`${node.key}${sketchId}`} node={node} sketchId={sketchId} />
+                <NodeContainer key={node.id} nodeId={node.id} />
               ))}
             </ControlGrid>
           )

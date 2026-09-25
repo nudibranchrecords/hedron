@@ -15,7 +15,8 @@ import { TimelineTrack } from './TimelineTrack'
 import { AlignedKeyframe, TimelineManagerTrack } from '@/types'
 import { findTrackById } from '@/utils/findTrackById'
 
-const KEYFRAME_ALIGNMENT_TOLERANCE_MS = 8
+const KEYFRAME_ALIGNMENT_TOLERANCE_MS = 16
+const EMPTY_ALIGNED_KEYFRAMES: AlignedKeyframe[] = []
 
 const getAlignedKeyframes = (
   tracks: TimelineManagerTrack[],
@@ -64,6 +65,7 @@ export interface TimelineProps {
   onKeyframeInsert: (trackId: string, time: number) => void
   onKeyframeMove: (keyframeId: string, time: number) => void
   onPlayPauseToggle: () => void
+  isAlignmentEnabled?: boolean
   onAlignedKeyframesChange?: (alignedKeyframes: AlignedKeyframe[]) => void
 }
 
@@ -83,6 +85,7 @@ export const Timeline = forwardRef<TimelineHandle, TimelineProps>(function Timel
     onKeyframeInsert,
     onKeyframeMove,
     onPlayPauseToggle,
+    isAlignmentEnabled = true,
     onAlignedKeyframesChange,
   },
   ref,
@@ -105,8 +108,11 @@ export const Timeline = forwardRef<TimelineHandle, TimelineProps>(function Timel
 
   const [selectedKeyframes, _setSelectedKeyframes] = useState<string[] | null>(null)
   const alignedKeyframes = useMemo(
-    () => getAlignedKeyframes(tracks, playheadPositionMs),
-    [tracks, playheadPositionMs],
+    () =>
+      isAlignmentEnabled
+        ? getAlignedKeyframes(tracks, playheadPositionMs)
+        : EMPTY_ALIGNED_KEYFRAMES,
+    [tracks, playheadPositionMs, isAlignmentEnabled],
   )
   const alignedKeyframeIds = useMemo(
     () => new Set(alignedKeyframes.map(({ keyframe }) => keyframe.id)),

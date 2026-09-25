@@ -7,7 +7,7 @@ export const useOnParamValueChange = (id: string) => {
 
   const onValueChange = useCallback(
     (value: ParamValue | ParamValue[]) => {
-      engine.setParamValue(id, value)
+      engine.setParamValue(id, value, { origin: 'user' })
     },
     [engine, id],
   )
