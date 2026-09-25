@@ -15,25 +15,28 @@ import { TimelineTrack } from './TimelineTrack'
 import { AlignedKeyframe, TimelineManagerTrack } from '@/types'
 import { findTrackById } from '@/utils/findTrackById'
 
-const KEYFRAME_ALIGNMENT_TOLERANCE_MS = 32
+const KEYFRAME_ALIGNMENT_TOLERANCE_PX = 3
 const EMPTY_ALIGNED_KEYFRAMES: AlignedKeyframe[] = []
 
 const getAlignedKeyframes = (
   tracks: TimelineManagerTrack[],
   playheadPositionMs: number,
+  alignmentToleranceMs: number,
 ): AlignedKeyframe[] => {
   const alignedKeyframes: AlignedKeyframe[] = []
 
   for (const track of tracks) {
     if (track.trackType === 'vector') {
-      alignedKeyframes.push(...getAlignedKeyframes(track.childTracks, playheadPositionMs))
+      alignedKeyframes.push(
+        ...getAlignedKeyframes(track.childTracks, playheadPositionMs, alignmentToleranceMs),
+      )
       continue
     }
 
     if (track.trackType !== 'keyframe') continue
 
     for (const keyframe of track.keyframes) {
-      if (Math.abs(keyframe.time - playheadPositionMs) <= KEYFRAME_ALIGNMENT_TOLERANCE_MS) {
+      if (Math.abs(keyframe.time - playheadPositionMs) <= alignmentToleranceMs) {
         alignedKeyframes.push({
           trackId: track.id,
           targetNodeId: track.targetNodeId,
@@ -100,6 +103,8 @@ export const Timeline = forwardRef<TimelineHandle, TimelineProps>(function Timel
     initialPxPerSecond,
   })
 
+  const alignmentToleranceMs = (KEYFRAME_ALIGNMENT_TOLERANCE_PX / pxPerSecond) * 1000
+
   // To prevent clashing of keyboard events, we need to keep track of which component is the active one
   const fallbackId = useId()
   const componentId = _componentId ?? fallbackId
@@ -110,9 +115,9 @@ export const Timeline = forwardRef<TimelineHandle, TimelineProps>(function Timel
   const alignedKeyframes = useMemo(
     () =>
       isAlignmentEnabled
-        ? getAlignedKeyframes(tracks, playheadPositionMs)
+        ? getAlignedKeyframes(tracks, playheadPositionMs, alignmentToleranceMs)
         : EMPTY_ALIGNED_KEYFRAMES,
-    [tracks, playheadPositionMs, isAlignmentEnabled],
+    [isAlignmentEnabled, tracks, playheadPositionMs, alignmentToleranceMs],
   )
   const alignedKeyframeIds = useMemo(
     () => new Set(alignedKeyframes.map(({ keyframe }) => keyframe.id)),
