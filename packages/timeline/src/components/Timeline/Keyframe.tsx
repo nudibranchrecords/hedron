@@ -4,39 +4,44 @@ import c from './Timeline.module.css'
 
 interface KeyframeProps {
   id: string
-  onClick?: (keyframeId: string) => void
+  onSelect?: (options: { isMultiSelect: boolean }) => void
   isSelected: boolean
   isAlignedWithPlayhead: boolean
   time: number
   trackDurationMs: number
   trackRef: RefObject<HTMLDivElement>
-  onMove?: (time: number) => void
+  onMoveStart?: () => void
+  onMove?: (deltaMs: number) => void
 }
 
 export const Keyframe = ({
-  onClick,
+  onSelect,
   isSelected,
   isAlignedWithPlayhead,
   id,
   time,
   trackDurationMs,
   trackRef,
+  onMoveStart,
   onMove,
 }: KeyframeProps) => {
   const percent = (time / trackDurationMs) * 100
 
   const isKeyframeSelected = isSelected
   // Tracked in a ref so the document-level move handler always sees the drag's origin, not stale state
-  const dragStartRef = useRef<{ screenX: number; time: number } | null>(null)
+  const dragStartRef = useRef<{ screenX: number } | null>(null)
 
   const handleMouseDown = useCallback(
     (e: React.MouseEvent) => {
-      if (!onMove || time === undefined || !trackDurationMs || !trackRef?.current) return
-
-      onClick?.(id)
       e.stopPropagation()
 
-      dragStartRef.current = { screenX: e.screenX, time }
+      onSelect?.({ isMultiSelect: e.shiftKey })
+
+      // Shift is a selection gesture, so it shouldn't also start a drag.
+      if (e.shiftKey || !onMove || !trackDurationMs || !trackRef?.current) return
+
+      dragStartRef.current = { screenX: e.screenX }
+      onMoveStart?.()
       setGlobalCursor('ew-resize')
 
       const handleMouseMove = (moveEvent: MouseEvent) => {
@@ -44,10 +49,9 @@ export const Keyframe = ({
         const container = trackRef.current
         if (!dragStart || !container || container.offsetWidth <= 0) return
 
-        const deltaTime =
+        const deltaMs =
           ((moveEvent.screenX - dragStart.screenX) / container.offsetWidth) * trackDurationMs
-        const newTime = Math.max(0, Math.min(trackDurationMs, dragStart.time + deltaTime))
-        onMove(newTime)
+        onMove(deltaMs)
       }
 
       const handleMouseUp = () => {
@@ -60,7 +64,7 @@ export const Keyframe = ({
       document.addEventListener('mousemove', handleMouseMove)
       document.addEventListener('mouseup', handleMouseUp)
     },
-    [onMove, time, trackDurationMs, trackRef, onClick, id],
+    [onMove, onMoveStart, trackDurationMs, trackRef, onSelect],
   )
 
   return (
@@ -69,11 +73,6 @@ export const Keyframe = ({
       className={`${c.keyframe} ${isKeyframeSelected ? c.keyframeSelected : ''} ${isAlignedWithPlayhead ? c.keyframeAligned : ''}`}
       style={{ left: `${percent}%` }}
       onMouseDown={handleMouseDown}
-      onClick={(e) => {
-        if (!onClick) return
-        e.stopPropagation()
-        onClick(id)
-      }}
     />
   )
 }

@@ -14,6 +14,7 @@ import c from './Timeline.module.css'
 import { TimelineTrack } from './TimelineTrack'
 import { AlignedKeyframe, TimelineManagerTrack } from '@/types'
 import { findTrackById } from '@/utils/findTrackById'
+import { getKeyframeTracks } from '@/utils/getKeyframeTracks'
 
 const KEYFRAME_ALIGNMENT_TOLERANCE_PX = 3
 const EMPTY_ALIGNED_KEYFRAMES: AlignedKeyframe[] = []
@@ -112,6 +113,9 @@ export const Timeline = forwardRef<TimelineHandle, TimelineProps>(function Timel
   const isActiveComponent = componentId === activeTimelineComponentId
 
   const [selectedKeyframes, _setSelectedKeyframes] = useState<string[] | null>(null)
+  // Mirrors the selection so a drag starting in the same event can read it before state flushes.
+  const selectedKeyframesRef = useRef<string[] | null>(null)
+  const keyframeDragOriginsRef = useRef<{ id: string; time: number }[]>([])
   const alignedKeyframes = useMemo(
     () =>
       isAlignmentEnabled
@@ -126,11 +130,86 @@ export const Timeline = forwardRef<TimelineHandle, TimelineProps>(function Timel
 
   const setSelectedKeyframes = useCallback(
     (keyframes: string[] | null) => {
+      selectedKeyframesRef.current = keyframes
       _setSelectedKeyframes(keyframes)
 
       setActiveTimelineComponentId(componentId)
     },
     [componentId, setActiveTimelineComponentId],
+  )
+
+  const selectKeyframes = useCallback(
+    (keyframeIds: string[], isMultiSelect: boolean) => {
+      const current = selectedKeyframesRef.current
+      const isAlreadySelected =
+        keyframeIds.length > 0 && keyframeIds.every((keyframeId) => current?.includes(keyframeId))
+
+      if (isMultiSelect) {
+        const next = new Set(current ?? [])
+
+        // Multi-selecting something already selected removes it again.
+        for (const keyframeId of keyframeIds) {
+          if (isAlreadySelected) {
+            next.delete(keyframeId)
+          } else {
+            next.add(keyframeId)
+          }
+        }
+
+        setSelectedKeyframes(next.size > 0 ? Array.from(next) : null)
+        return
+      }
+
+      // Grabbing part of the selection keeps it intact, so the whole group stays draggable.
+      if (isAlreadySelected) return
+
+      setSelectedKeyframes(keyframeIds)
+    },
+    [setSelectedKeyframes],
+  )
+
+  const clearSelectedKeyframes = useCallback(() => {
+    setSelectedKeyframes(null)
+  }, [setSelectedKeyframes])
+
+  const handleKeyframeDragStart = useCallback(
+    (keyframeIds: string[]) => {
+      const selected = selectedKeyframesRef.current
+      const isPartOfSelection =
+        keyframeIds.length > 0 && keyframeIds.every((keyframeId) => selected?.includes(keyframeId))
+      const movingKeyframeIds = isPartOfSelection && selected ? selected : keyframeIds
+
+      const timesByKeyframeId = new Map<string, number>()
+      for (const track of getKeyframeTracks(tracks)) {
+        for (const keyframe of track.keyframes) {
+          timesByKeyframeId.set(keyframe.id, keyframe.time)
+        }
+      }
+
+      keyframeDragOriginsRef.current = movingKeyframeIds
+        .map((keyframeId) => ({ id: keyframeId, time: timesByKeyframeId.get(keyframeId) }))
+        .filter((origin): origin is { id: string; time: number } => origin.time !== undefined)
+    },
+    [tracks],
+  )
+
+  const handleKeyframeDragMove = useCallback(
+    (deltaMs: number) => {
+      const origins = keyframeDragOriginsRef.current
+      if (origins.length === 0) return
+
+      const times = origins.map((origin) => origin.time)
+      // Clamped as a group so the selection keeps its relative spacing at the timeline edges.
+      const clampedDelta = Math.max(
+        -Math.min(...times),
+        Math.min(durationMs - Math.max(...times), deltaMs),
+      )
+
+      for (const origin of origins) {
+        onKeyframeMove(origin.id, origin.time + clampedDelta)
+      }
+    },
+    [durationMs, onKeyframeMove],
   )
 
   const setSelectedTrackId = useCallback(
@@ -253,9 +332,11 @@ export const Timeline = forwardRef<TimelineHandle, TimelineProps>(function Timel
             depth={0}
             durationMs={durationMs}
             selectedKeyframes={selectedKeyframes}
-            setSelectedKeyframes={setSelectedKeyframes}
+            selectKeyframes={selectKeyframes}
+            clearSelectedKeyframes={clearSelectedKeyframes}
             alignedKeyframeIds={alignedKeyframeIds}
-            onKeyframeMove={onKeyframeMove}
+            onKeyframeDragStart={handleKeyframeDragStart}
+            onKeyframeDragMove={handleKeyframeDragMove}
           />
         ))}
         <div

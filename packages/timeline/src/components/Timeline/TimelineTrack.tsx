@@ -14,9 +14,11 @@ interface TimelineTrackProps {
   depth: number
   durationMs: number
   selectedKeyframes: string[] | null
-  setSelectedKeyframes: (keyframes: string[] | null) => void
+  selectKeyframes: (keyframeIds: string[], isMultiSelect: boolean) => void
+  clearSelectedKeyframes: () => void
   alignedKeyframeIds: Set<string>
-  onKeyframeMove: (keyframeId: string, time: number) => void
+  onKeyframeDragStart: (keyframeIds: string[]) => void
+  onKeyframeDragMove: (deltaMs: number) => void
 }
 
 const getKeyframeTimes = (tracks: TimelineManagerKeyframeTrack[]): number[] => {
@@ -45,9 +47,11 @@ export const TimelineTrack = ({
   depth,
   durationMs,
   selectedKeyframes,
-  setSelectedKeyframes,
+  selectKeyframes,
+  clearSelectedKeyframes,
   alignedKeyframeIds,
-  onKeyframeMove,
+  onKeyframeDragStart,
+  onKeyframeDragMove,
 }: TimelineTrackProps) => {
   const isSketchGroup = track.trackType === 'sketch'
   const childTracks: TimelineManagerTrack[] =
@@ -82,16 +86,18 @@ export const TimelineTrack = ({
             {track.label}
           </button>
         </div>
-        <div className={c.trackBody} ref={trackBodyRef}>
+        {/* Keyframes stop propagation, so a mousedown landing here is empty lane space. */}
+        <div className={c.trackBody} ref={trackBodyRef} onMouseDown={clearSelectedKeyframes}>
           {track.trackType === 'keyframe' && (
             <TrackKeyframes
               track={track}
               durationMs={durationMs}
               selectedKeyframes={selectedKeyframes}
-              setSelectedKeyframes={setSelectedKeyframes}
+              selectKeyframes={selectKeyframes}
               alignedKeyframeIds={alignedKeyframeIds}
               containerRef={trackBodyRef}
-              onKeyframeMove={onKeyframeMove}
+              onKeyframeDragStart={onKeyframeDragStart}
+              onKeyframeDragMove={onKeyframeDragMove}
             />
           )}
           {isExpandable &&
@@ -113,14 +119,11 @@ export const TimelineTrack = ({
                   time={time}
                   trackDurationMs={durationMs}
                   trackRef={trackBodyRef}
-                  onClick={() => {
-                    setSelectedKeyframes(keyframeIdsAtTime)
+                  onSelect={({ isMultiSelect }) => {
+                    selectKeyframes(keyframeIdsAtTime, isMultiSelect)
                   }}
-                  onMove={(newTime) => {
-                    for (const kfId of keyframeIdsAtTime) {
-                      onKeyframeMove(kfId, newTime)
-                    }
-                  }}
+                  onMoveStart={() => onKeyframeDragStart(keyframeIdsAtTime)}
+                  onMove={onKeyframeDragMove}
                 />
               )
             })}
@@ -136,9 +139,11 @@ export const TimelineTrack = ({
             depth={depth + 1}
             durationMs={durationMs}
             selectedKeyframes={selectedKeyframes}
-            setSelectedKeyframes={setSelectedKeyframes}
+            selectKeyframes={selectKeyframes}
+            clearSelectedKeyframes={clearSelectedKeyframes}
             alignedKeyframeIds={alignedKeyframeIds}
-            onKeyframeMove={onKeyframeMove}
+            onKeyframeDragStart={onKeyframeDragStart}
+            onKeyframeDragMove={onKeyframeDragMove}
           />
         ))}
     </>

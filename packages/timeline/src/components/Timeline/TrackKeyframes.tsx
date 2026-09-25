@@ -6,20 +6,22 @@ interface TrackKeyframesProps {
   track: TimelineManagerKeyframeTrack
   durationMs: number
   selectedKeyframes: string[] | null
-  setSelectedKeyframes: (keyframeIds: string[] | null) => void
+  selectKeyframes: (keyframeIds: string[], isMultiSelect: boolean) => void
   alignedKeyframeIds: Set<string>
   containerRef: RefObject<HTMLDivElement>
-  onKeyframeMove: (keyframeId: string, time: number) => void
+  onKeyframeDragStart: (keyframeIds: string[]) => void
+  onKeyframeDragMove: (deltaMs: number) => void
 }
 
 export const TrackKeyframes = ({
   track,
   durationMs,
   selectedKeyframes,
-  setSelectedKeyframes,
+  selectKeyframes,
   alignedKeyframeIds,
   containerRef,
-  onKeyframeMove,
+  onKeyframeDragStart,
+  onKeyframeDragMove,
 }: TrackKeyframesProps) => (
   <>
     {track.keyframes.map((kf) => {
@@ -33,8 +35,9 @@ export const TrackKeyframes = ({
           time={kf.time}
           trackDurationMs={durationMs}
           trackRef={containerRef}
-          onClick={() => setSelectedKeyframes([kf.id])}
-          onMove={(time) => onKeyframeMove(kf.id, time)}
+          onSelect={({ isMultiSelect }) => selectKeyframes([kf.id], isMultiSelect)}
+          onMoveStart={() => onKeyframeDragStart([kf.id])}
+          onMove={onKeyframeDragMove}
         />
       )
     })}
