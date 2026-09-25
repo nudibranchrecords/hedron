@@ -15,7 +15,7 @@ import { TimelineTrack } from './TimelineTrack'
 import { AlignedKeyframe, TimelineManagerTrack } from '@/types'
 import { findTrackById } from '@/utils/findTrackById'
 
-const KEYFRAME_ALIGNMENT_TOLERANCE_MS = 16
+const KEYFRAME_ALIGNMENT_TOLERANCE_MS = 32
 const EMPTY_ALIGNED_KEYFRAMES: AlignedKeyframe[] = []
 
 const getAlignedKeyframes = (

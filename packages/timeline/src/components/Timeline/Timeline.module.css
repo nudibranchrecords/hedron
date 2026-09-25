@@ -123,7 +123,7 @@
   width: 1px;
   background: var(--playheadColor);
   pointer-events: none;
-  z-index: 2;
+  z-index: 1;
 }
 
 .playhead::after {
@@ -164,20 +164,20 @@
   transform: translate(-50%, -50%) rotate(45deg);
   top: 50%;
   cursor: pointer;
-  z-index: 1;
+  z-index: 2;
   opacity: 0.8;
 
   &:hover {
     opacity: 1;
   }
 
-  &.keyframeSelected {
-    background: var(--keyframeColor);
+  &.keyframeAligned {
+    --keyframeColor: var(--alignedKeyframeColor);
+    opacity: 1;
+    border-width: 2px;
   }
 
-  &.keyframeAligned {
-    border-color: var(--alignedKeyframeColor);
-    background: var(--alignedKeyframeColor);
-    opacity: 1;
+  &.keyframeSelected {
+    background: var(--keyframeColor);
   }
 }
