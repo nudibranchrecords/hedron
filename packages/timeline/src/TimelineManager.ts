@@ -16,13 +16,19 @@ export class TimelineManager {
   private tracks: TimelineManagerTrack[]
   private durationMs: number
   private positionMs = 0
+  // User intent: whether the timeline should be playing. May be true while the loop is suspended
+  // because an audio track is buffering.
   private playing = false
+  private loopRunning = false
+  // Ids of audio tracks currently buffering (or not yet started); the loop stays suspended while non-empty.
+  private bufferingTracks: Set<string> = new Set()
   private rafId: number | null = null
   private lastFrameTime: number | null = null
   private onUpdateCallback: OnUpdateCallback | null = null
   private cachedValues: TrackValues = {}
   private sortedKeyframesCache: Map<string, Keyframe[]> = new Map()
   private audioCache: Map<string, HTMLAudioElement> = new Map()
+  private audioListenerControllers: Map<string, AbortController> = new Map()
   private lastKeyframeIndex: Map<string, number> = new Map()
   // Number of shot keyframes at or before the position as of the last check, per track.
   private shotKeyframeCount: Map<string, number> = new Map()
@@ -68,7 +74,9 @@ export class TimelineManager {
         case 'audio':
           if (this.audioCache.get(track.id)?.src !== track.audioUrl) {
             const audio = new Audio(track.audioUrl)
+            audio.preload = 'auto'
             this.audioCache.set(track.id, audio)
+            this.attachAudioListeners(track.id, audio)
           }
           break
         case 'keyframe':
@@ -79,6 +87,30 @@ export class TimelineManager {
           break
       }
     }
+  }
+
+  private attachAudioListeners(trackId: string, audio: HTMLAudioElement) {
+    this.audioListenerControllers.get(trackId)?.abort()
+    const controller = new AbortController()
+    const { signal } = controller
+    this.audioListenerControllers.set(trackId, controller)
+
+    // `waiting` fires when the element stops because it ran out of buffered data (or is seeking),
+    // `playing` when it actually resumes. Mirror those onto the timeline loop.
+    const markBuffering = () => {
+      if (!this.playing) return
+      this.bufferingTracks.add(trackId)
+      this.syncLoopState()
+    }
+    const markReady = () => {
+      if (!this.bufferingTracks.delete(trackId)) return
+      this.syncLoopState()
+    }
+
+    audio.addEventListener('waiting', markBuffering, { signal })
+    audio.addEventListener('stalled', markBuffering, { signal })
+    audio.addEventListener('playing', markReady, { signal })
+    audio.addEventListener('error', markReady, { signal })
   }
 
   private resetKeyframeIndexes() {
@@ -180,16 +212,33 @@ export class TimelineManager {
       }))
   }
 
+  // The first audio track drives the playhead: its currentTime is the source of truth so the
+  // timeline can never drift ahead of audio that stalls or buffers.
+  private getMainAudio(): HTMLAudioElement | null {
+    return this.getAudioTracksWithAudio()[0]?.audio ?? null
+  }
+
+  private setPosition(nextMs: number) {
+    const clamped = Math.max(0, Math.min(nextMs, this.durationMs))
+    if (clamped < this.positionMs) {
+      this.resetKeyframeIndexes()
+    }
+    this.positionMs = clamped
+
+    if (this.clock) {
+      this.clock.beatDeltaMs = this.positionMs
+    }
+  }
+
   private tick = (now: number) => {
-    if (!this.playing) return
+    if (!this.loopRunning) return
 
-    if (this.lastFrameTime !== null) {
-      const delta = now - this.lastFrameTime
-      this.positionMs = Math.min(this.positionMs + delta, this.durationMs)
+    const masterAudio = this.getMainAudio()
 
-      if (this.clock) {
-        this.clock.beatDeltaMs = this.positionMs
-      }
+    if (masterAudio && !masterAudio.paused) {
+      this.setPosition(masterAudio.currentTime * 1000)
+    } else if (this.lastFrameTime !== null) {
+      this.setPosition(this.positionMs + (now - this.lastFrameTime))
     }
     this.lastFrameTime = now
 
@@ -206,28 +255,51 @@ export class TimelineManager {
     return [...this.flatTracks]
   }
 
-  play() {
-    if (this.playing) return
+  // Starts/stops the raf loop (and audio) to match play intent, staying suspended while buffering.
+  private syncLoopState() {
+    const shouldRun = this.playing && this.bufferingTracks.size === 0
+    if (shouldRun === this.loopRunning) return
+
+    if (shouldRun) {
+      this.startLoop()
+    } else {
+      this.stopLoop()
+    }
+  }
+
+  private startLoop() {
+    this.loopRunning = true
+    this.lastFrameTime = null
+
+    // Snap back to where the audio actually is before resuming.
+    const masterAudio = this.getMainAudio()
+    if (masterAudio && !masterAudio.paused) {
+      this.setPosition(masterAudio.currentTime * 1000)
+    }
 
     if (this.clock) {
       this.clock.beatDeltaMs = this.positionMs
       this.clock.continue()
     }
 
-    this.playing = true
-    this.lastFrameTime = null
-    this.rafId = requestAnimationFrame(this.tick)
-
-    // Play audio tracks
+    // Re-align and restart any audio we paused while waiting on a buffering track.
     for (const { audio } of this.getAudioTracksWithAudio()) {
+      if (!audio.paused) continue
       audio.currentTime = this.positionMs / 1000
-      audio.play()
+      void audio.play().catch(() => {})
     }
+
+    this.rafId = requestAnimationFrame(this.tick)
   }
 
-  pause() {
-    this.playing = false
+  private stopLoop() {
+    this.loopRunning = false
     this.lastFrameTime = null
+
+    const masterAudio = this.getMainAudio()
+    if (masterAudio) {
+      this.setPosition(masterAudio.currentTime * 1000)
+    }
 
     if (this.clock) {
       this.clock.stop()
@@ -238,10 +310,36 @@ export class TimelineManager {
       this.rafId = null
     }
 
-    // Pause audio tracks
-    for (const { audio } of this.getAudioTracksWithAudio()) {
+    // Buffering tracks are left alone so they keep loading and can emit `playing` when ready.
+    for (const { track, audio } of this.getAudioTracksWithAudio()) {
+      if (this.bufferingTracks.has(track.id)) continue
       audio.pause()
     }
+  }
+
+  play() {
+    if (this.playing) return
+    this.playing = true
+
+    for (const { track, audio } of this.getAudioTracksWithAudio()) {
+      // Treat every audio track as buffering until it reports `playing`, so the timeline never
+      // runs ahead of audio that hasn't loaded yet.
+      this.bufferingTracks.add(track.id)
+      audio.currentTime = this.positionMs / 1000
+      void audio.play().catch((error) => {
+        console.error(`Timeline audio track "${track.id}" failed to play`, error)
+        this.bufferingTracks.delete(track.id)
+        this.syncLoopState()
+      })
+    }
+
+    this.syncLoopState()
+  }
+
+  pause() {
+    this.playing = false
+    this.bufferingTracks.clear()
+    this.stopLoop()
   }
 
   goTo(timeMs: number) {
@@ -288,6 +386,10 @@ export class TimelineManager {
 
   dispose() {
     this.pause()
+    for (const controller of this.audioListenerControllers.values()) {
+      controller.abort()
+    }
+    this.audioListenerControllers.clear()
     this.onUpdateCallback = null
   }
 }
