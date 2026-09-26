@@ -260,6 +260,72 @@ export const WithSketchGroups: Story = {
   },
 }
 
+const createManyTracks = (sketchCount: number): TimelineManagerTrack[] =>
+  Array.from({ length: sketchCount }, (_, sketchIndex) => ({
+    id: `sketch-${sketchIndex}`,
+    label: `Sketch ${sketchIndex + 1}`,
+    trackType: 'sketch',
+    childTracks: [
+      {
+        id: `sketch-${sketchIndex}-visible`,
+        label: 'Visible',
+        trackType: 'keyframe',
+        keyframes: [
+          {
+            id: `kf-${sketchIndex}-v1`,
+            time: 500 + sketchIndex * 300,
+            valueType: 'boolean',
+            value: true,
+            nodeType: 'param',
+          },
+          {
+            id: `kf-${sketchIndex}-v2`,
+            time: 6000 + sketchIndex * 200,
+            valueType: 'boolean',
+            value: false,
+            nodeType: 'param',
+          },
+        ],
+      },
+      {
+        id: `sketch-${sketchIndex}-pos`,
+        label: 'Position',
+        trackType: 'vector',
+        childTracks: (['X', 'Y', 'Z'] as const).map((axis, axisIndex) => ({
+          id: `sketch-${sketchIndex}-pos-${axis}`,
+          label: axis,
+          trackType: 'keyframe' as const,
+          keyframes: [
+            {
+              id: `kf-${sketchIndex}-p${axis}1`,
+              time: 1000 + axisIndex * 700,
+              valueType: 'number' as const,
+              value: 0,
+              nodeType: 'param' as const,
+            },
+            {
+              id: `kf-${sketchIndex}-p${axis}2`,
+              time: 4000 + sketchIndex * 250,
+              valueType: 'number' as const,
+              value: 0.5,
+              nodeType: 'param' as const,
+            },
+          ],
+        })),
+      },
+    ],
+  }))
+
+export const ManyTracksScrollable: Story = {
+  args: {
+    ...baseTimelineArgs,
+    durationMs: 10000,
+    tracks: createManyTracks(10),
+    playheadPositionMs: 2500,
+    style: { height: '300px' },
+  },
+}
+
 export const Interactive = () => {
   const TIMELINE_DURATION = 60000 * 3
   const [playheadPositionMs, setPlayheadPositionMs] = useState(0)

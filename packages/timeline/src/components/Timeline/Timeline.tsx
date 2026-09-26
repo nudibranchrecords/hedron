@@ -72,6 +72,7 @@ export interface TimelineProps {
   onPlayPauseToggle: () => void
   isAlignmentEnabled?: boolean
   onAlignedKeyframesChange?: (alignedKeyframes: AlignedKeyframe[]) => void
+  style?: React.CSSProperties
 }
 
 export const Timeline = forwardRef<TimelineHandle, TimelineProps>(function Timeline(
@@ -92,6 +93,7 @@ export const Timeline = forwardRef<TimelineHandle, TimelineProps>(function Timel
     onPlayPauseToggle,
     isAlignmentEnabled = true,
     onAlignedKeyframesChange,
+    style,
   },
   ref,
 ) {
@@ -324,7 +326,7 @@ export const Timeline = forwardRef<TimelineHandle, TimelineProps>(function Timel
   }
 
   return (
-    <div className={c.timeline}>
+    <div className={c.timeline} style={style}>
       <div className={c.header}>
         <span>Timeline</span>
         <span>
@@ -336,40 +338,44 @@ export const Timeline = forwardRef<TimelineHandle, TimelineProps>(function Timel
         ref={bodyRef}
         style={{ '--trackAreaWidth': `${trackAreaWidth}px` } as React.CSSProperties}
       >
-        <div className={c.ruler} ref={rulerAreaRef}>
-          {rulerMarks}
-        </div>
-        {tracks.map((track) => (
-          <TimelineTrack
-            key={track.id}
-            selectedTrackId={selectedTrackId}
-            setSelectedTrackId={setSelectedTrackId}
-            track={track}
-            depth={0}
-            durationMs={durationMs}
-            selectedKeyframes={selectedKeyframes}
-            selectKeyframes={selectKeyframes}
-            onSelectionBoxStart={startSelectionBox}
-            alignedKeyframeIds={alignedKeyframeIds}
-            onKeyframeDragStart={handleKeyframeDragStart}
-            onKeyframeDragMove={handleKeyframeDragMove}
-          />
-        ))}
-        {selectionBox && (
+        <div className={c.grid}>
+          <div className={c.rulerCorner} />
+          <div className={c.ruler} ref={rulerAreaRef}>
+            {rulerMarks}
+            <div className={c.rulerPlayhead} style={{ left: `${playheadPercent}%` }} />
+          </div>
+          {tracks.map((track) => (
+            <TimelineTrack
+              key={track.id}
+              selectedTrackId={selectedTrackId}
+              setSelectedTrackId={setSelectedTrackId}
+              track={track}
+              depth={0}
+              durationMs={durationMs}
+              selectedKeyframes={selectedKeyframes}
+              selectKeyframes={selectKeyframes}
+              onSelectionBoxStart={startSelectionBox}
+              alignedKeyframeIds={alignedKeyframeIds}
+              onKeyframeDragStart={handleKeyframeDragStart}
+              onKeyframeDragMove={handleKeyframeDragMove}
+            />
+          ))}
+          {selectionBox && (
+            <div
+              className={c.selectionBox}
+              style={{
+                left: selectionBox.left,
+                top: selectionBox.top,
+                width: selectionBox.width,
+                height: selectionBox.height,
+              }}
+            />
+          )}
           <div
-            className={c.selectionBox}
-            style={{
-              left: selectionBox.left,
-              top: selectionBox.top,
-              width: selectionBox.width,
-              height: selectionBox.height,
-            }}
+            className={c.playhead}
+            style={{ '--playheadPercent': playheadPercent / 100 } as React.CSSProperties}
           />
-        )}
-        <div
-          className={c.playhead}
-          style={{ '--playheadPercent': playheadPercent / 100 } as React.CSSProperties}
-        />
+        </div>
       </div>
     </div>
   )

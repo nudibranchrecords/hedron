@@ -69,6 +69,7 @@ export const TimelineGlobalPanel = ({ engine }: TimelineGlobalPanelProps) => {
       </ControlGrid>
       <div className="mb-xl">
         <Timeline
+          style={{ maxHeight: '500px' }}
           ref={timelineRef}
           durationMs={durationS * 1000}
           tracks={tracks}
