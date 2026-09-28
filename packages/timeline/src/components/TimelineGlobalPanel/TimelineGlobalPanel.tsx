@@ -45,13 +45,14 @@ export const TimelineGlobalPanel = ({ engine }: TimelineGlobalPanelProps) => {
     zoomPxPerSecond,
     durationNode,
     durationS,
-    playheadPositionMs,
     isPlaying,
+    playheadPositionNode,
   } = useTimelineOptionNodes()
+
   const [alignedKeyframes, setAlignedKeyframes] = useState<AlignedKeyframe[]>([])
   const isAlignmentEnabled = !isPlaying
 
-  const timelineRef = useTimelineHandle(zoomPxPerSecondNode.id)
+  const timelineRef = useTimelineHandle(zoomPxPerSecondNode.id, playheadPositionNode.id)
   useAlignedKeyframeValueSync({
     engine,
     manager,
@@ -73,7 +74,6 @@ export const TimelineGlobalPanel = ({ engine }: TimelineGlobalPanelProps) => {
           ref={timelineRef}
           durationMs={durationS * 1000}
           tracks={tracks}
-          playheadPositionMs={playheadPositionMs}
           activeTimelineComponentId={activeTimelineComponentId}
           setActiveTimelineComponentId={setActiveTimelineComponentId}
           selectedTrackId={selectedTrackId}

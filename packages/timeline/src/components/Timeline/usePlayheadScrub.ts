@@ -1,18 +1,14 @@
 import { useElementScrub } from '@hedron-gl/ui-core'
-import { useCallback, useEffect, useRef } from 'react'
+import { useCallback, useEffect } from 'react'
 
 export const usePlayheadScrub = (
   durationMs: number,
   playheadAreaRef: React.RefObject<HTMLDivElement>,
-  playheadPositionMs: number,
+  playheadPositionMsRef: React.RefObject<number>,
   onPlayheadChange?: (time: number) => void,
+  setPlayheadPositionMs?: (nextPlayheadPositionMs: number) => void,
 ) => {
   // We need this as a ref for useElementScrub to work properly
-  const playheadPositionRef = useRef(0)
-
-  useEffect(() => {
-    playheadPositionRef.current = playheadPositionMs
-  }, [playheadPositionMs])
 
   const clampTime = useCallback(
     (time: number) => Math.max(0, Math.min(durationMs, time)),
@@ -21,12 +17,12 @@ export const usePlayheadScrub = (
 
   const onPlayheadAreaScrub = useCallback(
     ({ x }: { x: number }) => {
-      const newTime = clampTime(playheadPositionRef.current + x * durationMs)
+      const newTime = clampTime(playheadPositionMsRef.current! + x * durationMs)
 
       onPlayheadChange?.(newTime)
-      playheadPositionRef.current = newTime
+      setPlayheadPositionMs?.(newTime)
     },
-    [clampTime, durationMs, onPlayheadChange],
+    [clampTime, durationMs, onPlayheadChange, playheadPositionMsRef, setPlayheadPositionMs],
   )
 
   const onRulerMouseDown = useCallback(
@@ -38,9 +34,9 @@ export const usePlayheadScrub = (
       const x = Math.max(0, Math.min(rect.width, e.clientX - rect.left))
       const time = clampTime((x / rect.width) * durationMs)
       onPlayheadChange(time)
-      playheadPositionRef.current = time
+      setPlayheadPositionMs?.(time)
     },
-    [clampTime, durationMs, onPlayheadChange, playheadAreaRef],
+    [clampTime, durationMs, onPlayheadChange, playheadAreaRef, setPlayheadPositionMs],
   )
 
   useEffect(() => {

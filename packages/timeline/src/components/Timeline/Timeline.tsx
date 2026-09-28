@@ -53,12 +53,12 @@ const getAlignedKeyframes = (
 
 export type TimelineHandle = {
   setPxPerSecond: (pxPerSecond: number) => void
+  setPlayheadPositionMs: (playheadPositionMs: number) => void
 }
 
 export interface TimelineProps {
   tracks: TimelineManagerTrack[]
   durationMs: number
-  playheadPositionMs: number
   activeTimelineComponentId: string | null
   selectedTrackId: string | null
   setSelectedTrackId: (trackId: string | null) => void
@@ -79,7 +79,6 @@ export const Timeline = forwardRef<TimelineHandle, TimelineProps>(function Timel
   {
     tracks,
     durationMs,
-    playheadPositionMs = 0,
     activeTimelineComponentId,
     selectedTrackId,
     setSelectedTrackId: _setSelectedTrackId,
@@ -95,15 +94,19 @@ export const Timeline = forwardRef<TimelineHandle, TimelineProps>(function Timel
     onAlignedKeyframesChange,
     style,
   },
-  ref,
+  handleRef,
 ) {
+  const playheadPositionMsRef = useRef<number>(0)
   const durationSec = durationMs / 1000
   const rulerAreaRef = useRef<HTMLDivElement>(null)
   const bodyRef = useRef<HTMLDivElement>(null)
-  const { pxPerSecond, setPxPerSecond } = usePxPerSecond({
+  const playheadRef = useRef<HTMLDivElement>(null)
+  const rulerPlayheadRef = useRef<HTMLDivElement>(null)
+  const elapsedTimeRef = useRef<HTMLDivElement>(null)
+
+  const { pxPerSecond, setPxPerSecond: _setPxPerSecond } = usePxPerSecond({
     bodyRef,
     durationMs,
-    playheadPositionMs,
     initialPxPerSecond,
   })
 
@@ -119,13 +122,9 @@ export const Timeline = forwardRef<TimelineHandle, TimelineProps>(function Timel
   // Mirrors the selection so a drag starting in the same event can read it before state flushes.
   const selectedKeyframesRef = useRef<string[] | null>(null)
   const keyframeDragOriginsRef = useRef<{ id: string; time: number }[]>([])
-  const alignedKeyframes = useMemo(
-    () =>
-      isAlignmentEnabled
-        ? getAlignedKeyframes(tracks, playheadPositionMs, alignmentToleranceMs)
-        : EMPTY_ALIGNED_KEYFRAMES,
-    [isAlignmentEnabled, tracks, playheadPositionMs, alignmentToleranceMs],
-  )
+
+  const [alignedKeyframes, setAlignedKeyframes] = useState<AlignedKeyframe[]>([])
+
   const alignedKeyframeIds = useMemo(
     () => new Set(alignedKeyframes.map(({ keyframe }) => keyframe.id)),
     [alignedKeyframes],
@@ -283,7 +282,7 @@ export const Timeline = forwardRef<TimelineHandle, TimelineProps>(function Timel
         if (!track) return
 
         for (const keyframeTrackId of getChildKeyframeTrackIds(track)) {
-          onKeyframeInsert(keyframeTrackId, playheadPositionMs)
+          onKeyframeInsert(keyframeTrackId, playheadPositionMsRef.current)
         }
       }
     }
@@ -294,7 +293,6 @@ export const Timeline = forwardRef<TimelineHandle, TimelineProps>(function Timel
   }, [
     selectedKeyframes,
     onKeyframeDelete,
-    playheadPositionMs,
     onKeyframeInsert,
     tracks,
     setSelectedKeyframes,
@@ -303,15 +301,59 @@ export const Timeline = forwardRef<TimelineHandle, TimelineProps>(function Timel
     onPlayPauseToggle,
   ])
 
-  useImperativeHandle(ref, () => ({ setPxPerSecond }), [setPxPerSecond])
+  const setPxPerSecond = useCallback(
+    (nextPxPerSecond: number) => {
+      _setPxPerSecond(nextPxPerSecond, playheadPositionMsRef.current)
+    },
+    [_setPxPerSecond],
+  )
+
+  const setPlayheadPositionMs = useCallback(
+    (nextPlayheadPositionMs: number) => {
+      playheadPositionMsRef.current = nextPlayheadPositionMs
+
+      setAlignedKeyframes(
+        isAlignmentEnabled
+          ? getAlignedKeyframes(tracks, playheadPositionMsRef.current, alignmentToleranceMs)
+          : EMPTY_ALIGNED_KEYFRAMES,
+      )
+
+      if (playheadRef.current && rulerPlayheadRef.current) {
+        const playheadPercent = playheadPositionMsRef.current / durationMs
+        playheadRef.current.style.transform = `translateX(calc(
+        var(--trackHeaderWidth) + max(100% - var(--trackHeaderWidth), var(--trackAreaWidth, 0px)) *
+          ${playheadPercent}
+        ))`
+
+        rulerPlayheadRef.current.style.transform = `translateX(calc(
+        max(100% - var(--trackHeaderWidth), var(--trackAreaWidth, 0px)) *
+          ${playheadPercent}
+        ))`
+      }
+
+      if (elapsedTimeRef.current) {
+        elapsedTimeRef.current.textContent = `${(playheadPositionMsRef.current / 1000).toFixed(1)}s / ${durationSec}s`
+      }
+    },
+    [alignmentToleranceMs, durationMs, durationSec, isAlignmentEnabled, tracks],
+  )
+
+  useImperativeHandle(handleRef, () => ({ setPxPerSecond, setPlayheadPositionMs }), [
+    setPxPerSecond,
+    setPlayheadPositionMs,
+  ])
 
   useEffect(() => {
     onAlignedKeyframesChange?.(alignedKeyframes)
   }, [alignedKeyframes, onAlignedKeyframesChange])
 
-  usePlayheadScrub(durationMs, rulerAreaRef, playheadPositionMs, onPlayheadChange)
-
-  const playheadPercent = (playheadPositionMs / durationMs) * 100
+  usePlayheadScrub(
+    durationMs,
+    rulerAreaRef,
+    playheadPositionMsRef,
+    onPlayheadChange,
+    setPlayheadPositionMs,
+  )
 
   const trackAreaWidth = durationSec * pxPerSecond
   const rulerMarks = []
@@ -329,9 +371,7 @@ export const Timeline = forwardRef<TimelineHandle, TimelineProps>(function Timel
     <div className={c.timeline} style={style}>
       <div className={c.header}>
         <span>Timeline</span>
-        <span>
-          {(playheadPositionMs / 1000).toFixed(1)}s / {durationSec}s
-        </span>
+        <span ref={elapsedTimeRef}></span>
       </div>
       <div
         className={c.body}
@@ -342,7 +382,7 @@ export const Timeline = forwardRef<TimelineHandle, TimelineProps>(function Timel
           <div className={c.rulerCorner} />
           <div className={c.ruler} ref={rulerAreaRef}>
             {rulerMarks}
-            <div className={c.rulerPlayhead} style={{ left: `${playheadPercent}%` }} />
+            <div className={c.rulerPlayhead} ref={rulerPlayheadRef} />
           </div>
           {tracks.map((track) => (
             <TimelineTrack
@@ -371,10 +411,7 @@ export const Timeline = forwardRef<TimelineHandle, TimelineProps>(function Timel
               }}
             />
           )}
-          <div
-            className={c.playhead}
-            style={{ '--playheadPercent': playheadPercent / 100 } as React.CSSProperties}
-          />
+          <div className={c.playhead} ref={playheadRef} />
         </div>
       </div>
     </div>

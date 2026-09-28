@@ -3,14 +3,12 @@ import { useCallback, useRef, type RefObject } from 'react'
 interface UsePxPerSecondParams {
   bodyRef: RefObject<HTMLDivElement>
   durationMs: number
-  playheadPositionMs: number
   initialPxPerSecond: number
 }
 
 export const usePxPerSecond = ({
   bodyRef,
   durationMs,
-  playheadPositionMs,
   initialPxPerSecond,
 }: UsePxPerSecondParams) => {
   const pxPerSecondRef = useRef(initialPxPerSecond)
@@ -21,7 +19,7 @@ export const usePxPerSecond = ({
   // Mutates the DOM directly (bypassing React state) so the scroll position can be adjusted in the
   // same tick as the resize, without waiting on an effect.
   const setPxPerSecond = useCallback(
-    (nextPxPerSecond: number) => {
+    (nextPxPerSecond: number, playheadPositionMs: number) => {
       const body = bodyRef.current
       if (!body) return
 
@@ -47,7 +45,7 @@ export const usePxPerSecond = ({
 
       pxPerSecondRef.current = nextPxPerSecond
     },
-    [bodyRef, durationMs, durationSec, playheadPositionMs],
+    [bodyRef, durationMs, durationSec],
   )
 
   return { pxPerSecond: pxPerSecondRef.current, setPxPerSecond }

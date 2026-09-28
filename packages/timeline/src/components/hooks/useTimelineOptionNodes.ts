@@ -5,13 +5,12 @@ import { TimelineOptionNodes } from '@/TimelineInput'
 export const useTimelineOptionNodes = (timelineId = DEFAULT_TIMELINE_ID) => {
   const optionNodes = useNodeOptionNodes<TimelineOptionNodes>(timelineId)
   const isPlayingNode = optionNodes['isPlaying']!
-  const playheadPositionNode = optionNodes['playheadPositionMs']
+  const playheadPositionNode = optionNodes['playheadPositionMs']!
   const audioUrlNode = optionNodes['audioUrl']!
   const zoomPxPerSecondNode = optionNodes['zoomPxPerSecond']!
   const durationNode = optionNodes['timelineDurationS']!
 
   const isPlaying = useParamValue<boolean>(isPlayingNode?.id, false)
-  const playheadPositionMs = useParamValue<number>(playheadPositionNode?.id, 0)
   const audioUrl = useParamValue<string | null>(audioUrlNode?.id, null)
   const zoomPxPerSecond = useParamValue<number>(zoomPxPerSecondNode?.id, 80)
   const durationS = useParamValue<number>(durationNode?.id, 0)
@@ -21,7 +20,6 @@ export const useTimelineOptionNodes = (timelineId = DEFAULT_TIMELINE_ID) => {
     isPlayingNode,
     isPlaying,
     playheadPositionNode,
-    playheadPositionMs,
     audioUrlNode,
     audioUrl,
     zoomPxPerSecondNode,

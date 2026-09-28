@@ -173,10 +173,6 @@
   position: absolute;
   top: 0;
   bottom: 0;
-  left: calc(
-    var(--trackHeaderWidth) + max(100% - var(--trackHeaderWidth), var(--trackAreaWidth, 0px)) *
-      var(--playheadPercent)
-  );
   width: 1px;
   background: var(--playheadColor);
   pointer-events: none;
