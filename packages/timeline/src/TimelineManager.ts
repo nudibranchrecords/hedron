@@ -72,6 +72,10 @@ export class TimelineManager {
     for (const track of this.flatTracks) {
       switch (track.trackType) {
         case 'audio':
+          if (!track.audioUrl) {
+            this.audioCache.delete(track.id)
+            continue
+          }
           if (this.audioCache.get(track.id)?.src !== track.audioUrl) {
             const audio = new Audio(track.audioUrl)
             audio.preload = 'auto'
