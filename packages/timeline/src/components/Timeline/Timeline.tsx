@@ -308,15 +308,21 @@ export const Timeline = forwardRef<TimelineHandle, TimelineProps>(function Timel
     [_setPxPerSecond],
   )
 
+  const updateAlignedKeyframes = useCallback(() => {
+    setAlignedKeyframes(
+      isAlignmentEnabled
+        ? getAlignedKeyframes(tracks, playheadPositionMsRef.current, alignmentToleranceMs)
+        : EMPTY_ALIGNED_KEYFRAMES,
+    )
+  }, [isAlignmentEnabled, tracks, alignmentToleranceMs])
+
+  useEffect(updateAlignedKeyframes, [tracks, updateAlignedKeyframes])
+
   const setPlayheadPositionMs = useCallback(
     (nextPlayheadPositionMs: number) => {
       playheadPositionMsRef.current = nextPlayheadPositionMs
 
-      setAlignedKeyframes(
-        isAlignmentEnabled
-          ? getAlignedKeyframes(tracks, playheadPositionMsRef.current, alignmentToleranceMs)
-          : EMPTY_ALIGNED_KEYFRAMES,
-      )
+      updateAlignedKeyframes()
 
       if (playheadRef.current && rulerPlayheadRef.current) {
         const playheadPercent = playheadPositionMsRef.current / durationMs
@@ -335,13 +341,17 @@ export const Timeline = forwardRef<TimelineHandle, TimelineProps>(function Timel
         elapsedTimeRef.current.textContent = `${(playheadPositionMsRef.current / 1000).toFixed(1)}s / ${durationSec}s`
       }
     },
-    [alignmentToleranceMs, durationMs, durationSec, isAlignmentEnabled, tracks],
+    [durationMs, durationSec, updateAlignedKeyframes],
   )
 
   useImperativeHandle(handleRef, () => ({ setPxPerSecond, setPlayheadPositionMs }), [
     setPxPerSecond,
     setPlayheadPositionMs,
   ])
+
+  useEffect(() => {
+    setPlayheadPositionMs(playheadPositionMsRef.current)
+  }, [setPlayheadPositionMs])
 
   useEffect(() => {
     onAlignedKeyframesChange?.(alignedKeyframes)
