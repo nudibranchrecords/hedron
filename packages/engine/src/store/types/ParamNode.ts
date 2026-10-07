@@ -26,14 +26,18 @@ export interface ParamVectorBase extends ParamBase {
   }
 }
 
+export type ParamNumberDisplayMode = 'slider' | 'field'
+
 export interface ParamNumber extends ParamBase {
   valueType: 'number'
   defaultValue: number
+  displayMode?: ParamNumberDisplayMode
 }
 
 export type ConfigParamNumber = AsConfig<ParamNumber> & {
   sliderMin?: number
   sliderMax?: number
+  displayMode?: ParamNumberDisplayMode
 }
 
 export interface ParamBoolean extends ParamBase {

@@ -31,7 +31,6 @@ interface Actions {
   moveSketchDown: (instanceId: string) => void
   setSketchModuleItem: (newItem: SketchModuleItem) => void
   updateParamValue: (paramId: string, value: ParamValue) => void
-  updateMultipleParamValues: (paramIds: string[], values: ParamValue[]) => void
   deleteSketchModule: (moduleId: string) => void
   loadProject: (project: EngineData) => void
   reset: () => void

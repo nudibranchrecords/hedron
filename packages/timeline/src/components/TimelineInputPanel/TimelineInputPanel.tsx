@@ -1,11 +1,18 @@
-import { useEffect, useId } from 'react'
+import { useEffect, useId, useRef } from 'react'
 import { HedronEngine, InputNode } from '@hedron-gl/engine'
-import { useNodeOptionNodes, useParamValue, useAppStore } from '@hedron-gl/ui-core'
-import { useTimelineData } from '@/components/TimelineGlobalPanel/useTimelineData'
+import {
+  useNodeOptionNodes,
+  useParamValue,
+  useAppStore,
+  useSubscribeToParamValue,
+  ControlGrid,
+  NodeContainer,
+} from '@hedron-gl/ui-core'
+import { useTimelineTracks } from '@/components/TimelineGlobalPanel/useTimelineTracks'
 import { useTimelineHandlers } from '@/components/TimelineGlobalPanel/useTimelineHandlers'
 import { useTimelineManager } from '@/components/TimelineGlobalPanel/useTimelineManager'
 import { DEFAULT_TIMELINE_ID } from '@/constants'
-import { Timeline } from '@/components/Timeline/Timeline'
+import { Timeline, TimelineHandle } from '@/components/Timeline/Timeline'
 import { TimelineOptionNodes } from '@/TimelineInput'
 import { findTrackById } from '@/utils/findTrackById'
 
@@ -19,13 +26,14 @@ interface TimelineInputPanelProps {
  * (header, playhead, keyframes), scoped down to just this input's own track.
  */
 export const TimelineInputPanel = ({ input, engine }: TimelineInputPanelProps) => {
-  const timeline = useTimelineData()
+  const tracks = useTimelineTracks()
   const manager = useTimelineManager(DEFAULT_TIMELINE_ID)
 
-  const { handlePlayheadChange, handleKeyframeDelete, handleKeyframeInsert } = useTimelineHandlers({
-    engine,
-    manager,
-  })
+  const { handlePlayheadChange, handleKeyframeDelete, handleKeyframeInsert, handleKeyframeMove } =
+    useTimelineHandlers({
+      engine,
+      manager,
+    })
 
   const activeTimelineComponentId = useAppStore((state) => state.activeTimelineComponentId)
   const setActiveTimelineComponentId = useAppStore((state) => state.setActiveTimelineComponentId)
@@ -40,24 +48,45 @@ export const TimelineInputPanel = ({ input, engine }: TimelineInputPanelProps) =
     setActiveTimelineComponentId(timelineComponentId)
   }, [input.id, setSelectedTrackId, setActiveTimelineComponentId, timelineComponentId])
 
-  const optionNodes = useNodeOptionNodes<TimelineOptionNodes>(DEFAULT_TIMELINE_ID)
-  const playHeadPositionNode = optionNodes['playheadPositionMs']
+  const timelineOptionNodes = useNodeOptionNodes<TimelineOptionNodes>(DEFAULT_TIMELINE_ID)
+  const trackOptionNodes = useNodeOptionNodes<TimelineOptionNodes>(input.id)
+  const playHeadPositionNode = timelineOptionNodes['playheadPositionMs']
   const playheadPositionMs = useParamValue<number>(playHeadPositionNode?.id, 0)
 
-  const track = findTrackById(timeline.tracks, input.id)
+  const track = findTrackById(tracks, input.id)
+
+  const durationNode = timelineOptionNodes['timelineDurationS']
+  const durationS = useParamValue<number>(durationNode?.id, 0)
+
+  const zoomPxPerSecondNode = trackOptionNodes['zoomPxPerSecond']!
+
+  const timelineRef = useRef<TimelineHandle>(null)
+
+  useSubscribeToParamValue<number>(zoomPxPerSecondNode.id, (value) => {
+    timelineRef.current?.setPxPerSecond(value)
+  })
 
   return (
-    <Timeline
-      timeline={{ durationMs: timeline.durationMs, tracks: track ? [track] : [] }}
-      playheadPositionMs={playheadPositionMs}
-      activeTimelineComponentId={activeTimelineComponentId}
-      setActiveTimelineComponentId={setActiveTimelineComponentId}
-      selectedTrackId={selectedTrackId}
-      componentId={timelineComponentId}
-      setSelectedTrackId={setSelectedTrackId}
-      onPlayheadChange={handlePlayheadChange}
-      onKeyframeDelete={handleKeyframeDelete}
-      onKeyframeInsert={handleKeyframeInsert}
-    />
+    <>
+      <ControlGrid className="mb-xl">
+        <NodeContainer nodeId={zoomPxPerSecondNode.id} />
+      </ControlGrid>
+
+      <Timeline
+        ref={timelineRef}
+        durationMs={durationS * 1000}
+        tracks={track ? [track] : []}
+        playheadPositionMs={playheadPositionMs}
+        activeTimelineComponentId={activeTimelineComponentId}
+        setActiveTimelineComponentId={setActiveTimelineComponentId}
+        selectedTrackId={selectedTrackId}
+        componentId={timelineComponentId}
+        setSelectedTrackId={setSelectedTrackId}
+        onPlayheadChange={handlePlayheadChange}
+        onKeyframeDelete={handleKeyframeDelete}
+        onKeyframeInsert={handleKeyframeInsert}
+        onKeyframeMove={handleKeyframeMove}
+      />
+    </>
   )
 }

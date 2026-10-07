@@ -133,10 +133,7 @@ export const importSketchModule = async (
     // Get the sketch module
     const sketchPath = `${baseUrl}/${moduleId}/index.js?${cacheBust}`
 
-    const sketchImport = await safeImport(
-      sketchPath,
-      `Failed to import sketch module: ${sketchPath}`,
-    )
+    const sketchImport = await safeImport(sketchPath)
     if (!sketchImport.ok) {
       return { success: false, error: sketchImport.error, data: undefined }
     }
@@ -158,16 +155,16 @@ export const importSketchModule = async (
       // If no getConfig(), try to import config.js
       const configPath = `${baseUrl}/${moduleId}/config.js?${cacheBust}`
 
-      const configImport = await safeImport(
-        configPath,
-        `Failed to import sketch config: ${configPath}`,
-      )
+      const configImport = await safeImport(configPath)
       if (configImport.ok) {
         config = processSketchConfig(
           configImport.module.default as ConfigSketch,
           processConfigOptions,
         )
       } else {
+        console.warn(
+          `Couldn't find sketch config: ${configPath}, generating empty config instead. Error: ${configImport.error}`,
+        )
         // Generate empty config if config.js is not found, allowing for no config sketches
         config = processSketchConfig({}, processConfigOptions)
       }

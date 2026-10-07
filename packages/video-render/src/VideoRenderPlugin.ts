@@ -195,7 +195,7 @@ export class VideoRenderPlugin implements IPlugin {
           url: audioUrl,
           fps,
           frameCount,
-          getTimeMs: () => defaultTimelineManager.getPosition(),
+          getTimeMs: () => defaultTimelineManager.getPositionMs(),
         })
         offlineAnalysisActive = true
       }

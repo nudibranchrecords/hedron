@@ -25,7 +25,7 @@
   right: 0;
   z-index: 1;
   -webkit-tap-highlight-color: transparent;
-  touch-action: none;
+  touch-action: pan-y;
 }
 
 .numberInputContainer {

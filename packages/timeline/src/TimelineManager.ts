@@ -1,7 +1,6 @@
 import { Clock } from '@hedron-gl/clock'
 import { ParamValue } from '@hedron-gl/engine'
 import type {
-  TimelineManagerData,
   TimelineManagerTrack,
   Keyframe,
   TimelineManagerAudioTrack,
@@ -16,8 +15,9 @@ export type OnUpdateCallback = (values: TrackValues) => void
 export type OnAudioElementChangeCallback = (element: HTMLAudioElement | null) => void
 
 export class TimelineManager {
-  private timelineData: TimelineManagerData
-  private position = 0
+  private tracks: TimelineManagerTrack[]
+  private durationMs: number
+  private positionMs = 0
   private playing = false
   private onUpdateCallback: OnUpdateCallback | null = null
   private onAudioElementChangeCallback: OnAudioElementChangeCallback | null = null
@@ -30,12 +30,21 @@ export class TimelineManager {
   // Number of shot keyframes at or before the position as of the last check, per track.
   private shotKeyframeCount: Map<string, number> = new Map()
   private clock: Clock | null = null
-  // Flattened (vector tracks expanded to their childTracks) view of timelineData.tracks, kept in
+  // Flattened (vector tracks expanded to their childTracks) view of `tracks`, kept in
   // sync by buildCache() - avoids re-walking the track tree on every computeValues/emitUpdate call.
   private flatTracks: TimelineManagerTrack[] = []
 
-  constructor(timeline: TimelineManagerData, clock?: Clock) {
-    this.timelineData = timeline
+  constructor({
+    tracks,
+    durationMs,
+    clock,
+  }: {
+    tracks: TimelineManagerTrack[]
+    durationMs: number
+    clock?: Clock
+  }) {
+    this.tracks = tracks
+    this.durationMs = durationMs
     this.clock = clock ?? null
     this.buildCache()
   }
@@ -56,7 +65,7 @@ export class TimelineManager {
   private buildCache() {
     this.sortedKeyframesCache.clear()
     this.resetKeyframeIndexes()
-    this.flatTracks = this.flattenTracks(this.timelineData.tracks)
+    this.flatTracks = this.flattenTracks(this.tracks)
     for (const track of this.flatTracks) {
       switch (track.trackType) {
         case 'audio':
@@ -102,7 +111,7 @@ export class TimelineManager {
     let value = startIndex > 0 ? sorted[startIndex - 1].value : undefined
     let lastIndex = startIndex
     for (let i = startIndex; i < sorted.length; i++) {
-      if (sorted[i].time > this.position) break
+      if (sorted[i].time > this.positionMs) break
       value = sorted[i].value
       lastIndex = i + 1
     }
@@ -112,7 +121,7 @@ export class TimelineManager {
     const current = sorted[lastIndex - 1]
     const next = sorted[lastIndex]
     if (current?.valueType === 'number' && next?.valueType === 'number') {
-      const t = (this.position - current.time) / (next.time - current.time)
+      const t = (this.positionMs - current.time) / (next.time - current.time)
       return current.value + (next.value - current.value) * t
     }
 
@@ -123,7 +132,7 @@ export class TimelineManager {
   // keyframes crossed (time <= position) increases since the last check.
   private getShouldShotFire(track: TimelineManagerTrack): true | undefined {
     const sorted = this.sortedKeyframesCache.get(track.id) ?? []
-    const count = sorted.filter((kf) => kf.time < this.position).length
+    const count = sorted.filter((kf) => kf.time < this.positionMs).length
     const lastCount = this.shotKeyframeCount.get(track.id) ?? 0
     this.shotKeyframeCount.set(track.id, count)
     return count > lastCount ? true : undefined
@@ -198,18 +207,15 @@ export class TimelineManager {
   step(deltaMs: number) {
     if (!this.playing) return
 
-    this.position = Math.max(
-      0,
-      Math.min(this.position + deltaMs, this.timelineData.durationMs),
-    )
+    this.positionMs = Math.max(0, Math.min(this.positionMs + deltaMs, this.durationMs))
 
     if (this.clock) {
-      this.clock.beatDeltaMs = this.position
+      this.clock.beatDeltaMs = this.positionMs
     }
 
     this.emitUpdate()
 
-    if (this.position >= this.timelineData.durationMs) {
+    if (this.positionMs >= this.durationMs) {
       this.goTo(0)
     }
   }
@@ -226,7 +232,7 @@ export class TimelineManager {
     if (this.playing) return
 
     if (this.clock) {
-      this.clock.beatDeltaMs = this.position
+      this.clock.beatDeltaMs = this.positionMs
       this.clock.continue()
     }
 
@@ -236,7 +242,7 @@ export class TimelineManager {
 
     // Play audio tracks
     for (const { audio } of this.getAudioTracksWithAudio()) {
-      audio.currentTime = this.position / 1000
+      audio.currentTime = this.positionMs / 1000
       audio.play()
     }
   }
@@ -255,18 +261,19 @@ export class TimelineManager {
   }
 
   goTo(timeMs: number) {
-    this.position = Math.max(0, Math.min(timeMs, this.timelineData.durationMs))
+    this.positionMs = Math.max(0, Math.min(timeMs, this.durationMs))
     this.resetKeyframeIndexes()
-    this.emitUpdate()
 
     if (this.clock) {
-      this.clock.beatDeltaMs = this.position
+      this.clock.beatDeltaMs = this.positionMs
     }
 
     // Seek audio tracks
     for (const { audio } of this.getAudioTracksWithAudio()) {
-      audio.currentTime = this.position / 1000
+      audio.currentTime = this.positionMs / 1000
     }
+
+    this.emitUpdate()
   }
 
   /**
@@ -275,19 +282,20 @@ export class TimelineManager {
    */
   goToBeforeStart(offsetMs: number) {
     this.goTo(0)
-    this.position = -offsetMs
-  }
-
-  setDuration(durationMs: number) {
-    this.timelineData.durationMs = durationMs
-    this.position = Math.min(this.position, durationMs)
-    this.emitUpdate()
+    this.positionMs = -offsetMs
   }
 
   setTracks(tracks: TimelineManagerTrack[]) {
-    this.timelineData.tracks = tracks
+    this.tracks = tracks
     this.buildCache()
     this.emitUpdate()
+  }
+
+  setDurationMs(durationMs: number) {
+    this.durationMs = Math.max(0, durationMs)
+
+    // Ensure position stays within the new duration
+    this.goTo(Math.min(this.positionMs, this.durationMs))
   }
 
   onUpdate(callback: OnUpdateCallback) {
@@ -306,8 +314,8 @@ export class TimelineManager {
     }
   }
 
-  getPosition() {
-    return this.position
+  getPositionMs() {
+    return this.positionMs
   }
 
   isPlaying() {

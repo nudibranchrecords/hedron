@@ -22,7 +22,7 @@ export function VideoRenderGlobalPanel(): JSX.Element {
   // Knows about the timeline plugin (reads its duration/audio); the timeline package has no
   // knowledge of this plugin.
   const timelineOptionNodes = useNodeOptionNodes<TimelineOptionNodes>(DEFAULT_TIMELINE_ID)
-  const durationSeconds = useParamValue<number>(timelineOptionNodes['durationSeconds']!.id)
+  const durationSeconds = useParamValue<number>(timelineOptionNodes['timelineDurationS']!.id)
   const audioFileName = useParamValue<string | null>(timelineOptionNodes['audioUrl']!.id)
 
   const optionNodes = useNodeOptionNodes<VideoRenderOptionNodes>(VIDEO_RENDER_NODE_ID)
