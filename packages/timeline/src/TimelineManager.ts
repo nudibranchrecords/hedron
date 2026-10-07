@@ -269,6 +269,15 @@ export class TimelineManager {
     }
   }
 
+  /**
+   * Seeks to 0, then parks the playhead `offsetMs` before it (`goTo` clamps at 0), so advancing
+   * by `offsetMs` lands exactly on 0 - e.g. fixed-framerate rendering, which advances before each frame renders.
+   */
+  goToBeforeStart(offsetMs: number) {
+    this.goTo(0)
+    this.position = -offsetMs
+  }
+
   setDuration(durationMs: number) {
     this.timelineData.durationMs = durationMs
     this.position = Math.min(this.position, durationMs)

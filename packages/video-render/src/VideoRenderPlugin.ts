@@ -82,6 +82,16 @@ export const VIDEO_RENDER_PARAM_CONFIGS = defineOptionNodeConfigs([
     sliderMin: 1,
     sliderMax: 120,
   },
+  {
+    // Runs the timeline's last N seconds (uncaptured) before frame 0, so feedback/smoothing state loops seamlessly.
+    nodeType: 'param',
+    key: 'prewarmSeconds',
+    title: 'Prewarm Seconds',
+    valueType: 'number',
+    defaultValue: 0,
+    sliderMin: 0,
+    sliderMax: 10,
+  },
 ] as const)
 
 // A mapped type (via Record) rather than a plain interface, so it satisfies useNodeOptionNodes'
@@ -148,6 +158,7 @@ export class VideoRenderPlugin implements IPlugin {
       width,
       height,
       audioFileName,
+      prewarmSeconds = 0,
     }: RenderFramesOptions,
     onProgress?: (progress: RenderProgress) => void,
   ) {
@@ -160,10 +171,11 @@ export class VideoRenderPlugin implements IPlugin {
     // Not calling engine.resetTime(): it dumps one huge delta onto the next frame, sending TimelineManager's position deeply negative.
     // The timeline's start position is already reset cleanly via manager.goTo(0) below.
 
-    let originalSize: { width: number; height: number } | null = null
+    let originalSize: ReturnType<HedronEngine['getRendererSize']> | null = null
     if (width && height) {
       originalSize = engine.getRendererSize()
-      engine.resizeRenderer(width, height)
+      // Pixel ratio 1 so the saved frames exactly match width/height.
+      engine.resizeRenderer(width, height, 1)
     }
 
     const timelinePlugin = engine.getPlugin<TimelineInput>('timeline-input')
@@ -189,14 +201,40 @@ export class VideoRenderPlugin implements IPlugin {
       }
     }
 
-    // Started only now, synchronously followed by renderFramesSequence below (no await between).
+    // Each frame advances the timeline before rendering, so the playhead is parked one frame before the
+    // frame to render first. Frame k then shows exactly k/fps - the end point (== 0 in a loop) is never rendered.
+    const frameMs = 1000 / fps
+    const seekBeforeFrame = (frame: number) => {
+      timelinePlugin?.timelineManagers.forEach((manager) => {
+        if (frame > 0) {
+          manager.goTo((frame - 1) * frameMs)
+        } else {
+          manager.goToBeforeStart(frameMs)
+        }
+      })
+    }
+
+    // Prewarm replays the render's own last frames (same playhead positions and audio rows),
+    // so frame 0 inherits the loop end's feedback/smoothing state.
+    const prewarmFrameCount = Math.min(frameCount, Math.max(0, Math.round(prewarmSeconds * fps)))
+    seekBeforeFrame(prewarmFrameCount > 0 ? frameCount - prewarmFrameCount : 0)
+
+    // Started only now - the engine is paused, so nothing advances until frames are stepped below.
     // Muted - audio is muxed in separately. Ignores the live "isPlaying" toggle.
-    timelinePlugin?.timelineManagers.forEach((manager) => {
-      manager.goTo(0)
-      manager.play({ silent: true })
-    })
+    timelinePlugin?.timelineManagers.forEach((manager) => manager.play({ silent: true }))
 
     try {
+      if (prewarmFrameCount > 0) {
+        // Rendered but not captured, so stateful sketches (feedback, smoothing) are warmed up.
+        for (let i = 0; i < prewarmFrameCount; i++) {
+          engine.advanceFixedFrame(1 / fps)
+          onProgress?.({ stage: 'prewarming', framesDone: i + 1, totalFrames: prewarmFrameCount })
+          // Yield so the UI stays responsive during long prewarms.
+          await new Promise((resolve) => setTimeout(resolve, 1))
+        }
+        seekBeforeFrame(0)
+      }
+
       await engine.renderFramesSequence(
         frameCount,
         fps,
@@ -232,7 +270,7 @@ export class VideoRenderPlugin implements IPlugin {
     this.restoreTimelinePlaybackState(engine, timelinePlugin)
 
     if (originalSize) {
-      engine.restoreRendererSize(originalSize.width, originalSize.height)
+      engine.resizeRenderer(originalSize.width, originalSize.height, originalSize.pixelRatio)
     }
 
     console.log(`Frame sequence saved to ${outputDirAbsolute}/${name}/`)

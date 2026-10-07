@@ -8,10 +8,13 @@ export interface RenderFramesOptions {
   height?: number
   /** Resource filename (not an absolute path) of the audio to mux in. */
   audioFileName?: string
+  /** Seconds from the end of the timeline to run (uncaptured) before frame 0, for seamless loops. */
+  prewarmSeconds?: number
 }
 
 export type RenderProgress =
   | { stage: 'analyzing-audio' }
+  | { stage: 'prewarming'; framesDone: number; totalFrames: number }
   | { stage: 'rendering-frames'; framesSaved: number; totalFrames: number }
   | { stage: 'building-video' }
 

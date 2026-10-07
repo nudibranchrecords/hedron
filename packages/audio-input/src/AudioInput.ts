@@ -417,6 +417,8 @@ export class AudioInput implements IPlugin {
       // File-specific correction happens as real gain instead (see fileGainNode).
       analyser.minDecibels = DEFAULT_MIN_DECIBELS
       analyser.maxDecibels = DEFAULT_MAX_DECIBELS
+      // No native smoothing (browser default 0.8) - the `smoothing` param handles it, and the native one ramps in over the first offline-render frames.
+      analyser.smoothingTimeConstant = 0
       this.analyserNode = analyser
     }
     return this.analyserNode

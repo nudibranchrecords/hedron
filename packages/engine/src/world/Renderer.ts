@@ -234,16 +234,24 @@ export class Renderer {
   }
 
   /**
-   * Resize the renderer's canvas to the given width and height.
+   * Resizes the canvas to an explicit size, bypassing the container-driven `setSize`.
+   * @param pixelRatio If given, applied before resizing (e.g. 1 so the backing buffer exactly matches width/height).
    */
-  public resize(width: number, height: number): void {
+  public resize(width: number, height: number, pixelRatio?: number): void {
     if (!this.composer) throw new Error('Renderer not set')
+    if (pixelRatio !== undefined) {
+      this.renderer.setPixelRatio(pixelRatio)
+    }
     this.composer.setSize(width, height)
     this.rendererWidth = width
     this.rendererHeight = height
     if (this.viewerContainer) {
       this.viewerContainer.style.paddingBottom = (100 * height) / width + '%'
     }
+  }
+
+  public getPixelRatio(): number {
+    return this.renderer.getPixelRatio()
   }
 
   /**

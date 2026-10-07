@@ -35,6 +35,7 @@ export function VideoRenderGlobalPanel(): JSX.Element {
   const widthNode = optionNodes['width']!
   const heightNode = optionNodes['height']!
   const fpsNode = optionNodes['fps']!
+  const prewarmSecondsNode = optionNodes['prewarmSeconds']!
 
   const outputDirAbsolute = useParamValue<string>(outputDirNode.id)
   const name = useParamValue<string>(nameNode.id)
@@ -42,6 +43,7 @@ export function VideoRenderGlobalPanel(): JSX.Element {
   const width = useParamValue<number>(widthNode.id)
   const height = useParamValue<number>(heightNode.id)
   const fps = useParamValue<number>(fpsNode.id)
+  const prewarmSeconds = useParamValue<number>(prewarmSecondsNode.id)
 
   const [isRendering, setIsRendering] = useState(false)
   const [progress, setProgress] = useState(0)
@@ -67,6 +69,8 @@ export function VideoRenderGlobalPanel(): JSX.Element {
       const handleProgress = (progress: RenderProgress) => {
         if (progress.stage === 'analyzing-audio') {
           setRenderingStatus('Analyzing audio...')
+        } else if (progress.stage === 'prewarming') {
+          setRenderingStatus(`Prewarming: ${progress.framesDone}/${progress.totalFrames}`)
         } else if (progress.stage === 'rendering-frames') {
           setProgress(Math.floor((progress.framesSaved / progress.totalFrames) * 100))
           setRenderingStatus(`Rendering frames: ${progress.framesSaved}/${progress.totalFrames}`)
@@ -84,6 +88,7 @@ export function VideoRenderGlobalPanel(): JSX.Element {
         width,
         height,
         audioFileName: audioFileName ?? undefined,
+        prewarmSeconds,
       }
       await videoRenderPlugin?.renderFrames(options, handleProgress)
 
@@ -107,6 +112,7 @@ export function VideoRenderGlobalPanel(): JSX.Element {
     width,
     height,
     audioFileName,
+    prewarmSeconds,
     videoRenderPlugin,
   ])
 
@@ -142,6 +148,7 @@ export function VideoRenderGlobalPanel(): JSX.Element {
         <NodeContainer nodeId={widthNode.id} />
         <NodeContainer nodeId={heightNode.id} />
         <NodeContainer nodeId={fpsNode.id} />
+        <NodeContainer nodeId={prewarmSecondsNode.id} />
       </ControlGrid>
 
       <small>
