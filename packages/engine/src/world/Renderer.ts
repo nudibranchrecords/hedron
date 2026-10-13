@@ -287,9 +287,9 @@ export class Renderer {
         }
         scene.passes[scene.passes.length - 1].renderToScreen = true
         this.composer.render()
+      } else {
+        this.renderer.render(scene.scene, scene.camera)
       }
-
-      this.renderer.render(scene.scene, scene.camera)
     } else {
       throw new Error(`Unsupported renderer type: ${this.rendererType}`)
     }
