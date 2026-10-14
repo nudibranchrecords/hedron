@@ -6,25 +6,31 @@ import { SketchesServer } from '@main/SketchesServer/SketchesServer'
 
 // Track the current server instance
 let currentSketchesServer: SketchesServer | null = null
+let currentSketchesDir: string | null = null
 
 // Caches the resolved absolute source file path (index.ts or index.js) per moduleId.
 const sketchSourceFilePaths = new Map<string, string>()
 
-export const getCachedSketchSourceFilePath = (moduleId: string): string | undefined =>
-  sketchSourceFilePaths.get(moduleId)
+const findSketchSourceFile = (sketchDir: string): string | undefined =>
+  ['index.ts', 'index.js'].map((file) => path.join(sketchDir, file)).find((p) => fs.existsSync(p))
 
 const cacheSketchSourceFilePath = (dirPath: string, moduleId: string): boolean => {
-  const subdir = path.join(dirPath, moduleId)
-  const tsPath = path.join(subdir, 'index.ts')
-  const jsPath = path.join(subdir, 'index.js')
-  if (fs.existsSync(tsPath)) {
-    sketchSourceFilePaths.set(moduleId, tsPath)
-  } else if (fs.existsSync(jsPath)) {
-    sketchSourceFilePaths.set(moduleId, jsPath)
-  } else {
-    return false
-  }
-  return true
+  const filePath = findSketchSourceFile(path.join(dirPath, moduleId))
+  if (filePath) sketchSourceFilePaths.set(moduleId, filePath)
+  return Boolean(filePath)
+}
+
+// Falls back to the current sketches dir for modules the server hasn't scanned yet
+export const getSketchSourceFilePath = (moduleId: string): string | undefined => {
+  const cached = sketchSourceFilePaths.get(moduleId)
+  if (cached || !currentSketchesDir) return cached
+
+  // Only direct children of the sketches dir, so a crafted moduleId (e.g. `../`) can't escape it
+  const sketchesDir = path.resolve(currentSketchesDir)
+  if (path.dirname(path.resolve(sketchesDir, moduleId)) !== sketchesDir) return undefined
+
+  cacheSketchSourceFilePath(sketchesDir, moduleId)
+  return sketchSourceFilePaths.get(moduleId)
 }
 
 // Look for top level sketch directories and return module IDs (directory names)
@@ -49,6 +55,9 @@ export const startSketchesServer = async (dirPath: string): Promise<SketchesServ
     await currentSketchesServer.shutdown()
     currentSketchesServer = null
   }
+
+  currentSketchesDir = dirPath
+  sketchSourceFilePaths.clear()
 
   const moduleIds = await getInitialModuleIds(dirPath)
   const sketchesServer = new SketchesServer()

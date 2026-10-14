@@ -128,12 +128,9 @@ ipcMain.handle(FileEvents.OpenFolder, async (_, folderPath: string) => {
   return await openFolder(folderPath)
 })
 
-ipcMain.handle(
-  FileEvents.OpenSketchSourceFile,
-  async (_, sketchesDir: string, moduleId: string) => {
-    return await openSketchSourceFile(sketchesDir, moduleId)
-  },
-)
+ipcMain.handle(FileEvents.OpenSketchSourceFile, async (_, moduleId: string) => {
+  return await openSketchSourceFile(moduleId)
+})
 
 ipcMain.handle(SketchEvents.StartSketchesServer, async (_, sketchesDir: string) => {
   return await startSketchesServer(sketchesDir)
