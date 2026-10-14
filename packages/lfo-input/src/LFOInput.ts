@@ -8,7 +8,9 @@ import {
   IPlugin,
   ParamValue,
   ParamNode,
+  ShotNode,
 } from '@hedron-gl/engine'
+import { getNodeOptionNodes } from '@hedron-gl/ui-core'
 
 const TAU = Math.PI * 2
 const lerp = (v0: number, v1: number, t: number) => (1 - t) * v0 + t * v1
@@ -35,13 +37,13 @@ export class LFOInput implements IPlugin {
       key: 'isEnabled',
       nodeType: 'param',
       valueType: 'boolean',
-      defaultValue: true,
+      defaultValue: false,
     },
     {
       key: 'frequency',
       nodeType: 'param',
       valueType: 'enum',
-      defaultValue: 1,
+      defaultValue: 1 / 4,
       options: [
         {
           value: 32,
@@ -93,7 +95,7 @@ export class LFOInput implements IPlugin {
       key: 'waveType',
       nodeType: 'param',
       valueType: 'enum',
-      defaultValue: 'sine',
+      defaultValue: 'sawtooth',
       options: [
         { value: 'sine', label: 'Sine' },
         { value: 'square', label: 'Square' },
@@ -178,6 +180,24 @@ export class LFOInput implements IPlugin {
     )
 
     return null
+  }
+
+  // Seed min/max and their slider ranges from the target param slider range
+  onNewInput = (engine: HedronEngine, newInput: InputNode, targetNode: ParamNode | ShotNode) => {
+    const state = engine.getStore().getState()
+    const rangeMin = state.paramValues[`${targetNode.id}-sliderMin`]
+    const rangeMax = state.paramValues[`${targetNode.id}-sliderMax`]
+    if (typeof rangeMin !== 'number' || typeof rangeMax !== 'number') return
+
+    const { min, max } = getNodeOptionNodes(state, newInput.id)
+    if (min) state.updateParamValue(min.id, rangeMin)
+    if (max) state.updateParamValue(max.id, rangeMax)
+
+    for (const node of [min, max]) {
+      if (!node) continue
+      state.updateParamValue(`${node.id}-sliderMin`, rangeMin)
+      state.updateParamValue(`${node.id}-sliderMax`, rangeMax)
+    }
   }
 
   constructor(engine: HedronEngine) {
