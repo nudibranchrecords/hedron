@@ -35,7 +35,7 @@ export const TimelineGlobalPanel = ({ engine }: TimelineGlobalPanelProps) => {
   const setSelectedTrackId = useAppStore((state) => state.setSelectedTimelineTrackId)
 
   const optionNodes = useNodeOptionNodes<TimelineOptionNodes>(DEFAULT_TIMELINE_ID)
-  const isPlayingNode = optionNodes['isPlaying']
+  const isPlayingNode = optionNodes['isPlaying']!
   const playHeadPositionNode = optionNodes['playheadPositionMs']
 
   const audioUrlNode = optionNodes['audioUrl']!

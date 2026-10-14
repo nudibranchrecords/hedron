@@ -22,7 +22,7 @@ export function VideoRenderGlobalPanel(): JSX.Element {
   // Knows about the timeline plugin (reads its duration/audio); the timeline package has no
   // knowledge of this plugin.
   const timelineOptionNodes = useNodeOptionNodes<TimelineOptionNodes>(DEFAULT_TIMELINE_ID)
-  const durationSeconds = useParamValue<number>(timelineOptionNodes['timelineDurationS']!.id)
+  const durationSeconds = useParamValue<number>(timelineOptionNodes['timelineDurationS']!.id, 0)
   const audioFileName = useParamValue<string | null>(timelineOptionNodes['audioUrl']!.id)
 
   const optionNodes = useNodeOptionNodes<VideoRenderOptionNodes>(VIDEO_RENDER_NODE_ID)
@@ -38,11 +38,11 @@ export function VideoRenderGlobalPanel(): JSX.Element {
   const prewarmSecondsNode = optionNodes['prewarmSeconds']!
 
   const outputDirAbsolute = useParamValue<string>(outputDirNode.id)
-  const name = useParamValue<string>(nameNode.id)
+  const name = useParamValue<string>(nameNode.id, '')
   const createVideo = useParamValue<boolean>(createVideoNode.id)
   const width = useParamValue<number>(widthNode.id)
   const height = useParamValue<number>(heightNode.id)
-  const fps = useParamValue<number>(fpsNode.id)
+  const fps = useParamValue<number>(fpsNode.id, 30)
   const prewarmSeconds = useParamValue<number>(prewarmSecondsNode.id)
 
   const [isRendering, setIsRendering] = useState(false)

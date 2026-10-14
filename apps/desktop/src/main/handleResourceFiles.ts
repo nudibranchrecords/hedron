@@ -35,6 +35,7 @@ export const startResourcesServer = async (dirPath: string): Promise<ResourcesSe
     console.log('[HEDRON] Shutting down existing resources server')
     await currentResourcesServer.shutdown()
     currentResourcesServer = null
+    currentResourcesDir = undefined
   }
 
   // If the resources directory doesn't exist, return an empty response with no server

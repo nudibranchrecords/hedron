@@ -238,11 +238,10 @@ export class Renderer {
    * @param pixelRatio If given, applied before resizing (e.g. 1 so the backing buffer exactly matches width/height).
    */
   public resize(width: number, height: number, pixelRatio?: number): void {
-    if (!this.composer) throw new Error('Renderer not set')
     if (pixelRatio !== undefined) {
       this.renderer.setPixelRatio(pixelRatio)
     }
-    this.composer.setSize(width, height)
+    ;(this.composer || this.renderer).setSize(width, height)
     this.rendererWidth = width
     this.rendererHeight = height
     if (this.viewerContainer) {

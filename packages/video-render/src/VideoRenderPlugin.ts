@@ -11,6 +11,8 @@ import { AudioInput } from '@hedron-gl/audio-input'
 import { VIDEO_RENDER_NODE_ID } from './constants'
 import { RenderFramesOptions, RenderProgress, VideoRenderCallbacks } from './types'
 
+const toEven = (n: number) => Math.ceil(n / 2) * 2
+
 // Shot-type option nodes aren't covered by `defineOptionNodeConfigs` (typed for ConfigParam only),
 // so these are declared directly and passed to `engine.addOptionNodes`.
 const CAPTURE_FRAME_SHOT_CONFIG: ConfigShot = {
@@ -171,12 +173,15 @@ export class VideoRenderPlugin implements IPlugin {
     // Not calling engine.resetTime(): it dumps one huge delta onto the next frame, sending TimelineManager's position deeply negative.
     // The timeline's start position is already reset cleanly via manager.goTo(0) below.
 
-    let originalSize: ReturnType<HedronEngine['getRendererSize']> | null = null
-    if (width && height) {
-      originalSize = engine.getRendererSize()
-      // Pixel ratio 1 so the saved frames exactly match width/height.
-      engine.resizeRenderer(width, height, 1)
-    }
+    // No size set means the canvas pixel size, rounded up to even as libx264 with yuv420p requires
+    const originalSize = engine.getRendererSize()
+    const useCanvasSize = !width || !height
+    const renderWidth = toEven(useCanvasSize ? originalSize.width * originalSize.pixelRatio : width)
+    const renderHeight = toEven(
+      useCanvasSize ? originalSize.height * originalSize.pixelRatio : height,
+    )
+    // Pixel ratio 1 so the saved frames exactly match the render size
+    engine.resizeRenderer(renderWidth, renderHeight, 1)
 
     const timelinePlugin = engine.getPlugin<TimelineInput>('timeline-input')
     const defaultTimelineManager = timelinePlugin?.timelineManagers.get(DEFAULT_TIMELINE_ID)
@@ -258,20 +263,15 @@ export class VideoRenderPlugin implements IPlugin {
             console.log(`Saved frame ${framesSaved} / ${frameCount}`)
           }
         },
-        width,
-        height,
       )
     } finally {
       if (offlineAnalysisActive) {
         audioInput?.endOfflineAnalysis()
       }
+      engine.resizeRenderer(originalSize.width, originalSize.height, originalSize.pixelRatio)
     }
 
     this.restoreTimelinePlaybackState(engine, timelinePlugin)
-
-    if (originalSize) {
-      engine.resizeRenderer(originalSize.width, originalSize.height, originalSize.pixelRatio)
-    }
 
     console.log(`Frame sequence saved to ${outputDirAbsolute}/${name}/`)
 
