@@ -33,27 +33,19 @@ const startEngineWithSketchesDir = async (
   return { resources, resourcesUrl }
 }
 
-export const handleSketchesDialog = async (sketchesDir?: string) => {
-  const appState = appStore.getState()
-  const response = await openSketchesDirDialog(sketchesDir)
-
-  if (response.result === 'error') {
-    alert(response.error)
-    if (sketchesDir) appState.removeFromSketchesDirList(sketchesDir)
-    return
-  }
+export const handleSketchesDialog = async () => {
+  const response = await openSketchesDirDialog(appStore.getState().lastSketchesDir)
 
   if (response.result !== 'success') return
 
   const { sketchesDirAbsolute, resourcesDirAbsolute } = response
-
-  appState.addToSketchesDirList(sketchesDirAbsolute)
 
   await startEngineWithSketchesDir(sketchesDirAbsolute, resourcesDirAbsolute)
 
   appStore.setState((state: AppState) => ({
     ...state,
     sketchesDir: sketchesDirAbsolute,
+    lastSketchesDir: sketchesDirAbsolute,
   }))
 
   engine.ensureGlobalOptionNodes()
@@ -62,7 +54,7 @@ export const handleSketchesDialog = async (sketchesDir?: string) => {
 
 export const handleLoadProjectDialog = async (projectPath?: string) => {
   const appState = appStore.getState()
-  const response = await openProjectFileDialog(projectPath)
+  const response = await openProjectFileDialog(projectPath, appState.lastProjectPath)
 
   if (response.result === 'canceled') return
 
@@ -85,6 +77,7 @@ export const handleLoadProjectDialog = async (projectPath?: string) => {
     ...state,
     currentSavePath: savePath,
     ...projectData.app,
+    lastProjectPath: savePath,
   }))
 
   // Add/remove shots from sketches based on their current module configs, in case files were updated since last load

@@ -16,9 +16,6 @@ import {
   CardHeader,
   CardList,
   HedronErrorBoundary,
-  Icon,
-  Menu,
-  MenuItem,
 } from '@hedron-gl/ui-core'
 
 import c from './Intro.module.css'
@@ -71,65 +68,31 @@ const RecentProjectItem = ({ item }: { item: SaveItem }) => {
   )
 }
 
-const RecentSketchesDirs = () => {
-  const sketchesDirList = useAppStore((state) => state.sketchesDirList)
-
-  if (!sketchesDirList.length) return null
-
-  return (
-    <aside className={c.folders}>
-      <h2 className={c.projectsTitle}>Recent Folders</h2>
-      <Menu>
-        {sketchesDirList.map((dir) => (
-          <MenuItem
-            key={dir}
-            role="button"
-            tabIndex={0}
-            title={dir}
-            onClick={() => handleSketchesDialog(dir)}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter' || e.key === ' ') {
-                handleSketchesDialog(dir)
-              }
-            }}
-          >
-            <Icon name="folder_open" />
-            {dir.split(/[\\/]/).pop()}
-          </MenuItem>
-        ))}
-      </Menu>
-    </aside>
-  )
-}
-
 export const Intro = () => {
   const saveList = useAppStore((state) => state.saveList)
 
   return (
     <div className={c.wrapper}>
-      <RecentSketchesDirs />
-      <div className={c.main}>
-        <Panel className="mb-xxl">
-          <PanelHeader>Welcome back</PanelHeader>
-          <PanelBody>Choose your sketches folder or open a project to get started</PanelBody>
-          <PanelActions>
-            <Button onClick={() => handleSketchesDialog()} iconName="folder_open">
-              Select Sketches Folder
-            </Button>
-            <Button type="secondary" onClick={() => handleLoadProjectDialog()} iconName="file_open">
-              Find Project File
-            </Button>
-          </PanelActions>
-        </Panel>
-        <h2 className={c.projectsTitle}>Recent Projects</h2>
-        <CardList>
-          {saveList.map((item) => (
-            <HedronErrorBoundary key={item.path}>
-              <RecentProjectItem item={item} />
-            </HedronErrorBoundary>
-          ))}
-        </CardList>
-      </div>
+      <Panel className="mb-xxl">
+        <PanelHeader>Welcome back</PanelHeader>
+        <PanelBody>Choose your sketches folder or open a project to get started</PanelBody>
+        <PanelActions>
+          <Button onClick={handleSketchesDialog} iconName="folder_open">
+            Select Sketches Folder
+          </Button>
+          <Button type="secondary" onClick={() => handleLoadProjectDialog()} iconName="file_open">
+            Find Project File
+          </Button>
+        </PanelActions>
+      </Panel>
+      <h2 className={c.projectsTitle}>Recent Projects</h2>
+      <CardList>
+        {saveList.map((item) => (
+          <HedronErrorBoundary key={item.path}>
+            <RecentProjectItem item={item} />
+          </HedronErrorBoundary>
+        ))}
+      </CardList>
     </div>
   )
 }

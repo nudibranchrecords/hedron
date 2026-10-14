@@ -1,4 +1,3 @@
-import fs from 'fs'
 import path from 'path'
 import { app, BrowserWindow, dialog, ipcMain, screen, session } from 'electron'
 import { electronApp, optimizer } from '@electron-toolkit/utils'
@@ -93,28 +92,22 @@ app.on('window-all-closed', () => {
 
 ipcMain.handle(
   DialogEvents.OpenSketchesDirDialog,
-  async (_, sketchesDir?: string): Promise<OpenSketchesDirResponse> => {
-    if (sketchesDir) {
-      if (!fs.statSync(sketchesDir, { throwIfNoEntry: false })?.isDirectory()) {
-        return { result: 'error', error: 'Could not find sketches folder' }
-      }
-    } else {
-      const result = await dialog.showOpenDialog({
-        properties: ['openDirectory'],
-      })
+  async (_, defaultPath?: string): Promise<OpenSketchesDirResponse> => {
+    const result = await dialog.showOpenDialog({
+      defaultPath,
+      properties: ['openDirectory'],
+    })
 
-      if (result.canceled || result.filePaths.length === 0) {
-        return { result: 'canceled' }
-      }
-
-      sketchesDir = result.filePaths[0]
+    if (result.canceled || result.filePaths.length === 0) {
+      return { result: 'canceled' }
     }
 
-    const resourcesDirAbsolute = path.resolve(path.dirname(sketchesDir), 'resources')
+    const sketchesDirAbsolute = result.filePaths[0]
+    const resourcesDirAbsolute = path.resolve(path.dirname(sketchesDirAbsolute), 'resources')
 
     return {
       result: 'success',
-      sketchesDirAbsolute: sketchesDir,
+      sketchesDirAbsolute,
       resourcesDirAbsolute,
     }
   },
@@ -122,8 +115,8 @@ ipcMain.handle(
 
 ipcMain.handle(
   DialogEvents.OpenProjectFileDialog,
-  async (_, projectPath?: string): Promise<OpenProjectResponse> => {
-    return await openProjectFile(projectPath)
+  async (_, projectPath?: string, defaultPath?: string): Promise<OpenProjectResponse> => {
+    return await openProjectFile(projectPath, defaultPath)
   },
 )
 

@@ -54,7 +54,8 @@ export interface AppState {
   globalDialogId: DialogId | null
   currentSavePath: string | null
   saveList: SaveItem[]
-  sketchesDirList: string[]
+  lastSketchesDir: string | null
+  lastProjectPath: string | null
   sketchesServerBuildResult: BuildResult | null
   setSelectedNode: (sketchID: string, nodeId: string | null) => void
   setSelectedInput: (nodeId: string, inputId: string | null) => void
@@ -66,8 +67,6 @@ export interface AppState {
   setCurrentSavePath: (path: string) => void
   addToSaveList: (path: SaveItem) => void
   removeFromSaveList: (path: string) => void
-  addToSketchesDirList: (dir: string) => void
-  removeFromSketchesDirList: (dir: string) => void
   setSketchesServerBuildResult: (result: BuildResult | null) => void
   cleanupStaleReferences: (engineData: EngineData) => void
 
@@ -110,7 +109,8 @@ export const createAppStore = () =>
             selectedTimelineTrackId: null,
             openedControlGroups: {},
             saveList: [],
-            sketchesDirList: [],
+            lastSketchesDir: null,
+            lastProjectPath: null,
             sketchesServerBuildResult: null,
             setSelectedSketch: (sceneId: string, sketchId: string | null) => {
               set((state) => {
@@ -144,16 +144,6 @@ export const createAppStore = () =>
                 return {
                   saveList: state.saveList.filter((item) => item.path !== path),
                 }
-              })
-            },
-            addToSketchesDirList: (dir: string) => {
-              set((state) => {
-                state.sketchesDirList = [dir, ...state.sketchesDirList.filter((d) => d !== dir)]
-              })
-            },
-            removeFromSketchesDirList: (dir: string) => {
-              set((state) => {
-                state.sketchesDirList = state.sketchesDirList.filter((d) => d !== dir)
               })
             },
             setSketchesServerBuildResult: (result: BuildResult | null) => {
@@ -261,7 +251,8 @@ export const createAppStore = () =>
         name: 'app-storage',
         partialize: (state) => ({
           saveList: state.saveList,
-          sketchesDirList: state.sketchesDirList,
+          lastSketchesDir: state.lastSketchesDir,
+          lastProjectPath: state.lastProjectPath,
         }),
       },
     ),
