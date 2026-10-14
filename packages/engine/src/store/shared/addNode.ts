@@ -8,6 +8,7 @@ import {
   ParamVector,
   isParamVectorValueType,
   ConfigCustomNodeImported,
+  ParamNumberDisplayMode,
 } from '@store/types'
 import { createUniqueId } from '@utils/createUniqueId'
 
@@ -83,7 +84,12 @@ const _addNodeToState = (
 
   switch (valueType) {
     case 'number':
-      state.nodes[nodeId] = { ...baseNode, valueType, defaultValue }
+      state.nodes[nodeId] = {
+        ...baseNode,
+        valueType,
+        defaultValue,
+        displayMode: config.displayMode,
+      }
       break
     case 'boolean':
       state.nodes[nodeId] = { ...baseNode, valueType, defaultValue }
@@ -125,25 +131,34 @@ const _addNodeToState = (
 const _addSliderMinAndMaxNodesToState = (
   state: EngineState,
   paramId: string,
-  sketchConfigParam: { sliderMin?: number; sliderMax?: number; valueType: ParamValueType },
+  sketchConfigParam: {
+    sliderMin?: number
+    sliderMax?: number
+    displayMode?: ParamNumberDisplayMode
+    valueType: ParamValueType
+  },
 ) => {
   /** TODO: This can probably be tidier, using some sort of config object to generate the option nodes
    * The same config object could also be used in the component to loop through
    */
-  if (sketchConfigParam.valueType === 'number') {
+  if (sketchConfigParam.valueType === 'number' && sketchConfigParam.displayMode !== 'field') {
+    // FIXME: We don't really need to use this -sliderMin anymore as can be referenced as option nodes
     _addNodeToState(state, `${paramId}-sliderMin`, paramId, [], {
       key: 'sliderMin',
       nodeType: 'param',
       valueType: 'number',
+      displayMode: 'field',
       defaultValue: sketchConfigParam.sliderMin ?? 0,
       groupIndex: 0,
       title: 'Slider Min',
     })
 
+    // FIXME: We don't really need to use this -sliderMax anymore as can be referenced as option nodes
     _addNodeToState(state, `${paramId}-sliderMax`, paramId, [], {
       key: 'sliderMax',
       nodeType: 'param',
       valueType: 'number',
+      displayMode: 'field',
       defaultValue: sketchConfigParam.sliderMax ?? 1,
       groupIndex: 0,
       title: 'Slider Max',

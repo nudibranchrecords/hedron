@@ -26,6 +26,13 @@ export const TIMELINE_OPTION_NODE_CONFIGS = defineOptionNodeConfigs([
   },
   {
     nodeType: 'param',
+    key: 'timelineDurationS',
+    valueType: 'number',
+    displayMode: 'field',
+    defaultValue: 30,
+  },
+  {
+    nodeType: 'param',
     key: 'isPlaying',
     valueType: 'boolean',
     defaultValue: false,
@@ -38,10 +45,36 @@ export const TIMELINE_OPTION_NODE_CONFIGS = defineOptionNodeConfigs([
     defaultValue: null,
     accept: ['audio/*'],
   },
+  {
+    nodeType: 'param',
+    key: 'zoomPxPerSecond',
+    title: 'Timeline Zoom',
+    valueType: 'number',
+    defaultValue: 10,
+    sliderMin: 0.01,
+    sliderMax: 300,
+  },
 ])
 
 // We can use TimelineOptionNodes for strong typing when using useNodeOptionNodes
 export type TimelineOptionNodes = OptionNodesFromConfigs<typeof TIMELINE_OPTION_NODE_CONFIGS>
+
+const getKeyframeTracks = (tracks: TimelineManagerTrack[]): TimelineManagerKeyframeTrack[] => {
+  const keyframeTracks: TimelineManagerKeyframeTrack[] = []
+
+  for (const track of tracks) {
+    if (track.trackType === 'keyframe') {
+      keyframeTracks.push(track)
+      continue
+    }
+
+    if (track.trackType === 'vector') {
+      keyframeTracks.push(...getKeyframeTracks(track.childTracks))
+    }
+  }
+
+  return keyframeTracks
+}
 
 export class TimelineInput implements IPlugin {
   public readonly id = 'timeline-input'
@@ -63,17 +96,16 @@ export class TimelineInput implements IPlugin {
 
     this.timelineManagers.set(
       DEFAULT_TIMELINE_ID,
-      new TimelineManager(
-        {
-          durationMs: TIMELINE_DURATION,
-          tracks: [],
-        },
-        engine.clock,
-      ),
+      new TimelineManager({
+        durationMs: TIMELINE_DURATION,
+        tracks: [],
+        clock: engine.clock,
+      }),
     )
 
     this.timelineManagers.forEach((manager, timelineId) => {
       const isPlaying = engine.getNodeOptionNode(timelineId, 'isPlaying')
+      const timelineDurationS = engine.getNodeOptionNode(timelineId, 'timelineDurationS')
       const playHeadPositionNode = engine.getNodeOptionNode(timelineId, 'playheadPositionMs')
 
       engine.getStore().subscribe(
@@ -95,32 +127,18 @@ export class TimelineInput implements IPlugin {
         }
       })
 
+      engine.subscribeToParamValue<number>(timelineDurationS.id, (timelineDurationS) => {
+        if (timelineDurationS !== undefined && timelineDurationS > 0) {
+          manager.setDurationMs(timelineDurationS * 1000)
+        }
+      })
+
       manager.onUpdate((changed) => {
-        engine.setParamValue(playHeadPositionNode.id, manager.getPosition())
+        engine.setParamValue(playHeadPositionNode.id, manager.getPositionMs())
 
         const changedTrackIds = Object.keys(changed)
         if (changedTrackIds.length > 0) {
           const allTracks = getTimelineTracks(engine.getStoreState(), timelineId)
-
-          const getKeyframeTracks = (
-            tracks: TimelineManagerTrack[],
-          ): TimelineManagerKeyframeTrack[] => {
-            const keyframeTracks: TimelineManagerKeyframeTrack[] = []
-
-            for (const track of tracks) {
-              if (track.trackType === 'keyframe') {
-                keyframeTracks.push(track)
-                continue
-              }
-
-              if (track.trackType === 'vector') {
-                keyframeTracks.push(...getKeyframeTracks(track.childTracks))
-              }
-            }
-
-            return keyframeTracks
-          }
-
           const tracks = getKeyframeTracks(allTracks)
 
           const paramTargetNodeIds: string[] = []
@@ -157,6 +175,18 @@ export class TimelineInput implements IPlugin {
 
     // Input ID is only a child of the target node, we also need to make it a child of the timeline node so it shows up in the timeline UI
     engine.addChildToNode(DEFAULT_TIMELINE_ID, 'trackIds', newInput.id)
+
+    engine.addOptionNodes(newInput.id, [
+      {
+        nodeType: 'param',
+        key: 'zoomPxPerSecond',
+        title: 'Track Zoom',
+        valueType: 'number',
+        defaultValue: 80,
+        sliderMin: 10,
+        sliderMax: 300,
+      },
+    ])
 
     if (isParamVector(targetNode)) {
       targetNode.childGroups.vectorComponentIds.forEach((nodeId) => {

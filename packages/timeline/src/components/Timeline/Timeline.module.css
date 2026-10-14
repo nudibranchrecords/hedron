@@ -26,11 +26,14 @@
 
 .body {
   display: grid;
-  grid-template-columns: var(--trackHeaderWidth) 1fr;
+  grid-template-columns:
+    var(--trackHeaderWidth)
+    max(calc(100% - var(--trackHeaderWidth)), var(--trackAreaWidth, 0px));
   grid-auto-rows: auto;
   width: 100%;
   height: 100%;
   position: relative;
+  overflow-x: auto;
 
   --trackHeaderWidth: 100px;
 }
@@ -56,6 +59,10 @@
   .trackTitle:hover {
     color: var(--selectedColor);
   }
+
+  .trackHeader {
+    background: #242424;
+  }
 }
 
 .trackHeader {
@@ -68,6 +75,10 @@
   text-overflow: ellipsis;
   height: 24px;
   cursor: pointer;
+  position: sticky;
+  left: 0;
+  z-index: 3;
+  background: #1a1a1a;
 
   gap: 0.1rem;
 
@@ -104,7 +115,10 @@
   position: absolute;
   top: 0;
   bottom: 0;
-  left: calc(var(--trackHeaderWidth) + (100% - var(--trackHeaderWidth)) * var(--playheadPercent));
+  left: calc(
+    var(--trackHeaderWidth) + max(100% - var(--trackHeaderWidth), var(--trackAreaWidth, 0px)) *
+      var(--playheadPercent)
+  );
   width: 1px;
   background: var(--playheadColor);
   pointer-events: none;

@@ -10,7 +10,7 @@ export const MouseDownContext = createContext<React.MutableRefObject<boolean> | 
 export const useWasMouseDownOnInnerContext = () => {
   const isMouseDown = useRef(false)
   useEffect(() => {
-    const handleDocumentMouseUp = () => {
+    const handleDocumentEnd = () => {
       if (isMouseDown) {
         // Wait for the next frame to set isMouseDown to false so the flag can be used in the click event
         requestAnimationFrame(() => {
@@ -19,10 +19,14 @@ export const useWasMouseDownOnInnerContext = () => {
       }
     }
 
-    document.addEventListener('mouseup', handleDocumentMouseUp)
+    document.addEventListener('mouseup', handleDocumentEnd)
+    document.addEventListener('touchend', handleDocumentEnd)
+    document.addEventListener('touchcancel', handleDocumentEnd)
 
     return () => {
-      document.removeEventListener('mouseup', handleDocumentMouseUp)
+      document.removeEventListener('mouseup', handleDocumentEnd)
+      document.removeEventListener('touchend', handleDocumentEnd)
+      document.removeEventListener('touchcancel', handleDocumentEnd)
     }
   }, [isMouseDown])
 
@@ -38,5 +42,11 @@ export const useMouseDownOnInner = () => {
     }
   }, [isMouseDownOnInner])
 
-  return handleMouseDown
+  const handleTouchStart = useCallback(() => {
+    if (isMouseDownOnInner) {
+      isMouseDownOnInner.current = true
+    }
+  }, [isMouseDownOnInner])
+
+  return { handleMouseDown, handleTouchStart }
 }

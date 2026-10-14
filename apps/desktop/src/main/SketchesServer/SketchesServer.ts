@@ -83,6 +83,7 @@ export class SketchesServer extends EventEmitter {
         '.frag': 'text',
         '.vert': 'text',
         '.json': 'text',
+        '.md': 'text',
       },
       assetNames: '[dir]/[name]-[hash]',
       publicPath: `http://${HOST}:${port}`,

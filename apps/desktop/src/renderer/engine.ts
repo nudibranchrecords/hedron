@@ -5,8 +5,9 @@ import { MidiInput, MidiInputPanel, MidiGlobalPanel } from '@hedron-gl/midi-inpu
 import { GamepadInput, GamepadInputPanel, GamepadGlobalPanel } from '@hedron-gl/gamepad-input'
 import { LFOInput, LFOInputPanel } from '@hedron-gl/lfo-input'
 import { AudioInput, AudioInputPanel, AudioGlobalPanel } from '@hedron-gl/audio-input'
-import { TimelineInput, TimelineGlobalPanel } from '@hedron-gl/timeline'
+import { TimelineInput, TimelineGlobalPanel, TimelineInputPanel } from '@hedron-gl/timeline'
 import { SceneControlPlugin, SceneControlGlobalPanel } from '@hedron-gl/scene-control'
+import { ParamPresetsPlugin, ParamPresetsPanel } from '@hedron-gl/param-presets'
 
 export const performanceMonitor = new Stats()
 
@@ -29,6 +30,7 @@ engine.registerPlugin(new AudioInput(engine))
 engine.registerPlugin(new GamepadInput(engine))
 engine.registerPlugin(new TimelineInput())
 engine.registerPlugin(new SceneControlPlugin())
+engine.registerPlugin(new ParamPresetsPlugin())
 
 export const pluginViews = {
   inputPanel: {
@@ -36,6 +38,7 @@ export const pluginViews = {
     lfo: LFOInputPanel,
     audio: AudioInputPanel,
     gamepad: GamepadInputPanel,
+    ['timeline-track']: TimelineInputPanel,
   },
   globalPanel: {
     ['audio-input']: AudioGlobalPanel,
@@ -43,5 +46,8 @@ export const pluginViews = {
     ['midi-input']: MidiGlobalPanel,
     ['timeline-input']: TimelineGlobalPanel,
     ['scene-control']: SceneControlGlobalPanel,
+  },
+  sketchCollapsible: {
+    ['param-presets']: ParamPresetsPanel,
   },
 }

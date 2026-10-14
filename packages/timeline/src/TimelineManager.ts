@@ -1,7 +1,6 @@
 import { Clock } from '@hedron-gl/clock'
 import { ParamValue } from '@hedron-gl/engine'
 import type {
-  TimelineManagerData,
   TimelineManagerTrack,
   Keyframe,
   TimelineManagerAudioTrack,
@@ -14,8 +13,9 @@ export type TrackValues = Record<string, ParamValue>
 export type OnUpdateCallback = (values: TrackValues) => void
 
 export class TimelineManager {
-  private timelineData: TimelineManagerData
-  private position = 0
+  private tracks: TimelineManagerTrack[]
+  private durationMs: number
+  private positionMs = 0
   private playing = false
   private rafId: number | null = null
   private lastFrameTime: number | null = null
@@ -27,17 +27,43 @@ export class TimelineManager {
   // Number of shot keyframes at or before the position as of the last check, per track.
   private shotKeyframeCount: Map<string, number> = new Map()
   private clock: Clock | null = null
+  // Flattened (vector tracks expanded to their childTracks) view of timelineData.tracks, kept in
+  // sync by buildCache() - avoids re-walking the track tree on every computeValues/emitUpdate call.
+  private flatTracks: TimelineManagerTrack[] = []
 
-  constructor(timeline: TimelineManagerData, clock?: Clock) {
-    this.timelineData = timeline
+  constructor({
+    tracks,
+    durationMs,
+    clock,
+  }: {
+    tracks: TimelineManagerTrack[]
+    durationMs: number
+    clock?: Clock
+  }) {
+    this.tracks = tracks
+    this.durationMs = durationMs
     this.clock = clock ?? null
     this.buildCache()
+  }
+
+  private flattenTracks(tracks: TimelineManagerTrack[]): TimelineManagerTrack[] {
+    const allTracks: TimelineManagerTrack[] = []
+
+    for (const track of tracks) {
+      allTracks.push(track)
+      if (track.trackType === 'vector') {
+        allTracks.push(...this.flattenTracks(track.childTracks))
+      }
+    }
+
+    return allTracks
   }
 
   private buildCache() {
     this.sortedKeyframesCache.clear()
     this.resetKeyframeIndexes()
-    for (const track of this.getAllTracks()) {
+    this.flatTracks = this.flattenTracks(this.tracks)
+    for (const track of this.flatTracks) {
       switch (track.trackType) {
         case 'audio':
           if (this.audioCache.get(track.id)?.src !== track.audioUrl) {
@@ -65,7 +91,7 @@ export class TimelineManager {
     let value = startIndex > 0 ? sorted[startIndex - 1].value : undefined
     let lastIndex = startIndex
     for (let i = startIndex; i < sorted.length; i++) {
-      if (sorted[i].time > this.position) break
+      if (sorted[i].time > this.positionMs) break
       value = sorted[i].value
       lastIndex = i + 1
     }
@@ -75,7 +101,7 @@ export class TimelineManager {
     const current = sorted[lastIndex - 1]
     const next = sorted[lastIndex]
     if (current?.valueType === 'number' && next?.valueType === 'number') {
-      const t = (this.position - current.time) / (next.time - current.time)
+      const t = (this.positionMs - current.time) / (next.time - current.time)
       return current.value + (next.value - current.value) * t
     }
 
@@ -86,7 +112,7 @@ export class TimelineManager {
   // keyframes crossed (time <= position) increases since the last check.
   private getShouldShotFire(track: TimelineManagerTrack): true | undefined {
     const sorted = this.sortedKeyframesCache.get(track.id) ?? []
-    const count = sorted.filter((kf) => kf.time < this.position).length
+    const count = sorted.filter((kf) => kf.time < this.positionMs).length
     const lastCount = this.shotKeyframeCount.get(track.id) ?? 0
     this.shotKeyframeCount.set(track.id, count)
     return count > lastCount ? true : undefined
@@ -104,7 +130,7 @@ export class TimelineManager {
 
   private computeValues(): TrackValues {
     const values: TrackValues = {}
-    for (const track of this.getAllTracks()) {
+    for (const track of this.flatTracks) {
       if (track.trackType !== 'keyframe') continue
       const value = this.getTrackValue(track)
       if (value !== undefined) {
@@ -143,7 +169,7 @@ export class TimelineManager {
     track: TimelineManagerAudioTrack
     audio: HTMLAudioElement
   }[] {
-    return this.getAllTracks()
+    return this.flatTracks
       .filter(
         (track): track is TimelineManagerAudioTrack =>
           track.trackType === 'audio' && this.audioCache.has(track.id),
@@ -159,41 +185,32 @@ export class TimelineManager {
 
     if (this.lastFrameTime !== null) {
       const delta = now - this.lastFrameTime
-      this.position = Math.min(this.position + delta, this.timelineData.durationMs)
+      this.positionMs = Math.min(this.positionMs + delta, this.durationMs)
 
       if (this.clock) {
-        this.clock.beatDeltaMs = this.position
+        this.clock.beatDeltaMs = this.positionMs
       }
     }
     this.lastFrameTime = now
 
     this.emitUpdate()
 
-    if (this.position >= this.timelineData.durationMs) {
+    if (this.positionMs >= this.durationMs) {
       this.goTo(0)
     }
 
     this.rafId = requestAnimationFrame(this.tick)
   }
 
-  getAllTracks(tracks = this.timelineData.tracks): TimelineManagerTrack[] {
-    const allTracks: TimelineManagerTrack[] = []
-
-    for (const track of tracks) {
-      allTracks.push(track)
-      if (track.trackType === 'vector') {
-        allTracks.push(...this.getAllTracks(track.childTracks))
-      }
-    }
-
-    return allTracks
+  getAllTracks(): TimelineManagerTrack[] {
+    return [...this.flatTracks]
   }
 
   play() {
     if (this.playing) return
 
     if (this.clock) {
-      this.clock.beatDeltaMs = this.position
+      this.clock.beatDeltaMs = this.positionMs
       this.clock.continue()
     }
 
@@ -203,7 +220,7 @@ export class TimelineManager {
 
     // Play audio tracks
     for (const { audio } of this.getAudioTracksWithAudio()) {
-      audio.currentTime = this.position / 1000
+      audio.currentTime = this.positionMs / 1000
       audio.play()
     }
   }
@@ -228,33 +245,41 @@ export class TimelineManager {
   }
 
   goTo(timeMs: number) {
-    this.position = Math.max(0, Math.min(timeMs, this.timelineData.durationMs))
+    this.positionMs = Math.max(0, Math.min(timeMs, this.durationMs))
     this.lastFrameTime = null
     this.resetKeyframeIndexes()
-    this.emitUpdate()
 
     if (this.clock) {
-      this.clock.beatDeltaMs = this.position
+      this.clock.beatDeltaMs = this.positionMs
     }
 
     // Seek audio tracks
     for (const { audio } of this.getAudioTracksWithAudio()) {
-      audio.currentTime = this.position / 1000
+      audio.currentTime = this.positionMs / 1000
     }
+
+    this.emitUpdate()
   }
 
   setTracks(tracks: TimelineManagerTrack[]) {
-    this.timelineData.tracks = tracks
+    this.tracks = tracks
     this.buildCache()
     this.emitUpdate()
+  }
+
+  setDurationMs(durationMs: number) {
+    this.durationMs = Math.max(0, durationMs)
+
+    // Ensure position stays within the new duration
+    this.goTo(Math.min(this.positionMs, this.durationMs))
   }
 
   onUpdate(callback: OnUpdateCallback) {
     this.onUpdateCallback = callback
   }
 
-  getPosition() {
-    return this.position
+  getPositionMs() {
+    return this.positionMs
   }
 
   isPlaying() {

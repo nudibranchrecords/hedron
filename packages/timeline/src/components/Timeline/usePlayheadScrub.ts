@@ -51,5 +51,5 @@ export const usePlayheadScrub = (
     }
   }, [onRulerMouseDown, playheadAreaRef])
 
-  useElementScrub(playheadAreaRef, onPlayheadAreaScrub, 'ew-resize')
+  useElementScrub(playheadAreaRef, onPlayheadAreaScrub, 'ew-resize', 'x')
 }

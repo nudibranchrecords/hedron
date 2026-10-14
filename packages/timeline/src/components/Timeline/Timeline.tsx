@@ -1,55 +1,94 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import {
+  forwardRef,
+  useCallback,
+  useEffect,
+  useId,
+  useImperativeHandle,
+  useRef,
+  useState,
+} from 'react'
 import { usePlayheadScrub } from './usePlayheadScrub'
+import { usePxPerSecond } from './usePxPerSecond'
 import c from './Timeline.module.css'
 import { TimelineTrack } from './TimelineTrack'
 import { TimelineManagerTrack } from '@/types'
+import { findTrackById } from '@/utils/findTrackById'
 
-export interface TimelineProps {
-  /** Timeline data */
-  timeline: {
-    durationMs: number
-    tracks: TimelineManagerTrack[]
-  }
-  /** Current playhead position in milliseconds */
-  playheadPositionMs?: number
-  /** Called when the user clicks on the track area to set the playhead */
-  onPlayheadChange?: (time: number) => void
-  /** Called when a keyframe should be deleted */
-  onKeyframeDelete?: (keyframeId: string) => void
-  /** Called when a keyframe should be inserted on a track at a given time */
-  onKeyframeInsert?: (trackId: string, time: number) => void
+export type TimelineHandle = {
+  setPxPerSecond: (pxPerSecond: number) => void
 }
 
-export function Timeline({
-  timeline,
-  playheadPositionMs = 0,
-  onPlayheadChange,
-  onKeyframeDelete,
-  onKeyframeInsert,
-}: TimelineProps) {
-  const { durationMs, tracks } = timeline
+export interface TimelineProps {
+  tracks: TimelineManagerTrack[]
+  durationMs: number
+  playheadPositionMs: number
+  activeTimelineComponentId: string | null
+  selectedTrackId: string | null
+  setSelectedTrackId: (trackId: string | null) => void
+  setActiveTimelineComponentId: (id: string | null) => void
+  componentId?: string
+  initialPxPerSecond?: number
+  onPlayheadChange: (time: number) => void
+  onKeyframeDelete: (keyframeId: string) => void
+  onKeyframeInsert: (trackId: string, time: number) => void
+  onKeyframeMove: (keyframeId: string, time: number) => void
+}
+
+export const Timeline = forwardRef<TimelineHandle, TimelineProps>(function Timeline(
+  {
+    tracks,
+    durationMs,
+    playheadPositionMs = 0,
+    activeTimelineComponentId,
+    selectedTrackId: _selectedTrackId,
+    setSelectedTrackId: _setSelectedTrackId,
+    componentId: _componentId,
+    initialPxPerSecond = 80,
+    setActiveTimelineComponentId,
+    onPlayheadChange,
+    onKeyframeDelete,
+    onKeyframeInsert,
+    onKeyframeMove,
+  },
+  ref,
+) {
+  const durationSec = durationMs / 1000
   const rulerAreaRef = useRef<HTMLDivElement>(null)
-  const [selectedTrackId, setSelectedTrackId] = useState<string | null>(null)
-  const [selectedKeyframes, setSelectedKeyframes] = useState<string[] | null>(null)
+  const bodyRef = useRef<HTMLDivElement>(null)
+  const { pxPerSecond, setPxPerSecond } = usePxPerSecond({
+    bodyRef,
+    durationMs,
+    playheadPositionMs,
+    initialPxPerSecond,
+  })
 
-  const findTrackById = useCallback(
-    (trackList: TimelineManagerTrack[], trackId: string): TimelineManagerTrack | null => {
-      for (const track of trackList) {
-        if (track.id === trackId) {
-          return track
-        }
+  // To prevent clashing of keyboard events, we need to keep track of which component is the active one
+  const fallbackId = useId()
+  const componentId = _componentId ?? fallbackId
 
-        if (track.trackType === 'vector') {
-          const childTrack = findTrackById(track.childTracks, trackId)
-          if (childTrack) {
-            return childTrack
-          }
-        }
-      }
+  const isActiveComponent = componentId === activeTimelineComponentId
 
-      return null
+  const [_selectedKeyframes, _setSelectedKeyframes] = useState<string[] | null>(null)
+
+  const selectedKeyframes = isActiveComponent ? _selectedKeyframes : null
+  const selectedTrackId = isActiveComponent ? _selectedTrackId : null
+
+  const setSelectedKeyframes = useCallback(
+    (keyframes: string[] | null) => {
+      _setSelectedKeyframes(keyframes)
+
+      setActiveTimelineComponentId(componentId)
     },
-    [],
+    [componentId, setActiveTimelineComponentId],
+  )
+
+  const setSelectedTrackId = useCallback(
+    (trackId: string | null) => {
+      _setSelectedTrackId(trackId)
+
+      setActiveTimelineComponentId(componentId)
+    },
+    [_setSelectedTrackId, componentId, setActiveTimelineComponentId],
   )
 
   useEffect(() => {
@@ -67,19 +106,21 @@ export function Timeline({
 
     const handleKeyDown = (e: KeyboardEvent) => {
       const target = e.target as HTMLElement | null
-      if (target?.tagName === 'INPUT' || target?.tagName === 'TEXTAREA' || target?.isContentEditable) {
+      if (
+        target?.tagName === 'INPUT' ||
+        target?.tagName === 'TEXTAREA' ||
+        target?.isContentEditable
+      ) {
         return
       }
       if (e.key === 'x' && selectedKeyframes) {
         selectedKeyframes.forEach((keyframeId) => {
-          onKeyframeDelete?.(keyframeId)
+          onKeyframeDelete(keyframeId)
         })
 
         setSelectedKeyframes(null)
       }
       if (e.key === 'i' && selectedTrackId) {
-        if (!onKeyframeInsert) return
-
         const track = findTrackById(tracks, selectedTrackId)
         if (!track) return
 
@@ -89,7 +130,9 @@ export function Timeline({
       }
     }
     window.addEventListener('keydown', handleKeyDown)
-    return () => window.removeEventListener('keydown', handleKeyDown)
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown)
+    }
   }, [
     selectedKeyframes,
     onKeyframeDelete,
@@ -97,14 +140,16 @@ export function Timeline({
     playheadPositionMs,
     onKeyframeInsert,
     tracks,
-    findTrackById,
+    setSelectedKeyframes,
   ])
+
+  useImperativeHandle(ref, () => ({ setPxPerSecond }), [setPxPerSecond])
 
   usePlayheadScrub(durationMs, rulerAreaRef, playheadPositionMs, onPlayheadChange)
 
   const playheadPercent = (playheadPositionMs / durationMs) * 100
 
-  const durationSec = durationMs / 1000
+  const trackAreaWidth = durationSec * pxPerSecond
   const rulerMarks = []
   const step = durationSec <= 10 ? 1 : durationSec <= 60 ? 5 : 10
   for (let t = 0; t <= durationSec; t += step) {
@@ -124,7 +169,11 @@ export function Timeline({
           {(playheadPositionMs / 1000).toFixed(1)}s / {durationSec}s
         </span>
       </div>
-      <div className={c.body}>
+      <div
+        className={c.body}
+        ref={bodyRef}
+        style={{ '--trackAreaWidth': `${trackAreaWidth}px` } as React.CSSProperties}
+      >
         <div className={c.ruler} ref={rulerAreaRef}>
           {rulerMarks}
         </div>
@@ -138,6 +187,7 @@ export function Timeline({
             durationMs={durationMs}
             selectedKeyframes={selectedKeyframes}
             setSelectedKeyframes={setSelectedKeyframes}
+            onKeyframeMove={onKeyframeMove}
           />
         ))}
         <div
@@ -147,4 +197,4 @@ export function Timeline({
       </div>
     </div>
   )
-}
+})

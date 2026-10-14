@@ -7,10 +7,11 @@ export type TextInputHandle = {
 
 interface TextInputProps {
   onValueChange: (val: string) => void
+  autoFocus?: boolean
 }
 
 export const TextInput = forwardRef<TextInputHandle, TextInputProps>(function TextInput(
-  { onValueChange },
+  { onValueChange, autoFocus = false },
   ref,
 ) {
   const inputRef = useRef<HTMLInputElement>(null)
@@ -31,7 +32,13 @@ export const TextInput = forwardRef<TextInputHandle, TextInputProps>(function Te
 
   return (
     <div className={css.wrapper}>
-      <input type="text" className={css.input} ref={inputRef} onChange={handleChange} />
+      <input
+        type="text"
+        className={css.input}
+        ref={inputRef}
+        onChange={handleChange}
+        autoFocus={autoFocus}
+      />
     </div>
   )
 })

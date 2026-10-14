@@ -1,10 +1,5 @@
-import {
-  collapseOpenIcon,
-  collapseCloseIcon,
-  Icon,
-  useIsItemOpened,
-  useToggleStore,
-} from '@hedron-gl/ui-core'
+import { collapseOpenIcon, collapseCloseIcon, Icon } from '@hedron-gl/ui-core'
+import { useRef, useState } from 'react'
 import c from './Timeline.module.css'
 import { TrackKeyframes } from './TrackKeyframes'
 import { Keyframe } from './Keyframe'
@@ -19,6 +14,7 @@ interface TimelineTrackProps {
   durationMs: number
   selectedKeyframes: string[] | null
   setSelectedKeyframes: (keyframes: string[] | null) => void
+  onKeyframeMove: (keyframeId: string, time: number) => void
 }
 
 const getChildKeyframeTimes = (track: TimelineManagerTrack): number[] => {
@@ -57,10 +53,11 @@ export const TimelineTrack = ({
   durationMs,
   selectedKeyframes,
   setSelectedKeyframes,
+  onKeyframeMove,
 }: TimelineTrackProps) => {
-  const isExpanded = useIsItemOpened(track.id)
-  const setIsExpanded = useToggleStore((state) => state.toggleItem)
+  const [isExpanded, setIsExpanded] = useState<boolean>(false)
   const isSelected = track.id === selectedTrackId
+  const trackBodyRef = useRef<HTMLDivElement>(null)
 
   return (
     <>
@@ -70,26 +67,26 @@ export const TimelineTrack = ({
             <Icon
               className={c.collapseIcon}
               name={isExpanded ? collapseCloseIcon : collapseOpenIcon}
-              onClick={() => setIsExpanded(track.id)}
+              onClick={() => setIsExpanded(!isExpanded)}
             />
           )}
           <button className={c.trackTitle} onClick={() => setSelectedTrackId(track.id)}>
             {track.label}
           </button>
         </div>
-        <div className={c.trackBody}>
+        <div className={c.trackBody} ref={trackBodyRef}>
           {track.trackType === 'keyframe' && (
             <TrackKeyframes
               track={track}
               durationMs={durationMs}
               selectedKeyframes={selectedKeyframes}
               setSelectedKeyframes={setSelectedKeyframes}
+              containerRef={trackBodyRef}
+              onKeyframeMove={onKeyframeMove}
             />
           )}
           {track.trackType === 'vector' &&
             getChildKeyframeTimes(track).map((time, index) => {
-              const percent = (time / durationMs) * 100
-
               const isSelected = !getKeyframesAtTime(track.childTracks, time).some(
                 (kfId) => !selectedKeyframes?.includes(kfId),
               )
@@ -98,10 +95,17 @@ export const TimelineTrack = ({
                 <Keyframe
                   key={index}
                   id={index.toString()}
-                  percentPos={percent}
                   isSelected={isSelected}
+                  time={time}
+                  trackDurationMs={durationMs}
+                  trackRef={trackBodyRef}
                   onClick={() => {
                     setSelectedKeyframes(getKeyframesAtTime(track.childTracks, time))
+                  }}
+                  onMove={(newTime) => {
+                    for (const kfId of getKeyframesAtTime(track.childTracks, time)) {
+                      onKeyframeMove(kfId, newTime)
+                    }
                   }}
                 />
               )
@@ -120,6 +124,7 @@ export const TimelineTrack = ({
             durationMs={durationMs}
             selectedKeyframes={selectedKeyframes}
             setSelectedKeyframes={setSelectedKeyframes}
+            onKeyframeMove={onKeyframeMove}
           />
         ))}
     </>

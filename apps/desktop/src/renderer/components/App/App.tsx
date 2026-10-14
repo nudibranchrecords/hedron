@@ -89,6 +89,7 @@ const AppContent = (): JSX.Element => {
       <div
         className={c.handle}
         onMouseDown={onHandleMouseDown}
+        onTouchStart={onHandleMouseDown}
         role="separator"
         aria-orientation="vertical"
         tabIndex={0}
