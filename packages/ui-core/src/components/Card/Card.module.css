@@ -5,6 +5,15 @@
 
   display: flex;
   gap: 2rem;
+
+  &[role='button'] {
+    cursor: pointer;
+    transition: background-color var(--transitionTime);
+
+    &:hover {
+      background-color: var(--bgColorDark2);
+    }
+  }
 }
 
 .header {
