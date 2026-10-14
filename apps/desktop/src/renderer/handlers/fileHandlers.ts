@@ -33,12 +33,21 @@ const startEngineWithSketchesDir = async (
   return { resources, resourcesUrl }
 }
 
-export const handleSketchesDialog = async () => {
-  const response = await openSketchesDirDialog()
+export const handleSketchesDialog = async (sketchesDir?: string) => {
+  const appState = appStore.getState()
+  const response = await openSketchesDirDialog(sketchesDir)
+
+  if (response.result === 'error') {
+    alert(response.error)
+    if (sketchesDir) appState.removeFromSketchesDirList(sketchesDir)
+    return
+  }
 
   if (response.result !== 'success') return
 
   const { sketchesDirAbsolute, resourcesDirAbsolute } = response
+
+  appState.addToSketchesDirList(sketchesDirAbsolute)
 
   await startEngineWithSketchesDir(sketchesDirAbsolute, resourcesDirAbsolute)
 
