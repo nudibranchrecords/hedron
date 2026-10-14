@@ -1,6 +1,18 @@
 .wrapper {
   padding: var(--gapMega);
   overflow-y: scroll;
+  display: flex;
+  gap: var(--gapMega);
+}
+
+.folders {
+  width: 15rem;
+  flex-shrink: 0;
+}
+
+.main {
+  flex: 1;
+  min-width: 0;
 }
 
 .projectsTitle {

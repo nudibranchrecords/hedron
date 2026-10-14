@@ -11,11 +11,13 @@ import {
   SketchEvents,
 } from '@shared/Events'
 
-export const openSketchesDirDialog = () =>
+export const openSketchesDirDialog = (sketchesDir?: string) =>
   new Promise<OpenSketchesDirResponse>((resolve) => {
-    window.electronApi.ipcRenderer.invoke(DialogEvents.OpenSketchesDirDialog).then((response) => {
-      resolve(response)
-    })
+    window.electronApi.ipcRenderer
+      .invoke(DialogEvents.OpenSketchesDirDialog, sketchesDir)
+      .then((response) => {
+        resolve(response)
+      })
   })
 
 export const openProjectFileDialog = (projectPath?: string | null) =>
