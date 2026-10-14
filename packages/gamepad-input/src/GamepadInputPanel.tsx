@@ -1,5 +1,5 @@
 import { useCallback, useState, useMemo } from 'react'
-import { HedronEngine, InputNode } from '@hedron-gl/engine'
+import { HedronEngine, InputNode, TYPED_OVERRIDE_KEY } from '@hedron-gl/engine'
 import {
   Button,
   ControlGrid,
@@ -87,6 +87,9 @@ export const GamepadInputPanel = ({ input, engine }: IProps) => {
   const axisModeNode = optionNodes['axisMode']
 
   const inputTypeValue = inputTypeNode ? paramValues[inputTypeNode.id] : null
+  const overrideNode = optionNodes['override']
+  const overrideEnabled = overrideNode ? paramValues[overrideNode.id] === true : false
+  const isButton = inputTypeValue === GamepadInputType.Button
   const axisModeValue = axisModeNode ? paramValues[axisModeNode.id] : null
   const targetNode = nodes[input.targetNodeId]
   const targetParamValueType = targetNode?.nodeType === 'param' ? targetNode.valueType : null
@@ -112,6 +115,11 @@ export const GamepadInputPanel = ({ input, engine }: IProps) => {
             (targetParamValueType === 'number' || targetParamValueType === 'boolean')
           )
         }
+        if (node?.key === 'override') return isButton
+        if (node?.key === TYPED_OVERRIDE_KEY) return isButton && overrideEnabled
+        if (node?.key === 'overrideValue') {
+          return isButton && overrideEnabled && !optionNodes[TYPED_OVERRIDE_KEY]
+        }
         // Hide axisMode unless it's an axis input
         if (node?.key === 'axisMode') {
           return inputTypeValue === GamepadInputType.Axis
@@ -133,7 +141,16 @@ export const GamepadInputPanel = ({ input, engine }: IProps) => {
         }
         return true
       }),
-    [input.childGroups.optionNodeIds, nodes, inputTypeValue, axisModeValue, targetParamValueType],
+    [
+      input.childGroups.optionNodeIds,
+      nodes,
+      inputTypeValue,
+      axisModeValue,
+      targetParamValueType,
+      isButton,
+      overrideEnabled,
+      optionNodes,
+    ],
   )
 
   return (

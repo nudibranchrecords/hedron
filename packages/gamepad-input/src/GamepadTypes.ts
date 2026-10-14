@@ -45,6 +45,12 @@ export interface GamepadEvent {
   secondaryIndex?: number // For 2-axis modes
 }
 
+export type GamepadOptionNodes = ConfigToOptionsType<
+  typeof GamepadInput.prototype.optionNodesConfig
+> & {
+  overrideTargetValue?: ParamValue
+}
+
 /**
  * Type for value handler functions.
  */
@@ -52,7 +58,7 @@ export type ValueHandler<T = ParamNode> = (params: {
   gamepadEvent: GamepadEvent
   input: InputNode
   storeState: EngineState
-  optionNodes: ConfigToOptionsType<typeof GamepadInput.prototype.optionNodesConfig>
+  optionNodes: GamepadOptionNodes
   targetNode: T
   targetParamValue: ParamValue
 }) => ParamValue | null

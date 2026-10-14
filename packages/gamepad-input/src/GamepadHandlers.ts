@@ -15,7 +15,21 @@ import {
   ValueHandler as ValueHandler,
   ButtonMode,
   AxisMode,
+  GamepadEvent,
+  GamepadOptionNodes,
 } from './GamepadTypes'
+
+const isButtonOverride = (optionNodes: GamepadOptionNodes) =>
+  optionNodes.inputType === GamepadInputType.Button && optionNodes.override
+
+// Typed override value, undefined when unused, null when the event is not the trigger
+const getTypedOverride = (optionNodes: GamepadOptionNodes, gamepadEvent: GamepadEvent) => {
+  if (!isButtonOverride(optionNodes) || optionNodes.overrideTargetValue === undefined) return
+  const isTrigger =
+    (optionNodes.triggerOn === 'down' && gamepadEvent.isPressed) ||
+    (optionNodes.triggerOn === 'up' && !gamepadEvent.isPressed)
+  return isTrigger ? optionNodes.overrideTargetValue : null
+}
 
 /**
  * Calculates the combined value for 2-axis modes.
@@ -120,6 +134,9 @@ export function createGamepadHandlers(dependencies: {
     targetNode,
     optionNodes,
   }) => {
+    const override = getTypedOverride(optionNodes, gamepadEvent)
+    if (override !== undefined) return override
+
     // For buttons, cycle through enum values; for axes, map to enum range
     if (optionNodes.inputType === GamepadInputType.Button) {
       const shouldTrigger =
@@ -142,6 +159,9 @@ export function createGamepadHandlers(dependencies: {
     targetParamValue,
     optionNodes,
   }) => {
+    const override = getTypedOverride(optionNodes, gamepadEvent)
+    if (override !== undefined) return override
+
     if (optionNodes.inputType === GamepadInputType.Button) {
       // For toggle mode, toggle the state on trigger event
       if (optionNodes.buttonMode === ButtonMode.Toggle) {
@@ -177,6 +197,7 @@ export function createGamepadHandlers(dependencies: {
   }) => {
     const sliderMin = (storeState.paramValues[`${input.targetNodeId}-sliderMin`] as number) ?? 0
     const sliderMax = (storeState.paramValues[`${input.targetNodeId}-sliderMax`] as number) ?? 1
+    const pressedValue = isButtonOverride(optionNodes) ? optionNodes.overrideValue : 1
 
     // For button inputs, check if toggle mode is enabled
     if (
@@ -195,12 +216,13 @@ export function createGamepadHandlers(dependencies: {
       const newToggleState = !currentToggleState
       toggleStates.set(input.id, newToggleState)
 
-      // Return max if toggled on, min if toggled off
-      return newToggleState ? sliderMax : sliderMin
+      // Return pressed value if toggled on, min if toggled off
+      return newToggleState ? pressedValue * (sliderMax - sliderMin) + sliderMin : sliderMin
     }
 
     // For axis inputs in 2-axis mode, use the combined value
     let finalValue = gamepadEvent.value
+    if (isButtonOverride(optionNodes)) finalValue = gamepadEvent.isPressed ? pressedValue : 0
     if (
       optionNodes.inputType === GamepadInputType.Axis &&
       optionNodes.axisMode !== AxisMode.Single
@@ -217,6 +239,11 @@ export function createGamepadHandlers(dependencies: {
 
     // Default behavior: map value to slider range
     return finalValue * (sliderMax - sliderMin) + sliderMin
+  }
+
+  const handleString: ValueHandler<ParamString> = (params) => {
+    const override = getTypedOverride(params.optionNodes, params.gamepadEvent)
+    return override !== undefined ? override : handleUnsupportedString(params)
   }
 
   /**
@@ -291,7 +318,7 @@ export function createGamepadHandlers(dependencies: {
     handleEnum,
     handleBoolean,
     handleNumber,
-    handleUnsupportedString,
+    handleString,
     handleUnsupportedRGB,
     handleUnsupportedVector2,
     handleUnsupportedVector3,

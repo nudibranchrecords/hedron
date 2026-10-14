@@ -103,6 +103,22 @@ export const optionNodesConfig = [
   },
   {
     nodeType: 'param',
+    key: 'override',
+    title: 'Use Override',
+    valueType: 'boolean',
+    defaultValue: false,
+  },
+  {
+    nodeType: 'param',
+    key: 'overrideValue',
+    title: 'Override Value',
+    valueType: 'number',
+    defaultValue: 1,
+    sliderMin: 0,
+    sliderMax: 1,
+  },
+  {
+    nodeType: 'param',
     key: 'axisMode',
     title: 'Axis Mode',
     valueType: 'enum',

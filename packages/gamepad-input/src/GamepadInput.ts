@@ -11,6 +11,10 @@ import {
   ParamVector3,
   HedronEngine,
   ParamFile,
+  InputNode,
+  ParamNode,
+  ShotNode,
+  getTypedOverrideConfig,
 } from '@hedron-gl/engine'
 import { GamepadManager } from './GamepadManager'
 import { GamepadEvent, GamepadInputType, AxisMode, ValueHandler, ShotHandler } from './GamepadTypes'
@@ -88,7 +92,7 @@ export class GamepadInput implements IPlugin {
       enum: baseHandlers.handleEnum,
       boolean: baseHandlers.handleBoolean,
       number: baseHandlers.handleNumber,
-      string: baseHandlers.handleUnsupportedString,
+      string: baseHandlers.handleString,
       rgb: baseHandlers.handleUnsupportedRGB,
       vector2: baseHandlers.handleUnsupportedVector2,
       vector3: baseHandlers.handleUnsupportedVector3,
@@ -99,6 +103,13 @@ export class GamepadInput implements IPlugin {
 
     // Start the update loop
     window.requestAnimationFrame(() => this.update())
+  }
+
+  onNewInput = (engine: HedronEngine, newInput: InputNode, targetNode: ParamNode | ShotNode) => {
+    if (targetNode.nodeType !== 'param') return
+    const value = engine.getStore().getState().paramValues[targetNode.id]
+    const overrideConfig = getTypedOverrideConfig(targetNode, value)
+    if (overrideConfig) engine.addOptionNodes(newInput.id, [overrideConfig])
   }
 
   /**
