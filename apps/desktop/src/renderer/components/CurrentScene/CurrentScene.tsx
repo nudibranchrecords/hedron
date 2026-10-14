@@ -1,3 +1,5 @@
+import { useEffect } from 'react'
+import { ACTIVE_SCENE_ID_NODE_ID } from '@hedron-gl/engine'
 import {
   Button,
   Icon,
@@ -17,12 +19,18 @@ export const CurrentScene = () => {
   const sceneIds = useEngineStore((state) => state.sceneIds)
   const deleteScene = useEngineStore((state) => state.deleteScene)
   const addScene = useEngineStore((state) => state.addScene)
+  const updateParamValue = useEngineStore((state) => state.updateParamValue)
 
   const selectedSceneId = useAppStore((state) => state.selectedSceneId)
   const setSelectedSceneId = useAppStore((state) => state.setSelectedSceneId)
   const activeScene = useEngineStore((state) =>
     selectedSceneId ? state.nodes[selectedSceneId] : undefined,
   )
+
+  // Sync here too, as the Scenes panel only does so while expanded
+  useEffect(() => {
+    updateParamValue(ACTIVE_SCENE_ID_NODE_ID, selectedSceneId ?? '')
+  }, [selectedSceneId, updateParamValue])
 
   const handleDeleteCurrentScene = () => {
     if (!selectedSceneId) {
