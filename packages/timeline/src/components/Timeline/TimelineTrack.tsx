@@ -3,7 +3,12 @@ import { useRef, useState } from 'react'
 import c from './Timeline.module.css'
 import { TrackKeyframes } from './TrackKeyframes'
 import { Keyframe } from './Keyframe'
-import { TimelineManagerKeyframeTrack, TimelineManagerTrack } from '@/types'
+import {
+  Keyframe as KeyframeData,
+  KeyframeParam,
+  TimelineManagerKeyframeTrack,
+  TimelineManagerTrack,
+} from '@/types'
 import { getKeyframeTracks } from '@/utils/getKeyframeTracks'
 
 interface TimelineTrackProps {
@@ -38,6 +43,51 @@ const getKeyframesAtTime = (tracks: TimelineManagerKeyframeTrack[], time: number
   }
 
   return keyframeIds
+}
+
+const valuesEqual = (a: unknown, b: unknown): boolean => {
+  if (Array.isArray(a) && Array.isArray(b)) {
+    return a.length === b.length && a.every((component, i) => component === b[i])
+  }
+  return a === b
+}
+
+const isParamKeyframe = (kf: KeyframeData): kf is KeyframeParam => kf.nodeType === 'param'
+
+/** Value held at `time`: the last keyframe at or before it, falling back to the first keyframe. */
+const getValueAtTime = (sortedKeyframes: KeyframeParam[], time: number): unknown => {
+  let value = sortedKeyframes[0]?.value
+  for (const kf of sortedKeyframes) {
+    if (kf.time > time) break
+    value = kf.value
+  }
+  return value
+}
+
+/** Spans between adjacent keyframe times where the value changes. Vector tracks compare every component. */
+const getValueChangeSegments = (
+  track: TimelineManagerTrack,
+): { startTime: number; endTime: number }[] => {
+  const tracks =
+    track.trackType === 'keyframe' ? [track] : track.trackType === 'vector' ? track.childTracks : []
+
+  const sortedKeyframesPerTrack = tracks.map((t) =>
+    t.keyframes.filter(isParamKeyframe).sort((a, b) => a.time - b.time),
+  )
+  const times = Array.from(
+    new Set(sortedKeyframesPerTrack.flatMap((kfs) => kfs.map((kf) => kf.time))),
+  ).sort((a, b) => a - b)
+
+  const segments: { startTime: number; endTime: number }[] = []
+  for (let i = 1; i < times.length; i++) {
+    const startTime = times[i - 1]
+    const endTime = times[i]
+    const hasChange = sortedKeyframesPerTrack.some(
+      (kfs) => !valuesEqual(getValueAtTime(kfs, startTime), getValueAtTime(kfs, endTime)),
+    )
+    if (hasChange) segments.push({ startTime, endTime })
+  }
+  return segments
 }
 
 export const TimelineTrack = ({
@@ -88,6 +138,16 @@ export const TimelineTrack = ({
         </div>
         {/* Keyframes stop propagation, so a mousedown landing here is empty lane space. */}
         <div className={c.trackBody} ref={trackBodyRef} onMouseDown={onSelectionBoxStart}>
+          {getValueChangeSegments(track).map(({ startTime, endTime }) => (
+            <div
+              key={`${startTime}-${endTime}`}
+              className={c.keyframeLine}
+              style={{
+                left: `${(startTime / durationMs) * 100}%`,
+                width: `${((endTime - startTime) / durationMs) * 100}%`,
+              }}
+            />
+          ))}
           {track.trackType === 'keyframe' && (
             <TrackKeyframes
               track={track}

@@ -203,6 +203,16 @@
   margin-left: 3px;
 }
 
+.keyframeLine {
+  position: absolute;
+  top: 50%;
+  height: 1px;
+  background: var(--keyframeColor);
+  opacity: 0.5;
+  pointer-events: none;
+  z-index: 1;
+}
+
 .keyframe {
   position: absolute;
   width: 8px;
