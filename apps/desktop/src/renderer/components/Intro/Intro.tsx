@@ -10,7 +10,6 @@ import {
   PanelHeader,
   Button,
   Card,
-  CardActions,
   CardBody,
   CardContent,
   CardDetails,
@@ -26,14 +25,15 @@ import { pluralize } from '@renderer/utils/pluralize'
 import { openFolder } from '@renderer/ipc/mainThreadTalk'
 
 const RecentProjectItem = ({ item }: { item: SaveItem }) => {
-  const handleOpenFolder = async () => {
+  const handleOpenFolder = async (e: React.SyntheticEvent) => {
+    e.stopPropagation()
     const result = await openFolder(item.path)
     if (result.error) {
       console.error('Error opening folder:', result.error)
     }
   }
   return (
-    <Card>
+    <Card onClick={() => handleLoadProjectDialog(item.path)}>
       <CardContent>
         <CardHeader iconName="draft">{item.title}</CardHeader>
         <CardDetails>
@@ -44,7 +44,7 @@ const RecentProjectItem = ({ item }: { item: SaveItem }) => {
             onClick={handleOpenFolder}
             onKeyDown={(e) => {
               if (e.key === 'Enter' || e.key === ' ') {
-                handleOpenFolder()
+                handleOpenFolder(e)
               }
             }}
             title="Open folder in file browser"
@@ -64,11 +64,6 @@ const RecentProjectItem = ({ item }: { item: SaveItem }) => {
           </IconList>
         </CardBody>
       </CardContent>
-      <CardActions>
-        <Button iconName="file_open" onClick={() => handleLoadProjectDialog(item.path)}>
-          Open
-        </Button>
-      </CardActions>
     </Card>
   )
 }

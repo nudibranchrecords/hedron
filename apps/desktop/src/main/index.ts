@@ -93,24 +93,28 @@ app.on('window-all-closed', () => {
   }
 })
 
-ipcMain.handle(DialogEvents.OpenSketchesDirDialog, async (): Promise<OpenSketchesDirResponse> => {
-  const result = await dialog.showOpenDialog({
-    properties: ['openDirectory'],
-  })
+ipcMain.handle(
+  DialogEvents.OpenSketchesDirDialog,
+  async (_, defaultPath?: string): Promise<OpenSketchesDirResponse> => {
+    const result = await dialog.showOpenDialog({
+      defaultPath,
+      properties: ['openDirectory'],
+    })
 
-  if (result.canceled || result.filePaths.length === 0) {
-    return { result: 'canceled' }
-  }
+    if (result.canceled || result.filePaths.length === 0) {
+      return { result: 'canceled' }
+    }
 
-  const sketchesDirAbsolute = result.filePaths[0]
-  const resourcesDirAbsolute = path.resolve(path.dirname(sketchesDirAbsolute), 'resources')
+    const sketchesDirAbsolute = result.filePaths[0]
+    const resourcesDirAbsolute = path.resolve(path.dirname(sketchesDirAbsolute), 'resources')
 
-  return {
-    result: 'success',
-    sketchesDirAbsolute,
-    resourcesDirAbsolute,
-  }
-})
+    return {
+      result: 'success',
+      sketchesDirAbsolute,
+      resourcesDirAbsolute,
+    }
+  },
+)
 
 ipcMain.handle(DialogEvents.OpenOutputDirDialog, async (): Promise<OpenOutputDirResponse> => {
   const result = await dialog.showOpenDialog({
@@ -129,8 +133,8 @@ ipcMain.handle(DialogEvents.OpenOutputDirDialog, async (): Promise<OpenOutputDir
 
 ipcMain.handle(
   DialogEvents.OpenProjectFileDialog,
-  async (_, projectPath?: string): Promise<OpenProjectResponse> => {
-    return await openProjectFile(projectPath)
+  async (_, projectPath?: string, defaultPath?: string): Promise<OpenProjectResponse> => {
+    return await openProjectFile(projectPath, defaultPath)
   },
 )
 

@@ -3,9 +3,27 @@ import { Icon, IconName } from '@components/Icon/Icon'
 
 export interface CardProps {
   children: React.ReactNode
+  onClick?: () => void
 }
 
-export const Card = ({ children }: CardProps) => <div className={c.wrapper}>{children}</div>
+export const Card = ({ children, onClick }: CardProps) =>
+  onClick ? (
+    <div
+      className={c.wrapper}
+      role="button"
+      tabIndex={0}
+      onClick={onClick}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          onClick()
+        }
+      }}
+    >
+      {children}
+    </div>
+  ) : (
+    <div className={c.wrapper}>{children}</div>
+  )
 
 export interface CardHeaderProps {
   children: React.ReactNode

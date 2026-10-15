@@ -4,9 +4,13 @@ import { dialog } from 'electron'
 import { ProjectData } from '@hedron-gl/app-store'
 import { OpenProjectResponse } from '@shared/Events'
 
-export const openProjectFile = async (projectPath?: string): Promise<OpenProjectResponse> => {
+export const openProjectFile = async (
+  projectPath?: string,
+  defaultPath?: string,
+): Promise<OpenProjectResponse> => {
   if (!projectPath) {
     const result = await dialog.showOpenDialog({
+      defaultPath,
       filters: [{ name: 'Project', extensions: ['json'] }],
     })
 
