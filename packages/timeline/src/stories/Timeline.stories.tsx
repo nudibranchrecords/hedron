@@ -275,6 +275,25 @@ export const Interactive = () => {
     managerRef.current = manager
   }, [TIMELINE_DURATION])
 
+  // TimelineManager no longer self-drives via requestAnimationFrame (it's normally driven by
+  // HedronEngine.advanceFrame via TimelineInput's onFrame hook). Since this story has no engine,
+  // drive it manually here instead.
+  useEffect(() => {
+    let rafId: number
+    let lastTime: number | null = null
+
+    const tick = (now: number) => {
+      if (lastTime !== null) {
+        managerRef.current?.step(now - lastTime)
+      }
+      lastTime = now
+      rafId = requestAnimationFrame(tick)
+    }
+    rafId = requestAnimationFrame(tick)
+
+    return () => cancelAnimationFrame(rafId)
+  }, [])
+
   useEffect(() => {
     const manager = managerRef.current
     if (!manager) return

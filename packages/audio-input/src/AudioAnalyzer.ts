@@ -1,6 +1,7 @@
 import * as THREE from 'three'
 import { AudioInput } from './AudioInput'
 import { bellCurve, lerp } from './AudioUtils'
+import { OfflineAnalysisResult } from './OfflineSpectrumAnalyzer'
 
 /**
  * Represents a frequency band with center frequency and Q factor
@@ -39,6 +40,10 @@ export const BAND_COLORS = [
   '#4CAF50', // Green
   '#2196F3', // Blue
 ]
+
+/** AnalyserNode's spec-default dB window, shared by every source (mic and file alike). */
+export const DEFAULT_MIN_DECIBELS = -100
+export const DEFAULT_MAX_DECIBELS = -30
 
 /**
  * Structure containing the audio analysis data and visualization resources
@@ -123,6 +128,12 @@ export class AudioAnalyzer {
    * Audio data containing the analyzer and visualization resources
    */
   public audioData: AudioData | undefined
+
+  /** When set, `update()` samples this precomputed table instead of the live analyser. */
+  private offlineFrames: OfflineAnalysisResult | undefined
+
+  /** Current frame index while offline analysis is active. */
+  private offlineFrameIndex: (() => number) | undefined
 
   /**
    * Master volume multiplier applied to all audio levels
@@ -405,14 +416,34 @@ export class AudioAnalyzer {
     return { clampedFreq, clampedQ }
   }
 
+  /** Switches to sampling a precomputed offline table (see `analyzeAudioOffline`) by frame index. */
+  public beginOfflineAnalysis(frames: OfflineAnalysisResult, getFrameIndex: () => number): void {
+    this.offlineFrames = frames
+    this.offlineFrameIndex = getFrameIndex
+    this.resetLevelsData()
+  }
+
+  /** Restores live analysis via `audioData.analyser`. */
+  public endOfflineAnalysis(): void {
+    this.offlineFrames = undefined
+    this.offlineFrameIndex = undefined
+    this.resetLevelsData()
+  }
+
   /**
    * Updates audio analysis on each frame
    * @returns The current levels data array
    */
   public update(): void {
     if (!this.audioData) return
-    // Get latest frequency data from analyzer
-    this.audioData.analyser.getByteFrequencyData(this.audioData.freqs as Uint8Array<ArrayBuffer>)
+
+    if (this.offlineFrames && this.offlineFrameIndex) {
+      // Sample the precomputed table for this frame rather than reading live from the analyser.
+      this.audioData.freqs.set(this.offlineFrames.getFrame(this.offlineFrameIndex()))
+    } else {
+      // Get latest frequency data from analyzer
+      this.audioData.analyser.getByteFrequencyData(this.audioData.freqs as Uint8Array<ArrayBuffer>)
+    }
 
     this.processBands()
     this.processFullSpectrum()
