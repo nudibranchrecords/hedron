@@ -6,6 +6,7 @@ import {
   TimelineNode,
   TimelineTrackInput,
 } from '@/types'
+import { getResourceUrl } from '@/utils/getResourceUrl'
 
 export const getTimelineTracks = (
   state: EngineState,
@@ -57,13 +58,14 @@ export const getTimelineTracks = (
   )
   const resourceId = state.paramValues[audioUrlNodeId ?? ''] as ParamFileValue | undefined
   const resource = resourceId ? state.resources[resourceId] : null
+  const audioUrl = resourceId ? getResourceUrl(state, resourceId) : null
 
-  if (resource) {
+  if (resource && audioUrl) {
     tracks.unshift({
       id: DEFAULT_AUDIO_TRACK_ID,
-      label: resource?.fileName,
+      label: resource.fileName,
       trackType: 'audio',
-      audioUrl: `${state.resourcesUrl}/${resource?.filePath}`,
+      audioUrl,
     })
   }
   /// end hack

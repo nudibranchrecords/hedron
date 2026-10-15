@@ -16,7 +16,6 @@ export class Clock {
   private _beatCount: number = 0
   private _beatsPerMs: number = 0
   private _bpm: number = 0
-  private _lastTimestamp: number | null = null
   private _lastTempoTap: number | null = null
   private _tapIntervals: number[] = []
   private _lastPulseTimestamp: number | null = null
@@ -40,28 +39,20 @@ export class Clock {
   }
 
   /**
-   * Runs every frame, handles updates of beatDelta and beatCount
-   * @param timestamp Timestamp as given by requestAnimationFrame
+   * Advances the clock's beatDelta/beatCount by deltaMs. Called once per engine frame
+   * (via HedronEngine.advanceFrame) for both real-time playback and fixed-framerate rendering.
+   * No-ops if the clock isn't running.
+   * @param deltaMs The number of milliseconds to advance the clock by
    */
-  private tick = (timestamp: number) => {
-    if (this._lastTimestamp == null) {
-      throw new Error('Clock: tick() should never happen before start() has been called')
-    }
+  public step = (deltaMs: number) => {
+    if (!this._isRunning) return
 
-    if (this._isRunning) {
-      // Increase the delta.
-      // Adjusted by `beatPulseOffset` to keep in time with an external clock, if we have an external clock pulse coming in)
-      const deltaInc =
-        this._beatsPerMs * (timestamp - this._lastTimestamp) * (1 + this._beatPulseOffset)
-      this._beatDelta += deltaInc
-      this._beatPulseComparisonDelta += deltaInc
+    // Adjusted by `beatPulseOffset` to keep in time with an external clock, if we have an external clock pulse coming in)
+    const deltaInc = this._beatsPerMs * deltaMs * (1 + this._beatPulseOffset)
+    this._beatDelta += deltaInc
+    this._beatPulseComparisonDelta += deltaInc
 
-      this.updateBeatCount()
-
-      requestAnimationFrame(this.tick)
-
-      this._lastTimestamp = timestamp
-    }
+    this.updateBeatCount()
   }
 
   private updateBeatCount = () => {
@@ -177,11 +168,8 @@ export class Clock {
 
     if (withReset) this.reset()
 
-    this._lastTimestamp = performance.now()
     this._isRunning = true
     this._onIsRunningChange?.(true)
-
-    requestAnimationFrame(this.tick)
   }
 
   /**
@@ -205,7 +193,6 @@ export class Clock {
   public reset = () => {
     this._beatDelta = 0
     this._beatCount = 0
-    this._lastTimestamp = performance.now()
     this._lastTempoTap = null
     this._tapIntervals = []
     this._lastPulseTimestamp = null

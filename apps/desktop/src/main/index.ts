@@ -4,10 +4,12 @@ import { electronApp, optimizer } from '@electron-toolkit/utils'
 import { REDUX_DEVTOOLS, installExtension } from '@tomjs/electron-devtools-installer'
 import { ProjectData } from '@hedron-gl/app-store'
 import { openSketchSourceFile } from './handlers/openSketchSourceFile'
-import { saveFrameHandler, saveFrameSequenceHandler } from './handlers/frameHandlers'
+import { saveFrameHandler } from './handlers/renderVideo/saveFrame'
+import { saveFrameSequenceHandler } from './handlers/renderVideo/renderSequence'
 import {
   DialogEvents,
   OpenSketchesDirResponse,
+  OpenOutputDirResponse,
   FileEvents,
   OpenProjectResponse,
   ResourceEvents,
@@ -107,6 +109,21 @@ ipcMain.handle(DialogEvents.OpenSketchesDirDialog, async (): Promise<OpenSketche
     result: 'success',
     sketchesDirAbsolute,
     resourcesDirAbsolute,
+  }
+})
+
+ipcMain.handle(DialogEvents.OpenOutputDirDialog, async (): Promise<OpenOutputDirResponse> => {
+  const result = await dialog.showOpenDialog({
+    properties: ['openDirectory'],
+  })
+
+  if (result.canceled || result.filePaths.length === 0) {
+    return { result: 'canceled' }
+  }
+
+  return {
+    result: 'success',
+    outputDirAbsolute: result.filePaths[0],
   }
 })
 

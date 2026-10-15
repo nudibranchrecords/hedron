@@ -34,6 +34,7 @@ export enum DialogEvents {
   OpenSketchesDirDialog = 'open-sketches-dir-dialog',
   OpenProjectFileDialog = 'open-project-file-dialog',
   SaveProjectFileDialog = 'save-project-file-dialog',
+  OpenOutputDirDialog = 'open-output-dir-dialog',
 }
 
 export enum FileEvents {
@@ -57,6 +58,11 @@ type OpenSketchesDirResponseSuccess = {
   resourcesDirAbsolute: string
 }
 
+type OpenOutputDirResponseSuccess = {
+  result: 'success'
+  outputDirAbsolute: string
+}
+
 type OpenProjectResponseSuccess = {
   result: 'success'
   sketchesDirAbsolute: string
@@ -78,6 +84,8 @@ export type OpenSketchesDirResponse =
   | OpenSketchesDirResponseSuccess
   | ResponseError
   | ResponseCanceled
+
+export type OpenOutputDirResponse = OpenOutputDirResponseSuccess | ResponseError | ResponseCanceled
 
 export type SaveProjectResponse = SaveProjectResponseSuccess | ResponseError | ResponseCanceled
 

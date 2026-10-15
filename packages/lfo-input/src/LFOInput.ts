@@ -1,6 +1,7 @@
 import {
   ConfigToOptionsType,
   EngineState,
+  EngineStore,
   getNextEnumValue,
   handleEachInput,
   HedronEngine,
@@ -131,6 +132,10 @@ export class LFOInput implements IPlugin {
 
   private lastClockBeatDelta: number = -1
 
+  private clock: NonNullable<HedronEngine['clock']>
+
+  private store: EngineStore
+
   private handleShot: ShotHandler = ({ delta, input, engine }) => {
     const val = Math.sin(delta)
 
@@ -187,64 +192,65 @@ export class LFOInput implements IPlugin {
       throw new Error('Clock plugin is required for LFOInput to function.')
     }
 
-    const store = engine.getStore()
+    this.clock = clock
+    this.store = engine.getStore()
+  }
 
-    const tick = () => {
-      requestAnimationFrame(() => {
-        if (clock.beatDelta === this.lastClockBeatDelta) {
-          tick()
+  /**
+   * Called once per engine frame (via HedronEngine.advanceFrame), for both real-time playback and
+   * fixed-framerate rendering. Skips work if the clock hasn't advanced (e.g. it isn't running).
+   */
+  update(engine: HedronEngine) {
+    const clock = this.clock
+
+    if (clock.beatDelta === this.lastClockBeatDelta) {
+      return
+    }
+
+    this.lastClockBeatDelta = clock.beatDelta
+
+    const storeState = this.store.getState()
+    handleEachInput<typeof this.optionNodesConfig>(
+      storeState,
+      this.inputType,
+      ({ input, optionNodes, targetNode }) => {
+        const delta = (clock.beatDelta * optionNodes.frequency + optionNodes.phase) * TAU
+
+        // TODO: This can be handled by `onInput` once we have `isEnabled` as a generic option
+        if (!optionNodes.isEnabled) return
+
+        if (targetNode.nodeType === 'shot') {
+          this.handleShot({
+            delta,
+            input,
+            engine,
+          })
           return
         }
 
-        this.lastClockBeatDelta = clock.beatDelta
-
-        const storeState = store.getState()
-        handleEachInput<typeof this.optionNodesConfig>(
+        const value = {
+          enum: this.handleEnum,
+          boolean: this.handleBoolean,
+          number: this.handleNumber,
+          string: this.handleUnsupported,
+          rgb: this.handleUnsupported,
+          vector2: this.handleUnsupported,
+          vector3: this.handleUnsupported,
+          file: this.handleUnsupported,
+        }[targetNode.valueType]({
+          delta,
+          input,
           storeState,
-          this.inputType,
-          ({ input, optionNodes, targetNode }) => {
-            const delta = (clock.beatDelta * optionNodes.frequency + optionNodes.phase) * TAU
+          optionNodes,
+          targetNode,
+        })
 
-            // TODO: This can be handled by `onInput` once we have `isEnabled` as a generic option
-            if (!optionNodes.isEnabled) return
+        if (value === null) {
+          return
+        }
 
-            if (targetNode.nodeType === 'shot') {
-              this.handleShot({
-                delta,
-                input,
-                engine,
-              })
-              return
-            }
-
-            const value = {
-              enum: this.handleEnum,
-              boolean: this.handleBoolean,
-              number: this.handleNumber,
-              string: this.handleUnsupported,
-              rgb: this.handleUnsupported,
-              vector2: this.handleUnsupported,
-              vector3: this.handleUnsupported,
-              file: this.handleUnsupported,
-            }[targetNode.valueType]({
-              delta,
-              input,
-              storeState,
-              optionNodes,
-              targetNode,
-            })
-
-            if (value === null) {
-              return
-            }
-
-            storeState.updateParamValue(input.targetNodeId, value)
-          },
-        )
-
-        tick()
-      })
-    }
-    tick()
+        storeState.updateParamValue(input.targetNodeId, value)
+      },
+    )
   }
 }
