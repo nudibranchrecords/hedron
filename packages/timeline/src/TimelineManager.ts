@@ -12,22 +12,25 @@ export type TrackValues = Record<string, ParamValue>
 
 export type OnUpdateCallback = (values: TrackValues) => void
 
+export type OnAudioElementChangeCallback = (element: HTMLAudioElement | null) => void
+
 export class TimelineManager {
   private tracks: TimelineManagerTrack[]
   private durationMs: number
   private positionMs = 0
   private playing = false
-  private rafId: number | null = null
-  private lastFrameTime: number | null = null
   private onUpdateCallback: OnUpdateCallback | null = null
+  private onAudioElementChangeCallback: OnAudioElementChangeCallback | null = null
   private cachedValues: TrackValues = {}
   private sortedKeyframesCache: Map<string, Keyframe[]> = new Map()
   private audioCache: Map<string, HTMLAudioElement> = new Map()
+  // Last element reported to onAudioElementChangeCallback - fires only on actual change.
+  private currentAudioElement: HTMLAudioElement | null = null
   private lastKeyframeIndex: Map<string, number> = new Map()
   // Number of shot keyframes at or before the position as of the last check, per track.
   private shotKeyframeCount: Map<string, number> = new Map()
   private clock: Clock | null = null
-  // Flattened (vector tracks expanded to their childTracks) view of timelineData.tracks, kept in
+  // Flattened (vector tracks expanded to their childTracks) view of `tracks`, kept in
   // sync by buildCache() - avoids re-walking the track tree on every computeValues/emitUpdate call.
   private flatTracks: TimelineManagerTrack[] = []
 
@@ -67,7 +70,11 @@ export class TimelineManager {
       switch (track.trackType) {
         case 'audio':
           if (this.audioCache.get(track.id)?.src !== track.audioUrl) {
-            const audio = new Audio(track.audioUrl)
+            const audio = new Audio()
+            // Cross-origin resources server - without this the element is tainted and can't
+            // be captured for analysis. Must be set before src.
+            audio.crossOrigin = 'anonymous'
+            audio.src = track.audioUrl
             this.audioCache.set(track.id, audio)
           }
           break
@@ -79,6 +86,19 @@ export class TimelineManager {
           break
       }
     }
+
+    this.syncAudioElementChange()
+  }
+
+  // Reports the audio track's element on create/replace/remove, not on every buildCache() call.
+  private syncAudioElementChange() {
+    const [firstAudioTrack] = this.getAudioTracksWithAudio()
+    const element = firstAudioTrack?.audio ?? null
+
+    if (element === this.currentAudioElement) return
+
+    this.currentAudioElement = element
+    this.onAudioElementChangeCallback?.(element)
   }
 
   private resetKeyframeIndexes() {
@@ -180,33 +200,35 @@ export class TimelineManager {
       }))
   }
 
-  private tick = (now: number) => {
+  /**
+   * Advances playback position by deltaMs. Called once per engine frame (via TimelineInput's
+   * IPlugin.onFrame) while playing, for both real-time playback and fixed-framerate rendering.
+   */
+  step(deltaMs: number) {
     if (!this.playing) return
 
-    if (this.lastFrameTime !== null) {
-      const delta = now - this.lastFrameTime
-      this.positionMs = Math.min(this.positionMs + delta, this.durationMs)
+    this.positionMs = Math.max(0, Math.min(this.positionMs + deltaMs, this.durationMs))
 
-      if (this.clock) {
-        this.clock.beatDeltaMs = this.positionMs
-      }
+    if (this.clock) {
+      this.clock.beatDeltaMs = this.positionMs
     }
-    this.lastFrameTime = now
 
     this.emitUpdate()
 
     if (this.positionMs >= this.durationMs) {
       this.goTo(0)
     }
-
-    this.rafId = requestAnimationFrame(this.tick)
   }
 
   getAllTracks(): TimelineManagerTrack[] {
     return [...this.flatTracks]
   }
 
-  play() {
+  /**
+   * @param options.silent Skip starting audio track playback (used when rendering, where audio
+   * is muxed in separately rather than played back live).
+   */
+  play(options?: { silent?: boolean }) {
     if (this.playing) return
 
     if (this.clock) {
@@ -215,8 +237,8 @@ export class TimelineManager {
     }
 
     this.playing = true
-    this.lastFrameTime = null
-    this.rafId = requestAnimationFrame(this.tick)
+
+    if (options?.silent) return
 
     // Play audio tracks
     for (const { audio } of this.getAudioTracksWithAudio()) {
@@ -227,15 +249,9 @@ export class TimelineManager {
 
   pause() {
     this.playing = false
-    this.lastFrameTime = null
 
     if (this.clock) {
       this.clock.stop()
-    }
-
-    if (this.rafId !== null) {
-      cancelAnimationFrame(this.rafId)
-      this.rafId = null
     }
 
     // Pause audio tracks
@@ -246,7 +262,6 @@ export class TimelineManager {
 
   goTo(timeMs: number) {
     this.positionMs = Math.max(0, Math.min(timeMs, this.durationMs))
-    this.lastFrameTime = null
     this.resetKeyframeIndexes()
 
     if (this.clock) {
@@ -259,6 +274,15 @@ export class TimelineManager {
     }
 
     this.emitUpdate()
+  }
+
+  /**
+   * Seeks to 0, then parks the playhead `offsetMs` before it (`goTo` clamps at 0), so advancing
+   * by `offsetMs` lands exactly on 0 - e.g. fixed-framerate rendering, which advances before each frame renders.
+   */
+  goToBeforeStart(offsetMs: number) {
+    this.goTo(0)
+    this.positionMs = -offsetMs
   }
 
   setTracks(tracks: TimelineManagerTrack[]) {
@@ -278,6 +302,18 @@ export class TimelineManager {
     this.onUpdateCallback = callback
   }
 
+  /**
+   * Fires on audio-track element create/replace/remove, and immediately with the current
+   * element if one already exists (tracks are often already built by registration time).
+   */
+  onAudioElementChange(callback: OnAudioElementChangeCallback) {
+    this.onAudioElementChangeCallback = callback
+
+    if (this.currentAudioElement) {
+      callback(this.currentAudioElement)
+    }
+  }
+
   getPositionMs() {
     return this.positionMs
   }
@@ -289,5 +325,6 @@ export class TimelineManager {
   dispose() {
     this.pause()
     this.onUpdateCallback = null
+    this.onAudioElementChangeCallback = null
   }
 }

@@ -3,10 +3,13 @@ import { app, BrowserWindow, dialog, ipcMain, screen, session } from 'electron'
 import { electronApp, optimizer } from '@electron-toolkit/utils'
 import { REDUX_DEVTOOLS, installExtension } from '@tomjs/electron-devtools-installer'
 import { ProjectData } from '@hedron-gl/app-store'
-import { saveFrameHandler, saveFrameSequenceHandler } from './handlers/frameHandlers'
+import { openSketchSourceFile } from './handlers/openSketchSourceFile'
+import { saveFrameHandler } from './handlers/renderVideo/saveFrame'
+import { saveFrameSequenceHandler } from './handlers/renderVideo/renderSequence'
 import {
   DialogEvents,
   OpenSketchesDirResponse,
+  OpenOutputDirResponse,
   FileEvents,
   OpenProjectResponse,
   ResourceEvents,
@@ -113,6 +116,21 @@ ipcMain.handle(
   },
 )
 
+ipcMain.handle(DialogEvents.OpenOutputDirDialog, async (): Promise<OpenOutputDirResponse> => {
+  const result = await dialog.showOpenDialog({
+    properties: ['openDirectory'],
+  })
+
+  if (result.canceled || result.filePaths.length === 0) {
+    return { result: 'canceled' }
+  }
+
+  return {
+    result: 'success',
+    outputDirAbsolute: result.filePaths[0],
+  }
+})
+
 ipcMain.handle(
   DialogEvents.OpenProjectFileDialog,
   async (_, projectPath?: string, defaultPath?: string): Promise<OpenProjectResponse> => {
@@ -129,6 +147,10 @@ ipcMain.handle(
 
 ipcMain.handle(FileEvents.OpenFolder, async (_, folderPath: string) => {
   return await openFolder(folderPath)
+})
+
+ipcMain.handle(FileEvents.OpenSketchSourceFile, async (_, moduleId: string) => {
+  return await openSketchSourceFile(moduleId)
 })
 
 ipcMain.handle(SketchEvents.StartSketchesServer, async (_, sketchesDir: string) => {

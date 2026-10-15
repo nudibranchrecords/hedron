@@ -689,7 +689,16 @@ export class HedronEngine {
    * @param deltaTime The time delta (in seconds) to advance this frame.
    */
   private advanceFrame(deltaTime: number) {
-    // Flush buffered node value updates before processing the frame
+    this.clock?.step(deltaTime * 1000)
+
+    // Flush before plugin.update() so plugins read this frame's values, not stale ones buffered since the last flush.
+    flushParamValueBuffer(this.store.setState)
+
+    Object.values(this.plugins).forEach((plugin) =>
+      plugin.update?.(this, { deltaFrame: 1, deltaTime }),
+    )
+
+    // Flush again so any updates plugins just buffered are visible to sketches this same frame.
     flushParamValueBuffer(this.store.setState)
 
     const activeSceneId = this.getParamValue(ACTIVE_SCENE_ID_NODE_ID) as string | undefined
@@ -788,19 +797,20 @@ export class HedronEngine {
   }
 
   /**
-   * Public method to resize the renderer's canvas.
+   * Resizes the renderer's canvas to an explicit size, optionally setting its pixel ratio.
    */
-  public resizeRenderer(width: number, height: number): void {
-    this.renderer.resize(width, height)
+  public resizeRenderer(width: number, height: number, pixelRatio?: number): void {
+    this.renderer.resize(width, height, pixelRatio)
   }
 
   /**
-   * Public method to get the renderer's current size.
+   * Public method to get the renderer's current size and pixel ratio.
    */
-  public getRendererSize(): { width: number; height: number } {
+  public getRendererSize(): { width: number; height: number; pixelRatio: number } {
     return {
       width: this.renderer.getWidth(),
       height: this.renderer.getHeight(),
+      pixelRatio: this.renderer.getPixelRatio(),
     }
   }
 
@@ -824,27 +834,18 @@ export class HedronEngine {
     this.paused = true
 
     // Store original size if resizing
-    let originalSize: { width: number; height: number } | null = null
+    let originalSize: ReturnType<HedronEngine['getRendererSize']> | null = null
     if (width && height) {
       originalSize = this.getRendererSize()
-      this.resizeRenderer(width, height)
+      // Pixel ratio 1 so the captured frames exactly match width/height.
+      this.resizeRenderer(width, height, 1)
     }
 
     const frameDuration = 1 / fps
     const padCount = frameCount.toString().length // Zero-pad index based on frame count
 
     for (let i = 0; i < frameCount; i++) {
-      this.onFrameStart?.()
-
-      let deltaTime = frameDuration
-      if (this.extraTime != 0) {
-        deltaTime += this.extraTime
-        this.extraTime = 0
-      }
-      this.totalTime += deltaTime
-
-      this.advanceFrame(deltaTime)
-      this.onFrameEnd?.()
+      this.advanceFixedFrame(frameDuration)
 
       const dataUrl = this.captureFrame()
       if (!dataUrl) throw new Error(`Failed to capture frame at index ${i}`)
@@ -860,10 +861,28 @@ export class HedronEngine {
 
     // Restore original size after rendering
     if (originalSize) {
-      this.resizeRenderer(originalSize.width, originalSize.height)
+      this.resizeRenderer(originalSize.width, originalSize.height, originalSize.pixelRatio)
     }
 
     this.paused = false
+  }
+
+  /**
+   * Advances (updates and renders) one frame by a fixed duration in seconds, outside the real-time loop.
+   * Pause the engine first, or the real-time loop will keep advancing frames too.
+   */
+  public advanceFixedFrame(frameDuration: number) {
+    this.onFrameStart?.()
+
+    let deltaTime = frameDuration
+    if (this.extraTime != 0) {
+      deltaTime += this.extraTime
+      this.extraTime = 0
+    }
+    this.totalTime += deltaTime
+
+    this.advanceFrame(deltaTime)
+    this.onFrameEnd?.()
   }
 
   /**

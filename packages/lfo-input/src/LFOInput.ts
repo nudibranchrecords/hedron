@@ -1,6 +1,7 @@
 import {
   ConfigToOptionsType,
   EngineState,
+  EngineStore,
   getNextEnumValue,
   handleEachInput,
   HedronEngine,
@@ -8,7 +9,9 @@ import {
   IPlugin,
   ParamValue,
   ParamNode,
+  ShotNode,
 } from '@hedron-gl/engine'
+import { getNodeOptionNodes, getNodeOptionNodesValues } from '@hedron-gl/ui-core'
 
 const TAU = Math.PI * 2
 const lerp = (v0: number, v1: number, t: number) => (1 - t) * v0 + t * v1
@@ -35,13 +38,13 @@ export class LFOInput implements IPlugin {
       key: 'isEnabled',
       nodeType: 'param',
       valueType: 'boolean',
-      defaultValue: true,
+      defaultValue: false,
     },
     {
       key: 'frequency',
       nodeType: 'param',
       valueType: 'enum',
-      defaultValue: 1,
+      defaultValue: 1 / 4,
       options: [
         {
           value: 32,
@@ -93,7 +96,7 @@ export class LFOInput implements IPlugin {
       key: 'waveType',
       nodeType: 'param',
       valueType: 'enum',
-      defaultValue: 'sine',
+      defaultValue: 'sawtooth',
       options: [
         { value: 'sine', label: 'Sine' },
         { value: 'square', label: 'Square' },
@@ -130,6 +133,10 @@ export class LFOInput implements IPlugin {
   private inputLatches: Record<string, boolean> = {}
 
   private lastClockBeatDelta: number = -1
+
+  private clock: NonNullable<HedronEngine['clock']>
+
+  private store: EngineStore
 
   private handleShot: ShotHandler = ({ delta, input, engine }) => {
     const val = Math.sin(delta)
@@ -180,6 +187,29 @@ export class LFOInput implements IPlugin {
     return null
   }
 
+  // Seed min/max and their slider ranges from the target param slider range
+  onNewInput = (engine: HedronEngine, newInput: InputNode, targetNode: ParamNode | ShotNode) => {
+    const state = engine.getStore().getState()
+
+    const { sliderMin: paramSliderMinVal, sliderMax: paramSliderMaxVal } = getNodeOptionNodesValues(
+      state,
+      targetNode.id,
+    )
+
+    const { min, max } = getNodeOptionNodes(state, newInput.id)
+    if (min) state.updateParamValue(min.id, paramSliderMinVal!)
+    if (max) state.updateParamValue(max.id, paramSliderMaxVal!)
+
+    for (const node of [min, max]) {
+      if (!node) continue
+
+      const { sliderMin, sliderMax } = getNodeOptionNodes(state, node.id)
+
+      state.updateParamValue(sliderMin!.id, paramSliderMinVal!)
+      state.updateParamValue(sliderMax!.id, paramSliderMaxVal!)
+    }
+  }
+
   constructor(engine: HedronEngine) {
     const clock = engine.clock
 
@@ -187,64 +217,65 @@ export class LFOInput implements IPlugin {
       throw new Error('Clock plugin is required for LFOInput to function.')
     }
 
-    const store = engine.getStore()
+    this.clock = clock
+    this.store = engine.getStore()
+  }
 
-    const tick = () => {
-      requestAnimationFrame(() => {
-        if (clock.beatDelta === this.lastClockBeatDelta) {
-          tick()
+  /**
+   * Called once per engine frame (via HedronEngine.advanceFrame), for both real-time playback and
+   * fixed-framerate rendering. Skips work if the clock hasn't advanced (e.g. it isn't running).
+   */
+  update(engine: HedronEngine) {
+    const clock = this.clock
+
+    if (clock.beatDelta === this.lastClockBeatDelta) {
+      return
+    }
+
+    this.lastClockBeatDelta = clock.beatDelta
+
+    const storeState = this.store.getState()
+    handleEachInput<typeof this.optionNodesConfig>(
+      storeState,
+      this.inputType,
+      ({ input, optionNodes, targetNode }) => {
+        const delta = (clock.beatDelta * optionNodes.frequency + optionNodes.phase) * TAU
+
+        // TODO: This can be handled by `onInput` once we have `isEnabled` as a generic option
+        if (!optionNodes.isEnabled) return
+
+        if (targetNode.nodeType === 'shot') {
+          this.handleShot({
+            delta,
+            input,
+            engine,
+          })
           return
         }
 
-        this.lastClockBeatDelta = clock.beatDelta
-
-        const storeState = store.getState()
-        handleEachInput<typeof this.optionNodesConfig>(
+        const value = {
+          enum: this.handleEnum,
+          boolean: this.handleBoolean,
+          number: this.handleNumber,
+          string: this.handleUnsupported,
+          rgb: this.handleUnsupported,
+          vector2: this.handleUnsupported,
+          vector3: this.handleUnsupported,
+          file: this.handleUnsupported,
+        }[targetNode.valueType]({
+          delta,
+          input,
           storeState,
-          this.inputType,
-          ({ input, optionNodes, targetNode }) => {
-            const delta = (clock.beatDelta * optionNodes.frequency + optionNodes.phase) * TAU
+          optionNodes,
+          targetNode,
+        })
 
-            // TODO: This can be handled by `onInput` once we have `isEnabled` as a generic option
-            if (!optionNodes.isEnabled) return
+        if (value === null) {
+          return
+        }
 
-            if (targetNode.nodeType === 'shot') {
-              this.handleShot({
-                delta,
-                input,
-                engine,
-              })
-              return
-            }
-
-            const value = {
-              enum: this.handleEnum,
-              boolean: this.handleBoolean,
-              number: this.handleNumber,
-              string: this.handleUnsupported,
-              rgb: this.handleUnsupported,
-              vector2: this.handleUnsupported,
-              vector3: this.handleUnsupported,
-              file: this.handleUnsupported,
-            }[targetNode.valueType]({
-              delta,
-              input,
-              storeState,
-              optionNodes,
-              targetNode,
-            })
-
-            if (value === null) {
-              return
-            }
-
-            storeState.updateParamValue(input.targetNodeId, value)
-          },
-        )
-
-        tick()
-      })
-    }
-    tick()
+        storeState.updateParamValue(input.targetNodeId, value)
+      },
+    )
   }
 }
