@@ -27,7 +27,7 @@ export const CurrentScene = () => {
     selectedSceneId ? state.nodes[selectedSceneId] : undefined,
   )
 
-  // Sync here too, as the Scenes panel only does so while expanded
+  // make this the active scene upon mount (might want this to be user-optional in future)
   useEffect(() => {
     updateParamValue(ACTIVE_SCENE_ID_NODE_ID, selectedSceneId ?? '')
   }, [selectedSceneId, updateParamValue])
