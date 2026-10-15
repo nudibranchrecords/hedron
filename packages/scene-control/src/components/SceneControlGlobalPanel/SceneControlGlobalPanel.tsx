@@ -10,14 +10,11 @@ import {
   useEngineStore,
   useEngineStoreShallow,
 } from '@hedron-gl/ui-core'
-import { useEffect } from 'react'
 
 import c from './SceneControlGlobalPanel.module.css'
 
 export const SceneControlGlobalPanel = () => {
   const addScene = useEngineStore((state) => state.addScene)
-
-  const updateParamValue = useEngineStore((state) => state.updateParamValue)
 
   const selectedSceneId = useAppStore((state) => state.selectedSceneId)
   const setSelectedSceneId = useAppStore((state) => state.setSelectedSceneId)
@@ -32,10 +29,6 @@ export const SceneControlGlobalPanel = () => {
     const newSceneId = addScene()
     setSelectedSceneId(newSceneId)
   }
-
-  useEffect(() => {
-    updateParamValue(ACTIVE_SCENE_ID_NODE_ID, selectedSceneId ?? '')
-  }, [selectedSceneId, updateParamValue])
 
   return (
     <div className={c.wrapper}>

@@ -107,6 +107,30 @@ export function lerp(v0: number, v1: number, t: number) {
 }
 
 /**
+ * Loudest absolute sample across every channel of a decoded buffer.
+ * 0 = silence, 1 = full scale, can exceed 1 for hot/clipped source material.
+ */
+export function computePeakAmplitude(audioBuffer: AudioBuffer): number {
+  let peak = 0
+  for (let channel = 0; channel < audioBuffer.numberOfChannels; channel++) {
+    const data = audioBuffer.getChannelData(channel)
+    for (let i = 0; i < data.length; i++) {
+      const abs = Math.abs(data[i])
+      if (abs > peak) peak = abs
+    }
+  }
+  return peak
+}
+
+/**
+ * Linear gain that brings `peak` up to `targetPeak`.
+ * 1 (no-op) for silence, so an empty buffer isn't blown up to noise.
+ */
+export function gainForPeak(peak: number, targetPeak: number): number {
+  return peak > 0 ? targetPeak / peak : 1
+}
+
+/**
  * Standard bell curve (Gaussian) function for band-pass filtering
  * @param x Input value (frequency)
  * @param center Center frequency
