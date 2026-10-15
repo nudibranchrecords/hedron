@@ -1,4 +1,4 @@
-import { EngineState, ParamNode, ShotNode } from '@hedron-gl/engine'
+import { EngineState, ParamNode, ParamValues, ShotNode } from '@hedron-gl/engine'
 import { useShallow } from 'zustand/react/shallow'
 import { useEngineStore } from '@hooks/engineHooks'
 
@@ -21,6 +21,21 @@ export const getNodeOptionNodes = <OptionNodes extends Record<string, ParamNode 
   })
 
   return optionNodes as OptionNodes
+}
+
+export const getNodeOptionNodesValues = <OptionNodes extends Record<string, ParamNode | undefined>>(
+  state: Pick<EngineState, 'nodes' | 'paramValues'>,
+  parentId: string,
+): ParamValues => {
+  const optionNodes = getNodeOptionNodes<OptionNodes>(state, parentId)
+  const values: ParamValues = {}
+  for (const key in optionNodes) {
+    const node = optionNodes[key]
+    if (node) {
+      values[key] = state.paramValues[node.id]
+    }
+  }
+  return values
 }
 
 /** Returns option nodes for a given parent node ID, as a key pair object based on each option node's key property */
