@@ -9,6 +9,8 @@ import {
   ParamNode,
   ParamEnum,
   EngineStateWithActions,
+  ShotNode,
+  getTypedOverrideConfig,
 } from '@hedron-gl/engine'
 
 import { MIDIEvent, MidiManager, MidiMessageType } from '@hedron-gl/midi-manager'
@@ -25,11 +27,15 @@ import { doesMidiEventMatchInput, getMidiInputTypeFromEvent } from './utils'
 
 type MIDIEventWithValue = Omit<MIDIEvent, 'value'> & { value: number }
 
+type MidiOptionNodes = ConfigToOptionsType<typeof MidiInput.prototype.optionNodesConfig> & {
+  overrideTargetValue?: ParamValue
+}
+
 type ValueHander<T = ParamNode> = (params: {
   midiEvent: MIDIEventWithValue
   input: InputNode
   storeState: EngineStateWithActions
-  optionNodes: ConfigToOptionsType<typeof MidiInput.prototype.optionNodesConfig>
+  optionNodes: MidiOptionNodes
   targetNode: T
   targetParamValue: ParamValue
 }) => ParamValue | null
@@ -124,10 +130,11 @@ export class MidiInput implements IPlugin {
     engine.fireShot(input.targetNodeId, { _midiEvent: midiEvent })
   }
 
-  private getValue(
-    optionNodes: ConfigToOptionsType<typeof MidiInput.prototype.optionNodesConfig>,
-    midiEvent: MIDIEventWithValue,
-  ) {
+  private getTypedOverride(optionNodes: MidiOptionNodes) {
+    return optionNodes.override ? optionNodes.overrideTargetValue : undefined
+  }
+
+  private getValue(optionNodes: MidiOptionNodes, midiEvent: MIDIEventWithValue) {
     const value =
       !optionNodes.override || optionNodes.overrideValue < 0
         ? midiEvent.value
@@ -142,6 +149,9 @@ export class MidiInput implements IPlugin {
     optionNodes,
     targetNode,
   }) => {
+    const override = this.getTypedOverride(optionNodes)
+    if (override !== undefined) return override
+
     switch (midiEvent.type) {
       case MidiMessageType.NoteOn:
       case MidiMessageType.NoteOff:
@@ -154,6 +164,9 @@ export class MidiInput implements IPlugin {
   }
 
   private handleBoolean: ValueHander = ({ midiEvent, optionNodes, targetParamValue }) => {
+    const override = this.getTypedOverride(optionNodes)
+    if (override !== undefined) return override
+
     switch (midiEvent.type) {
       case MidiMessageType.NoteOn:
       case MidiMessageType.NoteOff:
@@ -206,6 +219,10 @@ export class MidiInput implements IPlugin {
     return null
   }
 
+  private handleString: ValueHander = (params) => {
+    return this.getTypedOverride(params.optionNodes) ?? this.handleUnsupported(params)
+  }
+
   private handleUnsupported: ValueHander = ({ input, targetNode, midiEvent }) => {
     console.warn(
       `MIDI Input: Unsupported value type for node ${input.targetNodeId}. Value: ${midiEvent.value}, Type: ${targetNode.valueType}`,
@@ -235,8 +252,14 @@ export class MidiInput implements IPlugin {
   }
 
   // Runs once at creation, not on every panel mount, unlike a value-inferred "is new" check.
-  onNewInput = (engine: HedronEngine, newInput: InputNode) => {
+  onNewInput = (engine: HedronEngine, newInput: InputNode, targetNode: ParamNode | ShotNode) => {
     const store = engine.getStore()
+
+    if (targetNode.nodeType === 'param') {
+      const value = store.getState().paramValues[targetNode.id]
+      const overrideConfig = getTypedOverrideConfig(targetNode, value)
+      if (overrideConfig) engine.addOptionNodes(newInput.id, [overrideConfig])
+    }
 
     const autoLearnEnabled = Boolean(
       store.getState().paramValues[`${this.id}-global-autoMidiLearn`],
@@ -305,7 +328,7 @@ export class MidiInput implements IPlugin {
             enum: this.handleEnum,
             boolean: this.handleBoolean,
             number: this.handleNumber,
-            string: this.handleUnsupported,
+            string: this.handleString,
             rgb: this.handleUnsupported,
             vector2: this.handleUnsupported,
             vector3: this.handleUnsupported,

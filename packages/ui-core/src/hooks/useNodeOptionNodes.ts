@@ -1,4 +1,4 @@
-import { EngineState, ParamNode } from '@hedron-gl/engine'
+import { EngineState, ParamNode, ParamValues, ShotNode } from '@hedron-gl/engine'
 import { useShallow } from 'zustand/react/shallow'
 import { useEngineStore } from '@hooks/engineHooks'
 
@@ -23,8 +23,44 @@ export const getNodeOptionNodes = <OptionNodes extends Record<string, ParamNode 
   return optionNodes as OptionNodes
 }
 
-/** Returns option nodes for a given parent node ID, as a key pair object based on each option node's key property */
-export const useNodeOptionNodes = <OptionNodes extends Record<string, ParamNode | undefined>>(
+export const getNodeOptionNodesValues = <OptionNodes extends Record<string, ParamNode | undefined>>(
+  state: Pick<EngineState, 'nodes' | 'paramValues'>,
   parentId: string,
-): OptionNodes =>
-  useEngineStore(useShallow((state) => getNodeOptionNodes<OptionNodes>(state, parentId)))
+): ParamValues => {
+  const optionNodes = getNodeOptionNodes<OptionNodes>(state, parentId)
+  const values: ParamValues = {}
+  for (const key in optionNodes) {
+    const node = optionNodes[key]
+    if (node) {
+      values[key] = state.paramValues[node.id]
+    }
+  }
+  return values
+}
+
+/** Returns option nodes for a given parent node ID, as a key pair object based on each option node's key property */
+export const useNodeOptionNodes = <
+  OptionNodes extends Record<string, ParamNode | ShotNode | undefined>,
+>(
+  parentId: string,
+): OptionNodes => {
+  return useEngineStore(
+    useShallow((state) => {
+      const optionNodes: Record<string, ParamNode | ShotNode | undefined> = {}
+      const parentNode = state.nodes[parentId]
+      const optionNodeIds = parentNode?.childGroups.optionNodeIds || []
+      optionNodeIds.forEach((id) => {
+        const node = state.nodes[id] as ParamNode | ShotNode | null
+
+        if (node?.nodeType !== 'param' && node?.nodeType !== 'shot') {
+          console.warn(`useNodeOptionNodes: node "${id}" doesn't exist or is not a param/shot node`)
+          return
+        }
+
+        optionNodes[node.key] = node
+      })
+
+      return optionNodes as OptionNodes
+    }),
+  )
+}

@@ -1,5 +1,5 @@
 import { useCallback, useState, useEffect, useMemo } from 'react'
-import { HedronEngine, InputNode, ParamNode } from '@hedron-gl/engine'
+import { HedronEngine, InputNode, ParamNode, TYPED_OVERRIDE_KEY } from '@hedron-gl/engine'
 import { MidiManager } from '@hedron-gl/midi-manager'
 import {
   Button,
@@ -69,7 +69,8 @@ export const MidiInputPanel = ({ input, engine }: IProps) => {
   const filteredNodes = useMemo(() => {
     return Object.values(optionNodes).filter((node) => {
       if (!node || !('key' in node)) return false
-      if (node.key === 'overrideValue') return overrideEnabled
+      if (node.key === TYPED_OVERRIDE_KEY) return overrideEnabled
+      if (node.key === 'overrideValue') return overrideEnabled && !optionNodes[TYPED_OVERRIDE_KEY]
       if (node.key === 'noteMode') return isNoteType
       return true
     }) as ParamNode[]

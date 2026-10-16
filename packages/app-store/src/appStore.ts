@@ -54,6 +54,8 @@ export interface AppState {
   globalDialogId: DialogId | null
   currentSavePath: string | null
   saveList: SaveItem[]
+  lastSketchesDir: string | null
+  lastProjectPath: string | null
   sketchesServerBuildResult: BuildResult | null
   setSelectedNode: (sketchID: string, nodeId: string | null) => void
   setSelectedInput: (nodeId: string, inputId: string | null) => void
@@ -107,6 +109,8 @@ export const createAppStore = () =>
             selectedTimelineTrackId: null,
             openedControlGroups: {},
             saveList: [],
+            lastSketchesDir: null,
+            lastProjectPath: null,
             sketchesServerBuildResult: null,
             setSelectedSketch: (sceneId: string, sketchId: string | null) => {
               set((state) => {
@@ -245,7 +249,11 @@ export const createAppStore = () =>
       ),
       {
         name: 'app-storage',
-        partialize: (state) => ({ saveList: state.saveList }),
+        partialize: (state) => ({
+          saveList: state.saveList,
+          lastSketchesDir: state.lastSketchesDir,
+          lastProjectPath: state.lastProjectPath,
+        }),
       },
     ),
   )
