@@ -1,4 +1,4 @@
-import { VideoRenderCallbacks } from '@hedron-gl/video-render'
+import { type VideoRenderCallbacks } from '@hedron-gl/video-render'
 import { DialogEvents, OpenOutputDirResponse } from '@shared/Events'
 import { FrameEvents, SaveFrameResponse, SaveFrameSequenceResponse } from '@shared/FrameEvents'
 
