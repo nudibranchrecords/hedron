@@ -558,7 +558,6 @@ export const Interactive = () => {
         ref={timelineRef}
         durationMs={timeline.durationMs}
         tracks={timeline.tracks}
-        playheadPositionMs={playheadPositionMs}
         activeTimelineComponentId={activeTimelineComponentId}
         selectedTrackId={selectedTrackId}
         setSelectedTrackId={setSelectedTrackId}

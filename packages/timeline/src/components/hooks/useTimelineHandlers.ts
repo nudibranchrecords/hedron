@@ -113,7 +113,6 @@ export const useTimelineHandlers = ({ engine, manager }: UseTimelineHandlersPara
   )
 
   const handlePlayPauseToggle = useCallback(() => {
-    console.log(isPlaying)
     engine.setParamValue(isPlayingNodeId, !isPlaying)
   }, [engine, isPlayingNodeId, isPlaying])
 
