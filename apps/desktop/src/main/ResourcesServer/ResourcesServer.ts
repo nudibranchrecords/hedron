@@ -53,7 +53,7 @@ export class ResourcesServer extends EventEmitter {
       res.setHeader('Access-Control-Allow-Origin', '*')
       res.setHeader('Cache-Control', 'no-cache')
 
-      send(req, fileName, {
+      send(req, encodeURIComponent(fileName), {
         root: dirPath,
         cacheControl: false,
       })
