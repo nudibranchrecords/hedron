@@ -96,8 +96,6 @@ export class TimelineInput implements IPlugin {
       const timelineDurationS = engine.getNodeOptionNode(timelineId, 'timelineDurationS')
       const playHeadPositionNode = engine.getNodeOptionNode(timelineId, 'playheadPositionMs')
 
-      let isFirstUpdate = true
-
       // Registered before the tracks subscription builds the audio element, so it gets reported.
       manager.onAudioElementChange((element) => {
         this.audioElementChangeCallback?.(element)
@@ -140,19 +138,12 @@ export class TimelineInput implements IPlugin {
         this.setDurationFromAudioUrl(engine, timelineDurationS.id, url)
       })
 
+      // set the playhead position to the current value from the engine
+      const playHeadPositionMs = engine.getParamValue(playHeadPositionNode.id) as number
+      manager.goTo(playHeadPositionMs)
+
       manager.onUpdate((changed) => {
-        if (isFirstUpdate) {
-          isFirstUpdate = false
-
-          // On the first update, set the playhead position to the current value from the engine
-          const playHeadPositionMs = engine.getParamValue(playHeadPositionNode.id) as number
-          manager.goTo(playHeadPositionMs)
-
-          return
-        } else {
-          // On subsequent updates, propagate the playhead position from the manager to the engine
-          engine.setParamValue(playHeadPositionNode.id, manager.getPositionMs())
-        }
+        engine.setParamValue(playHeadPositionNode.id, manager.getPositionMs())
 
         const changedTrackIds = Object.keys(changed)
         if (changedTrackIds.length > 0) {
