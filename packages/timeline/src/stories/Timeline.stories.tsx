@@ -19,7 +19,7 @@ import '@hedron-gl/ui-core/icons.css'
 import '@hedron-gl/ui-core/base.css'
 import '@hedron-gl/ui-core/fonts.css'
 
-const meta = {
+const meta: Meta<typeof Timeline> = {
   title: 'Timeline',
   component: Timeline,
   parameters: {
@@ -32,7 +32,7 @@ const meta = {
       </div>
     ),
   ],
-} satisfies Meta<typeof Timeline>
+}
 
 export default meta
 type Story = StoryObj<typeof meta>
@@ -45,6 +45,7 @@ const NOOP_ON_PLAYHEAD_CHANGE: (time: number) => void = () => {}
 const NOOP_ON_KEYFRAME_DELETE: (keyframeId: string) => void = () => {}
 const NOOP_ON_KEYFRAME_INSERT: (trackId: string, time: number) => void = () => {}
 const NOOP_ON_KEYFRAME_MOVE: (keyframeId: string, time: number) => void = () => {}
+const NOOP_ON_PLAY_PAUSE_TOGGLE = () => {}
 
 const createInsertedKeyframe = (time: number, lastKeyframe?: KeyframeParam): KeyframeParam => {
   if (!lastKeyframe) {
@@ -111,6 +112,7 @@ const baseTimelineArgs = {
   onKeyframeDelete: NOOP_ON_KEYFRAME_DELETE,
   onKeyframeInsert: NOOP_ON_KEYFRAME_INSERT,
   onKeyframeMove: NOOP_ON_KEYFRAME_MOVE,
+  onPlayPauseToggle: NOOP_ON_PLAY_PAUSE_TOGGLE,
 }
 
 export const Default: Story = {
@@ -139,7 +141,7 @@ export const WithKeyframes: Story = {
         ],
       },
     ],
-    playheadPositionMs: 3500,
+    playheadPositionMs: 3000,
   },
 }
 
@@ -180,9 +182,152 @@ export const WithVectorTrack: Story = {
   },
 }
 
+export const WithSketchGroups: Story = {
+  args: {
+    ...baseTimelineArgs,
+    durationMs: 10000,
+    tracks: [
+      {
+        id: 'sketch-group-sketch-a',
+        label: 'Solid',
+        trackType: 'sketch',
+        childTracks: [
+          {
+            id: 'track-solid-visible',
+            label: 'Visible',
+            trackType: 'keyframe',
+            keyframes: [
+              { id: 'kf-sv-1', time: 1000, valueType: 'boolean', value: true, nodeType: 'param' },
+              { id: 'kf-sv-2', time: 6000, valueType: 'boolean', value: false, nodeType: 'param' },
+            ],
+          },
+          {
+            id: 'track-solid-pos',
+            label: 'Position',
+            trackType: 'vector',
+            childTracks: [
+              {
+                id: 'track-solid-pos-x',
+                label: 'X',
+                trackType: 'keyframe',
+                keyframes: [
+                  { id: 'kf-spx-1', time: 1000, valueType: 'number', value: 0, nodeType: 'param' },
+                  {
+                    id: 'kf-spx-2',
+                    time: 4000,
+                    valueType: 'number',
+                    value: 0.6,
+                    nodeType: 'param',
+                  },
+                ],
+              },
+              {
+                id: 'track-solid-pos-y',
+                label: 'Y',
+                trackType: 'keyframe',
+                keyframes: [
+                  {
+                    id: 'kf-spy-1',
+                    time: 2500,
+                    valueType: 'number',
+                    value: -0.4,
+                    nodeType: 'param',
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      },
+      {
+        id: 'sketch-group-sketch-b',
+        label: 'Stars',
+        trackType: 'sketch',
+        childTracks: [
+          {
+            id: 'track-stars-count',
+            label: 'Count',
+            trackType: 'keyframe',
+            keyframes: [
+              { id: 'kf-sc-1', time: 3000, valueType: 'number', value: 100, nodeType: 'param' },
+              { id: 'kf-sc-2', time: 8000, valueType: 'number', value: 400, nodeType: 'param' },
+            ],
+          },
+        ],
+      },
+    ],
+    playheadPositionMs: 3000,
+  },
+}
+
+const createManyTracks = (sketchCount: number): TimelineManagerTrack[] =>
+  Array.from({ length: sketchCount }, (_, sketchIndex) => ({
+    id: `sketch-${sketchIndex}`,
+    label: `Sketch ${sketchIndex + 1}`,
+    trackType: 'sketch',
+    childTracks: [
+      {
+        id: `sketch-${sketchIndex}-visible`,
+        label: 'Visible',
+        trackType: 'keyframe',
+        keyframes: [
+          {
+            id: `kf-${sketchIndex}-v1`,
+            time: 500 + sketchIndex * 300,
+            valueType: 'boolean',
+            value: true,
+            nodeType: 'param',
+          },
+          {
+            id: `kf-${sketchIndex}-v2`,
+            time: 6000 + sketchIndex * 200,
+            valueType: 'boolean',
+            value: false,
+            nodeType: 'param',
+          },
+        ],
+      },
+      {
+        id: `sketch-${sketchIndex}-pos`,
+        label: 'Position',
+        trackType: 'vector',
+        childTracks: (['X', 'Y', 'Z'] as const).map((axis, axisIndex) => ({
+          id: `sketch-${sketchIndex}-pos-${axis}`,
+          label: axis,
+          trackType: 'keyframe' as const,
+          keyframes: [
+            {
+              id: `kf-${sketchIndex}-p${axis}1`,
+              time: 1000 + axisIndex * 700,
+              valueType: 'number' as const,
+              value: 0,
+              nodeType: 'param' as const,
+            },
+            {
+              id: `kf-${sketchIndex}-p${axis}2`,
+              time: 4000 + sketchIndex * 250,
+              valueType: 'number' as const,
+              value: 0.5,
+              nodeType: 'param' as const,
+            },
+          ],
+        })),
+      },
+    ],
+  }))
+
+export const ManyTracksScrollable: Story = {
+  args: {
+    ...baseTimelineArgs,
+    durationMs: 10000,
+    tracks: createManyTracks(10),
+    playheadPositionMs: 2500,
+    style: { height: '300px' },
+  },
+}
+
 export const Interactive = () => {
   const TIMELINE_DURATION = 60000 * 3
-  const [playheadPositionMs, setPlayheadPositionMs] = useState(0)
   const [playing, setPlaying] = useState(false)
   const [selectedTrackId, setSelectedTrackId] = useState<string | null>(null)
   const [pxPerSecond, setPxPerSecond] = useState(80)
@@ -300,7 +445,7 @@ export const Interactive = () => {
 
     manager.onUpdate((changed) => {
       setTrackValues((prev) => ({ ...prev, ...changed }))
-      setPlayheadPositionMs(manager.getPositionMs())
+      timelineRef.current?.setPlayheadPositionMs(manager.getPositionMs())
     })
 
     return () => manager.dispose()
@@ -323,7 +468,6 @@ export const Interactive = () => {
 
   const handlePlayheadChange = useCallback((time: number) => {
     managerRef.current?.goTo(time)
-    setPlayheadPositionMs(time)
     setPlaying(false)
     managerRef.current?.pause()
   }, [])
@@ -361,7 +505,7 @@ export const Interactive = () => {
         return [track]
       }
 
-      if (track.trackType === 'vector') {
+      if (track.trackType === 'vector' || track.trackType === 'sketch') {
         return getKeyframeTracks(track.childTracks)
       }
 
@@ -412,7 +556,6 @@ export const Interactive = () => {
         ref={timelineRef}
         durationMs={timeline.durationMs}
         tracks={timeline.tracks}
-        playheadPositionMs={playheadPositionMs}
         activeTimelineComponentId={activeTimelineComponentId}
         selectedTrackId={selectedTrackId}
         setSelectedTrackId={setSelectedTrackId}
@@ -423,6 +566,7 @@ export const Interactive = () => {
         onKeyframeDelete={handleKeyframeDelete}
         onKeyframeInsert={handleKeyframeInsert}
         onKeyframeMove={handleKeyframeMove}
+        onPlayPauseToggle={handlePlayPause}
       />
       <div style={{ marginTop: '12px', fontFamily: 'monospace', fontSize: '12px', color: '#ccc' }}>
         <div style={{ marginBottom: '4px', color: '#888' }}>Track Values:</div>

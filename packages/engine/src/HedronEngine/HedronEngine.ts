@@ -9,7 +9,10 @@ import { getSketchSceneId } from '@store/selectors/getSketchSceneId'
 import { addResource, removeResource } from '@store/actions/resources'
 import { createUniqueId } from '@utils/createUniqueId'
 import { ensureNodeConfig } from '@store/shared/ensureConfig'
-import { flushParamValueBuffer } from '@store/actionCreators/updateParamValue'
+import {
+  flushParamValueBuffer,
+  getLastParamValueOrigin,
+} from '@store/actionCreators/updateParamValue'
 import { getSketchShotNodes } from '@store/selectors/getSketchShotNodes'
 import { initializeGlobalVars } from '@globalVars'
 import { IPlugin } from '@plugins/Plugin'
@@ -31,6 +34,7 @@ import {
   Resources,
   InputNode,
   isParamVector,
+  ParamValueOrigin,
 } from '@store/types'
 import { getSketchesOfModuleId } from '@store/selectors/getSketchesOfModuleId'
 import { getAllSceneSketches, getSceneSketchIds } from '@store/selectors/getSceneSketches'
@@ -258,9 +262,7 @@ export class HedronEngine {
    * @returns The param value for the node (or an array of values if the node is a vector param), or undefined if the node does not exist or is not a param node
    */
   public getParamValue(nodeId: string): ParamValue | ParamValue[] | undefined {
-    return getParamValue(this.store.getState(), nodeId, {
-      resourcesUrl: this.store.getState().resourcesUrl,
-    })
+    return getParamValue(this.store.getState(), nodeId)
   }
 
   public getNodeOptionNode(nodeId: string, optionKey: string): ParamNode | ShotNode {
@@ -293,8 +295,13 @@ export class HedronEngine {
    * Sets the value of a parameter node, updating multiple nodes if the type is a vector.
    * @param nodeId The ID of the parameter node to set the value for.
    * @param value The value to set for the parameter node. If the node is a vector parameter, this should be an array of values for each component.
+   * @param options Set `origin: 'user'` for direct user edits, so listeners can tell them apart from automation.
    * */
-  public setParamValue(nodeId: string | undefined, value: ParamValue | ParamValue[]): void {
+  public setParamValue(
+    nodeId: string | undefined,
+    value: ParamValue | ParamValue[],
+    options: { origin?: ParamValueOrigin } = {},
+  ): void {
     if (!nodeId) {
       console.error('setParamValue: nodeId is undefined')
       return
@@ -325,7 +332,7 @@ export class HedronEngine {
       }
 
       componentIds.forEach((componentId, index) => {
-        state.updateParamValue(componentId, value[index])
+        state.updateParamValue(componentId, value[index], options.origin)
       })
       return
     }
@@ -335,13 +342,22 @@ export class HedronEngine {
       return
     }
 
-    state.updateParamValue(nodeId, value)
+    state.updateParamValue(nodeId, value, options.origin)
   }
 
-  public setMultipleParamValues(nodeIds: string[], values: (ParamValue | ParamValue[])[]): void {
+  public setMultipleParamValues(
+    nodeIds: string[],
+    values: (ParamValue | ParamValue[])[],
+    options: { origin?: ParamValueOrigin } = {},
+  ): void {
     nodeIds.forEach((nodeId, index) => {
-      this.setParamValue(nodeId, values[index])
+      this.setParamValue(nodeId, values[index], options)
     })
+  }
+
+  /** Origin of the most recently flushed value for a param, e.g. to ignore automation-driven changes. */
+  public getLastParamValueOrigin(nodeId: string): ParamValueOrigin | undefined {
+    return getLastParamValueOrigin(nodeId)
   }
 
   public addInput(inputType: string, targetNodeId: string): InputNode | undefined {
@@ -414,9 +430,7 @@ export class HedronEngine {
     shotNodes.forEach((shotNode) => {
       this.registerShot(shotNode.id, (shotArgs) => {
         const state = this.store.getState()
-        const params = getSketchParamValues(state, sketchId, {
-          resourcesUrl: state.resourcesUrl,
-        })
+        const params = getSketchParamValues(state, sketchId)
         const sceneId = getSketchSceneId(state, sketchId)
         if (!sceneId) {
           return
@@ -581,10 +595,13 @@ export class HedronEngine {
   public subscribeToParamValue<T extends ParamValue>(
     nodeId: string,
     callback: (value: T | undefined) => void,
+    options: { fireImmediately?: boolean } = { fireImmediately: true },
   ) {
-    return this.store.subscribe((state) => state.paramValues[nodeId] as T | undefined, callback, {
-      fireImmediately: true,
-    })
+    return this.store.subscribe(
+      (state) => state.paramValues[nodeId] as T | undefined,
+      callback,
+      options,
+    )
   }
 
   /**
@@ -718,9 +735,7 @@ export class HedronEngine {
     const state = this.store.getState()
 
     getSceneSketchIds(state, activeSceneId).forEach((sketchId) => {
-      const paramValues = getSketchParamValues(state, sketchId, {
-        resourcesUrl: state.resourcesUrl,
-      })
+      const paramValues = getSketchParamValues(state, sketchId)
       const instance = sketchInstances.get(sketchId)
       if (instance?.getPasses) {
         try {

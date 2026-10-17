@@ -6,12 +6,19 @@
   border-radius: 4px;
   overflow: hidden;
   user-select: none;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
 
   --playheadColor: var(--actionColor1);
   --keyframeColor: white;
+  --alignedKeyframeColor: #ffd84d;
   --unselectedColor: #999;
   --hoverColor: white;
   --selectedColor: white;
+  --groupColor: #111;
+
+  --trackHeaderWidth: 140px;
 }
 
 .header {
@@ -22,28 +29,68 @@
   background: #222;
   border-bottom: 1px solid #444;
   font-size: 11px;
+  flex-shrink: 0;
 }
 
 .body {
+  flex: 0 1 auto;
+  min-height: 0;
+  width: 100%;
+  overflow: auto;
+}
+
+/* Separate from the scroll container so absolute children span the full scroll height */
+.grid {
   display: grid;
   grid-template-columns:
     var(--trackHeaderWidth)
     max(calc(100% - var(--trackHeaderWidth)), var(--trackAreaWidth, 0px));
   grid-auto-rows: auto;
-  width: 100%;
-  height: 100%;
   position: relative;
-  overflow-x: auto;
+}
 
-  --trackHeaderWidth: 100px;
+.rulerCorner {
+  grid-column: 1;
+  grid-row: 1;
+  position: sticky;
+  top: 0;
+  left: 0;
+  z-index: 5;
+  background: #1a1a1a;
+  border-bottom: 1px solid #333;
 }
 
 .ruler {
   grid-column: 2;
+  grid-row: 1;
   display: flex;
   height: 16px;
   border-bottom: 1px solid #333;
-  position: relative;
+  position: sticky;
+  top: 0;
+  z-index: 4;
+  background: #1a1a1a;
+}
+
+.rulerPlayhead {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: var(--playheadColor);
+  pointer-events: none;
+}
+
+.rulerPlayhead::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -4px;
+  width: 0;
+  height: 0;
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  border-top: 6px solid var(--playheadColor);
 }
 
 .track {
@@ -74,13 +121,11 @@
   overflow: hidden;
   text-overflow: ellipsis;
   height: 24px;
-  cursor: pointer;
   position: sticky;
   left: 0;
   z-index: 3;
   background: #1a1a1a;
-
-  gap: 0.1rem;
+  padding-left: calc(0.5rem + var(--depth) * 1rem);
 
   button {
     text-align: left;
@@ -89,17 +134,30 @@
 
 .trackTitle {
   flex: 1;
-  padding-left: calc(1.5rem + var(--depth) * 1rem);
 
   &:hover {
     color: var(--hoverColor);
   }
 }
 
+.trackSketchGroup {
+  background: var(--groupColor);
+
+  .trackHeader {
+    background: var(--groupColor);
+  }
+
+  .trackTitle {
+    cursor: default;
+    &:hover {
+      color: inherit;
+    }
+  }
+}
+
 .collapseIcon {
-  position: absolute;
-  left: 0;
-  padding: 0.5rem;
+  cursor: pointer;
+  padding: 0.25rem;
 
   &:hover {
     color: var(--hoverColor);
@@ -115,26 +173,10 @@
   position: absolute;
   top: 0;
   bottom: 0;
-  left: calc(
-    var(--trackHeaderWidth) + max(100% - var(--trackHeaderWidth), var(--trackAreaWidth, 0px)) *
-      var(--playheadPercent)
-  );
   width: 1px;
   background: var(--playheadColor);
   pointer-events: none;
-  z-index: 2;
-}
-
-.playhead::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -4px;
-  width: 0;
-  height: 0;
-  border-left: 4px solid transparent;
-  border-right: 4px solid transparent;
-  border-top: 6px solid var(--playheadColor);
+  z-index: 1;
 }
 
 .rulerMark {
@@ -145,12 +187,30 @@
   background: #333;
 }
 
+.selectionBox {
+  position: absolute;
+  border: 1px solid var(--playheadColor);
+  background: rgba(255, 255, 255, 0.1);
+  pointer-events: none;
+  z-index: 2;
+}
+
 .rulerLabel {
   position: absolute;
   top: 1px;
   font-size: 9px;
   color: #666;
   margin-left: 3px;
+}
+
+.keyframeLine {
+  position: absolute;
+  top: 50%;
+  height: 1px;
+  background: var(--keyframeColor);
+  opacity: 0.5;
+  pointer-events: none;
+  z-index: 1;
 }
 
 .keyframe {
@@ -163,11 +223,17 @@
   transform: translate(-50%, -50%) rotate(45deg);
   top: 50%;
   cursor: pointer;
-  z-index: 1;
+  z-index: 2;
   opacity: 0.8;
 
   &:hover {
     opacity: 1;
+  }
+
+  &.keyframeAligned {
+    --keyframeColor: var(--alignedKeyframeColor);
+    opacity: 1;
+    border-width: 2px;
   }
 
   &.keyframeSelected {

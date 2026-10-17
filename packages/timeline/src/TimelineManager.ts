@@ -54,7 +54,7 @@ export class TimelineManager {
 
     for (const track of tracks) {
       allTracks.push(track)
-      if (track.trackType === 'vector') {
+      if (track.trackType === 'vector' || track.trackType === 'sketch') {
         allTracks.push(...this.flattenTracks(track.childTracks))
       }
     }
@@ -69,6 +69,10 @@ export class TimelineManager {
     for (const track of this.flatTracks) {
       switch (track.trackType) {
         case 'audio':
+          if (!track.audioUrl) {
+            this.audioCache.delete(track.id)
+            continue
+          }
           if (this.audioCache.get(track.id)?.src !== track.audioUrl) {
             const audio = new Audio()
             // Cross-origin resources server - without this the element is tainted and can't

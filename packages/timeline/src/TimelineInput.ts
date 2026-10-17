@@ -15,8 +15,8 @@ import {
 import { DEFAULT_TIMELINE_ID, TIMELINE_DURATION } from './constants'
 import { TimelineManager, OnAudioElementChangeCallback } from './TimelineManager'
 import { getTimelineTracks } from './selectors/getTimelineTracks'
+import { getKeyframeTracks } from './utils/getKeyframeTracks'
 import { getResourceUrl } from './utils/getResourceUrl'
-import { TimelineManagerKeyframeTrack, TimelineManagerTrack } from './types'
 
 // defineOptionNodeConfigs is only needed if we want nice TS node name inference in other parts of the plugin
 export const TIMELINE_OPTION_NODE_CONFIGS = defineOptionNodeConfigs([
@@ -60,23 +60,6 @@ export const TIMELINE_OPTION_NODE_CONFIGS = defineOptionNodeConfigs([
 
 // We can use TimelineOptionNodes for strong typing when using useNodeOptionNodes
 export type TimelineOptionNodes = OptionNodesFromConfigs<typeof TIMELINE_OPTION_NODE_CONFIGS>
-
-const getKeyframeTracks = (tracks: TimelineManagerTrack[]): TimelineManagerKeyframeTrack[] => {
-  const keyframeTracks: TimelineManagerKeyframeTrack[] = []
-
-  for (const track of tracks) {
-    if (track.trackType === 'keyframe') {
-      keyframeTracks.push(track)
-      continue
-    }
-
-    if (track.trackType === 'vector') {
-      keyframeTracks.push(...getKeyframeTracks(track.childTracks))
-    }
-  }
-
-  return keyframeTracks
-}
 
 export class TimelineInput implements IPlugin {
   public readonly id = 'timeline-input'
@@ -154,6 +137,10 @@ export class TimelineInput implements IPlugin {
 
         this.setDurationFromAudioUrl(engine, timelineDurationS.id, url)
       })
+
+      // set the playhead position to the current value from the engine
+      const playHeadPositionMs = engine.getParamValue(playHeadPositionNode.id) as number
+      manager.goTo(playHeadPositionMs)
 
       manager.onUpdate((changed) => {
         engine.setParamValue(playHeadPositionNode.id, manager.getPositionMs())

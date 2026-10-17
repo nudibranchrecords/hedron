@@ -1,19 +1,16 @@
-import { useRef } from 'react'
+import { useState } from 'react'
 import { HedronEngine } from '@hedron-gl/engine'
-import {
-  NodeContainer,
-  useNodeOptionNodes,
-  useParamValue,
-  useAppStore,
-  ControlGrid,
-  useSubscribeToParamValue,
-} from '@hedron-gl/ui-core'
-import { useTimelineTracks } from './useTimelineTracks'
-import { useTimelineHandlers } from './useTimelineHandlers'
-import { useTimelineManager } from './useTimelineManager'
+import { NodeContainer, ControlGrid } from '@hedron-gl/ui-core'
+import { useTimelineTracks } from '@/components/hooks/useTimelineTracks'
+import { useTimelineHandlers } from '@/components/hooks/useTimelineHandlers'
+import { useTimelineManager } from '@/components/hooks/useTimelineManager'
+import { useTimelineState } from '@/components/hooks/useTimelineState'
+import { useTimelineOptionNodes } from '@/components/hooks/useTimelineOptionNodes'
+import { useTimelineHandle } from '@/components/hooks/useTimelineHandle'
+import { useAlignedKeyframeValueSync } from '@/components/hooks/useAlignedKeyframeValueSync'
 import { DEFAULT_TIMELINE_ID } from '@/constants'
-import { Timeline, TimelineHandle } from '@/components/Timeline/Timeline'
-import { TimelineOptionNodes } from '@/TimelineInput'
+import { Timeline } from '@/components/Timeline/Timeline'
+import { AlignedKeyframe } from '@/types'
 
 interface TimelineGlobalPanelProps {
   engine: HedronEngine
@@ -23,34 +20,44 @@ export const TimelineGlobalPanel = ({ engine }: TimelineGlobalPanelProps) => {
   const tracks = useTimelineTracks()
   const manager = useTimelineManager(DEFAULT_TIMELINE_ID)
 
-  const { handlePlayheadChange, handleKeyframeDelete, handleKeyframeInsert, handleKeyframeMove } =
-    useTimelineHandlers({
-      engine,
-      manager,
-    })
+  const {
+    handlePlayheadChange,
+    handleKeyframeDelete,
+    handleKeyframeInsert,
+    handleKeyframeMove,
+    handlePlayPauseToggle,
+  } = useTimelineHandlers({
+    engine,
+    manager,
+  })
 
-  const activeTimelineComponentId = useAppStore((state) => state.activeTimelineComponentId)
-  const setActiveTimelineComponentId = useAppStore((state) => state.setActiveTimelineComponentId)
-  const selectedTrackId = useAppStore((state) => state.selectedTimelineTrackId)
-  const setSelectedTrackId = useAppStore((state) => state.setSelectedTimelineTrackId)
+  const {
+    activeTimelineComponentId,
+    setActiveTimelineComponentId,
+    selectedTrackId,
+    setSelectedTrackId,
+  } = useTimelineState()
 
-  const optionNodes = useNodeOptionNodes<TimelineOptionNodes>(DEFAULT_TIMELINE_ID)
-  const isPlayingNode = optionNodes['isPlaying']!
-  const playHeadPositionNode = optionNodes['playheadPositionMs']
+  const {
+    isPlayingNode,
+    audioUrlNode,
+    zoomPxPerSecondNode,
+    zoomPxPerSecond,
+    durationNode,
+    durationS,
+    isPlaying,
+    playheadPositionNode,
+  } = useTimelineOptionNodes()
 
-  const audioUrlNode = optionNodes['audioUrl']!
-  const zoomPxPerSecondNode = optionNodes['zoomPxPerSecond']!
-  const durationNode = optionNodes['timelineDurationS']!
+  const [alignedKeyframes, setAlignedKeyframes] = useState<AlignedKeyframe[]>([])
+  const isAlignmentEnabled = !isPlaying
 
-  // Not very performant to be updating state on every frame, later we'll want to do this imperatively using useSubscribeToParamValue
-  const playheadPositionMs = useParamValue<number>(playHeadPositionNode?.id, 0)
-  const initialZoomPxPerSecond = useParamValue<number>(zoomPxPerSecondNode.id, 80)
-  const durationS = useParamValue<number>(durationNode.id, 0)
-
-  const timelineRef = useRef<TimelineHandle>(null)
-
-  useSubscribeToParamValue<number>(zoomPxPerSecondNode.id, (value) => {
-    timelineRef.current?.setPxPerSecond(value)
+  const timelineRef = useTimelineHandle(zoomPxPerSecondNode.id, playheadPositionNode.id)
+  useAlignedKeyframeValueSync({
+    engine,
+    manager,
+    alignedKeyframes,
+    isEnabled: isAlignmentEnabled,
   })
 
   return (
@@ -63,19 +70,22 @@ export const TimelineGlobalPanel = ({ engine }: TimelineGlobalPanelProps) => {
       </ControlGrid>
       <div className="mb-xl">
         <Timeline
+          style={{ maxHeight: '500px' }}
           ref={timelineRef}
           durationMs={durationS * 1000}
           tracks={tracks}
-          playheadPositionMs={playheadPositionMs}
           activeTimelineComponentId={activeTimelineComponentId}
           setActiveTimelineComponentId={setActiveTimelineComponentId}
           selectedTrackId={selectedTrackId}
           setSelectedTrackId={setSelectedTrackId}
-          initialPxPerSecond={initialZoomPxPerSecond}
+          initialPxPerSecond={zoomPxPerSecond}
+          isAlignmentEnabled={isAlignmentEnabled}
+          onAlignedKeyframesChange={setAlignedKeyframes}
           onPlayheadChange={handlePlayheadChange}
           onKeyframeDelete={handleKeyframeDelete}
           onKeyframeInsert={handleKeyframeInsert}
           onKeyframeMove={handleKeyframeMove}
+          onPlayPauseToggle={handlePlayPauseToggle}
         />
       </div>
       Click track name to select track. Insert keyframe: [i]. Delete keyframe: [x].

@@ -129,5 +129,5 @@ export const useElementScrub = (
       onMouseUp()
       onTouchEnd()
     }
-  }, [elRef, onDrag, cursorCSSValue])
+  }, [elRef, onDrag, cursorCSSValue, axis])
 }

@@ -1,6 +1,6 @@
 import { StoreApi } from 'zustand'
 import { SketchNode, SketchModuleItem, SketchModules } from './SketchNode'
-import { ConfigParam, ParamValue, ParamValues } from './ParamNode'
+import { ConfigParam, ParamValue, ParamValueOrigin, ParamValues } from './ParamNode'
 import { InputNode } from './InputNode'
 import { ConfigShot } from './ShotNode'
 import { Nodes } from './Node'
@@ -30,7 +30,7 @@ interface Actions {
   moveSketchUp: (instanceId: string) => void
   moveSketchDown: (instanceId: string) => void
   setSketchModuleItem: (newItem: SketchModuleItem) => void
-  updateParamValue: (paramId: string, value: ParamValue) => void
+  updateParamValue: (paramId: string, value: ParamValue, origin?: ParamValueOrigin) => void
   deleteSketchModule: (moduleId: string) => void
   loadProject: (project: EngineData) => void
   reset: () => void

@@ -4,24 +4,61 @@ import {
   useEffect,
   useId,
   useImperativeHandle,
+  useMemo,
   useRef,
   useState,
 } from 'react'
 import { usePlayheadScrub } from './usePlayheadScrub'
 import { usePxPerSecond } from './usePxPerSecond'
+import { useSelectionBox } from './useSelectionBox'
 import c from './Timeline.module.css'
 import { TimelineTrack } from './TimelineTrack'
-import { TimelineManagerTrack } from '@/types'
+import { AlignedKeyframe, TimelineManagerTrack } from '@/types'
 import { findTrackById } from '@/utils/findTrackById'
+import { getKeyframeTracks } from '@/utils/getKeyframeTracks'
+
+const KEYFRAME_ALIGNMENT_TOLERANCE_PX = 3
+const EMPTY_ALIGNED_KEYFRAMES: AlignedKeyframe[] = []
+
+const getAlignedKeyframes = (
+  tracks: TimelineManagerTrack[],
+  playheadPositionMs: number,
+  alignmentToleranceMs: number,
+): AlignedKeyframe[] => {
+  const alignedKeyframes: AlignedKeyframe[] = []
+
+  for (const track of tracks) {
+    if (track.trackType === 'vector' || track.trackType === 'sketch') {
+      alignedKeyframes.push(
+        ...getAlignedKeyframes(track.childTracks, playheadPositionMs, alignmentToleranceMs),
+      )
+      continue
+    }
+
+    if (track.trackType !== 'keyframe') continue
+
+    for (const keyframe of track.keyframes) {
+      if (Math.abs(keyframe.time - playheadPositionMs) <= alignmentToleranceMs) {
+        alignedKeyframes.push({
+          trackId: track.id,
+          targetNodeId: track.targetNodeId,
+          keyframe,
+        })
+      }
+    }
+  }
+
+  return alignedKeyframes
+}
 
 export type TimelineHandle = {
   setPxPerSecond: (pxPerSecond: number) => void
+  setPlayheadPositionMs: (playheadPositionMs: number) => void
 }
 
 export interface TimelineProps {
   tracks: TimelineManagerTrack[]
   durationMs: number
-  playheadPositionMs: number
   activeTimelineComponentId: string | null
   selectedTrackId: string | null
   setSelectedTrackId: (trackId: string | null) => void
@@ -32,15 +69,18 @@ export interface TimelineProps {
   onKeyframeDelete: (keyframeId: string) => void
   onKeyframeInsert: (trackId: string, time: number) => void
   onKeyframeMove: (keyframeId: string, time: number) => void
+  onPlayPauseToggle: () => void
+  isAlignmentEnabled?: boolean
+  onAlignedKeyframesChange?: (alignedKeyframes: AlignedKeyframe[]) => void
+  style?: React.CSSProperties
 }
 
 export const Timeline = forwardRef<TimelineHandle, TimelineProps>(function Timeline(
   {
     tracks,
     durationMs,
-    playheadPositionMs = 0,
     activeTimelineComponentId,
-    selectedTrackId: _selectedTrackId,
+    selectedTrackId,
     setSelectedTrackId: _setSelectedTrackId,
     componentId: _componentId,
     initialPxPerSecond = 80,
@@ -49,18 +89,28 @@ export const Timeline = forwardRef<TimelineHandle, TimelineProps>(function Timel
     onKeyframeDelete,
     onKeyframeInsert,
     onKeyframeMove,
+    onPlayPauseToggle,
+    isAlignmentEnabled = true,
+    onAlignedKeyframesChange,
+    style,
   },
-  ref,
+  handleRef,
 ) {
+  const playheadPositionMsRef = useRef<number>(0)
   const durationSec = durationMs / 1000
   const rulerAreaRef = useRef<HTMLDivElement>(null)
   const bodyRef = useRef<HTMLDivElement>(null)
-  const { pxPerSecond, setPxPerSecond } = usePxPerSecond({
+  const playheadRef = useRef<HTMLDivElement>(null)
+  const rulerPlayheadRef = useRef<HTMLDivElement>(null)
+  const elapsedTimeRef = useRef<HTMLDivElement>(null)
+
+  const { pxPerSecond, setPxPerSecond: _setPxPerSecond } = usePxPerSecond({
     bodyRef,
     durationMs,
-    playheadPositionMs,
     initialPxPerSecond,
   })
+
+  const alignmentToleranceMs = (KEYFRAME_ALIGNMENT_TOLERANCE_PX / pxPerSecond) * 1000
 
   // To prevent clashing of keyboard events, we need to keep track of which component is the active one
   const fallbackId = useId()
@@ -68,18 +118,115 @@ export const Timeline = forwardRef<TimelineHandle, TimelineProps>(function Timel
 
   const isActiveComponent = componentId === activeTimelineComponentId
 
-  const [_selectedKeyframes, _setSelectedKeyframes] = useState<string[] | null>(null)
+  const [selectedKeyframes, _setSelectedKeyframes] = useState<string[] | null>(null)
+  // Mirrors the selection so a drag starting in the same event can read it before state flushes.
+  const selectedKeyframesRef = useRef<string[] | null>(null)
+  const keyframeDragOriginsRef = useRef<{ id: string; time: number }[]>([])
 
-  const selectedKeyframes = isActiveComponent ? _selectedKeyframes : null
-  const selectedTrackId = isActiveComponent ? _selectedTrackId : null
+  const [alignedKeyframes, setAlignedKeyframes] = useState<AlignedKeyframe[]>([])
+
+  const alignedKeyframeIds = useMemo(
+    () => new Set(alignedKeyframes.map(({ keyframe }) => keyframe.id)),
+    [alignedKeyframes],
+  )
 
   const setSelectedKeyframes = useCallback(
     (keyframes: string[] | null) => {
+      selectedKeyframesRef.current = keyframes
       _setSelectedKeyframes(keyframes)
 
       setActiveTimelineComponentId(componentId)
     },
     [componentId, setActiveTimelineComponentId],
+  )
+
+  const selectKeyframes = useCallback(
+    (keyframeIds: string[], isMultiSelect: boolean) => {
+      const current = selectedKeyframesRef.current
+      const isAlreadySelected =
+        keyframeIds.length > 0 && keyframeIds.every((keyframeId) => current?.includes(keyframeId))
+
+      if (isMultiSelect) {
+        const next = new Set(current ?? [])
+
+        // Multi-selecting something already selected removes it again.
+        for (const keyframeId of keyframeIds) {
+          if (isAlreadySelected) {
+            next.delete(keyframeId)
+          } else {
+            next.add(keyframeId)
+          }
+        }
+
+        setSelectedKeyframes(next.size > 0 ? Array.from(next) : null)
+        return
+      }
+
+      // Grabbing part of the selection keeps it intact, so the whole group stays draggable.
+      if (isAlreadySelected) return
+
+      setSelectedKeyframes(keyframeIds)
+    },
+    [setSelectedKeyframes],
+  )
+
+  const setBoxSelectedKeyframes = useCallback(
+    (keyframeIds: string[]) => {
+      const current = selectedKeyframesRef.current ?? []
+      const isUnchanged =
+        current.length === keyframeIds.length &&
+        current.every((keyframeId, index) => keyframeId === keyframeIds[index])
+
+      if (isUnchanged) return
+
+      setSelectedKeyframes(keyframeIds.length > 0 ? keyframeIds : null)
+    },
+    [setSelectedKeyframes],
+  )
+
+  const { selectionBox, startSelectionBox } = useSelectionBox({
+    bodyRef,
+    onSelectionChange: setBoxSelectedKeyframes,
+  })
+
+  const handleKeyframeDragStart = useCallback(
+    (keyframeIds: string[]) => {
+      const selected = selectedKeyframesRef.current
+      const isPartOfSelection =
+        keyframeIds.length > 0 && keyframeIds.every((keyframeId) => selected?.includes(keyframeId))
+      const movingKeyframeIds = isPartOfSelection && selected ? selected : keyframeIds
+
+      const timesByKeyframeId = new Map<string, number>()
+      for (const track of getKeyframeTracks(tracks)) {
+        for (const keyframe of track.keyframes) {
+          timesByKeyframeId.set(keyframe.id, keyframe.time)
+        }
+      }
+
+      keyframeDragOriginsRef.current = movingKeyframeIds
+        .map((keyframeId) => ({ id: keyframeId, time: timesByKeyframeId.get(keyframeId) }))
+        .filter((origin): origin is { id: string; time: number } => origin.time !== undefined)
+    },
+    [tracks],
+  )
+
+  const handleKeyframeDragMove = useCallback(
+    (deltaMs: number) => {
+      const origins = keyframeDragOriginsRef.current
+      if (origins.length === 0) return
+
+      const times = origins.map((origin) => origin.time)
+      // Clamped as a group so the selection keeps its relative spacing at the timeline edges.
+      const clampedDelta = Math.max(
+        -Math.min(...times),
+        Math.min(durationMs - Math.max(...times), deltaMs),
+      )
+
+      for (const origin of origins) {
+        onKeyframeMove(origin.id, origin.time + clampedDelta)
+      }
+    },
+    [durationMs, onKeyframeMove],
   )
 
   const setSelectedTrackId = useCallback(
@@ -113,6 +260,16 @@ export const Timeline = forwardRef<TimelineHandle, TimelineProps>(function Timel
       ) {
         return
       }
+
+      // Play/pause on space
+      if (e.key === ' ') {
+        e.preventDefault()
+        onPlayPauseToggle()
+      }
+
+      // Don't handle events below if this component is not active
+      if (!isActiveComponent) return
+
       if (e.key === 'x' && selectedKeyframes) {
         selectedKeyframes.forEach((keyframeId) => {
           onKeyframeDelete(keyframeId)
@@ -125,7 +282,7 @@ export const Timeline = forwardRef<TimelineHandle, TimelineProps>(function Timel
         if (!track) return
 
         for (const keyframeTrackId of getChildKeyframeTrackIds(track)) {
-          onKeyframeInsert(keyframeTrackId, playheadPositionMs)
+          onKeyframeInsert(keyframeTrackId, playheadPositionMsRef.current)
         }
       }
     }
@@ -136,18 +293,77 @@ export const Timeline = forwardRef<TimelineHandle, TimelineProps>(function Timel
   }, [
     selectedKeyframes,
     onKeyframeDelete,
-    selectedTrackId,
-    playheadPositionMs,
     onKeyframeInsert,
     tracks,
     setSelectedKeyframes,
+    isActiveComponent,
+    selectedTrackId,
+    onPlayPauseToggle,
   ])
 
-  useImperativeHandle(ref, () => ({ setPxPerSecond }), [setPxPerSecond])
+  const setPxPerSecond = useCallback(
+    (nextPxPerSecond: number) => {
+      _setPxPerSecond(nextPxPerSecond, playheadPositionMsRef.current)
+    },
+    [_setPxPerSecond],
+  )
 
-  usePlayheadScrub(durationMs, rulerAreaRef, playheadPositionMs, onPlayheadChange)
+  const updateAlignedKeyframes = useCallback(() => {
+    setAlignedKeyframes(
+      isAlignmentEnabled
+        ? getAlignedKeyframes(tracks, playheadPositionMsRef.current, alignmentToleranceMs)
+        : EMPTY_ALIGNED_KEYFRAMES,
+    )
+  }, [isAlignmentEnabled, tracks, alignmentToleranceMs])
 
-  const playheadPercent = (playheadPositionMs / durationMs) * 100
+  useEffect(updateAlignedKeyframes, [tracks, updateAlignedKeyframes])
+
+  const setPlayheadPositionMs = useCallback(
+    (nextPlayheadPositionMs: number) => {
+      playheadPositionMsRef.current = nextPlayheadPositionMs
+
+      updateAlignedKeyframes()
+
+      if (playheadRef.current && rulerPlayheadRef.current) {
+        const playheadPercent = playheadPositionMsRef.current / durationMs
+        playheadRef.current.style.transform = `translateX(calc(
+        var(--trackHeaderWidth) + max(100% - var(--trackHeaderWidth), var(--trackAreaWidth, 0px)) *
+          ${playheadPercent}
+        ))`
+
+        rulerPlayheadRef.current.style.transform = `translateX(calc(
+        max(100% - var(--trackHeaderWidth), var(--trackAreaWidth, 0px)) *
+          ${playheadPercent}
+        ))`
+      }
+
+      if (elapsedTimeRef.current) {
+        elapsedTimeRef.current.textContent = `${(playheadPositionMsRef.current / 1000).toFixed(1)}s / ${durationSec}s`
+      }
+    },
+    [durationMs, durationSec, updateAlignedKeyframes],
+  )
+
+  useImperativeHandle(handleRef, () => ({ setPxPerSecond, setPlayheadPositionMs }), [
+    setPxPerSecond,
+    setPlayheadPositionMs,
+  ])
+
+  useEffect(() => {
+    setPlayheadPositionMs(playheadPositionMsRef.current)
+  }, [setPlayheadPositionMs])
+
+  useEffect(() => {
+    onAlignedKeyframesChange?.(alignedKeyframes)
+  }, [alignedKeyframes, onAlignedKeyframesChange])
+
+  usePlayheadScrub(
+    durationMs,
+    rulerAreaRef,
+    playheadPositionMsRef,
+    onPlayheadChange,
+    setPlayheadPositionMs,
+  )
 
   const trackAreaWidth = durationSec * pxPerSecond
   const rulerMarks = []
@@ -162,38 +378,51 @@ export const Timeline = forwardRef<TimelineHandle, TimelineProps>(function Timel
   }
 
   return (
-    <div className={c.timeline}>
+    <div className={c.timeline} style={style}>
       <div className={c.header}>
         <span>Timeline</span>
-        <span>
-          {(playheadPositionMs / 1000).toFixed(1)}s / {durationSec}s
-        </span>
+        <span ref={elapsedTimeRef}></span>
       </div>
       <div
         className={c.body}
         ref={bodyRef}
         style={{ '--trackAreaWidth': `${trackAreaWidth}px` } as React.CSSProperties}
       >
-        <div className={c.ruler} ref={rulerAreaRef}>
-          {rulerMarks}
+        <div className={c.grid}>
+          <div className={c.rulerCorner} />
+          <div className={c.ruler} ref={rulerAreaRef}>
+            {rulerMarks}
+            <div className={c.rulerPlayhead} ref={rulerPlayheadRef} />
+          </div>
+          {tracks.map((track) => (
+            <TimelineTrack
+              key={track.id}
+              selectedTrackId={selectedTrackId}
+              setSelectedTrackId={setSelectedTrackId}
+              track={track}
+              depth={0}
+              durationMs={durationMs}
+              selectedKeyframes={selectedKeyframes}
+              selectKeyframes={selectKeyframes}
+              onSelectionBoxStart={startSelectionBox}
+              alignedKeyframeIds={alignedKeyframeIds}
+              onKeyframeDragStart={handleKeyframeDragStart}
+              onKeyframeDragMove={handleKeyframeDragMove}
+            />
+          ))}
+          {selectionBox && (
+            <div
+              className={c.selectionBox}
+              style={{
+                left: selectionBox.left,
+                top: selectionBox.top,
+                width: selectionBox.width,
+                height: selectionBox.height,
+              }}
+            />
+          )}
+          <div className={c.playhead} ref={playheadRef} />
         </div>
-        {tracks.map((track) => (
-          <TimelineTrack
-            key={track.id}
-            selectedTrackId={selectedTrackId}
-            setSelectedTrackId={setSelectedTrackId}
-            track={track}
-            depth={0}
-            durationMs={durationMs}
-            selectedKeyframes={selectedKeyframes}
-            setSelectedKeyframes={setSelectedKeyframes}
-            onKeyframeMove={onKeyframeMove}
-          />
-        ))}
-        <div
-          className={c.playhead}
-          style={{ '--playheadPercent': playheadPercent / 100 } as React.CSSProperties}
-        />
       </div>
     </div>
   )
