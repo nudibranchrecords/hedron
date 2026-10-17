@@ -557,6 +557,7 @@ export const Interactive = () => {
         ref={timelineRef}
         durationMs={timeline.durationMs}
         tracks={timeline.tracks}
+        audioBuffersSource={managerRef.current ?? undefined}
         activeTimelineComponentId={activeTimelineComponentId}
         selectedTrackId={selectedTrackId}
         setSelectedTrackId={setSelectedTrackId}
@@ -771,6 +772,7 @@ export const AudioStreaming = () => {
         ref={timelineRef}
         tracks={tracks}
         durationMs={loaded.durationMs}
+        audioBuffersSource={managerRef.current ?? undefined}
         initialPxPerSecond={20}
         selectedTrackId={selectedTrackId}
         setSelectedTrackId={setSelectedTrackId}

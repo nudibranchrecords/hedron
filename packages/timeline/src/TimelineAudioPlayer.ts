@@ -31,6 +31,7 @@ type TimelineAudioPlayerOptions = {
 export class TimelineAudioPlayer {
   private tracks: AudioTrack[] = []
   private bufferCache = new Map<string, AudioBuffer>()
+  private bufferListeners = new Set<() => void>()
   private loadController: AbortController | null = null
   private outputNode: GainNode | null = null
   private analysisDestination: MediaStreamAudioDestinationNode | null = null
@@ -69,9 +70,14 @@ export class TimelineAudioPlayer {
     this.tracks = nextTracks
 
     const activeUrls = new Set(nextTracks.map((track) => track.audioUrl))
+    let buffersRemoved = false
     for (const url of this.bufferCache.keys()) {
-      if (!activeUrls.has(url)) this.bufferCache.delete(url)
+      if (!activeUrls.has(url)) {
+        this.bufferCache.delete(url)
+        buffersRemoved = true
+      }
     }
+    if (buffersRemoved) this.bufferListeners.forEach((listener) => listener())
     if (urlsChanged) {
       this.stopStreaming()
       this.reportAudioSource()
@@ -83,6 +89,17 @@ export class TimelineAudioPlayer {
   onAudioSourceChange(callback: OnAudioSourceChangeCallback) {
     this.audioSourceChangeCallback = callback
     this.reportAudioSource()
+  }
+
+  getAudioBuffer(url: string) {
+    return this.bufferCache.get(url)
+  }
+
+  subscribeAudioBuffers(listener: () => void) {
+    this.bufferListeners.add(listener)
+    return () => {
+      this.bufferListeners.delete(listener)
+    }
   }
 
   private reportAudioSource() {
@@ -269,7 +286,10 @@ export class TimelineAudioPlayer {
               const data = await response.arrayBuffer()
               if (controller.signal.aborted) throw new Error('Audio load cancelled')
               const buffer = await context.decodeAudioData(data)
-              if (sessionId === this.loadSessionId) this.bufferCache.set(audioUrl, buffer)
+              if (sessionId === this.loadSessionId) {
+                this.bufferCache.set(audioUrl, buffer)
+                this.bufferListeners.forEach((listener) => listener())
+              }
               return buffer
             })()
             loads.set(audioUrl, loading)
@@ -468,6 +488,8 @@ export class TimelineAudioPlayer {
     this.stopStreaming()
     this.disposed = true
     this.bufferCache.clear()
+    this.bufferListeners.forEach((listener) => listener())
+    this.bufferListeners.clear()
     this.audioSourceChangeCallback?.(null)
     this.audioSourceChangeCallback = null
     this.outputNode?.disconnect()

@@ -3,6 +3,8 @@ import { useRef, useState } from 'react'
 import c from './Timeline.module.css'
 import { TrackKeyframes } from './TrackKeyframes'
 import { Keyframe } from './Keyframe'
+import { AudioWaveform } from './AudioWaveform'
+import type { TimelineAudioBufferSource } from './AudioWaveform'
 import {
   Keyframe as KeyframeData,
   KeyframeParam,
@@ -18,6 +20,7 @@ interface TimelineTrackProps {
   childTracks?: TimelineManagerTrack[]
   depth: number
   durationMs: number
+  audioBuffersSource?: TimelineAudioBufferSource
   selectedKeyframes: string[] | null
   selectKeyframes: (keyframeIds: string[], isMultiSelect: boolean) => void
   onSelectionBoxStart: (e: React.MouseEvent) => void
@@ -96,6 +99,7 @@ export const TimelineTrack = ({
   track,
   depth,
   durationMs,
+  audioBuffersSource,
   selectedKeyframes,
   selectKeyframes,
   onSelectionBoxStart,
@@ -138,6 +142,13 @@ export const TimelineTrack = ({
         </div>
         {/* Keyframes stop propagation, so a mousedown landing here is empty lane space. */}
         <div className={c.trackBody} ref={trackBodyRef} onMouseDown={onSelectionBoxStart}>
+          {track.trackType === 'audio' && (
+            <AudioWaveform
+              source={audioBuffersSource}
+              audioUrl={track.audioUrl}
+              durationMs={durationMs}
+            />
+          )}
           {getValueChangeSegments(track).map(({ startTime, endTime }) => (
             <div
               key={`${startTime}-${endTime}`}
@@ -198,6 +209,7 @@ export const TimelineTrack = ({
             track={childTrack}
             depth={depth + 1}
             durationMs={durationMs}
+            audioBuffersSource={audioBuffersSource}
             selectedKeyframes={selectedKeyframes}
             selectKeyframes={selectKeyframes}
             onSelectionBoxStart={onSelectionBoxStart}

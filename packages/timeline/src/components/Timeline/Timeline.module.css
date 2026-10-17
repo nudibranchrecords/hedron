@@ -169,6 +169,15 @@
   height: 24px;
 }
 
+.audioWaveform {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  color: #6babb8;
+}
+
 .playhead {
   position: absolute;
   top: 0;

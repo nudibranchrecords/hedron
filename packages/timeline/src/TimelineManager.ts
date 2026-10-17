@@ -112,6 +112,10 @@ export class TimelineManager {
     return this.audioPlayer.getDiagnostics(this.positionMs)
   }
 
+  getAudioBuffer = (url: string) => this.audioPlayer.getAudioBuffer(url)
+
+  subscribeAudioBuffers = (listener: () => void) => this.audioPlayer.subscribeAudioBuffers(listener)
+
   private resetKeyframeIndexes() {
     this.lastKeyframeIndex.clear()
   }
