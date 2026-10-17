@@ -38,10 +38,10 @@ engine.registerPlugin(new SceneControlPlugin())
 engine.registerPlugin(new VideoRenderPlugin(videoRenderCallbacks))
 engine.registerPlugin(new ParamPresetsPlugin())
 
-// Routes the timeline's audio element into the audio-input analyser for live preview.
+// Routes the timeline's audio stream into the audio-input analyser for live preview.
 // Wired here, not in either package, so neither depends on the other.
-timelineInput.onAudioElementChange((element) => {
-  audioInput.setLiveElementSource(element)
+timelineInput.onAudioSourceChange((source) => {
+  audioInput.setLiveStreamSource(source)
 })
 
 export const pluginViews = {

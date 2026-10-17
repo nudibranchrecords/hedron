@@ -13,7 +13,7 @@ import {
   isParamVectorComponent,
 } from '@hedron-gl/engine'
 import { DEFAULT_TIMELINE_ID, TIMELINE_DURATION } from './constants'
-import { TimelineManager, OnAudioElementChangeCallback } from './TimelineManager'
+import { TimelineManager, OnAudioSourceChangeCallback } from './TimelineManager'
 import { getTimelineTracks } from './selectors/getTimelineTracks'
 import { getKeyframeTracks } from './utils/getKeyframeTracks'
 import { getResourceUrl } from './utils/getResourceUrl'
@@ -69,8 +69,7 @@ export class TimelineInput implements IPlugin {
   public readonly description = 'Timeline-based input for automating parameters over time.'
   public timelineManagers: Map<string, TimelineManager> = new Map()
 
-  // Set by the app composition root (see onAudioElementChange), re-wired to each manager's hook.
-  private audioElementChangeCallback: OnAudioElementChangeCallback | null = null
+  private audioSourceChangeCallback: OnAudioSourceChangeCallback | null = null
 
   onEngineInitialize(engine: HedronEngine) {
     engine.addNodeOnce(DEFAULT_TIMELINE_ID, null, {
@@ -96,9 +95,8 @@ export class TimelineInput implements IPlugin {
       const timelineDurationS = engine.getNodeOptionNode(timelineId, 'timelineDurationS')
       const playHeadPositionNode = engine.getNodeOptionNode(timelineId, 'playheadPositionMs')
 
-      // Registered before the tracks subscription builds the audio element, so it gets reported.
-      manager.onAudioElementChange((element) => {
-        this.audioElementChangeCallback?.(element)
+      manager.onAudioSourceChange((source) => {
+        this.audioSourceChangeCallback?.(source)
       })
 
       engine.getStore().subscribe(
@@ -176,9 +174,11 @@ export class TimelineInput implements IPlugin {
     })
   }
 
-  /** Fires whenever any timeline's audio-track element is created, replaced, or removed. */
-  onAudioElementChange(callback: OnAudioElementChangeCallback) {
-    this.audioElementChangeCallback = callback
+  onAudioSourceChange(callback: OnAudioSourceChangeCallback) {
+    this.audioSourceChangeCallback = callback
+    this.timelineManagers.forEach((manager) => {
+      manager.onAudioSourceChange((source) => this.audioSourceChangeCallback?.(source))
+    })
   }
 
   /** Decodes the audio at `url` and writes its exact duration (in seconds) to the duration param. */

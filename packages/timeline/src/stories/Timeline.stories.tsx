@@ -6,6 +6,7 @@ import { useState, useEffect, useRef, useCallback } from 'react'
 import audioUrl from '../../../../apps/example-project/resources/120-4-4.mp3'
 import { TimelineManager } from '@/TimelineManager'
 import type { TrackValues } from '@/TimelineManager'
+import type { TimelineAudioLoadingMode } from '@/TimelineAudioPlayer'
 import { Timeline, TimelineHandle } from '@/components/Timeline/Timeline'
 import type { KeyframeParam, TimelineManagerKeyframeTrack, TimelineManagerTrack } from '@/types'
 import { findTrackById } from '@/utils/findTrackById'
@@ -582,6 +583,230 @@ export const Interactive = () => {
           )
         })}
       </div>
+    </div>
+  )
+}
+
+export const AudioStreaming = () => {
+  const [sourceUrl, setSourceUrl] = useState(audioUrl)
+  const [secondSourceUrl, setSecondSourceUrl] = useState('')
+  const [durationSeconds, setDurationSeconds] = useState(180)
+  const [audioLoadingMode, setAudioLoadingMode] = useState<TimelineAudioLoadingMode>('stream')
+  const [loaded, setLoaded] = useState({
+    urls: [audioUrl],
+    durationMs: 180000,
+    revision: 0,
+    audioLoadingMode: 'stream' as TimelineAudioLoadingMode,
+  })
+  const [selectedTrackId, setSelectedTrackId] = useState<string | null>(null)
+  const [activeComponentId, setActiveComponentId] = useState<string | null>(STORY_COMPONENT_ID)
+  const [positionMs, setPositionMs] = useState(0)
+  const [rampValue, setRampValue] = useState(0)
+  const [diagnostics, setDiagnostics] = useState<ReturnType<
+    TimelineManager['getAudioDiagnostics']
+  > | null>(null)
+  const managerRef = useRef<TimelineManager | null>(null)
+  const timelineRef = useRef<TimelineHandle>(null)
+  const tracks: TimelineManagerTrack[] = [
+    ...loaded.urls.map((url, index) => ({
+      id: `streaming-audio-${index}`,
+      label: `Audio ${index + 1}`,
+      trackType: 'audio' as const,
+      audioUrl: url,
+    })),
+    {
+      id: 'streaming-ramp',
+      label: 'Ramp',
+      trackType: 'keyframe',
+      keyframes: [
+        { id: 'streaming-ramp-start', time: 0, nodeType: 'param', valueType: 'number', value: 0 },
+        {
+          id: 'streaming-ramp-end',
+          time: loaded.durationMs,
+          nodeType: 'param',
+          valueType: 'number',
+          value: 1,
+        },
+      ],
+    },
+  ]
+
+  useEffect(() => {
+    const manager = new TimelineManager({
+      tracks,
+      durationMs: loaded.durationMs,
+      audioLoadingMode: loaded.audioLoadingMode,
+    })
+    managerRef.current = manager
+    setPositionMs(0)
+    setRampValue(0)
+    setDiagnostics(manager.getAudioDiagnostics())
+    timelineRef.current?.setPlayheadPositionMs(0)
+    manager.onUpdate((changed) => {
+      timelineRef.current?.setPlayheadPositionMs(manager.getPositionMs())
+      if (typeof changed['streaming-ramp'] === 'number') setRampValue(changed['streaming-ramp'])
+    })
+
+    let frameId: number
+    let lastTime: number | null = null
+    let lastDiagnosticTime = 0
+    const tick = (now: number) => {
+      if (lastTime !== null) manager.step(now - lastTime)
+      lastTime = now
+      if (now - lastDiagnosticTime >= 100) {
+        setPositionMs(manager.getPositionMs())
+        setDiagnostics(manager.getAudioDiagnostics())
+        lastDiagnosticTime = now
+      }
+      frameId = requestAnimationFrame(tick)
+    }
+    frameId = requestAnimationFrame(tick)
+
+    return () => {
+      cancelAnimationFrame(frameId)
+      manager.dispose()
+      if (managerRef.current === manager) managerRef.current = null
+    }
+    // Recreate only on explicit reload, not on diagnostic renders.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loaded])
+
+  const handlePlayPause = () => {
+    const manager = managerRef.current
+    if (!manager) return
+    if (manager.isPlaying()) manager.pause()
+    else manager.play()
+    setDiagnostics(manager.getAudioDiagnostics())
+  }
+
+  const handleSeek = (timeMs: number) => {
+    const manager = managerRef.current
+    if (!manager) return
+    manager.goTo(timeMs)
+    setPositionMs(manager.getPositionMs())
+    setDiagnostics(manager.getAudioDiagnostics())
+  }
+
+  return (
+    <div style={{ display: 'grid', gap: '12px', minWidth: 0 }}>
+      <form
+        onSubmit={(event) => {
+          event.preventDefault()
+          setLoaded((previous) => ({
+            urls: [sourceUrl.trim(), secondSourceUrl.trim()].filter(Boolean),
+            durationMs: durationSeconds * 1000,
+            revision: previous.revision + 1,
+            audioLoadingMode,
+          }))
+        }}
+        style={{ display: 'grid', gap: '8px' }}
+      >
+        <fieldset style={{ display: 'flex', flexWrap: 'wrap', gap: '12px', margin: 0 }}>
+          <legend>Audio loading mode</legend>
+          <label>
+            <input
+              type="radio"
+              name="audio-backend"
+              checked={audioLoadingMode === 'preload'}
+              onChange={() => setAudioLoadingMode('preload')}
+            />
+            Preload
+          </label>
+          <label>
+            <input
+              type="radio"
+              name="audio-backend"
+              checked={audioLoadingMode === 'stream'}
+              onChange={() => setAudioLoadingMode('stream')}
+            />
+            Stream
+          </label>
+        </fieldset>
+        <label style={{ display: 'grid', gap: '4px' }}>
+          Audio URL
+          <input
+            type="text"
+            required
+            value={sourceUrl}
+            onChange={(event) => setSourceUrl(event.target.value)}
+            style={{ width: '100%', minWidth: 0, boxSizing: 'border-box' }}
+          />
+        </label>
+        <label style={{ display: 'grid', gap: '4px' }}>
+          Second audio URL (optional)
+          <input
+            type="text"
+            value={secondSourceUrl}
+            onChange={(event) => setSecondSourceUrl(event.target.value)}
+            style={{ width: '100%', minWidth: 0, boxSizing: 'border-box' }}
+          />
+        </label>
+        <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '12px' }}>
+          <label>
+            Duration (s){' '}
+            <input
+              type="number"
+              required
+              min={1}
+              step="any"
+              value={durationSeconds}
+              onChange={(event) => setDurationSeconds(event.target.valueAsNumber)}
+              style={{ width: '90px' }}
+            />
+          </label>
+          <button type="submit">Load / Reload</button>
+        </div>
+      </form>
+      <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '12px' }}>
+        <button type="button" onClick={handlePlayPause}>
+          {diagnostics?.playRequested ? 'Pause' : 'Play'}
+        </button>
+        <button type="button" onClick={() => handleSeek(0)}>
+          Restart
+        </button>
+        <output aria-live="polite">{diagnostics?.state ?? 'idle'}</output>
+      </div>
+      <Timeline
+        {...baseTimelineArgs}
+        ref={timelineRef}
+        tracks={tracks}
+        durationMs={loaded.durationMs}
+        initialPxPerSecond={20}
+        selectedTrackId={selectedTrackId}
+        setSelectedTrackId={setSelectedTrackId}
+        activeTimelineComponentId={activeComponentId}
+        setActiveTimelineComponentId={setActiveComponentId}
+        onPlayheadChange={handleSeek}
+        onPlayPauseToggle={handlePlayPause}
+      />
+      <progress aria-label="Ramp value" value={rampValue} max={1} style={{ width: '100%' }} />
+      <dl
+        style={{
+          display: 'grid',
+          gridTemplateColumns: 'minmax(0, 1fr) minmax(0, 1fr)',
+          gap: '6px 12px',
+          margin: 0,
+          fontVariantNumeric: 'tabular-nums',
+        }}
+      >
+        <dt>Position</dt>
+        <dd style={{ margin: 0 }}>{(positionMs / 1000).toFixed(3)} s</dd>
+        <dt>Audio context</dt>
+        <dd style={{ margin: 0 }}>{diagnostics?.contextState ?? 'not created'}</dd>
+        <dt>Buffered ahead</dt>
+        <dd style={{ margin: 0 }}>{Math.round(diagnostics?.bufferedAheadMs ?? 0)} ms</dd>
+        <dt>Scheduled ahead</dt>
+        <dd style={{ margin: 0 }}>{Math.round(diagnostics?.scheduledAheadMs ?? 0)} ms</dd>
+        <dt>Underruns</dt>
+        <dd style={{ margin: 0 }}>{diagnostics?.underruns ?? 0}</dd>
+        <dt>Ramp</dt>
+        <dd style={{ margin: 0 }}>{rampValue.toFixed(4)}</dd>
+      </dl>
+      {diagnostics?.error && (
+        <div role="alert" style={{ color: '#ef6464', overflowWrap: 'anywhere' }}>
+          {diagnostics.error}
+        </div>
+      )}
     </div>
   )
 }
