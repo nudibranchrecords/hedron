@@ -155,10 +155,8 @@ export class TimelineManager {
   private computeValues(): TrackValues {
     const values: TrackValues = {}
     for (const track of this.flatTracks) {
-      console.log(track.trackType)
       if (track.trackType !== 'keyframe') continue
       const value = this.getTrackValue(track)
-      console.log(value)
       if (value !== undefined) {
         values[track.id] = value
       }
