@@ -80,6 +80,7 @@ export const TimelineInputPanel = ({ input, engine }: TimelineInputPanelProps) =
         ref={timelineRef}
         durationMs={durationS * 1000}
         tracks={singleTrackInArray}
+        audioBuffersSource={manager}
         activeTimelineComponentId={activeTimelineComponentId}
         setActiveTimelineComponentId={setActiveTimelineComponentId}
         selectedTrackId={selectedTrackId}

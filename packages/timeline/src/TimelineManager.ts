@@ -1,5 +1,7 @@
 import { Clock } from '@hedron-gl/clock'
 import { ParamValue } from '@hedron-gl/engine'
+import { TimelineAudioPlayer } from './TimelineAudioPlayer'
+import type { OnAudioSourceChangeCallback, TimelineAudioLoadingMode } from './TimelineAudioPlayer'
 import type {
   TimelineManagerTrack,
   Keyframe,
@@ -12,7 +14,11 @@ export type TrackValues = Record<string, ParamValue>
 
 export type OnUpdateCallback = (values: TrackValues) => void
 
-export type OnAudioElementChangeCallback = (element: HTMLAudioElement | null) => void
+export type {
+  OnAudioSourceChangeCallback,
+  TimelineAudioState,
+  TimelineAudioSource,
+} from './TimelineAudioPlayer'
 
 export class TimelineManager {
   private tracks: TimelineManagerTrack[]
@@ -20,12 +26,8 @@ export class TimelineManager {
   private positionMs = 0
   private playing = false
   private onUpdateCallback: OnUpdateCallback | null = null
-  private onAudioElementChangeCallback: OnAudioElementChangeCallback | null = null
   private cachedValues: TrackValues = {}
   private sortedKeyframesCache: Map<string, Keyframe[]> = new Map()
-  private audioCache: Map<string, HTMLAudioElement> = new Map()
-  // Last element reported to onAudioElementChangeCallback - fires only on actual change.
-  private currentAudioElement: HTMLAudioElement | null = null
   private lastKeyframeIndex: Map<string, number> = new Map()
   // Number of shot keyframes at or before the position as of the last check, per track.
   private shotKeyframeCount: Map<string, number> = new Map()
@@ -33,19 +35,43 @@ export class TimelineManager {
   // Flattened (vector tracks expanded to their childTracks) view of `tracks`, kept in
   // sync by buildCache() - avoids re-walking the track tree on every computeValues/emitUpdate call.
   private flatTracks: TimelineManagerTrack[] = []
+  private audioPlayer: TimelineAudioPlayer
+  private disposed = false
 
   constructor({
     tracks,
     durationMs,
     clock,
+    audioLoadingMode = 'preload',
   }: {
     tracks: TimelineManagerTrack[]
     durationMs: number
     clock?: Clock
+    audioLoadingMode?: TimelineAudioLoadingMode
   }) {
     this.tracks = tracks
     this.durationMs = durationMs
     this.clock = clock ?? null
+    this.audioPlayer = new TimelineAudioPlayer({
+      audioLoadingMode,
+      onPositionChange: (positionMs) => {
+        this.positionMs = positionMs
+      },
+      onStateChange: (state) => {
+        if (state === 'playing') {
+          if (this.clock) {
+            this.clock.beatDeltaMs = this.positionMs
+            this.clock.continue()
+          }
+        } else {
+          this.clock?.stop()
+        }
+      },
+      onError: () => {
+        this.playing = false
+        this.emitUpdate()
+      },
+    })
     this.buildCache()
   }
 
@@ -67,43 +93,28 @@ export class TimelineManager {
     this.resetKeyframeIndexes()
     this.flatTracks = this.flattenTracks(this.tracks)
     for (const track of this.flatTracks) {
-      switch (track.trackType) {
-        case 'audio':
-          if (!track.audioUrl) {
-            this.audioCache.delete(track.id)
-            continue
-          }
-          if (this.audioCache.get(track.id)?.src !== track.audioUrl) {
-            const audio = new Audio()
-            // Cross-origin resources server - without this the element is tainted and can't
-            // be captured for analysis. Must be set before src.
-            audio.crossOrigin = 'anonymous'
-            audio.src = track.audioUrl
-            this.audioCache.set(track.id, audio)
-          }
-          break
-        case 'keyframe':
-          this.sortedKeyframesCache.set(
-            track.id,
-            [...track.keyframes].sort((a, b) => a.time - b.time),
-          )
-          break
+      if (track.trackType === 'keyframe') {
+        this.sortedKeyframesCache.set(
+          track.id,
+          [...track.keyframes].sort((a, b) => a.time - b.time),
+        )
       }
     }
-
-    this.syncAudioElementChange()
+    this.audioPlayer.setTracks(
+      this.flatTracks.filter(
+        (track): track is TimelineManagerAudioTrack => track.trackType === 'audio',
+      ),
+      this.durationMs,
+    )
   }
 
-  // Reports the audio track's element on create/replace/remove, not on every buildCache() call.
-  private syncAudioElementChange() {
-    const [firstAudioTrack] = this.getAudioTracksWithAudio()
-    const element = firstAudioTrack?.audio ?? null
-
-    if (element === this.currentAudioElement) return
-
-    this.currentAudioElement = element
-    this.onAudioElementChangeCallback?.(element)
+  getAudioDiagnostics() {
+    return this.audioPlayer.getDiagnostics(this.positionMs)
   }
+
+  getAudioBuffer = (url: string) => this.audioPlayer.getAudioBuffer(url)
+
+  subscribeAudioBuffers = (listener: () => void) => this.audioPlayer.subscribeAudioBuffers(listener)
 
   private resetKeyframeIndexes() {
     this.lastKeyframeIndex.clear()
@@ -189,21 +200,6 @@ export class TimelineManager {
     this.onUpdateCallback?.(changed)
   }
 
-  private getAudioTracksWithAudio(): {
-    track: TimelineManagerAudioTrack
-    audio: HTMLAudioElement
-  }[] {
-    return this.flatTracks
-      .filter(
-        (track): track is TimelineManagerAudioTrack =>
-          track.trackType === 'audio' && this.audioCache.has(track.id),
-      )
-      .map((track) => ({
-        track,
-        audio: this.audioCache.get(track.id)!,
-      }))
-  }
-
   /**
    * Advances playback position by deltaMs. Called once per engine frame (via TimelineInput's
    * IPlugin.onFrame) while playing, for both real-time playback and fixed-framerate rendering.
@@ -211,7 +207,7 @@ export class TimelineManager {
   step(deltaMs: number) {
     if (!this.playing) return
 
-    this.positionMs = Math.max(0, Math.min(this.positionMs + deltaMs, this.durationMs))
+    this.audioPlayer.step(deltaMs, this.positionMs, this.durationMs)
 
     if (this.clock) {
       this.clock.beatDeltaMs = this.positionMs
@@ -233,48 +229,27 @@ export class TimelineManager {
    * is muxed in separately rather than played back live).
    */
   play(options?: { silent?: boolean }) {
-    if (this.playing) return
-
-    if (this.clock) {
-      this.clock.beatDeltaMs = this.positionMs
-      this.clock.continue()
-    }
-
+    if (this.playing || this.disposed) return
     this.playing = true
-
-    if (options?.silent) return
-
-    // Play audio tracks
-    for (const { audio } of this.getAudioTracksWithAudio()) {
-      audio.currentTime = this.positionMs / 1000
-      audio.play()
-    }
+    this.audioPlayer.play(this.positionMs, this.durationMs, options)
   }
 
   pause() {
+    this.audioPlayer.pause()
     this.playing = false
 
     if (this.clock) {
       this.clock.stop()
     }
-
-    // Pause audio tracks
-    for (const { audio } of this.getAudioTracksWithAudio()) {
-      audio.pause()
-    }
   }
 
   goTo(timeMs: number) {
     this.positionMs = Math.max(0, Math.min(timeMs, this.durationMs))
+    this.audioPlayer.seek(this.positionMs, this.durationMs)
     this.resetKeyframeIndexes()
 
     if (this.clock) {
       this.clock.beatDeltaMs = this.positionMs
-    }
-
-    // Seek audio tracks
-    for (const { audio } of this.getAudioTracksWithAudio()) {
-      audio.currentTime = this.positionMs / 1000
     }
 
     this.emitUpdate()
@@ -306,16 +281,8 @@ export class TimelineManager {
     this.onUpdateCallback = callback
   }
 
-  /**
-   * Fires on audio-track element create/replace/remove, and immediately with the current
-   * element if one already exists (tracks are often already built by registration time).
-   */
-  onAudioElementChange(callback: OnAudioElementChangeCallback) {
-    this.onAudioElementChangeCallback = callback
-
-    if (this.currentAudioElement) {
-      callback(this.currentAudioElement)
-    }
+  onAudioSourceChange(callback: OnAudioSourceChangeCallback) {
+    this.audioPlayer.onAudioSourceChange(callback)
   }
 
   getPositionMs() {
@@ -327,8 +294,10 @@ export class TimelineManager {
   }
 
   dispose() {
+    if (this.disposed) return
     this.pause()
+    this.disposed = true
+    this.audioPlayer.dispose()
     this.onUpdateCallback = null
-    this.onAudioElementChangeCallback = null
   }
 }

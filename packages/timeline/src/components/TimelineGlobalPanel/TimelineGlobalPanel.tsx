@@ -74,6 +74,7 @@ export const TimelineGlobalPanel = ({ engine }: TimelineGlobalPanelProps) => {
           ref={timelineRef}
           durationMs={durationS * 1000}
           tracks={tracks}
+          audioBuffersSource={manager}
           activeTimelineComponentId={activeTimelineComponentId}
           setActiveTimelineComponentId={setActiveTimelineComponentId}
           selectedTrackId={selectedTrackId}
