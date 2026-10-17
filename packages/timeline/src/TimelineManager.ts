@@ -104,6 +104,7 @@ export class TimelineManager {
       this.flatTracks.filter(
         (track): track is TimelineManagerAudioTrack => track.trackType === 'audio',
       ),
+      this.durationMs,
     )
   }
 

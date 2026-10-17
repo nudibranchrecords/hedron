@@ -38,7 +38,7 @@ export class TimelineAudioPlayer {
   private silent = false
   private audioContext: AudioContext | null = null
   private streamingTracks: StreamingTrack[] = []
-  private streamingGeneration = 0
+  private loadSessionId = 0
   private streamingTimer: ReturnType<typeof setInterval> | null = null
   private streamingSources = new Set<AudioBufferSourceNode>()
   private boundarySource: ConstantSourceNode | null = null
@@ -58,9 +58,10 @@ export class TimelineAudioPlayer {
     return !this.silent && this.tracks.length > 0
   }
 
-  setTracks(tracks: AudioTrack[]) {
+  setTracks(tracks: AudioTrack[], durationMs: number) {
     if (this.disposed) return
     if (this.shouldPlayAudio()) this.samplePosition()
+    this.durationMs = durationMs
     const nextTracks = tracks.filter((track) => track.audioUrl)
     const urlsChanged =
       this.tracks.length !== nextTracks.length ||
@@ -74,10 +75,8 @@ export class TimelineAudioPlayer {
     if (urlsChanged) {
       this.stopStreaming()
       this.reportAudioSource()
-      if (this.playing) {
-        if (this.shouldPlayAudio()) this.startStreaming()
-        else this.setState('playing')
-      }
+      if (this.tracks.length > 0) this.prepareAudio()
+      else this.setState(this.playing ? 'playing' : 'idle')
     }
   }
 
@@ -96,12 +95,25 @@ export class TimelineAudioPlayer {
 
   play(positionMs: number, durationMs: number, options?: { silent?: boolean }) {
     if (this.playing || this.disposed) return
-    this.positionMs = positionMs
+    if (positionMs !== this.positionMs) this.seek(positionMs, durationMs)
     this.durationMs = durationMs
     this.silent = options?.silent ?? false
     this.playing = true
     if (this.shouldPlayAudio()) {
-      this.startStreaming()
+      if (this.audioState === 'error') this.prepareAudio()
+      const sessionId = this.loadSessionId
+      try {
+        void this.audioContext
+          ?.resume()
+          .then(() => {
+            if (sessionId === this.loadSessionId) this.scheduleStreaming(sessionId)
+          })
+          .catch((error: unknown) => this.failStreaming(error, sessionId))
+        this.startScheduler()
+        this.scheduleStreaming(sessionId)
+      } catch (error) {
+        this.failStreaming(error, sessionId)
+      }
       return
     }
     this.setState('playing')
@@ -109,17 +121,25 @@ export class TimelineAudioPlayer {
 
   pause() {
     if (this.shouldPlayAudio()) this.samplePosition()
-    this.stopStreaming()
+    this.stopSources()
     this.playing = false
     if (this.audioState !== 'error') this.setState('paused')
   }
 
   seek(positionMs: number, durationMs: number) {
-    this.stopStreaming()
+    const positionChanged = positionMs !== this.positionMs
+    this.stopSources()
     this.positionMs = positionMs
     this.durationMs = durationMs
     this.scheduledUntil = positionMs / 1000
-    if (this.playing && this.shouldPlayAudio()) this.startStreaming()
+    if (positionChanged && this.options.audioLoadingMode === 'stream') {
+      this.stopStreaming()
+      if (this.tracks.length > 0) this.prepareAudio()
+    }
+    if (this.playing && this.shouldPlayAudio()) {
+      this.startScheduler()
+      this.scheduleStreaming(this.loadSessionId)
+    }
   }
 
   private setState(state: TimelineAudioState) {
@@ -138,10 +158,7 @@ export class TimelineAudioPlayer {
     this.options.onPositionChange(this.positionMs)
   }
 
-  private stopStreaming() {
-    this.streamingGeneration++
-    this.loadController?.abort()
-    this.loadController = null
+  private stopSources() {
     if (this.streamingTimer !== null) clearInterval(this.streamingTimer)
     this.streamingTimer = null
     this.audioAnchor = null
@@ -157,6 +174,14 @@ export class TimelineAudioPlayer {
       source.disconnect()
     }
     this.streamingSources.clear()
+    this.scheduledUntil = this.positionMs / 1000
+  }
+
+  private stopStreaming() {
+    this.loadSessionId++
+    this.loadController?.abort()
+    this.loadController = null
+    this.stopSources()
     for (const track of this.streamingTracks) {
       track.input?.dispose()
       void track.iterator?.return().catch(() => {})
@@ -165,8 +190,8 @@ export class TimelineAudioPlayer {
     this.scheduledUntil = this.positionMs / 1000
   }
 
-  private failStreaming(error: unknown, generation: number) {
-    if (generation !== this.streamingGeneration || this.disposed) return
+  private failStreaming(error: unknown, sessionId: number) {
+    if (sessionId !== this.loadSessionId || this.disposed) return
     this.samplePosition()
     this.stopStreaming()
     this.playing = false
@@ -175,15 +200,14 @@ export class TimelineAudioPlayer {
     this.options.onError()
   }
 
-  private startStreaming() {
+  private prepareAudio() {
     if (this.disposed) return
     this.stopStreaming()
-    this.setState('loading')
+    if (!this.playing || !this.silent) this.setState('loading')
     this.audioError = null
-    const generation = this.streamingGeneration
+    const sessionId = this.loadSessionId
     try {
       this.audioContext ??= new AudioContext({ latencyHint: 'interactive' })
-      const resumed = this.audioContext.resume()
       if (!this.outputNode) {
         this.outputNode = this.audioContext.createGain()
         this.outputNode.connect(this.audioContext.destination)
@@ -191,9 +215,9 @@ export class TimelineAudioPlayer {
         this.outputNode.connect(this.analysisDestination)
         this.reportAudioSource()
       }
-      void resumed.catch((error: unknown) => this.failStreaming(error, generation))
       if (this.options.audioLoadingMode === 'preload') {
-        void this.initializeBufferedTracks(generation, resumed)
+        void this.initializeBufferedTracks(sessionId)
+        if (this.playing && this.shouldPlayAudio()) this.startScheduler()
         return
       }
       const position = this.positionMs / 1000
@@ -213,15 +237,21 @@ export class TimelineAudioPlayer {
         ended: false,
       }))
       for (const record of this.streamingTracks) {
-        void this.initializeStreamingTrack(record, position, generation)
+        void this.initializeStreamingTrack(record, position, sessionId)
       }
-      this.streamingTimer = setInterval(() => this.scheduleStreaming(generation), 25)
+      if (this.playing && this.shouldPlayAudio()) this.startScheduler()
     } catch (error) {
-      this.failStreaming(error, generation)
+      this.failStreaming(error, sessionId)
     }
   }
 
-  private async initializeBufferedTracks(generation: number, resumed: Promise<void>) {
+  private startScheduler() {
+    if (this.streamingTimer !== null) return
+    const sessionId = this.loadSessionId
+    this.streamingTimer = setInterval(() => this.scheduleStreaming(sessionId), 25)
+  }
+
+  private async initializeBufferedTracks(sessionId: number) {
     const controller = new AbortController()
     this.loadController = controller
     const context = this.audioContext!
@@ -239,7 +269,7 @@ export class TimelineAudioPlayer {
               const data = await response.arrayBuffer()
               if (controller.signal.aborted) throw new Error('Audio load cancelled')
               const buffer = await context.decodeAudioData(data)
-              if (generation === this.streamingGeneration) this.bufferCache.set(audioUrl, buffer)
+              if (sessionId === this.loadSessionId) this.bufferCache.set(audioUrl, buffer)
               return buffer
             })()
             loads.set(audioUrl, loading)
@@ -247,8 +277,7 @@ export class TimelineAudioPlayer {
           return loading
         }),
       )
-      await resumed
-      if (generation !== this.streamingGeneration || this.disposed) return
+      if (sessionId !== this.loadSessionId || this.disposed) return
       this.streamingTracks = buffers.map((buffer) => ({
         input: null,
         iterator: null,
@@ -258,42 +287,42 @@ export class TimelineAudioPlayer {
         pending: false,
         ended: true,
       }))
-      this.scheduleStreaming(generation)
-      this.streamingTimer = setInterval(() => this.scheduleStreaming(generation), 25)
+      if (!this.playing && this.audioState === 'loading') this.setState('idle')
+      this.scheduleStreaming(sessionId)
     } catch (error) {
-      this.failStreaming(error, generation)
+      this.failStreaming(error, sessionId)
     }
   }
 
   private async initializeStreamingTrack(
     record: StreamingTrack,
     position: number,
-    generation: number,
+    sessionId: number,
   ) {
     try {
       const track = await record.input!.getPrimaryAudioTrack()
-      if (generation !== this.streamingGeneration) return
+      if (sessionId !== this.loadSessionId) return
       if (!track || !(await track.canDecode()))
         throw new Error('Audio codec is not supported by this browser.')
       const origin = await track.getFirstTimestamp()
-      if (generation !== this.streamingGeneration) return
+      if (sessionId !== this.loadSessionId) return
       record.origin = origin
       record.iterator = new AudioBufferSink(track).buffers(position + origin)
       record.pending = false
-      this.fillStreamingTrack(record, generation)
+      this.fillStreamingTrack(record, sessionId)
     } catch (error) {
-      this.failStreaming(error, generation)
+      this.failStreaming(error, sessionId)
     }
   }
 
-  private fillStreamingTrack(record: StreamingTrack, generation: number) {
+  private fillStreamingTrack(record: StreamingTrack, sessionId: number) {
     if (record.pending || record.ended || !record.iterator) return
     if (record.decodedUntil >= this.positionMs / 1000 + 2) return
     record.pending = true
     void record.iterator
       .next()
       .then((result) => {
-        if (generation !== this.streamingGeneration) return
+        if (sessionId !== this.loadSessionId) return
         record.pending = false
         if (result.done) {
           record.ended = true
@@ -310,24 +339,31 @@ export class TimelineAudioPlayer {
             record.decodedUntil = end
           }
         }
-        this.fillStreamingTrack(record, generation)
-        this.scheduleStreaming(generation)
+        if (!this.playing && this.audioState === 'loading') this.setState('idle')
+        this.fillStreamingTrack(record, sessionId)
+        this.scheduleStreaming(sessionId)
       })
-      .catch((error: unknown) => this.failStreaming(error, generation))
+      .catch((error: unknown) => this.failStreaming(error, sessionId))
   }
 
   step(deltaMs: number, positionMs: number, durationMs: number) {
     if (!this.playing) return
     if (this.shouldPlayAudio()) {
-      this.scheduleStreaming(this.streamingGeneration)
+      this.scheduleStreaming(this.loadSessionId)
     } else {
       this.positionMs = Math.max(0, Math.min(positionMs + deltaMs, durationMs))
       this.options.onPositionChange(this.positionMs)
     }
   }
 
-  private scheduleStreaming(generation: number) {
-    if (generation !== this.streamingGeneration || !this.playing || !this.audioContext) return
+  private scheduleStreaming(sessionId: number) {
+    if (
+      sessionId !== this.loadSessionId ||
+      !this.playing ||
+      !this.shouldPlayAudio() ||
+      !this.audioContext
+    )
+      return
     if (this.streamingTracks.length !== this.tracks.length) return
     const context = this.audioContext
     this.samplePosition()
@@ -348,7 +384,7 @@ export class TimelineAudioPlayer {
       record.buffers = record.buffers.filter(
         (buffer) => buffer.timestamp + buffer.buffer.duration > position,
       )
-      this.fillStreamingTrack(record, generation)
+      this.fillStreamingTrack(record, sessionId)
     }
     if (this.streamingTracks.some((track) => !track.iterator && !track.ended)) return
     const readyUntil = Math.min(
@@ -396,7 +432,7 @@ export class TimelineAudioPlayer {
     boundary.connect(context.destination)
     boundary.onended = () => {
       boundary.disconnect()
-      this.scheduleStreaming(generation)
+      this.scheduleStreaming(sessionId)
     }
     boundary.start()
     boundary.stop(anchor.contextTime + readyUntil - anchor.position)
@@ -429,6 +465,7 @@ export class TimelineAudioPlayer {
   dispose() {
     if (this.disposed) return
     this.pause()
+    this.stopStreaming()
     this.disposed = true
     this.bufferCache.clear()
     this.audioSourceChangeCallback?.(null)
