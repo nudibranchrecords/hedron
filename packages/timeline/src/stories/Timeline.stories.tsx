@@ -328,7 +328,6 @@ export const ManyTracksScrollable: Story = {
 
 export const Interactive = () => {
   const TIMELINE_DURATION = 60000 * 3
-  const [playheadPositionMs, setPlayheadPositionMs] = useState(0)
   const [playing, setPlaying] = useState(false)
   const [selectedTrackId, setSelectedTrackId] = useState<string | null>(null)
   const [pxPerSecond, setPxPerSecond] = useState(80)
@@ -446,7 +445,7 @@ export const Interactive = () => {
 
     manager.onUpdate((changed) => {
       setTrackValues((prev) => ({ ...prev, ...changed }))
-      setPlayheadPositionMs(manager.getPositionMs())
+      timelineRef.current?.setPlayheadPositionMs(manager.getPositionMs())
     })
 
     return () => manager.dispose()
@@ -469,7 +468,6 @@ export const Interactive = () => {
 
   const handlePlayheadChange = useCallback((time: number) => {
     managerRef.current?.goTo(time)
-    setPlayheadPositionMs(time)
     setPlaying(false)
     managerRef.current?.pause()
   }, [])
