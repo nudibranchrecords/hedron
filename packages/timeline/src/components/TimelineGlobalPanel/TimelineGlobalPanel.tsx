@@ -67,6 +67,7 @@ export const TimelineGlobalPanel = ({ engine }: TimelineGlobalPanelProps) => {
         <NodeContainer nodeId={isPlayingNode.id} />
         <NodeContainer nodeId={audioUrlNode.id} />
         <NodeContainer nodeId={durationNode.id} />
+        <NodeContainer nodeId={playheadPositionNode.id} />
       </ControlGrid>
       <div className="mb-xl">
         <Timeline
