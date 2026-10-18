@@ -401,9 +401,12 @@ export class TimelineAudioPlayer {
     }
 
     for (const record of this.streamingTracks) {
-      record.buffers = record.buffers.filter(
-        (buffer) => buffer.timestamp + buffer.buffer.duration > position,
-      )
+      if (this.options.audioLoadingMode === 'stream') {
+        // Discard any buffers that have already been played for stream mode
+        record.buffers = record.buffers.filter(
+          (buffer) => buffer.timestamp + buffer.buffer.duration > position,
+        )
+      }
       this.fillStreamingTrack(record, sessionId)
     }
     if (this.streamingTracks.some((track) => !track.iterator && !track.ended)) return
