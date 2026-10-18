@@ -144,6 +144,9 @@ export class TimelineAudioPlayer {
   }
 
   seek(positionMs: number, durationMs: number) {
+    console.log(positionMs === this.positionMs && durationMs === this.durationMs)
+    // Feeding a sampled position back from controlled state must not restart scheduled audio.
+    if (positionMs === this.positionMs && durationMs === this.durationMs) return
     const positionChanged = positionMs !== this.positionMs
     this.stopSources()
     this.positionMs = positionMs
@@ -366,14 +369,16 @@ export class TimelineAudioPlayer {
       .catch((error: unknown) => this.failStreaming(error, sessionId))
   }
 
-  step(deltaMs: number, positionMs: number, durationMs: number) {
+  /** Advances silent playback by engine time, or samples live playback from the audio clock. */
+  step(deltaMs: number) {
     if (!this.playing) return
     if (this.shouldOutputAudio()) {
       this.scheduleStreaming(this.loadSessionId)
     } else {
-      this.positionMs = Math.max(0, Math.min(positionMs + deltaMs, durationMs))
+      this.positionMs = Math.max(0, Math.min(this.positionMs + deltaMs, this.durationMs))
       this.options.onPositionChange(this.positionMs)
     }
+    if (this.positionMs >= this.durationMs) this.options.onPositionChange(0)
   }
 
   private scheduleStreaming(sessionId: number) {

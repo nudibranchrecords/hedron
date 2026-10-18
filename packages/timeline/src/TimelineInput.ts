@@ -81,12 +81,17 @@ export class TimelineInput implements IPlugin {
 
     engine.addOptionNodes(DEFAULT_TIMELINE_ID, TIMELINE_OPTION_NODE_CONFIGS)
 
+    const playHeadPositionNode = engine.getNodeOptionNode(DEFAULT_TIMELINE_ID, 'playheadPositionMs')
     this.timelineManagers.set(
       DEFAULT_TIMELINE_ID,
       new TimelineManager({
         durationMs: TIMELINE_DURATION,
         tracks: [],
         clock: engine.clock,
+        positionMs: 0,
+        onPositionChange: (positionMs) => {
+          engine.setParamValue(playHeadPositionNode.id, positionMs)
+        },
       }),
     )
 
@@ -110,20 +115,6 @@ export class TimelineInput implements IPlugin {
         },
       )
 
-      engine.subscribeToParamValue(isPlaying.id, (isPlaying) => {
-        if (isPlaying) {
-          manager.play()
-        } else {
-          manager.pause()
-        }
-      })
-
-      engine.subscribeToParamValue<number>(timelineDurationS.id, (timelineDurationS) => {
-        if (timelineDurationS !== undefined && timelineDurationS > 0) {
-          manager.setDurationMs(timelineDurationS * 1000)
-        }
-      })
-
       // Snaps duration to the audio's exact length when a new resource is picked.
       // Not `fireImmediately` - only fires on a later change, not on project load.
       const audioUrl = engine.getNodeOptionNode(timelineId, 'audioUrl')
@@ -136,13 +127,7 @@ export class TimelineInput implements IPlugin {
         this.setDurationFromAudioUrl(engine, timelineDurationS.id, url)
       })
 
-      // set the playhead position to the current value from the engine
-      const playHeadPositionMs = engine.getParamValue(playHeadPositionNode.id) as number
-      manager.goTo(playHeadPositionMs)
-
       manager.onUpdate((changed) => {
-        engine.setParamValue(playHeadPositionNode.id, manager.getPositionMs())
-
         const changedTrackIds = Object.keys(changed)
         if (changedTrackIds.length > 0) {
           const allTracks = getTimelineTracks(engine.getStoreState(), timelineId)
@@ -169,6 +154,24 @@ export class TimelineInput implements IPlugin {
           if (paramTargetNodeIds.length > 0) {
             engine.setMultipleParamValues(paramTargetNodeIds, paramValues)
           }
+        }
+      })
+
+      engine.subscribeToParamValue<number>(playHeadPositionNode.id, (positionMs) => {
+        if (positionMs !== undefined) manager.setPositionMs(positionMs)
+      })
+
+      engine.subscribeToParamValue<number>(timelineDurationS.id, (timelineDurationS) => {
+        if (timelineDurationS !== undefined && timelineDurationS > 0) {
+          manager.setDurationMs(timelineDurationS * 1000)
+        }
+      })
+
+      engine.subscribeToParamValue(isPlaying.id, (isPlaying) => {
+        if (isPlaying) {
+          manager.play()
+        } else {
+          manager.pause()
         }
       })
     })
@@ -201,7 +204,7 @@ export class TimelineInput implements IPlugin {
   update(_engine: HedronEngine, { deltaTime }: PluginUpdateArgs) {
     this.timelineManagers.forEach((manager) => {
       if (manager.isPlaying()) {
-        manager.step(deltaTime * 1000)
+        manager.playback.step(deltaTime * 1000)
       }
     })
   }

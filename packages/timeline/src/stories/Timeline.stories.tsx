@@ -417,22 +417,22 @@ export const Interactive = () => {
     const manager = new TimelineManager({
       durationMs: TIMELINE_DURATION,
       tracks: [],
+      positionMs: 0,
+      onPositionChange: (positionMs) => manager.setPositionMs(positionMs),
     })
     managerRef.current = manager
 
     return () => manager.dispose()
   }, [TIMELINE_DURATION])
 
-  // TimelineManager no longer self-drives via requestAnimationFrame (it's normally driven by
-  // HedronEngine.advanceFrame via TimelineInput's onFrame hook). Since this story has no engine,
-  // drive it manually here instead.
+  // Without an engine, drive playback from animation frames.
   useEffect(() => {
     let rafId: number
     let lastTime: number | null = null
 
     const tick = (now: number) => {
       if (lastTime !== null) {
-        managerRef.current?.step(now - lastTime)
+        managerRef.current?.playback.step(now - lastTime)
       }
       lastTime = now
       rafId = requestAnimationFrame(tick)
@@ -637,6 +637,8 @@ export const AudioStreaming = () => {
       tracks,
       durationMs: loaded.durationMs,
       audioLoadingMode: loaded.audioLoadingMode,
+      positionMs: 0,
+      onPositionChange: (positionMs) => manager.setPositionMs(positionMs),
     })
     managerRef.current = manager
     setPositionMs(0)
@@ -652,7 +654,7 @@ export const AudioStreaming = () => {
     let lastTime: number | null = null
     let lastDiagnosticTime = 0
     const tick = (now: number) => {
-      if (lastTime !== null) manager.step(now - lastTime)
+      if (lastTime !== null) manager.playback.step(now - lastTime)
       lastTime = now
       if (now - lastDiagnosticTime >= 100) {
         setPositionMs(manager.getPositionMs())

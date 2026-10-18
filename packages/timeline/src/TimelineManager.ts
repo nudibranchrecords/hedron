@@ -13,6 +13,7 @@ import type {
 export type TrackValues = Record<string, ParamValue>
 
 export type OnUpdateCallback = (values: TrackValues) => void
+export type OnPositionChangeCallback = (positionMs: number) => void
 
 export type {
   OnAudioSourceChangeCallback,
@@ -23,7 +24,8 @@ export type {
 export class TimelineManager {
   private tracks: TimelineManagerTrack[]
   private durationMs: number
-  private positionMs = 0
+  private positionMs: number
+  private onPositionChange: OnPositionChangeCallback
   private playing = false
   private onUpdateCallback: OnUpdateCallback | null = null
   private cachedValues: TrackValues = {}
@@ -35,27 +37,34 @@ export class TimelineManager {
   // Flattened (vector tracks expanded to their childTracks) view of `tracks`, kept in
   // sync by buildCache() - avoids re-walking the track tree on every computeValues/emitUpdate call.
   private flatTracks: TimelineManagerTrack[] = []
-  private audioPlayer: TimelineAudioPlayer
+  public readonly playback: TimelineAudioPlayer
   private disposed = false
 
+  /** The owner must synchronously feed accepted onPositionChange requests back through setPositionMs. */
   constructor({
     tracks,
     durationMs,
+    positionMs,
+    onPositionChange,
     clock,
     audioLoadingMode = 'preload',
   }: {
     tracks: TimelineManagerTrack[]
     durationMs: number
+    positionMs: number
+    onPositionChange: OnPositionChangeCallback
     clock?: Clock
     audioLoadingMode?: TimelineAudioLoadingMode
   }) {
     this.tracks = tracks
     this.durationMs = durationMs
+    this.positionMs = positionMs
+    this.onPositionChange = onPositionChange
     this.clock = clock ?? null
-    this.audioPlayer = new TimelineAudioPlayer({
+    this.playback = new TimelineAudioPlayer({
       audioLoadingMode,
       onPositionChange: (positionMs) => {
-        this.positionMs = positionMs
+        this.onPositionChange(positionMs)
       },
       onStateChange: (state) => {
         if (state === 'playing') {
@@ -72,6 +81,7 @@ export class TimelineManager {
         this.emitUpdate()
       },
     })
+    this.playback.seek(positionMs, durationMs)
     this.buildCache()
   }
 
@@ -100,7 +110,7 @@ export class TimelineManager {
         )
       }
     }
-    this.audioPlayer.setTracks(
+    this.playback.setTracks(
       this.flatTracks.filter(
         (track): track is TimelineManagerAudioTrack => track.trackType === 'audio',
       ),
@@ -109,12 +119,12 @@ export class TimelineManager {
   }
 
   getAudioDiagnostics() {
-    return this.audioPlayer.getDiagnostics(this.positionMs)
+    return this.playback.getDiagnostics(this.positionMs)
   }
 
-  getAudioBuffer = (url: string) => this.audioPlayer.getAudioBuffer(url)
+  getAudioBuffer = (url: string) => this.playback.getAudioBuffer(url)
 
-  subscribeAudioBuffers = (listener: () => void) => this.audioPlayer.subscribeAudioBuffers(listener)
+  subscribeAudioBuffers = (listener: () => void) => this.playback.subscribeAudioBuffers(listener)
 
   private resetKeyframeIndexes() {
     this.lastKeyframeIndex.clear()
@@ -200,26 +210,6 @@ export class TimelineManager {
     this.onUpdateCallback?.(changed)
   }
 
-  /**
-   * Advances playback position by deltaMs. Called once per engine frame (via TimelineInput's
-   * IPlugin.onFrame) while playing, for both real-time playback and fixed-framerate rendering.
-   */
-  step(deltaMs: number) {
-    if (!this.playing) return
-
-    this.audioPlayer.step(deltaMs, this.positionMs, this.durationMs)
-
-    if (this.clock) {
-      this.clock.beatDeltaMs = this.positionMs
-    }
-
-    this.emitUpdate()
-
-    if (this.positionMs >= this.durationMs) {
-      this.goTo(0)
-    }
-  }
-
   getAllTracks(): TimelineManagerTrack[] {
     return [...this.flatTracks]
   }
@@ -231,11 +221,11 @@ export class TimelineManager {
   play(options?: { silent?: boolean }) {
     if (this.playing || this.disposed) return
     this.playing = true
-    this.audioPlayer.play(this.positionMs, this.durationMs, options)
+    this.playback.play(this.positionMs, this.durationMs, options)
   }
 
   pause() {
-    this.audioPlayer.pause()
+    this.playback.pause()
     this.playing = false
 
     if (this.clock) {
@@ -244,12 +234,17 @@ export class TimelineManager {
   }
 
   goTo(timeMs: number) {
-    this.positionMs = Math.max(0, Math.min(timeMs, this.durationMs))
-    this.audioPlayer.seek(this.positionMs, this.durationMs)
-    this.resetKeyframeIndexes()
+    this.onPositionChange(Math.max(0, Math.min(timeMs, this.durationMs)))
+  }
 
+  /** Applies the owner's position and evaluates tracks. Negative values support pre-roll. */
+  setPositionMs(positionMs: number) {
+    if (positionMs === this.positionMs) return
+    if (positionMs < this.positionMs) this.resetKeyframeIndexes()
+    this.positionMs = positionMs
+    this.playback.seek(positionMs, this.durationMs)
     if (this.clock) {
-      this.clock.beatDeltaMs = this.positionMs
+      this.clock.beatDeltaMs = positionMs
     }
 
     this.emitUpdate()
@@ -261,7 +256,7 @@ export class TimelineManager {
    */
   goToBeforeStart(offsetMs: number) {
     this.goTo(0)
-    this.positionMs = -offsetMs
+    this.onPositionChange(-offsetMs)
   }
 
   setTracks(tracks: TimelineManagerTrack[]) {
@@ -275,6 +270,7 @@ export class TimelineManager {
 
     // Ensure position stays within the new duration
     this.goTo(Math.min(this.positionMs, this.durationMs))
+    this.playback.seek(this.positionMs, this.durationMs)
   }
 
   onUpdate(callback: OnUpdateCallback) {
@@ -282,7 +278,7 @@ export class TimelineManager {
   }
 
   onAudioSourceChange(callback: OnAudioSourceChangeCallback) {
-    this.audioPlayer.onAudioSourceChange(callback)
+    this.playback.onAudioSourceChange(callback)
   }
 
   getPositionMs() {
@@ -297,7 +293,7 @@ export class TimelineManager {
     if (this.disposed) return
     this.pause()
     this.disposed = true
-    this.audioPlayer.dispose()
+    this.playback.dispose()
     this.onUpdateCallback = null
   }
 }

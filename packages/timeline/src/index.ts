@@ -9,6 +9,7 @@ export { TimelineManager } from './TimelineManager'
 export type {
   TrackValues,
   OnUpdateCallback,
+  OnPositionChangeCallback,
   OnAudioSourceChangeCallback,
   TimelineAudioSource,
 } from './TimelineManager'
