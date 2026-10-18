@@ -419,6 +419,8 @@ export const Interactive = () => {
       tracks: [],
     })
     managerRef.current = manager
+
+    return () => manager.dispose()
   }, [TIMELINE_DURATION])
 
   // TimelineManager no longer self-drives via requestAnimationFrame (it's normally driven by
@@ -448,8 +450,6 @@ export const Interactive = () => {
       setTrackValues((prev) => ({ ...prev, ...changed }))
       timelineRef.current?.setPlayheadPositionMs(manager.getPositionMs())
     })
-
-    return () => manager.dispose()
   }, [timeline])
 
   useEffect(() => {
