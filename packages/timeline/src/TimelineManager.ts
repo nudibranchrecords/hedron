@@ -63,7 +63,7 @@ export class TimelineManager {
             this.clock.beatDeltaMs = this.positionMs
             this.clock.continue()
           }
-        } else {
+        } else if (this.playing) {
           this.clock?.stop()
         }
       },
