@@ -55,13 +55,13 @@ export class TimelineAudioPlayer {
 
   constructor(private options: TimelineAudioPlayerOptions) {}
 
-  private shouldPlayAudio() {
+  private shouldOutputAudio() {
     return !this.silent && this.tracks.length > 0
   }
 
   setTracks(tracks: AudioTrack[], durationMs: number) {
     if (this.disposed) return
-    if (this.shouldPlayAudio()) this.samplePosition()
+    if (this.shouldOutputAudio()) this.samplePosition()
     this.durationMs = durationMs
     const nextTracks = tracks.filter((track) => track.audioUrl)
     const urlsChanged =
@@ -116,7 +116,7 @@ export class TimelineAudioPlayer {
     this.durationMs = durationMs
     this.silent = options?.silent ?? false
     this.playing = true
-    if (this.shouldPlayAudio()) {
+    if (this.shouldOutputAudio()) {
       if (this.audioState === 'error') this.prepareAudio()
       const sessionId = this.loadSessionId
       try {
@@ -137,7 +137,7 @@ export class TimelineAudioPlayer {
   }
 
   pause() {
-    if (this.shouldPlayAudio()) this.samplePosition()
+    if (this.shouldOutputAudio()) this.samplePosition()
     this.stopSources()
     this.playing = false
     if (this.audioState !== 'error') this.setState('paused')
@@ -153,7 +153,7 @@ export class TimelineAudioPlayer {
       this.stopStreaming()
       if (this.tracks.length > 0) this.prepareAudio()
     }
-    if (this.playing && this.shouldPlayAudio()) {
+    if (this.playing && this.shouldOutputAudio()) {
       this.startScheduler()
       this.scheduleStreaming(this.loadSessionId)
     }
@@ -234,7 +234,7 @@ export class TimelineAudioPlayer {
       }
       if (this.options.audioLoadingMode === 'preload') {
         void this.initializeBufferedTracks(sessionId)
-        if (this.playing && this.shouldPlayAudio()) this.startScheduler()
+        if (this.playing && this.shouldOutputAudio()) this.startScheduler()
         return
       }
       const position = this.positionMs / 1000
@@ -256,7 +256,7 @@ export class TimelineAudioPlayer {
       for (const record of this.streamingTracks) {
         void this.initializeStreamingTrack(record, position, sessionId)
       }
-      if (this.playing && this.shouldPlayAudio()) this.startScheduler()
+      if (this.playing && this.shouldOutputAudio()) this.startScheduler()
     } catch (error) {
       this.failStreaming(error, sessionId)
     }
@@ -368,7 +368,7 @@ export class TimelineAudioPlayer {
 
   step(deltaMs: number, positionMs: number, durationMs: number) {
     if (!this.playing) return
-    if (this.shouldPlayAudio()) {
+    if (this.shouldOutputAudio()) {
       this.scheduleStreaming(this.loadSessionId)
     } else {
       this.positionMs = Math.max(0, Math.min(positionMs + deltaMs, durationMs))
@@ -380,7 +380,7 @@ export class TimelineAudioPlayer {
     if (
       sessionId !== this.loadSessionId ||
       !this.playing ||
-      !this.shouldPlayAudio() ||
+      !this.shouldOutputAudio() ||
       !this.audioContext
     )
       return
