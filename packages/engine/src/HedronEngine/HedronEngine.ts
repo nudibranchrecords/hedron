@@ -27,6 +27,7 @@ import {
   SketchModuleItem,
   ParamNode,
   ShotNode,
+  ShotFunc,
   ConfigParam,
   ConfigShot,
   ConfigCustomNode,
@@ -50,7 +51,7 @@ export class HedronEngine {
   private sketchesUrl: string | null = null
   private sceneManager: SceneManager
   public plugins: Record<string, IPlugin> = {}
-  private registeredShots: Record<string, (args: ShotArgsObject) => void> = {}
+  private registeredShots: Record<string, ShotFunc> = {}
   private shotListeners: Record<string, (() => void)[]> = {}
   private onFrameStart?: () => void
   private onFrameEnd?: () => void
@@ -111,23 +112,9 @@ export class HedronEngine {
     // Only process plugins with global options
     if (!plugin.globalOptionNodesConfig) return
 
-    // Create option nodes in the store
-    this.store.setState((state) => {
-      for (const cfg of plugin.globalOptionNodesConfig || []) {
-        const nodeId = `${plugin.id}-global-${cfg.key}`
-
-        // Only create the node if it doesn't already exist
-        if (state.nodes[nodeId]) {
-          continue
-        }
-
-        // Create proper imported config with required fields
-        const cfgImported = ensureNodeConfig(cfg)
-
-        // Add the node to the store using the shared addNode utility
-        addNode(state, nodeId, null, cfgImported)
-      }
-    })
+    for (const cfg of plugin.globalOptionNodesConfig) {
+      this.addNodeOnce(`${plugin.id}-global-${cfg.key}`, null, cfg)
+    }
   }
 
   public registerPlugin(plugin: IPlugin) {
@@ -145,6 +132,7 @@ export class HedronEngine {
     this.store.setState((state) => {
       addNode(state, nodeId, parentId, ensureNodeConfig(config))
     })
+    this.registerConfiguredShot(nodeId, config)
   }
 
   public addNodeOnce(
@@ -152,11 +140,15 @@ export class HedronEngine {
     parentId: string | null,
     config: ConfigParam | ConfigShot | ConfigCustomNode,
   ) {
-    if (this.store.getState().nodes[nodeId]) return
+    if (this.store.getState().nodes[nodeId]) {
+      this.registerConfiguredShot(nodeId, config)
+      return
+    }
     this.addNode(nodeId, parentId, config)
   }
 
   public addOptionNodes(parentId: string, configs: readonly (ConfigParam | ConfigShot)[]) {
+    const shots: { id: string; config: ConfigShot }[] = []
     this.store.setState((state) => {
       const parentNode = state.nodes[parentId]
 
@@ -166,18 +158,35 @@ export class HedronEngine {
       }
 
       for (const cfg of configs) {
-        const optionNodeExists = parentNode.childGroups.optionNodeIds.some((id) => {
+        const existingId = parentNode.childGroups.optionNodeIds.find((id) => {
           const node = state.nodes[id] as ParamNode | ShotNode | undefined
           return node?.key === cfg.key
         })
 
-        if (optionNodeExists) continue
-
-        const nodeId = createUniqueId()
-        addNode(state, nodeId, parentId, ensureNodeConfig(cfg))
-        parentNode.childGroups.optionNodeIds.push(nodeId)
+        const nodeId = existingId ?? createUniqueId()
+        if (!existingId) {
+          addNode(state, nodeId, parentId, ensureNodeConfig(cfg))
+          parentNode.childGroups.optionNodeIds.push(nodeId)
+        }
+        if (cfg.nodeType === 'shot') {
+          shots.push({ id: nodeId, config: cfg })
+        }
       }
     })
+    for (const { id, config } of shots) {
+      this.registerConfiguredShot(id, config)
+    }
+  }
+
+  private registerConfiguredShot(
+    nodeId: string,
+    config: ConfigParam | ConfigShot | ConfigCustomNode,
+  ) {
+    if (config.nodeType !== 'shot' || !config.func) return
+    if (this.store.getState().nodes[nodeId]?.nodeType !== 'shot') {
+      throw new Error(`Cannot register shot function: node "${nodeId}" is not a shot`)
+    }
+    this.registerShot(nodeId, config.func)
   }
 
   public setNodeCustomData(nodeId: string, customData: Record<string, unknown>) {
@@ -414,7 +423,7 @@ export class HedronEngine {
     return nodes.map((config) => `${pluginId}-global-${config.key}`)
   }
 
-  public registerShot(shotId: string, shotFunc: (value: ShotArgsObject) => void) {
+  public registerShot(shotId: string, shotFunc: ShotFunc) {
     this.unregisterShot(shotId) // Unregister existing shot if it exists to avoid duplicates
     this.registeredShots[shotId] = shotFunc
   }
@@ -440,7 +449,7 @@ export class HedronEngine {
           return
         }
 
-        sketchInstance?.[shotNode.key]?.({
+        return sketchInstance?.[shotNode.key]?.({
           params,
           scene: sketchScene,
           shotArgs,
@@ -465,7 +474,10 @@ export class HedronEngine {
   }
 
   public fireShot(shotId: string, shotArgs?: ShotArgsObject) {
-    this.registeredShots[shotId]?.(shotArgs ?? {})
+    const result = this.registeredShots[shotId]?.(shotArgs ?? {})
+    result?.catch((error: unknown) => {
+      console.error(`Shot "${shotId}" failed:`, error)
+    })
     this.shotListeners[shotId]?.forEach((listener) => listener())
   }
 

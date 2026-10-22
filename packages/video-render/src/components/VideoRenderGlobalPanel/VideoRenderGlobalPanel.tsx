@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useSyncExternalStore } from 'react'
 import {
   ControlGrid,
   NodeContainer,
@@ -7,17 +7,21 @@ import {
   useParamValue,
 } from '@hedron-gl/ui-core'
 import { DEFAULT_TIMELINE_ID, TimelineOptionNodes } from '@hedron-gl/timeline'
-import { useCaptureFrameShot } from './useCaptureFrameShot'
 import c from './VideoRenderGlobalPanel.module.css'
 import { VIDEO_RENDER_NODE_ID } from '@/constants'
 import { VideoRenderOptionNodes, VideoRenderPlugin } from '@/VideoRenderPlugin'
-import { RenderFramesOptions, RenderProgress } from '@/types'
 
 export function VideoRenderGlobalPanel(): JSX.Element {
-  useCaptureFrameShot()
-
   const engine = useEngine()
   const videoRenderPlugin = engine.getPlugin<VideoRenderPlugin>('video-render')
+  if (!videoRenderPlugin) {
+    throw new Error('Video Render plugin is not registered')
+  }
+  const { isRendering, progress, status, error } = useSyncExternalStore(
+    videoRenderPlugin.subscribeToRenderState,
+    videoRenderPlugin.getRenderState,
+    videoRenderPlugin.getRenderState,
+  )
 
   // Knows about the timeline plugin (reads its duration/audio); the timeline package has no
   // knowledge of this plugin.
@@ -36,82 +40,9 @@ export function VideoRenderGlobalPanel(): JSX.Element {
   const fpsNode = optionNodes['fps']!
   const prewarmSecondsNode = optionNodes['prewarmSeconds']!
 
-  const outputDirAbsolute = useParamValue<string | null>(outputDirNode.id)
-  const name = useParamValue<string>(nameNode.id, '')
-  const createVideo = useParamValue<boolean>(createVideoNode.id)
-  const width = useParamValue<number>(widthNode.id)
-  const height = useParamValue<number>(heightNode.id)
   const fps = useParamValue<number>(fpsNode.id, 30)
-  const prewarmSeconds = useParamValue<number>(prewarmSecondsNode.id)
-
-  const [isRendering, setIsRendering] = useState(false)
-  const [progress, setProgress] = useState(0)
-  const [renderingStatus, setRenderingStatus] = useState('Preparing...')
 
   const frameCount = Math.max(1, Math.round(durationSeconds * (fps || 30)))
-
-  const handleRender = useCallback(async () => {
-    if (!outputDirAbsolute || isRendering) return
-
-    setIsRendering(true)
-    setProgress(0)
-    setRenderingStatus('Preparing to render...')
-
-    try {
-      const handleProgress = (progress: RenderProgress) => {
-        if (progress.stage === 'analyzing-audio') {
-          setRenderingStatus('Analyzing audio...')
-        } else if (progress.stage === 'prewarming') {
-          setRenderingStatus(`Prewarming: ${progress.framesDone}/${progress.totalFrames}`)
-        } else if (progress.stage === 'rendering-frames') {
-          setProgress(Math.floor((progress.framesSaved / progress.totalFrames) * 100))
-          setRenderingStatus(`Rendering frames: ${progress.framesSaved}/${progress.totalFrames}`)
-        } else if (progress.stage === 'building-video') {
-          setRenderingStatus('Creating video file...')
-        }
-      }
-
-      const options: RenderFramesOptions = {
-        frameCount,
-        name,
-        fps,
-        outputDirAbsolute,
-        video: createVideo,
-        width,
-        height,
-        audioFileName: audioFileName ?? undefined,
-        prewarmSeconds,
-      }
-      await videoRenderPlugin?.renderFrames(options, handleProgress)
-
-      setProgress(100)
-      setRenderingStatus('Render completed!')
-      setTimeout(() => {
-        setIsRendering(false)
-        setProgress(0)
-      }, 2000)
-    } catch (error) {
-      console.error('Error during rendering:', error)
-      setIsRendering(false)
-    }
-  }, [
-    outputDirAbsolute,
-    isRendering,
-    frameCount,
-    name,
-    fps,
-    createVideo,
-    width,
-    height,
-    audioFileName,
-    prewarmSeconds,
-    videoRenderPlugin,
-  ])
-
-  useEffect(() => {
-    if (!renderShotNode) return
-    engine.registerShot(renderShotNode.id, () => handleRender())
-  }, [engine, renderShotNode, handleRender])
 
   return (
     <div className={c.form}>
@@ -137,13 +68,15 @@ export function VideoRenderGlobalPanel(): JSX.Element {
 
       {isRendering && (
         <div className={c.progressContainer}>
-          <div>{renderingStatus}</div>
+          <div>{status}</div>
           <div className={c.progressBar}>
             <div className={c.progressFill} style={{ width: `${progress}%` }} />
           </div>
           <div className={c.status}>{progress}% complete</div>
         </div>
       )}
+
+      {error && <div role="alert">{error}</div>}
 
       <ControlGrid>
         {renderShotNode && <NodeContainer nodeId={renderShotNode.id} />}

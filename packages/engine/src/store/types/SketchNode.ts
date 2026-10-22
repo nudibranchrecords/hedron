@@ -17,7 +17,7 @@ type SketchConfigParamBase = Exclude<ConfigParam, ConfigParamNumber> | SketchCon
 
 export type SketchConfigParam = WithOptional<SketchConfigParamBase, 'nodeType'>
 
-export type SketchConfigShot = WithOptional<ConfigShot, 'nodeType'>
+export type SketchConfigShot = WithOptional<Omit<ConfigShot, 'func'>, 'nodeType'>
 
 interface ConfigParamGroup {
   groupTitle?: string

@@ -18,6 +18,13 @@ export type RenderProgress =
   | { stage: 'rendering-frames'; framesSaved: number; totalFrames: number }
   | { stage: 'building-video' }
 
+export interface VideoRenderState {
+  isRendering: boolean
+  progress: number
+  status: string
+  error: string | null
+}
+
 export interface SaveFrameOptions {
   name?: string
   frameIndex?: number | string
