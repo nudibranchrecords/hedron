@@ -39,10 +39,22 @@ export function VideoRenderGlobalPanel(): JSX.Element {
   const heightNode = optionNodes['height']!
   const fpsNode = optionNodes['fps']!
   const prewarmSecondsNode = optionNodes['prewarmSeconds']!
+  const startSecondsNode = optionNodes['startSeconds']!
+  const endSecondsNode = optionNodes['endSeconds']!
 
   const fps = useParamValue<number>(fpsNode.id, 30)
+  const startSeconds = useParamValue<number>(startSecondsNode.id, 0)
+  const endSeconds = useParamValue<number>(endSecondsNode.id, durationSeconds)
 
-  const frameCount = Math.max(1, Math.round(durationSeconds * (fps || 30)))
+  const validRange =
+    Number.isFinite(startSeconds) &&
+    Number.isFinite(endSeconds) &&
+    startSeconds >= 0 &&
+    endSeconds > startSeconds &&
+    endSeconds <= durationSeconds
+  const frameCount = validRange
+    ? Math.max(1, Math.round((endSeconds - startSeconds) * (fps || 30)))
+    : 0
 
   return (
     <div className={c.form}>
@@ -54,6 +66,11 @@ export function VideoRenderGlobalPanel(): JSX.Element {
       </ControlGrid>
 
       <ControlGrid>
+        <NodeContainer nodeId={startSecondsNode.id} />
+        <NodeContainer nodeId={endSecondsNode.id} />
+      </ControlGrid>
+
+      <ControlGrid>
         <NodeContainer nodeId={widthNode.id} />
         <NodeContainer nodeId={heightNode.id} />
         <NodeContainer nodeId={fpsNode.id} />
@@ -62,9 +79,14 @@ export function VideoRenderGlobalPanel(): JSX.Element {
 
       <small>
         Width/height of 0 uses the current canvas size. Create Video requires ffmpeg. Timeline is{' '}
-        {(durationSeconds || 0).toFixed(1)}s, rendering {frameCount} frames at {fps || 30}fps.
+        {(durationSeconds || 0).toFixed(1)}s, exporting {startSeconds}s to {endSeconds}s (
+        {frameCount} frames at {fps || 30}fps).
         {audioFileName ? ` Audio: ${audioFileName}.` : ' No audio resource set on the timeline.'}
       </small>
+
+      {!validRange && (
+        <div role="alert">Choose a range within the timeline with end after start.</div>
+      )}
 
       {isRendering && (
         <div className={c.progressContainer}>

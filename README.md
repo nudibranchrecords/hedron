@@ -57,6 +57,14 @@ Video-render shots are registered by the plugin, independently of its panel.
 The panel subscribes to plugin-owned render progress and errors; closing it
 does not disable capture/render or reset an active render.
 
+Video export has editable Start Seconds and End Seconds controls, initially 0
+and the timeline duration at plugin initialization. Changing the timeline duration
+does not overwrite the export end. The range must satisfy
+`0 <= start < end <= timeline duration`; frame count is the range duration times
+FPS, rounded to the nearest whole frame (at least one). Capture, offline audio
+analysis, and exported audio start at the selected offset. Prewarming uses the
+tail of the selected range before returning to its start.
+
 ### Renderer
 
 You can configure the renderer type by creating a `.env` file in this directory:

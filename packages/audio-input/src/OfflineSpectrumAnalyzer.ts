@@ -12,6 +12,8 @@ export interface OfflineAnalysisOptions {
   fps: number
   /** Total number of frames to precompute (should match the render's frame count). */
   frameCount: number
+  /** Audio position of the first analysis row. Defaults to 0. */
+  startSeconds?: number
   /** Must match the live AudioContext's rate - AudioAnalyzer derives its bin-to-frequency mapping from it. */
   sampleRate: number
   /** Linear gain applied before analysis, mirroring the live element path's gain node. */
@@ -42,6 +44,7 @@ export const analyzeAudioOffline = async ({
   audioBuffer,
   fps,
   frameCount,
+  startSeconds = 0,
   sampleRate,
   gain,
   fftSize,
@@ -82,7 +85,10 @@ export const analyzeAudioOffline = async ({
   const suspendTimes: (number | null)[] = []
   let lastTime = 0
   for (let frame = 0; frame < frameCount; frame++) {
-    let time = Math.max(quantumDuration, quantizeToRenderQuantum(frame / fps, sampleRate))
+    let time = Math.max(
+      quantumDuration,
+      quantizeToRenderQuantum(startSeconds + frame / fps, sampleRate),
+    )
     if (time <= lastTime) {
       time = lastTime + quantumDuration
     }

@@ -24,6 +24,7 @@ export interface RenderSequenceOptions {
   frameCount: number
   /** Resource filename (not an absolute path) of the audio to mux in, resolved against the current resources directory. */
   audioFileName?: string
+  startSeconds?: number
 }
 
 export interface SaveFrameSequenceResponse {

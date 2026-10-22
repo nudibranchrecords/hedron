@@ -8,7 +8,9 @@ export interface RenderFramesOptions {
   height?: number
   /** Resource filename (not an absolute path) of the audio to mux in. */
   audioFileName?: string
-  /** Seconds from the end of the timeline to run (uncaptured) before frame 0, for seamless loops. */
+  /** Timeline position of the first exported frame. Defaults to 0. */
+  startSeconds?: number
+  /** Seconds from the end of the selected range to run before frame 0, for seamless loops. */
   prewarmSeconds?: number
 }
 
@@ -44,6 +46,8 @@ export interface BuildVideoOptions {
   frameCount: number
   /** Resource filename (not an absolute path) of the audio to mux in. */
   audioFileName?: string
+  /** Offset into the audio resource, matching the first exported frame. */
+  startSeconds?: number
 }
 
 export interface BuildVideoResult {

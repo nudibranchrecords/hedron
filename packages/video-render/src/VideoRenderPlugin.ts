@@ -19,11 +19,30 @@ const toEven = (n: number) => Math.ceil(n / 2) * 2
 
 // Render settings as option nodes (rather than component-local state) so they get the standard
 // param UI for free and are persisted with the project via the engine's normal save/load path.
-export const createVideoRenderOptionNodeConfigs = (actions: {
-  captureFrame: ShotFunc
-  render: ShotFunc
-}) =>
+export const createVideoRenderOptionNodeConfigs = (
+  actions: {
+    captureFrame: ShotFunc
+    render: ShotFunc
+  },
+  timelineDuration: number,
+) =>
   defineOptionNodeConfigs([
+    {
+      nodeType: 'param',
+      key: 'startSeconds',
+      title: 'Start Seconds',
+      valueType: 'number',
+      displayMode: 'field',
+      defaultValue: 0,
+    },
+    {
+      nodeType: 'param',
+      key: 'endSeconds',
+      title: 'End Seconds',
+      valueType: 'number',
+      displayMode: 'field',
+      defaultValue: timelineDuration,
+    },
     {
       nodeType: 'param',
       key: 'outputDirAbsolute',
@@ -78,7 +97,7 @@ export const createVideoRenderOptionNodeConfigs = (actions: {
       sliderMax: 120,
     },
     {
-      // Runs the timeline's last N seconds (uncaptured) before frame 0, so feedback/smoothing state loops seamlessly.
+      // Runs the selected range's last N seconds (uncaptured) before frame 0.
       nodeType: 'param',
       key: 'prewarmSeconds',
       title: 'Prewarm Seconds',
@@ -150,11 +169,24 @@ export class VideoRenderPlugin implements IPlugin {
 
     engine.addOptionNodes(
       VIDEO_RENDER_NODE_ID,
-      createVideoRenderOptionNodeConfigs({
-        captureFrame: () => this.captureFrame(),
-        render: () => this.render(),
-      }),
+      createVideoRenderOptionNodeConfigs(
+        {
+          captureFrame: () => this.captureFrame(),
+          render: () => this.render(),
+        },
+        this.getTimelineDuration(),
+      ),
     )
+  }
+
+  private getTimelineDuration(): number {
+    const engine = this.requireEngine()
+    const node = engine.getNodeOptionNode(DEFAULT_TIMELINE_ID, 'timelineDurationS')
+    const duration = engine.getStoreState().paramValues[node.id]
+    if (typeof duration !== 'number' || !Number.isFinite(duration) || duration <= 0) {
+      throw new Error('Timeline duration must be a positive number')
+    }
+    return duration
   }
 
   private getRenderOptions(): RenderFramesOptions {
@@ -174,6 +206,8 @@ export class VideoRenderPlugin implements IPlugin {
     const height = readValue(VIDEO_RENDER_NODE_ID, 'height')
     const fps = readValue(VIDEO_RENDER_NODE_ID, 'fps')
     const prewarmSeconds = readValue(VIDEO_RENDER_NODE_ID, 'prewarmSeconds')
+    const startSeconds = readValue(VIDEO_RENDER_NODE_ID, 'startSeconds')
+    const endSeconds = readValue(VIDEO_RENDER_NODE_ID, 'endSeconds')
     const duration = readValue(DEFAULT_TIMELINE_ID, 'timelineDurationS')
     const audioFileName = readValue(DEFAULT_TIMELINE_ID, 'audioUrl')
 
@@ -184,10 +218,22 @@ export class VideoRenderPlugin implements IPlugin {
       typeof height !== 'number' ||
       typeof fps !== 'number' ||
       typeof prewarmSeconds !== 'number' ||
+      typeof startSeconds !== 'number' ||
+      typeof endSeconds !== 'number' ||
       typeof duration !== 'number' ||
       (audioFileName !== null && typeof audioFileName !== 'string')
     ) {
       throw new Error('Invalid video render or timeline settings')
+    }
+
+    if (
+      !Number.isFinite(startSeconds) ||
+      !Number.isFinite(endSeconds) ||
+      startSeconds < 0 ||
+      endSeconds <= startSeconds ||
+      endSeconds > duration
+    ) {
+      throw new Error('Export range must satisfy 0 <= start < end <= timeline duration')
     }
 
     return {
@@ -198,7 +244,8 @@ export class VideoRenderPlugin implements IPlugin {
       height,
       fps: fps || 30,
       prewarmSeconds,
-      frameCount: Math.max(1, Math.round(duration * (fps || 30))),
+      startSeconds,
+      frameCount: Math.max(1, Math.round((endSeconds - startSeconds) * (fps || 30))),
       audioFileName: audioFileName ?? undefined,
     }
   }
@@ -279,9 +326,13 @@ export class VideoRenderPlugin implements IPlugin {
       height,
       audioFileName,
       prewarmSeconds = 0,
+      startSeconds = 0,
     }: RenderFramesOptions,
     onProgress?: (progress: RenderProgress) => void,
   ) {
+    if (!Number.isFinite(startSeconds) || startSeconds < 0) {
+      throw new Error('Export start seconds must be a non-negative number')
+    }
     const engine = this.requireEngine()
     const timelinePlugin = engine.getPlugin<TimelineInput>('timeline-input')
     const defaultTimelineManager = timelinePlugin?.timelineManagers.get(DEFAULT_TIMELINE_ID)
@@ -322,6 +373,7 @@ export class VideoRenderPlugin implements IPlugin {
             url: audioUrl,
             fps,
             frameCount,
+            startSeconds,
             getTimeMs: () => defaultTimelineManager.getPositionMs(),
           })
           offlineAnalysisActive = true
@@ -329,14 +381,15 @@ export class VideoRenderPlugin implements IPlugin {
       }
 
       // Each frame advances the timeline before rendering, so the playhead is parked one frame before the
-      // frame to render first. Frame k then shows exactly k/fps - the end point (== 0 in a loop) is never rendered.
+      // frame to render first. Frame k shows startSeconds + k/fps.
       const frameMs = 1000 / fps
       const seekBeforeFrame = (frame: number) => {
         timelinePlugin?.timelineManagers.forEach((manager) => {
-          if (frame > 0) {
-            manager.goTo((frame - 1) * frameMs)
+          const positionMs = startSeconds * 1000 + (frame - 1) * frameMs
+          if (positionMs >= 0) {
+            manager.goTo(positionMs)
           } else {
-            manager.goToBeforeStart(frameMs)
+            manager.goToBeforeStart(-positionMs)
           }
         })
       }
@@ -411,6 +464,7 @@ export class VideoRenderPlugin implements IPlugin {
         fps,
         frameCount,
         audioFileName,
+        startSeconds,
       })
       if (result.success && result.videoPath) {
         console.log(`Video created at: ${result.videoPath}`)

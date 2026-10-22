@@ -24,6 +24,7 @@ interface BuildVideoOptions {
   fps: number
   frameCount: number
   audioFileName?: string
+  startSeconds?: number
 }
 
 /**
@@ -36,6 +37,7 @@ export async function buildVideoFromFrames({
   fps,
   frameCount,
   audioFileName,
+  startSeconds = 0,
 }: BuildVideoOptions): Promise<string> {
   const videoDuration = frameCount / fps
   const videoPath = path.join(dirPath, `${name}.mp4`)
@@ -51,6 +53,8 @@ export async function buildVideoFromFrames({
       String(fps),
       '-i',
       framesPattern,
+      '-frames:v',
+      String(frameCount),
       '-c:v',
       'libx264',
       '-pix_fmt',
@@ -76,6 +80,8 @@ export async function buildVideoFromFrames({
   // Convert to WAV, trimmed to the video's duration.
   await runFfmpeg([
     '-y',
+    '-ss',
+    String(startSeconds),
     '-i',
     audioPath,
     '-t',
@@ -99,6 +105,8 @@ export async function buildVideoFromFrames({
     '0:v',
     '-map',
     '1:a',
+    '-frames:v',
+    String(frameCount),
     '-c:v',
     'libx264',
     '-pix_fmt',
