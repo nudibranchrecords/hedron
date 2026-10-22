@@ -10,14 +10,16 @@ import { useState } from 'react'
 import { ShotNode, ParamNode } from '@hedron-gl/engine'
 import c from './SketchControls.module.css'
 import { useAppStore } from '@renderer/appStore'
-import { engine, pluginViews } from '@renderer/engine'
+import { engine } from '@renderer/engine'
+import { usePluginViews, viewKey } from '@renderer/plugins/pluginViews'
 
 const SketchPluginCollapsibles = ({ sketchId }: { sketchId: string }) => {
   const [openById, setOpenById] = useState<Record<string, boolean>>({})
+  const sketchPanels = usePluginViews((state) => state.sketchCollapsible)
 
   return (
     <>
-      {Object.entries(pluginViews.sketchCollapsible).map(([pluginId, PluginPanel]) => {
+      {Object.entries(sketchPanels).map(([pluginId, PluginPanel]) => {
         const enginePlugin = engine.plugins[pluginId]
         const pluginName = enginePlugin?.name ?? pluginId
         const iconName = (enginePlugin?.iconName ?? 'extension') as IconName
@@ -39,7 +41,9 @@ const SketchPluginCollapsibles = ({ sketchId }: { sketchId: string }) => {
                 }))
               }
             >
-              <PluginPanel sketchId={sketchId} engine={engine} />
+              <HedronErrorBoundary key={viewKey(PluginPanel)}>
+                <PluginPanel sketchId={sketchId} engine={engine} />
+              </HedronErrorBoundary>
             </Collapsible>
           </div>
         )

@@ -89,6 +89,8 @@ export interface PluginViews {
   inputPanel?: Record<string, ComponentType<InputPanelProps>>
   /** Shown as a collapsible under every sketch's params. */
   sketchCollapsible?: ComponentType<SketchPanelProps>
+  /** A small always-visible view in the strip under the viewer, such as the clock. */
+  widget?: ComponentType
 }
 
 export interface HedronPluginDefinition<P extends IPlugin = IPlugin> {
