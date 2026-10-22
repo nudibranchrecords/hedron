@@ -67,6 +67,12 @@ export interface IPlugin {
    * Time-based plugins (LFO, timeline) should advance state here instead of self-scheduling via rAF.
    */
   update?: (engine: HedronEngine, args: PluginUpdateArgs) => void
+
+  /**
+   * Called when the plugin is unregistered (disabled, reloaded or removed).
+   * Release timers, devices and listeners here; nodes the plugin created stay in the store.
+   */
+  dispose?: (engine: HedronEngine) => void
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

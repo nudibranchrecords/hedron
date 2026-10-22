@@ -22,13 +22,19 @@ declare global {
         POSTPROCESSING: typeof import('postprocessing')
       }
       plugins?: Record<string, IPlugin>
+      /** Host modules shared with runtime-loaded plugins, keyed by import specifier. */
+      modules?: Record<string, unknown>
+      /** APIs plugins expose to sketches, keyed by plugin id. */
+      pluginApis?: Record<string, Record<string, unknown>>
     }
   }
 }
 
 export const initializeGlobalVars = () => {
   if (typeof window !== 'undefined') {
+    // Merge so anything registered before the engine was constructed survives
     window.__HEDRON = {
+      ...window.__HEDRON,
       dependencies: {
         THREE,
         THREE_WEBGPU,
@@ -54,10 +60,6 @@ export const globalVarsRef: GlobalEngineVarsRef = {
     {
       packageName: 'three',
       varName: 'THREE',
-    },
-    {
-      packageName: 'three/webgpu',
-      varName: 'THREE_WEBGPU',
     },
     {
       packageName: 'three/webgpu',

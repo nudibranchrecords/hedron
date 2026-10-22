@@ -50,6 +50,7 @@ export class HedronEngine {
   private sketchesUrl: string | null = null
   private sceneManager: SceneManager
   public plugins: Record<string, IPlugin> = {}
+  private pluginsInitiated = false
   private registeredShots: Record<string, ShotFunc> = {}
   private shotListeners: Record<string, (() => void)[]> = {}
   private onFrameStart?: () => void
@@ -97,10 +98,30 @@ export class HedronEngine {
   }
 
   public registerPlugin(plugin: IPlugin) {
+    // Re-registering an id (e.g. a hot reload) replaces the old instance cleanly
+    if (this.plugins[plugin.id]) this.unregisterPlugin(plugin.id)
+
     this.plugins[plugin.id] = plugin
     // Make plugins available in the global window object for debugging
     window.__HEDRON = window.__HEDRON || {}
     window.__HEDRON.plugins = this.plugins
+
+    // Plugins registered after a project has loaded missed `initiatePlugins`, so catch them up
+    if (this.pluginsInitiated) plugin.onEngineInitialize?.(this)
+  }
+
+  /** Disposes and removes a plugin; the nodes it created stay in the store so its state survives a reload. */
+  public unregisterPlugin(pluginId: string) {
+    const plugin = this.plugins[pluginId]
+    if (!plugin) return
+
+    delete this.plugins[pluginId]
+
+    try {
+      plugin.dispose?.(this)
+    } catch (error) {
+      console.error(`[HEDRON] Plugin "${pluginId}" threw while disposing`, error)
+    }
   }
 
   public addNode(
@@ -638,6 +659,7 @@ export class HedronEngine {
   }
 
   public initiatePlugins() {
+    this.pluginsInitiated = true
     Object.values(this.plugins).forEach((plugin) => {
       plugin.onEngineInitialize?.(this)
     })
