@@ -47,14 +47,14 @@ export class TimelineManager {
     positionMs,
     onPositionChange,
     clock,
-    audioLoadingMode = 'preload',
+    audioLoadingMode,
   }: {
     tracks: TimelineManagerTrack[]
     durationMs: number
     positionMs: number
     onPositionChange: OnPositionChangeCallback
     clock?: Clock
-    audioLoadingMode?: TimelineAudioLoadingMode
+    audioLoadingMode: TimelineAudioLoadingMode
   }) {
     this.tracks = tracks
     this.durationMs = durationMs

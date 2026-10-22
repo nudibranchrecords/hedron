@@ -419,6 +419,7 @@ export const Interactive = () => {
       tracks: [],
       positionMs: 0,
       onPositionChange: (positionMs) => manager.setPositionMs(positionMs),
+      audioLoadingMode: 'preload',
     })
     managerRef.current = manager
 

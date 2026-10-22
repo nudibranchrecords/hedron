@@ -26,7 +26,8 @@ export const engine = new HedronEngine({
 
 export const engineStore = engine.getStore()
 
-const timelineInput = new TimelineInput()
+// For desktop usage it's better to load the entire audio upfront rather than streaming it
+const timelineInput = new TimelineInput({ audioLoadingMode: 'preload' })
 const audioInput = new AudioInput(engine)
 
 engine.registerPlugin(new MidiInput(engine))

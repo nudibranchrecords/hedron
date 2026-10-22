@@ -17,6 +17,7 @@ import { TimelineManager, OnAudioSourceChangeCallback } from './TimelineManager'
 import { getTimelineTracks } from './selectors/getTimelineTracks'
 import { getKeyframeTracks } from './utils/getKeyframeTracks'
 import { getResourceUrl } from './utils/getResourceUrl'
+import { TimelineAudioLoadingMode } from './TimelineAudioPlayer'
 
 // defineOptionNodeConfigs is only needed if we want nice TS node name inference in other parts of the plugin
 export const TIMELINE_OPTION_NODE_CONFIGS = defineOptionNodeConfigs([
@@ -71,6 +72,12 @@ export class TimelineInput implements IPlugin {
 
   private audioSourceChangeCallback: OnAudioSourceChangeCallback | null = null
 
+  private audioLoadingMode: TimelineAudioLoadingMode
+
+  constructor({ audioLoadingMode }: { audioLoadingMode?: TimelineAudioLoadingMode } = {}) {
+    this.audioLoadingMode = audioLoadingMode ?? 'stream' // Default to streaming audio (nicer default for web projects)
+  }
+
   onEngineInitialize(engine: HedronEngine) {
     engine.addNodeOnce(DEFAULT_TIMELINE_ID, null, {
       title: 'Default Timeline',
@@ -92,6 +99,7 @@ export class TimelineInput implements IPlugin {
         onPositionChange: (positionMs) => {
           engine.setParamValue(playHeadPositionNode.id, positionMs)
         },
+        audioLoadingMode: this.audioLoadingMode,
       }),
     )
 
