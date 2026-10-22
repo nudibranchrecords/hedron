@@ -625,6 +625,10 @@ export class HedronEngine {
     return this.renderer.createCanvas(containerEl)
   }
 
+  public getThreeRenderer() {
+    return this.renderer.renderer
+  }
+
   public setOutput(container: HTMLElement, outputWindow: Window) {
     this.renderer.setOutput(container, outputWindow)
   }
