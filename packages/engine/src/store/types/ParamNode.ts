@@ -123,35 +123,10 @@ export type ConfigParam =
   | ConfigParamRGB
   | ConfigParamFile
 
-/** Preserves literal keys/valueTypes when defining option node config arrays. */
-export const defineOptionNodeConfigs = <const TConfigs extends readonly ConfigParam[]>(
-  configs: TConfigs,
-): TConfigs => {
-  return configs
-}
-
 export type ParamForValueType<TValueType extends ParamNode['valueType']> = Extract<
   ParamNode,
   { valueType: TValueType }
 >
-
-type OptionNodeConfigLike = {
-  key: string
-  valueType: ParamNode['valueType']
-}
-
-/**
- * Builds a strongly-typed key -> Param map from an option node config tuple.
- *
- * Example:
- * - const CONFIGS = defineOptionNodeConfigs([...])
- * - type OptionNodes = OptionNodesFromConfigs<typeof CONFIGS>
- */
-export type OptionNodesFromConfigs<TConfigs extends readonly OptionNodeConfigLike[]> = {
-  [TConfig in TConfigs[number] as TConfig['key']]:
-    | (ParamForValueType<TConfig['valueType']> & { key: TConfig['key'] })
-    | undefined
-}
 
 export type ParamValue = number | boolean | string | null
 export type ParamValues = Partial<Record<string, ParamValue>>

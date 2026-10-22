@@ -12,6 +12,10 @@ export * from './HedronEngine/importSketchModule'
 export { findNodeWithKeyFromIdList } from './utils/findNodeWithKeyFromIdList'
 export { getTypedOverrideConfig, TYPED_OVERRIDE_KEY } from './utils/getTypedOverrideConfig'
 export { nodesAsArray } from './utils/nodesAsArray'
+export {
+  defineOptionNodeConfigs,
+  type OptionNodesFromConfigs,
+} from './utils/defineOptionNodeConfigs'
 export { addNode } from './store/shared/addNode'
 export { fastIsEqual as isEqual } from 'fast-is-equal'
 export * from './constants'

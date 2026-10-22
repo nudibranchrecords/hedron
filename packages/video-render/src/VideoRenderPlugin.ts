@@ -1,10 +1,8 @@
 import {
-  ConfigShot,
   defineOptionNodeConfigs,
   HedronEngine,
   IPlugin,
   OptionNodesFromConfigs,
-  ShotNode,
 } from '@hedron-gl/engine'
 import { DEFAULT_TIMELINE_ID, getResourceUrl, TimelineInput } from '@hedron-gl/timeline'
 import { AudioInput } from '@hedron-gl/audio-input'
@@ -13,22 +11,9 @@ import { RenderFramesOptions, RenderProgress, VideoRenderCallbacks } from './typ
 
 const toEven = (n: number) => Math.ceil(n / 2) * 2
 
-// Shot-type option nodes aren't covered by `defineOptionNodeConfigs` (typed for ConfigParam only),
-// so these are declared directly and passed to `engine.addOptionNodes`.
-const CAPTURE_FRAME_SHOT_CONFIG: ConfigShot = {
-  nodeType: 'shot',
-  key: 'captureFrame',
-}
-
-const RENDER_SHOT_CONFIG: ConfigShot = {
-  nodeType: 'shot',
-  key: 'render',
-  title: 'Render',
-}
-
 // Render settings as option nodes (rather than component-local state) so they get the standard
 // param UI for free and are persisted with the project via the engine's normal save/load path.
-export const VIDEO_RENDER_PARAM_CONFIGS = defineOptionNodeConfigs([
+export const VIDEO_RENDER_OPTION_NODE_CONFIGS = defineOptionNodeConfigs([
   {
     nodeType: 'param',
     key: 'outputDirAbsolute',
@@ -93,12 +78,18 @@ export const VIDEO_RENDER_PARAM_CONFIGS = defineOptionNodeConfigs([
     sliderMin: 0,
     sliderMax: 10,
   },
-] as const)
+  {
+    nodeType: 'shot',
+    key: 'captureFrame',
+  },
+  {
+    nodeType: 'shot',
+    key: 'render',
+    title: 'Render',
+  },
+])
 
-// A mapped type (via Record) rather than a plain interface, so it satisfies useNodeOptionNodes'
-// `Record<string, ParamNode | ShotNode | undefined>` generic constraint.
-export type VideoRenderOptionNodes = OptionNodesFromConfigs<typeof VIDEO_RENDER_PARAM_CONFIGS> &
-  Record<'captureFrame' | 'render', ShotNode | undefined>
+export type VideoRenderOptionNodes = OptionNodesFromConfigs<typeof VIDEO_RENDER_OPTION_NODE_CONFIGS>
 
 // Input-less plugin: depends on the timeline plugin (reads duration/audio), but timeline doesn't know about it.
 // Electron-specific I/O (files, ffmpeg, dialogs) is injected via the constructor; everything else is engine orchestration here.
@@ -122,11 +113,7 @@ export class VideoRenderPlugin implements IPlugin {
       customNodeType: 'video-render',
     })
 
-    engine.addOptionNodes(VIDEO_RENDER_NODE_ID, [
-      ...VIDEO_RENDER_PARAM_CONFIGS,
-      CAPTURE_FRAME_SHOT_CONFIG,
-      RENDER_SHOT_CONFIG,
-    ])
+    engine.addOptionNodes(VIDEO_RENDER_NODE_ID, VIDEO_RENDER_OPTION_NODE_CONFIGS)
   }
 
   /** Captures the current canvas frame and saves it (a single, timestamped PNG). */
