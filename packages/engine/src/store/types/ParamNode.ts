@@ -57,16 +57,20 @@ export type ConfigParamString = AsConfig<ParamString>
 export type ParamEnumValue = string | number
 export type ParamEnumOption = { value: ParamEnumValue; label: string }
 
+export type ParamFileSource = 'resource' | 'local-directory'
+
 export interface ParamFile extends ParamBase {
   valueType: 'file'
   defaultValue: string | null
   accept?: string[] | null
+  fileSource?: ParamFileSource
 }
 
 export type ParamFileValue = string | null
 
 export type ConfigParamFile = AsConfig<ParamFile> & {
   accept?: string[] | null
+  fileSource?: ParamFileSource
 }
 
 export interface ParamEnum extends ParamBase {

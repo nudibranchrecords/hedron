@@ -27,7 +27,6 @@ export function VideoRenderGlobalPanel(): JSX.Element {
 
   const optionNodes = useNodeOptionNodes<VideoRenderOptionNodes>(VIDEO_RENDER_NODE_ID)
   const captureFrameNode = optionNodes['captureFrame']
-  const browseOutputDirNode = optionNodes['browseOutputDir']
   const renderShotNode = optionNodes['render']
   const outputDirNode = optionNodes['outputDirAbsolute']!
   const nameNode = optionNodes['name']!
@@ -37,7 +36,7 @@ export function VideoRenderGlobalPanel(): JSX.Element {
   const fpsNode = optionNodes['fps']!
   const prewarmSecondsNode = optionNodes['prewarmSeconds']!
 
-  const outputDirAbsolute = useParamValue<string>(outputDirNode.id)
+  const outputDirAbsolute = useParamValue<string | null>(outputDirNode.id)
   const name = useParamValue<string>(nameNode.id, '')
   const createVideo = useParamValue<boolean>(createVideoNode.id)
   const width = useParamValue<number>(widthNode.id)
@@ -50,13 +49,6 @@ export function VideoRenderGlobalPanel(): JSX.Element {
   const [renderingStatus, setRenderingStatus] = useState('Preparing...')
 
   const frameCount = Math.max(1, Math.round(durationSeconds * (fps || 30)))
-
-  const handleBrowseOutputDir = useCallback(async () => {
-    const dir = await videoRenderPlugin?.selectOutputDir()
-    if (dir) {
-      engine.setParamValue(outputDirNode.id, dir)
-    }
-  }, [videoRenderPlugin, engine, outputDirNode.id])
 
   const handleRender = useCallback(async () => {
     if (!outputDirAbsolute || isRendering) return
@@ -117,27 +109,13 @@ export function VideoRenderGlobalPanel(): JSX.Element {
   ])
 
   useEffect(() => {
-    if (!browseOutputDirNode) return
-    engine.registerShot(browseOutputDirNode.id, () => handleBrowseOutputDir())
-  }, [engine, browseOutputDirNode, handleBrowseOutputDir])
-
-  useEffect(() => {
     if (!renderShotNode) return
     engine.registerShot(renderShotNode.id, () => handleRender())
   }, [engine, renderShotNode, handleRender])
 
   return (
     <div className={c.form}>
-      <div className={c.outputDirRow}>
-        <div className={c.outputDirInput}>
-          <NodeContainer nodeId={outputDirNode.id} />
-        </div>
-        {browseOutputDirNode && (
-          <div className={c.outputDirBrowse}>
-            <NodeContainer nodeId={browseOutputDirNode.id} />
-          </div>
-        )}
-      </div>
+      <NodeContainer nodeId={outputDirNode.id} />
 
       <ControlGrid>
         <NodeContainer nodeId={nameNode.id} />

@@ -2,6 +2,7 @@ import {
   AppStoreProvider,
   Collapsible,
   EngineProvider,
+  LocalPathPickerProvider,
   Icon,
   IconName,
   useAppStore,
@@ -16,6 +17,7 @@ import { Viewer } from '@components/Viewer'
 import { WorkArea } from '@components/WorkArea/WorkArea'
 import { appStore } from '@renderer/appStore'
 import { engine, pluginViews } from '@renderer/engine'
+import { selectLocalPath } from '@renderer/ipc/mainThreadTalk'
 
 const PluginGlobalControls = () => {
   const [openById, setOpenById] = useState<Record<string, boolean>>({})
@@ -103,7 +105,9 @@ export const App = (): JSX.Element => {
   return (
     <AppStoreProvider value={appStore}>
       <EngineProvider value={engine}>
-        <AppContent />
+        <LocalPathPickerProvider value={selectLocalPath}>
+          <AppContent />
+        </LocalPathPickerProvider>
       </EngineProvider>
     </AppStoreProvider>
   )

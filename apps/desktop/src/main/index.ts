@@ -9,7 +9,8 @@ import { saveFrameSequenceHandler } from './handlers/renderVideo/renderSequence'
 import {
   DialogEvents,
   OpenSketchesDirResponse,
-  OpenOutputDirResponse,
+  LocalPathDialogOptions,
+  OpenLocalPathResponse,
   FileEvents,
   OpenProjectResponse,
   ResourceEvents,
@@ -116,20 +117,28 @@ ipcMain.handle(
   },
 )
 
-ipcMain.handle(DialogEvents.OpenOutputDirDialog, async (): Promise<OpenOutputDirResponse> => {
-  const result = await dialog.showOpenDialog({
-    properties: ['openDirectory'],
-  })
+ipcMain.handle(
+  DialogEvents.OpenLocalPathDialog,
+  async (_, options: LocalPathDialogOptions): Promise<OpenLocalPathResponse> => {
+    if (options.fileSource !== 'local-directory') {
+      throw new Error('Invalid local path source')
+    }
 
-  if (result.canceled || result.filePaths.length === 0) {
-    return { result: 'canceled' }
-  }
+    const result = await dialog.showOpenDialog({
+      defaultPath: options.currentPath ?? undefined,
+      properties: ['openDirectory', 'createDirectory'],
+    })
 
-  return {
-    result: 'success',
-    outputDirAbsolute: result.filePaths[0],
-  }
-})
+    if (result.canceled) {
+      return { result: 'canceled' }
+    }
+    const selectedPath = result.filePaths[0]
+    if (!selectedPath) {
+      throw new Error('The local path dialog did not return a path')
+    }
+    return { result: 'success', path: selectedPath }
+  },
+)
 
 ipcMain.handle(
   DialogEvents.OpenProjectFileDialog,

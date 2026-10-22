@@ -20,12 +20,6 @@ const CAPTURE_FRAME_SHOT_CONFIG: ConfigShot = {
   key: 'captureFrame',
 }
 
-const BROWSE_OUTPUT_DIR_SHOT_CONFIG: ConfigShot = {
-  nodeType: 'shot',
-  key: 'browseOutputDir',
-  title: 'Browse',
-}
-
 const RENDER_SHOT_CONFIG: ConfigShot = {
   nodeType: 'shot',
   key: 'render',
@@ -39,8 +33,9 @@ export const VIDEO_RENDER_PARAM_CONFIGS = defineOptionNodeConfigs([
     nodeType: 'param',
     key: 'outputDirAbsolute',
     title: 'Output Directory',
-    valueType: 'string',
-    defaultValue: '',
+    valueType: 'file',
+    fileSource: 'local-directory',
+    defaultValue: null,
   },
   {
     nodeType: 'param',
@@ -62,6 +57,7 @@ export const VIDEO_RENDER_PARAM_CONFIGS = defineOptionNodeConfigs([
     key: 'width',
     title: 'Width',
     valueType: 'number',
+    displayMode: 'field',
     defaultValue: 0,
     sliderMin: 0,
     sliderMax: 3840,
@@ -71,6 +67,7 @@ export const VIDEO_RENDER_PARAM_CONFIGS = defineOptionNodeConfigs([
     key: 'height',
     title: 'Height',
     valueType: 'number',
+    displayMode: 'field',
     defaultValue: 0,
     sliderMin: 0,
     sliderMax: 2160,
@@ -80,6 +77,7 @@ export const VIDEO_RENDER_PARAM_CONFIGS = defineOptionNodeConfigs([
     key: 'fps',
     title: 'FPS',
     valueType: 'number',
+    displayMode: 'field',
     defaultValue: 30,
     sliderMin: 1,
     sliderMax: 120,
@@ -90,6 +88,7 @@ export const VIDEO_RENDER_PARAM_CONFIGS = defineOptionNodeConfigs([
     key: 'prewarmSeconds',
     title: 'Prewarm Seconds',
     valueType: 'number',
+    displayMode: 'field',
     defaultValue: 0,
     sliderMin: 0,
     sliderMax: 10,
@@ -99,7 +98,7 @@ export const VIDEO_RENDER_PARAM_CONFIGS = defineOptionNodeConfigs([
 // A mapped type (via Record) rather than a plain interface, so it satisfies useNodeOptionNodes'
 // `Record<string, ParamNode | ShotNode | undefined>` generic constraint.
 export type VideoRenderOptionNodes = OptionNodesFromConfigs<typeof VIDEO_RENDER_PARAM_CONFIGS> &
-  Record<'captureFrame' | 'browseOutputDir' | 'render', ShotNode | undefined>
+  Record<'captureFrame' | 'render', ShotNode | undefined>
 
 // Input-less plugin: depends on the timeline plugin (reads duration/audio), but timeline doesn't know about it.
 // Electron-specific I/O (files, ffmpeg, dialogs) is injected via the constructor; everything else is engine orchestration here.
@@ -126,7 +125,6 @@ export class VideoRenderPlugin implements IPlugin {
     engine.addOptionNodes(VIDEO_RENDER_NODE_ID, [
       ...VIDEO_RENDER_PARAM_CONFIGS,
       CAPTURE_FRAME_SHOT_CONFIG,
-      BROWSE_OUTPUT_DIR_SHOT_CONFIG,
       RENDER_SHOT_CONFIG,
     ])
   }
@@ -302,10 +300,6 @@ export class VideoRenderPlugin implements IPlugin {
         console.error(`Failed to create video: ${result.error}`)
       }
     }
-  }
-
-  selectOutputDir() {
-    return this.callbacks.selectOutputDir()
   }
 
   private requireEngine(): HedronEngine {

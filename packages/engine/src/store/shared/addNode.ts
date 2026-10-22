@@ -106,6 +106,7 @@ const _addNodeToState = (
         valueType,
         defaultValue,
         accept: config.accept,
+        fileSource: config.fileSource,
       }
       break
   }

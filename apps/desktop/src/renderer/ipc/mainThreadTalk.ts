@@ -1,7 +1,9 @@
 import { ProjectData } from '@hedron-gl/app-store'
+import { LocalPathPicker } from '@hedron-gl/ui-core'
 import {
   DialogEvents,
   OpenSketchesDirResponse,
+  OpenLocalPathResponse,
   FileEvents,
   OpenProjectResponse,
   ResourceEvents,
@@ -10,6 +12,17 @@ import {
   SketchesServerResponse,
   SketchEvents,
 } from '@shared/Events'
+
+export const selectLocalPath: LocalPathPicker = async (options) => {
+  const response: OpenLocalPathResponse = await window.electronApi.ipcRenderer.invoke(
+    DialogEvents.OpenLocalPathDialog,
+    options,
+  )
+  if (response.result === 'error') {
+    throw new Error(response.error)
+  }
+  return response.result === 'success' ? response.path : null
+}
 
 export const openSketchesDirDialog = (defaultPath?: string | null) =>
   new Promise<OpenSketchesDirResponse>((resolve) => {

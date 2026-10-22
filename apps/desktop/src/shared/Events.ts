@@ -1,4 +1,4 @@
-import { Resource } from '@hedron-gl/engine'
+import { ParamFileSource, Resource } from '@hedron-gl/engine'
 import { ProjectData } from './types'
 
 export enum SketchEvents {
@@ -34,7 +34,7 @@ export enum DialogEvents {
   OpenSketchesDirDialog = 'open-sketches-dir-dialog',
   OpenProjectFileDialog = 'open-project-file-dialog',
   SaveProjectFileDialog = 'save-project-file-dialog',
-  OpenOutputDirDialog = 'open-output-dir-dialog',
+  OpenLocalPathDialog = 'open-local-path-dialog',
 }
 
 export enum FileEvents {
@@ -58,9 +58,14 @@ type OpenSketchesDirResponseSuccess = {
   resourcesDirAbsolute: string
 }
 
-type OpenOutputDirResponseSuccess = {
+export interface LocalPathDialogOptions {
+  fileSource: Exclude<ParamFileSource, 'resource'>
+  currentPath: string | null
+}
+
+type OpenLocalPathResponseSuccess = {
   result: 'success'
-  outputDirAbsolute: string
+  path: string
 }
 
 type OpenProjectResponseSuccess = {
@@ -85,7 +90,7 @@ export type OpenSketchesDirResponse =
   | ResponseError
   | ResponseCanceled
 
-export type OpenOutputDirResponse = OpenOutputDirResponseSuccess | ResponseError | ResponseCanceled
+export type OpenLocalPathResponse = OpenLocalPathResponseSuccess | ResponseError | ResponseCanceled
 
 export type SaveProjectResponse = SaveProjectResponseSuccess | ResponseError | ResponseCanceled
 

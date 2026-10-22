@@ -52,6 +52,4 @@ export interface BuildVideoResult {
 export interface VideoRenderCallbacks {
   saveFrame: (dataUrl: string, options?: SaveFrameOptions) => Promise<SaveFrameResult>
   buildVideo: (options: BuildVideoOptions) => Promise<BuildVideoResult>
-  /** Prompts the user to choose an output directory, resolving to its absolute path, or null if canceled. */
-  selectOutputDir: () => Promise<string | null>
 }
