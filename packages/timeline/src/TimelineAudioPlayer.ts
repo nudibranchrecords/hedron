@@ -144,7 +144,6 @@ export class TimelineAudioPlayer {
   }
 
   seek(positionMs: number, durationMs: number) {
-    console.log(positionMs === this.positionMs && durationMs === this.durationMs)
     // Feeding a sampled position back from controlled state must not restart scheduled audio.
     if (positionMs === this.positionMs && durationMs === this.durationMs) return
     const positionChanged = positionMs !== this.positionMs
