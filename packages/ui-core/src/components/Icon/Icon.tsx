@@ -26,6 +26,7 @@ export type IconName =
   | 'fullscreen'
   | 'image'
   | 'info'
+  | 'lightbulb'
   | 'mood'
   | 'more_horiz'
   | 'movie'
