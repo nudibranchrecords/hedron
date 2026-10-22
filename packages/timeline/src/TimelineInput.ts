@@ -116,16 +116,22 @@ export class TimelineInput implements IPlugin {
       )
 
       // Snaps duration to the audio's exact length when a new resource is picked.
-      // Not `fireImmediately` - only fires on a later change, not on project load.
       const audioUrl = engine.getNodeOptionNode(timelineId, 'audioUrl')
-      engine.subscribeToParamValue(audioUrl.id, (resourceId) => {
-        if (typeof resourceId !== 'string' || !resourceId) return
+      engine.subscribeToParamValue(
+        audioUrl.id,
+        (resourceId) => {
+          if (typeof resourceId !== 'string' || !resourceId) return
 
-        const url = getResourceUrl(engine.getStoreState(), resourceId)
-        if (!url) return
+          const url = getResourceUrl(engine.getStoreState(), resourceId)
+          if (!url) return
 
-        this.setDurationFromAudioUrl(engine, timelineDurationS.id, url)
-      })
+          this.setDurationFromAudioUrl(engine, timelineDurationS.id, url)
+        },
+        {
+          // We only want this to happen when the audio resource changes, as a convenience to the user
+          fireImmediately: false,
+        },
+      )
 
       manager.onUpdate((changed) => {
         const changedTrackIds = Object.keys(changed)
