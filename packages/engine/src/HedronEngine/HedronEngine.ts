@@ -475,7 +475,7 @@ export class HedronEngine {
 
   public fireShot(shotId: string, shotArgs?: ShotArgsObject) {
     const result = this.registeredShots[shotId]?.(shotArgs ?? {})
-    result?.catch((error: unknown) => {
+    Promise.resolve(result).catch((error: unknown) => {
       console.error(`Shot "${shotId}" failed:`, error)
     })
     this.shotListeners[shotId]?.forEach((listener) => listener())
