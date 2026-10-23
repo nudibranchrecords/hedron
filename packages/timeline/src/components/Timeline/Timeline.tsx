@@ -13,6 +13,7 @@ import { usePxPerSecond } from './usePxPerSecond'
 import { useSelectionBox } from './useSelectionBox'
 import c from './Timeline.module.css'
 import { TimelineTrack } from './TimelineTrack'
+import type { TimelineAudioBufferSource } from './AudioWaveform'
 import { AlignedKeyframe, TimelineManagerTrack } from '@/types'
 import { findTrackById } from '@/utils/findTrackById'
 import { getKeyframeTracks } from '@/utils/getKeyframeTracks'
@@ -58,6 +59,7 @@ export type TimelineHandle = {
 
 export interface TimelineProps {
   tracks: TimelineManagerTrack[]
+  audioBuffersSource?: TimelineAudioBufferSource
   durationMs: number
   activeTimelineComponentId: string | null
   selectedTrackId: string | null
@@ -78,6 +80,7 @@ export interface TimelineProps {
 export const Timeline = forwardRef<TimelineHandle, TimelineProps>(function Timeline(
   {
     tracks,
+    audioBuffersSource,
     durationMs,
     activeTimelineComponentId,
     selectedTrackId,
@@ -400,6 +403,7 @@ export const Timeline = forwardRef<TimelineHandle, TimelineProps>(function Timel
               selectedTrackId={selectedTrackId}
               setSelectedTrackId={setSelectedTrackId}
               track={track}
+              audioBuffersSource={audioBuffersSource}
               depth={0}
               durationMs={durationMs}
               selectedKeyframes={selectedKeyframes}

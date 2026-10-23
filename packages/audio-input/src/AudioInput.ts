@@ -219,19 +219,15 @@ export class AudioInput implements IPlugin {
   /** The plugin's single, lazily-created AudioContext. */
   private context: AudioContext | null = null
 
-  /** The single analyser every source (mic, timeline audio element) is routed into. */
+  /** The single analyser every source (mic or timeline audio) is routed into. */
   private analyserNode: AnalyserNode | null = null
 
-  /** The mic's source node, connected to the analyser by default. Undone while a live element source (e.g. the timeline's audio) is routed in instead. */
+  /** The mic's source node, disconnected while timeline audio is routed in instead. */
   private micSource: MediaStreamAudioSourceNode | null = null
 
-  /** Analysis tap for the currently-routed audio element (e.g. the timeline's), if any. */
-  private liveElementSource: MediaStreamAudioSourceNode | null = null
+  private liveStreamSource: MediaStreamAudioSourceNode | null = null
 
-  /** One tap per element - re-capturing the same element would pile up redundant streams. */
-  private liveElementSourceCache = new WeakMap<HTMLAudioElement, MediaStreamAudioSourceNode>()
-
-  /** Applies file gain to element-sourced audio, which (unlike mic capture) gets no auto gain control. */
+  /** Applies file gain to timeline audio, which gets no microphone auto gain control. */
   private fileGainNode: GainNode | null = null
 
   /**
@@ -385,7 +381,7 @@ export class AudioInput implements IPlugin {
       const audioData = this.audioData ?? this.analyzer.setupAudioData(analyser, context.sampleRate)
 
       // Mic only feeds the analyser when no element is routed in.
-      if (!this.liveElementSource) {
+      if (!this.liveStreamSource) {
         this.micSource.connect(analyser)
       }
 
@@ -460,49 +456,37 @@ export class AudioInput implements IPlugin {
     this.analyzer.beginOfflineAnalysis(frames, getFrameIndex)
   }
 
-  /** Restores live (mic or routed element) analysis after a render finishes. */
+  /** Restores live (mic or timeline) analysis after a render finishes. */
   public endOfflineAnalysis(): void {
     this.analyzer.endOfflineAnalysis()
   }
 
-  /**
-   * Routes an audio element into the analyser in place of the mic; `null` restores the mic.
-   * Sets up the context/analyser on demand if mic init hasn't run yet.
-   */
-  public setLiveElementSource(element: HTMLAudioElement | null): void {
+  public setLiveStreamSource(audio: { stream: MediaStream; url: string } | null): void {
     const context = this.getOrCreateContext()
     const analyser = this.getOrCreateAnalyser()
     this.ensureAudioDataExists()
 
-    this.liveElementSource?.disconnect()
-    this.liveElementSource = null
+    this.liveStreamSource?.disconnect()
+    this.liveStreamSource = null
 
-    if (!element) {
+    if (!audio) {
       this.fileGainNode?.disconnect()
       this.micSource?.connect(analyser)
       return
     }
 
-    // Mic and element must not both feed the analyser, or render won't match preview.
     this.micSource?.disconnect()
 
-    const source = this.getElementTap(element, context)
-    if (!source) {
-      // Tap failed - fall back to the mic rather than silently analysing nothing.
-      this.micSource?.connect(analyser)
-      return
-    }
-
-    // Element playback gets no browser auto gain control, unlike mic capture - see `applyFileGain`.
+    const source = context.createMediaStreamSource(audio.stream)
     const gainNode = this.fileGainNode ?? context.createGain()
     gainNode.disconnect()
     gainNode.connect(analyser)
     this.fileGainNode = gainNode
 
     source.connect(gainNode)
-    this.liveElementSource = source
+    this.liveStreamSource = source
 
-    this.applyFileGain(element.currentSrc || element.src, gainNode)
+    this.applyFileGain(audio.url, gainNode)
     this.ensureContextRunning()
   }
 
@@ -559,46 +543,6 @@ export class AudioInput implements IPlugin {
     const gain = gainForPeak(computePeakAmplitude(audioBuffer), TARGET_PEAK_AMPLITUDE)
     this.peakGainCache.set(url, gain)
     return gain
-  }
-
-  /**
-   * Taps the element via `captureStream` (copies output, doesn't reroute it).
-   * `createMediaElementSource` would hijack playback and fail silently on any graph issue.
-   */
-  private getElementTap(
-    element: HTMLAudioElement,
-    context: AudioContext,
-  ): MediaStreamAudioSourceNode | null {
-    const cached = this.liveElementSourceCache.get(element)
-    if (cached) return cached
-
-    const capturableElement = element as HTMLAudioElement & {
-      captureStream?: () => MediaStream
-    }
-
-    if (typeof capturableElement.captureStream !== 'function') {
-      console.error('[AudioInput] captureStream is unavailable; cannot analyse timeline audio.')
-      return null
-    }
-
-    try {
-      const stream = capturableElement.captureStream()
-
-      // No audio track until the element has loaded - retry once "playing" fires.
-      if (stream.getAudioTracks().length === 0) {
-        element.addEventListener('playing', () => this.setLiveElementSource(element), {
-          once: true,
-        })
-        return null
-      }
-
-      const source = context.createMediaStreamSource(stream)
-      this.liveElementSourceCache.set(element, source)
-      return source
-    } catch (error) {
-      console.error('[AudioInput] Failed to tap timeline audio for analysis:', error)
-      return null
-    }
   }
 
   /** Contexts start suspended until a user gesture; while suspended the analyser reads silence. */
@@ -798,7 +742,7 @@ export class AudioInput implements IPlugin {
 
     // Keep manual gain in sync each frame so the slider takes effect immediately.
     // Auto/peak gain is resolved once at routing time (applyFileGain) and left alone here.
-    if (this.liveElementSource) {
+    if (this.liveStreamSource) {
       if (this.fileGainNode && this.getFileAudioGainDb() >= 0) {
         this.fileGainNode.gain.value = this.getManualFileGain()
       }

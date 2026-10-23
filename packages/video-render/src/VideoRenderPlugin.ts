@@ -165,10 +165,15 @@ export class VideoRenderPlugin implements IPlugin {
     onProgress?: (progress: RenderProgress) => void,
   ) {
     const engine = this.requireEngine()
+    const timelinePlugin = engine.getPlugin<TimelineInput>('timeline-input')
+    const defaultTimelineManager = timelinePlugin?.timelineManagers.get(DEFAULT_TIMELINE_ID)
 
     // Stop the live loop first - `beginOfflineAnalysis` below has real async gaps, and an
     // unpaused engine would keep advancing the timeline in real time during them.
     engine.pause()
+    timelinePlugin?.timelineManagers.forEach((manager) => {
+      manager.pause()
+    })
 
     // Not calling engine.resetTime(): it dumps one huge delta onto the next frame, sending TimelineManager's position deeply negative.
     // The timeline's start position is already reset cleanly via manager.goTo(0) below.
@@ -182,9 +187,6 @@ export class VideoRenderPlugin implements IPlugin {
     )
     // Pixel ratio 1 so the saved frames exactly match the render size
     engine.resizeRenderer(renderWidth, renderHeight, 1)
-
-    const timelinePlugin = engine.getPlugin<TimelineInput>('timeline-input')
-    const defaultTimelineManager = timelinePlugin?.timelineManagers.get(DEFAULT_TIMELINE_ID)
 
     // Precompute the audio's frequency data so audio-reactive params react to the render's own
     // soundtrack (deterministically) instead of whatever the mic happens to be picking up.
@@ -271,9 +273,15 @@ export class VideoRenderPlugin implements IPlugin {
       engine.resizeRenderer(originalSize.width, originalSize.height, originalSize.pixelRatio)
     }
 
-    this.restoreTimelinePlaybackState(engine, timelinePlugin)
-
     console.log(`Frame sequence saved to ${outputDirAbsolute}/${name}/`)
+
+    engine.resume()
+    timelinePlugin?.timelineManagers.forEach((manager, timelineId) => {
+      const isPlayingNode = engine.getNodeOptionNode(timelineId, 'isPlaying')
+      manager.pause()
+      // Set state param so playback doesn't continue after rendering is complete (in case was playing before)
+      engine.setParamValue(isPlayingNode.id, false)
+    })
 
     if (video) {
       console.log('Creating video...')
@@ -298,21 +306,6 @@ export class VideoRenderPlugin implements IPlugin {
 
   selectOutputDir() {
     return this.callbacks.selectOutputDir()
-  }
-
-  // Resumes the timeline's live playback state (as reflected by its `isPlaying` param) after a render
-  private restoreTimelinePlaybackState(
-    engine: HedronEngine,
-    timelinePlugin: TimelineInput | undefined,
-  ) {
-    timelinePlugin?.timelineManagers.forEach((manager, timelineId) => {
-      const isPlayingNode = engine.getNodeOptionNode(timelineId, 'isPlaying')
-      manager.pause()
-      if (engine.getParamValue(isPlayingNode.id)) {
-        manager.goTo(0)
-        manager.play()
-      }
-    })
   }
 
   private requireEngine(): HedronEngine {

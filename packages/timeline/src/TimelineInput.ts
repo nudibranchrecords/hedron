@@ -13,10 +13,11 @@ import {
   isParamVectorComponent,
 } from '@hedron-gl/engine'
 import { DEFAULT_TIMELINE_ID, TIMELINE_DURATION } from './constants'
-import { TimelineManager, OnAudioElementChangeCallback } from './TimelineManager'
+import { TimelineManager, OnAudioSourceChangeCallback } from './TimelineManager'
 import { getTimelineTracks } from './selectors/getTimelineTracks'
 import { getKeyframeTracks } from './utils/getKeyframeTracks'
 import { getResourceUrl } from './utils/getResourceUrl'
+import { TimelineAudioLoadingMode } from './TimelineAudioPlayer'
 
 // defineOptionNodeConfigs is only needed if we want nice TS node name inference in other parts of the plugin
 export const TIMELINE_OPTION_NODE_CONFIGS = defineOptionNodeConfigs([
@@ -69,8 +70,13 @@ export class TimelineInput implements IPlugin {
   public readonly description = 'Timeline-based input for automating parameters over time.'
   public timelineManagers: Map<string, TimelineManager> = new Map()
 
-  // Set by the app composition root (see onAudioElementChange), re-wired to each manager's hook.
-  private audioElementChangeCallback: OnAudioElementChangeCallback | null = null
+  private audioSourceChangeCallback: OnAudioSourceChangeCallback | null = null
+
+  private audioLoadingMode: TimelineAudioLoadingMode
+
+  constructor({ audioLoadingMode }: { audioLoadingMode?: TimelineAudioLoadingMode } = {}) {
+    this.audioLoadingMode = audioLoadingMode ?? 'stream' // Default to streaming audio (nicer default for web projects)
+  }
 
   onEngineInitialize(engine: HedronEngine) {
     engine.addNodeOnce(DEFAULT_TIMELINE_ID, null, {
@@ -82,12 +88,18 @@ export class TimelineInput implements IPlugin {
 
     engine.addOptionNodes(DEFAULT_TIMELINE_ID, TIMELINE_OPTION_NODE_CONFIGS)
 
+    const playHeadPositionNode = engine.getNodeOptionNode(DEFAULT_TIMELINE_ID, 'playheadPositionMs')
     this.timelineManagers.set(
       DEFAULT_TIMELINE_ID,
       new TimelineManager({
         durationMs: TIMELINE_DURATION,
         tracks: [],
         clock: engine.clock,
+        positionMs: 0,
+        onPositionChange: (positionMs) => {
+          engine.setParamValue(playHeadPositionNode.id, positionMs)
+        },
+        audioLoadingMode: this.audioLoadingMode,
       }),
     )
 
@@ -96,9 +108,8 @@ export class TimelineInput implements IPlugin {
       const timelineDurationS = engine.getNodeOptionNode(timelineId, 'timelineDurationS')
       const playHeadPositionNode = engine.getNodeOptionNode(timelineId, 'playheadPositionMs')
 
-      // Registered before the tracks subscription builds the audio element, so it gets reported.
-      manager.onAudioElementChange((element) => {
-        this.audioElementChangeCallback?.(element)
+      manager.onAudioSourceChange((source) => {
+        this.audioSourceChangeCallback?.(source)
       })
 
       engine.getStore().subscribe(
@@ -112,39 +123,25 @@ export class TimelineInput implements IPlugin {
         },
       )
 
-      engine.subscribeToParamValue(isPlaying.id, (isPlaying) => {
-        if (isPlaying) {
-          manager.play()
-        } else {
-          manager.pause()
-        }
-      })
-
-      engine.subscribeToParamValue<number>(timelineDurationS.id, (timelineDurationS) => {
-        if (timelineDurationS !== undefined && timelineDurationS > 0) {
-          manager.setDurationMs(timelineDurationS * 1000)
-        }
-      })
-
       // Snaps duration to the audio's exact length when a new resource is picked.
-      // Not `fireImmediately` - only fires on a later change, not on project load.
       const audioUrl = engine.getNodeOptionNode(timelineId, 'audioUrl')
-      engine.subscribeToParamValue(audioUrl.id, (resourceId) => {
-        if (typeof resourceId !== 'string' || !resourceId) return
+      engine.subscribeToParamValue(
+        audioUrl.id,
+        (resourceId) => {
+          if (typeof resourceId !== 'string' || !resourceId) return
 
-        const url = getResourceUrl(engine.getStoreState(), resourceId)
-        if (!url) return
+          const url = getResourceUrl(engine.getStoreState(), resourceId)
+          if (!url) return
 
-        this.setDurationFromAudioUrl(engine, timelineDurationS.id, url)
-      })
-
-      // set the playhead position to the current value from the engine
-      const playHeadPositionMs = engine.getParamValue(playHeadPositionNode.id) as number
-      manager.goTo(playHeadPositionMs)
+          this.setDurationFromAudioUrl(engine, timelineDurationS.id, url)
+        },
+        {
+          // We only want this to happen when the audio resource changes, as a convenience to the user
+          fireImmediately: false,
+        },
+      )
 
       manager.onUpdate((changed) => {
-        engine.setParamValue(playHeadPositionNode.id, manager.getPositionMs())
-
         const changedTrackIds = Object.keys(changed)
         if (changedTrackIds.length > 0) {
           const allTracks = getTimelineTracks(engine.getStoreState(), timelineId)
@@ -173,12 +170,32 @@ export class TimelineInput implements IPlugin {
           }
         }
       })
+
+      engine.subscribeToParamValue<number>(playHeadPositionNode.id, (positionMs) => {
+        if (positionMs !== undefined) manager.setPositionMs(positionMs)
+      })
+
+      engine.subscribeToParamValue<number>(timelineDurationS.id, (timelineDurationS) => {
+        if (timelineDurationS !== undefined && timelineDurationS > 0) {
+          manager.setDurationMs(timelineDurationS * 1000)
+        }
+      })
+
+      engine.subscribeToParamValue(isPlaying.id, (isPlaying) => {
+        if (isPlaying) {
+          manager.play()
+        } else {
+          manager.pause()
+        }
+      })
     })
   }
 
-  /** Fires whenever any timeline's audio-track element is created, replaced, or removed. */
-  onAudioElementChange(callback: OnAudioElementChangeCallback) {
-    this.audioElementChangeCallback = callback
+  onAudioSourceChange(callback: OnAudioSourceChangeCallback) {
+    this.audioSourceChangeCallback = callback
+    this.timelineManagers.forEach((manager) => {
+      manager.onAudioSourceChange((source) => this.audioSourceChangeCallback?.(source))
+    })
   }
 
   /** Decodes the audio at `url` and writes its exact duration (in seconds) to the duration param. */
@@ -201,7 +218,7 @@ export class TimelineInput implements IPlugin {
   update(_engine: HedronEngine, { deltaTime }: PluginUpdateArgs) {
     this.timelineManagers.forEach((manager) => {
       if (manager.isPlaying()) {
-        manager.step(deltaTime * 1000)
+        manager.playback.step(deltaTime * 1000)
       }
     })
   }

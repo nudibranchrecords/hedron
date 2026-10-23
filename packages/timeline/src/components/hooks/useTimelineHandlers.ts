@@ -21,10 +21,8 @@ export const useTimelineHandlers = ({ engine, manager }: UseTimelineHandlersPara
   const handlePlayheadChange = useCallback(
     (time: number) => {
       engine.setParamValue(playheadPosNodeId, time)
-
-      manager.goTo(time)
     },
-    [playheadPosNodeId, manager, engine],
+    [playheadPosNodeId, engine],
   )
 
   const handleKeyframeDelete = useCallback(
