@@ -1,5 +1,5 @@
 export { Clock, DEFAULT_BPM, isValidBpm } from './Clock'
-export { ClockPlugin, CLOCK_OPTION_NODE_CONFIGS } from './ClockPlugin'
+export { ClockPlugin, createClockOptionNodeConfigs } from './ClockPlugin'
 export type { ClockOptionNodes } from './ClockPlugin'
 export { CLOCK_NODE_ID, CLOCK_PLUGIN_ID } from './constants'
 export { ClockDisplay } from './components/ClockDisplay/ClockDisplay'

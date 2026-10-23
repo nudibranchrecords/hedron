@@ -4,24 +4,50 @@ import {
   IPlugin,
   OptionNodesFromConfigs,
   PluginUpdateArgs,
+  ShotFunc,
 } from '@hedron-gl/engine'
 import { Clock, DEFAULT_BPM, isValidBpm } from './Clock'
 import { CLOCK_NODE_ID, CLOCK_PLUGIN_ID } from './constants'
 
-export const CLOCK_OPTION_NODE_CONFIGS = defineOptionNodeConfigs([
-  {
-    nodeType: 'param',
-    key: 'bpmValue',
-    title: 'BPM',
-    valueType: 'number',
-    displayMode: 'field',
-    defaultValue: DEFAULT_BPM,
-    sliderMin: 60,
-    sliderMax: 200,
-  },
-])
+export const createClockOptionNodeConfigs = (actions: {
+  togglePlay: ShotFunc
+  reset: ShotFunc
+  tapTempo: ShotFunc
+}) =>
+  defineOptionNodeConfigs([
+    {
+      nodeType: 'param',
+      key: 'bpmValue',
+      title: 'BPM',
+      valueType: 'number',
+      displayMode: 'field',
+      defaultValue: DEFAULT_BPM,
+      sliderMin: 60,
+      sliderMax: 200,
+    },
+    {
+      nodeType: 'shot',
+      key: 'togglePlay',
+      title: 'Play/Pause',
+      func: actions.togglePlay,
+    },
+    {
+      nodeType: 'shot',
+      key: 'reset',
+      title: 'Reset',
+      func: actions.reset,
+    },
+    {
+      nodeType: 'shot',
+      key: 'tapTempo',
+      title: 'Tap Tempo',
+      func: actions.tapTempo,
+    },
+  ])
 
-export type ClockOptionNodes = OptionNodesFromConfigs<typeof CLOCK_OPTION_NODE_CONFIGS>
+export type ClockOptionNodes = OptionNodesFromConfigs<
+  ReturnType<typeof createClockOptionNodeConfigs>
+>
 
 /**
  * Owns the global `Clock`. BPM lives in the `bpmValue` option node (project state): BPM changes
@@ -52,7 +78,14 @@ export class ClockPlugin implements IPlugin {
       customNodeType: 'clock',
     })
 
-    engine.addOptionNodes(CLOCK_NODE_ID, CLOCK_OPTION_NODE_CONFIGS)
+    engine.addOptionNodes(
+      CLOCK_NODE_ID,
+      createClockOptionNodeConfigs({
+        togglePlay: () => this.togglePlay(),
+        reset: () => this.clock.reset(),
+        tapTempo: () => this.clock.sendTempoTap(),
+      }),
+    )
 
     const bpmNode = engine.getNodeOptionNode(CLOCK_NODE_ID, 'bpmValue')
 
@@ -66,6 +99,14 @@ export class ClockPlugin implements IPlugin {
         engine.setParamValue(bpmNode.id, bpm)
       }),
     )
+  }
+
+  private togglePlay() {
+    if (this.clock.isRunning) {
+      this.clock.stop()
+    } else {
+      this.clock.start()
+    }
   }
 
   update(_engine: HedronEngine, { deltaTime }: PluginUpdateArgs) {

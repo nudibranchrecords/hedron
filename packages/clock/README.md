@@ -13,6 +13,8 @@ engine.registerPlugin(new LFOInput({ clock: clockPlugin.clock }))
 
 BPM is stored in the plugin's `bpmValue` option node (project state). BPM changes calculated by the clock (tempo tap, MIDI clock) are written to the node, which in turn updates the clock.
 
+The plugin also has `togglePlay`, `reset` and `tapTempo` shot option nodes, so these actions can be triggered by inputs like any other shot.
+
 UI: `ClockGlobalPanel` (global panel) and `GlobalClock` (widget).
 
 ## Standalone usage
