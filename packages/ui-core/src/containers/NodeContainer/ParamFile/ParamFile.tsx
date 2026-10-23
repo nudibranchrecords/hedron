@@ -14,6 +14,17 @@ export const ParamFile = ({ id }: ParamFileProps) => {
   const onFileChange = useOnParamValueChange(id)
   const availableFiles = useEngineStoreShallow((state) => Object.values(state.resources))
 
+  if (node.fileSource === 'local-directory') {
+    return (
+      <FilePicker
+        mode="local"
+        fileSource={node.fileSource}
+        currentFileName={currentFile}
+        onFileNameChange={onFileChange}
+      />
+    )
+  }
+
   return (
     <FilePicker
       currentFileName={currentFile}

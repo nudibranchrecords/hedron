@@ -20,6 +20,12 @@ export const ensureNodeConfig = (
     groupIndex,
   }
 
+  if (nodeConfig.nodeType === 'shot') {
+    const { ...config } = nodeConfig
+    delete config.func // Remove func from config as this isn't serializable
+    return { ...config, ...base }
+  }
+
   return {
     ...nodeConfig,
     ...base,

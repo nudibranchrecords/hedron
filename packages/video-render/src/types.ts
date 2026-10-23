@@ -8,7 +8,9 @@ export interface RenderFramesOptions {
   height?: number
   /** Resource filename (not an absolute path) of the audio to mux in. */
   audioFileName?: string
-  /** Seconds from the end of the timeline to run (uncaptured) before frame 0, for seamless loops. */
+  /** Timeline position of the first exported frame. Defaults to 0. */
+  startSeconds?: number
+  /** Seconds from the end of the selected range to run before frame 0, for seamless loops. */
   prewarmSeconds?: number
 }
 
@@ -17,6 +19,13 @@ export type RenderProgress =
   | { stage: 'prewarming'; framesDone: number; totalFrames: number }
   | { stage: 'rendering-frames'; framesSaved: number; totalFrames: number }
   | { stage: 'building-video' }
+
+export interface VideoRenderState {
+  isRendering: boolean
+  progress: number
+  status: string
+  error: string | null
+}
 
 export interface SaveFrameOptions {
   name?: string
@@ -37,6 +46,8 @@ export interface BuildVideoOptions {
   frameCount: number
   /** Resource filename (not an absolute path) of the audio to mux in. */
   audioFileName?: string
+  /** Offset into the audio resource, matching the first exported frame. */
+  startSeconds?: number
 }
 
 export interface BuildVideoResult {
@@ -52,6 +63,4 @@ export interface BuildVideoResult {
 export interface VideoRenderCallbacks {
   saveFrame: (dataUrl: string, options?: SaveFrameOptions) => Promise<SaveFrameResult>
   buildVideo: (options: BuildVideoOptions) => Promise<BuildVideoResult>
-  /** Prompts the user to choose an output directory, resolving to its absolute path, or null if canceled. */
-  selectOutputDir: () => Promise<string | null>
 }

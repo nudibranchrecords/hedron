@@ -10,4 +10,5 @@ export type {
   BuildVideoOptions,
   BuildVideoResult,
   VideoRenderCallbacks,
+  VideoRenderState,
 } from './types'

@@ -26,6 +26,47 @@ Build and zip the example project with `pnpm build:example` and it will be creat
 
 ## Configuration
 
+### Plugin shot callbacks
+
+Shot configs passed to `engine.addNode`, `engine.addNodeOnce`, or
+`engine.addOptionNodes` can provide a `func` callback:
+
+```ts
+engine.addOptionNodes(pluginNodeId, [
+  {
+    nodeType: 'shot',
+    key: 'captureFrame',
+    title: 'Capture Frame',
+    func: () => plugin.captureFrame(),
+  },
+])
+```
+
+`key` remains the stable identity used to find option nodes. Sketch shots still
+use their key to invoke the corresponding sketch method. Explicit callbacks
+receive `ShotArgsObject` and can return `void` or `Promise<void>`; rejected
+promises are logged by `fireShot`.
+
+Callbacks live in the engine's runtime registry, not saved node state.
+`addNodeOnce` and `addOptionNodes` refresh callbacks even when nodes already
+exist, so plugins should supply them during `onEngineInitialize`. Removing a
+node unregisters its callback through the engine's store listener. UI, MIDI,
+and timeline inputs all continue to trigger shots through `fireShot`.
+
+Video-render shots are registered by the plugin, independently of its panel.
+The panel subscribes to plugin-owned render progress and errors; closing it
+does not disable capture/render or reset an active render.
+
+Video export has editable Start Seconds and End Seconds controls, initially 0
+and the timeline duration at plugin initialization. Changing the timeline duration
+does not overwrite the export end. The range must satisfy
+`0 <= start < end <= timeline duration`; frame count is the range duration times
+FPS, rounded to the nearest whole frame (at least one). Capture, offline audio
+analysis, and exported audio start at the selected offset. Prewarming uses the
+tail of the selected range before returning to its start.
+
+### Renderer
+
 You can configure the renderer type by creating a `.env` file in this directory:
 
 ```bash

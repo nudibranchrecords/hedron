@@ -31,6 +31,10 @@ export const getParamValue = (state: EngineState, paramId: string) => {
 
   switch (node.valueType) {
     case 'file': {
+      if (node.fileSource === 'local-directory') {
+        break
+      }
+
       const fileName = value as string | null | undefined
 
       if (fileName === null) {

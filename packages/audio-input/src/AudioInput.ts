@@ -22,6 +22,8 @@ export interface BeginOfflineAnalysisOptions {
   fps: number
   /** Total number of frames to precompute (should match the render's frame count). */
   frameCount: number
+  /** Timeline offset of the first analysis row. Defaults to 0. */
+  startSeconds?: number
   /** Returns the current playhead position, in milliseconds, for the frame being rendered. */
   getTimeMs: () => number
 }
@@ -428,6 +430,7 @@ export class AudioInput implements IPlugin {
     url,
     fps,
     frameCount,
+    startSeconds = 0,
     getTimeMs,
   }: BeginOfflineAnalysisOptions): Promise<void> {
     await this.ensureAudioDataExists()
@@ -444,6 +447,7 @@ export class AudioInput implements IPlugin {
       audioBuffer,
       fps,
       frameCount,
+      startSeconds,
       sampleRate,
       gain: this.resolveFileGain(url, audioBuffer),
       fftSize: analyser.fftSize,
@@ -452,7 +456,7 @@ export class AudioInput implements IPlugin {
       maxDecibels: analyser.maxDecibels,
     })
 
-    const getFrameIndex = () => Math.round((getTimeMs() / 1000) * fps)
+    const getFrameIndex = () => Math.round((getTimeMs() / 1000 - startSeconds) * fps)
     this.analyzer.beginOfflineAnalysis(frames, getFrameIndex)
   }
 

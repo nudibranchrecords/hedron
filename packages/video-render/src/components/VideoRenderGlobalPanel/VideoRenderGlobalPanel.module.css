@@ -5,21 +5,6 @@
   padding: var(--gapLarge) 0;
 }
 
-.outputDirRow {
-  display: flex;
-  gap: var(--gapLarge);
-}
-
-.outputDirInput {
-  flex: 2;
-  min-width: 0;
-}
-
-.outputDirBrowse {
-  flex: 1;
-  min-width: 0;
-}
-
 .progressContainer {
   margin-top: 16px;
   text-align: center;

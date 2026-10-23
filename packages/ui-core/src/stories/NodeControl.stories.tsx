@@ -22,6 +22,7 @@ import { ColorPickerHandle, ColorPicker } from '@components/ColorPicker/ColorPic
 import { TriggerPad, TriggerPadHandle } from '@components/TriggerPad/TriggerPad'
 import { Panel, PanelBody, PanelHeader } from '@components/Panel/Panel'
 import { NumberInput, NumberInputHandle } from '@components/NumberInput/NumberInput'
+import { LocalPathPickerProvider } from '@hooks/localPathPicker'
 
 const meta = {
   title: 'NodeControl',
@@ -277,6 +278,34 @@ const FileStory = ({
 
 export const File = ({ title = 'File Picker', isActive, onClick }: BasicProps) => {
   return <FileStory title={title} isActive={isActive} onClick={onClick} />
+}
+
+const selectExampleDirectory = fn(async () => '/output/renders')
+
+export const FileLocalDirectory = ({
+  title = 'Local Output Directory',
+  isActive,
+  onClick,
+}: BasicProps) => {
+  const [path, setPath] = useState<ParamFileValue>(null)
+
+  return (
+    <LocalPathPickerProvider value={selectExampleDirectory}>
+      <NodeControl isActive={isActive} onClick={onClick}>
+        <NodeControlMain>
+          <NodeControlTitle>{title}</NodeControlTitle>
+          <NodeControlInner>
+            <FilePicker
+              mode="local"
+              fileSource="local-directory"
+              currentFileName={path}
+              onFileNameChange={setPath}
+            />
+          </NodeControlInner>
+        </NodeControlMain>
+      </NodeControl>
+    </LocalPathPickerProvider>
+  )
 }
 
 export const FileMissing = ({ title = 'Video Only', isActive, onClick }: BasicProps) => {

@@ -2,18 +2,20 @@ import { EngineState, ParamNode, ParamValues, ShotNode } from '@hedron-gl/engine
 import { useShallow } from 'zustand/react/shallow'
 import { useEngineStore } from '@hooks/engineHooks'
 
-export const getNodeOptionNodes = <OptionNodes extends Record<string, ParamNode | undefined>>(
+export const getNodeOptionNodes = <
+  OptionNodes extends Record<string, ParamNode | ShotNode | undefined>,
+>(
   state: Pick<EngineState, 'nodes'>,
   parentId: string,
 ): OptionNodes => {
-  const optionNodes: Record<string, ParamNode | undefined> = {}
+  const optionNodes: Record<string, ParamNode | ShotNode | undefined> = {}
   const parentNode = state.nodes[parentId]
   const optionNodeIds = parentNode?.childGroups.optionNodeIds || []
   optionNodeIds.forEach((id) => {
-    const node = state.nodes[id] as ParamNode | null
+    const node = state.nodes[id]
 
-    if (node?.nodeType !== 'param') {
-      console.warn(`useNodeOptionNodes: node "${id}" doesn't exist or is not a param node`)
+    if (node?.nodeType !== 'param' && node?.nodeType !== 'shot') {
+      console.warn(`getNodeOptionNodes: node "${id}" doesn't exist or is not a param/shot node`)
       return
     }
 
@@ -31,7 +33,7 @@ export const getNodeOptionNodesValues = <OptionNodes extends Record<string, Para
   const values: ParamValues = {}
   for (const key in optionNodes) {
     const node = optionNodes[key]
-    if (node) {
+    if (node?.nodeType === 'param') {
       values[key] = state.paramValues[node.id]
     }
   }
@@ -44,23 +46,5 @@ export const useNodeOptionNodes = <
 >(
   parentId: string,
 ): OptionNodes => {
-  return useEngineStore(
-    useShallow((state) => {
-      const optionNodes: Record<string, ParamNode | ShotNode | undefined> = {}
-      const parentNode = state.nodes[parentId]
-      const optionNodeIds = parentNode?.childGroups.optionNodeIds || []
-      optionNodeIds.forEach((id) => {
-        const node = state.nodes[id] as ParamNode | ShotNode | null
-
-        if (node?.nodeType !== 'param' && node?.nodeType !== 'shot') {
-          console.warn(`useNodeOptionNodes: node "${id}" doesn't exist or is not a param/shot node`)
-          return
-        }
-
-        optionNodes[node.key] = node
-      })
-
-      return optionNodes as OptionNodes
-    }),
-  )
+  return useEngineStore(useShallow((state) => getNodeOptionNodes<OptionNodes>(state, parentId)))
 }
