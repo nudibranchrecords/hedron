@@ -3,12 +3,12 @@ import { ClockOptionNodes } from '@/ClockPlugin'
 import { CLOCK_NODE_ID } from '@/constants'
 
 export function ClockGlobalPanel(): JSX.Element {
-  const { bpmValue, togglePlay, reset, tapTempo } =
+  const { globalClockBpm, togglePlay, reset, tapTempo } =
     useNodeOptionNodes<ClockOptionNodes>(CLOCK_NODE_ID)
 
   return (
     <>
-      {bpmValue && <NodeContainer nodeId={bpmValue.id} />}
+      {globalClockBpm && <NodeContainer nodeId={globalClockBpm.id} />}
       <ControlGrid>
         {togglePlay && <NodeContainer nodeId={togglePlay.id} />}
         {reset && <NodeContainer nodeId={reset.id} />}

@@ -17,7 +17,7 @@ export const createClockOptionNodeConfigs = (actions: {
   defineOptionNodeConfigs([
     {
       nodeType: 'param',
-      key: 'bpmValue',
+      key: 'globalClockBpm',
       title: 'BPM',
       valueType: 'number',
       displayMode: 'field',
@@ -50,7 +50,7 @@ export type ClockOptionNodes = OptionNodesFromConfigs<
 >
 
 /**
- * Owns the global `Clock`. BPM lives in the `bpmValue` option node (project state): BPM changes
+ * Owns the global `Clock`. BPM lives in the `globalClockBpm` option node (project state): BPM changes
  * calculated by the clock are written to the node, and node changes are applied to the clock.
  */
 export class ClockPlugin implements IPlugin {
@@ -87,7 +87,7 @@ export class ClockPlugin implements IPlugin {
       }),
     )
 
-    const bpmNode = engine.getNodeOptionNode(CLOCK_NODE_ID, 'bpmValue')
+    const bpmNode = engine.getNodeOptionNode(CLOCK_NODE_ID, 'globalClockBpm')
 
     this.unsubscribers.push(
       engine.subscribeToParamValue<number>(bpmNode.id, (bpm) => {

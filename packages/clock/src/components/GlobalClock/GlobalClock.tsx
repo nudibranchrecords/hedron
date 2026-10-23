@@ -19,7 +19,7 @@ export const GlobalClock = () => {
 
   const onBpmEdit = (newBpm: number) => {
     if (!isValidBpm(newBpm)) return
-    const bpmNode = engine.getNodeOptionNode(CLOCK_NODE_ID, 'bpmValue')
+    const bpmNode = engine.getNodeOptionNode(CLOCK_NODE_ID, 'globalClockBpm')
     engine.setParamValue(bpmNode.id, newBpm)
   }
 
