@@ -28,13 +28,13 @@ engine.registerPlugin(clockPlugin)
 
 // For desktop usage it's better to load the entire audio upfront rather than streaming it
 const timelineInput = new TimelineInput({ audioLoadingMode: 'preload', clock: clockPlugin.clock })
-const audioInput = new AudioInput(engine)
+const audioInput = new AudioInput()
 
-engine.registerPlugin(new MidiInput(engine))
+engine.registerPlugin(new MidiInput())
 engine.registerPlugin(timelineInput)
-engine.registerPlugin(new LFOInput(engine, clockPlugin.clock))
+engine.registerPlugin(new LFOInput({ clock: clockPlugin.clock }))
 engine.registerPlugin(audioInput)
-engine.registerPlugin(new GamepadInput(engine))
+engine.registerPlugin(new GamepadInput())
 engine.registerPlugin(new SceneControlPlugin())
 engine.registerPlugin(new VideoRenderPlugin(videoRenderCallbacks))
 engine.registerPlugin(new ParamPresetsPlugin())

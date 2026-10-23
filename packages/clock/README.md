@@ -8,7 +8,7 @@ Hedron Clock module. Exports a Hedron plugin (`ClockPlugin`) and the standalone 
 const clockPlugin = new ClockPlugin()
 engine.registerPlugin(clockPlugin) // Register before plugins that depend on the clock
 
-engine.registerPlugin(new LFOInput(engine, clockPlugin.clock))
+engine.registerPlugin(new LFOInput({ clock: clockPlugin.clock }))
 ```
 
 BPM is stored in the plugin's `bpmValue` option node (project state). BPM changes calculated by the clock (tempo tap, MIDI clock) are written to the node, which in turn updates the clock.

@@ -20,7 +20,7 @@ clockPlugin.clock.start()
 engine.registerPlugin(clockPlugin)
 
 // We need to add the plugin for LFOs to work
-engine.registerPlugin(new LFOInput(engine, clockPlugin.clock))
+engine.registerPlugin(new LFOInput({ clock: clockPlugin.clock }))
 
 export const engineStore = engine.getStore()
 const { setSketchModuleItem, loadProject } = engineStore.getState()

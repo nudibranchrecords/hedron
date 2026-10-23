@@ -7,8 +7,6 @@ import {
   ParamValue,
   ParamNode,
   ShotNode,
-  ConfigParam,
-  ConfigShot,
 } from '@store/types'
 
 /**
@@ -51,25 +49,16 @@ export interface IPlugin {
   description: string
 
   /**
-   * @deprecated prefer `onNewInput` to create option nodes
-   * Config to generate option nodes. Follows same structure as sketch params config.
-   */
-  optionNodesConfig?: readonly (ConfigParam | ConfigShot)[]
-
-  /**
-   * @deprecated prefer `onEngineInitialize` to create global plugin option nodes
-   * Config to generate global option nodes. Follows same structure as sketch params config.
-   */
-  globalOptionNodesConfig?: readonly (ConfigParam | ConfigShot)[]
-
-  /**
-   * Optional callback called after engine initialization (project load, sketches folder selection)
-   * Useful for plugins that need to sync their state after the store is populated
+   * Optional callback called after engine initialization (project load, sketches folder selection).
+   * May be called multiple times (e.g. each time a project is loaded).
+   * Use this to get a reference to the engine, create global option nodes via `engine.addOptionNodes`,
+   * and sync plugin state after the store is populated.
    */
   onEngineInitialize?: (engine: HedronEngine) => void
 
   /**
-   * Optional callback called after each input for this plugin is added
+   * Optional callback called after each input for this plugin is added.
+   * Use this to create the input's option nodes via `engine.addOptionNodes(newInput.id, configs)`.
    */
   onNewInput?: (engine: HedronEngine, newInput: InputNode, targetNode: ParamNode | ShotNode) => void
 

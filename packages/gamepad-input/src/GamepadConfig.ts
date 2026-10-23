@@ -1,7 +1,9 @@
-import { IPlugin } from '@hedron-gl/engine'
+import { defineOptionNodeConfigs, OptionNodesFromConfigs } from '@hedron-gl/engine'
 import { GamepadInputType, ButtonMode, AxisMode } from './GamepadTypes'
 
-export const globalOptionNodesConfig = [
+export const GAMEPAD_INPUT_NODE_ID = 'gamepad-input-node'
+
+export const GAMEPAD_GLOBAL_OPTION_NODE_CONFIGS = defineOptionNodeConfigs([
   {
     nodeType: 'param',
     key: 'axisSmoothing',
@@ -38,9 +40,13 @@ export const globalOptionNodesConfig = [
     sliderMin: 0,
     sliderMax: 0.99,
   },
-] as const satisfies IPlugin['globalOptionNodesConfig']
+])
 
-export const optionNodesConfig = [
+export type GamepadGlobalOptionNodes = OptionNodesFromConfigs<
+  typeof GAMEPAD_GLOBAL_OPTION_NODE_CONFIGS
+>
+
+export const GAMEPAD_OPTION_NODE_CONFIGS = defineOptionNodeConfigs([
   {
     nodeType: 'param',
     key: 'isEnabled',
@@ -133,4 +139,4 @@ export const optionNodesConfig = [
     sliderMin: 0,
     sliderMax: 1,
   },
-] as const satisfies IPlugin['optionNodesConfig']
+])

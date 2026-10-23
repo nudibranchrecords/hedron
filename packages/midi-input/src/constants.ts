@@ -13,3 +13,5 @@ for (let i = 0; i < 128; i++) {
   const octave = Math.floor(i / noteLetters.length) - 1
   MIDI_NOTES[i] = `${i} - ${letter} (${octave})`
 }
+
+export const MIDI_INPUT_NODE_ID = 'midi-input-node'

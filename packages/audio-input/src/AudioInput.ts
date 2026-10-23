@@ -1,4 +1,12 @@
-import { handleEachInput, HedronEngine, IPlugin } from '@hedron-gl/engine'
+import {
+  defineOptionNodeConfigs,
+  EngineStore,
+  handleEachInput,
+  HedronEngine,
+  InputNode,
+  IPlugin,
+  OptionNodesFromConfigs,
+} from '@hedron-gl/engine'
 import { AudioDeviceManager } from './AudioDeviceManager'
 import {
   AudioAnalyzer,
@@ -11,6 +19,7 @@ import {
 import { lerp, computePeakAmplitude, gainForPeak } from './AudioUtils'
 import { handleAudioError } from './AudioTestUtils'
 import { analyzeAudioOffline } from './OfflineSpectrumAnalyzer'
+import { AUDIO_INPUT_NODE_ID } from './constants'
 
 /** Target peak amplitude for peak-normalized (auto) gain - a touch under full scale for headroom. */
 const TARGET_PEAK_AMPLITUDE = 0.99
@@ -29,6 +38,167 @@ export interface BeginOfflineAnalysisOptions {
 }
 
 /**
+ * Default frequency bands to use
+ */
+const DEFAULT_BANDS: FrequencyBand[] = [
+  { centerFreq: 70, q: 0.2, color: BAND_COLORS[0] }, // Low
+  { centerFreq: 400, q: 0.25, color: BAND_COLORS[1] }, // Mid Low
+  { centerFreq: 1400, q: 0.3, color: BAND_COLORS[2] }, // Mid High
+  { centerFreq: 5000, q: 0.33, color: BAND_COLORS[3] }, // High
+]
+
+const getBandCenterFreqKey = (bandIndex: number) => `band${bandIndex}CenterFreq` as const
+const getBandQKey = (bandIndex: number) => `band${bandIndex}Q` as const
+
+export const AUDIO_GLOBAL_OPTION_NODE_CONFIGS = defineOptionNodeConfigs([
+  {
+    nodeType: 'param',
+    key: 'masterVolume',
+    title: 'Master Volume',
+    valueType: 'number',
+    defaultValue: 1.0,
+    sliderMin: 0,
+    sliderMax: 2.0,
+  },
+  {
+    nodeType: 'param',
+    key: 'smoothing',
+    title: 'Smoothing',
+    valueType: 'number',
+    defaultValue: 0,
+    sliderMin: 0,
+    sliderMax: 0.999,
+  },
+  {
+    nodeType: 'param',
+    key: 'normalizeLevels',
+    title: 'Normalize Levels',
+    valueType: 'number',
+    defaultValue: 0,
+    sliderMin: 0,
+    sliderMax: 1.0,
+  },
+  {
+    nodeType: 'param',
+    key: 'levelsFalloff',
+    title: 'Levels Falloff',
+    valueType: 'number',
+    defaultValue: 1,
+    sliderMin: 0,
+    sliderMax: 2.0,
+  },
+  {
+    nodeType: 'param',
+    key: 'levelsPower',
+    title: 'Levels Power',
+    valueType: 'number',
+    defaultValue: 1,
+    sliderMin: 0.1,
+    sliderMax: 5.0,
+  },
+  {
+    nodeType: 'param',
+    key: 'maxLevelFalloffMultiplier',
+    title: 'Max Level Falloff Multiplier',
+    valueType: 'number',
+    defaultValue: 0.9999,
+    sliderMin: 0.9,
+    sliderMax: 1.0,
+  },
+  {
+    nodeType: 'param',
+    key: 'maxLevelMinimum',
+    title: 'Max Level Minimum',
+    valueType: 'number',
+    defaultValue: 0.001,
+    sliderMin: 0.0001,
+    sliderMax: 0.1,
+  },
+  {
+    nodeType: 'param',
+    key: 'fileAudioGainDb',
+    title: 'File Audio Gain (dB, negative = auto)',
+    valueType: 'number',
+    defaultValue: 0,
+    sliderMin: -24,
+    sliderMax: 24,
+  },
+  // Generate hidden band configuration nodes from DEFAULT_BANDS
+  ...DEFAULT_BANDS.flatMap((band, index) => [
+    {
+      nodeType: 'param' as const,
+      key: getBandCenterFreqKey(index),
+      title: `Band ${index} Center Frequency`,
+      valueType: 'number' as const,
+      defaultValue: band.centerFreq,
+      hidden: true,
+    },
+    {
+      nodeType: 'param' as const,
+      key: getBandQKey(index),
+      title: `Band ${index} Q Factor`,
+      valueType: 'number' as const,
+      defaultValue: band.q,
+      hidden: true,
+    },
+  ]),
+])
+
+export const AUDIO_OPTION_NODE_CONFIGS = defineOptionNodeConfigs([
+  {
+    nodeType: 'param',
+    key: 'isEnabled',
+    title: 'Enabled',
+    valueType: 'boolean',
+    defaultValue: true,
+  },
+  {
+    nodeType: 'param',
+    key: 'frequency',
+    valueType: 'enum',
+    defaultValue: 1,
+    options: [
+      {
+        value: 0,
+        label: 'Low',
+      },
+      {
+        value: 1,
+        label: 'Mid Low',
+      },
+      {
+        value: 2,
+        label: 'Mid High',
+      },
+      {
+        value: 3,
+        label: 'High',
+      },
+    ],
+  },
+  {
+    nodeType: 'param',
+    key: 'min',
+    valueType: 'number',
+    defaultValue: 0,
+    title: 'Min Value',
+    sliderMin: 0,
+    sliderMax: 1,
+  },
+  {
+    nodeType: 'param',
+    key: 'max',
+    valueType: 'number',
+    defaultValue: 1,
+    title: 'Max Value',
+    sliderMin: 0,
+    sliderMax: 1,
+  },
+])
+
+export type AudioGlobalOptionNodes = OptionNodesFromConfigs<typeof AUDIO_GLOBAL_OPTION_NODE_CONFIGS>
+
+/**
  * Audio Input plugin for capturing and processing audio from the microphone
  * Provides frequency analysis and visualization capabilities
  */
@@ -45,161 +215,6 @@ export class AudioInput implements IPlugin {
   public readonly inputType = 'audio'
   public readonly description =
     'Captures microphone audio and provides real-time frequency analysis for visualization.'
-
-  /**
-   * Default frequency bands to use
-   */
-  private static DEFAULT_BANDS: FrequencyBand[] = [
-    { centerFreq: 70, q: 0.2, color: BAND_COLORS[0] }, // Low
-    { centerFreq: 400, q: 0.25, color: BAND_COLORS[1] }, // Mid Low
-    { centerFreq: 1400, q: 0.3, color: BAND_COLORS[2] }, // Mid High
-    { centerFreq: 5000, q: 0.33, color: BAND_COLORS[3] }, // High
-  ]
-  public readonly globalOptionNodesConfig = [
-    {
-      nodeType: 'param',
-      key: 'masterVolume',
-      title: 'Master Volume',
-      valueType: 'number',
-      defaultValue: 1.0,
-      sliderMin: 0,
-      sliderMax: 2.0,
-    },
-    {
-      nodeType: 'param',
-      key: 'smoothing',
-      title: 'Smoothing',
-      valueType: 'number',
-      defaultValue: 0,
-      sliderMin: 0,
-      sliderMax: 0.999,
-    },
-    {
-      nodeType: 'param',
-      key: 'normalizeLevels',
-      title: 'Normalize Levels',
-      valueType: 'number',
-      defaultValue: 0,
-      sliderMin: 0,
-      sliderMax: 1.0,
-    },
-    {
-      nodeType: 'param',
-      key: 'levelsFalloff',
-      title: 'Levels Falloff',
-      valueType: 'number',
-      defaultValue: 1,
-      sliderMin: 0,
-      sliderMax: 2.0,
-    },
-    {
-      nodeType: 'param',
-      key: 'levelsPower',
-      title: 'Levels Power',
-      valueType: 'number',
-      defaultValue: 1,
-      sliderMin: 0.1,
-      sliderMax: 5.0,
-    },
-    {
-      nodeType: 'param',
-      key: 'maxLevelFalloffMultiplier',
-      title: 'Max Level Falloff Multiplier',
-      valueType: 'number',
-      defaultValue: 0.9999,
-      sliderMin: 0.9,
-      sliderMax: 1.0,
-    },
-    {
-      nodeType: 'param',
-      key: 'maxLevelMinimum',
-      title: 'Max Level Minimum',
-      valueType: 'number',
-      defaultValue: 0.001,
-      sliderMin: 0.0001,
-      sliderMax: 0.1,
-    },
-    {
-      nodeType: 'param',
-      key: 'fileAudioGainDb',
-      title: 'File Audio Gain (dB, negative = auto)',
-      valueType: 'number',
-      defaultValue: 0,
-      sliderMin: -24,
-      sliderMax: 24,
-    },
-    // Generate hidden band configuration nodes from DEFAULT_BANDS
-    ...AudioInput.DEFAULT_BANDS.flatMap((band, index) => [
-      {
-        nodeType: 'param' as const,
-        key: `band${index}CenterFreq`,
-        title: `Band ${index} Center Frequency`,
-        valueType: 'number' as const,
-        defaultValue: band.centerFreq,
-        hidden: true,
-      },
-      {
-        nodeType: 'param' as const,
-        key: `band${index}Q`,
-        title: `Band ${index} Q Factor`,
-        valueType: 'number' as const,
-        defaultValue: band.q,
-        hidden: true,
-      },
-    ]),
-  ] as const satisfies IPlugin['globalOptionNodesConfig']
-
-  public readonly optionNodesConfig = [
-    {
-      nodeType: 'param',
-      key: 'isEnabled',
-      title: 'Enabled',
-      valueType: 'boolean',
-      defaultValue: true,
-    },
-    {
-      nodeType: 'param',
-      key: 'frequency',
-      valueType: 'enum',
-      defaultValue: 1,
-      options: [
-        {
-          value: 0,
-          label: 'Low',
-        },
-        {
-          value: 1,
-          label: 'Mid Low',
-        },
-        {
-          value: 2,
-          label: 'Mid High',
-        },
-        {
-          value: 3,
-          label: 'High',
-        },
-      ],
-    },
-    {
-      nodeType: 'param',
-      key: 'min',
-      valueType: 'number',
-      defaultValue: 0,
-      title: 'Min Value',
-      sliderMin: 0,
-      sliderMax: 1,
-    },
-    {
-      nodeType: 'param',
-      key: 'max',
-      valueType: 'number',
-      defaultValue: 1,
-      title: 'Max Value',
-      sliderMin: 0,
-      sliderMax: 1,
-    },
-  ] as const satisfies IPlugin['optionNodesConfig']
 
   /**
    * Audio data containing the analyzer and visualization resources
@@ -239,22 +254,24 @@ export class AudioInput implements IPlugin {
   private peakGainCache = new Map<string, number>()
 
   /**
-   * Reference to the engine's state store
+   * Reference to the engine's state store, set in `onEngineInitialize`
    */
-  private _store
+  private _store?: EngineStore
 
-  constructor(engine: HedronEngine) {
+  /**
+   * Reference to the engine, set in `onEngineInitialize`
+   */
+  private engine?: HedronEngine
+
+  constructor() {
     console.log('[AudioInput] Plugin initializing...')
-    this._store = engine.getStore()
 
     // Initialize audio device manager
     this.deviceManager = new AudioDeviceManager()
     AudioDeviceManager.ENABLE_LOGGING = AudioInput.ENABLE_LOGGING
 
     // Initialize audio analyzer
-    this.analyzer = new AudioAnalyzer(AudioInput.DEFAULT_BANDS)
-    // Sync band configurations once on initialization
-    this.syncBandConfigurations()
+    this.analyzer = new AudioAnalyzer(DEFAULT_BANDS)
     // Initialize audio capture
     this.deviceManager
       .updateInputDeviceList()
@@ -270,10 +287,26 @@ export class AudioInput implements IPlugin {
   }
 
   /**
-   * Called after engine initialization to sync plugin state
+   * Called after engine initialization to create global option nodes and sync plugin state
    */
-  public onEngineInitialize = (): void => {
+  public onEngineInitialize = (engine: HedronEngine): void => {
+    this.engine = engine
+    this._store = engine.getStore()
+
+    engine.addNodeOnce(AUDIO_INPUT_NODE_ID, null, {
+      title: 'Audio Input',
+      key: 'audio-input',
+      nodeType: 'custom',
+      customNodeType: 'audio-input',
+    })
+
+    engine.addOptionNodes(AUDIO_INPUT_NODE_ID, AUDIO_GLOBAL_OPTION_NODE_CONFIGS)
+
     this.syncBandConfigurations()
+  }
+
+  public onNewInput = (engine: HedronEngine, newInput: InputNode): void => {
+    engine.addOptionNodes(newInput.id, AUDIO_OPTION_NODE_CONFIGS)
   }
 
   /**
@@ -288,12 +321,13 @@ export class AudioInput implements IPlugin {
     if (!result) return
 
     // Update the store values so they persist
-    const storeState = this._store.getState()
-    const centerFreqNodeId = `${AudioInput.ID}-global-band${bandIndex}CenterFreq`
-    const qNodeId = `${AudioInput.ID}-global-band${bandIndex}Q`
-
-    // Only update store if the nodes exist
-    if (storeState.nodes[centerFreqNodeId] && storeState.nodes[qNodeId]) {
+    if (this.engine && this._store) {
+      const centerFreqNodeId = this.engine.getNodeOptionNode(
+        AUDIO_INPUT_NODE_ID,
+        getBandCenterFreqKey(bandIndex),
+      ).id
+      const qNodeId = this.engine.getNodeOptionNode(AUDIO_INPUT_NODE_ID, getBandQKey(bandIndex)).id
+      const storeState = this._store.getState()
       storeState.updateParamValue(centerFreqNodeId, result.clampedFreq)
       storeState.updateParamValue(qNodeId, result.clampedQ)
     }
@@ -569,10 +603,7 @@ export class AudioInput implements IPlugin {
 
   /** File audio gain in dB from the global options (default: 0). */
   private getFileAudioGainDb(): number {
-    const storeState = this._store.getState()
-    const nodeId = `${AudioInput.ID}-global-fileAudioGainDb`
-    const value = storeState.paramValues[nodeId] as number | undefined
-    return value ?? 0
+    return this.engine?.getNodeOptionNodeValue<number>(AUDIO_INPUT_NODE_ID, 'fileAudioGainDb') ?? 0
   }
 
   /**
@@ -588,12 +619,7 @@ export class AudioInput implements IPlugin {
    * @returns Master volume value (default: 1.0)
    */
   private getMasterVolume(): number {
-    const storeState = this._store.getState()
-    // Construct the ID for the master volume node
-    const masterVolumeNodeId = `${AudioInput.ID}-global-masterVolume`
-    // Get the value from the store, default to 1.0 if not found
-    const masterVolume = storeState.paramValues[masterVolumeNodeId] as number | undefined
-    return masterVolume ?? 1.0
+    return this.engine?.getNodeOptionNodeValue<number>(AUDIO_INPUT_NODE_ID, 'masterVolume') ?? 1.0
   }
 
   /**
@@ -601,10 +627,7 @@ export class AudioInput implements IPlugin {
    * @returns Smoothing value (default: 0)
    */
   private getSmoothing(): number {
-    const storeState = this._store.getState()
-    const nodeId = `${AudioInput.ID}-global-smoothing`
-    const value = storeState.paramValues[nodeId] as number | undefined
-    return value ?? 0
+    return this.engine?.getNodeOptionNodeValue<number>(AUDIO_INPUT_NODE_ID, 'smoothing') ?? 0
   }
 
   /**
@@ -612,10 +635,7 @@ export class AudioInput implements IPlugin {
    * @returns Normalize levels value (default: 0)
    */
   private getNormalizeLevels(): number {
-    const storeState = this._store.getState()
-    const nodeId = `${AudioInput.ID}-global-normalizeLevels`
-    const value = storeState.paramValues[nodeId] as number | undefined
-    return value ?? 0
+    return this.engine?.getNodeOptionNodeValue<number>(AUDIO_INPUT_NODE_ID, 'normalizeLevels') ?? 0
   }
 
   /**
@@ -623,10 +643,7 @@ export class AudioInput implements IPlugin {
    * @returns Levels falloff value (default: 1)
    */
   private getLevelsFalloff(): number {
-    const storeState = this._store.getState()
-    const nodeId = `${AudioInput.ID}-global-levelsFalloff`
-    const value = storeState.paramValues[nodeId] as number | undefined
-    return value ?? 1
+    return this.engine?.getNodeOptionNodeValue<number>(AUDIO_INPUT_NODE_ID, 'levelsFalloff') ?? 1
   }
 
   /**
@@ -634,10 +651,7 @@ export class AudioInput implements IPlugin {
    * @returns Levels power value (default: 1)
    */
   private getLevelsPower(): number {
-    const storeState = this._store.getState()
-    const nodeId = `${AudioInput.ID}-global-levelsPower`
-    const value = storeState.paramValues[nodeId] as number | undefined
-    return value ?? 1
+    return this.engine?.getNodeOptionNodeValue<number>(AUDIO_INPUT_NODE_ID, 'levelsPower') ?? 1
   }
 
   /**
@@ -645,10 +659,12 @@ export class AudioInput implements IPlugin {
    * @returns Max level falloff multiplier value (default: 0.9999)
    */
   private getMaxLevelFalloffMultiplier(): number {
-    const storeState = this._store.getState()
-    const nodeId = `${AudioInput.ID}-global-maxLevelFalloffMultiplier`
-    const value = storeState.paramValues[nodeId] as number | undefined
-    return value ?? 0.9999
+    return (
+      this.engine?.getNodeOptionNodeValue<number>(
+        AUDIO_INPUT_NODE_ID,
+        'maxLevelFalloffMultiplier',
+      ) ?? 0.9999
+    )
   }
 
   /**
@@ -656,10 +672,9 @@ export class AudioInput implements IPlugin {
    * @returns Max level minimum value (default: 0.001)
    */
   private getMaxLevelMinimum(): number {
-    const storeState = this._store.getState()
-    const nodeId = `${AudioInput.ID}-global-maxLevelMinimum`
-    const value = storeState.paramValues[nodeId] as number | undefined
-    return value ?? 0.001
+    return (
+      this.engine?.getNodeOptionNodeValue<number>(AUDIO_INPUT_NODE_ID, 'maxLevelMinimum') ?? 0.001
+    )
   }
 
   /**
@@ -668,59 +683,20 @@ export class AudioInput implements IPlugin {
    * @returns Object with centerFreq and q values
    */
   private getBandConfig(bandIndex: number): { centerFreq: number; q: number } {
-    const storeState = this._store.getState()
-    const centerFreqNodeId = `${AudioInput.ID}-global-band${bandIndex}CenterFreq`
-    const qNodeId = `${AudioInput.ID}-global-band${bandIndex}Q`
-
-    // Check if the nodes exist in the store first
-    const centerFreqNode = storeState.nodes[centerFreqNodeId]
-    const qNode = storeState.nodes[qNodeId]
-
-    // If nodes don't exist (old project), use defaults
-    if (!centerFreqNode || !qNode) {
-      const defaults = AudioInput.DEFAULT_BANDS[bandIndex] || { centerFreq: 1000, q: 1 }
-      return {
-        centerFreq: defaults.centerFreq,
-        q: defaults.q,
-      }
-    }
-
-    const centerFreq = storeState.paramValues[centerFreqNodeId] as number | undefined
-    const q = storeState.paramValues[qNodeId] as number | undefined
-
-    // Return stored values or defaults
-    const defaults = AudioInput.DEFAULT_BANDS[bandIndex] || { centerFreq: 1000, q: 1 }
+    const defaults = DEFAULT_BANDS[bandIndex] || { centerFreq: 1000, q: 1 }
+    const getValue = (key: string) =>
+      this.engine?.getNodeOptionNodeValue<number>(AUDIO_INPUT_NODE_ID, key)
     return {
-      centerFreq: centerFreq ?? defaults.centerFreq,
-      q: q ?? defaults.q,
+      centerFreq: getValue(getBandCenterFreqKey(bandIndex)) ?? defaults.centerFreq,
+      q: getValue(getBandQKey(bandIndex)) ?? defaults.q,
     }
   }
 
   /**
    * Syncs band configurations from store to analyzer
-   * Only syncs if all required nodes exist, otherwise leaves analyzer with defaults
    */
   private syncBandConfigurations(): void {
-    const storeState = this._store.getState()
-
-    // Check if any of the band configuration nodes exist
-    let hasAnyBandNodes = false
-    for (let i = 0; i < AudioInput.DEFAULT_BANDS.length; i++) {
-      const centerFreqNodeId = `${AudioInput.ID}-global-band${i}CenterFreq`
-      const qNodeId = `${AudioInput.ID}-global-band${i}Q`
-      if (storeState.nodes[centerFreqNodeId] && storeState.nodes[qNodeId]) {
-        hasAnyBandNodes = true
-        break
-      }
-    }
-
-    // If no band nodes exist (old project), don't sync - keep analyzer defaults
-    if (!hasAnyBandNodes) {
-      return
-    }
-
-    // Sync each band configuration
-    for (let i = 0; i < AudioInput.DEFAULT_BANDS.length; i++) {
+    for (let i = 0; i < DEFAULT_BANDS.length; i++) {
       const config = this.getBandConfig(i)
       this.analyzer.updateBand(i, config.centerFreq, config.q)
       if (AudioInput.ENABLE_LOGGING) {
@@ -766,8 +742,10 @@ export class AudioInput implements IPlugin {
    * Called each frame from the main update loop
    */
   private updateInputNodes() {
+    if (!this._store) return
+
     const storeState = this._store.getState()
-    handleEachInput<typeof this.optionNodesConfig>(
+    handleEachInput<typeof AUDIO_OPTION_NODE_CONFIGS>(
       storeState,
       this.inputType,
       ({ input, optionNodes, targetNode }) => {

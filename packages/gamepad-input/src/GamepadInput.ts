@@ -11,10 +11,15 @@ import {
   ParamVector3,
   HedronEngine,
   ParamFile,
+  InputNode,
 } from '@hedron-gl/engine'
 import { GamepadManager } from './GamepadManager'
 import { GamepadEvent, GamepadInputType, AxisMode, ValueHandler, ShotHandler } from './GamepadTypes'
-import { globalOptionNodesConfig, optionNodesConfig } from './GamepadConfig'
+import {
+  GAMEPAD_GLOBAL_OPTION_NODE_CONFIGS,
+  GAMEPAD_INPUT_NODE_ID,
+  GAMEPAD_OPTION_NODE_CONFIGS,
+} from './GamepadConfig'
 import { createGamepadHandlers, applySmoothing, calculate2AxisValue } from './GamepadHandlers'
 
 /**
@@ -27,11 +32,9 @@ export class GamepadInput implements IPlugin {
   public readonly inputType = 'gamepad'
   public readonly description = 'Handles gamepad input devices.'
   public readonly gamepadManager = new GamepadManager()
-  public readonly globalOptionNodesConfig = globalOptionNodesConfig
-  public readonly optionNodesConfig = optionNodesConfig
 
-  store: EngineStore
-  engine: HedronEngine
+  store?: EngineStore
+  engine?: HedronEngine
   /**
    * Tracks target values from gamepad events for each input
    */
@@ -72,10 +75,7 @@ export class GamepadInput implements IPlugin {
     vector3: ValueHandler<ParamVector3>
   }
 
-  constructor(engine: HedronEngine) {
-    this.store = engine.getStore()
-    this.engine = engine
-
+  constructor() {
     // Create handlers with access to necessary state
     const baseHandlers = createGamepadHandlers({
       toggleStates: this.toggleStates,
@@ -98,15 +98,30 @@ export class GamepadInput implements IPlugin {
     this.gamepadManager.onGamepadEvent.add(this.handleGamepadEvent.bind(this))
   }
 
+  onEngineInitialize(engine: HedronEngine) {
+    this.engine = engine
+    this.store = engine.getStore()
+
+    engine.addNodeOnce(GAMEPAD_INPUT_NODE_ID, null, {
+      title: 'Gamepad Input',
+      key: 'gamepad-input',
+      nodeType: 'custom',
+      customNodeType: 'gamepad-input',
+    })
+
+    engine.addOptionNodes(GAMEPAD_INPUT_NODE_ID, GAMEPAD_GLOBAL_OPTION_NODE_CONFIGS)
+  }
+
+  onNewInput = (engine: HedronEngine, newInput: InputNode) => {
+    engine.addOptionNodes(newInput.id, GAMEPAD_OPTION_NODE_CONFIGS)
+  }
+
   /**
    * Gets the axis smoothing value from the global options
    * @returns Axis smoothing value (default: 0)
    */
   private getAxisSmoothing(): number {
-    const storeState = this.store.getState()
-    const nodeId = `${this.id}-global-axisSmoothing`
-    const value = storeState.paramValues[nodeId] as number | undefined
-    return value ?? 0
+    return this.engine?.getNodeOptionNodeValue<number>(GAMEPAD_INPUT_NODE_ID, 'axisSmoothing') ?? 0
   }
 
   /**
@@ -114,10 +129,9 @@ export class GamepadInput implements IPlugin {
    * @returns Button smoothing value (default: 0)
    */
   private getButtonSmoothing(): number {
-    const storeState = this.store.getState()
-    const nodeId = `${this.id}-global-buttonSmoothing`
-    const value = storeState.paramValues[nodeId] as number | undefined
-    return value ?? 0
+    return (
+      this.engine?.getNodeOptionNodeValue<number>(GAMEPAD_INPUT_NODE_ID, 'buttonSmoothing') ?? 0
+    )
   }
 
   /**
@@ -125,10 +139,7 @@ export class GamepadInput implements IPlugin {
    * @returns Axis dead zone value (default: 0)
    */
   private getAxisDeadZone(): number {
-    const storeState = this.store.getState()
-    const nodeId = `${this.id}-global-axisDeadZone`
-    const value = storeState.paramValues[nodeId] as number | undefined
-    return value ?? 0
+    return this.engine?.getNodeOptionNodeValue<number>(GAMEPAD_INPUT_NODE_ID, 'axisDeadZone') ?? 0
   }
 
   /**
@@ -136,10 +147,7 @@ export class GamepadInput implements IPlugin {
    * @returns Axis cap value (default: 1)
    */
   private getAxisCap(): number {
-    const storeState = this.store.getState()
-    const nodeId = `${this.id}-global-axisCap`
-    const value = storeState.paramValues[nodeId] as number | undefined
-    return value ?? 1
+    return this.engine?.getNodeOptionNodeValue<number>(GAMEPAD_INPUT_NODE_ID, 'axisCap') ?? 1
   }
 
   /**
@@ -181,8 +189,11 @@ export class GamepadInput implements IPlugin {
       this.buttonStates.set(buttonKey, event.isPressed ?? false)
     }
 
-    const storeState = this.store.getState()
-    handleEachInput<typeof this.optionNodesConfig>(
+    const engine = this.engine
+    if (!engine) return
+
+    const storeState = engine.getStore().getState()
+    handleEachInput<typeof GAMEPAD_OPTION_NODE_CONFIGS>(
       storeState,
       'gamepad',
       ({ input, optionNodes, targetNode, targetParamValue }) => {
@@ -263,7 +274,7 @@ export class GamepadInput implements IPlugin {
             const processedEvent = { ...event, value: processedValue }
             this.handlers.handleShot({
               input,
-              engine: this.engine,
+              engine,
               gamepadEvent: processedEvent,
               optionNodes,
             })
@@ -316,8 +327,10 @@ export class GamepadInput implements IPlugin {
    * Called each frame from the main update loop.
    */
   private updateInputNodes() {
+    if (!this.store) return
+
     const storeState = this.store.getState()
-    handleEachInput<typeof this.optionNodesConfig>(
+    handleEachInput<typeof GAMEPAD_OPTION_NODE_CONFIGS>(
       storeState,
       'gamepad',
       ({ input, optionNodes, targetNode }) => {
