@@ -93,6 +93,8 @@ export class ClockPlugin implements IPlugin {
       engine.subscribeToParamValue<number>(bpmNode.id, (bpm) => {
         if (isValidBpm(bpm)) {
           this.clock.bpm = bpm
+        } else if (bpm !== undefined) {
+          engine.setParamValue(bpmNode.id, this.clock.bpm)
         }
       }),
       this.clock.onBpmChange((bpm) => {
