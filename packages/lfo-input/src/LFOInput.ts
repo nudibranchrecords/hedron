@@ -11,6 +11,7 @@ import {
   ParamNode,
   ShotNode,
 } from '@hedron-gl/engine'
+import type { Clock } from '@hedron-gl/clock'
 import { getNodeOptionNodes, getNodeOptionNodesValues } from '@hedron-gl/ui-core'
 
 const TAU = Math.PI * 2
@@ -134,7 +135,7 @@ export class LFOInput implements IPlugin {
 
   private lastClockBeatDelta: number = -1
 
-  private clock: NonNullable<HedronEngine['clock']>
+  private clock: Clock
 
   private store: EngineStore
 
@@ -210,13 +211,11 @@ export class LFOInput implements IPlugin {
     }
   }
 
-  constructor(engine: HedronEngine) {
-    const clock = engine.clock
-
-    if (!clock) {
-      throw new Error('Clock plugin is required for LFOInput to function.')
-    }
-
+  /**
+   * @param engine The engine
+   * @param clock The clock to drive LFOs, usually `ClockPlugin.clock` from `@hedron-gl/clock`
+   */
+  constructor(engine: HedronEngine, clock: Clock) {
     this.clock = clock
     this.store = engine.getStore()
   }

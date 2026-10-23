@@ -12,6 +12,7 @@ import {
   ShotNode,
   isParamVectorComponent,
 } from '@hedron-gl/engine'
+import type { Clock } from '@hedron-gl/clock'
 import { DEFAULT_TIMELINE_ID, TIMELINE_DURATION } from './constants'
 import { TimelineManager, OnAudioSourceChangeCallback } from './TimelineManager'
 import { getTimelineTracks } from './selectors/getTimelineTracks'
@@ -74,8 +75,17 @@ export class TimelineInput implements IPlugin {
 
   private audioLoadingMode: TimelineAudioLoadingMode
 
-  constructor({ audioLoadingMode }: { audioLoadingMode?: TimelineAudioLoadingMode } = {}) {
+  private clock?: Clock
+
+  /**
+   * @param options.clock Optional clock (usually `ClockPlugin.clock` from `@hedron-gl/clock`) to keep in sync with timeline playback
+   */
+  constructor({
+    audioLoadingMode,
+    clock,
+  }: { audioLoadingMode?: TimelineAudioLoadingMode; clock?: Clock } = {}) {
     this.audioLoadingMode = audioLoadingMode ?? 'stream' // Default to streaming audio (nicer default for web projects)
+    this.clock = clock
   }
 
   onEngineInitialize(engine: HedronEngine) {
@@ -94,7 +104,7 @@ export class TimelineInput implements IPlugin {
       new TimelineManager({
         durationMs: TIMELINE_DURATION,
         tracks: [],
-        clock: engine.clock,
+        clock: this.clock,
         positionMs: 0,
         onPositionChange: (positionMs) => {
           engine.setParamValue(playHeadPositionNode.id, positionMs)

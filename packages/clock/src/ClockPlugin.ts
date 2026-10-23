@@ -1,0 +1,74 @@
+import {
+  defineOptionNodeConfigs,
+  HedronEngine,
+  IPlugin,
+  OptionNodesFromConfigs,
+  PluginUpdateArgs,
+} from '@hedron-gl/engine'
+import { Clock, DEFAULT_BPM, isValidBpm } from './Clock'
+import { CLOCK_NODE_ID, CLOCK_PLUGIN_ID } from './constants'
+
+export const CLOCK_OPTION_NODE_CONFIGS = defineOptionNodeConfigs([
+  {
+    nodeType: 'param',
+    key: 'bpmValue',
+    title: 'BPM',
+    valueType: 'number',
+    displayMode: 'field',
+    defaultValue: DEFAULT_BPM,
+    sliderMin: 60,
+    sliderMax: 200,
+  },
+])
+
+export type ClockOptionNodes = OptionNodesFromConfigs<typeof CLOCK_OPTION_NODE_CONFIGS>
+
+/**
+ * Owns the global `Clock`. BPM lives in the `bpmValue` option node (project state): BPM changes
+ * calculated by the clock are written to the node, and node changes are applied to the clock.
+ */
+export class ClockPlugin implements IPlugin {
+  public readonly id = CLOCK_PLUGIN_ID
+  public readonly name = 'Clock'
+  public readonly iconName = 'timer'
+  public readonly description = 'Global clock, providing BPM and beat timing for other plugins.'
+  public readonly clock: Clock
+
+  private unsubscribers: (() => void)[] = []
+
+  constructor() {
+    this.clock = new Clock(DEFAULT_BPM)
+  }
+
+  onEngineInitialize(engine: HedronEngine) {
+    // Engine may be initialized multiple times (e.g. loading a new project)
+    this.unsubscribers.forEach((unsubscribe) => unsubscribe())
+    this.unsubscribers = []
+
+    engine.addNodeOnce(CLOCK_NODE_ID, null, {
+      title: 'Clock',
+      key: 'clock',
+      nodeType: 'custom',
+      customNodeType: 'clock',
+    })
+
+    engine.addOptionNodes(CLOCK_NODE_ID, CLOCK_OPTION_NODE_CONFIGS)
+
+    const bpmNode = engine.getNodeOptionNode(CLOCK_NODE_ID, 'bpmValue')
+
+    this.unsubscribers.push(
+      engine.subscribeToParamValue<number>(bpmNode.id, (bpm) => {
+        if (isValidBpm(bpm)) {
+          this.clock.bpm = bpm
+        }
+      }),
+      this.clock.onBpmChange((bpm) => {
+        engine.setParamValue(bpmNode.id, bpm)
+      }),
+    )
+  }
+
+  update(_engine: HedronEngine, { deltaTime }: PluginUpdateArgs) {
+    this.clock.step(deltaTime * 1000)
+  }
+}

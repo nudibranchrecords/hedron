@@ -1,4 +1,4 @@
-import { Clock } from '@hedron-gl/clock'
+import type { Clock } from '@hedron-gl/clock'
 import { ParamValue } from '@hedron-gl/engine'
 import { TimelineAudioPlayer } from './TimelineAudioPlayer'
 import type { OnAudioSourceChangeCallback, TimelineAudioLoadingMode } from './TimelineAudioPlayer'

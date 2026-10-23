@@ -1,5 +1,4 @@
 import { Pass } from 'postprocessing'
-import { type Clock } from '@hedron-gl/clock'
 import { WebGPURenderer } from 'three/webgpu'
 import { CanvasSizeMode, RendererType, Result, ShotArgsObject } from './types'
 import { importSketchModule } from './importSketchModule'
@@ -55,7 +54,6 @@ export class HedronEngine {
   private shotListeners: Record<string, (() => void)[]> = {}
   private onFrameStart?: () => void
   private onFrameEnd?: () => void
-  public clock?: Clock
   private running: boolean = false
   private paused: boolean = false
   private _onError: SketchInstanceError
@@ -69,7 +67,6 @@ export class HedronEngine {
     onError?: SketchInstanceError
     rendererType: RendererType
     canvasSizeMode: CanvasSizeMode
-    clock?: Clock
   }) {
     // Initialize global variables for sketches
     initializeGlobalVars()
@@ -93,10 +90,6 @@ export class HedronEngine {
 
     this.onFrameStart = params?.onFrameStart
     this.onFrameEnd = params?.onFrameEnd
-
-    if (params.clock) {
-      this.clock = params.clock
-    }
   }
 
   private setIsSketchBroken(sketchInstanceId: string, isBroken: boolean) {
@@ -722,8 +715,6 @@ export class HedronEngine {
    * @param deltaTime The time delta (in seconds) to advance this frame.
    */
   private advanceFrame(deltaTime: number) {
-    this.clock?.step(deltaTime * 1000)
-
     // Flush before plugin.update() so plugins read this frame's values, not stale ones buffered since the last flush.
     flushParamValueBuffer(this.store.setState)
 

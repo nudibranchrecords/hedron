@@ -29,7 +29,12 @@ function App() {
       $text('beat', beat)
     })
 
-    const unsubscribeBpm = clockRef.current.onBpmChange((bpm) => {
+    // BPM changes from the clock (tap, MIDI pulses) are only requests, so apply them here
+    const unsubscribeBpmRequests = clockRef.current.onBpmChange((bpm) => {
+      clockRef.current!.bpm = bpm
+    })
+
+    const unsubscribeBpm = clockRef.current.onSmoothedBpmChange((bpm) => {
       $text('smoothedBpm', bpm)
     })
 
@@ -82,6 +87,7 @@ function App() {
       cancelAnimationFrame(raf)
       unsubscribeBeats()
       unsubscribeBpm()
+      unsubscribeBpmRequests()
     }
   }, [])
 

@@ -16,5 +16,10 @@
 
   "eslint.workingDirectories": [{ "pattern": "./packages/*/" }, { "pattern": "./apps/*/" }],
   "typescript.tsdk": "node_modules/typescript/lib",
-  "typescript.preferences.importModuleSpecifier": "relative"
+  "typescript.preferences.importModuleSpecifier": "relative",
+  "chat.tools.terminal.autoApprove": {
+    "mkdir": true,
+    "git mv": true,
+    "git rm": true
+  }
 }
