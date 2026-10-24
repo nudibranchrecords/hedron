@@ -9,10 +9,12 @@ import {
   ControlGrid,
   getNodeOptionNodes,
   NodeContainer,
+  useNodeOptionNodes,
 } from '@hedron-gl/ui-core'
 import { GamepadInput } from './GamepadInput'
 import styles from './GamepadGlobalPanel.module.css'
 import { GamepadEvent } from './GamepadTypes'
+import { GAMEPAD_INPUT_NODE_ID, GamepadGlobalOptionNodes } from './GamepadConfig'
 
 interface GamepadGlobalPanelProps {
   engine: HedronEngine
@@ -290,7 +292,7 @@ export const GamepadGlobalPanel: React.FC<GamepadGlobalPanelProps> = ({ engine }
 
   return (
     <div>
-      <GlobalSettings engine={engine} />
+      <GlobalSettings />
       <ControllerList
         connectedGamepads={connectedGamepads}
         expandedControllers={expandedControllers}
@@ -308,22 +310,17 @@ export const GamepadGlobalPanel: React.FC<GamepadGlobalPanelProps> = ({ engine }
 }
 
 // Component: Global Settings
-interface GlobalSettingsProps {
-  engine: HedronEngine
-}
+const GlobalSettings: React.FC = () => {
+  const globalOptionNodes = useNodeOptionNodes<GamepadGlobalOptionNodes>(GAMEPAD_INPUT_NODE_ID)
+  const visibleNodes = Object.values(globalOptionNodes).filter((node) => node && !node.hidden)
 
-const GlobalSettings: React.FC<GlobalSettingsProps> = ({ engine }) => {
-  const globalOptionNodeIds = engine.getPluginGlobalOptionNodeIds('gamepad-input')
-
-  if (globalOptionNodeIds.length === 0) {
+  if (visibleNodes.length === 0) {
     return null
   }
 
   return (
     <ControlGrid className={styles.controlGrid}>
-      {globalOptionNodeIds.map((id: string) => (
-        <NodeContainer key={id} nodeId={id} />
-      ))}
+      {visibleNodes.map((node) => node && <NodeContainer key={node.id} nodeId={node.id} />)}
     </ControlGrid>
   )
 }

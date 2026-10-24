@@ -5,13 +5,29 @@
   "author": "Alex Kempton <alex@funwithtriangles.net>",
   "homepage": "https://github.com/nudibranchrecords/hedron#readme",
   "license": "ISC",
-  "main": "./dist/index.mjs",
+  "type": "module",
+  "main": "./dist/clock.es.js",
   "types": "./dist/index.d.ts",
   "scripts": {
+    "dev": "vite build --watch",
     "typecheck": "tsc --noEmit -p tsconfig.json",
-    "dev": "tsup --watch",
-    "build": "tsup",
+    "build": "vite build",
     "lint": "eslint . --ext .js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.3.4",
+    "typescript": "^5.9.3",
+    "vite": "^7.3.1",
+    "vite-plugin-dts": "^4.5.3",
+    "vite-tsconfig-paths": "^5.1.4"
+  },
+  "dependencies": {
+    "@hedron-gl/engine": "^1.0.0-alpha.4",
+    "@hedron-gl/ui-core": "^1.0.0-alpha.4"
+  },
+  "peerDependencies": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
   },
   "repository": {
     "type": "git",

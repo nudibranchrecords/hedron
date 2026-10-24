@@ -1,6 +1,6 @@
+import { useState } from 'react'
+import { Button, IconName } from '@hedron-gl/ui-core'
 import c from './ClockDisplay.module.css'
-import { IconName } from '@components/Icon/Icon'
-import { Button } from '@components/Button/Button'
 
 export interface ClockDisplayProps {
   bpm: number
@@ -23,6 +23,9 @@ export const ClockDisplay = ({
   onTapClick,
   onResetClick,
 }: ClockDisplayProps) => {
+  // Local draft so the field can be temporarily empty/invalid while typing
+  const [bpmDraft, setBpmDraft] = useState<string | null>(null)
+
   const playPauseButton = {
     iconName: isRunning ? 'pause' : 'play_arrow',
     onClick: isRunning ? onStopClick : onStartClick,
@@ -36,8 +39,12 @@ export const ClockDisplay = ({
           <input
             type="number"
             className={c.number}
-            value={bpm}
-            onChange={(e) => onBpmEdit(Number(e.target.value))}
+            value={bpmDraft ?? bpm}
+            onChange={(e) => {
+              setBpmDraft(e.target.value)
+              onBpmEdit(Number(e.target.value))
+            }}
+            onBlur={() => setBpmDraft(null)}
           />
         </div>
         <div className={c.beat}>{beat}</div>

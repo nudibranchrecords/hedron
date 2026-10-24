@@ -1,11 +1,17 @@
 import React, { useState, useEffect } from 'react'
 import { HedronEngine, ParamNode, ShotNode } from '@hedron-gl/engine'
-import { useEngineStore, ControlGrid, NodeContainer, getNodeOptionNodes } from '@hedron-gl/ui-core'
+import {
+  useEngineStore,
+  ControlGrid,
+  NodeContainer,
+  getNodeOptionNodes,
+  useNodeOptionNodes,
+} from '@hedron-gl/ui-core'
 import { MIDIEvent, MidiMessageType, midiMessageNames } from '@hedron-gl/midi-manager'
-import { MidiInput } from './MidiInput'
+import { MidiInput, MidiGlobalOptionNodes } from './MidiInput'
 import { doesMidiEventMatchInput } from './utils'
 import styles from './MidiGlobalPanel.module.css'
-import { NOTE_MODE_ON } from './constants'
+import { MIDI_INPUT_NODE_ID, NOTE_MODE_ON } from './constants'
 
 interface MidiGlobalPanelProps {
   engine: HedronEngine
@@ -136,13 +142,15 @@ export const MidiGlobalPanel: React.FC<MidiGlobalPanelProps> = ({ engine }) => {
     }
   }, [midiPlugin, nodes, paramValues])
 
-  const globalNodeId = `${midiPlugin.id}-global`
+  const globalOptionNodes = useNodeOptionNodes<MidiGlobalOptionNodes>(MIDI_INPUT_NODE_ID)
+  const smoothingNode = globalOptionNodes['smoothing']
+  const autoMidiLearnNode = globalOptionNodes['autoMidiLearn']
 
   return (
     <div>
       <ControlGrid>
-        <NodeContainer nodeId={`${globalNodeId}-smoothing`} />
-        <NodeContainer nodeId={`${globalNodeId}-autoMidiLearn`} />
+        {smoothingNode && <NodeContainer nodeId={smoothingNode.id} />}
+        {autoMidiLearnNode && <NodeContainer nodeId={autoMidiLearnNode.id} />}
       </ControlGrid>
 
       <div className={styles.section}>

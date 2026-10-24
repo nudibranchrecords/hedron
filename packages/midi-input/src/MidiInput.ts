@@ -11,6 +11,8 @@ import {
   EngineStateWithActions,
   ShotNode,
   getTypedOverrideConfig,
+  defineOptionNodeConfigs,
+  OptionNodesFromConfigs,
 } from '@hedron-gl/engine'
 
 import { MIDIEvent, MidiManager, MidiMessageType } from '@hedron-gl/midi-manager'
@@ -22,12 +24,89 @@ import {
   NOTE_MODE_OFF,
   NOTE_MODE_ON_OFF,
   MIDI_NOTES,
+  MIDI_INPUT_NODE_ID,
 } from './constants'
 import { doesMidiEventMatchInput, getMidiInputTypeFromEvent } from './utils'
 
+export const MIDI_GLOBAL_OPTION_NODE_CONFIGS = defineOptionNodeConfigs([
+  {
+    nodeType: 'param',
+    key: 'smoothing',
+    title: 'Smoothing',
+    valueType: 'number',
+    defaultValue: 0.9,
+    sliderMin: 0,
+    sliderMax: 0.99,
+  },
+  {
+    nodeType: 'param',
+    key: 'autoMidiLearn',
+    title: 'Auto MIDI Learn',
+    valueType: 'boolean',
+    defaultValue: false,
+  },
+])
+
+export const MIDI_OPTION_NODE_CONFIGS = defineOptionNodeConfigs([
+  {
+    nodeType: 'param',
+    key: 'channel',
+    valueType: 'enum',
+    options: Array.from({ length: 16 }, (_, i) => ({ value: i, label: `${i + 1}` })),
+    defaultValue: 1,
+  },
+  {
+    nodeType: 'param',
+    key: 'note',
+    valueType: 'enum',
+    options: MIDI_NOTES.map((label, i) => ({ value: i, label })),
+    defaultValue: 1,
+  },
+  {
+    nodeType: 'param',
+    key: 'type',
+    valueType: 'enum',
+    defaultValue: MIDI_INPUT_TYPE_CONTROL_CHANGE,
+    options: [
+      { value: MIDI_INPUT_TYPE_NOTE, label: 'Note' },
+      { value: MIDI_INPUT_TYPE_CONTROL_CHANGE, label: 'Control Change' },
+    ],
+  },
+  {
+    nodeType: 'param',
+    key: 'noteMode',
+    title: 'Note Mode',
+    valueType: 'enum',
+    defaultValue: NOTE_MODE_ON,
+    options: [
+      { value: NOTE_MODE_ON, label: 'On' },
+      { value: NOTE_MODE_OFF, label: 'Off' },
+      { value: NOTE_MODE_ON_OFF, label: 'On/Off' },
+    ],
+  },
+  {
+    nodeType: 'param',
+    key: 'override',
+    title: 'Use Override',
+    valueType: 'boolean',
+    defaultValue: false,
+  },
+  {
+    nodeType: 'param',
+    key: 'overrideValue',
+    title: 'Override Value',
+    valueType: 'number',
+    defaultValue: -1,
+    sliderMin: -1,
+    sliderMax: 127,
+  },
+])
+
+export type MidiGlobalOptionNodes = OptionNodesFromConfigs<typeof MIDI_GLOBAL_OPTION_NODE_CONFIGS>
+
 type MIDIEventWithValue = Omit<MIDIEvent, 'value'> & { value: number }
 
-type MidiOptionNodes = ConfigToOptionsType<typeof MidiInput.prototype.optionNodesConfig> & {
+type MidiOptionNodes = ConfigToOptionsType<typeof MIDI_OPTION_NODE_CONFIGS> & {
   overrideTargetValue?: ParamValue
 }
 
@@ -53,78 +132,9 @@ export class MidiInput implements IPlugin {
   public readonly inputType = 'midi'
   public readonly description = 'Handles MIDI input devices and messages.'
   public readonly midiManager = new MidiManager()
-  public readonly globalOptionNodesConfig = [
-    {
-      nodeType: 'param',
-      key: 'smoothing',
-      title: 'Smoothing',
-      valueType: 'number',
-      defaultValue: 0.9,
-      sliderMin: 0,
-      sliderMax: 0.99,
-    },
-    {
-      nodeType: 'param',
-      key: 'autoMidiLearn',
-      title: 'Auto MIDI Learn',
-      valueType: 'boolean',
-      defaultValue: false,
-    },
-  ] as const satisfies IPlugin['globalOptionNodesConfig']
-  public readonly optionNodesConfig = [
-    {
-      nodeType: 'param',
-      key: 'channel',
-      valueType: 'enum',
-      options: Array.from({ length: 16 }, (_, i) => ({ value: i, label: `${i + 1}` })),
-      defaultValue: 1,
-    },
-    {
-      nodeType: 'param',
-      key: 'note',
-      valueType: 'enum',
-      options: MIDI_NOTES.map((label, i) => ({ value: i, label })),
-      defaultValue: 1,
-    },
-    {
-      nodeType: 'param',
-      key: 'type',
-      valueType: 'enum',
-      defaultValue: MIDI_INPUT_TYPE_CONTROL_CHANGE,
-      options: [
-        { value: MIDI_INPUT_TYPE_NOTE, label: 'Note' },
-        { value: MIDI_INPUT_TYPE_CONTROL_CHANGE, label: 'Control Change' },
-      ],
-    },
-    {
-      nodeType: 'param',
-      key: 'noteMode',
-      title: 'Note Mode',
-      valueType: 'enum',
-      defaultValue: NOTE_MODE_ON,
-      options: [
-        { value: NOTE_MODE_ON, label: 'On' },
-        { value: NOTE_MODE_OFF, label: 'Off' },
-        { value: NOTE_MODE_ON_OFF, label: 'On/Off' },
-      ],
-    },
-    {
-      nodeType: 'param',
-      key: 'override',
-      title: 'Use Override',
-      valueType: 'boolean',
-      defaultValue: false,
-    },
-    {
-      nodeType: 'param',
-      key: 'overrideValue',
-      title: 'Override Value',
-      valueType: 'number',
-      defaultValue: -1,
-      sliderMin: -1,
-      sliderMax: 127,
-    },
-  ] as const satisfies IPlugin['optionNodesConfig']
+
+  private engine?: HedronEngine
+  private unsubscribers: (() => void)[] = []
 
   private handleShot: ShotHandler = ({ input, engine, midiEvent }) => {
     engine.fireShot(input.targetNodeId, { _midiEvent: midiEvent })
@@ -253,6 +263,8 @@ export class MidiInput implements IPlugin {
 
   // Runs once at creation, not on every panel mount, unlike a value-inferred "is new" check.
   onNewInput = (engine: HedronEngine, newInput: InputNode, targetNode: ParamNode | ShotNode) => {
+    engine.addOptionNodes(newInput.id, MIDI_OPTION_NODE_CONFIGS)
+
     const store = engine.getStore()
 
     if (targetNode.nodeType === 'param') {
@@ -261,9 +273,8 @@ export class MidiInput implements IPlugin {
       if (overrideConfig) engine.addOptionNodes(newInput.id, [overrideConfig])
     }
 
-    const autoLearnEnabled = Boolean(
-      store.getState().paramValues[`${this.id}-global-autoMidiLearn`],
-    )
+    const autoLearnNode = engine.getNodeOptionNode(MIDI_INPUT_NODE_ID, 'autoMidiLearn')
+    const autoLearnEnabled = Boolean(store.getState().paramValues[autoLearnNode.id])
     if (!autoLearnEnabled) return
 
     this.midiManager.midiLearn().then((event) => {
@@ -272,31 +283,40 @@ export class MidiInput implements IPlugin {
     })
   }
 
-  constructor(engine: HedronEngine) {
-    const store = engine.getStore()
+  onEngineInitialize(engine: HedronEngine) {
+    this.engine = engine
 
-    // Update smoothing value from global options
-    const updateSmoothing = () => {
-      const storeState = store.getState()
-      const smoothingNodeId = `${this.id}-global-smoothing`
-      const smoothingValue = storeState.paramValues[smoothingNodeId] as number | undefined
-      this.midiManager.smoothing = smoothingValue ?? 0.9
-    }
+    // Engine may be initialized multiple times (e.g. loading a new project)
+    this.unsubscribers.forEach((unsubscribe) => unsubscribe())
+    this.unsubscribers = []
 
-    // Initial update
-    updateSmoothing()
-
-    // Subscribe to state changes to update smoothing
-    store.subscribe(() => {
-      updateSmoothing()
+    engine.addNodeOnce(MIDI_INPUT_NODE_ID, null, {
+      title: 'MIDI Input',
+      key: 'midi-input',
+      nodeType: 'custom',
+      customNodeType: 'midi-input',
     })
 
+    engine.addOptionNodes(MIDI_INPUT_NODE_ID, MIDI_GLOBAL_OPTION_NODE_CONFIGS)
+
+    const smoothingNode = engine.getNodeOptionNode(MIDI_INPUT_NODE_ID, 'smoothing')
+    this.unsubscribers.push(
+      engine.subscribeToParamValue<number>(smoothingNode.id, (smoothing) => {
+        this.midiManager.smoothing = smoothing ?? 0.9
+      }),
+    )
+  }
+
+  constructor() {
     this.midiManager.onMidiMessage.add((event) => {
-      const storeState = store.getState()
+      const engine = this.engine
+      if (!engine) return
+
+      const storeState = engine.getStore().getState()
 
       // TODO: Filter out clock
 
-      handleEachInput<typeof this.optionNodesConfig>(
+      handleEachInput<typeof MIDI_OPTION_NODE_CONFIGS>(
         storeState,
         'midi',
         ({ input, optionNodes, targetNode, targetParamValue }) => {

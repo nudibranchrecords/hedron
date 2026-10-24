@@ -48,7 +48,6 @@ export const handleSketchesDialog = async () => {
     lastSketchesDir: sketchesDirAbsolute,
   }))
 
-  engine.ensureGlobalOptionNodes()
   engine.initiatePlugins()
 }
 
@@ -70,8 +69,6 @@ export const handleLoadProjectDialog = async (projectPath?: string) => {
 
   // Load project and overwrite resources with newly loaded ones
   engineStore.getState().loadProject({ ...projectData.engine, resources })
-
-  engine.ensureGlobalOptionNodes()
 
   appStore.setState((state: AppState) => ({
     ...state,

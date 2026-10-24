@@ -18,6 +18,7 @@ export default defineConfig({
         'react/jsx-runtime',
         '@hedron-gl/ui-core',
         '@hedron-gl/engine',
+        '@hedron-gl/clock',
       ],
       output: {
         globals: {

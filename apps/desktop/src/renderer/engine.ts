@@ -1,6 +1,6 @@
 import { HedronEngine } from '@hedron-gl/engine'
 import Stats from 'three/examples/jsm/libs/stats.module.js'
-import { Clock } from '@hedron-gl/clock'
+import { ClockPlugin, ClockGlobalPanel, GlobalClock } from '@hedron-gl/clock'
 import { MidiInput, MidiInputPanel, MidiGlobalPanel } from '@hedron-gl/midi-input'
 import { GamepadInput, GamepadInputPanel, GamepadGlobalPanel } from '@hedron-gl/gamepad-input'
 import { LFOInput, LFOInputPanel } from '@hedron-gl/lfo-input'
@@ -13,28 +13,28 @@ import { videoRenderCallbacks } from '@renderer/utils/renderVideo/videoRenderCal
 
 export const performanceMonitor = new Stats()
 
-// TODO: This will eventually be handed to the engine but there's nothing to use it for yet
-export const clock = new Clock()
-
 export const engine = new HedronEngine({
   onFrameStart: performanceMonitor.begin,
   onFrameEnd: performanceMonitor.end,
   rendererType: import.meta.env.HEDRON_RENDERER_TYPE ?? 'webgl',
   canvasSizeMode: 'fixedAspectRatio',
-  clock,
 })
 
 export const engineStore = engine.getStore()
 
-// For desktop usage it's better to load the entire audio upfront rather than streaming it
-const timelineInput = new TimelineInput({ audioLoadingMode: 'preload' })
-const audioInput = new AudioInput(engine)
+// Registered first so the clock steps before other plugins update each frame
+const clockPlugin = new ClockPlugin()
+engine.registerPlugin(clockPlugin)
 
-engine.registerPlugin(new MidiInput(engine))
+// For desktop usage it's better to load the entire audio upfront rather than streaming it
+const timelineInput = new TimelineInput({ audioLoadingMode: 'preload', clock: clockPlugin.clock })
+const audioInput = new AudioInput()
+
+engine.registerPlugin(new MidiInput())
 engine.registerPlugin(timelineInput)
-engine.registerPlugin(new LFOInput(engine))
+engine.registerPlugin(new LFOInput({ clock: clockPlugin.clock }))
 engine.registerPlugin(audioInput)
-engine.registerPlugin(new GamepadInput(engine))
+engine.registerPlugin(new GamepadInput())
 engine.registerPlugin(new SceneControlPlugin())
 engine.registerPlugin(new VideoRenderPlugin(videoRenderCallbacks))
 engine.registerPlugin(new ParamPresetsPlugin())
@@ -54,6 +54,7 @@ export const pluginViews = {
     ['timeline-track']: TimelineInputPanel,
   },
   globalPanel: {
+    ['clock']: ClockGlobalPanel,
     ['audio-input']: AudioGlobalPanel,
     ['midi-input']: MidiGlobalPanel,
     ['gamepad-input']: GamepadGlobalPanel,
@@ -63,5 +64,8 @@ export const pluginViews = {
   },
   sketchCollapsible: {
     ['param-presets']: ParamPresetsPanel,
+  },
+  widget: {
+    ['clock']: GlobalClock,
   },
 }

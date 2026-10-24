@@ -1,7 +1,7 @@
 import {
   ConfigToOptionsType,
+  defineOptionNodeConfigs,
   EngineState,
-  EngineStore,
   getNextEnumValue,
   handleEachInput,
   HedronEngine,
@@ -11,16 +11,114 @@ import {
   ParamNode,
   ShotNode,
 } from '@hedron-gl/engine'
+import type { Clock } from '@hedron-gl/clock'
 import { getNodeOptionNodes, getNodeOptionNodesValues } from '@hedron-gl/ui-core'
 
 const TAU = Math.PI * 2
 const lerp = (v0: number, v1: number, t: number) => (1 - t) * v0 + t * v1
 
+export const LFO_OPTION_NODE_CONFIGS = defineOptionNodeConfigs([
+  {
+    key: 'isEnabled',
+    nodeType: 'param',
+    valueType: 'boolean',
+    defaultValue: false,
+  },
+  {
+    key: 'frequency',
+    nodeType: 'param',
+    valueType: 'enum',
+    defaultValue: 1 / 4,
+    options: [
+      {
+        value: 32,
+        label: '32',
+      },
+      {
+        value: 16,
+        label: '16',
+      },
+      {
+        value: 8,
+        label: '8',
+      },
+      {
+        value: 4,
+        label: '4',
+      },
+      {
+        value: 2,
+        label: '2',
+      },
+      {
+        value: 1,
+        label: '1',
+      },
+      {
+        value: 1 / 2,
+        label: '1/2',
+      },
+      {
+        value: 1 / 4,
+        label: '1/4',
+      },
+      {
+        value: 1 / 8,
+        label: '1/8',
+      },
+      {
+        value: 1 / 16,
+        label: '1/16',
+      },
+      {
+        value: 1 / 32,
+        label: '1/32',
+      },
+    ],
+  },
+  {
+    key: 'waveType',
+    nodeType: 'param',
+    valueType: 'enum',
+    defaultValue: 'sawtooth',
+    options: [
+      { value: 'sine', label: 'Sine' },
+      { value: 'square', label: 'Square' },
+      { value: 'sawtooth', label: 'Sawtooth' },
+      { value: 'triangle', label: 'Triangle' },
+    ],
+  },
+  {
+    key: 'amplitude',
+    nodeType: 'param',
+    valueType: 'number',
+    defaultValue: 1,
+  },
+  {
+    key: 'phase',
+    nodeType: 'param',
+    valueType: 'number',
+    defaultValue: 0,
+  },
+  {
+    key: 'min',
+    nodeType: 'param',
+    valueType: 'number',
+    defaultValue: 0,
+  },
+  {
+    key: 'max',
+    nodeType: 'param',
+    valueType: 'number',
+    defaultValue: 1,
+  },
+])
+
 type ValueHander = (params: {
   delta: number
   input: InputNode
   storeState: EngineState
-  optionNodes: ConfigToOptionsType<typeof LFOInput.prototype.optionNodesConfig>
+  optionNodes: ConfigToOptionsType<typeof LFO_OPTION_NODE_CONFIGS>
   targetNode: ParamNode
 }) => ParamValue | null
 
@@ -33,110 +131,12 @@ export class LFOInput implements IPlugin {
   public readonly iconName = 'vital_signs'
   public readonly description =
     'Generates LFO waves (e.g. sin, square, sawtooth) as inputs for params.'
-  public readonly optionNodesConfig = [
-    {
-      key: 'isEnabled',
-      nodeType: 'param',
-      valueType: 'boolean',
-      defaultValue: false,
-    },
-    {
-      key: 'frequency',
-      nodeType: 'param',
-      valueType: 'enum',
-      defaultValue: 1 / 4,
-      options: [
-        {
-          value: 32,
-          label: '32',
-        },
-        {
-          value: 16,
-          label: '16',
-        },
-        {
-          value: 8,
-          label: '8',
-        },
-        {
-          value: 4,
-          label: '4',
-        },
-        {
-          value: 2,
-          label: '2',
-        },
-        {
-          value: 1,
-          label: '1',
-        },
-        {
-          value: 1 / 2,
-          label: '1/2',
-        },
-        {
-          value: 1 / 4,
-          label: '1/4',
-        },
-        {
-          value: 1 / 8,
-          label: '1/8',
-        },
-        {
-          value: 1 / 16,
-          label: '1/16',
-        },
-        {
-          value: 1 / 32,
-          label: '1/32',
-        },
-      ],
-    },
-    {
-      key: 'waveType',
-      nodeType: 'param',
-      valueType: 'enum',
-      defaultValue: 'sawtooth',
-      options: [
-        { value: 'sine', label: 'Sine' },
-        { value: 'square', label: 'Square' },
-        { value: 'sawtooth', label: 'Sawtooth' },
-        { value: 'triangle', label: 'Triangle' },
-      ],
-    },
-    {
-      key: 'amplitude',
-      nodeType: 'param',
-      valueType: 'number',
-      defaultValue: 1,
-    },
-    {
-      key: 'phase',
-      nodeType: 'param',
-      valueType: 'number',
-      defaultValue: 0,
-    },
-    {
-      key: 'min',
-      nodeType: 'param',
-      valueType: 'number',
-      defaultValue: 0,
-    },
-    {
-      key: 'max',
-      nodeType: 'param',
-      valueType: 'number',
-      defaultValue: 1,
-    },
-  ] as const satisfies IPlugin['optionNodesConfig']
 
   private inputLatches: Record<string, boolean> = {}
 
   private lastClockBeatDelta: number = -1
 
-  private clock: NonNullable<HedronEngine['clock']>
-
-  private store: EngineStore
+  private clock: Clock
 
   private handleShot: ShotHandler = ({ delta, input, engine }) => {
     const val = Math.sin(delta)
@@ -189,6 +189,8 @@ export class LFOInput implements IPlugin {
 
   // Seed min/max and their slider ranges from the target param slider range
   onNewInput = (engine: HedronEngine, newInput: InputNode, targetNode: ParamNode | ShotNode) => {
+    engine.addOptionNodes(newInput.id, LFO_OPTION_NODE_CONFIGS)
+
     const state = engine.getStore().getState()
 
     const { sliderMin: paramSliderMinVal, sliderMax: paramSliderMaxVal } = getNodeOptionNodesValues(
@@ -210,15 +212,11 @@ export class LFOInput implements IPlugin {
     }
   }
 
-  constructor(engine: HedronEngine) {
-    const clock = engine.clock
-
-    if (!clock) {
-      throw new Error('Clock plugin is required for LFOInput to function.')
-    }
-
+  /**
+   * @param options.clock The clock to drive LFOs, usually `ClockPlugin.clock` from `@hedron-gl/clock`
+   */
+  constructor({ clock }: { clock: Clock }) {
     this.clock = clock
-    this.store = engine.getStore()
   }
 
   /**
@@ -234,8 +232,8 @@ export class LFOInput implements IPlugin {
 
     this.lastClockBeatDelta = clock.beatDelta
 
-    const storeState = this.store.getState()
-    handleEachInput<typeof this.optionNodesConfig>(
+    const storeState = engine.getStoreState()
+    handleEachInput<typeof LFO_OPTION_NODE_CONFIGS>(
       storeState,
       this.inputType,
       ({ input, optionNodes, targetNode }) => {

@@ -1,5 +1,5 @@
 import { EngineData, HedronEngine } from '@hedron-gl/engine'
-import { Clock } from '@hedron-gl/clock'
+import { ClockPlugin } from '@hedron-gl/clock'
 import { LFOInput } from '@hedron-gl/lfo-input'
 import projectData from './project.json'
 import '@fontsource/chivo-mono'
@@ -9,19 +9,18 @@ import { getSketchModuleItems } from './utils'
 // Imported from the Hedron project save file (JSON)
 const engineData = projectData.engine as unknown as EngineData
 
-// Because the project uses LFOs, we need a clock
-const clock = new Clock()
-clock.start()
-
-// Initialize the engine with the clock
 export const engine = new HedronEngine({
   rendererType: 'webgl',
   canvasSizeMode: 'fillContainer',
-  clock,
 })
 
+// Because the project uses LFOs, we need a clock
+const clockPlugin = new ClockPlugin()
+clockPlugin.clock.start()
+engine.registerPlugin(clockPlugin)
+
 // We need to add the plugin for LFOs to work
-engine.registerPlugin(new LFOInput(engine))
+engine.registerPlugin(new LFOInput({ clock: clockPlugin.clock }))
 
 export const engineStore = engine.getStore()
 const { setSketchModuleItem, loadProject } = engineStore.getState()
@@ -37,6 +36,8 @@ sketchModules.forEach(setSketchModuleItem)
 engine.startStoreListener()
 engine.run()
 loadProject(engineData)
+// Plugins create their nodes (e.g. clock BPM) and sync with project state
+engine.initiatePlugins()
 
 // Add the canvas to the DOM
 engine.createCanvas(document.getElementById('root') as HTMLElement)

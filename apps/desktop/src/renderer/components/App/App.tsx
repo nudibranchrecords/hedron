@@ -10,7 +10,6 @@ import {
 import { useState } from 'react'
 import c from './App.module.css'
 import { useHandleDrag } from './useHandleDrag'
-import { GlobalClock } from '@components/GlobalClock/GlobalClock'
 import { GlobalDialogs } from '@components/GlobalDialogs/GlobalDialogs'
 import { PerformanceStats } from '@components/PerformanceStats/PerformanceStats'
 import { Viewer } from '@components/Viewer'
@@ -73,9 +72,11 @@ const AppContent = (): JSX.Element => {
           <>
             <div className={c.widgetStrip}>
               <PerformanceStats />
-              <div className={c.widgetItem}>
-                <GlobalClock />
-              </div>
+              {Object.entries(pluginViews.widget).map(([pluginId, PluginWidget]) => (
+                <div className={c.widgetItem} key={pluginId}>
+                  <PluginWidget />
+                </div>
+              ))}
             </div>
 
             <div className={c.pluginControls}>

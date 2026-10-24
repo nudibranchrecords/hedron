@@ -1,5 +1,4 @@
 import { Pass } from 'postprocessing'
-import { type Clock } from '@hedron-gl/clock'
 import { WebGPURenderer } from 'three/webgpu'
 import { CanvasSizeMode, RendererType, Result, ShotArgsObject } from './types'
 import { importSketchModule } from './importSketchModule'
@@ -55,7 +54,6 @@ export class HedronEngine {
   private shotListeners: Record<string, (() => void)[]> = {}
   private onFrameStart?: () => void
   private onFrameEnd?: () => void
-  public clock?: Clock
   private running: boolean = false
   private paused: boolean = false
   private _onError: SketchInstanceError
@@ -69,7 +67,6 @@ export class HedronEngine {
     onError?: SketchInstanceError
     rendererType: RendererType
     canvasSizeMode: CanvasSizeMode
-    clock?: Clock
   }) {
     // Initialize global variables for sketches
     initializeGlobalVars()
@@ -93,28 +90,10 @@ export class HedronEngine {
 
     this.onFrameStart = params?.onFrameStart
     this.onFrameEnd = params?.onFrameEnd
-
-    if (params.clock) {
-      this.clock = params.clock
-    }
   }
 
   private setIsSketchBroken(sketchInstanceId: string, isBroken: boolean) {
     this.store.getState().updateSketch(sketchInstanceId, { isBroken })
-  }
-
-  /**
-   * @deprecated - Use `onEngineInitialize` in plugins instead
-   * Creates global option nodes for a plugin in the store
-   * @param plugin The plugin to create global option nodes for
-   */
-  private createGlobalOptionNodesForPlugin(plugin: IPlugin): void {
-    // Only process plugins with global options
-    if (!plugin.globalOptionNodesConfig) return
-
-    for (const cfg of plugin.globalOptionNodesConfig) {
-      this.addNodeOnce(`${plugin.id}-global-${cfg.key}`, null, cfg)
-    }
   }
 
   public registerPlugin(plugin: IPlugin) {
@@ -301,6 +280,19 @@ export class HedronEngine {
   }
 
   /**
+   * Gets the param value of an option node, looked up by its parent node ID and option key
+   * @param nodeId The ID of the parent node
+   * @param optionKey The key of the option node
+   * @returns The param value of the option node (see `getParamValue`)
+   */
+  public getNodeOptionNodeValue<T extends ParamValue | ParamValue[] = ParamValue | ParamValue[]>(
+    nodeId: string,
+    optionKey: string,
+  ): T | undefined {
+    return this.getParamValue(this.getNodeOptionNode(nodeId, optionKey).id) as T | undefined
+  }
+
+  /**
    * Sets the value of a parameter node, updating multiple nodes if the type is a vector.
    * @param nodeId The ID of the parameter node to set the value for.
    * @param value The value to set for the parameter node. If the node is a vector parameter, this should be an array of values for each component.
@@ -394,33 +386,9 @@ export class HedronEngine {
 
     const newInput = addInput(input)
 
-    /**
-     * FIXME: Once `optionNodesConfig` is removed, we wont need this
-     * All plugins will use `onNewInput` to add these manually
-     * */
-    this.addOptionNodes(newInput.id, plugin.optionNodesConfig ?? [])
-
     plugin.onNewInput?.(this, newInput, targetNode)
 
     return newInput
-  }
-
-  /**
-   * Get the node IDs for a plugin's global option nodes
-   * @param pluginId The ID of the plugin
-   * @param includeHidden Whether to include hidden nodes (default: false)
-   * @returns An array of node IDs for the global options
-   */
-  public getPluginGlobalOptionNodeIds(pluginId: string, includeHidden: boolean = false): string[] {
-    const plugin = this.plugins[pluginId]
-    if (!plugin || !plugin.globalOptionNodesConfig) return []
-
-    let nodes = [...plugin.globalOptionNodesConfig]
-    if (!includeHidden) {
-      nodes = nodes.filter((cfg) => !cfg.hidden)
-    }
-    // The IDs of global option nodes follow the pattern: `${pluginId}-global-${optionKey}`
-    return nodes.map((config) => `${pluginId}-global-${config.key}`)
   }
 
   public registerShot(shotId: string, shotFunc: ShotFunc) {
@@ -669,19 +637,6 @@ export class HedronEngine {
     return { nodes, paramValues, resources, sceneIds } satisfies EngineData
   }
 
-  /**
-   * @deprecated - Use `initiatePlugins` instead
-   * Ensures global option nodes exist
-   * This should be called when the engine is ready
-   */
-  public ensureGlobalOptionNodes() {
-    // FIXME: Once plugins stop using globalOptionNodesConfig, we can remove this and rely on `onEngineInitialize` instead
-    // For each registered plugin, ensure global option nodes exist
-    Object.values(this.plugins).forEach((plugin) => {
-      this.createGlobalOptionNodesForPlugin(plugin)
-    })
-  }
-
   public initiatePlugins() {
     Object.values(this.plugins).forEach((plugin) => {
       plugin.onEngineInitialize?.(this)
@@ -722,8 +677,6 @@ export class HedronEngine {
    * @param deltaTime The time delta (in seconds) to advance this frame.
    */
   private advanceFrame(deltaTime: number) {
-    this.clock?.step(deltaTime * 1000)
-
     // Flush before plugin.update() so plugins read this frame's values, not stale ones buffered since the last flush.
     flushParamValueBuffer(this.store.setState)
 

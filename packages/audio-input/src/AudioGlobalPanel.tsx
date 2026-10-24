@@ -1,11 +1,12 @@
 import React from 'react'
 import { HedronEngine } from '@hedron-gl/engine'
-import { ControlGrid, NodeContainer } from '@hedron-gl/ui-core'
-import { AudioInput } from './AudioInput'
+import { ControlGrid, NodeContainer, useNodeOptionNodes } from '@hedron-gl/ui-core'
+import { AudioGlobalOptionNodes, AudioInput } from './AudioInput'
 import styles from './AudioGlobalPanel.module.css'
 import { AudioDebugPanel } from './AudioDebugPanel'
 import { FreqPreview } from './FreqPreview'
 import { AudioInputSelector } from './AudioInputSelector'
+import { AUDIO_INPUT_NODE_ID } from './constants'
 
 interface AudioGlobalPanelProps {
   engine: HedronEngine
@@ -13,17 +14,16 @@ interface AudioGlobalPanelProps {
 
 export const AudioGlobalPanel: React.FC<AudioGlobalPanelProps> = ({ engine }) => {
   const audioPlugin = engine.plugins[AudioInput.ID] as AudioInput | undefined
+  const globalOptionNodes = useNodeOptionNodes<AudioGlobalOptionNodes>(AUDIO_INPUT_NODE_ID)
+  const visibleNodes = Object.values(globalOptionNodes).filter((node) => node && !node.hidden)
 
   // If plugin is not available, show an error message
   if (!audioPlugin) {
     return <div className={styles.errorPanel}>Audio plugin not available</div>
   }
 
-  // Get global option node IDs
-  const globalOptionNodeIds = engine.getPluginGlobalOptionNodeIds(AudioInput.ID)
-
   // If no global option nodes are found, display a message
-  if (globalOptionNodeIds.length === 0) {
+  if (visibleNodes.length === 0) {
     return <div className={styles.errorPanel}>No global audio settings available</div>
   }
 
@@ -32,9 +32,7 @@ export const AudioGlobalPanel: React.FC<AudioGlobalPanelProps> = ({ engine }) =>
       <AudioInputSelector audioPlugin={audioPlugin} />
       <FreqPreview audioPlugin={audioPlugin} />
       <ControlGrid className={styles.controlGrid}>
-        {globalOptionNodeIds.map((id: string) => (
-          <NodeContainer key={id} nodeId={id} />
-        ))}
+        {visibleNodes.map((node) => node && <NodeContainer key={node.id} nodeId={node.id} />)}
       </ControlGrid>
       <AudioDebugPanel audioPlugin={audioPlugin} />
     </div>
