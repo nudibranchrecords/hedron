@@ -96,9 +96,29 @@ export default definePlugin({
 | `ctx.engine`                  | the Hedron engine and its store                                                                 |
 | `ctx.main.invoke / send / on` | messages to and from the plugin's main entry, namespaced to the plugin                          |
 | `ctx.storage.read / write`    | files in Hedron's user data folder, for state that belongs to the machine rather than a project |
-| `ctx.getPlugin(id)`           | another loaded plugin                                                                           |
+| `ctx.whenPlugin(id, cb)`      | another plugin's `api`, now and whenever it loads, reloads or unloads                           |
+| `ctx.getPlugin(id)`           | escape hatch: another plugin's instance, which goes stale when that plugin reloads              |
 
 Project state belongs in engine nodes (param values or `customData`), which save with the project.
+
+### Using other plugins
+
+A plugin reaches another the same way sketches do, through its `api`, never its instance. List it
+in `dependencies` so it loads first, then either import it or watch it:
+
+```ts
+import { setColor } from '@hedron-plugins/dmx-lighting'
+
+// Or, to know when it comes and goes (undefined while it isn't loaded):
+ctx.whenPlugin<LightingApi>('dmx-lighting', (dmx) => {
+  dmx?.setColor('wash', 255, 0, 0)
+})
+```
+
+Both read the same stable object, which Hedron refills when that plugin reloads, so keep the object
+rather than copies of its functions. Named imports are bound when your plugin loads, which is why
+`dependencies` load first; use `whenPlugin` for an optional dependency. The watch stops when the
+returned function is called or your plugin unloads.
 
 ### Shared modules
 

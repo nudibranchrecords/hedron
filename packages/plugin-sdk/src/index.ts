@@ -69,6 +69,15 @@ export interface PluginContext {
   engine: HedronEngine
   main: PluginMainBridge
   storage: PluginStorage
+  /**
+   * Calls `callback` with another plugin's `api` now and each time that plugin loads, reloads or unloads
+   * (undefined while it isn't loaded), until the returned function is called or this plugin unloads.
+   */
+  whenPlugin<T extends object = Record<string, unknown>>(
+    id: string,
+    callback: (api: T | undefined) => void,
+  ): () => void
+  /** Escape hatch returning another plugin's instance, which goes stale when it reloads; prefer `whenPlugin`. */
   getPlugin<T extends IPlugin>(id: string): T | undefined
 }
 

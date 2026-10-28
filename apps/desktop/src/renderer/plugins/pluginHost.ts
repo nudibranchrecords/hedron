@@ -47,6 +47,22 @@ const setPluginApi = (pluginId: string, api: Record<string, unknown> | null) => 
   if (api) Object.assign(target, api)
 }
 
+type PluginWatcher = (api: Record<string, unknown> | undefined) => void
+
+const watchers = new Map<string, Set<PluginWatcher>>()
+
+const callWatcher = (pluginId: string, watcher: PluginWatcher) => {
+  try {
+    watcher(loaded.has(pluginId) ? window.__HEDRON.pluginApis?.[pluginId] : undefined)
+  } catch (error) {
+    console.error(`[HEDRON] A whenPlugin("${pluginId}") callback threw`, error)
+  }
+}
+
+const notifyWatchers = (pluginId: string) => {
+  for (const watcher of [...(watchers.get(pluginId) ?? [])]) callWatcher(pluginId, watcher)
+}
+
 const createContext = (id: string, cleanups: (() => void)[]): PluginContext => ({
   id,
   engine,
@@ -64,6 +80,15 @@ const createContext = (id: string, cleanups: (() => void)[]): PluginContext => (
     read: (name) => ipc().invoke(PluginEvents.StorageRead, id, name) as Promise<string | null>,
     write: (name, data) => ipc().invoke(PluginEvents.StorageWrite, id, name, data) as Promise<void>,
   },
+  whenPlugin: <T extends object>(pluginId: string, callback: (api: T | undefined) => void) => {
+    const watcher = callback as PluginWatcher
+    const pluginWatchers = watchers.get(pluginId) ?? new Set()
+    watchers.set(pluginId, pluginWatchers.add(watcher))
+    const remove = () => void pluginWatchers.delete(watcher)
+    cleanups.push(remove)
+    callWatcher(pluginId, watcher)
+    return remove
+  },
   getPlugin: <T extends IPlugin>(pluginId: string) => engine.getPlugin<T>(pluginId),
 })
 
@@ -79,6 +104,7 @@ const unloadPlugin = (id: string) => {
 }
 
 const loadPlugin = async (info: PluginInfo) => {
+  const wasLoaded = loaded.has(info.id)
   unloadPlugin(info.id)
   const cleanups: (() => void)[] = []
 
@@ -105,6 +131,9 @@ const loadPlugin = async (info: PluginInfo) => {
     console.error(`[HEDRON] Plugin "${info.id}" failed to load`, error)
     setLoadError(info.id, error instanceof Error ? (error.stack ?? error.message) : String(error))
   }
+
+  // A reload is one call to watchers, with the new api or undefined if it failed
+  if (wasLoaded || loaded.has(info.id)) notifyWatchers(info.id)
 }
 
 // Reconciles one at a time, so a burst of change events can't load a plugin twice
@@ -124,7 +153,10 @@ const reconcile = (state: PluginsState) => {
       (id) => id,
       (id) => loaded.get(id)?.dependencies ?? [],
     ).order
-    for (const id of unwanted.reverse()) unloadPlugin(id)
+    for (const id of unwanted.reverse()) {
+      unloadPlugin(id)
+      notifyWatchers(id)
+    }
 
     const { order } = sortByDependencies(
       [...wanted.values()],
