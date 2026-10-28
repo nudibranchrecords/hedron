@@ -7,7 +7,8 @@ import { PluginFileServer } from './PluginFileServer'
 import { readPluginSettings, writePluginSettings } from './pluginSettings'
 import { BuildOutput, watchMainBuild, watchRendererBuild } from './buildPlugin'
 import { MainPluginInstance } from './MainPluginInstance'
-import { PluginEvents, PluginInfo, PluginsState } from '@shared/PluginEvents'
+import { dependencyIds, resolveDependencies } from './resolveDependencies'
+import { DependencyIssue, PluginEvents, PluginInfo, PluginsState } from '@shared/PluginEvents'
 import { mainWindow } from '@main/mainWindow'
 
 interface LoadedPlugin {
@@ -39,6 +40,7 @@ const entriesMatch = (a: DiscoveredPlugin, b: DiscoveredPlugin) =>
 export class PluginManager {
   private server = new PluginFileServer()
   private discovered: DiscoveredPlugin[] = []
+  private dependencyIssues = new Map<DiscoveredPlugin, DependencyIssue[]>()
   private loaded = new Map<string, LoadedPlugin>()
   private projectPluginsDir: string | null = null
   // Refreshes run one at a time so overlapping requests can't double-load a plugin
@@ -85,15 +87,21 @@ export class PluginManager {
     }
     this.discovered = discovered
 
+    const { order, issues, loadable } = resolveDependencies(
+      [...byId.values()],
+      (id) => !settings.disabled.includes(id),
+    )
+    this.dependencyIssues = issues
+
     const shouldLoad = (plugin: DiscoveredPlugin | undefined): plugin is DiscoveredPlugin =>
-      !!plugin && plugin.errors.length === 0 && !settings.disabled.includes(plugin.id)
+      !!plugin && loadable.has(plugin.id)
 
     for (const [id, loaded] of [...this.loaded]) {
       const next = byId.get(id)
       if (!shouldLoad(next) || !entriesMatch(next, loaded.plugin)) await this.unload(id)
     }
 
-    for (const plugin of byId.values()) {
+    for (const plugin of order) {
       if (shouldLoad(plugin) && !this.loaded.has(plugin.id)) await this.load(plugin)
     }
 
@@ -187,6 +195,7 @@ export class PluginManager {
     const plugins = this.discovered.map((plugin): PluginInfo => {
       const loaded = this.loaded.get(plugin.id)
       const isThisCopy = !!loaded && dirKey(loaded.plugin.dir) === dirKey(plugin.dir)
+      const dependencyIssues = this.dependencyIssues.get(plugin) ?? []
       return {
         id: plugin.id,
         name: plugin.name,
@@ -200,8 +209,11 @@ export class PluginManager {
         buildId: isThisCopy ? loaded.buildId : 0,
         hasMain: !!plugin.mainEntry,
         mainActive: isThisCopy && !!loaded.main,
+        dependencies: dependencyIds(plugin),
+        dependencyIssues,
         errors: [
           ...plugin.errors,
+          ...dependencyIssues.filter((issue) => !issue.optional).map((issue) => issue.message),
           ...(isThisCopy ? [...loaded.mainErrors, ...loaded.rendererErrors] : []),
         ],
       }

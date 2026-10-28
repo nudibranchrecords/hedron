@@ -5,8 +5,18 @@ import { pluginActions, usePluginHost } from '@renderer/plugins/pluginHost'
 import { openFolder } from '@renderer/ipc/mainThreadTalk'
 import { PluginInfo } from '@shared/PluginEvents'
 
-const PluginRow = ({ plugin, loadError }: { plugin: PluginInfo; loadError?: string }) => {
+interface PluginRowProps {
+  plugin: PluginInfo
+  loadError?: string
+  onAddFolder: () => void
+}
+
+const PluginRow = ({ plugin, loadError, onAddFolder }: PluginRowProps) => {
   const errors = loadError ? [...plugin.errors, loadError] : plugin.errors
+  const warnings = plugin.dependencyIssues.filter((issue) => issue.optional)
+  const required = plugin.dependencyIssues.filter((issue) => !issue.optional)
+  const disabledDependencies = required.filter((issue) => issue.reason === 'disabled')
+  const isMissingDependency = required.some((issue) => issue.reason === 'missing')
   const isRunning =
     plugin.enabled && errors.length === 0 && (!!plugin.rendererUrl || plugin.mainActive)
   const status = plugin.overriddenBy
@@ -37,10 +47,33 @@ const PluginRow = ({ plugin, loadError }: { plugin: PluginInfo; loadError?: stri
       {!plugin.overriddenBy && plugin.enabled && errors.length > 0 && (
         <pre className={c.errors}>{errors.join('\n\n')}</pre>
       )}
+      {!plugin.overriddenBy &&
+        plugin.enabled &&
+        warnings.map((issue) => (
+          <div key={issue.id} className={c.description}>
+            {issue.message}
+          </div>
+        ))}
       <div className={c.actions}>
         {/* Enabling is per plugin id, so only the copy that actually loads gets the controls */}
         {!plugin.overriddenBy && (
           <>
+            {plugin.enabled &&
+              disabledDependencies.map((issue) => (
+                <Button
+                  key={issue.id}
+                  size="slim"
+                  type="secondary"
+                  onClick={() => pluginActions.setEnabled(issue.id, true)}
+                >
+                  Enable {issue.id}
+                </Button>
+              ))}
+            {plugin.enabled && isMissingDependency && (
+              <Button size="slim" type="secondary" iconName="add" onClick={onAddFolder}>
+                Add plugin folder
+              </Button>
+            )}
             <Button
               size="slim"
               type="secondary"
@@ -98,6 +131,7 @@ export const PluginManager = () => {
               key={plugin.dir}
               plugin={plugin}
               loadError={plugin.overriddenBy ? undefined : loadErrors[plugin.id]}
+              onAddFolder={onAddFolder}
             />
           ))}
         </ul>

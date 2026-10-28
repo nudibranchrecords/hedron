@@ -40,9 +40,19 @@ my-plugin/
     "main": "src/main.ts",
     // Packages the main entry loads from node_modules instead of bundling, e.g. native addons
     "mainExternals": ["usb"],
+    // Other plugins, by id, that load before this one
+    "dependencies": { "dmx-lighting": "^0.1.0" },
+    "optionalDependencies": { "midi-tools": "~1.2.0" },
   },
 }
 ```
+
+### Dependencies
+
+A plugin whose `dependencies` aren't all installed, enabled and in range doesn't load; the Plugins
+panel says why. `optionalDependencies` only order loading, and warn when present at a version out
+of range. Ranges are `^1.2.3`, `~1.2.3`, an exact `1.2.3`, or `*`, checked against each plugin's
+package.json `version`.
 
 ## Renderer entry
 

@@ -30,7 +30,19 @@ export interface PluginInfo {
   buildId: number
   hasMain: boolean
   mainActive: boolean
+  /** Ids of the plugins it depends on, required or optional, so the renderer can load them first. */
+  dependencies: string[]
+  dependencyIssues: DependencyIssue[]
   errors: string[]
+}
+
+export interface DependencyIssue {
+  /** The plugin depended on. */
+  id: string
+  reason: 'missing' | 'disabled' | 'version' | 'unloadable' | 'cycle'
+  /** An optional dependency's issue is only a warning; any other stops the plugin loading and is in its errors too. */
+  optional: boolean
+  message: string
 }
 
 export interface PluginsState {

@@ -4,6 +4,7 @@ import type { HedronPluginDefinition, PluginContext } from '@hedron-gl/plugin-sd
 import { engine } from '@renderer/engine'
 import { registerPluginViews, unregisterPluginViews } from '@renderer/plugins/pluginViews'
 import { PluginEvents, PluginInfo, PluginsState, pluginChannel } from '@shared/PluginEvents'
+import { sortByDependencies } from '@shared/pluginDependencies'
 
 interface PluginHostState extends PluginsState {
   /** Errors thrown while importing or creating a plugin in the renderer, by plugin id. */
@@ -21,6 +22,7 @@ export const usePluginHost = <T>(selector: (state: PluginHostState) => T) =>
 
 interface LoadedRendererPlugin {
   buildId: number
+  dependencies: string[]
   cleanups: (() => void)[]
 }
 
@@ -38,7 +40,7 @@ const setLoadError = (id: string, error: string | null) => {
 }
 
 /** Importers hold a stable object per plugin, so swap its contents rather than the object. */
-const setPluginApi =(pluginId: string, api: Record<string, unknown> | null) => {
+const setPluginApi = (pluginId: string, api: Record<string, unknown> | null) => {
   const apis = (window.__HEDRON.pluginApis ??= {})
   const target = (apis[pluginId] ??= {})
   for (const key of Object.keys(target)) delete target[key]
@@ -96,7 +98,7 @@ const loadPlugin = async (info: PluginInfo) => {
     registerPluginViews(info.id, definition.views)
     setPluginApi(info.id, definition.api?.(plugin) ?? null)
 
-    loaded.set(info.id, { buildId: info.buildId, cleanups })
+    loaded.set(info.id, { buildId: info.buildId, dependencies: info.dependencies, cleanups })
     setLoadError(info.id, null)
   } catch (error) {
     for (const cleanup of cleanups) cleanup()
@@ -116,11 +118,20 @@ const reconcile = (state: PluginsState) => {
       state.plugins.filter((p) => p.enabled && p.rendererUrl).map((p) => [p.id, p] as const),
     )
 
-    for (const id of [...loaded.keys()]) {
-      if (!wanted.has(id)) unloadPlugin(id)
-    }
+    // Dependents unload before, and load after, the plugins they depend on
+    const unwanted = sortByDependencies(
+      [...loaded.keys()].filter((id) => !wanted.has(id)),
+      (id) => id,
+      (id) => loaded.get(id)?.dependencies ?? [],
+    ).order
+    for (const id of unwanted.reverse()) unloadPlugin(id)
 
-    for (const info of wanted.values()) {
+    const { order } = sortByDependencies(
+      [...wanted.values()],
+      (info) => info.id,
+      (info) => info.dependencies,
+    )
+    for (const info of order) {
       if (loaded.get(info.id)?.buildId !== info.buildId) await loadPlugin(info)
     }
   })

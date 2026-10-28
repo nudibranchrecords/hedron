@@ -2,6 +2,7 @@ import fs from 'fs'
 import path from 'path'
 import { PLUGIN_API_VERSION, type PluginManifest } from '@hedron-gl/plugin-sdk'
 import { isValidPluginId, PluginSource } from '@shared/PluginEvents'
+import { parseVersionRange } from '@shared/pluginDependencies'
 
 export interface DiscoveredPlugin {
   id: string
@@ -48,6 +49,26 @@ const resolveEntry = (dir: string, entry: unknown, errors: string[], label: stri
   return absolute
 }
 
+const readDependencies = (value: unknown, errors: string[], label: string) => {
+  const dependencies: Record<string, string> = {}
+  if (value === undefined) return dependencies
+  if (!value || typeof value !== 'object' || Array.isArray(value)) {
+    errors.push(`"hedron.${label}" must map plugin ids to version ranges`)
+    return dependencies
+  }
+
+  for (const [id, range] of Object.entries(value)) {
+    if (!isValidPluginId(id)) {
+      errors.push(`"hedron.${label}" has an invalid plugin id: "${id}"`)
+    } else if (typeof range !== 'string' || !parseVersionRange(range)) {
+      errors.push(`"hedron.${label}.${id}" must be a version like "^1.2.3", "~1.2.3" or "1.2.3"`)
+    } else {
+      dependencies[id] = range
+    }
+  }
+  return dependencies
+}
+
 const readPlugin = (dir: string, source: PluginSource): DiscoveredPlugin | null => {
   const pkg = readPackageJson(dir)
   const hedron = pkg?.hedron as Partial<PluginManifest> | undefined
@@ -74,6 +95,16 @@ const readPlugin = (dir: string, source: PluginSource): DiscoveredPlugin | null 
     errors.push('Plugin has neither a "hedron.renderer" nor a "hedron.main" entry')
   }
 
+  const dependencies = readDependencies(hedron.dependencies, errors, 'dependencies')
+  const optionalDependencies = readDependencies(
+    hedron.optionalDependencies,
+    errors,
+    'optionalDependencies',
+  )
+  if (id in dependencies || id in optionalDependencies) {
+    errors.push("A plugin can't depend on itself")
+  }
+
   return {
     id,
     name: typeof pkg.displayName === 'string' ? pkg.displayName : String(pkg.name ?? id),
@@ -88,6 +119,8 @@ const readPlugin = (dir: string, source: PluginSource): DiscoveredPlugin | null 
       renderer: hedron.renderer,
       main: hedron.main,
       mainExternals: Array.isArray(hedron.mainExternals) ? hedron.mainExternals : [],
+      dependencies,
+      optionalDependencies,
     },
     rendererEntry,
     mainEntry,
