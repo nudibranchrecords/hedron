@@ -43,7 +43,7 @@ export interface PluginManifest {
   main?: string
   /** Packages the main entry requires from the plugin's own node_modules instead of bundling, such as native addons. */
   mainExternals?: string[]
-  /** Plugin ids and version ranges (`^1.2.3`, `~1.2.3` or `1.2.3`) this plugin can't load without; they load first. */
+  /** Plugin ids and version ranges (`^1.2.3`, `~1.2.3`, `1.2.3` or `*`) this plugin can't load without; they load first. */
   dependencies?: Record<string, string>
   /** Plugins loaded first when present, which this plugin works without. */
   optionalDependencies?: Record<string, string>

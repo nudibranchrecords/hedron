@@ -4,6 +4,10 @@ import { PLUGIN_API_VERSION, type PluginManifest } from '@hedron-gl/plugin-sdk'
 import { isValidPluginId, PluginSource } from '@shared/PluginEvents'
 import { parseVersionRange } from '@shared/pluginDependencies'
 
+/** A manifest with its optional lists and maps read and defaulted. */
+export type ResolvedManifest = PluginManifest &
+  Required<Pick<PluginManifest, 'mainExternals' | 'dependencies' | 'optionalDependencies'>>
+
 export interface DiscoveredPlugin {
   id: string
   name: string
@@ -14,7 +18,7 @@ export interface DiscoveredPlugin {
   sources: PluginSource[]
   /** Set on a user copy that a project's own copy of the same plugin replaces. */
   overriddenBy: string | null
-  manifest: PluginManifest
+  manifest: ResolvedManifest
   rendererEntry: string | null
   mainEntry: string | null
   /** Problems that stop the plugin from loading at all. */
@@ -61,13 +65,18 @@ const readDependencies = (value: unknown, errors: string[], label: string) => {
     if (!isValidPluginId(id)) {
       errors.push(`"hedron.${label}" has an invalid plugin id: "${id}"`)
     } else if (typeof range !== 'string' || !parseVersionRange(range)) {
-      errors.push(`"hedron.${label}.${id}" must be a version like "^1.2.3", "~1.2.3" or "1.2.3"`)
+      errors.push(
+        `"hedron.${label}.${id}" must be a version like "^1.2.3", "~1.2.3", "1.2.3" or "*"`,
+      )
     } else {
       dependencies[id] = range
     }
   }
   return dependencies
 }
+
+const isNameList = (value: unknown): value is string[] =>
+  Array.isArray(value) && value.every((name) => typeof name === 'string')
 
 const readPlugin = (dir: string, source: PluginSource): DiscoveredPlugin | null => {
   const pkg = readPackageJson(dir)
@@ -101,6 +110,10 @@ const readPlugin = (dir: string, source: PluginSource): DiscoveredPlugin | null 
     errors,
     'optionalDependencies',
   )
+  const mainExternals: unknown = hedron.mainExternals ?? []
+  if (!isNameList(mainExternals)) {
+    errors.push(`"hedron.mainExternals" must be a list of package names`)
+  }
   if (id in dependencies || id in optionalDependencies) {
     errors.push("A plugin can't depend on itself")
   }
@@ -118,7 +131,7 @@ const readPlugin = (dir: string, source: PluginSource): DiscoveredPlugin | null 
       apiVersion: hedron.apiVersion ?? 0,
       renderer: hedron.renderer,
       main: hedron.main,
-      mainExternals: Array.isArray(hedron.mainExternals) ? hedron.mainExternals : [],
+      mainExternals: isNameList(mainExternals) ? mainExternals : [],
       dependencies,
       optionalDependencies,
     },

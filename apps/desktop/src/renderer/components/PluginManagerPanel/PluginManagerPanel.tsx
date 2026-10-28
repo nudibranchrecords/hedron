@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Button, Icon } from '@hedron-gl/ui-core'
-import c from './PluginManager.module.css'
+import c from './PluginManagerPanel.module.css'
 import { pluginActions, usePluginHost } from '@renderer/plugins/pluginHost'
 import { openFolder } from '@renderer/ipc/mainThreadTalk'
 import { PluginInfo } from '@shared/PluginEvents'
@@ -106,7 +106,7 @@ const PluginRow = ({ plugin, loadError, onAddFolder }: PluginRowProps) => {
 }
 
 /** Lists runtime plugins and the folders they're loaded from. */
-export const PluginManager = () => {
+export const PluginManagerPanel = () => {
   const plugins = usePluginHost((state) => state.plugins)
   const folders = usePluginHost((state) => state.folders)
   const loadErrors = usePluginHost((state) => state.loadErrors)

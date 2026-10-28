@@ -177,9 +177,9 @@ const reconcile = (state: PluginsState) => {
   return reconciling
 }
 
-/** Loads the user's plugins and keeps them in step with main (folder changes, toggles, rebuilds). */
 let initialLoad: Promise<void> | null = null
 
+/** Loads the user's plugins and keeps them in step with main (folder changes, toggles, rebuilds). */
 export const initPluginHost = () => {
   ipc().on(PluginEvents.Changed, (_, state: PluginsState) => {
     reconcile(state)

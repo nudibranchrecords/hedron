@@ -276,12 +276,11 @@ export class PluginManager {
   }
 
   /** Fully tears a plugin down and loads it again, picking up manifest changes. */
-  reload = async (id: string) => {
-    await this.enqueue(async () => {
+  reload = (id: string) =>
+    this.enqueue(async () => {
       await this.unload(id)
       await this.doRefresh()
     })
-  }
 
   /**
    * Picks up the `plugins` folder beside a project's sketches folder. Opening someone else's

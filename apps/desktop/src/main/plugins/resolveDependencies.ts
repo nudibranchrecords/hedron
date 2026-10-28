@@ -2,11 +2,11 @@ import type { DiscoveredPlugin } from './discoverPlugins'
 import type { DependencyIssue } from '@shared/PluginEvents'
 import { satisfiesRange, sortByDependencies } from '@shared/pluginDependencies'
 
-const requiredIds = (plugin: DiscoveredPlugin) => Object.keys(plugin.manifest.dependencies ?? {})
+const requiredIds = (plugin: DiscoveredPlugin) => Object.keys(plugin.manifest.dependencies)
 
 export const dependencyIds = (plugin: DiscoveredPlugin) => [
   ...requiredIds(plugin),
-  ...Object.keys(plugin.manifest.optionalDependencies ?? {}),
+  ...Object.keys(plugin.manifest.optionalDependencies),
 ]
 
 /** Orders plugins after the plugins they depend on and finds what stops each one loading. */
@@ -59,10 +59,10 @@ export const resolveDependencies = (
       }
     }
 
-    for (const [id, range] of Object.entries(plugin.manifest.dependencies ?? {})) {
+    for (const [id, range] of Object.entries(plugin.manifest.dependencies)) {
       check(id, range, false)
     }
-    for (const [id, range] of Object.entries(plugin.manifest.optionalDependencies ?? {})) {
+    for (const [id, range] of Object.entries(plugin.manifest.optionalDependencies)) {
       check(id, range, true)
     }
 

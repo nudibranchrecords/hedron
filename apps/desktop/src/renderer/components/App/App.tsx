@@ -19,7 +19,7 @@ import { appStore } from '@renderer/appStore'
 import { engine } from '@renderer/engine'
 import { selectLocalPath } from '@renderer/ipc/mainThreadTalk'
 import { usePluginViews, viewKey } from '@renderer/plugins/pluginViews'
-import { PluginManager } from '@components/PluginManager/PluginManager'
+import { PluginManagerPanel } from '@components/PluginManagerPanel/PluginManagerPanel'
 
 const PluginGlobalControls = () => {
   const [openById, setOpenById] = useState<Record<string, boolean>>({})
@@ -70,7 +70,7 @@ const PluginGlobalControls = () => {
         isOpen={isManagerOpen}
         onToggle={setIsManagerOpen}
       >
-        <PluginManager />
+        <PluginManagerPanel />
       </Collapsible>
     </div>
   )

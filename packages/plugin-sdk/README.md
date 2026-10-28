@@ -41,8 +41,8 @@ my-plugin/
     // Packages the main entry loads from node_modules instead of bundling, e.g. native addons
     "mainExternals": ["usb"],
     // Other plugins, by id, that load before this one
-    "dependencies": { "dmx-lighting": "^0.1.0" },
-    "optionalDependencies": { "midi-tools": "~1.2.0" },
+    "dependencies": { "other-plugin": "^0.1.0" },
+    "optionalDependencies": { "optional-plugin": "~1.2.0" },
   },
 }
 ```
@@ -112,11 +112,11 @@ A plugin reaches another the same way sketches do, through its `api`, never its 
 in `dependencies` so it loads first, then either import it or watch it:
 
 ```ts
-import { setColor } from '@hedron-plugins/dmx-lighting'
+import { ping } from '@hedron-plugins/other-plugin'
 
 // Or, to know when it comes and goes (undefined while it isn't loaded):
-ctx.whenPlugin<LightingApi>('dmx-lighting', (dmx) => {
-  dmx?.setColor('wash', 255, 0, 0)
+ctx.whenPlugin<{ ping: () => string }>('other-plugin', (other) => {
+  console.log(other?.ping())
 })
 ```
 

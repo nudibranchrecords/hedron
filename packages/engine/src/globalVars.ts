@@ -24,7 +24,7 @@ declare global {
       plugins?: Record<string, IPlugin>
       /** Host modules shared with runtime-loaded plugins, keyed by import specifier. */
       modules?: Record<string, unknown>
-      /** APIs plugins expose to sketches, keyed by plugin id. */
+      /** APIs plugins expose to sketches and other plugins, keyed by plugin id. */
       pluginApis?: Record<string, Record<string, unknown>>
     }
   }

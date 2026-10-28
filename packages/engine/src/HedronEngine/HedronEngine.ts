@@ -98,7 +98,7 @@ export class HedronEngine {
   }
 
   public registerPlugin(plugin: IPlugin) {
-    // Re-registering an id (e.g. a hot reload) replaces the old instance cleanly
+    // Re-registering an id disposes the old instance rather than leaking it
     if (this.plugins[plugin.id]) this.unregisterPlugin(plugin.id)
 
     this.plugins[plugin.id] = plugin

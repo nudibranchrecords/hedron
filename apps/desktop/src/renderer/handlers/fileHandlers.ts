@@ -19,7 +19,7 @@ const startEngineWithSketchesDir = async (
   sketchesDirPath: string,
   resourcesDirAbsolute: string,
 ) => {
-  // Project plugins load first, so their sketch APIs and option nodes exist when sketches and project data arrive
+  // Project plugins load first, so sketches can import their APIs and project data finds their nodes
   await setPluginProject(sketchesDirPath)
 
   const { moduleIds, url } = await startSketchesServer(sketchesDirPath)

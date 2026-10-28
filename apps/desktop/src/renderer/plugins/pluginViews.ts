@@ -35,43 +35,33 @@ export const usePluginViews = <T>(selector: (state: PluginViewsState) => T) =>
 const omitKeys = <V>(record: Record<string, V>, keys: (key: string) => boolean) =>
   Object.fromEntries(Object.entries(record).filter(([key]) => !keys(key)))
 
+const withoutPlugin = (state: PluginViewsState, pluginId: string): PluginViewsState => ({
+  globalPanel: omitKeys(state.globalPanel, (key) => key === pluginId),
+  sketchCollapsible: omitKeys(state.sketchCollapsible, (key) => key === pluginId),
+  widget: omitKeys(state.widget, (key) => key === pluginId),
+  inputPanel: omitKeys(state.inputPanel, (key) => state.inputPanelOwners[key] === pluginId),
+  inputPanelOwners: omitKeys(
+    state.inputPanelOwners,
+    (key) => state.inputPanelOwners[key] === pluginId,
+  ),
+  revision: state.revision + 1,
+})
+
 export const unregisterPluginViews = (pluginId: string) => {
-  pluginViewsStore.setState((state) => ({
-    globalPanel: omitKeys(state.globalPanel, (key) => key === pluginId),
-    sketchCollapsible: omitKeys(state.sketchCollapsible, (key) => key === pluginId),
-    widget: omitKeys(state.widget, (key) => key === pluginId),
-    inputPanel: omitKeys(state.inputPanel, (key) => state.inputPanelOwners[key] === pluginId),
-    inputPanelOwners: omitKeys(
-      state.inputPanelOwners,
-      (key) => state.inputPanelOwners[key] === pluginId,
-    ),
-    revision: state.revision + 1,
-  }))
+  pluginViewsStore.setState((state) => withoutPlugin(state, pluginId))
 }
 
 export const registerPluginViews = (pluginId: string, views: PluginViews = {}) => {
-  unregisterPluginViews(pluginId)
-
-  pluginViewsStore.setState((state) => {
-    const inputPanel = { ...state.inputPanel }
-    const inputPanelOwners = { ...state.inputPanelOwners }
+  pluginViewsStore.setState((current) => {
+    const state = withoutPlugin(current, pluginId)
     for (const [inputType, view] of Object.entries(views.inputPanel ?? {})) {
-      inputPanel[inputType] = view
-      inputPanelOwners[inputType] = pluginId
+      state.inputPanel[inputType] = view
+      state.inputPanelOwners[inputType] = pluginId
     }
-
-    return {
-      globalPanel: views.globalPanel
-        ? { ...state.globalPanel, [pluginId]: views.globalPanel }
-        : state.globalPanel,
-      sketchCollapsible: views.sketchCollapsible
-        ? { ...state.sketchCollapsible, [pluginId]: views.sketchCollapsible }
-        : state.sketchCollapsible,
-      widget: views.widget ? { ...state.widget, [pluginId]: views.widget } : state.widget,
-      inputPanel,
-      inputPanelOwners,
-      revision: state.revision + 1,
-    }
+    if (views.globalPanel) state.globalPanel[pluginId] = views.globalPanel
+    if (views.sketchCollapsible) state.sketchCollapsible[pluginId] = views.sketchCollapsible
+    if (views.widget) state.widget[pluginId] = views.widget
+    return state
   })
 }
 

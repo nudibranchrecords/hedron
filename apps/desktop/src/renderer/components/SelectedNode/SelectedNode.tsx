@@ -45,16 +45,16 @@ export const SelectedNode = () => {
 
   const inputPanels = usePluginViews((state) => state.inputPanel)
   const pluginsRevision = usePluginViews((state) => state.revision)
-  const PluginView =
-    currentInput?.nodeType === 'input' ? inputPanels[currentInput.inputType] : undefined
+  const inputNode = currentInput?.nodeType === 'input' ? currentInput : undefined
+  const PluginView = inputNode && inputPanels[inputNode.inputType]
 
   // Inputs from a plugin that isn't loaded keep their data, but nothing drives them
   const isMissingPlugin = useMemo(
     () =>
-      currentInput?.nodeType === 'input' &&
-      !Object.values(engine.plugins).some((plugin) => plugin.inputType === currentInput.inputType),
+      !!inputNode &&
+      !Object.values(engine.plugins).some((plugin) => plugin.inputType === inputNode.inputType),
     // eslint-disable-next-line react-hooks/exhaustive-deps -- engine.plugins changes are signalled by pluginsRevision
-    [currentInput, pluginsRevision],
+    [inputNode, pluginsRevision],
   )
 
   const availableInputs = useMemo(() => {
@@ -134,15 +134,13 @@ export const SelectedNode = () => {
           {inputs.length === 0 && (
             <div className={c.noInputs}>Add inputs to this node using the plus (+) button</div>
           )}
-          {isMissingPlugin && currentInput?.nodeType === 'input' && (
+          {isMissingPlugin && (
             <div className={c.noInputs}>
-              No plugin is loaded for &ldquo;{currentInput.inputType}&rdquo; inputs. Its settings
-              are kept and will work again once the plugin is loaded.
+              No plugin is loaded for &ldquo;{inputNode?.inputType}&rdquo; inputs. Its settings are
+              kept and will work again once the plugin is loaded.
             </div>
           )}
-          {PluginView && currentInput?.nodeType === 'input' && (
-            <PluginView input={currentInput} engine={engine} />
-          )}
+          {inputNode && PluginView && <PluginView input={inputNode} engine={engine} />}
         </HedronErrorBoundary>
       </div>
       {selectedNode.nodeType === 'param' && (

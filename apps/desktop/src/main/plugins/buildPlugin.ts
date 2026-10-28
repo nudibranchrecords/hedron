@@ -153,7 +153,7 @@ export const watchMainBuild = (
       target: 'node22',
       sourcemap: 'inline',
       // Resolved at runtime: Electron and the SDK by the host, the rest from the plugin's node_modules
-      external: ['electron', '@hedron-gl/plugin-sdk', ...(plugin.manifest.mainExternals ?? [])],
+      external: ['electron', '@hedron-gl/plugin-sdk', ...plugin.manifest.mainExternals],
       // A native import() would resolve from Hedron's folder; as require() it goes through the plugin's
       supported: { 'dynamic-import': false },
     },
