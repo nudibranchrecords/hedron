@@ -69,6 +69,8 @@ export interface PluginContext {
   engine: HedronEngine
   main: PluginMainBridge
   storage: PluginStorage
+  /** What the previous instance's `dispose()` returned when this is a reload of it; undefined on a fresh load. */
+  previousState?: unknown
   /**
    * Calls `callback` with another plugin's `api` now and each time that plugin loads, reloads or unloads
    * (undefined while it isn't loaded), until the returned function is called or this plugin unloads.

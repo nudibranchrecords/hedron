@@ -63,9 +63,14 @@ const notifyWatchers = (pluginId: string) => {
   for (const watcher of [...(watchers.get(pluginId) ?? [])]) callWatcher(pluginId, watcher)
 }
 
-const createContext = (id: string, cleanups: (() => void)[]): PluginContext => ({
+const createContext = (
+  id: string,
+  cleanups: (() => void)[],
+  previousState: unknown,
+): PluginContext => ({
   id,
   engine,
+  previousState,
   main: {
     invoke: <T>(channel: string, ...args: unknown[]) =>
       ipc().invoke(pluginChannel(id, channel), ...args) as Promise<T>,
@@ -92,20 +97,22 @@ const createContext = (id: string, cleanups: (() => void)[]): PluginContext => (
   getPlugin: <T extends IPlugin>(pluginId: string) => engine.getPlugin<T>(pluginId),
 })
 
+/** Returns what the plugin's `dispose()` returned, for its next instance on a reload. */
 const unloadPlugin = (id: string) => {
   const plugin = loaded.get(id)
-  if (!plugin) return
+  if (!plugin) return undefined
   loaded.delete(id)
 
-  engine.unregisterPlugin(id)
+  const state = engine.unregisterPlugin(id)
   unregisterPluginViews(id)
   setPluginApi(id, null)
   for (const cleanup of plugin.cleanups) cleanup()
+  return state
 }
 
 const loadPlugin = async (info: PluginInfo) => {
   const wasLoaded = loaded.has(info.id)
-  unloadPlugin(info.id)
+  const previousState = unloadPlugin(info.id)
   const cleanups: (() => void)[] = []
 
   try {
@@ -115,7 +122,7 @@ const loadPlugin = async (info: PluginInfo) => {
       throw new Error('Renderer entry must `export default definePlugin({ create })`')
     }
 
-    const plugin = definition.create(createContext(info.id, cleanups))
+    const plugin = definition.create(createContext(info.id, cleanups, previousState))
     if (plugin.id !== info.id) {
       throw new Error(`Plugin created with id "${plugin.id}" but its manifest says "${info.id}"`)
     }

@@ -73,7 +73,8 @@ class MyPlugin implements IPlugin {
   }
 
   dispose() {
-    // Release timers and listeners; called on disable and hot reload
+    // Release timers and listeners; called on disable and hot reload. Whatever this returns
+    // reaches the reloaded instance as `ctx.previousState`.
   }
 }
 
@@ -96,10 +97,14 @@ export default definePlugin({
 | `ctx.engine`                  | the Hedron engine and its store                                                                 |
 | `ctx.main.invoke / send / on` | messages to and from the plugin's main entry, namespaced to the plugin                          |
 | `ctx.storage.read / write`    | files in Hedron's user data folder, for state that belongs to the machine rather than a project |
+| `ctx.previousState`           | what the previous instance's `dispose()` returned, on a hot reload                              |
 | `ctx.whenPlugin(id, cb)`      | another plugin's `api`, now and whenever it loads, reloads or unloads                           |
 | `ctx.getPlugin(id)`           | escape hatch: another plugin's instance, which goes stale when that plugin reloads              |
 
 Project state belongs in engine nodes (param values or `customData`), which save with the project.
+Live objects that should survive a hot reload, such as buffers sketches hold, can be handed over:
+return them from `dispose()` and read them from `ctx.previousState` in the next `create(ctx)`. It's
+undefined on a fresh load, and comes from the previous build of your code, so check its shape.
 
 ### Using other plugins
 

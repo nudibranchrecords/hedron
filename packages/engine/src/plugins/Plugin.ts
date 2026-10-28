@@ -69,10 +69,10 @@ export interface IPlugin {
   update?: (engine: HedronEngine, args: PluginUpdateArgs) => void
 
   /**
-   * Called when the plugin is unregistered (disabled, reloaded or removed).
-   * Release timers, devices and listeners here; nodes the plugin created stay in the store.
+   * Called when the plugin is unregistered (disabled, reloaded or removed) to release timers, devices and listeners.
+   * Nodes it created stay in the store; a runtime plugin's return value reaches its reloaded instance as `ctx.previousState`.
    */
-  dispose?: (engine: HedronEngine) => void
+  dispose?: (engine: HedronEngine) => unknown
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

@@ -110,17 +110,18 @@ export class HedronEngine {
     if (this.pluginsInitiated) plugin.onEngineInitialize?.(this)
   }
 
-  /** Disposes and removes a plugin; the nodes it created stay in the store so its state survives a reload. */
-  public unregisterPlugin(pluginId: string) {
+  /** Disposes and removes a plugin, returning what its `dispose` returned; the nodes it created stay in the store. */
+  public unregisterPlugin(pluginId: string): unknown {
     const plugin = this.plugins[pluginId]
-    if (!plugin) return
+    if (!plugin) return undefined
 
     delete this.plugins[pluginId]
 
     try {
-      plugin.dispose?.(this)
+      return plugin.dispose?.(this)
     } catch (error) {
       console.error(`[HEDRON] Plugin "${pluginId}" threw while disposing`, error)
+      return undefined
     }
   }
 
