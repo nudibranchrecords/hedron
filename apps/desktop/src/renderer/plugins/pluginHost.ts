@@ -37,8 +37,8 @@ const setLoadError = (id: string, error: string | null) => {
   })
 }
 
-/** Sketches import from a stable object per plugin, so swap its contents rather than the object. */
-const setSketchApi = (pluginId: string, api: Record<string, unknown> | null) => {
+/** Importers hold a stable object per plugin, so swap its contents rather than the object. */
+const setPluginApi =(pluginId: string, api: Record<string, unknown> | null) => {
   const apis = (window.__HEDRON.pluginApis ??= {})
   const target = (apis[pluginId] ??= {})
   for (const key of Object.keys(target)) delete target[key]
@@ -72,7 +72,7 @@ const unloadPlugin = (id: string) => {
 
   engine.unregisterPlugin(id)
   unregisterPluginViews(id)
-  setSketchApi(id, null)
+  setPluginApi(id, null)
   for (const cleanup of plugin.cleanups) cleanup()
 }
 
@@ -94,7 +94,7 @@ const loadPlugin = async (info: PluginInfo) => {
 
     engine.registerPlugin(plugin)
     registerPluginViews(info.id, definition.views)
-    setSketchApi(info.id, definition.sketchApi?.(plugin) ?? null)
+    setPluginApi(info.id, definition.api?.(plugin) ?? null)
 
     loaded.set(info.id, { buildId: info.buildId, cleanups })
     setLoadError(info.id, null)

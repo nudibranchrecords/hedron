@@ -28,8 +28,8 @@ export const SHARED_MODULES = [
 
 export type SharedModule = (typeof SHARED_MODULES)[number]
 
-/** Sketches import a plugin's `sketchApi` from `${SKETCH_API_PREFIX}<plugin id>`. */
-export const SKETCH_API_PREFIX = '@hedron-plugins/'
+/** Sketches and plugins import a plugin's `api` from `${PLUGIN_API_PREFIX}<plugin id>`. */
+export const PLUGIN_API_PREFIX = '@hedron-plugins/'
 
 /** The `hedron` field of a plugin's package.json. */
 export interface PluginManifest {
@@ -96,8 +96,8 @@ export interface PluginViews {
 export interface HedronPluginDefinition<P extends IPlugin = IPlugin> {
   create(ctx: PluginContext): P
   views?: PluginViews
-  /** Functions sketches can import from `@hedron-plugins/<id>`. */
-  sketchApi?(plugin: P): Record<string, unknown>
+  /** What sketches and other plugins import from `@hedron-plugins/<id>`, refilled on every reload. */
+  api?(plugin: P): Record<string, unknown>
 }
 
 /** The default export of a plugin's renderer entry. */

@@ -74,8 +74,8 @@ export default definePlugin({
     inputPanel: { 'my-input-type': ({ input }) => <div>{input.title}</div> },
     sketchCollapsible: ({ sketchId }) => <div>Shown under each sketch</div>,
   },
-  // Sketches can `import { ping } from '@hedron-plugins/my-plugin'`
-  sketchApi: (plugin) => ({ ping: () => 'pong' }),
+  // Sketches and other plugins can `import { ping } from '@hedron-plugins/my-plugin'`
+  api: (plugin) => ({ ping: () => 'pong' }),
 })
 ```
 

@@ -4,6 +4,7 @@ import { app } from 'electron'
 import type * as esbuild from 'esbuild'
 import { SHARED_MODULES } from '@hedron-gl/plugin-sdk'
 import type { DiscoveredPlugin } from './discoverPlugins'
+import { pluginApiResolver } from './pluginApiResolver'
 import { loadEsbuild } from '@main/getUnpackedModules'
 
 export interface BuildOutput {
@@ -132,7 +133,7 @@ export const watchRendererBuild = (
       define: {
         'process.env.NODE_ENV': JSON.stringify(app.isPackaged ? 'production' : 'development'),
       },
-      plugins: [sharedModulesPlugin],
+      plugins: [sharedModulesPlugin, pluginApiResolver],
     },
     onBuild,
   )

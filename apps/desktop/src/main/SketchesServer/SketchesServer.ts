@@ -5,11 +5,11 @@ import { app } from 'electron'
 import * as esbuild from 'esbuild'
 import { emptyDirSync } from 'fs-extra'
 import { getPort } from 'get-port-please'
-import { SKETCH_API_PREFIX } from '@hedron-gl/plugin-sdk'
 import { createGlobalVarModuleFiles, watchWithDebounce } from './utils'
 import { deleteUnwantedOutputs } from './deleteUnwantedOutputs'
 import { FileWatchEvents } from '@shared/Events'
 import { getEsbuild } from '@main/getUnpackedModules'
+import { pluginApiResolver } from '@main/plugins/pluginApiResolver'
 
 const HOST = process.platform.startsWith('win') ? 'localhost' : '0.0.0.0'
 
@@ -106,24 +106,7 @@ export class SketchesServer extends EventEmitter {
             }
           },
         },
-        {
-          name: 'plugin-sketch-api-resolver',
-          setup: (build): void => {
-            // `@hedron-plugins/<id>` resolves to whatever that plugin exposes via `sketchApi`
-            const filter = new RegExp(`^${SKETCH_API_PREFIX.replace(/[/@]/g, '\\$&')}(.+)$`)
-            build.onResolve({ filter }, (args) => ({
-              path: args.path.slice(SKETCH_API_PREFIX.length),
-              namespace: 'hedron-plugin-api',
-            }))
-            build.onLoad({ filter: /.*/, namespace: 'hedron-plugin-api' }, (args) => {
-              const id = JSON.stringify(args.path)
-              return {
-                contents: `var apis = (window.__HEDRON.pluginApis ??= {}); module.exports = (apis[${id}] ??= {})`,
-                loader: 'js',
-              }
-            })
-          },
-        },
+        pluginApiResolver,
         {
           name: 'on-end',
           setup: (build): void => {
