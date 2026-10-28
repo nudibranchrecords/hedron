@@ -18,7 +18,8 @@ import { useCallback, useMemo } from 'react'
 import { IPlugin } from '@hedron-gl/engine'
 import c from './SelectedNode.module.css'
 import { useSelectedNode } from '@components/hooks/useSelectedNode'
-import { pluginViews, engine, engineStore } from '@renderer/engine'
+import { engine, engineStore } from '@renderer/engine'
+import { usePluginViews } from '@renderer/plugins/pluginViews'
 import { useInputsWithNode } from '@components/hooks/useInputsWithNode'
 
 export const SelectedNode = () => {
@@ -42,9 +43,19 @@ export const SelectedNode = () => {
 
   const inputs = useInputsWithNode(selectedNode.id)
 
-  // TODO: Fix types here, maybe we need a "@hedron-gl/plugins" package to handle this sort of thing?
-  // @ts-expect-error -- needs work
-  const PluginView = currentInput && pluginViews.inputPanel[currentInput?.inputType]
+  const inputPanels = usePluginViews((state) => state.inputPanel)
+  const pluginsRevision = usePluginViews((state) => state.revision)
+  const inputNode = currentInput?.nodeType === 'input' ? currentInput : undefined
+  const PluginView = inputNode && inputPanels[inputNode.inputType]
+
+  // Inputs from a plugin that isn't loaded keep their data, but nothing drives them
+  const isMissingPlugin = useMemo(
+    () =>
+      !!inputNode &&
+      !Object.values(engine.plugins).some((plugin) => plugin.inputType === inputNode.inputType),
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- engine.plugins changes are signalled by pluginsRevision
+    [inputNode, pluginsRevision],
+  )
 
   const availableInputs = useMemo(() => {
     const inputPlugins = Object.values(engine.plugins).filter(
@@ -64,7 +75,8 @@ export const SelectedNode = () => {
         setSelectedInputId(selectedNode.id, newInput.id)
       },
     }))
-  }, [selectedNode.id, setSelectedInputId])
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- engine.plugins changes are signalled by pluginsRevision
+  }, [selectedNode.id, setSelectedInputId, pluginsRevision])
 
   const onDeleteCurrentInput = useCallback(() => {
     if (currentInput) {
@@ -122,7 +134,13 @@ export const SelectedNode = () => {
           {inputs.length === 0 && (
             <div className={c.noInputs}>Add inputs to this node using the plus (+) button</div>
           )}
-          {PluginView && <PluginView input={currentInput} engine={engine} />}
+          {isMissingPlugin && (
+            <div className={c.noInputs}>
+              No plugin is loaded for &ldquo;{inputNode?.inputType}&rdquo; inputs. Its settings are
+              kept and will work again once the plugin is loaded.
+            </div>
+          )}
+          {inputNode && PluginView && <PluginView input={inputNode} engine={engine} />}
         </HedronErrorBoundary>
       </div>
       {selectedNode.nodeType === 'param' && (

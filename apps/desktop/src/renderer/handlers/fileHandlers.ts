@@ -1,6 +1,7 @@
 import { ProjectData, AppState } from '@hedron-gl/app-store'
 import { appStore } from '@renderer/appStore'
 import { engine, engineStore } from '@renderer/engine'
+import { setPluginProject } from '@renderer/plugins/pluginHost'
 import {
   openProjectFileDialog,
   openSketchesDirDialog,
@@ -18,6 +19,9 @@ const startEngineWithSketchesDir = async (
   sketchesDirPath: string,
   resourcesDirAbsolute: string,
 ) => {
+  // Project plugins load first, so sketches can import their APIs and project data finds their nodes
+  await setPluginProject(sketchesDirPath)
+
   const { moduleIds, url } = await startSketchesServer(sketchesDirPath)
 
   const { url: resourcesUrl, files: resources } = await startResourcesServer(resourcesDirAbsolute)
