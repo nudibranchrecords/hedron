@@ -21,10 +21,18 @@ interface LoadedPlugin {
   main: MainPluginInstance | null
 }
 
+/** Compares folders the way the file system does, so case and separators don't split one folder in two. */
+const dirKey = (dir: string) => {
+  const resolved = path.resolve(dir)
+  return process.platform === 'win32' || process.platform === 'darwin'
+    ? resolved.toLowerCase()
+    : resolved
+}
+
 const entriesMatch = (a: DiscoveredPlugin, b: DiscoveredPlugin) =>
-  a.dir === b.dir &&
-  a.rendererEntry === b.rendererEntry &&
-  a.mainEntry === b.mainEntry &&
+  dirKey(a.dir) === dirKey(b.dir) &&
+  a.manifest.renderer === b.manifest.renderer &&
+  a.manifest.main === b.manifest.main &&
   JSON.stringify(a.manifest.mainExternals) === JSON.stringify(b.manifest.mainExternals)
 
 /** Finds, builds, watches and hosts runtime plugins, and tells the renderer what to load. */
@@ -48,19 +56,31 @@ export class PluginManager {
     await this.server.start()
     const settings = readPluginSettings()
 
-    const discovered = settings.folders.flatMap((folder) => discoverPluginsInFolder(folder, 'user'))
-    if (this.projectPluginsDir) {
-      discovered.push(...discoverPluginsInFolder(this.projectPluginsDir, 'project'))
-    }
+    // Project plugins come first, so a project's own copy of a plugin wins over the user's
+    const found = [
+      ...(this.projectPluginsDir ? discoverPluginsInFolder(this.projectPluginsDir, 'project') : []),
+      ...settings.folders.flatMap((folder) => discoverPluginsInFolder(folder, 'user')),
+    ]
 
-    // The first plugin found with an id wins, later ones are listed with an error
+    // One folder reached through both sources is one plugin, not a clash with itself
+    const byDir = new Map<string, DiscoveredPlugin>()
+    for (const plugin of found) {
+      const existing = byDir.get(dirKey(plugin.dir))
+      if (!existing) byDir.set(dirKey(plugin.dir), plugin)
+      else if (!existing.sources.includes(plugin.sources[0]))
+        existing.sources.push(plugin.sources[0])
+    }
+    const discovered = [...byDir.values()]
+
     const byId = new Map<string, DiscoveredPlugin>()
     for (const plugin of discovered) {
       const existing = byId.get(plugin.id)
-      if (existing) {
-        plugin.errors.push(`Another plugin already uses the id "${plugin.id}": ${existing.dir}`)
-      } else {
+      if (!existing) {
         byId.set(plugin.id, plugin)
+      } else if (existing.sources.includes('project') && !plugin.sources.includes('project')) {
+        plugin.overriddenBy = existing.dir
+      } else {
+        plugin.errors.push(`Another plugin already uses the id "${plugin.id}": ${existing.dir}`)
       }
     }
     this.discovered = discovered
@@ -166,14 +186,15 @@ export class PluginManager {
     const settings = readPluginSettings()
     const plugins = this.discovered.map((plugin): PluginInfo => {
       const loaded = this.loaded.get(plugin.id)
-      const isThisCopy = loaded?.plugin.dir === plugin.dir
+      const isThisCopy = !!loaded && dirKey(loaded.plugin.dir) === dirKey(plugin.dir)
       return {
         id: plugin.id,
         name: plugin.name,
         version: plugin.version,
         description: plugin.description,
         dir: plugin.dir,
-        source: plugin.source,
+        sources: plugin.sources,
+        overriddenBy: plugin.overriddenBy,
         enabled: !settings.disabled.includes(plugin.id),
         rendererUrl: isThisCopy ? loaded.rendererUrl : null,
         buildId: isThisCopy ? loaded.buildId : 0,

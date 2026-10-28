@@ -9,13 +9,15 @@ const PluginRow = ({ plugin, loadError }: { plugin: PluginInfo; loadError?: stri
   const errors = loadError ? [...plugin.errors, loadError] : plugin.errors
   const isRunning =
     plugin.enabled && errors.length === 0 && (!!plugin.rendererUrl || plugin.mainActive)
-  const status = !plugin.enabled
-    ? 'Disabled'
-    : errors.length > 0
-      ? 'Error'
-      : isRunning
-        ? 'Loaded'
-        : 'Loading'
+  const status = plugin.overriddenBy
+    ? 'Not used'
+    : !plugin.enabled
+      ? 'Disabled'
+      : errors.length > 0
+        ? 'Error'
+        : isRunning
+          ? 'Loaded'
+          : 'Loading'
 
   return (
     <li className={c.plugin}>
@@ -23,28 +25,40 @@ const PluginRow = ({ plugin, loadError }: { plugin: PluginInfo; loadError?: stri
         <Icon name={errors.length > 0 && plugin.enabled ? 'error' : 'extension'} />
         <span className={c.name}>{plugin.name}</span>
         <span className={c.meta}>
-          {plugin.version} · {plugin.source === 'project' ? 'project' : 'user'} · {status}
+          {plugin.version} · {plugin.sources.join(' + ')} · {status}
         </span>
       </div>
       {plugin.description && <div className={c.description}>{plugin.description}</div>}
-      {plugin.enabled && errors.length > 0 && <pre className={c.errors}>{errors.join('\n\n')}</pre>}
+      {plugin.overriddenBy && (
+        <div className={c.description}>
+          This project has its own copy, which is loaded instead: {plugin.overriddenBy}
+        </div>
+      )}
+      {!plugin.overriddenBy && plugin.enabled && errors.length > 0 && (
+        <pre className={c.errors}>{errors.join('\n\n')}</pre>
+      )}
       <div className={c.actions}>
-        <Button
-          size="slim"
-          type="secondary"
-          onClick={() => pluginActions.setEnabled(plugin.id, !plugin.enabled)}
-        >
-          {plugin.enabled ? 'Disable' : 'Enable'}
-        </Button>
-        <Button
-          size="slim"
-          type="ghost"
-          iconName="refresh"
-          disabled={!plugin.enabled}
-          onClick={() => pluginActions.reload(plugin.id)}
-        >
-          Reload
-        </Button>
+        {/* Enabling is per plugin id, so only the copy that actually loads gets the controls */}
+        {!plugin.overriddenBy && (
+          <>
+            <Button
+              size="slim"
+              type="secondary"
+              onClick={() => pluginActions.setEnabled(plugin.id, !plugin.enabled)}
+            >
+              {plugin.enabled ? 'Disable' : 'Enable'}
+            </Button>
+            <Button
+              size="slim"
+              type="ghost"
+              iconName="refresh"
+              disabled={!plugin.enabled}
+              onClick={() => pluginActions.reload(plugin.id)}
+            >
+              Reload
+            </Button>
+          </>
+        )}
         <Button
           size="slim"
           type="ghost"
@@ -80,7 +94,11 @@ export const PluginManager = () => {
       ) : (
         <ul className={c.list}>
           {plugins.map((plugin) => (
-            <PluginRow key={plugin.dir} plugin={plugin} loadError={loadErrors[plugin.id]} />
+            <PluginRow
+              key={plugin.dir}
+              plugin={plugin}
+              loadError={plugin.overriddenBy ? undefined : loadErrors[plugin.id]}
+            />
           ))}
         </ul>
       )}

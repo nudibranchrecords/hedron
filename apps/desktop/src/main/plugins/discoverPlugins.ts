@@ -9,7 +9,10 @@ export interface DiscoveredPlugin {
   version: string
   description: string
   dir: string
-  source: PluginSource
+  /** Usually one; both when a project plugin's folder was also added as a user folder. */
+  sources: PluginSource[]
+  /** Set on a user copy that a project's own copy of the same plugin replaces. */
+  overriddenBy: string | null
   manifest: PluginManifest
   rendererEntry: string | null
   mainEntry: string | null
@@ -77,7 +80,8 @@ const readPlugin = (dir: string, source: PluginSource): DiscoveredPlugin | null 
     version: String(pkg.version ?? '0.0.0'),
     description: String(pkg.description ?? ''),
     dir,
-    source,
+    sources: [source],
+    overriddenBy: null,
     manifest: {
       id,
       apiVersion: hedron.apiVersion ?? 0,
@@ -92,7 +96,8 @@ const readPlugin = (dir: string, source: PluginSource): DiscoveredPlugin | null 
 }
 
 /** A folder is either a plugin itself or a collection of plugin folders one level down. */
-export const discoverPluginsInFolder = (folder: string, source: PluginSource) => {
+export const discoverPluginsInFolder = (rawFolder: string, source: PluginSource) => {
+  const folder = path.resolve(rawFolder)
   if (!fs.existsSync(folder)) return []
 
   const self = readPlugin(folder, source)

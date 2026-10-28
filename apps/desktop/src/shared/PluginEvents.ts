@@ -19,7 +19,10 @@ export interface PluginInfo {
   version: string
   description: string
   dir: string
-  source: PluginSource
+  /** Usually one; both when a project plugin's folder was also added as a user folder. */
+  sources: PluginSource[]
+  /** Set on a user copy that the open project's own copy replaces; only that copy loads. */
+  overriddenBy: string | null
   enabled: boolean
   /** Null when there's no renderer entry, the plugin is disabled, or the build failed. */
   rendererUrl: string | null
