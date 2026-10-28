@@ -42,19 +42,20 @@ export const resolveDependencies = (
       const add = (reason: DependencyIssue['reason'], message: string) =>
         addIssue(plugin, { id, reason, optional, message })
       const dependency = byId.get(id)
+      const label = !dependency || dependency.name === id ? `"${id}"` : `${dependency.name} (${id})`
 
       // An absent optional dependency is fine, but one at the wrong version is worth a warning
       if (!dependency) {
-        if (!optional) add('missing', `Requires "${id}" ${range}, which isn't installed`)
+        if (!optional) add('missing', `Requires ${label} ${range}, which isn't installed`)
       } else if (!isEnabled(id)) {
-        if (!optional) add('disabled', `Requires ${dependency.name} (${id}), which is disabled`)
+        if (!optional) add('disabled', `Requires ${label}, which is disabled`)
       } else if (!satisfiesRange(dependency.version, range)) {
         add(
           'version',
-          `${optional ? 'Works with' : 'Requires'} ${dependency.name} ${range}, but ${dependency.version} is installed`,
+          `${optional ? 'Works with' : 'Requires'} ${label} ${range}, but ${dependency.version} is installed`,
         )
       } else if (!optional && !inCycle && !loadable.has(id)) {
-        add('unloadable', `Requires ${dependency.name} (${id}), which can't load`)
+        add('unloadable', `Requires ${label}, which can't load`)
       }
     }
 
