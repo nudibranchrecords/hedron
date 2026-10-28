@@ -43,6 +43,8 @@ export class PluginManager {
   private dependencyIssues = new Map<DiscoveredPlugin, DependencyIssue[]>()
   private loaded = new Map<string, LoadedPlugin>()
   private projectPluginsDir: string | null = null
+  // Shared by all loads so a build URL never repeats, since the renderer caches modules by URL
+  private lastBuildId = 0
   // Refreshes run one at a time so overlapping requests can't double-load a plugin
   private queue: Promise<void> = Promise.resolve()
 
@@ -151,7 +153,7 @@ export class PluginManager {
     if (output.errors.length === 0 && output.files.has('index.js')) {
       this.server.setFiles(id, output.files)
       loaded.rendererUrl = `${this.server.baseUrl}/${id}/index.js`
-      loaded.buildId++
+      loaded.buildId = ++this.lastBuildId
     }
 
     if (!isFirst) this.emitChanged()
