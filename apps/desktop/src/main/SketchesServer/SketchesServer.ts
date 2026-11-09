@@ -9,6 +9,7 @@ import { createGlobalVarModuleFiles, watchWithDebounce } from './utils'
 import { deleteUnwantedOutputs } from './deleteUnwantedOutputs'
 import { FileWatchEvents } from '@shared/Events'
 import { getEsbuild } from '@main/getUnpackedModules'
+import { pluginApiResolver } from '@main/plugins/pluginApiResolver'
 
 const HOST = process.platform.startsWith('win') ? 'localhost' : '0.0.0.0'
 
@@ -105,6 +106,7 @@ export class SketchesServer extends EventEmitter {
             }
           },
         },
+        pluginApiResolver,
         {
           name: 'on-end',
           setup: (build): void => {
@@ -139,7 +141,7 @@ export class SketchesServer extends EventEmitter {
       ],
     })
 
-    console.log(`Starting server... http://${HOST}:${port}`)
+    console.log(`Starting sketches server... http://${HOST}:${port}`)
     console.log(`Serving directory: ${outdir}`)
 
     const { host } = await ctx.serve({

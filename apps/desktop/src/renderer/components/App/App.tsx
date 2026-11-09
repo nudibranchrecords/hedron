@@ -2,6 +2,7 @@ import {
   AppStoreProvider,
   Collapsible,
   EngineProvider,
+  HedronErrorBoundary,
   LocalPathPickerProvider,
   Icon,
   IconName,
@@ -15,15 +16,19 @@ import { PerformanceStats } from '@components/PerformanceStats/PerformanceStats'
 import { Viewer } from '@components/Viewer'
 import { WorkArea } from '@components/WorkArea/WorkArea'
 import { appStore } from '@renderer/appStore'
-import { engine, pluginViews } from '@renderer/engine'
+import { engine } from '@renderer/engine'
 import { selectLocalPath } from '@renderer/ipc/mainThreadTalk'
+import { usePluginViews, viewKey } from '@renderer/plugins/pluginViews'
+import { PluginManagerPanel } from '@components/PluginManagerPanel/PluginManagerPanel'
 
 const PluginGlobalControls = () => {
   const [openById, setOpenById] = useState<Record<string, boolean>>({})
+  const [isManagerOpen, setIsManagerOpen] = useState(false)
+  const globalPanels = usePluginViews((state) => state.globalPanel)
 
   return (
     <div className={c.plugins}>
-      {Object.entries(pluginViews.globalPanel).map(([pluginId, PluginPanel]) => {
+      {Object.entries(globalPanels).map(([pluginId, PluginPanel]) => {
         const enginePlugin = engine.plugins[pluginId]
         const pluginName = enginePlugin?.name ?? pluginId
         const pluginIconName = enginePlugin?.iconName ?? 'extension'
@@ -47,10 +52,26 @@ const PluginGlobalControls = () => {
               }))
             }
           >
-            <PluginPanel engine={engine} />
+            {/* Keyed on the component so a reloaded plugin gets a fresh error boundary */}
+            <HedronErrorBoundary key={viewKey(PluginPanel)}>
+              <PluginPanel engine={engine} />
+            </HedronErrorBoundary>
           </Collapsible>
         )
       })}
+      <Collapsible
+        type="panel"
+        className={c.pluginItem}
+        title={
+          <>
+            <Icon name="extension" /> Plugins
+          </>
+        }
+        isOpen={isManagerOpen}
+        onToggle={setIsManagerOpen}
+      >
+        <PluginManagerPanel />
+      </Collapsible>
     </div>
   )
 }
@@ -58,6 +79,7 @@ const PluginGlobalControls = () => {
 const AppContent = (): JSX.Element => {
   const sketchesDir = useAppStore((state) => state.sketchesDir)
   const isProjectLoaded = sketchesDir !== null
+  const widgets = usePluginViews((state) => state.widget)
 
   const { leftRatio, onHandleMouseDown, wrapperRef } = useHandleDrag()
 
@@ -72,9 +94,11 @@ const AppContent = (): JSX.Element => {
           <>
             <div className={c.widgetStrip}>
               <PerformanceStats />
-              {Object.entries(pluginViews.widget).map(([pluginId, PluginWidget]) => (
+              {Object.entries(widgets).map(([pluginId, PluginWidget]) => (
                 <div className={c.widgetItem} key={pluginId}>
-                  <PluginWidget />
+                  <HedronErrorBoundary key={viewKey(PluginWidget)}>
+                    <PluginWidget />
+                  </HedronErrorBoundary>
                 </div>
               ))}
             </div>

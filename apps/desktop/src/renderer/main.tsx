@@ -10,6 +10,9 @@ import { App } from '@components/App/App'
 import '@renderer/windows'
 import '@renderer/ipc/mainThreadListen'
 import '@renderer/engine'
+import { initPluginHost } from '@renderer/plugins/pluginHost'
+
+initPluginHost()
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>

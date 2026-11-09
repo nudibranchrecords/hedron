@@ -1,0 +1,50 @@
+{
+  "name": "@hedron-gl/plugin-sdk",
+  "version": "1.0.0-alpha.4",
+  "description": "Types and helpers for writing Hedron plugins that load at runtime",
+  "author": "Cale Bradbury",
+  "homepage": "https://github.com/nudibranchrecords/hedron#readme",
+  "license": "ISC",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.mts",
+        "default": "./dist/index.mjs"
+      },
+      "require": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      }
+    }
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "dev": "tsup --watch",
+    "build": "tsup",
+    "lint": "eslint . --ext .js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix"
+  },
+  "dependencies": {
+    "@hedron-gl/engine": "^1.0.0-alpha.4"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.1",
+    "tsup": "^8.3.6",
+    "typescript": "^5.9.3"
+  },
+  "peerDependencies": {
+    "react": "^18.3.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nudibranchrecords/hedron.git"
+  },
+  "bugs": {
+    "url": "https://github.com/nudibranchrecords/hedron/issues"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

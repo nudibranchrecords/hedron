@@ -21,9 +21,15 @@ const importPackages = async () => {
   importedEsbuild = await import(importPath)
 }
 
-importPackages()
+const esbuildReady = importPackages()
 
 export const getEsbuild = () => {
   if (importedEsbuild === null) throw new Error('esbuild was not imported in time')
   return importedEsbuild
+}
+
+/** Waits for the async import above, for callers that may run before it resolves. */
+export const loadEsbuild = async () => {
+  await esbuildReady
+  return getEsbuild()
 }

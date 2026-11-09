@@ -144,6 +144,9 @@ importers:
       '@hedron-gl/param-presets':
         specifier: ^1.0.0-alpha.4
         version: link:../../packages/param-presets
+      '@hedron-gl/plugin-sdk':
+        specifier: ^1.0.0-alpha.4
+        version: link:../../packages/plugin-sdk
       '@hedron-gl/scene-control':
         specifier: ^1.0.0-alpha.4
         version: link:../../packages/scene-control
@@ -551,6 +554,25 @@ importers:
       vite-tsconfig-paths:
         specifier: ^5.1.4
         version: 5.1.4(typescript@5.9.3)(vite@7.3.1(@types/node@26.1.1)(jiti@2.7.0)(lightningcss@1.32.0)(yaml@2.9.0))
+
+  packages/plugin-sdk:
+    dependencies:
+      '@hedron-gl/engine':
+        specifier: ^1.0.0-alpha.4
+        version: link:../engine
+      react:
+        specifier: ^18.3.1
+        version: 18.3.1
+    devDependencies:
+      '@types/react':
+        specifier: ^18.3.1
+        version: 18.3.28
+      tsup:
+        specifier: ^8.3.6
+        version: 8.5.1(@microsoft/api-extractor@7.58.9(@types/node@26.1.1))(jiti@2.7.0)(postcss@8.5.16)(typescript@5.9.3)(yaml@2.9.0)
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
 
   packages/scene-control:
     dependencies:

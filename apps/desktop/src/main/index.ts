@@ -25,6 +25,7 @@ import { saveProjectFile } from '@main/handlers/saveProjectFile'
 import { openProjectFile } from '@main/handlers/openProjectFile'
 import { openFolder } from '@main/handlers/openFolder'
 import { FrameEvents } from '@shared/FrameEvents'
+import { initPlugins } from '@main/plugins'
 const isDevelopment = process.env.NODE_ENV !== 'production'
 
 // This method will be called when Electron has finished
@@ -33,6 +34,7 @@ const isDevelopment = process.env.NODE_ENV !== 'production'
 app.whenReady().then(() => {
   updateMenu()
   initiateScreens()
+  initPlugins()
 
   // Set app user model id for windows
   electronApp.setAppUserModelId('com.electron')
