@@ -141,7 +141,7 @@ export class SketchesServer extends EventEmitter {
       ],
     })
 
-    console.log(`Starting server... http://${HOST}:${port}`)
+    console.log(`Starting sketches server... http://${HOST}:${port}`)
     console.log(`Serving directory: ${outdir}`)
 
     const { host } = await ctx.serve({

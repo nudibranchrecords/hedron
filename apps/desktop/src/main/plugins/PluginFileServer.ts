@@ -2,7 +2,7 @@ import http from 'http'
 import { getPort } from 'get-port-please'
 import { getContentTypeFromFileName } from '@utils/getContentTypeFromFileName'
 
-const HOST = process.platform.startsWith('win') ? 'localhost' : '127.0.0.1'
+const HOST = process.platform.startsWith('win') ? 'localhost' : '0.0.0.0'
 
 /** Serves plugin build output straight from memory, so builds never touch disk. */
 export class PluginFileServer {
@@ -34,6 +34,8 @@ export class PluginFileServer {
 
     await new Promise<void>((resolve) => this.server!.listen(port, HOST, resolve))
     this.baseUrl = `http://${HOST}:${port}`
+
+    console.log(`Starting plugin file server... http://${HOST}:${port}`)
   }
 
   /** Replaces every file under `/<prefix>/` with the given set. */
