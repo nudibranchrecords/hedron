@@ -30,20 +30,22 @@ export const NumberInput = forwardRef<NumberInputHandle, NumberInputProps>(funct
     [updateTextValue],
   )
 
+  const commitInput = useCallback(() => {
+    const text = numberInput.current.value
+    // An untouched box shows the rounded value, so committing it would lose precision
+    if (text === currVal.current.toFixed(2)) return
+    const value = parseFloat(text)
+    if (isNaN(value)) return
+    updateValue(value)
+    onValueChange(value)
+  }, [updateValue, onValueChange])
+
   const onInputSubmit = useCallback(
     (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault()
-      const input = numberInput.current
-
-      if (input) {
-        const value = parseFloat(input.value)
-        if (!isNaN(value)) {
-          updateValue(value)
-          onValueChange(value)
-        }
-      }
+      commitInput()
     },
-    [updateValue, onValueChange],
+    [commitInput],
   )
 
   const onInputBlur = useCallback(() => {
@@ -54,11 +56,7 @@ export const NumberInput = forwardRef<NumberInputHandle, NumberInputProps>(funct
     (e: React.KeyboardEvent<HTMLInputElement>) => {
       if (e.key === 'Tab') {
         // Submit value on Tab
-        const value = parseFloat(numberInput.current.value)
-        if (!isNaN(value)) {
-          updateValue(value)
-          onValueChange(value)
-        }
+        commitInput()
         // Let Tab propagate for focus change
       } else if (e.key === 'Escape') {
         // Reset to last value and blur
@@ -67,7 +65,7 @@ export const NumberInput = forwardRef<NumberInputHandle, NumberInputProps>(funct
         e.preventDefault()
       }
     },
-    [onValueChange, updateValue, updateTextValue],
+    [commitInput, updateTextValue],
   )
 
   const onInputFocus = useCallback(() => {
